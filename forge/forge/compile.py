@@ -169,7 +169,7 @@ def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Di
     if not losses or run_backward:
 
         if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
+            losses = _generate_random_losses(outputs)
 
         if run_backward:
             _run_pytorch_backward(outputs, device, losses)
@@ -186,6 +186,7 @@ def compile_main(
     attach_to: Optional[CompiledModel] = None,
     compiler_cfg: CompilerConfig = CompilerConfig(),
     forge_property_handler: Optional[ForgePropertyHandler] = None,
+    verify_cfg: DepricatedVerifyConfig = DepricatedVerifyConfig(),
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -248,7 +249,7 @@ def compile_main(
         modules=modules,
         graph_name=module_name,
         compiler_cfg=compiler_cfg,
-        verify_cfg=DepricatedVerifyConfig.disabled(),
+        verify_cfg=verify_cfg,
         microbatch_size=1,
         microbatch_count=1,
         inputs=sample_inputs,
@@ -304,19 +305,18 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
 
         # Check if we need to stop compilation or perform verifications in the current stage.
         should_early_stop_compilation = check_for_compilation_early_stop(compiler_cfg.compile_depth, current_stage)
+        should_verify = current_stage in verify_cfg.stages_for_intermediate_verification
 
         can_verify = (
             current_stage != CompileDepth.INIT_COMPILE
             and current_stage != CompileDepth.PRE_LOWERING_PASS
             and current_stage != CompileDepth.POST_PATTERN_MATCHER
         )
-        should_verify = current_stage == CompileDepth.POST_AUTOGRAD_PASS and verify_cfg.verify_post_autograd_passes
 
         if (
             verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify
         ) and can_verify:
             in_training = context.compiler_cfg.enable_training and current_stage.value >= CompileDepth.AUTOGRAD.value
-            assert False, "verification not working yet"
             do_verify(
                 current_stage.name.lower(),
                 in_training,
@@ -325,9 +325,8 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.parameter_dict,
                 context.input_grads,
                 context.outputs,
-                dev,
-                context.intermediate_tensors,
-                verify_cfg,
+                context.intermediate_tensors,  # intermediate golden tensors
+                verify_cfg,  # DepricatedVerifyConfig
                 False,
                 losses=context.losses,
                 targets=context.targets,

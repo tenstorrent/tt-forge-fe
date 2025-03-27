@@ -4,10 +4,12 @@
 #include "lower_to_mlir.hpp"
 
 // Standard headers
+#include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <utils/assert.hpp>
+#include <variant>
 
 // TTForge headers
 #include "forge_graph_module.hpp"
@@ -107,13 +109,31 @@ class AttributeMapper
     void initialize_default_mappings()
     {
         // Sort the mappings in lexicographical order
+
+        // conv2d_transpose
+        add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping(
+            "conv2d_transpose", "output_padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
+        // conv2d
         add_op_mapping("conv2d", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
         add_op_mapping("conv2d", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
+        // cumsum
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
+
+        // reduce_avg
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
+
+        // repeat_interleave
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UI32Attr));
+
+        // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
 
         // Add more default mappings here
@@ -567,6 +587,7 @@ class MLIRGenerator
             case tt::DataFormat::Float16: return builder_.getF16Type();
             case tt::DataFormat::Int32: return builder_.getI32Type();
             case tt::DataFormat::Int8: return builder_.getI8Type();
+            case tt::DataFormat::RawUInt8: return builder_.getIntegerType(8, false);
             default:
                 log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                 TT_ASSERT(false);
@@ -654,6 +675,8 @@ class MLIRGenerator
         lowering_handler_map["repeat_interleave"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatInterleaveOp>;
         lowering_handler_map["repeat"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatOp>;
+        lowering_handler_map["conv2d_transpose"] =
+            &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
         lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;

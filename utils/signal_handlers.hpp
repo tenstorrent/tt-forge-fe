@@ -23,9 +23,6 @@ inline void tt_forge_signal_handler(int sig)
     }
 
     std::cerr << "tt_forge_signal_handler - signal: " << sig << " (" << signal_name << ")" << std::endl;
-
-    tt::TTSystem::get_system().close_devices();
-
     std::cerr << "stacktrace: " << std::endl;
 
     std::vector bt = tt::assert::backtrace(100, 0);
@@ -51,6 +48,11 @@ inline void tt_forge_signal_handler(int sig)
 
         in_python_section = false;
         std::cerr << prefix << frame << std::endl;
+    }
+
+    if (tt::TTSystem::is_initialized())
+    {
+        tt::TTSystem::get_system().close_devices();
     }
 
     // Restore the default signal handler and raise the signal again.

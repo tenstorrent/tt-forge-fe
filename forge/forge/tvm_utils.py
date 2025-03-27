@@ -69,6 +69,18 @@ def map_pt_dtype_to_pd(pt_dtype):
     assert pt_dtype in pt_types, f"{pt_dtype} Paddle equivelant not defined"
     return list(pd_to_pt_type_map.keys())[pt_types.index(pt_dtype)]
 
+def map_pd_dtype_to_pt(pd_dtype):
+    pt_type = pd_to_pt_type_map[pd_dtype]
+    assert pt_type is not None, f"Paddle DType {pd_dtype} has no PyTorch equivalent"
+    return pt_type
+
+
+def map_pt_dtype_to_pd(pt_dtype):
+    pt_types = list(pd_to_pt_type_map.values())
+    assert pt_dtype in pt_types, f"{pt_dtype} Paddle equivelant not defined"
+    return list(pd_to_pt_type_map.keys())[pt_types.index(pt_dtype)]
+
+
 def flatten_inputs(inputs, names=None, force_float32=False):
     from forge.tensor import AnyTensor
 

@@ -47,8 +47,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
             "pcc": 0.99,
         },
@@ -59,8 +59,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
             "pcc": 0.99,
         },
@@ -71,8 +71,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
             "pcc": 0.99,
         },
@@ -86,26 +86,6 @@ forge_modules_and_shapes_dtypes_list = [
         Identity0,
         [((2, 1, 8192), torch.float32)],
         {"model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((2, 1, 1536), torch.float32)],
-        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((48, 1, 1), torch.float32)],
-        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((48, 1, 13), torch.float32)],
-        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((2, 1, 6144), torch.float32)],
-        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -129,12 +109,125 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
+        [((2, 1, 1536), torch.float32)],
+        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((48, 1, 1), torch.float32)],
+        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((48, 1, 13), torch.float32)],
+        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((2, 1, 6144), torch.float32)],
+        {"model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1, 384), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 6, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
+                "pt_t5_google_flan_t5_small_text_gen_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1500, 384), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 6, 1500, 1500), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1500, 1536), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 6, 1, 1500), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1, 1536), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1, 768), torch.float32)],
+        {
+            "model_name": [
+                "pt_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_t5_t5_base_text_gen_hf",
+                "pt_t5_google_flan_t5_base_text_gen_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 12, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_whisper_openai_whisper_small_speech_recognition_hf",
+                "pt_t5_t5_base_text_gen_hf",
+                "pt_t5_google_flan_t5_base_text_gen_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1500, 768), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 12, 1500, 1500), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1500, 3072), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 12, 1, 1500), torch.float32)],
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1, 3072), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf", "pt_t5_t5_base_text_gen_hf"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
         [((1, 1, 1024), torch.float32)],
         {
             "model_name": [
                 "pt_whisper_openai_whisper_medium_speech_recognition_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_t5_large_text_gen_hf",
+                "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_google_flan_t5_small_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -146,8 +239,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_whisper_openai_whisper_medium_speech_recognition_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_t5_large_text_gen_hf",
+                "pt_t5_google_flan_t5_large_text_gen_hf",
             ],
             "pcc": 0.99,
         },
@@ -217,47 +310,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 1, 384), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 6, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 1500, 384), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 6, 1500, 1500), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 1500, 1536), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 6, 1, 1500), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 1, 1536), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((1, 1, 512), torch.float32)],
         {
             "model_name": [
@@ -310,58 +362,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 1, 768), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_small_speech_recognition_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 12, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_small_speech_recognition_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 1500, 768), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 12, 1500, 1500), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 1500, 3072), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 12, 1, 1500), torch.float32)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 1, 3072), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
         [((1, 2, 1280), torch.float32)],
         {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99},
     ),
@@ -387,8 +387,23 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
+        [((1, 16, 588, 588), torch.float32)],
+        {"model_name": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
         [((1, 32, 39, 39), torch.float32)],
-        {"model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf", "DeepSeekWrapper_decoder"], "pcc": 0.99},
+        {"model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((16, 577, 577), torch.float32)],
+        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 32, 596, 596), torch.float32)],
+        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -415,22 +430,67 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 128), torch.float32)],
         {
             "model_name": [
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
                 "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
                 "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_base_v1_mlm_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
                 "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_base_v1_token_cls_hf",
+                "pt_albert_xxlarge_v1_token_cls_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 128, 2048), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+                "pt_albert_xlarge_v2_token_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 128, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_large_v2_token_cls_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -440,10 +500,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 128, 128), torch.float32)],
         {
             "model_name": [
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
                 "pt_albert_xxlarge_v1_token_cls_hf",
                 "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -453,10 +513,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 4096), torch.float32)],
         {
             "model_name": [
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
                 "pt_albert_xxlarge_v1_token_cls_hf",
                 "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -467,20 +527,20 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
                 "pt_albert_base_v1_mlm_hf",
                 "pt_albert_base_v2_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
@@ -496,20 +556,20 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_base_v1_token_cls_hf",
                 "pt_albert_base_v1_mlm_hf",
                 "pt_albert_base_v2_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
@@ -521,48 +581,53 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 16, 128, 128), torch.float32)],
+        [((1, 9, 128), torch.float32)],
+        {"model_name": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 12, 9, 9), torch.float32)],
+        {"model_name": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 9, 768), torch.float32)],
+        {"model_name": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 768), torch.float32)],
         {
             "model_name": [
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+                "pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf",
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
+                "pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 128, 1024), torch.float32)],
-        {
-            "model_name": [
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v2_token_cls_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+        [((1, 14, 128), torch.float32)],
+        {"model_name": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
-        [((1, 128, 2048), torch.float32)],
-        {
-            "model_name": [
-                "pt_albert_xlarge_v2_token_cls_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
-            "pcc": 0.99,
-        },
+        [((1, 12, 14, 14), torch.float32)],
+        {"model_name": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 14, 768), torch.float32)],
+        {"model_name": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -571,8 +636,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_name": [
                 "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_opt_facebook_opt_350m_clm_hf",
                 "pt_xglm_facebook_xglm_564m_clm_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
@@ -604,27 +669,48 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 768), torch.float32)],
+        [((1, 384, 1024), torch.float32)],
         {
             "model_name": [
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
-                "pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 384, 1024), torch.float32)],
-        {"model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"], "pcc": 0.99},
+        [((1, 16, 384, 384), torch.float32)],
+        {
+            "model_name": [
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
-        [((1, 16, 384, 384), torch.float32)],
-        {"model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"], "pcc": 0.99},
+        [((1, 6, 768), torch.float32)],
+        {"model_name": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 12, 6, 6), torch.float32)],
+        {"model_name": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 32, 32), torch.float32)],
+        {
+            "model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf", "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 32, 1536), torch.float32)],
+        {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -632,8 +718,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
             ],
             "pcc": 0.99,
@@ -651,19 +737,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 71, 6, 6), torch.float32)],
-        {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 6, 4544), torch.float32)],
-        {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((1, 12, 10, 10), torch.float32)],
         {
-            "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+            "model_name": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
             "pcc": 0.99,
         },
     ),
@@ -672,9 +748,39 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 10, 10), torch.float32)],
         {"model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99},
     ),
+    (
+        Identity0,
+        [((1, 71, 6, 6), torch.float32)],
+        {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 6, 4544), torch.float32)],
+        {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99},
+    ),
     (Identity0, [((1, 64, 334, 334), torch.float32)], {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (Identity0, [((1, 334, 4096), torch.float32)], {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (Identity0, [((1, 8, 7, 7), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 8, 207, 207), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 207, 207), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 8, 107, 107), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 107, 107), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99},
+    ),
     (
         Identity0,
         [((1, 256, 768), torch.float32)],
@@ -694,41 +800,35 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 256, 2560), torch.float32)],
+        [((1, 7, 768), torch.float32)],
         {
             "model_name": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 20, 256, 256), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 256, 2048), torch.float32)],
+        [((1, 12, 7, 7), torch.float32)],
         {
             "model_name": [
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
         },
+    ),
+    (
+        Identity0,
+        [((1, 32, 2560), torch.float32)],
+        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 20, 32, 32), torch.float32)],
+        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -749,13 +849,41 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 32, 2560), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99},
+        [((1, 256, 2560), torch.float32)],
+        {
+            "model_name": [
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_phi2_microsoft_phi_2_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
-        [((1, 20, 32, 32), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99},
+        [((1, 20, 256, 256), torch.float32)],
+        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 256, 2048), torch.float32)],
+        {
+            "model_name": [
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
@@ -771,17 +899,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 16, 32, 32), torch.float32)],
-        {"model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((1, 32, 4, 4), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
@@ -791,59 +915,42 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
+        [((1, 24, 4, 4), torch.float32)],
+        {"model_name": ["pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
         [((1, 32, 256, 256), torch.float32)],
         {
             "model_name": [
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_phi2_microsoft_phi_2_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
+        [((1, 24, 32, 32), torch.float32)],
+        {"model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 32, 32, 32), torch.float32)],
+        {"model_name": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
         [((1, 32, 128, 128), torch.float32)],
         {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 7, 768), torch.float32)],
-        {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 12, 7, 7), torch.float32)],
-        {"model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"], "pcc": 0.99},
-    ),
-    (Identity0, [((32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
-    (Identity0, [((256, 2048), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
-    (
-        Identity0,
-        [((32, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((32, 2048), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((16, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 32, 1024), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((32, 1024), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -855,9 +962,107 @@ forge_modules_and_shapes_dtypes_list = [
         [((32, 768), torch.float32)],
         {"model_name": ["pt_opt_facebook_opt_125m_seq_cls_hf", "pt_opt_facebook_opt_125m_qa_hf"], "pcc": 0.99},
     ),
+    (
+        Identity0,
+        [((32, 32, 32), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((32, 2048), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
+    ),
+    (Identity0, [((32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
+    (Identity0, [((256, 2048), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((16, 32, 32), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 32, 1024), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((32, 1024), torch.float32)],
+        {"model_name": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
+    ),
     (Identity0, [((12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
     (Identity0, [((256, 768), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
     (Identity0, [((256, 1024), torch.float32)], {"model_name": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 1, 512, 50176), torch.float32)],
+        {
+            "model_name": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 8, 512, 512), torch.float32)],
+        {
+            "model_name": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1, 1, 512), torch.float32)],
+        {
+            "model_name": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1, 512, 3025), torch.float32)],
+        {"model_name": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 8, 256, 2048), torch.float32)],
+        {"model_name": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 8, 256, 256), torch.float32)],
+        {
+            "model_name": [
+                "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 8, 2048, 256), torch.float32)],
+        {"model_name": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99},
+    ),
     (
         Identity0,
         [((1, 12, 2560), torch.float32)],
@@ -878,7 +1083,7 @@ forge_modules_and_shapes_dtypes_list = [
         Identity0,
         [((1, 11, 2560), torch.float32)],
         {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
             "pcc": 0.99,
         },
     ),
@@ -886,24 +1091,20 @@ forge_modules_and_shapes_dtypes_list = [
         Identity0,
         [((1, 32, 11, 11), torch.float32)],
         {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
         [((1, 256, 3072), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 32, 13, 13), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 13, 3072), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+        {
+            "model_name": [
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
@@ -915,11 +1116,48 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 5, 3072), torch.float32)],
         {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
     ),
+    (
+        Identity0,
+        [((1, 32, 13, 13), torch.float32)],
+        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 13, 3072), torch.float32)],
+        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+    ),
     (Identity0, [((1, 16, 6, 6), torch.float32)], {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 16, 29, 29), torch.float32)],
         {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 35, 35), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 14, 35, 35), torch.float32)],
+        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 12, 35, 35), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
@@ -934,33 +1172,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 12, 35, 35), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 16, 35, 35), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 14, 35, 35), torch.float32)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((1, 12, 29, 29), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99},
     ),
@@ -971,14 +1182,23 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
+        [((1, 28, 13, 13), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 13, 3584), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
         [((1, 28, 39, 39), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    (Identity0, [((1, 28, 29, 29), torch.float32)], {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99}),
     (
         Identity0,
-        [((1, 16, 39, 39), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99},
+        [((1, 14, 39, 39), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -987,9 +1207,10 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 14, 39, 39), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
+        [((1, 16, 39, 39), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99},
     ),
+    (Identity0, [((1, 28, 29, 29), torch.float32)], {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 768, 128), torch.float32)],
@@ -1000,8 +1221,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 61, 1024), torch.float32)],
         {
             "model_name": [
-                "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_t5_large_text_gen_hf",
+                "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_google_flan_t5_small_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -1010,24 +1231,14 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Identity0,
         [((1, 16, 61, 61), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"], "pcc": 0.99},
+        {"model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Identity0,
-        [((1, 61, 2816), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
-    ),
+    (Identity0, [((1, 61, 4096), torch.float32)], {"model_name": ["pt_t5_t5_large_text_gen_hf"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 16, 1, 61), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"], "pcc": 0.99},
+        {"model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Identity0,
-        [((1, 1, 2816), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
-    ),
-    (Identity0, [((1, 61, 4096), torch.float32)], {"model_name": ["pt_t5_t5_large_text_gen_hf"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 61, 512), torch.float32)],
@@ -1042,13 +1253,13 @@ forge_modules_and_shapes_dtypes_list = [
     (Identity0, [((1, 8, 1, 61), torch.float32)], {"model_name": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99}),
     (
         Identity0,
-        [((1, 6, 61, 61), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+        [((1, 61, 2816), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
-        [((1, 6, 1, 61), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+        [((1, 1, 2816), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
@@ -1066,6 +1277,16 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 1, 61), torch.float32)],
         {"model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99},
     ),
+    (
+        Identity0,
+        [((1, 6, 61, 61), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 6, 1, 61), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99},
+    ),
     (Identity0, [((1, 256, 8192), torch.float32)], {"model_name": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99}),
     (
         Identity0,
@@ -1080,14 +1301,44 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_alexnet_alexnet_img_cls_torchhub",
                 "pt_alexnet_base_img_cls_osmr",
                 "pt_rcnn_base_obj_det_torchvision_rect_0",
-                "pt_vgg_bn_vgg19_obj_det_osmr",
+                "pt_vgg_vgg16_bn_img_cls_torchvision",
                 "pt_vgg_19_obj_det_hf",
-                "pt_vgg_vgg19_bn_obj_det_torchhub",
+                "pt_vgg_vgg11_bn_img_cls_torchvision",
+                "pt_vgg_vgg13_img_cls_torchvision",
+                "pt_vgg_vgg11_img_cls_torchvision",
                 "pt_vgg_vgg11_obj_det_osmr",
+                "pt_vgg_vgg13_obj_det_osmr",
+                "pt_vgg_vgg16_img_cls_torchvision",
+                "pt_vgg_vgg19_bn_obj_det_torchhub",
                 "pt_vgg_bn_vgg19b_obj_det_osmr",
                 "pt_vgg_vgg16_obj_det_osmr",
+                "pt_vgg_vgg13_bn_img_cls_torchvision",
+                "pt_vgg_vgg19_img_cls_torchvision",
                 "pt_vgg_vgg19_obj_det_osmr",
-                "pt_vgg_vgg13_obj_det_osmr",
+                "pt_vgg_vgg19_bn_obj_det_timm",
+                "pt_vgg_bn_vgg19_obj_det_osmr",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 197, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 16, 197, 197), torch.float32)],
+        {
+            "model_name": [
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -1097,6 +1348,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 197, 768), torch.float32)],
         {
             "model_name": [
+                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
@@ -1109,6 +1361,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 197, 197), torch.float32)],
         {
             "model_name": [
+                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
@@ -1136,22 +1389,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 6, 197, 197), torch.float32)],
         {"model_name": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"], "pcc": 0.99},
     ),
-    (
-        Identity0,
-        [((1, 1280), torch.float32)],
-        {
-            "model_name": [
-                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
-                "pt_mobilenetv2_basic_img_cls_torchhub",
-                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
-    ),
+    (Identity0, [((1, 512, 1, 1), torch.float32)], {"model_name": ["pt_dla_dla34_in1k_img_cls_timm"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 1792), torch.float32)],
@@ -1159,13 +1397,128 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
+        [((1, 1280), torch.float32)],
+        {
+            "model_name": [
+                "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
+                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                "pt_mobilenetv2_basic_img_cls_torchhub",
+                "pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf",
+                "pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf",
+                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1, 19200, 300), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 19200, 64), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 19200, 256), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 2, 4800, 300), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 4800, 128), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 4800, 512), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 5, 1200, 300), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1200, 320), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1200, 1280), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 8, 300, 300), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 300, 512), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 300, 2048), torch.float32)],
+        {"model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
         [((1, 1024), torch.float32)],
         {
             "model_name": [
                 "pt_googlenet_base_img_cls_torchvision",
+                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
                 "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
                 "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 2048), torch.float32)],
+        {
+            "model_name": [
+                "pt_hrnet_hrnet_w48_pose_estimation_timm",
+                "pt_hrnet_hrnet_w40_pose_estimation_timm",
+                "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
+                "pt_hrnet_hrnet_w18_pose_estimation_timm",
+                "pt_hrnet_hrnet_w64_pose_estimation_timm",
+                "pt_hrnet_hrnet_w32_pose_estimation_timm",
+                "pt_hrnet_hrnet_w44_pose_estimation_timm",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
+                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+                "pt_hrnet_hrnet_w30_pose_estimation_timm",
+                "pt_xception_xception71_tf_in1k_img_cls_timm",
+                "pt_xception_xception65_img_cls_timm",
+                "pt_xception_xception71_img_cls_timm",
+                "pt_xception_xception41_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1536), torch.float32)],
+        {
+            "model_name": ["pt_inception_inception_v4_tf_in1k_img_cls_timm", "pt_inception_inception_v4_img_cls_timm"],
             "pcc": 0.99,
         },
     ),
@@ -1174,83 +1527,25 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 768, 384), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
-    ),
-    (
-        Identity0,
-        [((1, 768, 49), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 49, 3072), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 49, 768), torch.float32)],
-        {
-            "model_name": [
-                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 512, 256), torch.float32)],
-        {
-            "model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm", "pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 512, 196), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 196, 2048), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 196, 512), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 512, 49), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 49, 2048), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 49, 512), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
     ),
     (
         Identity0,
         [((1, 768, 196), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1260,10 +1555,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 196, 3072), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1273,10 +1569,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 196, 768), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1286,33 +1583,49 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 512), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_base_img_cls_github",
                 "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 1024, 49), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+        [((1, 256, 512), torch.float32)],
+        {
+            "model_name": [
+                "pt_mlp_mixer_base_img_cls_github",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
-        [((1, 49, 4096), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 49, 1024), torch.float32)],
-        {"model_name": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+        [((1, 256, 256), torch.float32)],
+        {
+            "model_name": [
+                "pt_mlp_mixer_base_img_cls_github",
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
         [((1, 1024, 196), torch.float32)],
         {
-            "model_name": ["pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_img_cls_timm"],
+            "model_name": ["pt_mlp_mixer_mixer_l16_224_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm"],
             "pcc": 0.99,
         },
     ),
@@ -1320,7 +1633,7 @@ forge_modules_and_shapes_dtypes_list = [
         Identity0,
         [((1, 196, 4096), torch.float32)],
         {
-            "model_name": ["pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_img_cls_timm"],
+            "model_name": ["pt_mlp_mixer_mixer_l16_224_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm"],
             "pcc": 0.99,
         },
     ),
@@ -1328,10 +1641,12 @@ forge_modules_and_shapes_dtypes_list = [
         Identity0,
         [((1, 196, 1024), torch.float32)],
         {
-            "model_name": ["pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_img_cls_timm"],
+            "model_name": ["pt_mlp_mixer_mixer_l16_224_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm"],
             "pcc": 0.99,
         },
     ),
+    (Identity0, [((1, 64, 12, 12), torch.float32)], {"model_name": ["pt_mnist_base_img_cls_github"], "pcc": 0.99}),
+    (Identity0, [((1, 128), torch.float32)], {"model_name": ["pt_mnist_base_img_cls_github"], "pcc": 0.99}),
     (
         Identity0,
         [((1, 256, 28, 28), torch.float32)],
@@ -1339,60 +1654,20 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 1, 512, 3025), torch.float32)],
-        {"model_name": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 8, 512, 512), torch.float32)],
-        {
-            "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 1, 1, 512), torch.float32)],
-        {
-            "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 1, 512, 50176), torch.float32)],
-        {
-            "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
         [((1, 1, 16384, 256), torch.float32)],
         {
             "model_name": [
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1425,16 +1700,16 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1467,16 +1742,16 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1505,49 +1780,18 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 8, 256, 256), torch.float32)],
-        {
-            "model_name": [
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
-        [((1, 256, 256), torch.float32)],
-        {
-            "model_name": [
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Identity0,
         [((1, 16384, 64), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1557,15 +1801,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 16384, 256), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1575,15 +1819,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 4096, 128), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1593,15 +1837,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 4096, 512), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1611,15 +1855,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 320), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
@@ -1629,33 +1873,26 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 1280), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 256, 512), torch.float32)],
+        [((1, 256, 128, 128), torch.float32)],
         {
             "model_name": [
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -1674,38 +1911,143 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((1, 256, 128, 128), torch.float32)],
+        [((64, 3, 49, 49), torch.float32)],
         {
             "model_name": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Identity0,
-        [((1, 3136, 96), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((64, 3, 49, 49), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((64, 49, 96), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 56, 56, 384), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 56, 56, 96), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
     ),
     (
         Identity0,
         [((16, 6, 49, 49), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Identity0,
         [((16, 49, 192), torch.float32)],
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 28, 28, 768), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 28, 28, 192), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((4, 12, 49, 49), torch.float32)],
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((4, 49, 384), torch.float32)],
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 14, 14, 1536), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 14, 14, 384), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 24, 49, 49), torch.float32)],
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 49, 768), torch.float32)],
+        {
+            "model_name": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 7, 7, 3072), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 7, 7, 768), torch.float32)],
+        {"model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 3136, 96), torch.float32)],
         {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
     ),
     (
@@ -1715,42 +2057,81 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Identity0,
-        [((4, 12, 49, 49), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((4, 49, 384), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
         [((1, 196, 384), torch.float32)],
         {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
     ),
     (
         Identity0,
-        [((1, 24, 49, 49), torch.float32)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        [((64, 4, 49, 49), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (Identity0, [((64, 49, 128), torch.float32)], {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 56, 56, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 56, 56, 128), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((16, 8, 49, 49), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (Identity0, [((16, 49, 256), torch.float32)], {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 28, 28, 1024), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 28, 28, 256), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((4, 16, 49, 49), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (Identity0, [((4, 49, 512), torch.float32)], {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 14, 14, 2048), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 14, 14, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 32, 49, 49), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (Identity0, [((1, 49, 1024), torch.float32)], {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 7, 7, 4096), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 7, 7, 1024), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
     (Identity0, [((1, 4096, 1, 1), torch.float32)], {"model_name": ["pt_vgg_vgg19_bn_obj_det_timm"], "pcc": 0.99}),
-    (
-        Identity0,
-        [((1, 197, 1024), torch.float32)],
-        {"model_name": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Identity0,
-        [((1, 16, 197, 197), torch.float32)],
-        {"model_name": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
-    ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Identity")
+    forge_property_recorder("tags.op_name", "Identity")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

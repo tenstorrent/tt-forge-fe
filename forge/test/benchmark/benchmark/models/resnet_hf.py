@@ -20,7 +20,8 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
-from forge.verify.compare import compare_with_golden_pcc
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
+from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
 # Common constants
@@ -67,9 +68,6 @@ def test_resnet_hf(
     if training:
         pytest.skip("Training is not supported")
 
-    if batch_size > 1:
-        pytest.skip("Batch size greater than 1 is not supported")
-
     # TODO: This we will need when when we run resnet with real data.
     # Load tiny dataset
     # dataset = load_dataset("zh-plus/tiny-imagenet")
@@ -86,6 +84,12 @@ def test_resnet_hf(
     compiled_model = forge.compile(framework_model, *input_sample)
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
     co_out = compiled_model(*input_sample)
     start = time.time()
     for _ in range(loop_count):
@@ -93,7 +97,7 @@ def test_resnet_hf(
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden_pcc(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
+    assert [compare_with_golden(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
 
     short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
