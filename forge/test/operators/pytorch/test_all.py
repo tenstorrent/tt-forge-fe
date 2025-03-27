@@ -441,7 +441,6 @@ class InfoUtils:
                 "operator": test_vector.operator,
                 "input_source": test_vector.input_source.name if test_vector.input_source is not None else None,
                 "input_shape": f"{test_vector.input_shape}",
-                "number_of_operands": test_vector.number_of_operands,
                 "dev_data_format": TestPlanUtils.dev_data_format_to_str(test_vector.dev_data_format),
                 "math_fidelity": test_vector.math_fidelity.name if test_vector.math_fidelity is not None else None,
                 "kwargs": f"{test_vector.kwargs}",
