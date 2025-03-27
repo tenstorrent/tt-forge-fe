@@ -37,8 +37,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
             "pcc": 0.99,
         },
@@ -54,11 +54,16 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
                 "pt_opt_facebook_opt_1_3b_clm_hf",
                 "pt_opt_facebook_opt_125m_clm_hf",
                 "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
                 "pt_xglm_facebook_xglm_1_7b_clm_hf",
                 "pt_xglm_facebook_xglm_564m_clm_hf",
             ],
@@ -70,11 +75,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 128, 128), torch.float32)],
         {
             "model_name": [
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -89,12 +94,14 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 32, 32), torch.float32)],
         {
             "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
+                "pt_llama3_huggyllama_llama_7b_clm_hf",
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
                 "pt_opt_facebook_opt_350m_seq_cls_hf",
                 "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
             ],
             "pcc": 0.99,
         },
@@ -105,7 +112,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Abs")
+    forge_property_recorder("tags.op_name", "Abs")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

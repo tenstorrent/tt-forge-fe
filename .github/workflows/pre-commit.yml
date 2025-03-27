@@ -6,17 +6,12 @@ on:
 
 jobs:
   pre-commit:
-
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-      - name: Run pre-commit
-        shell: bash
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install pre-commit
-          pre-commit run --all-files --show-diff-on-failure
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - uses: pre-commit/action@v3.0.1

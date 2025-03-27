@@ -19,6 +19,7 @@ namespace tt::property
 
 enum class ExecutionDepth
 {
+    CI_FAILURE,                 // CI failure (e.g. download of model weights fails)
     FAILED_FE_COMPILATION,      // Front end compilation fails (tvm->ttir)
     FAILED_TTMLIR_COMPILATION,  // TT-MLIR compilation fails, can't produce flatbuffer
     FAILED_RUNTIME,             // Runtime execution fails

@@ -587,6 +587,7 @@ class MLIRGenerator
             case tt::DataFormat::Float16: return builder_.getF16Type();
             case tt::DataFormat::Int32: return builder_.getI32Type();
             case tt::DataFormat::Int8: return builder_.getI8Type();
+            case tt::DataFormat::RawUInt8: return builder_.getIntegerType(8, false);
             default:
                 log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                 TT_ASSERT(false);

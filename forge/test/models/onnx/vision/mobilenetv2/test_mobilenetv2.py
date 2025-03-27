@@ -67,5 +67,3 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder):
 
     # Run model on sample data and print results
     print_results(fw_out[0], co_out[0])
-
-

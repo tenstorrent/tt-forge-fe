@@ -17,6 +17,7 @@ from torch import nn
 
 # Forge modules
 import forge
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
 # Common constants
@@ -105,6 +106,12 @@ def test_mnist_linear(
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
     co_out = compiled_model(*inputs)

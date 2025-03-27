@@ -37,13 +37,10 @@ class Advindex1(ForgeModule):
 class Advindex2(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "advindex2.weight_0",
-            forge.Parameter(*(169, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("advindex2_const_1", shape=(38809,), dtype=torch.int64)
 
-    def forward(self, advindex_input_1):
-        advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex2.weight_0"), advindex_input_1)
+    def forward(self, advindex_input_0):
+        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, self.get_constant("advindex2_const_1"))
         return advindex_output_1
 
 
@@ -52,7 +49,7 @@ class Advindex3(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex3.weight_0",
-            forge.Parameter(*(169, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
@@ -65,7 +62,7 @@ class Advindex4(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex4.weight_0",
-            forge.Parameter(*(169, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
@@ -78,11 +75,24 @@ class Advindex5(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex5.weight_0",
-            forge.Parameter(*(169, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
         advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex5.weight_0"), advindex_input_1)
+        return advindex_output_1
+
+
+class Advindex6(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "advindex6.weight_0",
+            forge.Parameter(*(169, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, advindex_input_1):
+        advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex6.weight_0"), advindex_input_1)
         return advindex_output_1
 
 
@@ -95,6 +105,16 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Advindex0,
+        [((448, 384), torch.float32), ((1, 1), torch.int64)],
+        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex0,
+        [((448, 768), torch.float32), ((1, 1), torch.int64)],
+        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex0,
         [((448, 1024), torch.float32), ((1, 1), torch.int64)],
         {"model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
@@ -105,40 +125,44 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Advindex0,
-        [((448, 384), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
-    ),
-    (
-        Advindex0,
         [((448, 512), torch.float32), ((1, 1), torch.int64)],
         {"model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
-    ),
-    (
-        Advindex0,
-        [((448, 768), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
     ),
     (
         Advindex0,
         [((448, 1280), torch.float32), ((1, 2), torch.int64)],
         {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 447},
     ),
+    pytest.param(
+        (
+            Advindex0,
+            [((2359296,), torch.float32), ((2441216,), torch.int32)],
+            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Node not found")],
+    ),
+    (
+        Advindex0,
+        [((7, 2), torch.float32), ((1,), torch.int64)],
+        {"model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99, "max_int": 6},
+    ),
     (
         Advindex1,
         [((1, 2), torch.float32)],
         {
             "model_name": [
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_phi2_microsoft_phi_2_seq_cls_hf",
                 "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf",
+                "pt_phi2_microsoft_phi_2_seq_cls_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -147,11 +171,16 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Advindex0,
+        [((4, 2), torch.float32), ((1,), torch.int64)],
+        {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 3},
+    ),
+    (
+        Advindex0,
         [((32, 2), torch.float32), ((1,), torch.int64)],
         {
             "model_name": [
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
                 "pt_opt_facebook_opt_350m_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -164,8 +193,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_nbeats_seasionality_basis_clm_hf",
-                "pt_nbeats_trend_basis_clm_hf",
                 "pt_nbeats_generic_basis_clm_hf",
+                "pt_nbeats_trend_basis_clm_hf",
             ],
             "pcc": 0.99,
             "max_int": 0,
@@ -173,8 +202,49 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Advindex2,
-        [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+        [((732, 16), torch.float32)],
+        {"model_name": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
+    ),
+    (
+        Advindex2,
+        [((732, 12), torch.float32)],
+        {"model_name": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
+    ),
+    (
+        Advindex0,
+        [((169, 3), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex0,
+        [((169, 6), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex0,
+        [((169, 12), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex0,
+        [((169, 24), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
     ),
     (
         Advindex3,
@@ -191,13 +261,38 @@ forge_modules_and_shapes_dtypes_list = [
         [((2401,), torch.int64)],
         {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
+    (
+        Advindex6,
+        [((2401,), torch.int64)],
+        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex0,
+        [((169, 4), torch.float32), ((2401,), torch.int64)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex0,
+        [((169, 8), torch.float32), ((2401,), torch.int64)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex0,
+        [((169, 16), torch.float32), ((2401,), torch.int64)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex0,
+        [((169, 32), torch.float32), ((2401,), torch.int64)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("AdvIndex")
+    forge_property_recorder("tags.op_name", "AdvIndex")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
