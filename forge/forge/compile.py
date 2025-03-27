@@ -181,6 +181,7 @@ def compile_main(
     module: AnyModule,
     sample_inputs: List[torch.Tensor],
     module_name: Optional[str] = None,
+    onnx_path: Optional[str] = None,
     optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
@@ -201,6 +202,9 @@ def compile_main(
 
     module_name: Optional[str]
         Name of the module. If not provided, the class name of the provided module will be used.
+
+    onnx_path: Optional[str]
+        Path to the ONNX model file. Used to directly load the model when its size exceeds 2GB (with external data).
 
     optimizer: Optional[torch.optim.Optimizer]
         Optimizer for training.
@@ -235,7 +239,8 @@ def compile_main(
 
     assert sample_inputs is not None
 
-    modules = [wrap_module(module, module_name)]
+    modules = [wrap_module(module, module_name, onnx_path=onnx_path)]
+
     training = training or optimizer is not None
 
     if forge_property_handler is not None:
