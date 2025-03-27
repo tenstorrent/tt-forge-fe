@@ -14,6 +14,7 @@ std::string to_string(const ExecutionDepth depth)
 {
     switch (depth)
     {
+        case ExecutionDepth::CI_FAILURE: return "CI_FAILURE";
         case ExecutionDepth::FAILED_FE_COMPILATION: return "FAILED_FE_COMPILATION";
         case ExecutionDepth::FAILED_TTMLIR_COMPILATION: return "FAILED_TTMLIR_COMPILATION";
         case ExecutionDepth::FAILED_RUNTIME: return "FAILED_RUNTIME";

@@ -255,7 +255,6 @@ class VerifyConfig:
     verify_dtype: bool = True  # Check output dtype
     verify_shape: bool = True  # Check output shape
     verify_values: bool = True  # Check output values
-    pcc: Optional[float] = None
     value_checker: ValueChecker = AutomaticValueChecker()
 
     # --- Logging settings --- #
@@ -263,10 +262,6 @@ class VerifyConfig:
     dump_tensors_path: str = (
         ""  # dump input tensors as well as framework_model and compiled_model output tensors to this path
     )
-    # Pcc Override
-    def __post_init__(self):
-        if self.pcc is not None:
-            self.value_checker.pcc = self.pcc
 
     # --- Supported Types --- #
     @property
