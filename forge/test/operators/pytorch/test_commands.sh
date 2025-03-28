@@ -56,7 +56,7 @@ function print_query_docs {
     max_width=$(tput cols)
     max_width=$((max_width * 80 / 100))
 
-    pushd ${SCRIPT_DIR}/../../../
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../
     python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.print_query_params(max_width=${max_width})"
     popd
 }
@@ -77,7 +77,7 @@ function export_tests {
         file_name="${logs_dir}/${file_name}"
     fi
 
-    pushd ${SCRIPT_DIR}/../../../
+    pushd ${SWEEPS_SCRIPT_DIR}/../../../
     python3 -c "from test.operators.pytorch.test_all import InfoUtils; InfoUtils.export(file_name=\"${file_name}\")"
     popd
 }
@@ -163,18 +163,18 @@ function filters_to_string {
 
 
 function select_test_query {
-    set_pytest_function "${SCRIPT_DIR}/test_query.py::test_query"
+    set_pytest_function "${SWEEPS_SCRIPT_DIR}/test_query.py::test_query"
     # set_pytest_function "forge/test/operators/pytorch/test_query.py::test_query"
 }
 
 function select_test_push {
-    set_pytest_function "${SCRIPT_DIR}/test_push.py::test_push"
+    set_pytest_function "${SWEEPS_SCRIPT_DIR}/test_push.py::test_push"
 }
 
 
-SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+SWEEPS_SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
-. ${SCRIPT_DIR}/test_common.sh
+. ${SWEEPS_SCRIPT_DIR}/test_common.sh
 
 set_default_pytest_opts
 select_test_query
