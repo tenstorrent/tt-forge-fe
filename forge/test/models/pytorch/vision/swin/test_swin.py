@@ -83,7 +83,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
