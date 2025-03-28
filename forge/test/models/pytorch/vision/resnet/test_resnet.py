@@ -38,6 +38,8 @@ def test_resnet_hf(variant, forge_property_recorder):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load tiny dataset
@@ -106,6 +108,8 @@ def test_resnet_timm(forge_property_recorder):
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
+
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
