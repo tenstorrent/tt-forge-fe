@@ -994,6 +994,21 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             )
         return ret
 
+    elif type == "repeat_interleave":
+        assert len(attr) == 2, "repeat_interleave should have two attributes - repeats and dim"
+        repeats = attr[0]
+        dim = attr[1]
+        shape = inputs[0].shape.as_list()
+        if dim < 0:
+            dim += len(shape)
+
+        shape.insert(dim, repeats)
+
+        ret = ac.op("reshape", (grad,), shape, {"shape": shape})
+        ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
+        ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
+        return ret
+
     raise NotImplementedError(f"{type}")
 
 
