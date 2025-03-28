@@ -171,6 +171,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           create-symlink: true
+          max-size: 900M
           key: forge-build-${{ matrix.build.build-type }}
         env:
           CCACHE_NOHASHDIR: true
