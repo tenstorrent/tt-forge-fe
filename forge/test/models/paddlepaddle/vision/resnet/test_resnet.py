@@ -17,12 +17,14 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-        'resnet18',
-        'resnet34',
-        'resnet50',
-        'resnet101',
-        'resnet152',
+    "resnet18",
+    "resnet34",
+    "resnet50",
+    "resnet101",
+    "resnet152",
 ]
+
+
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_resnet_pd_variants(variant, forge_property_recorder):
@@ -48,4 +50,10 @@ def test_resnet_pd_variants(variant, forge_property_recorder):
     compiled_model = forge.compile(framework_model, input_sample, forge_property_handler=forge_property_recorder)
 
     # Verify data on sample input
-    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)), forge_property_handler=forge_property_recorder)
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        forge_property_handler=forge_property_recorder,
+    )

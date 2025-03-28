@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 import paddle
 import pytest
 
@@ -9,6 +12,7 @@ from forge.verify.verify import verify
 from paddle.vision.models import mobilenet_v2
 
 from test.models.utils import Framework, Source, Task, build_module_name
+
 
 @pytest.mark.nightly
 def test_mobilenetv2_basic(forge_property_recorder):
@@ -30,5 +34,10 @@ def test_mobilenetv2_basic(forge_property_recorder):
     compiled_model = forge.compile(framework_model, input_sample, forge_property_handler=forge_property_recorder)
 
     # Verify data on sample input
-    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)), forge_property_handler=forge_property_recorder)
-
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        forge_property_handler=forge_property_recorder,
+    )

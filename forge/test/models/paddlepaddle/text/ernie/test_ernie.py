@@ -10,7 +10,14 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-from paddlenlp.transformers import ErnieForSequenceClassification, ErnieForMaskedLM, ErnieTokenizer, AutoTokenizer, AutoModel
+from paddlenlp.transformers import (
+    ErnieForSequenceClassification,
+    ErnieForMaskedLM,
+    ErnieTokenizer,
+    AutoTokenizer,
+    AutoModel,
+)
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["ernie-1.0"])
@@ -41,13 +48,14 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
     ]  # [input_ids, token_type_ids, position_ids, attention_mask]
 
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
-    
+    framework_model, _ = paddle_trace(model, input_spec)
+
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["ernie-1.0"])
@@ -73,12 +81,10 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     input = ["One, [MASK], three, four"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
-    inputs = [
-        paddle.to_tensor(value) for value in encoded_input.values()
-    ]
+    inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, input_spec)
 
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs)
@@ -92,4 +98,3 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     mask_token_index = (inputs[0] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0].item()
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1).item()
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
-
