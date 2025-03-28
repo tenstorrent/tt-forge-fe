@@ -681,7 +681,7 @@ class MLIRGenerator
     /// location.
     mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::NameLoc::get(builder_.getStringAttr(node->name()), get_node_location(graph, node));
+        return mlir::NameLoc::get(builder_.getStringAttr(graph->name()), get_node_location(graph, node));
     }
 
     /// Convert an MLIR value to a string.
