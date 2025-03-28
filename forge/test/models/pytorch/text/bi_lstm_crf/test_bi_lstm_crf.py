@@ -26,7 +26,7 @@ def test_birnn_crf_pypi(forge_property_recorder):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
