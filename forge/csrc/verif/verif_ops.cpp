@@ -4,6 +4,8 @@
 
 #include "verif_ops.hpp"
 
+#include <utils/assert.hpp>
+
 #define INTRA_OP_PARALLEL
 
 #include <ATen/TensorSubclassLikeUtils.h>
@@ -37,8 +39,77 @@ T reduce_max(at::vec::Vectorized<T> vec)
     return ret;
 }
 
-template <typename func_t, typename vec_func_t>
-inline void cpu_kernel_scalar_vec(at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op)
+enum class ReduceOp
+{
+    Max,
+    Min,
+    LogicalOr,
+    LogicalAnd,
+};
+
+template <typename scalar_t, ReduceOp op>
+inline scalar_t do_reduce_op(scalar_t a, scalar_t b)
+{
+    if constexpr (op == ReduceOp::Max)
+    {
+        return std::max(a, b);
+    }
+    else if constexpr (op == ReduceOp::Min)
+    {
+        return std::min(a, b);
+    }
+    else if constexpr (op == ReduceOp::LogicalOr)
+    {
+        return a || b;
+    }
+    else if constexpr (op == ReduceOp::LogicalAnd)
+    {
+        return a && b;
+    }
+    else
+    {
+        TT_ASSERT(false, "Unsupported reduction operation");
+    }
+}
+
+template <ReduceOp op, typename scalar_t>
+inline scalar_t scalar_reduce_op(at::vec::Vectorized<scalar_t> vec)
+{
+    scalar_t ret = vec[0];
+    for (int64_t i = 1; i != vec.size(); i++)
+    {
+        ret = do_reduce_op<scalar_t, op>(ret, vec[i]);
+    }
+    return ret;
+}
+
+template <ReduceOp op, typename scalar_t>
+inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vectorized<scalar_t>& b)
+{
+    if constexpr (op == ReduceOp::Max)
+    {
+        a = at::vec::maximum(a, b);
+    }
+    else if constexpr (op == ReduceOp::Min)
+    {
+        a = at::vec::minimum(a, b);
+    }
+    else if constexpr (op == ReduceOp::LogicalOr)
+    {
+        a = a || b;
+    }
+    else if constexpr (op == ReduceOp::LogicalAnd)
+    {
+        a = a && b;
+    }
+    else
+    {
+        TT_ASSERT(false, "Unsupported reduction operation");
+    }
+}
+
+template <ReduceOp reduce_op, typename func_t, typename vec_func_t>
+inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op)
 {
     using traits = binary_function_traits<func_t>;
     using scalar_t = typename traits::arg1_t;
@@ -66,16 +137,16 @@ inline void cpu_kernel_scalar_vec(at::TensorIteratorBase& iter, func_t scalar_op
             auto b_vec = Vec::loadu(b_data + i * sizeof(scalar_t));
             Vec out = vec_op(a_vec, b_vec);
 
-            max_vec = at::vec::maximum(max_vec, out);
+            vec_reduce_op<reduce_op>(max_vec, out);
 
             auto a_vec2 = Vec::loadu(a_data + (i + vec_size) * sizeof(scalar_t));
             auto b_vec2 = Vec::loadu(b_data + (i + vec_size) * sizeof(scalar_t));
             out = vec_op(a_vec2, b_vec2);
 
-            max_vec = at::vec::maximum(max_vec, out);
+            vec_reduce_op<reduce_op>(max_vec, out);
         }
 
-        chunk_result = reduce_max(max_vec);
+        chunk_result = scalar_reduce_op<reduce_op>(max_vec);
 
         for (; i < n; ++i)
         {
@@ -118,6 +189,8 @@ inline void cpu_kernel_scalar_vec(at::TensorIteratorBase& iter, func_t scalar_op
     iter.output().fill_(result.load());
 }
 
+bool has_special_values(torch::Tensor& a) { return false; }
+
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
 {
     torch::Tensor output = at::empty({1}, a.options());
@@ -137,7 +210,7 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
         "max_abs_diff",
         [&]()
         {
-            cpu_kernel_scalar_vec(
+            cpu_kernel_reduce_into_scalar_vec<ReduceOp::Max>(
                 iter,
                 [](scalar_t a_val, scalar_t b_val) -> double
                 { return std::max(static_cast<scalar_t>(std::abs(a_val - b_val)), static_cast<scalar_t>(0)); },
