@@ -8,7 +8,7 @@ from datasets import load_dataset
 from ultralytics.nn.tasks import DetectionModel
 
 
-class YoloV10Wrapper(torch.nn.Module):
+class YoloWrapper(torch.nn.Module):
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -17,10 +17,10 @@ class YoloV10Wrapper(torch.nn.Module):
         return self.model(image)
 
 
-def load_yolov10_model_and_image():
+def load_yolo_model_and_image(url):
     # Load YOLOv10n model weights
     weights = torch.hub.load_state_dict_from_url(
-        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt", map_location="cpu"
+        url, map_location="cpu"
     )
 
     # Initialize and load model

@@ -18,13 +18,13 @@ opset_versions = [10, 17]
 
 
 @pytest.mark.parametrize("opset_version", opset_versions, ids=[str(v) for v in opset_versions])
-@pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details")
+@pytest.mark.xfail(reason="RuntimeError: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B")
 @pytest.mark.nightly
-def test_yolov10(forge_property_recorder, tmp_path, opset_version):
+def test_yolov8(forge_property_recorder, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
-        model="Yolov10",
+        model="Yolov8",
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
@@ -33,11 +33,11 @@ def test_yolov10(forge_property_recorder, tmp_path, opset_version):
     forge_property_recorder.record_model_name(module_name)
 
     # Load  model and input
-    model, image_tensor = load_yolo_model_and_image("https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt")
+    model, image_tensor = load_yolo_model_and_image("https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt")
     torch_model = YoloWrapper(model)
 
     # Export model to ONNX
-    onnx_path = tmp_path / "yolov10.onnx"
+    onnx_path = tmp_path / "yolov8.onnx"
     torch.onnx.export(
         torch_model,
         image_tensor,

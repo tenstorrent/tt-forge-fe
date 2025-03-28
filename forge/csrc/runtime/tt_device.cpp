@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
@@ -62,14 +63,16 @@ void TTDevice::open_device(const DeviceSettings& settings)
 {
     TT_ASSERT(!is_open());
     static constexpr std::uint32_t num_hw_cqs = 1;
-    rt_device = runtime::openDevice(
-        {index}, num_hw_cqs, std::nullopt, std::nullopt, std::nullopt, settings.enable_program_cache);
+    runtime::MeshDeviceOptions options;
+    options.numHWCQs = num_hw_cqs;
+    options.enableProgramCache = settings.enable_program_cache;
+    rt_device = runtime::openMeshDevice({1, 1}, options);
 }
 
 void TTDevice::close_device()
 {
     TT_ASSERT(is_open());
-    runtime::closeDevice(rt_device.value());
+    runtime::closeMeshDevice(rt_device.value());
     rt_device.reset();
 }
 
