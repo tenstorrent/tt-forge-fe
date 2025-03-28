@@ -9,7 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from forge.test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class LlamaPrefillModel(torch.nn.Module):
@@ -67,12 +67,15 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
     if "open_llama_3b" in model_path:
         model_name = "Open Llama"
         variant = "3b"
+        group = "generality"
     elif "Llama-3.2-1B" in model_path:
-        model_name = "Llama"
-        variant = "3.2_1b"
+        model_name = "Llama 3.2"
+        variant = "1b"
+        group = "red"
     else:
         model_name = "Llama"
         variant = "unknown"
+        group = "generality"
 
     # Record model details
     module_name = build_module_name(
@@ -82,7 +85,7 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
-    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_group(group)
     forge_property_recorder.record_model_name(module_name)
 
     # Load Llama model and tokenizer
