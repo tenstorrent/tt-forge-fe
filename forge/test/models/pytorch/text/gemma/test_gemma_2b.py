@@ -90,7 +90,7 @@ def test_gemma_2b(forge_property_recorder, variant):
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=pytest.mark.xfail(reason="RuntimeError: Trying to access element outside of dimensions: 2"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "google/gemma-2-9b-it",

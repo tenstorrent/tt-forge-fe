@@ -79,12 +79,7 @@ size = [
     pytest.param("n", id="yolov5n"),
     pytest.param(
         "s",
-        id="yolov5s",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
@@ -138,12 +133,7 @@ size = [
     pytest.param("n", id="yolov5n"),
     pytest.param(
         "s",
-        id="yolov5s",
-        marks=[
-            pytest.mark.xfail(
-                reason="Statically allocated circular buffers in program 691 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 573216"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),

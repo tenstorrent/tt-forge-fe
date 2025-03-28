@@ -19,7 +19,7 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "distilbert-base-uncased",
-        marks=[pytest.mark.xfail(reason="ttir.typecast op Result shape must match operand shapes after broadcasting")],
+        marks=[pytest.mark.xfail],
     ),
     "distilbert-base-cased",
     "distilbert-base-multilingual-cased",

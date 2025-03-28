@@ -14,7 +14,6 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
 @pytest.mark.skip(reason="Floating point exception(core dumped)")
 def test_monodle_pytorch(forge_property_recorder):
     # Build Module Name
