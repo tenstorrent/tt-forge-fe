@@ -1917,7 +1917,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -1933,7 +1932,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -1949,7 +1947,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -1965,7 +1962,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     (
         Index0,
@@ -2004,7 +2000,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "7", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     (
         Index5,
@@ -2129,7 +2124,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -2141,7 +2135,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "9", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -2153,7 +2146,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "14", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -2169,7 +2161,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "384", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     pytest.param(
         (
@@ -2181,7 +2172,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "6", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     (
         Index0,
@@ -2264,7 +2254,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "1", "stop": "2", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Index0,
@@ -2974,7 +2963,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "0", "stop": "256", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -2989,7 +2977,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "0", "stop": "7", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -3001,7 +2988,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "256", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -3016,7 +3002,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "7", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -3032,7 +3017,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -3048,7 +3032,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-2", "start": "0", "stop": "256", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     pytest.param(
         (
@@ -3064,7 +3047,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Index46,
@@ -3093,7 +3075,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "256", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
     ),
     (
         Index5,
@@ -4275,7 +4256,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
     ),
     (
         Index57,

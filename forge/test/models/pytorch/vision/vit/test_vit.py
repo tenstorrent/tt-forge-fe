@@ -50,7 +50,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
-        forge_property_recorder.record_group("priority")
+        forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
