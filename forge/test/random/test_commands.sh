@@ -59,7 +59,7 @@ function print_query_docs {
     max_width=$(tput cols)
     max_width=$((max_width * 80 / 100))
 
-    pushd ${SCRIPT_DIR}/../../
+    pushd ${RGG_SCRIPT_DIR}/../../
     python3 -c "from test.random.test_graphs import InfoUtils; InfoUtils.print_query_params(max_width=${max_width})"
     popd
 }
@@ -120,14 +120,14 @@ function filters_to_string {
 
 
 function select_test_graphs {
-    set_pytest_function "${SCRIPT_DIR}/test_graphs.py"
+    set_pytest_function "${RGG_SCRIPT_DIR}/test_graphs.py"
     # set_pytest_function "forge/test/random/test_graphs.py"
 }
 
 
-SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+RGG_SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 
-. ${SCRIPT_DIR}/../operators/pytorch/test_common.sh
+. ${RGG_SCRIPT_DIR}/../operators/pytorch/test_common.sh
 
 set_default_pytest_opts
 select_test_graphs
