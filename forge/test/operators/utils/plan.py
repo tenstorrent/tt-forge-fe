@@ -87,7 +87,6 @@ class TestVector:
     operator: Optional[str]
     input_source: InputSource
     input_shape: TensorShape  # TODO - Support multiple input shapes
-    number_of_operands: Optional[int] = None
     dev_data_format: Optional[FrameworkDataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
@@ -98,7 +97,7 @@ class TestVector:
     def get_id(self, fields: Optional[List[str]] = None) -> str:
         """Get test vector id"""
         if fields is None:
-            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}{'-' + str(self.number_of_operands) + '-' if self.number_of_operands else '-'}{TestPlanUtils.dev_data_format_to_str(self.dev_data_format)}-{self.math_fidelity.name if self.math_fidelity else None}"
+            return f"{self.operator}-{self.input_source.name}-{self.kwargs}-{self.input_shape}-{TestPlanUtils.dev_data_format_to_str(self.dev_data_format)}-{self.math_fidelity.name if self.math_fidelity else None}"
         else:
             attr = [
                 (getattr(self, field).name if getattr(self, field) is not None else None)
@@ -145,7 +144,6 @@ class TestCollection:
     operators: Optional[List[str]] = None
     input_sources: Optional[List[InputSource]] = None
     input_shapes: Optional[List[TensorShape]] = None  # TODO - Support multiple input shapes
-    numbers_of_operands: Optional[List[int]] = None
     dev_data_formats: Optional[List[FrameworkDataFormat]] = None
     math_fidelities: Optional[List[MathFidelity]] = None
     kwargs: Optional[
@@ -392,51 +390,42 @@ class TestPlan:
             if kwargs_list is None:
                 kwargs_list = [None]
 
-            numbers_of_operands = test_collection.numbers_of_operands
-            if numbers_of_operands is None:
-                numbers_of_operands = [None]
-
             for input_operator in test_collection.operators:
                 for input_source in test_collection.input_sources:
                     for input_shape in test_collection.input_shapes:
-                        for number_of_operands in numbers_of_operands:
-                            for dev_data_format in dev_data_formats:
-                                for math_fidelity in math_fidelities:
+                        for dev_data_format in dev_data_formats:
+                            for math_fidelity in math_fidelities:
 
-                                    test_vector_no_kwargs = TestVector(
-                                        test_plan=self,  # Set the test plan to support verification
-                                        operator=input_operator,
-                                        input_source=input_source,
-                                        input_shape=input_shape,
-                                        number_of_operands=number_of_operands,
-                                        dev_data_format=dev_data_format,
-                                        math_fidelity=math_fidelity,
-                                        pcc=test_collection.pcc,
-                                    )
+                                test_vector_no_kwargs = TestVector(
+                                    test_plan=self,  # Set the test plan to support verification
+                                    operator=input_operator,
+                                    input_source=input_source,
+                                    input_shape=input_shape,
+                                    dev_data_format=dev_data_format,
+                                    math_fidelity=math_fidelity,
+                                    pcc=test_collection.pcc,
+                                )
 
-                                    # filter collection based on criteria
-                                    if test_collection.criteria is None or test_collection.criteria(
-                                        test_vector_no_kwargs
-                                    ):
+                                # filter collection based on criteria
+                                if test_collection.criteria is None or test_collection.criteria(test_vector_no_kwargs):
 
-                                        if isinstance(test_collection.kwargs, types.FunctionType):
-                                            kwargs_list = test_collection.kwargs(test_vector_no_kwargs)
+                                    if isinstance(test_collection.kwargs, types.FunctionType):
+                                        kwargs_list = test_collection.kwargs(test_vector_no_kwargs)
 
-                                        for kwargs in kwargs_list:
-                                            # instantiate a new test vector to avoid mutating the original test_vector_no_kwargs
-                                            test_vector = TestVector(
-                                                test_plan=self,  # Set the test plan to support verification
-                                                operator=input_operator,
-                                                input_source=input_source,
-                                                input_shape=input_shape,
-                                                number_of_operands=number_of_operands,
-                                                dev_data_format=dev_data_format,
-                                                math_fidelity=math_fidelity,
-                                                pcc=test_collection.pcc,
-                                                kwargs=kwargs,
-                                            )
+                                    for kwargs in kwargs_list:
+                                        # instantiate a new test vector to avoid mutating the original test_vector_no_kwargs
+                                        test_vector = TestVector(
+                                            test_plan=self,  # Set the test plan to support verification
+                                            operator=input_operator,
+                                            input_source=input_source,
+                                            input_shape=input_shape,
+                                            dev_data_format=dev_data_format,
+                                            math_fidelity=math_fidelity,
+                                            pcc=test_collection.pcc,
+                                            kwargs=kwargs,
+                                        )
 
-                                            yield test_vector
+                                        yield test_vector
 
     def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
         test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
@@ -631,7 +620,6 @@ class TestPlanUtils:
             cls._match(test_collection.operators, test_vector.operator)
             and cls._match(test_collection.input_sources, test_vector.input_source)
             and cls._match(test_collection.input_shapes, test_vector.input_shape)
-            and cls._match(test_collection.numbers_of_operands, test_vector.number_of_operands)
             and cls._match(test_collection.dev_data_formats, test_vector.dev_data_format)
             and cls._match(test_collection.math_fidelities, test_vector.math_fidelity)
             and cls._match_kwargs_list(test_collection.kwargs, test_vector.kwargs)
