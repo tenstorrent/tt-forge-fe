@@ -173,7 +173,7 @@ jobs:
           create-symlink: true
           key: forge-build-${{ matrix.build.build-type }}
         env:
-          CCACHE_HASHDIR: false
+          CCACHE_NOHASHDIR: true
   
       - name: Debug Build
         shell: bash
