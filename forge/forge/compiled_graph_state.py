@@ -380,8 +380,8 @@ class CompiledModel:
                             grad_tensor = grads[idx].to_torch()
                             if param.shape != grad_tensor.shape:
                                 # Our gradients for bias are 2D (of [1, N] shape) but PyTorch expects 1D - [N].
-                                assert (torch.squeeze(grad_tensor, 0)).shape == param.shape
-                                grad_tensor = torch.squeeze(grad_tensor, 0)
+                                assert (torch.squeeze(grad_tensor)).shape == param.shape
+                                grad_tensor = torch.squeeze(grad_tensor)
 
                             if param.grad is not None:
                                 param.grad += grad_tensor
