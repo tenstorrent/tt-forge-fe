@@ -81,6 +81,7 @@ target_link_libraries(ttforge_csrc PRIVATE
     tt_torch_device
     runtime
     ttforge_csrc_objs
+    verif
 
     TTMLIRCompiler
     TTMLIRRuntime
