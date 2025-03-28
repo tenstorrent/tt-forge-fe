@@ -487,7 +487,7 @@ def compile_pytorch_for_forge(
             torchmod = torch.jit.freeze(torchmod)
 
         # Trace framework model
-        traced_model = torch.jit.trace(torchmod, inputs, strict=False)
+        traced_model = torch.jit.trace(torchmod, inputs, check_trace=False, strict=False)
 
     # Extract flatten inputs
     flattened_inputs, flattened_input_names, flattened_name_map, input_structure = extract_flatten_inputs(
