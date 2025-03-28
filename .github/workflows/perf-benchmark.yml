@@ -45,7 +45,7 @@ jobs:
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=$(pwd)/benchmark_reports/" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=$(pwd)/benchmark_reports" >> "$GITHUB_OUTPUT"
 
     - name: Git safe dir
       run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
@@ -119,6 +119,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        mkdir -p ${{ steps.strings.outputs.perf_report_path }}
         python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir.mlir
         python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
