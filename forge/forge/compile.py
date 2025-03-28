@@ -40,7 +40,7 @@ import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
-
+from forge.tensor import TensorFromPytorch
 
 LAST_SUCCESSFUL_STAGE = None
 
@@ -869,10 +869,11 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
 
     return next_stage
 
-def append_losses_to_inputs(inputs: Union[torch.Tensor, List[torch.Tensor]], losses: Optional[List[torch.Tensor]] = None) -> List[torch.Tensor]:
+def append_losses_to_inputs(inputs: Union[TensorFromPytorch, List[TensorFromPytorch]], losses: List[torch.Tensor]) -> List[torch.Tensor]:
     # Ensure inputs is a list
-    if isinstance(inputs, torch.Tensor):
+    if isinstance(inputs, TensorFromPytorch):
         inputs = [inputs]
+    inputs = [input.value() for input in inputs]
 
     # Append losses if they exist
     if losses is not None:
@@ -920,9 +921,9 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
 
     # Record calculated input grads from the previous do_verify call and save so that we don't keep re-calculating and
     # accumulating on each verification call
-    # context.input_grads = [
-    #     i.value().grad for i in context.inputs if i.value().requires_grad and i.value().grad is not None
-    # ]
+    context.input_grads = [
+        i.grad for i in context.inputs if i.requires_grad and i.grad is not None
+    ]
 
     return CompileDepth.POST_AUTOGRAD_PASS
 
