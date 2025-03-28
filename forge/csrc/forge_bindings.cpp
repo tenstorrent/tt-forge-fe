@@ -39,6 +39,7 @@ namespace py = pybind11;
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
+#include "verif/python_bindings.hpp"
 
 namespace tt
 {
@@ -142,6 +143,9 @@ PYBIND11_MODULE(_C, m)
 
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
+
+    py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification functions");
+    VerifModule(m_verif);
 
     py::enum_<tt::MathFidelity>(m, "MathFidelity")
         .value("LoFi", tt::MathFidelity::LoFi)
