@@ -52,7 +52,7 @@ def test_stable_diffusion_generation(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the pipeline and set it to use the CPU

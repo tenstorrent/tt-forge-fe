@@ -42,7 +42,7 @@ def test_mobilenetv2_basic(forge_property_recorder):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the model and prepare input data
