@@ -29,6 +29,7 @@ from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
 from test.operators.utils import ValueRanges
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
@@ -99,7 +100,6 @@ class TestVerification:
     MODEL_TYPES = {
         InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
         InputSource.FROM_HOST: ModelDirect,
-        InputSource.FROM_DRAM_QUEUE: ModelDirect,
         InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
     }
 
@@ -111,10 +111,6 @@ class TestVerification:
         input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
-
-        input_source_flag: InputSourceFlags = None
-        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
-            input_source_flag = InputSourceFlags.FROM_DRAM
 
         operator = getattr(torch, test_vector.operator)
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
@@ -132,7 +128,7 @@ class TestVerification:
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
         verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
-        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
 
         VerifyUtils.verify(
@@ -140,7 +136,6 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            input_source_flag=input_source_flag,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
@@ -271,8 +266,8 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.all.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.all.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -282,7 +277,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
         # Test specific classes of reshape operations collection:
