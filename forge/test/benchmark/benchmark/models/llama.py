@@ -187,11 +187,9 @@ def llama_prefill_benchmark(config: dict):
 
     result = test_llama_prefill(training=training, batch_size=batch_size, model_path=model_path, loop_count=loop_count)
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:
