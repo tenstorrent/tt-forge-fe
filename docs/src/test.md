@@ -65,19 +65,16 @@ Available commands
 | `print_help`          | Print commands and current query parameters.                          |
 | `print_query_docs`    | Print docs for all available query parameters.                        |
 | `print_params`        | Print current query parameters values.                                |
-| `collect_only_on`     | Enable only collecting tests by including --collect-only.             |
-| `collect_only_off`    | Remove collect only setup.                                            |
-| `test_plan`           | Run all tests from test plan.                                         |
-| `test_query`          | Run subset of test plan based on a query parameters.                  |
-| `test_unique`         | Run representative examples of all available tests.                   |
-| `test_single`         | Run single test based on TEST_ID parameter.                           |
-| `test_ids`            | Run tests for multile ids from a test id file.                        |
+| `select_test_query`   | Select test_query pytest function.                                    |
+| `select_test_push`    | Select test_push pytest function.                                     |
+| `pytest`              | Run all tests or subset of test plan based on a query parameters.     |
+| `with-params pytest`  | Print params before and after test run.                               |
 
 Full list of supported query parameters
 
 | Parameter             | Description                                                                                   | Supported by commands                 |
 | --------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------- |
-| OPERATORS             | List of operators                                                                             | test_plan, test_query, test_unique    |
+| OPERATORS             | List of operators                                                                             | test_query                            |
 | FILTERS               | List of lambda filters                                                                        | test_query                            |
 | INPUT_SOURCES         | List of input sources                                                                         | test_query                            |
 | INPUT_SHAPES          | List of input shapes                                                                          | test_query                            |
@@ -89,8 +86,9 @@ Full list of supported query parameters
 | RANGE                 | Limit number of results                                                                       | test_query                            |
 | RANDOM_SEED           | Seed for random number generator                                                              | test_query                            |
 | SAMPLE                | Percentage of results to sample                                                               | test_query                            |
-| TEST_ID               | Id of a test containing test parameters                                                       | test_single                           |
-| ID_FILE               | Path to a file containing test ids                                                            | test_ids                              |
+| TEST_ID               | Id of a single test to run containing all test parameters                                     | test_query                            |
+| ID_FILES              | Paths to files containing test ids instead of tests from test plan                            | test_query                            |
+| ID_FILES_IGNORE       | Paths to files containing test ids to be ignored                                              | test_query                            |
 
 Test configuration parameters
 
@@ -106,14 +104,14 @@ Usage examples
 Run all tests
 
 ```sh
-test_plan
+with-params pytest
 ```
 
 Run all tests for few operators
 
 ```sh
 export OPERATORS=add,div
-test_plan
+with-params pytest
 ```
 
 Run subset of tests based on query criteria
@@ -125,34 +123,27 @@ export INPUT_SOURCES=FROM_HOST,FROM_DRAM_QUEUE
 export DEV_DATA_FORMATS=Float16_b,Int8
 export MATH_FIDELITIES=HiFi4,HiFi3
 export KWARGS="[{'rounding_mode': 'trunc'},{'rounding_mode': 'floor'}]"
-print_params
-test_query
+with-params pytest
 ```
 
 Print representative tests ids of all operators with examples for kwargs values
 
 ```sh
-collect_only_on
-test_unique
-collect_only_off
+FILTERS=UNIQUE_KWARGS with-params pytest --collect-only
 ```
 
 Print representative tests ids of few operators
 
 ```sh
-export OPERATORS=add,div
-collect_only_on
-test_unique
-collect_only_off
+OPERATORS=add,div FILTERS=UNIQUE_KWARGS with-params pytest --collect-only
 ```
 
 Each test can be uniquely identified via a test id. Format of test id is `{operator}-{input_source}-{kwargs}-{input_shape}[-{number_of_operands)-]{dev_data_format}-{math_fidelity}`.
 
-Kwarg is a mandatory or optional attribute of an operator. See framework (PyTorch, Forge, ...) operator documentation for each operator or use `test_unique` to find examples.
+Kwarg is a mandatory or optional attribute of an operator. See framework (PyTorch, Forge, ...) operator documentation for each operator or use filter `UNIQUE_KWARGS` to find examples.
 
 Run single test based on a test id. Test id may be from a test plan or constructed custom by specifying custom values for kwargs and input_shapes.
 
 ```sh
-export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'
-test_single
+TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4' with-params pytest
 ```
