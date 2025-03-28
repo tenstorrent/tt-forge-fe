@@ -257,6 +257,28 @@ def run_command(command: str):
     logger.info(f"Running the {command}\n{command_outputs}")
 
 
+def run_pip_freeze(log_file_path: str):
+    """
+    Runs 'pip freeze' and writes the output to a log file.
+
+    :param log_file: Name of the log file to save the output.
+    """
+    try:
+        # Run 'pip freeze' and capture the output
+        result = subprocess.run(["pip", "freeze"], capture_output=True, text=True, check=True)
+        message = ""
+        if result.stderr:
+            message += "STDERR: \n\n"
+            message += result.stderr
+        if result.stdout:
+            message += "STDOUT: \n\n"
+            message += result.stdout
+        dump_logs(log_file_path, message)
+        
+    except subprocess.CalledProcessError as e:
+        message = f"Error executing 'pip freeze': {e}"
+        dump_logs(log_file_path, message)
+
 def run_precommit(directory_path: str):
     """Checks if pre-commit is installed and runs it on all files in the given directory."""
 

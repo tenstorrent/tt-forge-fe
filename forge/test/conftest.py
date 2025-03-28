@@ -34,7 +34,7 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore
+# from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore
 
 import test.utils
 
@@ -77,18 +77,18 @@ def pytest_sessionstart(session):
             print(f"{key}={value}")
 
 
-@pytest.fixture(scope="function")
-def forge_property_recorder(record_property):
-    forge_property_store = ForgePropertyStore()
+# @pytest.fixture(scope="function")
+# def forge_property_recorder(record_property):
+#     forge_property_store = ForgePropertyStore()
 
-    forge_property_handler = ForgePropertyHandler(forge_property_store)
+#     forge_property_handler = ForgePropertyHandler(forge_property_store)
 
-    # Set CI_FAILURE as default execution depth
-    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
+#     # Set CI_FAILURE as default execution depth
+#     forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
 
-    yield forge_property_handler
+#     yield forge_property_handler
 
-    forge_property_handler.store_property(record_property)
+#     forge_property_handler.store_property(record_property)
 
 
 @pytest.fixture(autouse=True)

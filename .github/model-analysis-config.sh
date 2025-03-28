@@ -29,7 +29,7 @@ env_vars["MODELS_OPS_TEST_PACKAGE_NAME"]="models_ops"
 
 
 # Common Config for markdown generation and model ops test generation
-env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models"
+env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models/pytorch/"
 env_vars["UNIQUE_OPS_OUTPUT_DIR_PATH"]="./models_unique_ops_output"
 
 
