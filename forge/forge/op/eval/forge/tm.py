@@ -1005,7 +1005,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         shape.insert(dim, repeats)
 
         ret = ac.op("reshape", (grad,), shape, {"shape": shape})
-        ret = ac.op("reduce_sum", (ret,), (dim, False), {"dim_arg": [dim], "keep_dim": True})
+        ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
 
