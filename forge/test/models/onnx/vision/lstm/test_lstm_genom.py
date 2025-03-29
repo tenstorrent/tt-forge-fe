@@ -18,7 +18,7 @@ from test.utils import download_model
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_lstm_genom_onnx(test_device):
     load_path = "third_party/confidential_customer_models/model_2/onnx/lstm_genom/lstm-genom-model.onnx"

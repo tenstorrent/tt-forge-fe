@@ -52,7 +52,7 @@ def img_preprocess(scal_val=1):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_retinanet_r101_640x480_onnx(test_device):
     # STEP 1: Set Forge configuration parameters
@@ -109,7 +109,7 @@ variants = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_retinanet_onnx(variant, test_device):

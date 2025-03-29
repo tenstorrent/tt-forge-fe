@@ -27,7 +27,7 @@ def get_sample_data(model_name):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize(
     "model_name",
     [

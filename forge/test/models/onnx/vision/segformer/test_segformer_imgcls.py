@@ -35,7 +35,7 @@ variants_img_classification = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly
 def test_segformer_image_classification_onnx(test_device, variant):

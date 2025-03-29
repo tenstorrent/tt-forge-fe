@@ -16,7 +16,7 @@ import tensorflow as tf
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_lstm_valence_onnx(test_device):
     # Load model checkpoint from HuggingFace

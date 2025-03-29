@@ -41,7 +41,7 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_yolox_onnx(variant, test_device):

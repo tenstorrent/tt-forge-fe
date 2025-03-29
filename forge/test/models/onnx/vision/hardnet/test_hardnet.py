@@ -18,7 +18,7 @@ variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_hardnet_onnx(variant, test_device):

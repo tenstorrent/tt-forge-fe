@@ -19,7 +19,7 @@ variants = ["ddrnet23s", "ddrnet23", "ddrnet39"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet(variant, test_device):
@@ -80,7 +80,7 @@ variants = ["ddrnet_23_slim_1024"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_onnx(variant, test_device):

@@ -13,7 +13,7 @@ import pytest
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_fpn_onnx(test_device, test_kind):
     compiler_cfg = forge.config.CompilerConfig()

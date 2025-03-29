@@ -48,7 +48,7 @@ def preprocess(img):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_yolov3_tiny_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
@@ -78,7 +78,7 @@ def test_yolov3_tiny_onnx(test_device):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="CCM is not public yet.")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_yolov3_onnx(test_device):
     # STEP 1: Create Forge module from PyTorch model
