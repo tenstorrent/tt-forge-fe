@@ -538,4 +538,79 @@ void fuse_gelu(Graph *graph)
     }
 }
 
+void convert_broadcast_tms_to_repeat(Graph *graph)
+{
+    std::unordered_set<graphlib::Node *> nodes_to_remove;
+    for (auto *node : graphlib::topological_sort(*graph))
+    {
+        auto op = dynamic_cast<graphlib::OpNode *>(node);
+
+        if (not op)
+        {
+            continue;
+        }
+        // Expandable oplist for the broadcast tms not supported nodes
+        std::vector<std::string> oplist = {"cast"};
+
+        if (std::find(oplist.begin(), oplist.end(), op->op_name()) == oplist.end())
+        {
+            continue;
+        }
+
+        std::vector<graphlib::Edge> input_operand_edge = graph->operand_data_edges(op);
+
+        if (input_operand_edge.size() != 1)
+        {
+            continue;
+        }
+
+        graphlib::Edge operand_edge_tms = input_operand_edge.front();
+        std::vector<graphlib::OpType> oplisttms = graph->get_edge_attributes(operand_edge_tms)->get_tms();
+
+        bool contains_broadcast = std::any_of(
+            oplisttms.begin(), oplisttms.end(), [](const graphlib::OpType &tm) { return tm.op == "broadcast"; });
+        if (not contains_broadcast)
+        {
+            continue;
+        }
+
+        // It will get executed for the oplist node that has the tms in its edge
+        for (graphlib::Edge operand_edge : input_operand_edge)
+        {
+            std::vector<graphlib::OpType> tms = graph->get_edge_attributes(operand_edge)->get_tms();
+
+            // Calculating the repeats from the broadcast tms edge
+            graphlib::Shape repeat_vector =
+                graphlib::Shape::create(std::vector<uint32_t>(node->shape().size(), 1));  // repeat shape
+            std::vector<graphlib::OpType::Attr> repeats;
+            for (graphlib::OpType &tm : tms)
+            {
+                if (tm.op == "broadcast")
+                {
+                    int dim = std::get<int>(tm.attr[0]);
+                    int volume = std::get<int>(tm.attr[1]);
+                    repeat_vector[dim] *= volume;
+                }
+            }
+
+            graphlib::OpType::Attrs named_attrs;
+            std::vector<int> repeat_vector_attr(repeat_vector.begin(), repeat_vector.end());
+            for (const auto &element : repeat_vector)
+            {
+                repeats.push_back((int)element);
+            }
+            named_attrs["repeats"] = repeat_vector_attr;
+
+            graphlib::OpType repeat_op("repeat", repeats, {}, named_attrs);
+
+            static int counter = 0;
+            auto repeat_node = graph->add_node(
+                graphlib::create_node<graphlib::PyOpNode>("tms_repeat" + std::to_string(++counter), repeat_op),
+                graph->get_subgraph_id_for_node(op->id()));
+            graph->get_edge_attributes(operand_edge)->clear_broadcast_dims();
+            graphlib::insert_node_on_edge(graph, operand_edge, repeat_node);
+        }
+    }
+}
+
 }  // namespace tt
