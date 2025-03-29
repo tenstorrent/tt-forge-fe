@@ -17,7 +17,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "Qwen/Qwen1.5-0.5B",
-            marks=[pytest.mark.xfail(reason="RuntimeError: Input count mismatch: expected 533, got 534")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

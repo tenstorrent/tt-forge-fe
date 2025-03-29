@@ -38,9 +38,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_THROW tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp Unsupported mode"
-)
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
     # Build Module Name
@@ -243,7 +241,7 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
+@pytest.mark.xfail
 def test_unet_carvana(forge_property_recorder):
 
     # Build Module Name

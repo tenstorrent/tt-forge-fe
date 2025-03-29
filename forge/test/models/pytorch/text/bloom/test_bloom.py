@@ -29,11 +29,7 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "bigscience/bloom-1b1",
-            marks=[
-                pytest.mark.xfail(
-                    reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen"
-                )
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

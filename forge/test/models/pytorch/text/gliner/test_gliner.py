@@ -15,7 +15,7 @@ variants = ["urchade/gliner_multi-v2.1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="IndexError: Dimension out of range (expected to be in range of [-2, 1], but got 2)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_gliner(forge_property_recorder, variant):
 

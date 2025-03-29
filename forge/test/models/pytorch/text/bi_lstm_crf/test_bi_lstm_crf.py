@@ -12,9 +12,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="NotImplementedError: The following operators are not implemented: ['aten::_pad_packed_sequence', 'aten::_pack_padded_sequence']"
-)
+@pytest.mark.xfail
 def test_birnn_crf_pypi(forge_property_recorder):
 
     # Build Module Name

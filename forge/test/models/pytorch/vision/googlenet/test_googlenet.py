@@ -15,9 +15,7 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume Invalid arguments to reshape"
-)
+@pytest.mark.xfail
 def test_googlenet_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(

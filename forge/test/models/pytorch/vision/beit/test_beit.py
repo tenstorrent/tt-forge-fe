@@ -12,15 +12,11 @@ from test.models.utils import Framework, Source, Task, build_module_name
 variants = [
     pytest.param(
         "microsoft/beit-base-patch16-224",
-        marks=[
-            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
-        ],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "microsoft/beit-large-patch16-224",
-        marks=[
-            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
-        ],
+        marks=[pytest.mark.xfail],
     ),
 ]
 

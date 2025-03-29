@@ -27,9 +27,7 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="AssertionError: Setting a tensor value of incorrect shape: (1, 64, 76, 70) vs torch.Size([1, 64, 73, 73])"
-)
+@pytest.mark.xfail
 def test_inception_v4_osmr_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
@@ -61,7 +59,7 @@ variants = [
     "inception_v4",
     pytest.param(
         "inception_v4.tf_in1k",
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 47 - stride mismatch: expected [1225, 1], got [0, 0]")],
+        marks=[pytest.mark.xfail],
     ),
 ]
 

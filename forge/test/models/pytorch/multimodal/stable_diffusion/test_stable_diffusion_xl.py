@@ -37,7 +37,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
     [
         pytest.param(
             "stable-diffusion-xl-base-1.0",
-            marks=[pytest.mark.xfail(reason="NotImplementedError: Unknown output type: <class 'PIL.Image.Image'>")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

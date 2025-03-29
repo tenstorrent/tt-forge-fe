@@ -16,9 +16,7 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "Salesforce/codegen-350M-mono",
-        marks=[
-            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "Salesforce/codegen-350M-multi",
     "Salesforce/codegen-350M-nl",

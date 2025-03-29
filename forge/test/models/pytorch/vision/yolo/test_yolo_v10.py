@@ -28,7 +28,7 @@ class YoloWrapper(torch.nn.Module):
         return boxes, class_ids, confidences
 
 
-@pytest.mark.xfail(reason="TypeError: type Tensor doesn't define __round__ method")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolov10(forge_property_recorder):
 

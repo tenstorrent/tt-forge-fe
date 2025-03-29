@@ -28,11 +28,7 @@ class Wrapper(torch.nn.Module):
 variants = [
     pytest.param(
         "state-spaces/mamba-790m-hf",
-        marks=[
-            pytest.mark.xfail(
-                reason="[TVM Relay IRModule Generation] Dimension mismatch: axes has 3 elements, but data.ndim = 6"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "state-spaces/mamba-2.8b-hf",
     "state-spaces/mamba-1.4b-hf",

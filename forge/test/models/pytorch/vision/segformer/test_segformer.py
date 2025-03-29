@@ -18,11 +18,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 variants_img_classification = [
     pytest.param(
         "nvidia/mit-b0",
-        marks=[
-            pytest.mark.xfail(
-                reason="Statically allocated circular buffers in program 9 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 213120 and static circular buffer region ends at 626464"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "nvidia/mit-b1",
     "nvidia/mit-b2",

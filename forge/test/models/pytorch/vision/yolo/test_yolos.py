@@ -16,7 +16,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "hustvl/yolos-tiny",
-            marks=[pytest.mark.xfail(reason="AssertionError: Only support nearest neighbor and linear for now")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

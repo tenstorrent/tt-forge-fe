@@ -14,9 +14,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: Tensor 0 - stride mismatch: expected [270000, 90000, 300, 1], got [3, 1, 900, 3]"
-)
+@pytest.mark.xfail
 def test_pytorch_ssd300_resnet50(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(

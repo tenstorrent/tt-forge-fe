@@ -23,7 +23,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "seasionality_basis",
-            marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 4 - stride mismatch: expected [24, 1], got [1, 12]")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

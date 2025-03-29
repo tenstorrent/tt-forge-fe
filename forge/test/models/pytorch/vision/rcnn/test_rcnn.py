@@ -17,9 +17,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="Statically allocated circular buffers in program 13 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 1031040 and static circular buffer region ends at 1191648"
-)
+@pytest.mark.xfail
 def test_rcnn_pytorch(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(

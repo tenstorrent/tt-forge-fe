@@ -23,7 +23,7 @@ class YoloWorldWrapper(torch.nn.Module):
         return self.yolo.model.forward(x, augment=False)
 
 
-@pytest.mark.xfail(reason=" ValueError: not enough values to unpack (expected 3, got 0)")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference(forge_property_recorder):
 

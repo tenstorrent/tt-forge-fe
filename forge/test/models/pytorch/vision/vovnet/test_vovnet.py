@@ -146,11 +146,7 @@ variants = [
     "ese_vovnet99b",
     pytest.param(
         "ese_vovnet19b_dw.ra_in1k",
-        marks=[
-            pytest.mark.xfail(
-                reason="AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 1, 7, 7168] vs [1, 1, 7, 7]"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
 ]
 

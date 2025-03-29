@@ -13,11 +13,7 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "facebook/xglm-564M",
-        marks=[
-            pytest.mark.xfail(
-                reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "facebook/xglm-1.7B",
 ]

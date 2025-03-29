@@ -99,9 +99,7 @@ variants_with_weights = {
 variants = [
     pytest.param(
         "regnet_y_400mf",
-        marks=pytest.mark.xfail(
-            reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-        ),
+        marks=[pytest.mark.xfail],
     ),
     "regnet_y_800mf",
     "regnet_y_1_6gf",

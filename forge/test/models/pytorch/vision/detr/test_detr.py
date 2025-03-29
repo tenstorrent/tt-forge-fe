@@ -20,7 +20,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "facebook/detr-resnet-50",
-            marks=[pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")],
+            marks=[pytest.mark.xfail],
         )
     ],
 )
