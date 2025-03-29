@@ -361,7 +361,7 @@ class OnnxModule(Module):
     A wrapper around a Onnx module.
     """
 
-    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto):
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: Optional[str] = None):
         """
         Create Onnx module wrapper.
 
@@ -369,12 +369,15 @@ class OnnxModule(Module):
         ----------
         module: onnx.onnx_ml_pb2.ModelProto
             onnx module
+        onnx_path: Optional[str]
+        Path to the ONNX model file. Used to directly load the model when its size exceeds 2GB (with external data).
         """
         super().__init__(name)
 
         if not isinstance(module, onnx.onnx_ml_pb2.ModelProto):
             raise RuntimeError("onnx.onnx_ml_pb2.ModelProto module expected, got " + str(type(module)))
         self.module = module
+        self.onnx_path = onnx_path
 
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
@@ -386,9 +389,12 @@ class OnnxModule(Module):
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
 
-        module_bytes = self.module.SerializeToString()
+        if self.onnx_path is not None:
+            model = self.onnx_path
+        else:
+            model = self.module.SerializeToString()
         ort_sess = ort.InferenceSession(
-            module_bytes,
+            model,
             sess_options=so,
             use_deterministic_compute=True,
             providers=["CPUExecutionProvider"],
@@ -938,7 +944,7 @@ class IntQueueHandle:
         self.output_index = output_index
 
 
-def wrap_module(module, name: str) -> Module:
+def wrap_module(module, name: str, onnx_path: Optional[str] = None) -> Module:
     """
     Wrap a module in a Forge module
 
@@ -964,7 +970,7 @@ def wrap_module(module, name: str) -> Module:
     elif isinstance(module, paddle.nn.Layer):
         return PaddleModule(name, module)
     elif isinstance(module, onnx.onnx_ml_pb2.ModelProto):
-        return OnnxModule(name, module)
+        return OnnxModule(name, module, onnx_path) if onnx_path is not None else OnnxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
