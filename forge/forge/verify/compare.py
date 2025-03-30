@@ -34,7 +34,7 @@ def compare_with_golden(
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
 
-        all_close = torch.allclose(golden, calculated, rtol=rtol, atol=atol)
+        all_close = forge._C.verif.all_close(golden, calculated, rtol=rtol, atol=atol)
         if not all_close:
             req_atol, req_rtol = compute_required_tolerances(golden, calculated)
             logger.error("Tensor mismatch. Required rtol={}, atol={}", rtol, atol)
@@ -241,7 +241,7 @@ def compare_tensor_to_golden(
     if golden.dtype != calculated.dtype:
         calculated = calculated.type(golden.dtype)
 
-    ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
+    ok = forge._C.verif.all_close(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
     callback_ok = (
         True
         if verify_cfg is None or verify_cfg.golden_compare_callback is None
