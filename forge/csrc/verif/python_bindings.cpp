@@ -20,7 +20,15 @@ void VerifModule(py::module &m_verif)
         py::arg("rtol") = 1e-5,
         py::arg("atol") = 1e-9,
         py::arg("equal_nan") = false);
-    m_verif.def("all_close", &all_close, "all_close");
+    m_verif.def(
+        "all_close",
+        &all_close,
+        "all_close",
+        py::arg("a"),
+        py::arg("b"),
+        py::arg("rtol") = 1e-5,
+        py::arg("atol") = 1e-9,
+        py::arg("equal_nan") = false);
     m_verif.def("max_abs_diff", &max_abs_diff, "max_abs_diff");
     m_verif.def("has_special_values", &has_special_values, "has_special_values");
 }

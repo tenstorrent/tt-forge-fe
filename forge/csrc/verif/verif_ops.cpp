@@ -23,10 +23,6 @@ torch::Tensor is_close(torch::Tensor a, torch::Tensor b, double rtol, double ato
 {
     return torch::empty({1});
 }
-torch::Tensor all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan)
-{
-    return torch::empty({1});
-}
 
 template <typename T>
 T reduce_max(at::vec::Vectorized<T> vec)
@@ -288,8 +284,7 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
         {
             cpu_kernel_reduce_into_scalar_vec<ReduceOp::Max>(
                 iter,
-                [](scalar_t a_val, scalar_t b_val) -> double
-                { return std::max(static_cast<scalar_t>(std::abs(a_val - b_val)), static_cast<scalar_t>(0)); },
+                [](scalar_t a_val, scalar_t b_val) -> double { return static_cast<scalar_t>(std::abs(a_val - b_val)); },
                 [](at::native::Vectorized<scalar_t> a,
                    at::native::Vectorized<scalar_t> b) -> at::native::Vectorized<scalar_t>
                 {
@@ -299,6 +294,49 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
         });
 
     return iter.output().item<double>();
+}
+
+bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan)
+{
+    auto options = a.options();
+    torch::Tensor output = at::empty({1}, options);
+
+    if (has_special_values(a) || has_special_values(b) || a.dtype() != at::kFloat || b.dtype() != at::kFloat ||
+        a.dtype() != at::kDouble || b.dtype() != at::kDouble)
+    {
+        return at::allclose(a, b, rtol, atol, equal_nan);
+    }
+
+    a = a.flatten();
+    auto iter = at::TensorIteratorConfig()
+                    .resize_outputs(false)
+                    .declare_static_shape(output.sizes())
+                    .add_output(output)
+                    .add_input(a)
+                    .add_input(b)
+                    .build();
+
+    AT_DISPATCH_FLOATING_TYPES(
+        iter.input().scalar_type(),
+        "all_close",
+        [&]()
+        {
+            const auto atol_vec = at::native::Vectorized<scalar_t>(atol);
+            const auto rtol_vec = at::native::Vectorized<scalar_t>(rtol);
+
+            cpu_kernel_reduce_into_scalar_vec<ReduceOp::Max>(
+                iter,
+                [rtol, atol](scalar_t a_val, scalar_t b_val) -> scalar_t
+                { return std::abs(a_val - b_val) - atol - rtol * std::abs(b_val); },
+                [&rtol_vec, &atol_vec](at::native::Vectorized<scalar_t> a, at::native::Vectorized<scalar_t> b)
+                    -> at::native::Vectorized<scalar_t>
+                {
+                    auto delta = (a - b).abs() - atol_vec - b.abs() * rtol_vec;
+                    return delta;
+                });
+        });
+
+    return iter.output().item<double>() <= 0.0;
 }
 
 }  // namespace tt
