@@ -22,6 +22,7 @@ void VerifModule(py::module &m_verif)
         py::arg("equal_nan") = false);
     m_verif.def("all_close", &all_close, "all_close");
     m_verif.def("max_abs_diff", &max_abs_diff, "max_abs_diff");
+    m_verif.def("has_special_values", &has_special_values, "has_special_values");
 }
 
 }  // namespace tt
