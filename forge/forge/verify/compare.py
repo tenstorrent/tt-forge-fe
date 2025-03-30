@@ -14,6 +14,8 @@ from loguru import logger
 from scipy.spatial import distance
 from typing import Union, Tuple, List, Optional
 
+from forge._C import verif
+
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
@@ -34,7 +36,7 @@ def compare_with_golden(
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
 
-        all_close = forge._C.verif.all_close(golden, calculated, rtol=rtol, atol=atol)
+        all_close = verif.all_close(golden, calculated, rtol=rtol, atol=atol)
         if not all_close:
             req_atol, req_rtol = compute_required_tolerances(golden, calculated)
             logger.error("Tensor mismatch. Required rtol={}, atol={}", rtol, atol)
@@ -113,6 +115,10 @@ def calculate_or_estimate_pcc(
     if a.dtype == torch.bfloat16 or b.dtype == torch.bfloat16:
         a = a.type(torch.float32)
         b = b.type(torch.float32)
+
+    if a.dtype in (torch.float32, torch.double, torch.float16):
+        if not verif.has_special_values(a) and not verif.has_special_values(b):
+            return verif.calculate_tensor_pcc(a, b)
 
     a_np = a.detach().numpy().flatten()
     b_np = b.detach().numpy().flatten()
@@ -241,7 +247,7 @@ def compare_tensor_to_golden(
     if golden.dtype != calculated.dtype:
         calculated = calculated.type(golden.dtype)
 
-    ok = forge._C.verif.all_close(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
+    ok = verif.all_close(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
     callback_ok = (
         True
         if verify_cfg is None or verify_cfg.golden_compare_callback is None
@@ -326,6 +332,9 @@ def calculate_atol(golden, calculated):
         # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
         golden = golden.type(torch.float32)
         calculated = calculated.type(torch.float32)
+
+    if not verif.has_special_values(golden) and not verif.has_special_values(calculated):
+        return verif.max_abs_diff(golden, calculated)
 
     golden = golden.detach().numpy()
     calculated = calculated.detach().numpy()

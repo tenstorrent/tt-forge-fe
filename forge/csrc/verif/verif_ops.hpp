@@ -14,4 +14,6 @@ bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool 
 
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b);
 bool has_special_values(torch::Tensor& a);
+
+double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b);
 }  // namespace tt
