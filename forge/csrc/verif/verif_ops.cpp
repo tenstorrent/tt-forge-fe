@@ -48,7 +48,7 @@ enum class ReduceOp
 };
 
 template <typename scalar_t, ReduceOp op>
-inline scalar_t do_reduce_op(scalar_t a, scalar_t b)
+inline auto do_reduce_op(scalar_t a, scalar_t b)
 {
     if constexpr (op == ReduceOp::Max)
     {
@@ -106,6 +106,60 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     {
         TT_ASSERT(false, "Unsupported reduction operation");
     }
+}
+
+template <ReduceOp reduce_op, typename func_t>
+inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t scalar_op)
+{
+    using traits = unary_function_traits<func_t>;
+    using scalar_t = typename traits::arg1_t;
+    using result_t = decltype(scalar_op(typename traits::arg1_t{}));
+
+    std::atomic<bool> barrier = std::numeric_limits<scalar_t>::min();
+    // FIXME: Need to pass in the init value
+    std::atomic<result_t> result = false;  // scalar_op(scalar_t{});
+
+    int64_t numel = iter.input().numel();
+    auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
+    {
+        auto first_val = *reinterpret_cast<scalar_t*>(data[1]);
+        result_t chunk_result = scalar_op(first_val);
+
+        // FIXME: Handle different number of input tensors
+        auto* a_data = data[1];
+        int64_t i = 1;
+
+        for (; i < n; ++i)
+        {
+            auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
+            chunk_result = do_reduce_op<result_t, reduce_op>(chunk_result, scalar_op(a_val));
+        }
+
+        // Wait for atomic to go false
+        bool expected = false;
+        bool desired = true;
+        while (barrier.compare_exchange_weak(expected, desired))
+        {
+            expected = false;
+        }
+
+        result = do_reduce_op<result_t, reduce_op>(result, chunk_result);
+
+        barrier = false;
+    };
+
+    int64_t grain_size = at::internal::GRAIN_SIZE;
+    if (numel < grain_size || at::get_num_threads() == 1)
+    {
+        iter.serial_for_each(loop_fn, {0, numel});
+    }
+    else
+    {
+        at::parallel_for(
+            0, numel, grain_size, [&](int64_t begin, int64_t end) { iter.serial_for_each(loop_fn, {begin, end}); });
+    }
+
+    iter.output().fill_(result.load());
 }
 
 template <ReduceOp reduce_op, typename func_t, typename vec_func_t>
@@ -167,10 +221,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func
             expected = false;
         }
 
-        if (result < chunk_result)
-        {
-            result = chunk_result;
-        }
+        result = scalar_op(result, chunk_result);
 
         barrier = false;
     };
@@ -189,7 +240,32 @@ inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func
     iter.output().fill_(result.load());
 }
 
-bool has_special_values(torch::Tensor& a) { return false; }
+bool has_special_values(torch::Tensor& a)
+{
+    auto options = a.options();
+    options = options.dtype(torch::kBool);
+    torch::Tensor output = at::empty({1}, options);
+
+    a = a.flatten();
+    auto iter = at::TensorIteratorConfig()
+                    .resize_outputs(false)
+                    .check_all_same_dtype(false)
+                    .declare_static_shape(output.sizes())
+                    .add_output(output)
+                    .add_input(a)
+                    .build();
+
+    AT_DISPATCH_FLOATING_TYPES(
+        iter.input().scalar_type(),
+        "has_special_values",
+        [&]()
+        {
+            cpu_kernel_reduce_into_scalar<ReduceOp::LogicalOr>(
+                iter, [](scalar_t val) -> bool { return std::isinf(val) || std::isnan(val); });
+        });
+
+    return iter.output().item<bool>();
+}
 
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
 {

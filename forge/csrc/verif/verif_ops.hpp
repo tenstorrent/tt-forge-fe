@@ -13,4 +13,5 @@ torch::Tensor is_close(
 torch::Tensor all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan = false);
 
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b);
+bool has_special_values(torch::Tensor& a);
 }  // namespace tt
