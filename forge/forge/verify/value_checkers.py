@@ -50,7 +50,7 @@ class AllCloseValueChecker(ValueChecker):
             torch.bool,
         ], f"AllCloseValueChecker (all_close): all_close doesn't make sense for integer/bool types"
 
-        if not torch.allclose(fw_out, co_out, rtol=self.rtol, atol=self.atol):
+        if not forge._C.verif.all_close(fw_out, co_out, rtol=self.rtol, atol=self.atol):
             atol, rtol = compute_required_tolerances(fw_out, co_out)
             raise ValueError(
                 f"Data mismatch -> AllCloseValueChecker (all_close):\n"
@@ -87,7 +87,7 @@ class FullValueChecker(ValueChecker):
             torch.int64,
             torch.bool,
         ]:  # allclose doesn't make sense for integer/bool types
-            all_close_check = torch.allclose(fw_out, co_out, rtol=self.rtol, atol=self.atol)
+            all_close_check = forge._C.verif.all_close(fw_out, co_out, rtol=self.rtol, atol=self.atol)
 
         if not all_close_check:
             atol, rtol = compute_required_tolerances(fw_out, co_out)
