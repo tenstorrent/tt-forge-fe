@@ -31,6 +31,7 @@ void VerifModule(py::module &m_verif)
         py::arg("equal_nan") = false);
     m_verif.def("max_abs_diff", &max_abs_diff, "max_abs_diff");
     m_verif.def("has_special_values", &has_special_values, "has_special_values");
+    m_verif.def("calculate_tensor_pcc", &calculate_tensor_pcc, "calculate_tensor_pcc");
 }
 
 }  // namespace tt

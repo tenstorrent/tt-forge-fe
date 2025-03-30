@@ -39,6 +39,7 @@ enum class ReduceOp
 {
     Max,
     Min,
+    Sum,
     LogicalOr,
     LogicalAnd,
 };
@@ -53,6 +54,10 @@ inline auto do_reduce_op(scalar_t a, scalar_t b)
     else if constexpr (op == ReduceOp::Min)
     {
         return std::min(a, b);
+    }
+    else if constexpr (op == ReduceOp::Sum)
+    {
+        return a + b;
     }
     else if constexpr (op == ReduceOp::LogicalOr)
     {
@@ -89,6 +94,10 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     else if constexpr (op == ReduceOp::Min)
     {
         a = at::vec::minimum(a, b);
+    }
+    else if constexpr (op == ReduceOp::Sum)
+    {
+        a += b;
     }
     else if constexpr (op == ReduceOp::LogicalOr)
     {
@@ -159,7 +168,8 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
 }
 
 template <ReduceOp reduce_op, typename func_t, typename vec_func_t>
-inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op)
+inline void cpu_kernel_reduce_into_scalar_vec(
+    at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op, double init_val = 0)
 {
     using traits = binary_function_traits<func_t>;
     using scalar_t = typename traits::arg1_t;
@@ -167,19 +177,19 @@ inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func
     using Vec = at::vec::Vectorized<scalar_t>;
     constexpr int64_t vec_size = Vec::size();
 
-    std::atomic<bool> barrier = std::numeric_limits<scalar_t>::min();
-    std::atomic<scalar_t> result = std::numeric_limits<scalar_t>::min();
+    std::atomic<bool> barrier = false;
+    std::atomic<scalar_t> result = init_val;
 
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
     {
-        scalar_t chunk_result = std::numeric_limits<scalar_t>::min();
+        scalar_t chunk_result = init_val;
         auto* a_data = data[1];
         auto* b_data = data[2];
 
         int64_t i = 0;
 
-        Vec max_vec = Vec(std::numeric_limits<scalar_t>::min());
+        Vec max_vec = Vec(init_val);
 
         for (; i <= n - 2 * vec_size; i += 2 * vec_size)
         {
@@ -197,16 +207,17 @@ inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func
         }
 
         chunk_result = scalar_reduce_op<reduce_op>(max_vec);
+        printf("chunk_result: %f\n", chunk_result);
 
         for (; i < n; ++i)
         {
             auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
             auto b_val = *reinterpret_cast<scalar_t*>(b_data + i * sizeof(scalar_t));
+            printf("a_val: %f, b_val: %f\n", a_val, b_val);
             auto out = scalar_op(a_val, b_val);
-            if (chunk_result < out)
-            {
-                chunk_result = out;
-            }
+            printf("out: %f\n", out);
+            chunk_result = do_reduce_op<scalar_t, reduce_op>(chunk_result, out);
+            printf("chunk_result: %f\n", chunk_result);
         }
 
         // Wait for atomic to go false
@@ -217,7 +228,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(at::TensorIteratorBase& iter, func
             expected = false;
         }
 
-        result = scalar_op(result, chunk_result);
+        result = do_reduce_op<scalar_t, reduce_op>(result, chunk_result);
 
         barrier = false;
     };
@@ -296,13 +307,22 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
     return iter.output().item<double>();
 }
 
+bool unsupported_dtypes(torch::Tensor& a)
+{
+    switch (a.scalar_type())
+    {
+        case torch::kFloat:
+        case torch::kDouble: return false;
+        default: return true;
+    }
+}
+
 bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan)
 {
     auto options = a.options();
     torch::Tensor output = at::empty({1}, options);
 
-    if (has_special_values(a) || has_special_values(b) || a.dtype() != at::kFloat || b.dtype() != at::kFloat ||
-        a.dtype() != at::kDouble || b.dtype() != at::kDouble)
+    if (unsupported_dtypes(a) || unsupported_dtypes(b) || has_special_values(a) || has_special_values(b))
     {
         return at::allclose(a, b, rtol, atol, equal_nan);
     }
@@ -337,6 +357,112 @@ bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool 
         });
 
     return iter.output().item<double>() <= 0.0;
+}
+
+double cov_ij(
+    torch::Tensor& a,
+    torch::Tensor& b,
+    std::optional<double> a_mean = std::nullopt,
+    std::optional<double> b_mean = std::nullopt)
+{
+    TT_ASSERT(a.sizes() == b.sizes(), "Input tensors must have the same shape");
+    TT_ASSERT(a.dim() == 1, "Input tensors must be 1D");
+
+    if (!a_mean.has_value())
+    {
+        a_mean = a.mean().item<double>();
+    }
+
+    if (!b_mean.has_value())
+    {
+        b_mean = b.mean().item<double>();
+    }
+
+    a = a.flatten();
+
+    auto output = at::empty({1}, a.options());
+    auto iter = at::TensorIteratorConfig()
+                    .resize_outputs(false)
+                    .declare_static_shape(output.sizes())
+                    .add_output(output)
+                    .add_input(a)
+                    .add_input(b)
+                    .build();
+
+    const auto N = a.numel() - 1;
+
+    AT_DISPATCH_FLOATING_TYPES(
+        iter.input().scalar_type(),
+        "cov_ij",
+        [&]()
+        {
+            at::native::Vectorized<scalar_t> a_mean_vec(a_mean.value());
+            at::native::Vectorized<scalar_t> b_mean_vec(b_mean.value());
+            const auto N_vec = at::native::Vectorized<scalar_t>(N);
+            cpu_kernel_reduce_into_scalar_vec<ReduceOp::Sum>(
+                iter,
+                [&a_mean, &b_mean, &N](scalar_t a_val, scalar_t b_val) -> double
+                { return (a_val - a_mean.value()) * (b_val - b_mean.value()) / N; },
+                [&a_mean_vec, &b_mean_vec, &N_vec](
+                    at::native::Vectorized<scalar_t> a,
+                    at::native::Vectorized<scalar_t> b) -> at::native::Vectorized<scalar_t>
+                {
+                    auto delta_a = a - a_mean_vec;
+                    auto delta_b = b - b_mean_vec;
+                    return (delta_a * delta_b) / N_vec;
+                });
+        });
+
+    return iter.output().item<double>();
+}
+
+double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b)
+{
+    auto a_flat = a.flatten();
+    auto b_flat = b.flatten();
+
+    auto options = a.options();
+    torch::Tensor output = at::empty({1}, options);
+
+    TT_ASSERT(a_flat.numel() == b_flat.numel(), "Input tensors must have the same number of elements");
+    std::cerr << a_flat << std::endl;
+    std::cerr << "numel: " << a_flat.numel() << std::endl;
+
+    if (unsupported_dtypes(a) || unsupported_dtypes(b) || has_special_values(a) || has_special_values(b))
+    {
+        // Fallback to torch impl.
+        return at::max(at::corrcoef(at::stack({a, b}))).item<double>();
+    }
+
+    auto iter = at::TensorIteratorConfig()
+                    .resize_outputs(false)
+                    .declare_static_shape(output.sizes())
+                    .add_output(output)
+                    .add_input(a)
+                    .add_input(b)
+                    .build();
+
+    auto a_mean = a.mean().item<double>();
+    auto b_mean = b.mean().item<double>();
+
+    auto cov = at::empty({4}, options);
+    cov[0] = cov_ij(a_flat, a_flat, a_mean, a_mean);
+    cov[1] = cov_ij(a_flat, b_flat, a_mean, b_mean);
+    cov[2] = cov_ij(b_flat, a_flat, b_mean, a_mean);
+    cov[3] = cov_ij(b_flat, b_flat, b_mean, b_mean);
+
+    std::cerr << cov << std::endl;
+
+    auto std_a = std::sqrt(cov[0].item<double>());
+    auto std_b = std::sqrt(cov[3].item<double>());
+
+    double min = std::numeric_limits<double>::max();
+    min = std::min(min, cov[0].item<double>() / (std_a * std_a));
+    min = std::min(min, cov[1].item<double>() / (std_a * std_b));
+    min = std::min(min, cov[2].item<double>() / (std_b * std_a));
+    min = std::min(min, cov[3].item<double>() / (std_b * std_b));
+
+    return min;
 }
 
 }  // namespace tt
