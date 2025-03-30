@@ -1,32 +1,32 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+# SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
 
-import forge.optimizers
 import pytest
 import torch
 from torch.utils.data import DataLoader
 
 import forge
-
-# from forge.op.loss import CrossEntropyLoss
-# from forge.tensor import to_forge_tensors
-from forge.verify.verify import verify
+from forge.forge.verify.config import VerifyConfig
+from forge.forge.verify.value_checkers import AutomaticValueChecker
+import forge.optimizers
+from forge.verify.verify import verify, verify_backward
 from test.mlir.llama.utils.utils import load_model, load_tokenized_data
-import time
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
-@pytest.mark.parametrize("use_lora", [False])
-def test_llama_fwd_pass(model_path, use_lora):
+def test_llama_lora_fwd_pass(model_path):
     if model_path == "openlm-research/open_llama_3b":
         pytest.skip(
             "TT_THROW: Out of Memory: Not enough space to allocate 110592000 B DRAM buffer across 12 banks, where each bank needs to store 9216000 B"
         )
 
-    # Load Model and Tokenizer
+    # Load Model and Tokenizer for LoRA training
+    use_lora = True
     framework_model, tokenizer = load_model(model_path, use_lora=use_lora)
 
+    # Need input seq divisible by 32 due to metal constraints TILE_WIDTH=32
+    # Can be changed when https://github.com/tenstorrent/tt-metal/issues/17714 resolved
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     tokenizer.model_max_length = 32
@@ -40,63 +40,62 @@ def test_llama_fwd_pass(model_path, use_lora):
     verify([input_ids], framework_model, compiled_model)
 
 
-@pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B"])
-@pytest.mark.parametrize("use_lora", [True])
-def test_llama_bwd_pass(model_path, use_lora):
-    # Load Model and Tokenizer
+@pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
+def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
+    # Load Model and Tokenizer for LoRA training
+    use_lora = True
     framework_model, tokenizer = load_model(model_path, use_lora=use_lora)
     framework_model.train()
-
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "right"
-    tokenizer.model_max_length = 32
 
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
 
-    # tt_optimizer = forge.optimizers.SGD(learning_rate=0.1)
-    # framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=0.1)
-    framework_optimizer = torch.optim.Adam(framework_model.parameters())
+    # Create a batch of input_ids
+    batch_size = 32
+    input_ids = input_ids.repeat(batch_size, 1)
 
-    # Compile the model for trainingc
-    compiled_model = forge.compile(framework_model, input_ids, optimizer=framework_optimizer, training=True)
+    # Compile the model for training
+    compiled_model = forge.compile(
+        framework_model, input_ids, training=True, forge_property_handler=forge_property_recorder
+    )
 
-    logits = compiled_model(input_ids)[0]
-    logits = logits.squeeze()
-    labels = torch.nn.functional.one_hot(input_ids.squeeze(), num_classes=tokenizer.vocab_size).float()
+    fw_out, co_out = verify(
+        [input_ids], framework_model, compiled_model, forge_property_handler=forge_property_recorder
+    )
 
-    # loss_inputs = [torch.rand(32, 32000).requires_grad_(True), torch.rand(32, 32000)]
-    # loss_inputs = to_forge_tensors(loss_inputs)
-    # tt_loss = forge.compile(CrossEntropyLoss(name="cross_entropy_loss"), sample_inputs=loss_inputs, training=True, attach_to=compiled_model)
+    # Run bwd pass
+    grad = torch.rand_like(fw_out[0])
 
-    # Create a torch loss and leave on CPU
-    loss_fn = torch.nn.CrossEntropyLoss()
-
-    loss = loss_fn(logits, labels)
-
-    loss.backward()
-    compiled_model.backward()
-
-    framework_optimizer.step()
-    framework_optimizer.zero_grad()
+    verify_backward(
+        [input_ids],
+        grad,
+        fw_out[0],
+        co_out[0],
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
 @pytest.mark.parametrize("dataset_id", ["stanfordnlp/sst2"])
-@pytest.mark.parametrize("use_lora", [True])
-def test_llama_training(model_path, dataset_id, use_lora):
+def test_llama_training(model_path, dataset_id):
     if model_path == "meta-llama/Llama-3.2-1B":
         pytest.skip("NotImplementedError: repeat_interleave")
 
+    # Setup hyperparameters
     num_epoch = 3
     max_length = 128
     batch_size = 4
     num_layers = 15
 
     # Load Model and Tokenizer
-    framework_model, tokenizer = load_model(model_path, use_lora=use_lora, num_hidden_layers=num_layers)
+    use_lora = True
+    framework_model, tokenizer = load_model(model_path, use_lora=use_lora)
     framework_model.train()
 
+    # Need input seq divisible by 32 due to metal constraints TILE_WIDTH=32
+    # Can be changed when https://github.com/tenstorrent/tt-metal/issues/17714 resolved
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
     tokenizer.model_max_length = max_length
@@ -106,28 +105,31 @@ def test_llama_training(model_path, dataset_id, use_lora):
 
     tt_optimizer = forge.optimizers.AdamW()
 
+    # Compile the model for training
     sample_inputs = [torch.randint(0, tokenizer.vocab_size, (batch_size, max_length))]
     compiled_model = forge.compile(framework_model, sample_inputs, optimizer=tt_optimizer, training=True)
 
-    # Compile the model for training
+    # Create a torch loss and leave on CPU
+    # Can be changed when https://github.com/tenstorrent/tt-metal/issues/18997 resolved
+    loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
+
     losses = []
-    total_start_time = time.time()
-    breakpoint()
     for epoch in range(num_epoch):
         epoch_loss = 0
 
         for batch in data_loader:
+            # Fwd pass
             input_ids = batch["input_ids"]
-
             logits = compiled_model(input_ids)[0]
-            logits = logits.view(-1, tokenizer.vocab_size)
 
-            labels = input_ids.view(-1)
+            # Bwd pass
+            # Create label tensor - set to -100 for prompt tokens (they shouldn't contribute to loss)
+            prompt_length = len(input_ids)
+            labels = batch["labels"]
+            labels_for_loss = labels.clone()
+            labels_for_loss[0, :prompt_length] = -100
 
-            # Create a torch loss and leave on CPU
-            loss_fn = torch.nn.CrossEntropyLoss()
-
-            loss = loss_fn(logits, labels)
+            loss = loss_fn(logits.view(-1, tokenizer.vocab_size), labels_for_loss.view(-1))
             epoch_loss += loss.item()
 
             loss.backward()
@@ -136,9 +138,6 @@ def test_llama_training(model_path, dataset_id, use_lora):
         losses.append(epoch_loss / len(tokenized_data))
 
         tt_optimizer.step()
-
-    total_end_time = time.time()
-    print(f"Total run time: {total_end_time - total_start_time:.2f} seconds")
 
     for epoch, epoch_loss in enumerate(losses):
         print(f"Epoch: {epoch+1}, Loss: {epoch_loss}")

@@ -45,7 +45,7 @@ Output should be in the valid json format: {'label': sentiment_value}.
 
 Review: $input
 
-Output: {"label": "$label"}
+Output:
 """
 )
 
@@ -54,18 +54,17 @@ LBL2VALUE = {0: "negative", 1: "positive"}
 
 def load_tokenized_data(dataset_id, tokenizer, **kwargs):
     dataset = load_dataset(dataset_id)
-    max_length = kwargs.get("max_length", 64)
+    max_length = kwargs.get("max_length", 128)
 
     def _apply_template(example):
-        example["text"] = TRAIN_PROMPT_TEMPLATE.substitute(input=example["sentence"], label=LBL2VALUE[example["label"]])
+        example["text"] = TRAIN_PROMPT_TEMPLATE.substitute(input=example["sentence"])
         return example
 
     def _tokenize_function(example: dict):
         tokenized_batch = tokenizer(example["text"], padding="max_length", max_length=max_length, truncation=True)
 
-        example["label"] = [LBL2VALUE[lbl] for lbl in example["label"]]
-        tokenized_lbls = tokenizer(example["label"], padding="max_length", max_length=max_length, truncation=True)
-
+        expected_output = example["text"] + f"Output: {{'label': '{LBL2VALUE[example['label']]}'}}"
+        tokenized_lbls = tokenizer(expected_output, padding="max_length", max_length=max_length, truncation=True)
         tokenized_batch["labels"] = tokenized_lbls["input_ids"]
 
         return tokenized_batch
