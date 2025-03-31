@@ -15,10 +15,8 @@ on:
   workflow_run:
     workflows:
       - "On nightly"
-    types:
-      - completed
-    branches:
-      - main
+    types: [ completed ]
+    branches: [ "main" ]
 
 jobs:
   docker-build:
