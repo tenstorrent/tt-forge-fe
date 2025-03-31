@@ -27,7 +27,7 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_resnet_pd_variants(variant, forge_property_recorder):
+def test_resnet_pd(variant, forge_property_recorder):
     if variant != "resnet50":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
