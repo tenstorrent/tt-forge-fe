@@ -31,7 +31,12 @@ def test_mobilenetv2_basic(forge_property_recorder):
 
     # Compile model
     input_sample = [paddle.rand([1, 3, 224, 224])]
-    compiled_model = forge.compile(framework_model, input_sample, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=input_sample,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Verify data on sample input
     verify(
