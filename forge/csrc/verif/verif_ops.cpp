@@ -207,17 +207,13 @@ inline void cpu_kernel_reduce_into_scalar_vec(
         }
 
         chunk_result = scalar_reduce_op<reduce_op>(max_vec);
-        printf("chunk_result: %f\n", chunk_result);
 
         for (; i < n; ++i)
         {
             auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
             auto b_val = *reinterpret_cast<scalar_t*>(b_data + i * sizeof(scalar_t));
-            printf("a_val: %f, b_val: %f\n", a_val, b_val);
             auto out = scalar_op(a_val, b_val);
-            printf("out: %f\n", out);
             chunk_result = do_reduce_op<scalar_t, reduce_op>(chunk_result, out);
-            printf("chunk_result: %f\n", chunk_result);
         }
 
         // Wait for atomic to go false
@@ -367,6 +363,8 @@ double cov_ij(
 {
     TT_ASSERT(a.sizes() == b.sizes(), "Input tensors must have the same shape");
     TT_ASSERT(a.dim() == 1, "Input tensors must be 1D");
+    TT_ASSERT(b.dim() == 1, "Input tensors must be 1D");
+    TT_ASSERT(a.strides() == b.strides(), "Input tensors must have the same strides");
 
     if (!a_mean.has_value())
     {
@@ -377,8 +375,6 @@ double cov_ij(
     {
         b_mean = b.mean().item<double>();
     }
-
-    a = a.flatten();
 
     auto output = at::empty({1}, a.options());
     auto iter = at::TensorIteratorConfig()
@@ -421,37 +417,44 @@ double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b)
     auto a_flat = a.flatten();
     auto b_flat = b.flatten();
 
+    if (a_flat.stride(0) != 1)
+    {
+        a_flat = a_flat.contiguous();
+    }
+
+    if (b_flat.stride(0) != 1)
+    {
+        b_flat = b_flat.contiguous();
+    }
+
     auto options = a.options();
     torch::Tensor output = at::empty({1}, options);
 
     TT_ASSERT(a_flat.numel() == b_flat.numel(), "Input tensors must have the same number of elements");
-    std::cerr << a_flat << std::endl;
-    std::cerr << "numel: " << a_flat.numel() << std::endl;
 
-    if (unsupported_dtypes(a) || unsupported_dtypes(b) || has_special_values(a) || has_special_values(b))
+    if (unsupported_dtypes(a_flat) || unsupported_dtypes(b_flat) || has_special_values(a_flat) ||
+        has_special_values(b_flat))
     {
         // Fallback to torch impl.
-        return at::max(at::corrcoef(at::stack({a, b}))).item<double>();
+        return at::max(at::corrcoef(at::stack({a_flat, b_flat}))).item<double>();
     }
 
     auto iter = at::TensorIteratorConfig()
                     .resize_outputs(false)
                     .declare_static_shape(output.sizes())
                     .add_output(output)
-                    .add_input(a)
-                    .add_input(b)
+                    .add_input(a_flat)
+                    .add_input(b_flat)
                     .build();
 
-    auto a_mean = a.mean().item<double>();
-    auto b_mean = b.mean().item<double>();
+    auto a_mean = a_flat.mean().item<double>();
+    auto b_mean = b_flat.mean().item<double>();
 
     auto cov = at::empty({4}, options);
     cov[0] = cov_ij(a_flat, a_flat, a_mean, a_mean);
     cov[1] = cov_ij(a_flat, b_flat, a_mean, b_mean);
     cov[2] = cov_ij(b_flat, a_flat, b_mean, a_mean);
     cov[3] = cov_ij(b_flat, b_flat, b_mean, b_mean);
-
-    std::cerr << cov << std::endl;
 
     auto std_a = std::sqrt(cov[0].item<double>());
     auto std_b = std::sqrt(cov[3].item<double>());
