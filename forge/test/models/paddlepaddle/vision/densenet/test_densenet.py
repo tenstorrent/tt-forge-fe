@@ -16,9 +16,8 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = [
-    "densenet121"
-]
+variants = ["densenet121"]
+
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
