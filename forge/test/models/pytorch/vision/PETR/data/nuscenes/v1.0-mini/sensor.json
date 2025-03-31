@@ -1,0 +1,62 @@
+[
+{
+"token": "725903f5b62f56118f4094b46a4470d8",
+"channel": "CAM_FRONT",
+"modality": "camera"
+},
+{
+"token": "ce89d4f3050b5892b33b3d328c5e82a3",
+"channel": "CAM_BACK",
+"modality": "camera"
+},
+{
+"token": "a89643a5de885c6486df2232dc954da2",
+"channel": "CAM_BACK_LEFT",
+"modality": "camera"
+},
+{
+"token": "ec4b5d41840a509984f7ec36419d4c09",
+"channel": "CAM_FRONT_LEFT",
+"modality": "camera"
+},
+{
+"token": "2f7ad058f1ac5557bf321c7543758f43",
+"channel": "CAM_FRONT_RIGHT",
+"modality": "camera"
+},
+{
+"token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+"channel": "CAM_BACK_RIGHT",
+"modality": "camera"
+},
+{
+"token": "dc8b396651c05aedbb9cdaae573bb567",
+"channel": "LIDAR_TOP",
+"modality": "lidar"
+},
+{
+"token": "47fcd48f71d75e0da5c8c1704a9bfe0a",
+"channel": "RADAR_FRONT",
+"modality": "radar"
+},
+{
+"token": "232a6c4dc628532e81de1c57120876e9",
+"channel": "RADAR_FRONT_RIGHT",
+"modality": "radar"
+},
+{
+"token": "1f69f87a4e175e5ba1d03e2e6d9bcd27",
+"channel": "RADAR_FRONT_LEFT",
+"modality": "radar"
+},
+{
+"token": "df2d5b8be7be55cca33c8c92384f2266",
+"channel": "RADAR_BACK_LEFT",
+"modality": "radar"
+},
+{
+"token": "5c29dee2f70b528a817110173c2e71b9",
+"channel": "RADAR_BACK_RIGHT",
+"modality": "radar"
+}
+]

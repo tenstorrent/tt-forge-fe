@@ -1,0 +1,42 @@
+[
+{
+"token": "cb5118da1ab342aa947717dc53544259",
+"name": "vehicle.moving",
+"description": "Vehicle is moving."
+},
+{
+"token": "c3246a1e22a14fcb878aa61e69ae3329",
+"name": "vehicle.stopped",
+"description": "Vehicle, with a driver/rider in/on it, is currently stationary but has an intent to move."
+},
+{
+"token": "58aa28b1c2a54dc88e169808c07331e3",
+"name": "vehicle.parked",
+"description": "Vehicle is stationary (usually for longer duration) with no immediate intent to move."
+},
+{
+"token": "a14936d865eb4216b396adae8cb3939c",
+"name": "cycle.with_rider",
+"description": "There is a rider on the bicycle or motorcycle."
+},
+{
+"token": "5a655f9751944309a277276b8f473452",
+"name": "cycle.without_rider",
+"description": "There is NO rider on the bicycle or motorcycle."
+},
+{
+"token": "03aa62109bf043afafdea7d875dd4f43",
+"name": "pedestrian.sitting_lying_down",
+"description": "The human is sitting or lying down."
+},
+{
+"token": "4d8821270b4a47e3a8a300cbec48188e",
+"name": "pedestrian.standing",
+"description": "The human is standing."
+},
+{
+"token": "ab83627ff28b465b85c427162dec722f",
+"name": "pedestrian.moving",
+"description": "The human is moving."
+}
+]
