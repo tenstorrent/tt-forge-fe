@@ -42,15 +42,15 @@ class StableDiffusionWrapper(torch.nn.Module):
     [
         pytest.param(
             "stable-diffusion-3.5-medium",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "stable-diffusion-3.5-large",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "stable-diffusion-3.5-large-turbo",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
     ],
 )

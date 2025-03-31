@@ -19,9 +19,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=[
-            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "microsoft/phi-2-pytdml",
 ]

@@ -20,9 +20,7 @@ from test.utils import download_model
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "xlm-roberta-base", marks=[pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")]
-        ),
+        pytest.param("xlm-roberta-base", marks=[pytest.mark.xfail]),
     ],
 )
 def test_roberta_masked_lm(forge_property_recorder, variant):
