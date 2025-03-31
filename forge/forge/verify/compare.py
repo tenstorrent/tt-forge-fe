@@ -27,7 +27,7 @@ def compare_with_golden(
     if golden.dtype == torch.bool:
         calculated_dissimilarity = calculate_dissimilarity(golden, calculated)
         result = compare_dissimilarity(calculated_dissimilarity, dissimilarity_threshold)
-    if golden.flatten().size() != (1,):  # PCC for single values doesn't work
+    elif golden.flatten().size() != (1,):  # PCC for single values doesn't work
         calculated_pcc = calculate_pcc(golden, calculated)
         result = compare_pcc(calculated_pcc, pcc)
     else:
@@ -56,8 +56,8 @@ def calculate_dissimilarity(golden: torch.Tensor, calculated: torch.Tensor):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)
 
-    golden_squeezed = golden.view(-1).detach().numpy()
-    calculated_squeezed = calculated.view(-1).detach().numpy()
+    golden_squeezed = golden.reshape(-1).detach().numpy()
+    calculated_squeezed = calculated.reshape(-1).detach().numpy()
     dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
     return dissimilarity
 

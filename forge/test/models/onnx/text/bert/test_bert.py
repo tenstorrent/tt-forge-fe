@@ -25,7 +25,7 @@ opset_versions = [9, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_bert_masked_lm(forge_property_recorder, variant, tmp_path, opset_version):
+def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.ONNX,
@@ -75,7 +75,7 @@ def test_bert_masked_lm(forge_property_recorder, variant, tmp_path, opset_versio
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_bert_question_answering(forge_property_recorder, variant, tmp_path, opset_version):
+def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.ONNX,

@@ -16,9 +16,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail(reason="RuntimeError: Couldn't lower all tuples")]
-        ),
+        pytest.param("alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail]),
     ],
 )
 def test_mgp_scene_text_recognition(forge_property_recorder, variant):

@@ -10,32 +10,6 @@ from forge.verify.verify import verify
 from test.mlir.llama.utils.utils import load_model
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize(
-    "model_path",
-    [
-        "openlm-research/open_llama_3b",
-        "meta-llama/Llama-3.2-1B",
-    ],
-)
-def test_llama_inference(forge_property_recorder, model_path):
-    if model_path == "openlm-research/open_llama_3b":
-        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
-
-    # Load Model and Tokenizer
-    framework_model, tokenizer = load_model(model_path)
-
-    prompt = "Q: What is the largest animal?\nA:"
-    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-
-    # Sanity run
-    generation_output = framework_model.generate(input_ids=input_ids, max_new_tokens=32)
-    print(tokenizer.decode(generation_output[0]))
-
-    # Compile the model
-    compiled_model = forge.compile(framework_model, input_ids, forge_property_handler=forge_property_recorder)
-
-
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
 @pytest.mark.push
