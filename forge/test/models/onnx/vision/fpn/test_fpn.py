@@ -2,16 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
-import forge
 import onnx
 import os
 import pytest
-from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
+
+# TODO: These are old forge, we should update them to the currently version.
+# import forge
+# from forge.verify.backend import verify_module
+# from forge import DepricatedVerifyConfig
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Not supported")
+@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.nightly
 def test_fpn_onnx(test_device, test_kind):
     compiler_cfg = forge.config.CompilerConfig()

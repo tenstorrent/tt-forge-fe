@@ -12,9 +12,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: Couldn't load custom C++ ops. This can happen if your PyTorch and torchvision versions are incompatible, or if you had errors while compiling torchvision from source"
-)
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["briaai/RMBG-2.0"])
 def test_rmbg(forge_property_recorder, variant):
 
