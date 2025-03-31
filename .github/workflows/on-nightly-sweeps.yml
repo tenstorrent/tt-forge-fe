@@ -1,10 +1,5 @@
 name: On Nightly Sweeps Tests
 
-# This workflow runs after the "on-nightly" workflow.
-# It executes full set of sweep single operator tests.
-# Note: This workflow shouldn't run build, it only
-# does so if no existing run ID is available.
-
 on:
   workflow_dispatch:
     inputs:
@@ -16,41 +11,29 @@ on:
           - n150
           - n300
         default: n150
-      run_id:
-        description: 'Run id (from a previous On nightly workflow)'
-        required: false
-        type: number
       operators:
         description: 'Operators to test (comma separated)'
         type: string
         required: false
-  workflow_run:
-    workflows:
-      - "On nightly"
-    types:
-      - completed
-  # schedule:
-  #   - cron: '0 4 * * *'  # Runs at 04:00 UTC every day
+  schedule:
+    - cron: '0 4 * * *'  # Runs at 04:00 UTC every day
 
 jobs:
   docker-build:
-    uses: ./.github/workflows/build-image.yml
-    secrets: inherit
-  build-if-neccessary:
-    runs-on: ubuntu-latest
+      uses: ./.github/workflows/build-image.yml
+      secrets: inherit
+  build:
     needs: docker-build
-    steps:
-      - name: Build the wheel if necessary
-        if: ${{ !(github.event.workflow_run.id || github.event.inputs.run_id) }}
-        uses: ./.github/workflows/build.yml
-        with:
-          docker-image: ${{ needs.docker-build.outputs.docker-image }}
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
   test_on_dispatch:
     if: inputs.runs-on
     needs:
       - docker-build
-      - build-if-neccessary
+      - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
@@ -60,14 +43,12 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "${{ github.event.inputs.runs-on }}"}]'
       operators: ${{ github.event.inputs.operators }}
-      # Prioritize workflow trigger, then input run ID, then current run (for new builds)
-      on_nightly_run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
 
   test_on_schedule:
     if: ${{ ! inputs.runs-on }}
     needs:
       - docker-build
-      - build-if-neccessary
+      - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
@@ -77,5 +58,3 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       operators: ${{ github.event.inputs.operators }}
-      # Prioritize workflow trigger, then input run ID, then current run (for new builds)
-      on_nightly_run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
