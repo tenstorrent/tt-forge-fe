@@ -328,7 +328,7 @@ def calculate_rtol(golden, calculated):
     # Avoid division by zero by setting a high rtol for zero values in b
     safe_abs_calculated = torch.where(abs_calculated == 0, torch.tensor(float("inf")), abs_calculated)
 
-    return torch.max(diff / safe_abs_calculated).items()
+    return torch.max(diff / safe_abs_calculated).item()
 
 
 def compute_required_tolerances(golden, calculated):
