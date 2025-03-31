@@ -959,6 +959,16 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
 
+    elif type == "index":
+        # TODO: check the required num of attrs
+
+        input_shape = inputs[0].shape.as_list()
+        grad_shape = grad.shape.as_list()
+
+        zero_grad = torch.zeros(input_shape)
+
+        ret = ac.op("scatter", (zero_grad, grad))
+
     raise NotImplementedError(f"{type}")
 
 
