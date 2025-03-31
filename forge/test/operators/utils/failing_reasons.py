@@ -101,6 +101,7 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and f"{ex}" == "Tensor 2 - data type mismatch: expected UInt32, got Float32",
+            lambda ex: isinstance(ex, RuntimeError) and '"softmax_lastdim_kernel_impl" not implemented' in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -206,6 +207,9 @@ class FailingReasonsValidation:
         ],
         FailingReasons.MICROBATCHING_UNSUPPORTED: [
             lambda ex: isinstance(ex, RuntimeError) and "The expanded size of the tensor" in f"{ex}",
+        ],
+        FailingReasons.UNSUPORTED_AXIS: [
+            lambda ex: isinstance(ex, RuntimeError) and "Inputs must be of bfloat16 or bfloat8_b type" in f"{ex}",
         ],
     }
 
