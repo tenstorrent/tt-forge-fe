@@ -14,9 +14,7 @@ from paddle.vision.models import googlenet
 from test.models.utils import Framework, Source, Task, build_module_name
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:37: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (528) should be padded to nearest TILE_WIDTH (32) or should be 16"
-)
+@pytest.mark.xfail()
 @pytest.mark.nightly
 def test_googlenet(forge_property_recorder):
     # Record model details
