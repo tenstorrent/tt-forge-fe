@@ -79,12 +79,7 @@ size = [
     pytest.param("n", id="yolov5n"),
     pytest.param(
         "s",
-        id="yolov5s",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
