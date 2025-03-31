@@ -130,11 +130,11 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 
 
 size = [
-    pytest.param("n", id="yolov5n"),
     pytest.param(
-        "s",
+        "n",
         marks=[pytest.mark.xfail],
     ),
+    pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
     pytest.param("x", id="yolov5x"),
@@ -144,7 +144,7 @@ size = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
 def test_yolov5_480x480(forge_property_recorder, size):
-    if size != "s":
+    if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
