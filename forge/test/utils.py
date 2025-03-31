@@ -10,10 +10,12 @@ import os
 import shutil
 import urllib
 from filelock import FileLock
+import tarfile
 
 import numpy as np
 import torch
 import tensorflow as tf
+import paddle
 from forge.module import FrameworkModule
 
 
@@ -125,6 +127,41 @@ def fetch_model(
     # Load model
     model = loader(model_path, **kwargs) if loader else None
     return model
+
+def fetch_paddle_model(url, save_dir):
+    model_name = os.path.splitext(os.path.basename(url))[0]
+    file_names = ["inference.pdiparams", "inference.pdiparams.info", "inference.pdmodel"]
+
+    # Download the tar file
+    response = requests.get(url, stream=True)
+    tar_path = os.path.join(save_dir, model_name + ".tar")
+
+    # Check if the model is already downloaded
+    model_dir = os.path.join(save_dir, model_name)
+    if os.path.exists(model_dir) and all(
+        os.path.exists(os.path.join(model_dir, file))
+        for file in file_names
+    ):
+        print(f"Model already downloaded at {model_dir}. Skipping download.")
+
+    else:
+        with open(tar_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                f.write(chunk)
+        with tarfile.open(tar_path, "r") as tar:
+            tar.extractall(path=save_dir)
+
+        os.remove(tar_path)
+
+        # Verify if all required files are present in the model directory
+        if not all(os.path.exists(os.path.join(model_dir, file)) for file in file_names):
+            raise FileNotFoundError(f"Some required model files are missing in {model_dir}.")
+
+    model_path = os.path.join(model_dir, "inference")
+    model = paddle.jit.load(model_path)
+
+    return model
+
 
 
 def reset_seeds():
