@@ -1,45 +1,32 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
-import random
-
 import paddle
 import pytest
-from datasets import load_dataset
-
-from paddle.vision.models import resnet18, resnet34, resnet50, resnet101, resnet152
 
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from paddle.vision.models import mobilenet_v2
+
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = [
-    "resnet18",
-    "resnet34",
-    "resnet50",
-    "resnet101",
-    "resnet152",
-]
-
-
-@pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_resnet_pd(variant, forge_property_recorder):
+def test_mobilenetv2_basic(forge_property_recorder):
     # Record model details
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="resnet",
-        variant=variant[6:],
+        model="mobilenetv2",
+        variant="basic",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
-    framework_model = eval(variant)(pretrained=True)
+    framework_model = mobilenet_v2(pretrained=True)
 
     # Compile model
     input_sample = [paddle.rand([1, 3, 224, 224])]

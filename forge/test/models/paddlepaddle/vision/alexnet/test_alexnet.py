@@ -1,45 +1,32 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
-import random
-
 import paddle
 import pytest
-from datasets import load_dataset
-
-from paddle.vision.models import resnet18, resnet34, resnet50, resnet101, resnet152
 
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from paddle.vision.models import alexnet
+
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = [
-    "resnet18",
-    "resnet34",
-    "resnet50",
-    "resnet101",
-    "resnet152",
-]
-
-
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail(reason="RuntimeError: TT_THROW @ /tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:912: tt::exception info: Statically allocated circular buffers in program 8 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=5)]. L1 buffer allocated at 947328 and static circular buffer region ends at 1191712")
 @pytest.mark.nightly
-def test_resnet_pd(variant, forge_property_recorder):
+def test_alexnet(forge_property_recorder):
     # Record model details
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="resnet",
-        variant=variant[6:],
+        model="alexnet",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
-    framework_model = eval(variant)(pretrained=True)
+    framework_model = alexnet(pretrained=True)
 
     # Compile model
     input_sample = [paddle.rand([1, 3, 224, 224])]

@@ -1,45 +1,32 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
-import random
-
 import paddle
 import pytest
-from datasets import load_dataset
-
-from paddle.vision.models import resnet18, resnet34, resnet50, resnet101, resnet152
 
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from paddle.vision.models import googlenet
+
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = [
-    "resnet18",
-    "resnet34",
-    "resnet50",
-    "resnet101",
-    "resnet152",
-]
-
-
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail(reason="RuntimeError: TT_FATAL @ /tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:37: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (528) should be padded to nearest TILE_WIDTH (32) or should be 16")
 @pytest.mark.nightly
-def test_resnet_pd(variant, forge_property_recorder):
+def test_googlenet(forge_property_recorder):
     # Record model details
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="resnet",
-        variant=variant[6:],
+        model="googlenet",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
-    framework_model = eval(variant)(pretrained=True)
+    framework_model = googlenet(pretrained=True)
 
     # Compile model
     input_sample = [paddle.rand([1, 3, 224, 224])]

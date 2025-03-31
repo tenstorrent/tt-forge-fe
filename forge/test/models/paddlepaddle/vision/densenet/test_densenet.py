@@ -7,7 +7,7 @@ import paddle
 import pytest
 from datasets import load_dataset
 
-from paddle.vision.models import resnet18, resnet34, resnet50, resnet101, resnet152
+from paddle.vision.models import densenet121, densenet161, densenet169, densenet201, densenet264
 
 import forge
 from forge.verify.config import VerifyConfig
@@ -17,22 +17,17 @@ from forge.verify.verify import verify
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    "resnet18",
-    "resnet34",
-    "resnet50",
-    "resnet101",
-    "resnet152",
+    "densenet121"
 ]
-
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_resnet_pd(variant, forge_property_recorder):
+def test_densenet_pd(variant, forge_property_recorder):
     # Record model details
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="resnet",
-        variant=variant[6:],
+        model="densenet",
+        variant=variant[8:],
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
