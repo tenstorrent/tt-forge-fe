@@ -10,7 +10,7 @@ from forge.verify.verify import verify
 import shutil
 from utils import load_inputs
 from test.models.utils import Framework, Source, Task, build_module_name
-from test.utils import print_results
+from test.utils import print_cls_results
 import timm
 
 variants = [
@@ -75,4 +75,4 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     )
 
     # Run model on sample data and print results
-    print_results(fw_out[0], co_out[0])
+    print_cls_results(fw_out[0], co_out[0])
