@@ -26,5 +26,5 @@ def load_inputs(url, filename):
         return [img_batch]
 
     except Exception as e:
-        random_data = torch.randn(1, 3, 256, 256)
-        return [random_data]
+        input_tensor = torch.randn(1, 3, 256, 256)
+        return [input_tensor]
