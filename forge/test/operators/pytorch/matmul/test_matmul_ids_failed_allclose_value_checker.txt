@@ -1,0 +1,48 @@
+matmul-FROM_ANOTHER_OP-None-(1, 1000)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 10000)-None-None
+matmul-FROM_ANOTHER_OP-None-(100, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(1000, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(10, 1000)-None-None
+matmul-FROM_ANOTHER_OP-None-(160, 96)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 100, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 1000, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 10, 1000)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 160, 96)-None-None
+matmul-FROM_ANOTHER_OP-None-(100, 100, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(10, 1000, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(32, 32, 64)-None-None
+matmul-FROM_ANOTHER_OP-None-(64, 160, 96)-None-None
+matmul-FROM_ANOTHER_OP-None-(11, 17, 41)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 100, 100, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 10, 1000, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 1, 10, 1000)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 32, 32, 64)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 64, 160, 96)-None-None
+matmul-FROM_ANOTHER_OP-None-(1, 11, 17, 41)-None-None
+matmul-FROM_ANOTHER_OP-None-(6, 100, 100, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(7, 10, 1000, 100)-None-None
+matmul-FROM_ANOTHER_OP-None-(8, 1, 10, 1000)-None-None
+matmul-FROM_ANOTHER_OP-None-(11, 32, 32, 64)-None-None
+matmul-FROM_ANOTHER_OP-None-(12, 64, 160, 96)-None-None
+matmul-FROM_ANOTHER_OP-None-(13, 11, 17, 41)-None-None
+matmul-FROM_HOST-None-(1, 10000)-None-None
+matmul-FROM_HOST-None-(1000, 100)-None-None
+matmul-FROM_HOST-None-(10, 1000)-None-None
+matmul-FROM_HOST-None-(1, 1000, 100)-None-None
+matmul-FROM_HOST-None-(1, 10, 1000)-None-None
+matmul-FROM_HOST-None-(1, 1, 10, 1000)-None-None
+matmul-FROM_HOST-None-(7, 10, 1000, 100)-None-None
+matmul-FROM_HOST-None-(8, 1, 10, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 10000)-None-None
+matmul-CONST_EVAL_PASS-None-(10, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 10, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(10, 1000, 100)-None-None
+matmul-CONST_EVAL_PASS-None-(64, 160, 96)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 10, 1000, 100)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 1, 10, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(1, 64, 160, 96)-None-None
+matmul-CONST_EVAL_PASS-None-(6, 100, 100, 100)-None-None
+matmul-CONST_EVAL_PASS-None-(7, 10, 1000, 100)-None-None
+matmul-CONST_EVAL_PASS-None-(8, 1, 10, 1000)-None-None
+matmul-CONST_EVAL_PASS-None-(12, 64, 160, 96)-None-None
