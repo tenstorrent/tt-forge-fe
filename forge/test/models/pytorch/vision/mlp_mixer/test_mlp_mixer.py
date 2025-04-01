@@ -20,11 +20,7 @@ from test.utils import download_model
 varaints = [
     pytest.param(
         "mixer_b16_224",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "mixer_b16_224_in21k",
     "mixer_b16_224_miil",
@@ -37,11 +33,7 @@ varaints = [
     "mixer_s32_224",
     pytest.param(
         "mixer_b16_224.goog_in21k",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
 ]
 
@@ -91,9 +83,7 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="[Optimzation Graph Passes][Shape Calculation] AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 512, 1, 1024] vs [1, 1024, 512, 1]"
-)
+@pytest.mark.xfail
 def test_mlp_mixer_pytorch(forge_property_recorder):
 
     # Build Module Name

@@ -19,11 +19,7 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "EleutherAI/gpt-neo-125M",
-        marks=[
-            pytest.mark.xfail(
-                reason="AssertionError: Data mismatch on output 0 between Framework and Forge codegen(pcc=0.28)"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "EleutherAI/gpt-neo-1.3B",
     "EleutherAI/gpt-neo-2.7B",
