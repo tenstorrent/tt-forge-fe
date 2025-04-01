@@ -16,7 +16,7 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.ONNX, model="unet", variant="basic", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.ONNX, model="unet", variant="base", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
