@@ -1,3 +1,6 @@
+[![Tests][tests badge]][tests]
+[![Codecov][codecov badge]][codecov]
+
 <div align="center">
 
 <h1>
@@ -17,3 +20,8 @@
 <br>
 
 - - -
+
+[codecov]: https://codecov.io/gh/tenstorrent/tt-forge-fe
+[tests]: https://github.com/tenstorrent/tt-forge-fe/actions/workflows/on-push.yml?query=branch%3Amain
+[codecov badge]: https://codecov.io/gh/tenstorrent/tt-forge-fe/graph/badge.svg
+[tests badge]: https://github.com/tenstorrent/tt-forge-fe/actions/workflows/on-push.yml/badge.svg?query=branch%3Amain
