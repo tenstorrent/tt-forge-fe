@@ -10,9 +10,7 @@ from paddle.vision.models import mobilenet_v2
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-@pytest.mark.push
 @pytest.mark.nightly
-
 def test_mobilenetv2_basic(forge_property_recorder):
     # Record model details
     module_name = build_module_name(
