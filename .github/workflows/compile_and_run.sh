@@ -26,3 +26,10 @@ if [ $? -ne 0 ]; then
 fi
 echo "run device_perf.py creating $2"
 python ./forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv $2
+csv_file="${1%.*}.csv"
+cp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv "$csv_file"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to copy ops_perf_results.csv to $csv_file."
+    exit 1
+fi
+echo "Copied ops_perf_results.csv to $csv_file"
