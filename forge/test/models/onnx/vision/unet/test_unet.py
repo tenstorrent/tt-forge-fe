@@ -26,7 +26,7 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
     # Load the torch model
     torch_model = torch.hub.load(
         "mateuszbuda/brain-segmentation-pytorch",
-        variant,
+        "unet",
         in_channels=3,
         out_channels=1,
         init_features=32,
