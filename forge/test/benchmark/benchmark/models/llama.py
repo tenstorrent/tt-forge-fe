@@ -23,7 +23,6 @@ from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
 REPORTS_DIR = "./benchmark_reports/"
 
 # Model path
@@ -95,7 +94,6 @@ def test_llama_prefill(
     # Calculate the pcc for only the last vector in the hidden states tensor.
     assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :])
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     input_size = len(input_ids[0])
