@@ -15,6 +15,7 @@ import numpy as np
 import torch
 import tensorflow as tf
 from forge.module import FrameworkModule
+import paddle
 
 
 def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
@@ -128,6 +129,7 @@ def fetch_model(
 
 
 def reset_seeds():
+    paddle.seed(0)
     random.seed(0)
     np.random.seed(0)
     torch.manual_seed(0)
