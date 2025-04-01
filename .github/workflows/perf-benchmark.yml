@@ -98,7 +98,7 @@ jobs:
       shell: bash
       working-directory: install
       run: tar xvf artifact.tar
-  
+
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
