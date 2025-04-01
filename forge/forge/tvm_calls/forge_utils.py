@@ -175,7 +175,10 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         if hasattr(model, "_input_args_names"):
             flattened_input_names = model._input_args_names
         else:
-            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())
+            # TODO: Find a better way to get input names for paddle models
+            # When the forward function has optional parameters, we assume they are provided in order in the input,
+            # so we use the first len(inputs) elements of the forward function signature as the input names
+            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())[: len(inputs)]
 
         flattened_inputs, _, flattened_name_map = flatten_inputs(inputs, flattened_input_names)
 
