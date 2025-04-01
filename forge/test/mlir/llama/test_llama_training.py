@@ -124,7 +124,7 @@ def test_llama_training(model_path, dataset_id):
 
     # Create a torch loss and leave on CPU
     # Can be changed when https://github.com/tenstorrent/tt-metal/issues/18997 resolved
-    loss_fn = torch.nn.CrossEntropyLoss(ignore_index=-100)
+    loss_fn = torch.nn.CrossEntropyLoss()
 
     losses = []
     for epoch in range(num_epoch):
@@ -136,13 +136,8 @@ def test_llama_training(model_path, dataset_id):
             logits = compiled_model(input_ids)[0]
 
             # Bwd pass
-            # Create label tensor - set to -100 for prompt tokens (they shouldn't contribute to loss)
-            prompt_length = len(input_ids)
-            labels = batch["labels"]
-            labels_for_loss = labels.clone()
-            labels_for_loss[0, :prompt_length] = -100
-
-            loss = loss_fn(logits.view(-1, framework_model.config.vocab_size), labels_for_loss.view(-1))
+            expected_output = batch["labels"]
+            loss = loss_fn(logits.view(-1, framework_model.config.vocab_size), expected_output.view(-1))
             epoch_loss += loss.item()
 
             loss.backward()

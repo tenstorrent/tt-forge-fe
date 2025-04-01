@@ -55,20 +55,22 @@ def load_tokenized_data(dataset_id, tokenizer, **kwargs):
     dataset = load_dataset(dataset_id)
     max_length = kwargs.get("max_length", 128)
 
-    def _apply_template(example):
-        example["text"] = TRAIN_PROMPT_TEMPLATE.substitute(input=example["sentence"])
-        return example
+    def _apply_template(examples):
+        examples["text"] = [TRAIN_PROMPT_TEMPLATE.substitute(input=sentence) for sentence in examples["sentence"]]
+        return examples
 
-    def _tokenize_function(example: dict):
-        tokenized_batch = tokenizer(example["text"], padding="max_length", max_length=max_length, truncation=True)
+    def _tokenize_function(examples):
+        tokenized_batch = tokenizer(examples["text"], padding="max_length", max_length=max_length, truncation=True)
 
-        expected_output = [txt + f" {{'label': '{LBL2VALUE[example['label']]}'}}" for txt in example["text"]]
+        expected_output = [
+            txt + f" {{'label': '{LBL2VALUE[lbl]}'}}" for txt, lbl in zip(examples["text"], examples["label"])
+        ]
         tokenized_lbls = tokenizer(expected_output, padding="max_length", max_length=max_length, truncation=True)
         tokenized_batch["labels"] = tokenized_lbls["input_ids"]
 
         return tokenized_batch
 
-    train_set = dataset["train"].map(_apply_template)
+    train_set = dataset["train"].map(_apply_template, batched=True)
     tokenized_train_set = train_set.map(_tokenize_function, batched=True)
     tokenized_train_set.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
 
