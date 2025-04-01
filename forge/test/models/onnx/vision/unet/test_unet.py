@@ -16,11 +16,12 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
 
     # Build Module Name
     module_name = build_module_name(
-        framework=Framework.ONNX, model="unet", variant="basic", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.ONNX, model="unet", variant="base", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("p1")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the torch model
@@ -42,7 +43,7 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
     inputs = load_inputs(url, filename)
 
     onnx_path = f"{tmp_path}/unet.onnx"
-    torch.onnx.export(torch_model, inputs[0], onnx_path, opset_version=17)
+    torch.onnx.export(torch_model, inputs[0], onnx_path)
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
     framework_model = forge.OnnxModule(module_name, onnx_model)
