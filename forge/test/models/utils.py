@@ -14,6 +14,7 @@ class Framework(StrEnum):
     PYTORCH = "pt"
     TENSORFLOW = "tf"
     ONNX = "onnx"
+    PADDLE = "pd"
 
 
 class Task(StrEnum):
@@ -51,6 +52,7 @@ class Source(StrEnum):
     OSMR = "osmr"
     TORCHVISION = "torchvision"
     GITHUB = "github"
+    PADDLE = "paddlemodels"
 
 
 def build_module_name(
