@@ -7,6 +7,7 @@ import onnx
 from transformers import (
     BertForMaskedLM,
     BertForQuestionAnswering,
+    BertModel,
     BertTokenizer,
 )
 
@@ -15,6 +16,7 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
+from test.models.model_utils import mean_pooling
 
 
 # Opset 9 is the minimum version to support BERT in Torch.
@@ -130,3 +132,52 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.nightly
+@pytest.mark.push
+@pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
+def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, tmp_path):
+
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.ONNX,
+        model="bert",
+        variant=variant,
+        task=Task.SENTENCE_EMBEDDING_GENERATION,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_model_name(module_name)
+
+    # Load model and tokenizer
+    tokenizer = download_model(BertTokenizer.from_pretrained, variant)
+    framework_model = download_model(BertModel.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model.eval()
+
+    # prepare input
+    sentences = "Bu örnek bir cümle"
+    encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
+    inputs = [encoded_input["input_ids"], encoded_input["attention_mask"], encoded_input["token_type_ids"]]
+
+    # Export model to ONNX
+    onnx_path = f"{tmp_path}/bert_sentence_emb_gen.onnx"
+    torch.onnx.export(framework_model, (inputs[0], inputs[1], inputs[2]), onnx_path, opset_version=17)
+
+    # Load ONNX model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    # Model Verification
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Post processing
+    sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])
+
+    print("Sentence embeddings:", sentence_embeddings)
