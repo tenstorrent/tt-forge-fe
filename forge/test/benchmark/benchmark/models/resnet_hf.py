@@ -22,8 +22,8 @@ from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
+
 # Common constants
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [

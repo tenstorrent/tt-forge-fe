@@ -20,8 +20,8 @@ import forge
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
+
 # Common constants
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7

@@ -22,8 +22,8 @@ from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
+
 # Common constants
-REPORTS_DIR = "./benchmark_reports/"
 
 # Model path
 MODEL_PATH = ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"]

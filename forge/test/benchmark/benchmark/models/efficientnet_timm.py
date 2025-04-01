@@ -21,8 +21,8 @@ from forge._C.runtime.experimental import configure_devices, DeviceSettings
 
 from test.utils import download_model
 
+
 # Common constants
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
@@ -181,11 +181,9 @@ def efficientnet_timm_benchmark(config: dict):
         loop_count=loop_count,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-efficient_tim_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:
