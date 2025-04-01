@@ -27,9 +27,7 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "microsoft/speecht5_tts",
-            marks=pytest.mark.xfail(
-                reason="[TVM Relay IRModule Generation] aten::bernoulli operator is not implemented"
-            ),
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

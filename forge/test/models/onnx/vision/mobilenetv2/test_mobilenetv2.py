@@ -12,7 +12,8 @@ from forge.verify.verify import verify
 from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from utils import load_inputs
-from test.models.utils import Framework, Source, Task, build_module_name, print_cls_results
+from test.models.utils import Framework, Source, Task, build_module_name
+from test.utils import print_cls_results
 
 variants = [
     "mobilenetv2_050",

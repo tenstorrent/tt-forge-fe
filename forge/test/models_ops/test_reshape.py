@@ -16715,23 +16715,20 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 256, 32, 128)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape344,
-            [((1, 128), torch.bool)],
-            {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"shape": "(1, 1, 1, 128)"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
+    (
+        Reshape344,
+        [((1, 128), torch.bool)],
+        {
+            "model_name": [
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"shape": "(1, 1, 1, 128)"},
+        },
     ),
     (
         Reshape345,
@@ -16778,17 +16775,14 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 12, 384, 384)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape350,
-            [((1, 384), torch.bool)],
-            {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-                "pcc": 0.99,
-                "op_params": {"shape": "(1, 1, 1, 384)"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
+    (
+        Reshape350,
+        [((1, 384), torch.bool)],
+        {
+            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"shape": "(1, 1, 1, 384)"},
+        },
     ),
     (
         Reshape351,
