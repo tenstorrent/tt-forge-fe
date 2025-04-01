@@ -105,7 +105,7 @@ def _update_causal_mask(
             #     padding_mask, min_dtype
             # )
 
-            if causal_mask.shape[-1] < mask_length:
+            if causal_mask.shape[-1] > mask_length:
                 part_1 = causal_mask[:, :, :, :mask_length]
                 part_2 = causal_mask[:, :, :, mask_length:]
                 part_1 = part_1.masked_fill(padding_mask, min_dtype)
