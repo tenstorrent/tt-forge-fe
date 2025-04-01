@@ -2634,7 +2634,7 @@ def compile_tvm_to_python(
             delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
-                    "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"
+                    "Preserving Intermediate tensor values in ForgeModule forward may cause out-of-memory issues"
                 )
             writer = ForgeWriter(
                 current_module_name,
