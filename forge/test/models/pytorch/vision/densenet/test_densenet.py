@@ -95,11 +95,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
     [
         pytest.param(
             "densenet161",
-            marks=[
-                pytest.mark.xfail(
-                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-                )
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -139,11 +135,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
     [
         pytest.param(
             "densenet169",
-            marks=[
-                pytest.mark.xfail(
-                    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-                )
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

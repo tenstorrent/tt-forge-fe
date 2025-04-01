@@ -75,7 +75,6 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(verify_values=False),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -205,7 +204,6 @@ def test_dpr_reader_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(verify_values=False),
         forge_property_handler=forge_property_recorder,
     )
 

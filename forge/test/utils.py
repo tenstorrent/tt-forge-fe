@@ -14,6 +14,7 @@ import tarfile
 
 import numpy as np
 import torch
+import paddle
 import tensorflow as tf
 import paddle
 from forge.module import FrameworkModule
@@ -166,6 +167,7 @@ def fetch_paddle_model(url, save_dir):
 
 def reset_seeds():
     random.seed(0)
+    paddle.seed(0)
     np.random.seed(0)
     torch.manual_seed(0)
     tf.random.set_seed(0)

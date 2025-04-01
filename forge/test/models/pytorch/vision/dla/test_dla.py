@@ -61,7 +61,7 @@ variants = ["dla34.in1k"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="RuntimeError: Boolean value of Tensor with more than one value is ambiguous")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_dla_timm(forge_property_recorder, variant):
 

@@ -32,7 +32,7 @@ class HippynWrapper(torch.nn.Module):
         return output_dict
 
 
-@pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'tvm.relay.expr.TupleWrapper'>")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_hippynn(forge_property_recorder):
 

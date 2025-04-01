@@ -25,7 +25,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "microsoft/swin-tiny-patch4-window7-224",
-            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.98)")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -68,7 +68,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     [
         pytest.param(
             "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.86)")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -83,7 +83,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -181,21 +181,13 @@ variants_with_weights = {
 variants = [
     pytest.param(
         "swin_t",
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "swin_s",
     "swin_b",
     pytest.param(
         "swin_v2_t",
-        marks=[
-            pytest.mark.xfail(
-                reason="[TVM Relay IRModule Generation] relay.op._make.full expects Array[IntImm], but got Array[index 0: tir.Any] in argument 1"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "swin_v2_s",
     "swin_v2_b",

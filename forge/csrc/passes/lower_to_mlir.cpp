@@ -127,6 +127,12 @@ class AttributeMapper
         // cumsum
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
 
+        // index
+        add_op_mapping("index", "dim", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping("index", "start", AttributeRemap("begin", TargetType::I32Attr));
+        add_op_mapping("index", "stop", AttributeRemap("end", TargetType::I32Attr));
+        add_op_mapping("index", "stride", AttributeRemap("step", TargetType::I32Attr));
+
         // reduce_avg
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
 
@@ -553,7 +559,7 @@ class MLIRGenerator
             shape_vec.push_back((int64_t)dim);
         }
 
-        return builder_.create<mlir::tensor::EmptyOp>(
+        return builder_.create<mlir::tt::ttir::EmptyOp>(
             get_tt_forge_operation_location(graph, node), shape_vec, get_data_type(node));
     }
 
@@ -645,7 +651,7 @@ class MLIRGenerator
         lowering_handler_map["abs"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AbsOp>;
         lowering_handler_map["add"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AddOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
-        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampOp>;
+        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
         lowering_handler_map["conv2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Conv2dOp>;
         lowering_handler_map["cosine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CosOp>;
@@ -658,6 +664,7 @@ class MLIRGenerator
         lowering_handler_map["gelu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GeluOp>;
         lowering_handler_map["greater_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterEqualOp>;
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
+        lowering_handler_map["index"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexOp>;
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
         lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;

@@ -17,7 +17,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 variants = [
     pytest.param(
         "Qwen/Qwen2.5-0.5B",
-        marks=[pytest.mark.xfail(reason="RuntimeError: Input count mismatch: expected 533, got 534")],
+        marks=[pytest.mark.xfail],
     ),
     "Qwen/Qwen2.5-0.5B-Instruct",
     "Qwen/Qwen2.5-1.5B",
@@ -42,7 +42,7 @@ def test_qwen_clm(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
-        forge_property_recorder.record_group("priority")
+        forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)

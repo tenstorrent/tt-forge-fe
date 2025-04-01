@@ -142,7 +142,7 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["meta-llama/Llama-3.1-8B", "meta-llama/Llama-3.2-1B", "meta-llama/Llama-3.2-3B"]:
-        forge_property_recorder.record_group("priority")
+        forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
