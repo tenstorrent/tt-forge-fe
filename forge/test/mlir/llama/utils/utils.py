@@ -22,7 +22,6 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
 
     # Load the model
     framework_model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto", config=config)
-    framework_model = framework_model.to(dtype=torch.bfloat16)
     framework_model.eval()
 
     use_lora = kwargs.get("use_lora", False)
@@ -63,17 +62,17 @@ def load_tokenized_data(dataset_id, tokenizer, **kwargs):
     def _tokenize_function(example: dict):
         tokenized_batch = tokenizer(example["text"], padding="max_length", max_length=max_length, truncation=True)
 
-        expected_output = example["text"] + f"Output: {{'label': '{LBL2VALUE[example['label']]}'}}"
+        expected_output = [txt + f" {{'label': '{LBL2VALUE[example['label']]}'}}" for txt in example["text"]]
         tokenized_lbls = tokenizer(expected_output, padding="max_length", max_length=max_length, truncation=True)
         tokenized_batch["labels"] = tokenized_lbls["input_ids"]
 
         return tokenized_batch
 
-    train_set = dataset["train"].map(_apply_template, fn_kwargs={"mode": "train"})
+    train_set = dataset["train"].map(_apply_template)
     tokenized_train_set = train_set.map(_tokenize_function, batched=True)
     tokenized_train_set.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
 
     sample_size = kwargs.get("sample_size", None)
     if sample_size:
-        return tokenized_train_set.select(range(10))
+        return tokenized_train_set.select(range(sample_size))
     return tokenized_train_set
