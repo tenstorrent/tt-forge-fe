@@ -44,10 +44,6 @@ def test_rcnn_pytorch(forge_property_recorder):
 
     framework_model.eval()
 
-    # Cancel gradient tracking
-    for param in framework_model.parameters():
-        param.requires_grad = False
-
     # Image
     img = cv2.imread("forge/test/models/files/samples/images/car.jpg")
 

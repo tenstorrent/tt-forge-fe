@@ -12,7 +12,7 @@ import ast
 import torch
 
 from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
-from utils import dump_logs, collect_all_model_analysis_test
+from utils import dump_logs, collect_all_model_analysis_test, run_pip_freeze
 
 
 def generate_and_export_unique_ops_tests(
@@ -49,7 +49,13 @@ def generate_and_export_unique_ops_tests(
         model_output_dir_paths.append(model_output_dir_path)
         for test in tests:
             logger.info(f"Running the tests : {test}")
+            test_case_name = test.split("::")[-1]
+            os.makedirs(os.path.join(model_output_dir_path, test_case_name), exist_ok=True)
+            test_log_file_path = os.path.join(model_output_dir_path, test_case_name, "test.log")
+            before_pip_freeze_file_path = os.path.join(model_output_dir_path, test_case_name, "before.log")
+            after_pip_freeze_file_path = os.path.join(model_output_dir_path, test_case_name, "after.log")
             try:
+                run_pip_freeze(before_pip_freeze_file_path)
                 result = subprocess.run(
                     ["pytest", test, "-vss", "--no-skips"],
                     capture_output=True,
@@ -65,19 +71,40 @@ def generate_and_export_unique_ops_tests(
                         FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
                     ),
                 )
+                run_pip_freeze(after_pip_freeze_file_path)
+                message = ""
+                if result.stderr:
+                    message += "STDERR: \n\n"
+                    message += result.stderr
+                if result.stdout:
+                    message += "STDOUT: \n\n"
+                    message += result.stdout
                 if result.returncode != 0:
-                    logger.error(f"Error while running the pytest:\n stdout: {result.stdout}\n stderr: {result.stderr}")
+                    error_message = f"Error while running the pytest:"
+                    error_message+=message
+                    logger.info(error_message)
+                    dump_logs(test_log_file_path, error_message)
                 else:
+                    dump_logs(test_log_file_path, message)
                     logger.info(f"Successfully generated and exported unique ops test")
 
             except subprocess.CalledProcessError as e:
-                logger.error(f"Error while running the pytest:\n {e.output}")
+                error_message = f"Error while running the pytest:\n {e.output}"
+                logger.error(error_message)
+                dump_logs(test_log_file_path, error_message)
+                run_pip_freeze(after_pip_freeze_file_path)
 
             except subprocess.TimeoutExpired as e:
-                logger.error(f"Test timed out after {timeout} seconds")
+                error_message = f"Test timed out after {timeout} seconds"
+                logger.error(error_message)
+                dump_logs(test_log_file_path, error_message)
+                run_pip_freeze(after_pip_freeze_file_path)
 
             except Exception as e:
-                logger.error(f"An unexpected error occurred while running {test}: {e}")
+                error_message = f"An unexpected error occurred while running {test}: {e}"
+                logger.error(error_message)
+                dump_logs(test_log_file_path, error_message)
+                run_pip_freeze(after_pip_freeze_file_path)
 
     return model_output_dir_paths
 
