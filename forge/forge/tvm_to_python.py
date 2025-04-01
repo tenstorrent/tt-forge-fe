@@ -2732,48 +2732,51 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if framework == "pytorch":
+        if (framework in ["pytorch", "paddle"] and compiler_cfg.extract_tvm_unique_ops_config) or (
+            framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
+        ):
 
-            # Generate unique op tests based on requested model. Currently only supported
-            # for PyTorch framework.
-            if compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests:
-
-                # Commenting the below verification between framework outputs and generated forge module outputs
-                # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
-
-                # file_path = os.path.join(writer.module_directory, writer.filename)
-                # module = import_from_path(writer.module_name, file_path)
-
-                # TestClass = getattr(module, writer.class_name)
-                # forge_mod = TestClass(writer.module_name)
-                # forge_mod.process_framework_parameters(framework_mod.module)
-
-                # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
-                # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
-                # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
-
-                extract_and_generate_unique_ops_tests(
-                    framework_mod,
-                    ops,
-                    current_module_name,
-                    framework,
-                    contains_incompatible_np_floats,
-                    node_name_to_node_type,
-                    params,
-                    constants,
-                    param_names,
-                    param_file_name,
-                    compiler_cfg,
-                    writer.module_directory,
+            if compiler_cfg.extract_tvm_unique_ops_config and compiler_cfg.tvm_generate_unique_ops_tests:
+                raise ValueError(
+                    "Both extract_tvm_unique_ops_config and tvm_generate_unique_ops_tests should not be enabled at the same time."
                 )
 
-                # Exit python progrems without error
-                # - Two different exit methods depending on whether compile is run using
-                # pytest, or as a standalone python script
-                if "pytest" in sys.modules:
-                    pytest.exit("Exiting test without error", returncode=0)
-                else:
-                    sys.exit(0)
+            # Commenting the below verification between framework outputs and generated forge module outputs
+            # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
+
+            # file_path = os.path.join(writer.module_directory, writer.filename)
+            # module = import_from_path(writer.module_name, file_path)
+
+            # TestClass = getattr(module, writer.class_name)
+            # forge_mod = TestClass(writer.module_name)
+            # forge_mod.process_framework_parameters(framework_mod.module)
+
+            # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
+            # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
+            # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+
+            extract_and_generate_unique_ops_tests(
+                framework_mod,
+                ops,
+                current_module_name,
+                framework,
+                contains_incompatible_np_floats,
+                node_name_to_node_type,
+                params,
+                constants,
+                param_names,
+                param_file_name,
+                compiler_cfg,
+                writer.module_directory,
+            )
+
+            # Exit python progrems without error
+            # - Two different exit methods depending on whether compile is run using
+            # pytest, or as a standalone python script
+            if "pytest" in sys.modules:
+                pytest.exit("Exiting test without error", returncode=0)
+            else:
+                sys.exit(0)
 
     if compiler_cfg.retain_tvm_python_files:
         save_writers_metadata(modules, flattened_pytorch_inputs, forge_inputs, graph_name)

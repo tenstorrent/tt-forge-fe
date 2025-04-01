@@ -11,6 +11,7 @@ import torch
 
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file
+from forge.tensor import to_pt_tensors, AnyTensor
 
 
 class NodeType(Enum):
@@ -506,6 +507,13 @@ def export_unique_op_configuration_info(module_name, unique_operation_data, uniq
     )
 
 
+def to_pt_parameters(parameters: Dict[str, AnyTensor]):
+    pt_parameters = {}
+    for name, param in parameters.items():
+        pt_parameters[name] = to_pt_tensors(param)[0]
+    return pt_parameters
+
+
 def extract_and_generate_unique_ops_tests(
     framework_mod,
     ops,
@@ -534,6 +542,9 @@ def extract_and_generate_unique_ops_tests(
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
     named_parameters.update(named_buffers)
+
+    # Convert parameters from different framework to pytorch framework(i.e Convert paddle weight/buffer tensor to pytorch tensor)
+    named_parameters = to_pt_parameters(named_parameters)
 
     # The model's named parameters and named buffers are stored for the following key reasons:
     #
