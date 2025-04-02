@@ -1,86 +1,57 @@
-name: On nightly xfail
-
-# This workflow runs after the "on-nightly" workflow.
-# It executes tests that are expected to fail (xFail).
-# Note: This workflow shouldn't run build, it only
-# does so if no existing run ID is available.
+name: On Nightly - XFail
 
 on:
   workflow_dispatch:
     inputs:
-        run_id:
-            description: 'Run id (from a previous On nightly workflow)'
-            required: false
-            type: number
-  workflow_run:
-    workflows:
-      - "On nightly"
-    types: [ completed ]
-    branches: [ "main" ]
-
+      rebuild:
+        description: 'Rebuild the Forge'
+        required: false
+        default: false
+        type: boolean
+  workflow_call:
+    inputs:
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
+        type: string
+      
 jobs:
-  docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
-
-  build-if-neccessary:
+  build:
     runs-on: ubuntu-latest
-    needs: docker-build
+    outputs:
+      docker-image: ${{ steps.docker-build.outputs.docker-image }}
     steps:
-      - name: Build the wheel if necessary
-        if: ${{ !(github.event.workflow_run.id || github.event.inputs.run_id) }}
+      - name: Build Docker Image
+        id: docker-realbuild
+        if: ${{ !inputs.docker-image }}
+        uses: ./.github/workflows/build-image.yml
+        with:
+          secrets: ${{ secrets }}
+      - name: Set docker image
+        id: docker-build
+        run: |
+          if [ -z "${{ inputs.docker-image }}" ]; then
+            echo "docker-image=${{ steps.docker-realbuild.outputs.docker-image }}" >> $GITHUB_OUTPUT
+          else
+            echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
+          fi
+      - name: Build
+        if: ${{ inputs.rebuild == 'true' }}
         uses: ./.github/workflows/build.yml
         with:
-          docker-image: ${{ needs.docker-build.outputs.docker-image }}
+          docker-image: ${{ steps.docker-build.outputs.docker-image }}
+          build: 'Release'
 
-    # Only build if no existing run ID is available
   test_full_model_xfailing:
     needs:
-      - docker-build
-      - build-if-neccessary
+      - build
     uses: ./.github/workflows/test.yml
     secrets: inherit
     with:
       test_mark: 'nightly and xfail'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      docker-image: ${{ needs.build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       # Prioritize workflow trigger, then input run ID, then current run (for new builds)
       on_nightly_run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
-
-  fail-notify:
-    if: always()
-    needs:
-      - test_full_model_xfailing
-    runs-on: Ubuntu-latest
-    outputs:
-      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
-      failed: ${{ steps.check.outputs.failure }}
-    steps:
-      - name: Check if branch is main
-        id: branch-check
-        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-      - name: Check if the needed jobs succeeded or failed
-        id: check
-        uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
-
-  fail-send-msg:
-    if: always()
-    needs:
-      - fail-notify
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly XFAIL: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}
