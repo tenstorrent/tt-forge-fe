@@ -13,7 +13,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 variants_img_classification = [
     pytest.param(
@@ -34,8 +34,8 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     if variant != "nvidia/mit-b0":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -48,7 +48,6 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -87,8 +86,8 @@ variants_semseg = [
 def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -98,7 +97,6 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace
     framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)

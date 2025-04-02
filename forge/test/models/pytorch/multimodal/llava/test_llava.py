@@ -11,7 +11,7 @@ import forge
 from forge.verify.verify import verify
 
 from .utils import load_inputs
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 class Wrapper(torch.nn.Module):
@@ -40,8 +40,8 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 def test_llava(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="llava",
         variant=variant,
@@ -51,7 +51,6 @@ def test_llava(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"

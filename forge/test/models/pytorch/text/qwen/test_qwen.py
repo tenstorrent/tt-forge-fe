@@ -8,7 +8,7 @@ from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
@@ -22,14 +22,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
     ],
 )
 def test_qwen1_5_causal_lm(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)
@@ -70,14 +69,13 @@ def test_qwen1_5_causal_lm(forge_property_recorder, variant):
 def test_qwen1_5_chat(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)

@@ -13,7 +13,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 variants = ["microsoft/phi-3-mini-4k-instruct"]
 
@@ -23,8 +23,8 @@ variants = ["microsoft/phi-3-mini-4k-instruct"]
 def test_phi3_causal_lm(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 64 GB)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -33,7 +33,6 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -80,8 +79,8 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
 def test_phi3_token_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3",
         variant=variant,
@@ -91,7 +90,6 @@ def test_phi3_token_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -126,8 +124,8 @@ def test_phi3_token_classification(forge_property_recorder, variant):
 def test_phi3_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3",
         variant=variant,
@@ -137,7 +135,6 @@ def test_phi3_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

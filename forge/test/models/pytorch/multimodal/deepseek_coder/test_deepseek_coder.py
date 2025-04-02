@@ -12,7 +12,7 @@ from test.models.pytorch.multimodal.deepseek_coder.utils.model_utils import (
     generate_no_cache,
     pad_inputs,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
@@ -20,8 +20,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
 def test_deepseek_inference_no_cache(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="deepseek", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 

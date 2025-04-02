@@ -10,6 +10,12 @@ from typing import Union, List, Optional, Any, get_origin, get_args, Dict
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
 from forge._C import ExecutionDepth
+from test.models.utils import (
+    Framework,
+    Task,
+    Source,
+    build_module_name,
+)
 
 
 class ExecutionStage(Enum):
@@ -158,6 +164,16 @@ class Config:
 
 @dataclass_json
 @dataclass
+class ModelInfo:
+    framework: str = ""
+    model_arch: str = ""
+    variant_name: str = ""
+    task: str = ""
+    source: str = ""
+
+
+@dataclass_json
+@dataclass
 class Tags:
     model_name: Optional[Union[List[str], str]] = None
     bringup_status: str = ""
@@ -168,6 +184,7 @@ class Tags:
     op_params: Dict[str, Any] = field(default_factory=lambda: dict())
     inputs: Optional[List[TensorDesc]] = None
     outputs: Optional[List[TensorDesc]] = None
+    model_info: Optional[ModelInfo] = None
 
 
 @dataclass_json
@@ -520,3 +537,43 @@ class ForgePropertyHandler:
         cleaned_property_store = self.clean_store()
         for property_name, property_value in cleaned_property_store.items():
             record_property(property_name, property_value)
+
+    def record_model_properties(
+        self,
+        framework: Framework,
+        model: str,
+        task: Task,
+        source: Source,
+        variant: str = "base",
+        suffix: str | None = None,
+    ) -> str:
+        """
+        Records model properties and generates a module name and stores it.
+
+        Args:
+            framework: The framework used (e.g., pt,tf, etc.)
+            model: The model name (e.g., bert)
+            variant: The model variant (e.g., bert-base-uncased)
+            task: The task type (e.g., qa,mlm, etc.)
+            source: The model source (e.g., hf,torchhub etc.)
+            suffix: Optional suffix to append to the module name
+
+        Returns:
+            The generated module name
+        """
+
+        # Record individual properties
+        self.add("tags.model_info.framework", framework.full)
+        self.add("tags.model_info.model_arch", model)
+        self.add("tags.model_info.variant_name", variant)
+        self.add("tags.model_info.task", task.full)
+        self.add("tags.model_info.source", source.full)
+
+        # Build and return the module name
+        module_name = build_module_name(
+            framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+        )
+
+        # Record model_name
+        self.record_model_name(module_name)
+        return module_name

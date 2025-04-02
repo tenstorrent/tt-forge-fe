@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 # Paper - https://arxiv.org/abs/1311.2524
@@ -19,14 +19,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_rcnn_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Alexnet Model
     framework_model = torchvision.models.alexnet(pretrained=True)
@@ -78,8 +77,8 @@ def test_rcnn_pytorch(forge_property_recorder):
 
         inputs = [rect_transform.unsqueeze(0)]
 
-        # Build Module Name
-        module_name = build_module_name(
+        # Record Forge Property
+        module_name = forge_property_recorder.record_model_properties(
             framework=Framework.PYTORCH,
             model="rcnn",
             suffix=f"rect_{idx}",

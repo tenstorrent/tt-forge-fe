@@ -14,49 +14,57 @@ class StrEnum(str, Enum):
         return self.value
 
 
-class Framework(StrEnum):
-    PYTORCH = "pt"
-    TENSORFLOW = "tf"
-    ONNX = "onnx"
-    PADDLE = "pd"
+class BaseEnum(Enum):
+    """Base Enum to handle short and full name attributes."""
+
+    def __init__(self, short: str, full: str):
+        self.short = short  # Short identifier (e.g., "hf" for Hugging Face)
+        self.full = full  # Full descriptive name (e.g., "Hugging Face")
 
 
-class Task(StrEnum):
-    SPEECH_TRANSLATE = "speech_translate"
-    MUSIC_GENERATION = "music_generation"
-    SPEECH_RECOGNITION = "speech_recognition"
-    QA = "qa"
-    MASKED_LM = "mlm"
-    CAUSAL_LM = "clm"
-    TOKEN_CLASSIFICATION = "token_cls"
-    SEQUENCE_CLASSIFICATION = "seq_cls"
-    IMAGE_CLASSIFICATION = "img_cls"
-    IMAGE_SEGMENTATION = "img_seg"
-    POSE_ESTIMATION = "pose_estimation"
-    DEPTH_PREDICTION = "depth_prediction"
-    TEXT_GENERATION = "text_gen"
-    OBJECT_DETECTION = "obj_det"
-    SEMANTIC_SEGMENTATION = "sem_seg"
-    MASKED_IMAGE_MODELLING = "masked_img"
-    CONDITIONAL_GENERATION = "cond_gen"
-    IMAGE_ENCODING = "img_enc"
-    VISUAL_BACKBONE = "visual_bb"
-    DEPTH_ESTIMATION = "depth_estimation"
-    SCENE_TEXT_RECOGNITION = "scene_text_recognition"
-    TEXT_TO_SPEECH = "text_to_speech"
-    SENTENCE_EMBEDDING_GENERATION = "sentence_embed_gen"
-    MULTIMODAL_TEXT_GENERATION = "multimodal_text_gen"
-    ATOMIC_ML = "atomic_ml"
+class Framework(BaseEnum):
+    PYTORCH = ("pt", "PyTorch")
+    TENSORFLOW = ("tf", "TensorFlow")
+    ONNX = ("onnx", "ONNX")
+    PADDLE = ("pd", "PaddlePaddle")
 
 
-class Source(StrEnum):
-    HUGGINGFACE = "hf"
-    TORCH_HUB = "torchhub"
-    TIMM = "timm"
-    OSMR = "osmr"
-    TORCHVISION = "torchvision"
-    GITHUB = "github"
-    PADDLE = "paddlemodels"
+class Task(BaseEnum):
+    SPEECH_TRANSLATE = ("speech_translate", "Speech Translation")
+    MUSIC_GENERATION = ("music_generation", "Music Generation")
+    SPEECH_RECOGNITION = ("speech_recognition", "Speech Recognition")
+    QA = ("qa", "Question Answering")
+    MASKED_LM = ("mlm", "Masked Language Modeling")
+    CAUSAL_LM = ("clm", "Causal Language Modeling")
+    TOKEN_CLASSIFICATION = ("token_cls", "Token Classification")
+    SEQUENCE_CLASSIFICATION = ("seq_cls", "Sequence Classification")
+    IMAGE_CLASSIFICATION = ("img_cls", "Image Classification")
+    IMAGE_SEGMENTATION = ("img_seg", "Image Segmentation")
+    POSE_ESTIMATION = ("pose_estimation", "Pose Estimation")
+    DEPTH_PREDICTION = ("depth_prediction", "Depth Prediction")
+    TEXT_GENERATION = ("text_gen", "Text Generation")
+    OBJECT_DETECTION = ("obj_det", "Object Detection")
+    SEMANTIC_SEGMENTATION = ("sem_seg", "Semantic Segmentation")
+    MASKED_IMAGE_MODELING = ("masked_img", "Masked Image Modeling")
+    CONDITIONAL_GENERATION = ("cond_gen", "Conditional Generation")
+    IMAGE_ENCODING = ("img_enc", "Image Encoding")
+    VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
+    DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
+    SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
+    TEXT_TO_SPEECH = ("text_to_speech", "Text to Speech")
+    SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
+    MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
+    ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
+
+
+class Source(BaseEnum):
+    HUGGINGFACE = ("hf", "Hugging Face")
+    TORCH_HUB = ("torchhub", "Torch Hub")
+    TIMM = ("timm", "TIMM")
+    OSMR = ("osmr", "OSMR")
+    TORCHVISION = ("torchvision", "Torchvision")
+    GITHUB = ("github", "GitHub")
+    PADDLE = ("paddlemodels", "Paddle Models")
 
 
 def build_module_name(
@@ -67,14 +75,9 @@ def build_module_name(
     variant: str = "base",
     suffix: str | None = None,
 ) -> str:
-    module_name = f"{framework}_{model}"
-    if variant is not None:
-        module_name += f"_{variant}"
-    module_name += f"_{task}"
-    module_name += f"_{source}"
+    module_name = f"{framework}_{model}_{variant}_{task}_{source}"
     if suffix is not None:
         module_name += f"_{suffix}"
-
     module_name = re.sub(r"[^a-zA-Z0-9_]", "_", module_name)
     module_name = re.sub(r"_+", "_", module_name)
     module_name = module_name.lower()
