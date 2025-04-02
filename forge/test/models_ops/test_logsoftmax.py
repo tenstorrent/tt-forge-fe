@@ -31,13 +31,10 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Logsoftmax0,
-            [((1, 10), torch.float32)],
-            {"model_name": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "op_params": {"dim": "1"}},
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    (
+        Logsoftmax0,
+        [((1, 10), torch.float32)],
+        {"model_name": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "op_params": {"dim": "1"}},
     ),
 ]
 
