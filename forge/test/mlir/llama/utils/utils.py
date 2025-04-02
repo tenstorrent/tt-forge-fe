@@ -1,11 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-from string import Template
 import torch
 from transformers import LlamaConfig, LlamaForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model
-from datasets import load_dataset
 
 
 def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
@@ -26,55 +24,13 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
 
     use_lora = kwargs.get("use_lora", False)
     if use_lora:
-        lora_config = LoraConfig(r=8, lora_alpha=16, lora_dropout=0.1, bias="none", task_type="CAUSAL_LM")
+        lora_r = kwargs.get("lora_r", 4)
+        lora_alpha = kwargs.get("lora_alpha", 8)
+        lora_config = LoraConfig(r=lora_r, lora_alpha=lora_alpha, task_type="CAUSAL_LM")
         framework_model = get_peft_model(framework_model, lora_config)
-        framework_model.print_trainable_parameters()
 
     # Using AutoTokenizer for default tokenizers for both openllama and llama 3.2
     use_fast = kwargs.get("use_fast", True)
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=use_fast)
 
     return framework_model, tokenizer
-
-
-TRAIN_PROMPT_TEMPLATE = Template(
-    """
-Your task is to perform binary sentiment analysis and determine whether the sentiment of the review is negative or positive.
-Output should be in the valid json format: {'label': sentiment_value}.
-
-Review: $input
-
-Output:
-"""
-)
-
-LBL2VALUE = {0: "negative", 1: "positive"}
-
-
-def load_tokenized_data(dataset_id, tokenizer, **kwargs):
-    dataset = load_dataset(dataset_id)
-    max_length = kwargs.get("max_length", 128)
-
-    def _apply_template(examples):
-        examples["text"] = [TRAIN_PROMPT_TEMPLATE.substitute(input=sentence) for sentence in examples["sentence"]]
-        return examples
-
-    def _tokenize_function(examples):
-        tokenized_batch = tokenizer(examples["text"], padding="max_length", max_length=max_length, truncation=True)
-
-        expected_output = [
-            txt + f" {{'label': '{LBL2VALUE[lbl]}'}}" for txt, lbl in zip(examples["text"], examples["label"])
-        ]
-        tokenized_lbls = tokenizer(expected_output, padding="max_length", max_length=max_length, truncation=True)
-        tokenized_batch["labels"] = tokenized_lbls["input_ids"]
-
-        return tokenized_batch
-
-    train_set = dataset["train"].map(_apply_template, batched=True)
-    tokenized_train_set = train_set.map(_tokenize_function, batched=True)
-    tokenized_train_set.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
-
-    sample_size = kwargs.get("sample_size", None)
-    if sample_size:
-        return tokenized_train_set.select(range(sample_size))
-    return tokenized_train_set
