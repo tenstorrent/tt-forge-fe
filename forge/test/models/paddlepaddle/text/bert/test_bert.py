@@ -11,54 +11,63 @@ from forge.tvm_calls.forge_utils import paddle_trace
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-from paddlenlp.transformers import ErnieForSequenceClassification, ErnieForMaskedLM, ErnieForQuestionAnswering, ErnieTokenizer
+from paddlenlp.transformers import BertForSequenceClassification, BertForMaskedLM, BertForQuestionAnswering, BertTokenizer
 
-variant = "ernie-1.0"
+inputs_map = {
+    "bert-base-uncased": {
+        "sequence": ["Hello, my dog is cute"],
+        "mask": ["One, [MASK], three, four"],
+        "question": ["What is the capital of China?"]
+    },
+    "cl-tohoku/bert-base-japanese": {
+        "sequence": ["こんにちは、私の犬はかわいいです"],
+        "mask": ["一つ、[MASK]、三、四"],
+        "question": ["中国の首都はどこですか？"]
+    },
+    "uer/chinese-roberta-base": {
+        "sequence": ["你好，我的狗很可爱"],
+        "mask": ["一，[MASK]，三，四"],
+        "question": ["中国的首都是哪里？"]
+    },
+}
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
-def test_ernie_for_sequence_classification(forge_property_recorder, variant):
-    # Build Module Name
+@pytest.mark.parametrize("variant, inputs_data", inputs_map.items())
+def test_bert_sequence_classification(forge_property_recorder, variant, inputs_data):
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="ernie",
-        variant=variant,
+        model="bert",
+        variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
 
-    # Record Forge Property
     forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
-    # Load Model and Tokenizer
-    model = ErnieForSequenceClassification.from_pretrained(variant, num_classes=2)
-    tokenizer = ErnieTokenizer.from_pretrained(variant)
+    model = BertForSequenceClassification.from_pretrained(variant, num_classes=2)
+    tokenizer = BertTokenizer.from_pretrained(variant)
 
-    # Load sample
-    input = ["Hello, my dog is cute"]
+    input = inputs_data["sequence"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
     inputs = [
         paddle.to_tensor(value) for value in encoded_input.values()
-    ]  # [input_ids, token_type_ids, position_ids, attention_mask]
+    ]
 
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
     framework_model,_ = paddle_trace(model, input_spec)
     
-    # Compile Model
     compiled_model = forge.compile(framework_model, inputs)
 
-    # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
-def test_ernie_maskedlm(forge_property_recorder, variant):
-    # Build Module Name
+@pytest.mark.parametrize("variant, inputs_data", inputs_map.items())
+def test_bert_maskedlm(forge_property_recorder, variant, inputs_data):
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="ernie",
+        model="bert",
         variant=variant,
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
@@ -69,11 +78,11 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
-    model = ErnieForMaskedLM.from_pretrained(variant)
-    tokenizer = ErnieTokenizer.from_pretrained(variant)
+    model = BertForMaskedLM.from_pretrained(variant)
+    tokenizer = BertTokenizer.from_pretrained(variant)
 
     # Load sample
-    input = ["One, [MASK], three, four"]
+    input = inputs_data["mask"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
     inputs = [
@@ -97,11 +106,11 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
-def test_ernie_question_answering(forge_property_recorder,variant):
+@pytest.mark.parametrize("variant, inputs_data", inputs_map.items())
+def test_bert_question_answering(forge_property_recorder, variant, inputs_data):
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="ernie",
+        model="bert",
         variant=variant,
         task=Task.QA,
         source=Source.PADDLENLP,
@@ -112,11 +121,11 @@ def test_ernie_question_answering(forge_property_recorder,variant):
     forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
-    model = ErnieForQuestionAnswering.from_pretrained(variant)
-    tokenizer = ErnieTokenizer.from_pretrained(variant)
+    model = BertForQuestionAnswering.from_pretrained(variant)
+    tokenizer = BertTokenizer.from_pretrained(variant)
 
     # Load sample
-    question = ["What is the capital of China?"]
+    question = inputs
     encoded_input = tokenizer(question, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
     inputs = [
