@@ -22,8 +22,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_xglm_causal_lm(forge_property_recorder, variant):
-    if variant != "facebook/xglm-564M":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
