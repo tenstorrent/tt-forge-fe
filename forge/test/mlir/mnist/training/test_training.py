@@ -633,7 +633,7 @@ def test_e2e_device(forge_property_recorder):
     loss_inputs = [torch.rand(batch_size, 10).requires_grad_(True), torch.rand(batch_size, 10)]
     loss_inputs = to_forge_tensors(loss_inputs)
     tt_loss = forge.compile(
-        CrossEntropyLoss(name="cross_entropy_loss"),
+        framework_loss,
         sample_inputs=loss_inputs,
         training=True,
         attach_to=tt_model,
