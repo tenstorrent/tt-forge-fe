@@ -126,6 +126,10 @@ jobs:
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir
         python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/LlamaModel/mlir_reports/ttir.mlir
+        python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mobilenetv2_basic_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MobileNetv2Basic/mlir_reports/ttir.mlir
+        python forge/test/benchmark/benchmark.py -m efficientnet_timm -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_efficientnet_timm_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/EfficientNetTimmB0/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT
       shell: bash
@@ -140,6 +144,8 @@ jobs:
         ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
         # TTRT does not support llama model yet
         # ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/MobileNetv2Basic/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mobilenetv2_basic_${{ steps.fetch-job-id.outputs.job_id }}.json
+        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/EfficientNetTimmB0/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_efficientnet_timm_${{ steps.fetch-job-id.outputs.job_id }}.json
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
