@@ -1702,6 +1702,7 @@ tvm_to_forge_op_map = {
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
+    "nn.cross_entropy_with_logits": "cross_entropy",
     "not_equal": "not_equal",
     "pixel_shuffle": "pixel_shuffle",
     "power": "power",
@@ -1762,6 +1763,7 @@ forge_op_to_function_name = {
     "conv3d": "forge.op.Conv3d",
     "cos": "forge.op.Cosine",
     "cumsum": "forge.op.CumSum",
+    "cross_entropy": "forge.op.loss.CrossEntropyLoss.CrossEntropy",
     "dropout": "forge.op.Identity",  # (Temporary): change when forge supports dropout
     "embedding": "forge.op.Embedding",
     "equal": "forge.op.Equal",
@@ -2124,7 +2126,11 @@ def compile_tvm_to_python(
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
     framework = get_framework(framework_mod)
+    is_loss = False
+
     if framework == "pytorch":
+        if isinstance(framework_mod.module, torch.nn.modules.loss._Loss):
+            is_loss = True
         if is_training:
             framework_mod.module.train()
             verify_cfg.verify_tvm_compile = False
@@ -2652,7 +2658,7 @@ def compile_tvm_to_python(
                 writer.write_forward(matched_ops, submodule_inputs, submodule_outputs)
             writer.write_class_definition(params, constants, num_submodels=len(subgraph_matches))
         else:
-            writer.write_class_definition(params, constants)
+            writer.write_class_definition(params, constants, is_loss=is_loss)
 
         # can submodules be called in a loop? IE one outputs into the next
         loop_start = None

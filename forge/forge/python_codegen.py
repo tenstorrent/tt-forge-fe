@@ -177,7 +177,9 @@ class ForgeWriter(PythonWriter):
 
         self.wl("\n")
 
-    def write_class_definition(self, params, constants, class_name=None, num_submodels=0, is_submodel=False):
+    def write_class_definition(
+        self, params, constants, class_name=None, num_submodels=0, is_submodel=False, is_loss=False
+    ):
         if class_name is None:
             class_name = self.class_name
         self.num_submodels = num_submodels
@@ -187,6 +189,7 @@ class ForgeWriter(PythonWriter):
         self.wl("def __init__(self, name):")
         self.indent += 1
         self.wl(f"super().__init__(name)")
+        self.wl(f"self.is_loss = {'True' if is_loss else 'False'}")
         if num_submodels > 0:
             self.wl(f"self.num_layers = {num_submodels}")
             self.wl("self.layers = []")
