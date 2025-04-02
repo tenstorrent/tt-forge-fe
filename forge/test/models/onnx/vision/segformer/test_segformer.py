@@ -9,7 +9,7 @@ import pytest
 import onnx
 import torch
 from forge.verify.verify import verify
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -32,8 +32,8 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
     if variant != "nvidia/mit-b0":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="segformer",
         variant=variant,
@@ -48,7 +48,6 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
         forge_property_recorder.record_group("generality")
 
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForImageClassification.from_pretrained, variant, return_dict=False)
@@ -98,8 +97,8 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     if variant != "nvidia/segformer-b0-finetuned-ade-512-512":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="segformer",
         variant=variant,
@@ -112,7 +111,6 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForSemanticSegmentation.from_pretrained, variant, return_dict=False)

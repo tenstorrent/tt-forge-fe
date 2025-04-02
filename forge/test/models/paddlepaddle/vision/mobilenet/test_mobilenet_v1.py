@@ -11,20 +11,19 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import mobilenet_v1
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
 def test_mobilenetv1_basic(forge_property_recorder):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="mobilenetv1",
         variant="basic",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
     framework_model = mobilenet_v1(pretrained=True)

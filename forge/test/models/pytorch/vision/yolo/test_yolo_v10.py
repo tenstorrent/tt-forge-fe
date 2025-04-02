@@ -5,20 +5,20 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolo_utils import (
     YoloWrapper,
     load_yolo_model_and_image,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details")
 @pytest.mark.nightly
 def test_yolov10(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="Yolov10",
         variant="default",
@@ -26,7 +26,6 @@ def test_yolov10(forge_property_recorder):
         source=Source.GITHUB,
     )
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

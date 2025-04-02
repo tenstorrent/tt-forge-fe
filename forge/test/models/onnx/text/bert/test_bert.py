@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
@@ -28,8 +28,8 @@ opset_versions = [9, 17]
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_version):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,
@@ -37,7 +37,6 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
         source=Source.HUGGINGFACE,
     )
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -80,8 +79,8 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path, opset_version):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,
@@ -89,7 +88,6 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
         source=Source.HUGGINGFACE,
     )
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -143,8 +141,8 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
 def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,
@@ -154,7 +152,6 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

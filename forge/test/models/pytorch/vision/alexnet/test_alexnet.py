@@ -10,16 +10,16 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
 @pytest.mark.nightly
 def test_alexnet_torchhub(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="alexnet",
         variant="alexnet",
@@ -29,7 +29,6 @@ def test_alexnet_torchhub(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
@@ -69,14 +68,13 @@ def test_alexnet_torchhub(forge_property_recorder):
 def test_alexnet_osmr(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
