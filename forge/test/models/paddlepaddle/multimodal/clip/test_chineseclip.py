@@ -4,7 +4,7 @@ from PIL import Image
 import pytest
 
 import paddle
-from paddlenlp.transformers import CLIPProcessor, CLIPModel, CLIPVisionModel, CLIPTextModel
+from paddlenlp.transformers import ChineseCLIPProcessor, ChineseCLIPTokenizer, ChineseCLIPModel, ChineseCLIPTextModel, ChineseCLIPVisionModel
 
 from forge.tvm_calls.forge_utils import paddle_trace
 import forge
@@ -12,19 +12,17 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variants = ["openai/clip-vit-base-patch16"]
+variants = ["OFA-Sys/chinese-clip-vit-base-patch16"]
 
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail()
-def test_clip_text(variant):
-    model = CLIPTextModel.from_pretrained(variant)
-    processor = CLIPProcessor.from_pretrained(variant)
-
-    text = "a photo of cats in bed"
-
-    inputs = processor(text=text, return_tensors="pd", padding=True)
-
+def test_chineseclip_text(variant):
+    model = ChineseCLIPTextModel.from_pretrained(variant)
+    model.eval()
+    tokenizer = ChineseCLIPTokenizer.from_pretrained(variant)
+    inputs = tokenizer("一只猫的照片", padding=True, return_tensors="pd")
+    
     inputs = [inputs["input_ids"]]
+
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
     framework_model,_ = paddle_trace(model, input_spec)
 
@@ -33,14 +31,17 @@ def test_clip_text(variant):
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail()
-def test_clip_vision(variant):
-    model = CLIPVisionModel.from_pretrained(variant)
-    processor = CLIPProcessor.from_pretrained(variant)
+def test_chineseclip_vision(variant):
+    model = ChineseCLIPVisionModel.from_pretrained(variant)
+    model.eval()
+    processor = ChineseCLIPProcessor.from_pretrained(variant)
 
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
+    image = Image.open(requests.get("https://clip-cn-beijing.oss-cn-beijing.aliyuncs.com/pokemon.jpeg", stream=True).raw)
+
     inputs = processor(images=image, return_tensors="pd")
 
     inputs = [inputs["pixel_values"]]
+
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
     framework_model,_ = paddle_trace(model, input_spec)
 
@@ -49,38 +50,32 @@ def test_clip_vision(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail()
-def test_clip(variant, forge_property_recorder):
-    # Build Module Name
+def test_chineseclip(variant, forge_property_recorder):
     module_name = build_module_name(
         framework=Framework.PADDLE,
-        model="clip",
+        model="chineseclip",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
 
-    # Record Forge Property
     forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
-    # Load model and processor
-    model = CLIPModel.from_pretrained(variant)
-    processor = CLIPProcessor.from_pretrained(variant)
+    model = ChineseCLIPModel.from_pretrained(variant)
+    model.eval()
+    processor = ChineseCLIPProcessor.from_pretrained(variant)
 
-    # Prepare inputs
-    text = [
-        "a photo of cats in bed",
-        "a photo of dog in snow",
-    ]
-    image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
-    inputs = processor(images=image, text=text, return_tensors="pd")
+    text=["椅子", "玫瑰", "小火龙", "皮卡丘"]
+    image = Image.open(requests.get("https://clip-cn-beijing.oss-cn-beijing.aliyuncs.com/pokemon.jpeg", stream=True).raw)
+    inputs = processor(images=image, text=text, return_tensors="pd", padding=True)
 
     inputs = [inputs["input_ids"], inputs["pixel_values"]]
 
     input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
     framework_model,_ = paddle_trace(model, input_spec)
 
+    
     # Test framework model
     outputs = framework_model(*inputs)
 
@@ -96,14 +91,11 @@ def test_clip(variant, forge_property_recorder):
     for t, sim in zip(text, similarities):
         print(f"{t}: similarity = {sim:.4f}")
 
-    # Compile model
+    # Compile Model
     compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name)
-
+    
     # Verify
     verify(inputs, framework_model, compiled_model)
-
-    
-
 
 
 
