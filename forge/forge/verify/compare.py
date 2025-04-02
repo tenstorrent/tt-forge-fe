@@ -3,8 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from typing import Union
+from multiprocessing.pool import ThreadPool
 import os
+from typing import Union
 
 import torch
 import tensorflow as tf
@@ -12,8 +13,6 @@ import numpy as np
 from loguru import logger
 from scipy.spatial import distance
 from typing import Union, Tuple, List, Optional
-
-from forge.tensor import narrow_forge_tensor_to_pytorch
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
@@ -27,7 +26,7 @@ def compare_with_golden(
     if golden.dtype == torch.bool:
         calculated_dissimilarity = calculate_dissimilarity(golden, calculated)
         result = compare_dissimilarity(calculated_dissimilarity, dissimilarity_threshold)
-    if golden.flatten().size() != (1,):  # PCC for single values doesn't work
+    elif golden.flatten().size() != (1,):  # PCC for single values doesn't work
         calculated_pcc = calculate_pcc(golden, calculated)
         result = compare_pcc(calculated_pcc, pcc)
     else:
@@ -56,8 +55,8 @@ def calculate_dissimilarity(golden: torch.Tensor, calculated: torch.Tensor):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)
 
-    golden_squeezed = golden.view(-1).detach().numpy()
-    calculated_squeezed = calculated.view(-1).detach().numpy()
+    golden_squeezed = golden.reshape(-1).detach().numpy()
+    calculated_squeezed = calculated.reshape(-1).detach().numpy()
     dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
     return dissimilarity
 
@@ -75,48 +74,96 @@ def compare_dissimilarity(calculated_dissimilarity: float, dissimilarity_thresho
         return False
 
 
-def calculate_pcc(a, b):
-    if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
-        logger.warning("Both tensors are 'nan'")
-        return 1.0
+# Helper function to calculate PCC over a chunk of rows
+def calc_chunk_pcc(a, b, chunk_size, chunk_start):
+    a_chunk = a[chunk_start : chunk_start + chunk_size]
+    b_chunk = b[chunk_start : chunk_start + chunk_size]
 
-    if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
-        logger.error("One tensor is all nan, the other is not.")
-        return 0.0
+    chunk_pcc = np.min(np.ma.corrcoef(a_chunk, b_chunk))
 
-    # Test if either is completely zero
-    if torch.any(a.bool()) != torch.any(b.bool()):
-        return 0.0
+    return chunk_pcc
 
-    # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
-    #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
 
-    # if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
-    #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
+def calculate_or_estimate_pcc(
+    a: torch.Tensor, b: torch.Tensor, tensor_size_threshold: int, chunk_size: int
+) -> np.float64:
 
-    # For now, mask all infs and nans so that we check the rest... TODO
-    a = a.clone()
-    a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
-    b = b.clone()
-    b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
+    """
+    Calculate (estimate) Pearson Correlation Coefficient (PCC) between two tensors.
 
-    if torch.equal(a, b):
-        return 1.0
+    There are two different implementations of PCC calculation (estimation):
 
-    if a.dtype == torch.bfloat16:
+    - For "small" tensors, the PCC is calculated on the whole (flattened) tensors.
+
+    - For large tensors, we split the tensors into smaller chunks and calculate PCC over each chunk.
+      This is done to avoid large memory usage when calculating PCC on large tensors. Unfortunately,
+      this isn't the same mathematical operation, but it provides a good estimation of the original approach,
+      and is quite simple.
+
+      The calculations over chunks are done in parallel using ThreadPool, to lower the execution time.
+
+      NOTES: original implementation is flattening both tensors and then calculating the PCC, this means
+      that the whole tensor is treated as a single random variable with N samples (N = number of elements in the tensor).
+      With the estimation procedure we are treating the tensor as a collection of random variables, each chunk is treated
+      like a single random variable (so N_chunks in total) with M samples (M = number of elements in the chunk). The final
+      PCC is the average of all the PCCs calculated over the chunks.
+
+    """
+    # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+    if a.dtype == torch.bfloat16 or b.dtype == torch.bfloat16:
         a = a.type(torch.float32)
         b = b.type(torch.float32)
-    pcc = np.min(
-        np.ma.corrcoef(
-            np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
-            np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+
+    a_np = a.detach().numpy().flatten()
+    b_np = b.detach().numpy().flatten()
+    masked_a = np.ma.masked_invalid(a_np, copy=False)
+    masked_b = np.ma.masked_invalid(b_np, copy=False)
+
+    number_of_invalid_elements = np.sum(masked_a.mask)
+
+    # We expect the number of invalid elements to be the same in both tensors
+    if number_of_invalid_elements != np.sum(masked_b.mask):
+        return 0.0
+
+    # Verify that all invalid elements (nans/infs) are the same in both tensors
+    if not np.array_equal(a_np[masked_a.mask], b_np[masked_b.mask], equal_nan=True) or not np.array_equal(
+        masked_a.mask, masked_b.mask
+    ):
+        return 0.0
+
+    # For large tensors, split the tensor into smaller chunks to estimate PCC.
+    if a.numel() > tensor_size_threshold:
+        pool = ThreadPool()
+        results = []
+
+        for i in range(0, masked_a.shape[0], chunk_size):
+            work = pool.apply_async(calc_chunk_pcc, args=(masked_a, masked_b, chunk_size, i))
+            results.append(work)
+
+        pcc = 0
+        n_chunks = len(results)
+        for work in results:
+            chunk_pcc = work.get()
+            pcc += chunk_pcc / n_chunks
+    else:
+        pcc = np.min(
+            np.ma.corrcoef(
+                masked_a,
+                masked_b,
+            )
         )
-    )
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
 
     return pcc
+
+
+def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
+    TENSOR_SIZE_THRESHOLD = int(1e8)
+    CHUNK_SIZE = int(1e6)
+
+    return calculate_or_estimate_pcc(a, b, TENSOR_SIZE_THRESHOLD, CHUNK_SIZE)
 
 
 def compare_pcc(calculated_pcc: float, pcc: float = 0.99):
@@ -267,57 +314,33 @@ def compare_tensor_to_golden(
     return True
 
 
-def prepare_tensors(golden, calculated):
-    # Convert boolean tensors to float; so ATOL can be calculated.
-    if golden.dtype == torch.bool:
-        golden = golden.to(torch.float)
-
-    # TTNN does not support all the data types. So convert 'ret' tensor type to
-    # match 'golden' tensor type.
-    if golden.dtype != calculated.dtype:
-        calculated = calculated.to(golden.dtype)
-
-    return golden, calculated
-
-
 def calculate_atol(golden, calculated):
     if torch.equal(golden, calculated):
         return 0.0
 
-    golden, calculated = prepare_tensors(golden, calculated)
+    if golden.dtype == torch.bool:
+        # For bool tensors, return 1.0, since they are not equal (previous check).
+        return 1.0
 
-    # Handle NaN and Inf by verifying if NaN and Inf exists at same location in
-    # both tensors.
-    golden_nan_mask = torch.isnan(golden)
-    calculated_nan_mask = torch.isnan(calculated)
-    golden_inf_mask = torch.isinf(golden)
-    calculated_inf_mask = torch.isinf(calculated)
+    if golden.dtype == torch.bfloat16:
+        # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+        golden = golden.type(torch.float32)
+        calculated = calculated.type(torch.float32)
 
-    # Compare NaN values (NaN == NaN is considered True).
-    if not torch.all(golden_nan_mask == calculated_nan_mask):
-        return torch.nan
+    golden = golden.detach().numpy()
+    calculated = calculated.detach().numpy()
 
-    # Compare Inf values (Inf == Inf is considered True).
-    if not torch.all(golden_inf_mask == calculated_inf_mask):
+    masked_golden = np.ma.masked_invalid(golden, copy=False)
+    masked_calculated = np.ma.masked_invalid(calculated, copy=False)
+
+    # Assert that all nans/infs are matching. If not, return inf.
+    if not np.array_equal(
+        golden[masked_golden.mask], calculated[masked_calculated.mask], equal_nan=True
+    ) or not np.array_equal(masked_golden.mask, masked_calculated.mask):
         return torch.inf
 
-    # Verify if respective Inf values in both tensors have same sign.
-    golden_sign = torch.sign(golden)
-    calculated_sign = torch.sign(calculated)
-    sign_comparison = golden_sign == calculated_sign
-    masked_sign_comparison = torch.where(calculated_inf_mask, sign_comparison, torch.tensor(True))
-    if not torch.all(masked_sign_comparison):
-        return torch.inf
-
-    # Replace NaN values with 0 to avoid having NaN as ATOL
-    golden[golden_nan_mask] = 0
-    calculated[calculated_nan_mask] = 0
-
-    # Replace Inf values with 0 to avoid having NaN as ATOL
-    golden[golden_inf_mask] = 0
-    calculated[calculated_inf_mask] = 0
-
-    return torch.max(torch.abs(golden - calculated)).item()
+    np_max_abs_diff = np.nanmax(np.abs(golden - calculated))
+    return torch.tensor(np_max_abs_diff).item()
 
 
 def calculate_rtol(golden, calculated):
@@ -375,16 +398,12 @@ def determine_consistency_limits(
             logger.error(f"Tensor {idx} - Shape mismatch: fw_out shape={fw_out.shape}, co_out shape={co_out.shape}")
             continue
 
-        fw_out = fw_out.clone()
-        co_out = co_out.clone()
-
         # If the output is a scalar, compute only ATOL
         if fw_out.numel() == 1:
             atol = calculate_atol(fw_out, co_out)
             atol_values.append(atol)
         else:
-            golden, calculated = prepare_tensors(fw_out, co_out)
-            pcc = calculate_pcc(golden, calculated)
+            pcc = calculate_pcc(fw_out, co_out)
             pcc_values.append(pcc)
             atol = calculate_atol(fw_out, co_out)
             atol_values.append(atol)

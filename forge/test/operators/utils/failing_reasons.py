@@ -44,6 +44,9 @@ class FailingReasons:
     # Validation error caused by pcc threshold
     DATA_MISMATCH = "Verification failed due to data mismatch"
 
+    # ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8
+    DTYPE_MISMATCH = "Dtype mismatch"
+
     UNSUPPORTED_TYPE_FOR_VALIDATION = "Verification failed due to unsupported type in verify_module"
 
     # "Fatal python error - xfail does not work; UserWarning: resource_tracker: There appear to be 26 leaked semaphore objects to clean up at shutdown"
@@ -98,11 +101,17 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and f"{ex}" == "Tensor 2 - data type mismatch: expected UInt32, got Float32",
+            lambda ex: isinstance(ex, RuntimeError) and '"softmax_lastdim_kernel_impl" not implemented' in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Unsupported data format" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "\"bmm\" not implemented for 'Half'" in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Data mismatch"),
             lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Data mismatch"),
+        ],
+        FailingReasons.DTYPE_MISMATCH: [
+            lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Dtype mismatch"),
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -200,6 +209,9 @@ class FailingReasonsValidation:
         ],
         FailingReasons.MICROBATCHING_UNSUPPORTED: [
             lambda ex: isinstance(ex, RuntimeError) and "The expanded size of the tensor" in f"{ex}",
+        ],
+        FailingReasons.UNSUPORTED_AXIS: [
+            lambda ex: isinstance(ex, RuntimeError) and "Inputs must be of bfloat16 or bfloat8_b type" in f"{ex}",
         ],
     }
 

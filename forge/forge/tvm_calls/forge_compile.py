@@ -163,7 +163,7 @@ def compile_tvm_graph(
         Compiler configurations
 
     path: str
-        Path to TFLite file on disk. This is used to verify TVM results vs. framework results.
+        Path to TFLite/ONNX file on disk. This is used to verify TVM results vs. framework results.
 
     Returns
     -------
@@ -225,6 +225,7 @@ def compile_tvm_graph(
         onnx_inputs = [x.detach().numpy() for x in inputs]
         json_graphs, _ = compile_onnx_for_forge(
             module,
+            path,
             *onnx_inputs,
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
@@ -487,7 +488,7 @@ def compile_pytorch_for_forge(
             torchmod = torch.jit.freeze(torchmod)
 
         # Trace framework model
-        traced_model = torch.jit.trace(torchmod, inputs, strict=False)
+        traced_model = torch.jit.trace(torchmod, inputs, check_trace=False, strict=False)
 
     # Extract flatten inputs
     flattened_inputs, flattened_input_names, flattened_name_map, input_structure = extract_flatten_inputs(
@@ -782,7 +783,9 @@ def duplicate_dequantize_nodes_in_onnx_graph(onnx_module):
         graph.node.remove(node)
 
 
-def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None):
+def compile_onnx_for_forge(
+    onnx_mod, onnx_path, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None
+):
     import onnxruntime as ort
 
     # Set default num threads to 2, hangs on some hosts otherwise https://github.com/microsoft/onnxruntime/issues/10166
@@ -790,8 +793,12 @@ def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_c
     so.inter_op_num_threads = 2
     so.intra_op_num_threads = 2
 
-    onnx_bytes = onnx_mod.SerializeToString()
-    ort_sess = ort.InferenceSession(onnx_bytes, sess_options=so, providers=["CPUExecutionProvider"])
+    if onnx_path is not None:
+        onnx_model = onnx_path
+    else:
+        onnx_model = onnx_mod.SerializeToString()
+
+    ort_sess = ort.InferenceSession(onnx_model, sess_options=so, providers=["CPUExecutionProvider"])
 
     input_names = []
     for inp in ort_sess.get_inputs():
@@ -809,6 +816,7 @@ def compile_onnx_for_forge(onnx_mod, *inputs, graph_name, compiler_cfg, verify_c
     framework_outputs = extract_framework_model_outputs(
         framework="onnx",
         model=onnx_mod,
+        onnx_path=onnx_path,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
         input_dict=input_dict,

@@ -33,9 +33,7 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "gpt2",
-            marks=[
-                pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got UInt8")
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -80,7 +78,7 @@ def test_gpt2_text_gen(forge_property_recorder, variant):
     [
         pytest.param(
             "mnoukhov/gpt2-imdb-sentiment-classifier",
-            marks=[pytest.mark.xfail(reason="ttir.softmax op requires attribute 'dimension'")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

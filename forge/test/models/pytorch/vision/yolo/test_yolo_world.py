@@ -23,7 +23,7 @@ class YoloWorldWrapper(torch.nn.Module):
         return self.yolo.model.forward(x, augment=False)
 
 
-@pytest.mark.xfail(reason=" ValueError: not enough values to unpack (expected 3, got 0)")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference(forge_property_recorder):
 
@@ -40,7 +40,7 @@ def test_yolo_world_inference(forge_property_recorder):
 
     # Record Forge property
 
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework_model and input

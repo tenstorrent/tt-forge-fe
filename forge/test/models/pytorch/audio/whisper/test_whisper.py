@@ -18,11 +18,7 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "openai/whisper-tiny",
-        marks=[
-            pytest.mark.xfail(
-                reason="Conv2d AssertionError: Setting a tensor value of incorrect shape: (1, 384, 2999, 2) vs torch.Size([1, 384, 3000, 1])"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "openai/whisper-base",
     "openai/whisper-small",

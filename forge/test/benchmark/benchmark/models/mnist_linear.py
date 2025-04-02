@@ -20,9 +20,8 @@ import forge
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
+
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -122,7 +121,6 @@ def test_mnist_linear(
 
     verify(inputs, framework_model, compiled_model)
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
@@ -219,11 +217,9 @@ def mnist_linear_benchmark(config: dict):
         loop_count=loop_count,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:
