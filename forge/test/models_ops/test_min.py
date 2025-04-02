@@ -32,14 +32,7 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Min0,
-            [((2441216,), torch.int32)],
-            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32")],
-    ),
+    (Min0, [((2441216,), torch.int32)], {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99}),
 ]
 
 
