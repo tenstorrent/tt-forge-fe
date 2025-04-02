@@ -12,20 +12,16 @@ from .utils import load_inputs, load_model
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
-    pytest.param(
-        "facebook/musicgen-small",
-        marks=[pytest.mark.xfail],
-    ),
+    "facebook/musicgen-small",
     "facebook/musicgen-medium",
     "facebook/musicgen-large",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(forge_property_recorder, variant):
-    if variant != "facebook/musicgen-small":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
