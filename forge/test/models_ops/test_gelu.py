@@ -51,6 +51,15 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
+        [((2, 1, 4096), torch.float32)],
+        {
+            "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
         [((2, 1, 6144), torch.float32)],
         {
             "model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -60,9 +69,72 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((2, 1, 4096), torch.float32)],
+        [((1, 384, 3000), torch.float32)],
         {
-            "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 384, 1500), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1500, 1536), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1, 1536), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 768, 3000), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 768, 1500), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1500, 3072), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1, 3072), torch.float32)],
+        {
+            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -141,42 +213,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((1, 384, 3000), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 384, 1500), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 1500, 1536), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 1, 1536), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
         [((1, 512, 3000), torch.float32)],
         {
             "model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -218,45 +254,18 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((1, 768, 3000), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 768, 1500), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 1500, 3072), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 1, 3072), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
         [((1, 2, 5120), torch.float32)],
         {
             "model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 576, 4096), torch.float32)],
+        {
+            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -286,9 +295,77 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
+        [((1, 128, 8192), torch.float32)],
+        {
+            "model_name": ["pt_albert_xlarge_v1_mlm_hf", "pt_albert_xlarge_v1_token_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 128, 8192), torch.float32)],
+        {
+            "model_name": ["pt_albert_xlarge_v2_mlm_hf", "pt_albert_xlarge_v2_token_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 128, 128), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_base_v1_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 128, 128), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
+                "pt_albert_base_v2_mlm_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 128, 4096), torch.float32)],
+        {
+            "model_name": ["pt_albert_large_v2_token_cls_hf", "pt_albert_large_v2_mlm_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 128, 4096), torch.float32)],
+        {
+            "model_name": [
+                "pt_albert_large_v1_mlm_hf",
+                "pt_albert_large_v1_token_cls_hf",
+                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
         [((1, 128, 16384), torch.float32)],
         {
-            "model_name": ["pt_albert_xxlarge_v1_token_cls_hf", "pt_albert_xxlarge_v1_mlm_hf"],
+            "model_name": ["pt_albert_xxlarge_v1_mlm_hf", "pt_albert_xxlarge_v1_token_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -297,7 +374,7 @@ forge_modules_and_shapes_dtypes_list = [
         Gelu1,
         [((1, 128, 16384), torch.float32)],
         {
-            "model_name": ["pt_albert_xxlarge_v2_token_cls_hf", "pt_albert_xxlarge_v2_mlm_hf"],
+            "model_name": ["pt_albert_xxlarge_v2_mlm_hf", "pt_albert_xxlarge_v2_token_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
         },
@@ -316,19 +393,19 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 3072), torch.float32)],
         {
             "model_name": [
-                "pt_albert_base_v1_token_cls_hf",
                 "pt_albert_base_v1_mlm_hf",
+                "pt_albert_base_v1_token_cls_hf",
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
@@ -339,71 +416,21 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Gelu0,
-        [((1, 128, 4096), torch.float32)],
-        {
-            "model_name": [
-                "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
         Gelu1,
-        [((1, 128, 4096), torch.float32)],
+        [((1, 9, 3072), torch.float32)],
         {
-            "model_name": ["pt_albert_large_v2_token_cls_hf", "pt_albert_large_v2_mlm_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"tanh"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 128, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_albert_base_v1_mlm_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
-                "pt_albert_large_v1_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu1,
-        [((1, 128, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_large_v2_mlm_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-            ],
+            "model_name": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
         },
     ),
     (
         Gelu1,
-        [((1, 128, 8192), torch.float32)],
+        [((1, 14, 3072), torch.float32)],
         {
-            "model_name": ["pt_albert_xlarge_v2_token_cls_hf", "pt_albert_xlarge_v2_mlm_hf"],
+            "model_name": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 128, 8192), torch.float32)],
-        {
-            "model_name": ["pt_albert_xlarge_v1_token_cls_hf", "pt_albert_xlarge_v1_mlm_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
         },
     ),
     (
@@ -421,20 +448,11 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 384, 4096), torch.float32)],
-        {
-            "model_name": ["pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
         },
     ),
     (
@@ -443,11 +461,32 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_bert_bert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
             ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 384, 4096), torch.float32)],
+        {
+            "model_name": [
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 6, 3072), torch.float32)],
+        {
+            "model_name": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -477,9 +516,59 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu1,
+        [((1, 207, 9216), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+    ),
+    (
+        Gelu1,
+        [((1, 207, 14336), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+    ),
+    (
+        Gelu1,
+        [((1, 107, 16384), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+    ),
+    (
+        Gelu1,
+        [((1, 107, 24576), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+    ),
+    (
+        Gelu1,
         [((1, 256, 3072), torch.float32)],
         {
             "model_name": ["pt_gpt2_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 7, 3072), torch.float32)],
+        {
+            "model_name": [
+                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 32, 10240), torch.float32)],
+        {
+            "model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"tanh"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 32, 3072), torch.float32)],
+        {
+            "model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
         },
@@ -490,8 +579,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                "pt_phi2_microsoft_phi_2_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
@@ -513,24 +602,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu1,
-        [((1, 32, 3072), torch.float32)],
-        {
-            "model_name": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"tanh"'},
-        },
-    ),
-    (
-        Gelu1,
-        [((1, 32, 10240), torch.float32)],
-        {
-            "model_name": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"tanh"'},
-        },
-    ),
-    (
-        Gelu1,
         [((1, 32, 8192), torch.float32)],
         {
             "model_name": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
@@ -539,12 +610,52 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Gelu1,
-        [((1, 7, 3072), torch.float32)],
+        Gelu0,
+        [((1, 512, 1024), torch.float32)],
         {
-            "model_name": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"],
+            "model_name": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
             "pcc": 0.99,
-            "op_params": {"approximate": '"tanh"'},
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu1,
+        [((1, 1, 1024), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+    ),
+    (
+        Gelu0,
+        [((1, 256, 1280), torch.float32)],
+        {
+            "model_name": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 2048, 768), torch.float32)],
+        {
+            "model_name": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
         },
     ),
     (
@@ -560,7 +671,7 @@ forge_modules_and_shapes_dtypes_list = [
         Gelu1,
         [((1, 11, 10240), torch.float32)],
         {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"tanh"'},
         },
@@ -591,32 +702,27 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu1,
-        [((1, 1, 1024), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
+        [((1, 61, 2048), torch.float32)],
+        {"model_name": ["pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
     ),
     (
         Gelu0,
-        [((1, 1, 1024), torch.float32)],
+        [((1, 197, 4096), torch.float32)],
         {
             "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
     ),
     (
-        Gelu1,
-        [((1, 61, 2048), torch.float32)],
-        {"model_name": ["pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99, "op_params": {"approximate": '"tanh"'}},
-    ),
-    (
         Gelu0,
         [((1, 197, 3072), torch.float32)],
         {
             "model_name": [
+                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
@@ -645,54 +751,51 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
+        [((1, 19200, 256), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 4800, 512), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 1200, 1280), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 300, 2048), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
         [((1, 768, 384), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 49, 3072), torch.float32)],
-        {
-            "model_name": [
-                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 512, 256), torch.float32)],
-        {
-            "model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm", "pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 196, 2048), torch.float32)],
-        {
-            "model_name": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 49, 2048), torch.float32)],
-        {
-            "model_name": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -702,10 +805,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 196, 3072), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
@@ -716,9 +820,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 512), torch.float32)],
         {
             "model_name": [
-                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_base_img_cls_github",
                 "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
@@ -726,31 +830,14 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((1, 49, 4096), torch.float32)],
-        {
-            "model_name": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
+        [((1, 256, 256), torch.float32)],
+        {"model_name": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "op_params": {"approximate": '"none"'}},
     ),
     (
         Gelu0,
         [((1, 196, 4096), torch.float32)],
         {
-            "model_name": ["pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_img_cls_timm"],
-            "pcc": 0.99,
-            "op_params": {"approximate": '"none"'},
-        },
-    ),
-    (
-        Gelu0,
-        [((1, 512, 1024), torch.float32)],
-        {
-            "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-            ],
+            "model_name": ["pt_mlp_mixer_mixer_l16_224_img_cls_timm", "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -808,15 +895,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 16384, 256), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
@@ -827,15 +914,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 4096, 512), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
@@ -846,15 +933,15 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 1280), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
@@ -865,16 +952,52 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256, 2048), torch.float32)],
         {
             "model_name": [
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
             ],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 56, 56, 384), torch.float32)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 28, 28, 768), torch.float32)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 14, 14, 1536), torch.float32)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"approximate": '"none"'},
+        },
+    ),
+    (
+        Gelu0,
+        [((1, 7, 7, 3072), torch.float32)],
+        {
+            "model_name": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
@@ -908,12 +1031,32 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Gelu0,
-        [((1, 197, 4096), torch.float32)],
+        [((1, 49, 3072), torch.float32)],
         {
-            "model_name": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"],
+            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
             "pcc": 0.99,
             "op_params": {"approximate": '"none"'},
         },
+    ),
+    (
+        Gelu0,
+        [((1, 56, 56, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"approximate": '"none"'}},
+    ),
+    (
+        Gelu0,
+        [((1, 28, 28, 1024), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"approximate": '"none"'}},
+    ),
+    (
+        Gelu0,
+        [((1, 14, 14, 2048), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"approximate": '"none"'}},
+    ),
+    (
+        Gelu0,
+        [((1, 7, 7, 4096), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"approximate": '"none"'}},
     ),
 ]
 
@@ -921,7 +1064,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder.record_op_name("Gelu")
+    forge_property_recorder("tags.op_name", "Gelu")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 

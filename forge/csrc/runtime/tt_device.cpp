@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
 
@@ -58,17 +59,31 @@ TTSystem& TTSystem::get_system()
 
 bool TTSystem::is_initialized() { return system_is_initialized; }
 
-void TTDevice::open_device()
+void TTDevice::open_device(const DeviceSettings& settings)
 {
     TT_ASSERT(!is_open());
-    rt_device = runtime::openDevice({index});
+    static constexpr std::uint32_t num_hw_cqs = 1;
+    runtime::MeshDeviceOptions options;
+    options.numHWCQs = num_hw_cqs;
+    options.enableProgramCache = settings.enable_program_cache;
+    rt_device = runtime::openMeshDevice({1, 1}, options);
 }
 
 void TTDevice::close_device()
 {
     TT_ASSERT(is_open());
-    runtime::closeDevice(rt_device.value());
+    runtime::closeMeshDevice(rt_device.value());
     rt_device.reset();
+}
+
+void TTDevice::configure_device(const DeviceSettings& settings)
+{
+    if (is_open())
+    {
+        close_device();
+    }
+
+    open_device(settings);
 }
 
 }  // namespace tt

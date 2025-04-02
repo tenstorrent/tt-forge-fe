@@ -6,9 +6,7 @@
 import pytest
 import time
 import socket
-import subprocess
 import json
-import random
 import os
 from datetime import datetime
 
@@ -20,12 +18,12 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
+
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
@@ -81,6 +79,12 @@ def test_resnet_hf(
 
     # Compile model
     compiled_model = forge.compile(framework_model, *input_sample)
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
     co_out = compiled_model(*input_sample)
@@ -92,7 +96,6 @@ def test_resnet_hf(
     co_out = [co.to("cpu") for co in co_out]
     assert [compare_with_golden(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
@@ -188,11 +191,9 @@ def resnet_hf_benchmark(config: dict):
         variant=variant,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:

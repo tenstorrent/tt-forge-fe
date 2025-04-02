@@ -15,8 +15,8 @@ on:
   workflow_run:
     workflows:
       - "On nightly"
-    types:
-      - completed
+    types: [ completed ]
+    branches: [ "main" ]
 
 jobs:
   docker-build:
@@ -48,3 +48,39 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
       # Prioritize workflow trigger, then input run ID, then current run (for new builds)
       on_nightly_run_id: ${{ github.event.workflow_run.id || github.event.inputs.run_id || github.run_id }}
+
+  fail-notify:
+    if: always()
+    needs:
+      - test_full_model_xfailing
+    runs-on: Ubuntu-latest
+    outputs:
+      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
+      failed: ${{ steps.check.outputs.failure }}
+    steps:
+      - name: Check if branch is main
+        id: branch-check
+        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
+      - name: Check if the needed jobs succeeded or failed
+        id: check
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+  fail-send-msg:
+    if: always()
+    needs:
+      - fail-notify
+    runs-on: Ubuntu-latest
+    steps:
+      - name: Send Fail Notification
+        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Bad bad nightly XFAIL: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
+              "channel": "C08HFLL9L56"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}

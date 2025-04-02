@@ -8,13 +8,15 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, build_module_name
-from test.utils import download_model
+from test.utils import fetch_model, yolov5_loader
+
+base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
 
 
 def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
 
-    model = download_model(torch.hub.load, variant, name, pretrained=True)
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
 
     input_shape = (1, 3, 320, 320)
     input_tensor = torch.rand(input_shape)
@@ -66,7 +68,7 @@ def test_yolov5_320x320(forge_property_recorder, size):
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
-    model = download_model(torch.hub.load, variant, name, pretrained=True)
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
 
     input_shape = (1, 3, 640, 640)
     input_tensor = torch.rand(input_shape)
@@ -77,12 +79,7 @@ size = [
     pytest.param("n", id="yolov5n"),
     pytest.param(
         "s",
-        id="yolov5s",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
@@ -126,23 +123,18 @@ def test_yolov5_640x640(forge_property_recorder, size):
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
     name = "yolov5" + size
-    model = download_model(torch.hub.load, variant, name, pretrained=True)
+    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
     input_shape = (1, 3, 480, 480)
     input_tensor = torch.rand(input_shape)
     return model, [input_tensor], {}
 
 
 size = [
-    pytest.param("n", id="yolov5n"),
     pytest.param(
-        "s",
-        id="yolov5s",
-        marks=[
-            pytest.mark.xfail(
-                reason="Statically allocated circular buffers in program 691 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 573216"
-            )
-        ],
+        "n",
+        marks=[pytest.mark.xfail],
     ),
+    pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
     pytest.param("x", id="yolov5x"),
@@ -152,7 +144,7 @@ size = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
 def test_yolov5_480x480(forge_property_recorder, size):
-    if size != "s":
+    if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -202,7 +194,12 @@ def test_yolov5_1280x1280(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
-    framework_model = download_model(torch.hub.load, "ultralytics/yolov5", variant, pretrained=True)
+    framework_model = fetch_model(
+        variant,
+        f"{base_url}/{variant}.pt",
+        yolov5_loader,
+        variant="ultralytics/yolov5",
+    )
 
     input_shape = (1, 3, 1280, 1280)
     input_tensor = torch.rand(input_shape)

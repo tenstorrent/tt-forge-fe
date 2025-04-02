@@ -15,6 +15,8 @@ import torch.multiprocessing as mp
 import torch
 import tensorflow as tf
 
+from forge._C import ExecutionDepth
+
 # This is a workaround to set RTLD_GLOBAL flag to load emulation ZeBu library.
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
 # hence need to be set as GLOBAL. This is a requirement for ZeBu.
@@ -80,6 +82,9 @@ def forge_property_recorder(record_property):
     forge_property_store = ForgePropertyStore()
 
     forge_property_handler = ForgePropertyHandler(forge_property_store)
+
+    # Set CI_FAILURE as default execution depth
+    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
 
     yield forge_property_handler
 

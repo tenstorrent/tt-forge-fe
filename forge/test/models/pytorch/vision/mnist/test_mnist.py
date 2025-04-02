@@ -11,7 +11,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="ttir.softmax op requires attribute 'dimension'")
+@pytest.mark.xfail
 def test_mnist(forge_property_recorder):
 
     # Build Module Name

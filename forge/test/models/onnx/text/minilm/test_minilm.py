@@ -21,7 +21,7 @@ opset_versions = [9, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification(forge_property_recorder, variant, tmp_path, opset_version):
+def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.ONNX,

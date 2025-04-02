@@ -9,6 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class LlamaPrefillModel(torch.nn.Module):
@@ -61,6 +62,31 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
     """
     if model_path == "openlm-research/open_llama_3b":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
+
+    # Extract model variant from path
+    if "open_llama_3b" in model_path:
+        model_name = "Open Llama"
+        variant = "3b"
+        group = "generality"
+    elif "Llama-3.2-1B" in model_path:
+        model_name = "Llama 3.2"
+        variant = "1b"
+        group = "red"
+    else:
+        model_name = "Llama"
+        variant = "unknown"
+        group = "generality"
+
+    # Record model details
+    module_name = build_module_name(
+        framework=Framework.PYTORCH,
+        model=model_name,
+        variant=variant,
+        source=Source.HUGGINGFACE,
+        task=Task.TEXT_GENERATION,
+    )
+    forge_property_recorder.record_group(group)
+    forge_property_recorder.record_model_name(module_name)
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)

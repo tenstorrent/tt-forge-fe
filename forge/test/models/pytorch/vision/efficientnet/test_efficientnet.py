@@ -22,7 +22,13 @@ from torchvision.models._api import WeightsEnum
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import (
+    Framework,
+    Source,
+    Task,
+    build_module_name,
+    print_cls_results,
+)
 from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
@@ -49,8 +55,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(forge_property_recorder, variant):
-    if variant != "efficientnet_b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -63,7 +67,7 @@ def test_efficientnet_timm(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["efficientnet_b0"]:
-        forge_property_recorder.record_group("priority")
+        forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
@@ -97,7 +101,10 @@ def test_efficientnet_timm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -122,8 +129,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(forge_property_recorder, variant):
-    if variant != "efficientnet_b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -145,6 +150,7 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
 
     framework_model.eval()
+
     # Load and pre-process image
     try:
         url, filename = (
@@ -170,4 +176,7 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

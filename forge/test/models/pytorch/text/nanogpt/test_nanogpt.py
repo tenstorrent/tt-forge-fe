@@ -28,7 +28,7 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "FinancialSupport/NanoGPT",
-            marks=pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got UInt8"),
+            marks=pytest.mark.xfail,
         ),
     ],
 )

@@ -20,6 +20,7 @@ from forge.config import CompilerConfig
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.tensor import to_pt_tensors, to_pd_tensors
 from forge.tvm_calls.relay.op.forge import extract_function_callnodes, trace_to_origin
+from typing import Optional
 
 
 def extract_framework_model_outputs(
@@ -28,6 +29,7 @@ def extract_framework_model_outputs(
     inputs,
     verify_tvm_compile: bool = False,
     input_dict={},
+    onnx_path: Optional[str] = None,
 ):
     framework_outputs = []
 
@@ -117,7 +119,11 @@ def extract_framework_model_outputs(
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
-        onnx_model = model.SerializeToString()
+
+        if onnx_path is not None:
+            onnx_model = onnx_path
+        else:
+            onnx_model = model.SerializeToString()
         ort_sess = ort.InferenceSession(onnx_model, sess_options=so)
         framework_outputs = ort_sess.run(output_names, input_dict)
 
@@ -175,7 +181,10 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         if hasattr(model, "_input_args_names"):
             flattened_input_names = model._input_args_names
         else:
-            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())
+            # TODO: Find a better way to get input names for paddle models
+            # When the forward function has optional parameters, we assume they are provided in order in the input,
+            # so we use the first len(inputs) elements of the forward function signature as the input names
+            flattened_input_names = list(inspect.signature(model.forward).parameters.keys())[: len(inputs)]
 
         flattened_inputs, _, flattened_name_map = flatten_inputs(inputs, flattened_input_names)
 

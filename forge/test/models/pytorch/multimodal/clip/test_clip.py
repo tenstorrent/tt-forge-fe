@@ -20,11 +20,7 @@ from test.utils import download_model
     [
         pytest.param(
             "openai/clip-vit-base-patch32",
-            marks=[
-                pytest.mark.xfail(
-                    reason="ttir.reshape op Input and output tensors must have the same number of elements"
-                )
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )

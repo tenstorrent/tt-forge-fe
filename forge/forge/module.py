@@ -361,7 +361,7 @@ class OnnxModule(Module):
     A wrapper around a Onnx module.
     """
 
-    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto):
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: Optional[str] = None):
         """
         Create Onnx module wrapper.
 
@@ -369,12 +369,15 @@ class OnnxModule(Module):
         ----------
         module: onnx.onnx_ml_pb2.ModelProto
             onnx module
+        onnx_path: Optional[str]
+            Path to the ONNX model file. Used to directly load the model when its size exceeds 2GB (with external data).
         """
         super().__init__(name)
 
         if not isinstance(module, onnx.onnx_ml_pb2.ModelProto):
             raise RuntimeError("onnx.onnx_ml_pb2.ModelProto module expected, got " + str(type(module)))
         self.module = module
+        self.onnx_path = onnx_path
 
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
@@ -386,9 +389,20 @@ class OnnxModule(Module):
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
 
-        module_bytes = self.module.SerializeToString()
+        if self.onnx_path is None:
+            try:
+                model = self.module.SerializeToString()
+            except Exception as e:
+                raise RuntimeError(
+                    "The model exceeds the 2GB limit and cannot be serialized directly. \n"
+                    "To proceed, please provide an 'onnx_path' to load the model\n"
+                    f"Original error: {e}"
+                )
+        else:
+            model = self.onnx_path
+
         ort_sess = ort.InferenceSession(
-            module_bytes,
+            model,
             sess_options=so,
             use_deterministic_compute=True,
             providers=["CPUExecutionProvider"],
@@ -965,6 +979,8 @@ def wrap_module(module, name: str) -> Module:
         return PaddleModule(name, module)
     elif isinstance(module, onnx.onnx_ml_pb2.ModelProto):
         return OnnxModule(name, module)
+    elif isinstance(module, forge.module.OnnxModule):
+        return module
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 

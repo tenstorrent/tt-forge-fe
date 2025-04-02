@@ -20,7 +20,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "facebook/detr-resnet-50",
-            marks=[pytest.mark.xfail(reason="AttributeError: <class 'tvm.ir.op.Op'> has no attribute name_hint")],
+            marks=[pytest.mark.xfail],
         )
     ],
 )
@@ -35,7 +35,7 @@ def test_detr_detection(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the model

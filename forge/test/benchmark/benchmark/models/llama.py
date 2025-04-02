@@ -18,12 +18,12 @@ from transformers import LlamaTokenizer
 
 # Forge modules
 import forge
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 
+
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
 
 # Model path
 MODEL_PATH = ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"]
@@ -70,6 +70,11 @@ def test_llama_prefill(
     model_decoder = model.get_decoder()
     compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
 
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
     # Prefill Phase - Process the initial prompt on device
     # This what we actually want to benchmark, and measure the time taken.
     transformer_outputs = compiled_decoder(input_ids)
@@ -89,7 +94,6 @@ def test_llama_prefill(
     # Calculate the pcc for only the last vector in the hidden states tensor.
     assert compare_with_golden(hidden_states_framework[:, -1, :], hidden_states_compiled[:, -1, :])
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     input_size = len(input_ids[0])
@@ -181,11 +185,9 @@ def llama_prefill_benchmark(config: dict):
 
     result = test_llama_prefill(training=training, batch_size=batch_size, model_path=model_path, loop_count=loop_count)
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-llama_prefill_{result['run_type']}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:

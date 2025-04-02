@@ -62,12 +62,7 @@ def test_torch_training(forge_property_recorder):
 
         loss_grad = tt_out.grad
         assert loss_grad is not None
-        grad = tt_model.backward()
-
-        # HACK to run the optimizer step
-        # i'm not sure what's the right way to tie the torch optimizer to our params,
-        # but this can be done automatically after backward() (hidden from user)
-        model.p.grad = grad[0]
+        tt_model.backward()
 
         optimizer.step()
 

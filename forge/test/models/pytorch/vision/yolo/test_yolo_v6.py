@@ -20,11 +20,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 variants = [
     pytest.param(
         "yolov6n",
-        marks=[
-            pytest.mark.xfail(
-                reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "yolov6s",
     "yolov6m",

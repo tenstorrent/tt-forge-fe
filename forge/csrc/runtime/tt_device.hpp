@@ -11,6 +11,11 @@
 namespace tt
 {
 
+struct DeviceSettings
+{
+    bool enable_program_cache{false};
+};
+
 struct TTDevice
 {
     std::optional<runtime::Device> rt_device;
@@ -35,8 +40,10 @@ struct TTDevice
 
     bool is_open() const { return rt_device.has_value(); }
 
-    void open_device();
+    void open_device(const DeviceSettings& settings = {});
     void close_device();
+
+    void configure_device(const DeviceSettings& settings = {});
 };
 
 // Used to store the system description and the list of devices.
@@ -60,6 +67,14 @@ struct TTSystem
             {
                 device->close_device();
             }
+        }
+    }
+
+    void configure_devices(const DeviceSettings& settings = {})
+    {
+        for (auto& device : devices)
+        {
+            device->configure_device(settings);
         }
     }
 
