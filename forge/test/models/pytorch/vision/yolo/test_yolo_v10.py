@@ -29,7 +29,9 @@ def test_yolov10(forge_property_recorder):
     forge_property_recorder.record_model_name(module_name)
 
     # Load  model and input
-    model, image_tensor = load_yolo_model_and_image( "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt")
+    model, image_tensor = load_yolo_model_and_image(
+        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
+    )
     framework_model = YoloWrapper(model)
 
     # Forge compile framework model

@@ -14,7 +14,10 @@ from test.models.pytorch.vision.yolo.utils.yolo_utils import (
 )
 from test.models.utils import Framework, Source, Task, build_module_name
 
-@pytest.mark.xfail(reason="RuntimeError: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B")
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B"
+)
 @pytest.mark.nightly
 def test_yolov8(forge_property_recorder):
     # Build Module Name
@@ -29,7 +32,9 @@ def test_yolov8(forge_property_recorder):
     forge_property_recorder.record_model_name(module_name)
 
     # Load  model and input
-    model, image_tensor = load_yolo_model_and_image( "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt")
+    model, image_tensor = load_yolo_model_and_image(
+        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt"
+    )
     framework_model = YoloWrapper(model)
     input = [image_tensor]
 

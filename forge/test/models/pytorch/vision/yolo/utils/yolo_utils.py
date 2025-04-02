@@ -20,9 +20,7 @@ class YoloWrapper(torch.nn.Module):
 
 def load_yolo_model_and_image(url):
     # Load YOLO model weights
-    weights = torch.hub.load_state_dict_from_url(
-       url, map_location="cpu"
-    )
+    weights = torch.hub.load_state_dict_from_url(url, map_location="cpu")
 
     # Initialize and load model
     model = DetectionModel(cfg=weights["model"].yaml)
