@@ -12,19 +12,19 @@ from forge.verify.verify import verify
 from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from utils import load_inputs
-from test.models.utils import Framework, Source, Task, build_module_name
-from test.utils import print_cls_results
+from urllib.request import urlopen
+from PIL import Image
+from test.models.utils import Framework, Source, Task, build_module_name, print_cls_results
 
-variants = [
-    "mobilenetv2_050",
-    "mobilenetv2_100",
-    "mobilenetv2_110d",
-    "mobilenetv2_140",
+params = [
+    pytest.param("mobilenetv2_050", marks=[pytest.mark.push]),
+    pytest.param("mobilenetv2_100"),
+    pytest.param("mobilenetv2_110d"),
+    pytest.param("mobilenetv2_140"),
 ]
 
 
-@pytest.mark.push
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
 def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
@@ -44,13 +44,15 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
-    # Load the inputs
-    dataset = load_dataset("huggingface/cats-image")
-    img = dataset["test"]["image"][0]
-    inputs = load_inputs(img)
-
     # Load mobilenetv2 model
     model = timm.create_model(variant, pretrained=True)
+
+    # Load the inputs
+    img = Image.open(
+        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
+    )
+
+    inputs = load_inputs(img, model)
     onnx_path = f"{tmp_path}/mobilenetv2.onnx"
     torch.onnx.export(model, inputs[0], onnx_path, opset_version=17)
 
