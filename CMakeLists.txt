@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.24.0)
 
 project(ttforge LANGUAGES CXX)
 
@@ -76,7 +76,6 @@ install(TARGETS ttforge_csrc LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
 ### Generate stubs for ttforge
 ### Run `cmake --build build -- make_stubs` to generate stubs
 add_custom_target(make_stubs
-    COMMAND pip install mypy==1.10
     COMMAND stubgen -m forge._C -m forge._C.autograd -m forge._C.graph -m forge._C.torch_device -m forge._C.runtime -o forge -v
     COMMENT "Generating stubs for ttforge"
     USES_TERMINAL
