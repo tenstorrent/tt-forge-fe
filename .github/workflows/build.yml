@@ -7,6 +7,15 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
+      build:
+        description: 'Build type (Release or Debug)'
+        required: false
+        default: 'All'
+        type: choice
+        options: 
+          - All
+          - Release
+          - Debug
   workflow_call:
     inputs:
       mlir_override:
@@ -17,7 +26,12 @@ on:
         description: 'Docker image to use for build'
         required: true
         type: string
-
+      build:
+        description: 'Build type (Release, Debug, All)'
+        required: false
+        default: 'All'
+        type: string
+  
 permissions:
   packages: write
   checks: write
@@ -26,6 +40,7 @@ permissions:
 jobs:
 
   forge-build:
+    if: ${{ inputs.build == 'All' || inputs.build == 'Release' }}
 
     strategy:
       fail-fast: false
@@ -116,6 +131,8 @@ jobs:
 
 
   unit-test-build:
+    if: ${{ inputs.build == 'All' || inputs.build == 'Debug' }}
+
     strategy:
       fail-fast: false
       matrix:

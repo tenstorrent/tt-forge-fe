@@ -1,6 +1,13 @@
 name: Perf benchmark
 
 on:
+  workflow_dispatch:
+    inputs:
+      rebuild:
+        description: 'Rebuild the Forge'
+        required: false
+        default: false
+        type: boolean
   workflow_call:
     inputs:
       docker-image:
@@ -9,8 +16,34 @@ on:
         type: string
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-image: ${{ steps.docker-build.outputs.docker-image }}
+    steps:
+      - name: Build Docker Image
+        id: docker-realbuild
+        if: ${{ !inputs.docker-image }}
+        uses: ./.github/workflows/build-image.yml
+        with:
+          secrets: ${{ secrets }}
+      - name: Set docker image
+        id: docker-build
+        run: |
+          if [ -z "${{ inputs.docker-image }}" ]; then
+            echo "docker-image=${{ steps.docker-realbuild.outputs.docker-image }}" >> $GITHUB_OUTPUT
+          else
+            echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
+          fi
+      - name: Build
+        if: ${{ inputs.rebuild == 'true' }}
+        uses: ./.github/workflows/build.yml
+        with:
+          docker-image: ${{ steps.docker-build.outputs.docker-image }}
+          build: 'Release'
 
   run-perf-benchmarks:
+    needs: build
 
     strategy:
       fail-fast: false
@@ -20,7 +53,7 @@ jobs:
       - performance
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ needs.build.outputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -29,6 +62,7 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
+
     steps:
 
     - name: Fetch job id
@@ -99,10 +133,23 @@ jobs:
       working-directory: install
       run: tar xvf artifact.tar
 
-    - name: Download build artifacts
+    - name: Download built artifacts
+      if: ${{ inputs.rebuild == null || inputs.rebuild == 'true' }}
       uses: actions/download-artifact@v4
       with:
         name: forge-wheel
+
+    - name: Find and download forge wheel
+      if: ${{ inputs.rebuild == 'false' }}
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-nightly.yml
+        branch: master
+        name: forge-wheel
+        repo: tenstorrent/tt-forge-fe
+        check_artifacts: true
 
     - name: Install wheel
       shell: bash
