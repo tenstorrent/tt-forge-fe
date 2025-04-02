@@ -1,4 +1,4 @@
-name: Perf benchmark
+name: On Nightly - Perf benchmark
 
 on:
   workflow_dispatch:
@@ -138,6 +138,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: forge-wheel
+        run-id: ${{ github.run_id }}
 
     - name: Find and download forge wheel
       if: ${{ inputs.rebuild == 'false' }}

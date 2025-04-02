@@ -1,6 +1,50 @@
 name: Test
 
 on:
+  workflow_dispatch:
+    inputs:
+      rebuild:
+        description: 'Rebuild the Forge'
+        required: false
+        default: false
+        type: boolean
+      preset:
+        description: 'Test preset to run'
+        required: false
+        default: 'Custom'
+        type: choice
+        options:
+          - Full Model Passing
+          - Full Model XFailing
+          - Models Ops
+          - Sweeps
+          - Custom
+      test_mark:
+        description: 'Test mark to run (custom preset)'
+        required: false
+        default: 'push'
+        type: string
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: choice
+        options:
+          - n150
+          - n300
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: "2"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+          - "4"
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
+        type: string
   workflow_call:
     inputs:
       test_mark:
@@ -43,20 +87,86 @@ permissions:
 
 jobs:
 
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-image: ${{ steps.docker-build.outputs.docker-image }}
+      test_group_cnt: ${{ inputs.test_group_cnt }}
+      test_group_ids: ${{ inputs.test_group_ids }}
+      test_mark: ${{ inputs.test_mark }}
+      runs-on: ${{ inputs.runs-on }}
+      operators: ${{ inputs.operators }}
+    steps:
+      - name: Build Docker Image
+        id: docker-realbuild
+        if: ${{ !inputs.docker-image }}
+        uses: ./.github/workflows/build-image.yml
+      - name: Set docker image
+        id: docker-build
+        run: |
+          if [ -z "${{ inputs.docker-image }}" ]; then
+            echo "docker-image=${{ steps.docker-realbuild.outputs.docker-image }}" >> $GITHUB_OUTPUT
+          else
+            echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
+          fi
+      - name: Build
+        if: ${{ inputs.rebuild == 'true' }}
+        uses: ./.github/workflows/build.yml
+        with:
+          docker-image: ${{ steps.docker-build.outputs.docker-image }}
+          build: 'Release'
+      - name: Inputs Management
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
+            echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
+            echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
+            echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
+            case "${{ inputs.preset }}" in
+              "Full Model Passing")
+                echo "test_mark='nightly and not xfail'" >> $GITHUB_OUTPUT
+                ;;
+              "Full Model XFailing")
+                echo "test_mark='nightly and xfail'" >> $GITHUB_OUTPUT
+                ;;
+              "Models Ops")
+                echo "test_mark='nightly_models_ops'" >> $GITHUB_OUTPUT
+                ;;
+              "Sweeps")
+                echo "test_mark='nightly_sweeps'" >> $GITHUB_OUTPUT
+                ;;
+              "Custom")
+                echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
+                ;;
+              *)
+                echo "Invalid preset"
+                exit 1
+                ;;
+            esac
+          else
+            echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
+            echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
+            echo "test_group_ids=${{ inputs.test_group_ids }}" >> $GITHUB_OUTPUT
+            echo "runs-on=${{ inputs.runs-on }}" >> $GITHUB_OUTPUT
+            echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
+          fi
+
   run-tests:
+    needs:
+      - build
 
     strategy:
       fail-fast: false
       matrix:
-        build: ${{ fromJson(inputs.runs-on) }}
-        test_group_id: ${{ fromJson(inputs.test_group_ids) }}
+        build: ${{ needs.build.outputs.runs-on }}
+        test_group_id: ${{ needs.build.outputs.test_group_ids }}
 
     runs-on:
       - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ inputs.docker-image }}
+      image: ${{ needs.build.outputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -66,14 +176,14 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
-    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+    name: "run-tests ${{ needs.build.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
     steps:
 
     - name: Fetch job id
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job_name: "run-tests ${{ needs.build.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
 
     - name: Set reusable strings
       id: strings
@@ -105,6 +215,7 @@ jobs:
           git submodule foreach --recursive git reset --hard
 
     - name: Download wheel
+      if: ${{ inputs.rebuild == null || inputs.rebuild == 'true' }}
       uses: actions/download-artifact@v4
       with:
         name: forge-wheel
@@ -112,6 +223,18 @@ jobs:
         run-id: ${{ inputs.on_nightly_run_id || github.run_id }}
         github-token: ${{ github.token }}
 
+    - name: Find and download forge wheel
+      if: ${{ inputs.rebuild == 'false' }}
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-nightly.yml
+        branch: master
+        name: forge-wheel
+        repo: tenstorrent/tt-forge-fe
+        check_artifacts: true
+  
     - name: Install wheel
       shell: bash
       run: |
@@ -126,14 +249,14 @@ jobs:
         FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
-        OPERATORS: ${{ inputs.operators }}
+        OPERATORS: ${{ needs.build.outputs.operators }}
       shell: bash
       run: |
         source env/activate
-        pytest --splits ${{ inputs.test_group_cnt }} \
+        pytest --splits ${{ needs.build.outputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
-               -m "${{ inputs.test_mark }}" \
+               -m "${{ needs.build.outputs.test_mark }}" \
                --junit-xml=${{ steps.strings.outputs.test_report_path }}
 
     - name: Upload Test Report
