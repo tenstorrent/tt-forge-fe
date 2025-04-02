@@ -76,6 +76,7 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than X GB)")
 def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     # Build Module Name
     module_name = build_module_name(
