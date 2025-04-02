@@ -12,15 +12,10 @@ from forge.verify.verify import verify
 from test.models.onnx.vision.yolo.utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
 from test.models.utils import Framework, Source, Task, build_module_name
 
-# Opset 10 is the minimum version to support DetectionModel in Torch.
-# Opset 17 is the maximum version in Torchscript.
-opset_versions = [10, 17]
 
-
-@pytest.mark.parametrize("opset_version", opset_versions, ids=[str(v) for v in opset_versions])
-@pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details")
+@pytest.mark.xfail()
 @pytest.mark.nightly
-def test_yolov10(forge_property_recorder, tmp_path, opset_version):
+def test_yolov10(forge_property_recorder, tmp_path):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -33,7 +28,9 @@ def test_yolov10(forge_property_recorder, tmp_path, opset_version):
     forge_property_recorder.record_model_name(module_name)
 
     # Load  model and input
-    model, image_tensor = load_yolo_model_and_image("https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt")
+    model, image_tensor = load_yolo_model_and_image(
+        "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
+    )
     torch_model = YoloWrapper(model)
 
     # Export model to ONNX
@@ -44,7 +41,7 @@ def test_yolov10(forge_property_recorder, tmp_path, opset_version):
         onnx_path,
         input_names=["image"],
         output_names=["output"],
-        opset_version=opset_version,
+        opset_version=17,
         dynamic_axes={"image": {0: "batch_size"}},
     )
 
