@@ -2,8 +2,8 @@
 * @nvukobratTT @pilkicTT @dgolubovicTT
 
 # CI/CD
-/.github/ @vmilosevic
+/.github/ nvukobratTT @pilkicTT @vmilosevic @nsumrakTT
 
 # Models
 ## PyTorch
-forge/test/models/pytorch @vkovinicTT @mstojkovicTT
+forge/test/models @nvukobratTT @pilkicTT @dgolubovicTT @vkovinicTT @mstojkovicTT
