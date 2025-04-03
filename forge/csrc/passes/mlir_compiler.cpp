@@ -3,7 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
 
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
+namespace fs = std::filesystem;
 
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
@@ -36,6 +43,7 @@
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
+#include "adapter.hpp"
 
 // Reportify headers
 #include "reportify/reportify.hpp"
@@ -127,6 +135,26 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         tt::log_info(LogMLIRCompiler, "C++ code generated successfully.");
         return cpp_source;
     }
+    else if constexpr (output == MLIROutputKind::SharedObject)
+    {
+        std::string cpp_source;
+        llvm::raw_string_ostream rso(cpp_source);
+
+        log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
+        auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
+        if (mlir::failed(res))
+        {
+            throw std::runtime_error("Failed to generate C++ code.");
+        }
+
+        rso.flush();
+
+        tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
+
+        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/handmade");
+
+        return soPathStr;
+    }
 }
 
 runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
@@ -138,5 +166,11 @@ std::string run_mlir_compiler_to_cpp(
     tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
 {
     return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, forge_property_handler);
+}
+
+std::string run_mlir_compiler_to_shared_object(
+    tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
+{
+    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, forge_property_handler);
 }
 }  // namespace tt::passes
