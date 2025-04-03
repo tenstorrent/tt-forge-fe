@@ -2134,7 +2134,9 @@ def compile_tvm_to_python(
 
     # Path is needed for TFLite model verification against TVM compile.
     path = None
-    if isinstance(framework_mod, TFLiteModule):
+    if isinstance(framework_mod, OnnxModule):
+        path = framework_mod.onnx_path
+    elif isinstance(framework_mod, TFLiteModule):
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded

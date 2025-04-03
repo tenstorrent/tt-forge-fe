@@ -179,27 +179,19 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param(
-        "swin_t",
-        marks=[pytest.mark.xfail],
-    ),
+    "swin_t",
     "swin_s",
     "swin_b",
-    pytest.param(
-        "swin_v2_t",
-        marks=[pytest.mark.xfail],
-    ),
+    "swin_v2_t",
     "swin_v2_s",
     "swin_v2_b",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(forge_property_recorder, variant):
-
-    if variant not in ["swin_t", "swin_v2_t"]:
-        pytest.skip("Skipping this variant; only testing the small variants(swin_t,swin_v2_t) for now.")
 
     # Build Module Name
     module_name = build_module_name(
