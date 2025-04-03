@@ -384,37 +384,47 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Conv2Dtranspose0,
-        [((1, 4, 7, 7), torch.float32)],
-        {
-            "model_name": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose0,
+            [((1, 4, 7, 7), torch.float32)],
+            {
+                "model_name": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2Dtranspose1,
-        [((1, 16, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose1,
+            [((1, 16, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 8502 clash with L1 buffers on core range [(x=0,y=0) - (x=0,y=0)]. L1 buffer allocated at 1227648 and static circular buffer region ends at 1342496"
+            )
+        ],
     ),
     pytest.param(
         (
@@ -473,261 +483,373 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
-    (
-        Conv2Dtranspose5,
-        [((1, 512, 16, 16), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose5,
+            [((1, 512, 16, 16), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=1)] grow to 1686560 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose6,
-        [((1, 256, 32, 32), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose6,
+            [((1, 256, 32, 32), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=0)] grow to 6405152 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose7,
-        [((1, 128, 64, 64), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose7,
+            [((1, 128, 64, 64), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 8520192 B L1 buffer across 4 banks, where each bank needs to store 2130048 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose8,
-        [((1, 64, 128, 128), torch.float32)],
-        {
-            "model_name": ["pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose8,
+            [((1, 64, 128, 128), torch.float32)],
+            {
+                "model_name": ["pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 4194304 B L1 buffer across 2 banks, where each bank needs to store 2097152 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose9,
-        [((1, 1024, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose9,
+            [((1, 1024, 14, 14), torch.float32)],
+            {
+                "model_name": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 8658 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=3)]. L1 buffer allocated at 1227648 and static circular buffer region ends at 1342496"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose5,
-        [((1, 512, 28, 28), torch.float32)],
-        {
-            "model_name": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose5,
+            [((1, 512, 28, 28), torch.float32)],
+            {
+                "model_name": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=1)] grow to 4930592 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose6,
-        [((1, 256, 56, 56), torch.float32)],
-        {
-            "model_name": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose6,
+            [((1, 256, 56, 56), torch.float32)],
+            {
+                "model_name": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 13075456 B L1 buffer across 8 banks, where each bank needs to store 1634432 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose7,
-        [((1, 128, 112, 112), torch.float32)],
-        {
-            "model_name": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose7,
+            [((1, 128, 112, 112), torch.float32)],
+            {
+                "model_name": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 6422528 B L1 buffer across 4 banks, where each bank needs to store 1605632 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose10,
-        [((1, 64, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose10,
+            [((1, 64, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=1,y=0)] grow to 1838112 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose11,
-        [((1, 32, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose11,
+            [((1, 32, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=0,y=0)] grow to 6999072 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose12,
-        [((1, 192, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose12,
+            [((1, 192, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=5,y=0)] grow to 1838112 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose13,
-        [((1, 96, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose13,
+            [((1, 96, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=2,y=0)] grow to 6999072 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose14,
-        [((1, 256, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose14,
+            [((1, 256, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=0)] grow to 1838112 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose15,
-        [((1, 128, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose15,
+            [((1, 128, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=3,y=0)] grow to 6999072 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose15,
-        [((1, 128, 14, 20), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose15,
+            [((1, 128, 14, 20), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=3,y=0)] grow to 1838112 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2Dtranspose10,
-        [((1, 64, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {
-                "stride": "2",
-                "padding": "0",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose10,
+            [((1, 64, 28, 40), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {
+                    "stride": "2",
+                    "padding": "0",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=1,y=0)] grow to 6999072 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
 ]
 

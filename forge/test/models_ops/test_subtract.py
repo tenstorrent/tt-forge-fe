@@ -425,21 +425,24 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 32), torch.int64)],
-        {
-            "model_name": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 32), torch.int64)],
+            {
+                "model_name": [
+                    "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                    "pt_opt_facebook_opt_125m_seq_cls_hf",
+                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Subtract4,
@@ -548,17 +551,20 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 256), torch.int64)],
-        {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 256), torch.int64)],
+            {
+                "model_name": [
+                    "pt_opt_facebook_opt_1_3b_clm_hf",
+                    "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Subtract0,

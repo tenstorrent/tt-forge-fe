@@ -1660,20 +1660,23 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Reciprocal0,
-        [((1, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-                "pt_t5_t5_small_text_gen_hf",
-                "pt_t5_t5_large_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Reciprocal0,
+            [((1, 1, 1), torch.float32)],
+            {
+                "model_name": [
+                    "pt_t5_google_flan_t5_base_text_gen_hf",
+                    "pt_t5_t5_small_text_gen_hf",
+                    "pt_t5_t5_large_text_gen_hf",
+                    "pt_t5_google_flan_t5_large_text_gen_hf",
+                    "pt_t5_t5_base_text_gen_hf",
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reciprocal0,

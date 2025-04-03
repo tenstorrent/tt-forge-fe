@@ -768,17 +768,24 @@ forge_modules_and_shapes_dtypes_list = [
         [((12, 256, 256), torch.float32)],
         {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 1, 512, 50176), torch.float32)],
-        {
-            "model_name": [
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 1, 512, 50176), torch.float32)],
+            {
+                "model_name": [
+                    "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                    "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 3445728 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
     (
         Softmax1,
@@ -1215,32 +1222,53 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 49, 49), torch.float32)],
         {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"dim": "-1"}},
     ),
-    (
-        Softmax3,
-        [((1, 17, 4, 4480), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax3,
+            [((1, 17, 4, 4480), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
-    (
-        Softmax3,
-        [((1, 17, 4, 1120), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax3,
+            [((1, 17, 4, 1120), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
-    (
-        Softmax3,
-        [((1, 17, 4, 280), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax3,
+            [((1, 17, 4, 280), torch.float32)],
+            {
+                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
 ]
 

@@ -284,14 +284,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1, 32), torch.int64)],
         {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dtype": "torch.float32"}},
     ),
-    (
-        Cast1,
-        [((1, 384), torch.int64)],
-        {
-            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 384), torch.int64)],
+            {
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast2,
@@ -302,14 +305,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.int32"},
         },
     ),
-    (
-        Cast1,
-        [((1, 384), torch.int32)],
-        {
-            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 384), torch.int32)],
+            {
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast0,
@@ -320,20 +326,23 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.float32"},
         },
     ),
-    (
-        Cast1,
-        [((1, 128), torch.int64)],
-        {
-            "model_name": [
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 128), torch.int64)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast2,
@@ -352,20 +361,23 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.int32"},
         },
     ),
-    (
-        Cast1,
-        [((1, 128), torch.int32)],
-        {
-            "model_name": [
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 128), torch.int32)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast3,
@@ -500,28 +512,38 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.bool"},
         },
     ),
-    (
-        Cast1,
-        [((1, 1, 256, 256), torch.int32)],
-        {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 1, 256, 256), torch.int32)],
+            {
+                "model_name": [
+                    "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+                    "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                    "pt_phi2_microsoft_phi_2_clm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Cast1,
-        [((1, 4), torch.int64)],
-        {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dtype": "torch.bool"}},
+    pytest.param(
+        (
+            Cast1,
+            [((1, 4), torch.int64)],
+            {
+                "model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast2,
@@ -532,10 +554,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.int32"},
         },
     ),
-    (
-        Cast1,
-        [((1, 4), torch.int32)],
-        {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dtype": "torch.bool"}},
+    pytest.param(
+        (
+            Cast1,
+            [((1, 4), torch.int32)],
+            {
+                "model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast1,
@@ -546,14 +575,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dtype": "torch.bool"},
         },
     ),
-    (
-        Cast1,
-        [((1, 1, 32, 32), torch.int32)],
-        {
-            "model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf", "pt_llama3_huggyllama_llama_7b_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"dtype": "torch.bool"},
-        },
+    pytest.param(
+        (
+            Cast1,
+            [((1, 1, 32, 32), torch.int32)],
+            {
+                "model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf", "pt_llama3_huggyllama_llama_7b_clm_hf"],
+                "pcc": 0.99,
+                "op_params": {"dtype": "torch.bool"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Cast0,

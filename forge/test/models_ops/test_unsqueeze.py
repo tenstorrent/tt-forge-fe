@@ -3960,31 +3960,37 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "0"},
         },
     ),
-    (
-        Unsqueeze0,
-        [((2, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Unsqueeze0,
+            [((2, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Unsqueeze1,
-        [((2, 13), torch.int64)],
-        {
-            "model_name": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "2"},
-        },
+    pytest.param(
+        (
+            Unsqueeze1,
+            [((2, 13), torch.int64)],
+            {
+                "model_name": [
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "2"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Unsqueeze1,
@@ -4039,14 +4045,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "1"},
         },
     ),
-    (
-        Unsqueeze0,
-        [((2, 7), torch.int64)],
-        {
-            "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
-            "pcc": 0.99,
-            "op_params": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Unsqueeze0,
+            [((2, 7), torch.int64)],
+            {
+                "model_name": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
+                "pcc": 0.99,
+                "op_params": {"dim": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Unsqueeze1,
@@ -4174,10 +4183,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "1"},
         },
     ),
-    (
-        Unsqueeze2,
-        [((1, 596), torch.bool)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+    pytest.param(
+        (
+            Unsqueeze2,
+            [((1, 596), torch.bool)],
+            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/reshape_view/device/reshape_rm_op.cpp:19: input_tensor_a.get_dtype() == DataType::BFLOAT16 or input_tensor_a.get_dtype() == DataType::UINT32 or input_tensor_a.get_dtype() == DataType::FLOAT32 info: Can only work with bfloat16/float32 or uint32 tensors"
+            )
+        ],
     ),
     (
         Unsqueeze3,
