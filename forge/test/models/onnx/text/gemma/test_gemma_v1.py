@@ -35,7 +35,10 @@ def test_gemma_v1_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    if variant == "google/gemma-1.1-2b-it":
+        forge_property_recorder.record_group("red")
+    else:
+        forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer from HuggingFace

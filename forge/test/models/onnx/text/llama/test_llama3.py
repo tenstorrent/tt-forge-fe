@@ -157,11 +157,7 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    if variant in [
-        "meta-llama/Llama-3.1-8B-Instruct",
-        "meta-llama/Llama-3.2-1B-Instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-    ]:
+    if variant == "meta-llama/Llama-3.1-8B-Instruct":
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")

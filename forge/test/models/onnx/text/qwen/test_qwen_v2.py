@@ -20,7 +20,7 @@ import torch
     [
         pytest.param(
             "Qwen/Qwen2.5-0.5B",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
@@ -28,6 +28,18 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
+            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-0.5B-Instruct",
+            marks=pytest.mark.xfail,
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-1.5B-Instruct",
+            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-3B-Instruct",
             marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
         ),
     ],
@@ -40,7 +52,10 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    if variant == "Qwen/Qwen2.5-0.5B-Instruct":
+        forge_property_recorder.record_group("red")
+    else:
+        forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer

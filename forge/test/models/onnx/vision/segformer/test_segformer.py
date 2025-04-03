@@ -47,8 +47,6 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-
-    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace
@@ -82,10 +80,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
 
 
 variants_semseg = [
-    pytest.param(
-        "nvidia/segformer-b0-finetuned-ade-512-512",
-        marks=[pytest.mark.xfail],
-    ),
+    "nvidia/segformer-b0-finetuned-ade-512-512",
     "nvidia/segformer-b1-finetuned-ade-512-512",
     "nvidia/segformer-b2-finetuned-ade-512-512",
     "nvidia/segformer-b3-finetuned-ade-512-512",
@@ -96,8 +91,7 @@ variants_semseg = [
 @pytest.mark.parametrize("variant", variants_semseg)
 @pytest.mark.nightly
 def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, tmp_path):
-    if variant != "nvidia/segformer-b0-finetuned-ade-512-512":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -109,10 +103,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     )
 
     # Record Forge Property
-    if variant == "nvidia/segformer-b0-finetuned-ade-512-512":
-        forge_property_recorder.record_group("red")
-    else:
-        forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the model from HuggingFace

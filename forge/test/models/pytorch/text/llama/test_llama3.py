@@ -31,6 +31,7 @@ variants = [
     "meta-llama/Llama-3.2-1B",
     "meta-llama/Llama-3.2-1B-Instruct",
     "meta-llama/Llama-3.2-3B",
+    "meta-llama/Llama-3.2-3B-Instruct",
     "huggyllama/llama-7b",
 ]
 
@@ -133,7 +134,8 @@ LlamaModel._update_causal_mask = _update_causal_mask
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llama3_causal_lm(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # if variant != "meta-llama/Llama-3.1-8B-Instruct":
+    #     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -141,7 +143,7 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    if variant in ["meta-llama/Llama-3.1-8B", "meta-llama/Llama-3.2-1B", "meta-llama/Llama-3.2-3B"]:
+    if variant == "meta-llama/Llama-3.1-8B-Instruct":
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
