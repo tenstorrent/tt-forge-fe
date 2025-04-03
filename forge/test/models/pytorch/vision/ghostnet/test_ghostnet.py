@@ -18,11 +18,7 @@ params = [
     pytest.param("ghostnet_100.in1k", marks=[pytest.mark.push]),
     pytest.param(
         "ghostnetv2_100.in1k",
-        marks=[
-            pytest.mark.xfail(
-                reason="AssertionError: Setting a tensor value of incorrect shape: (1, 72, 30, 26) vs torch.Size([1, 72, 28, 28])"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
 ]
 

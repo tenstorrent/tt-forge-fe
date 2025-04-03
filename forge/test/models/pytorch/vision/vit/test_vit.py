@@ -28,7 +28,7 @@ def generate_model_vit_imgcls_hf_pytorch(variant):
 
 
 variants = [
-    pytest.param("google/vit-base-patch16-224", marks=[pytest.mark.xfail(reason="Tracing issue by torch.jit.trace")]),
+    pytest.param("google/vit-base-patch16-224", marks=[pytest.mark.xfail]),
     "google/vit-large-patch16-224",
 ]
 
@@ -50,7 +50,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
-        forge_property_recorder.record_group("priority")
+        forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
@@ -75,7 +75,7 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param("vit_b_16", marks=[pytest.mark.xfail(reason="Tracing issue by torch.jit.trace")]),
+    pytest.param("vit_b_16", marks=[pytest.mark.xfail]),
     "vit_b_32",
     "vit_l_16",
     "vit_l_32",

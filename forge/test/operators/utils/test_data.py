@@ -348,6 +348,6 @@ class TestCollectionTorch:
 
     single = TestCollection(
         dev_data_formats=[
-            torch.float16,
+            torch.bfloat16,
         ],
     )

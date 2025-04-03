@@ -18,15 +18,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "seasionality_basis",
-            marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 4 - stride mismatch: expected [24, 1], got [1, 12]")],
-        ),
-    ],
-)
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", ["seasionality_basis"])
 def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
@@ -61,9 +54,9 @@ def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["generic_basis"])
 def test_nbeats_with_generic_basis(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -91,9 +84,9 @@ def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["trend_basis"])
 def test_nbeats_with_trend_basis(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(

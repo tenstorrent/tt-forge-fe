@@ -29,11 +29,7 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
 variants = [
     pytest.param(
         "facebook/deit-base-patch16-224",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "facebook/deit-base-distilled-patch16-224",
     "facebook/deit-small-patch16-224",
