@@ -3,7 +3,14 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "mlir_compiler.hpp"
 
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <memory>
+#include <sstream>
+#include <string>
+namespace fs = std::filesystem;
 
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
@@ -127,6 +134,72 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         tt::log_info(LogMLIRCompiler, "C++ code generated successfully.");
         return cpp_source;
     }
+    else if constexpr (output == MLIROutputKind::SharedObject)
+    {
+        std::string cpp_source;
+        llvm::raw_string_ostream rso(cpp_source);
+
+        auto mdl = mlir_module.get();
+
+        mdl->dump();
+
+        log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
+        auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
+        if (mlir::failed(res))
+        {
+            throw std::runtime_error("Failed to generate C++ code.");
+        }
+
+        rso.flush();
+
+        tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
+
+        // TODO: Implement shared object generation from MLIR module.
+
+        // Define paths for .cpp files.
+        //
+        fs::path directoryPath = fs::path("/localdev/svuckovic/_workspace/repos/tt-forge-fe");
+        fs::path filePath = directoryPath / "resnet.cpp";
+
+        std::ofstream outFile(filePath);
+        if (!outFile.is_open())
+        {
+            std::cerr << "Error: Could not open file for writing: " << filePath << std::endl;
+            exit(1);
+        }
+        outFile << cpp_source;
+        outFile.close();
+        std::cout << "Successfully wrote C++ code to: " << filePath << std::endl;
+
+        // Compile the C++ code to a shared object.
+        //
+        std::string pythonScriptPath =
+            "/localdev/svuckovic/_workspace/repos/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/"
+            "ci_compile_dylib.py";
+
+        // Check if the script exists
+        if (!fs::exists(pythonScriptPath))
+        {
+            std::cerr << "Error: Python script not found: " << pythonScriptPath << std::endl;
+            exit(1);
+        }
+
+        std::string command =
+            "/opt/ttforge-toolchain/venv/bin/python " + pythonScriptPath + " --file " + filePath.string();
+
+        int result = std::system(command.c_str());
+
+        if (result == 0)
+        {
+            std::cout << "Python script executed successfully." << std::endl;
+        }
+        else
+        {
+            std::cerr << "Error: Python script execution failed with code: " << result << std::endl;
+        }
+
+        return "test";
+    }
 }
 
 runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
@@ -138,5 +211,11 @@ std::string run_mlir_compiler_to_cpp(
     tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
 {
     return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, forge_property_handler);
+}
+
+std::string run_mlir_compiler_to_shared_object(
+    tt::ForgeGraphModule& module, const std::optional<py::object>& forge_property_handler)
+{
+    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, forge_property_handler);
 }
 }  // namespace tt::passes

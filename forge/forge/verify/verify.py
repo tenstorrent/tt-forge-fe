@@ -429,6 +429,8 @@ def verify(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
+    compiled_model.export_to_shared_object()
+
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
@@ -445,6 +447,8 @@ def verify(
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)
     fw_out = to_pt_tensors(fw_out)
+
+    # compiled_model.export_to_cpp("todo_unique_name.cpp")
 
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 

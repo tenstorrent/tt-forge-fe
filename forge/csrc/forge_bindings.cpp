@@ -219,6 +219,7 @@ PYBIND11_MODULE(_C, m)
         py::arg("default_df_override") = std::optional<DataFormat>{});
     m.def("run_mlir_compiler", &passes::run_mlir_compiler);
     m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
+    m.def("run_mlir_compiler_to_shared_object", &passes::run_mlir_compiler_to_shared_object);
     m.def("split_graph", &passes::split_graph);
 
     m.def(

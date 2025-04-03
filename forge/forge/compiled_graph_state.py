@@ -21,7 +21,7 @@ from forge._C.runtime import (
     create_program_state,
     ProgramType,
 )
-from forge._C import run_mlir_compiler_to_cpp
+from forge._C import run_mlir_compiler_to_cpp, run_mlir_compiler_to_shared_object
 from forge.tensor import Tensor, get_post_const_eval_tensors, to_pt_tensors, cast_unsupported_torch_dtype, AnyTensor
 from forge.module import Module, PyTorchModule, AnyModule
 
@@ -459,7 +459,7 @@ class CompiledModel:
         """
 
         logger.info(f"Exporting model {self.framework_module.get_name()} to cpp file...")
-        cpp_code = run_mlir_compiler_to_cpp(self.forge_graph_module)
+        cpp_code = run_mlir_compiler_to_cpp(self.forge_graph_module, None)
 
         with open(export_path, "w") as f:
             f.write(cpp_code)
@@ -472,6 +472,21 @@ class CompiledModel:
         )
         logger.info(f"    Tool: https://github.com/tenstorrent/tt-mlir/tree/main/tools/ttnn-standalone")
         logger.info(f"    Docs: https://docs.tenstorrent.com/tt-mlir/ttnn-standalone.html")
+
+    def export_to_shared_object(self) -> None:
+        """
+        Export the model to a shared object file.
+
+        Parameters
+        ----------
+        export_path: str
+            Path to the file where the model shared object code will be exported.
+        """
+
+        logger.info(f"Exporting model {self.framework_module.get_name()} to shared object file...")
+        run_mlir_compiler_to_shared_object(self.forge_graph_module, None)
+
+        logger.info(f'Exported model as shared object file...')
 
     def update_host_weights(self):
         for name, param in self.framework_module.module.named_parameters():
