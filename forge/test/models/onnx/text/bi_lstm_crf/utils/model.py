@@ -23,8 +23,8 @@ def get_model(test_sentence):
     word_to_ix = {"apple": 0, "corporation": 1, "is": 2, "in": 3, "georgia": 4, "<PAD>": 5}
     tag_to_ix = {"B": 0, "I": 1, "O": 2}
 
-    embedding_dim = 5
-    hidden_dim = 4
+    embedding_dim = len(word_to_ix) - 1
+    hidden_dim = len(word_to_ix) - 2
     num_rnn_layers = 1
     model = BiRnnCrf(
         vocab_size=len(word_to_ix),
