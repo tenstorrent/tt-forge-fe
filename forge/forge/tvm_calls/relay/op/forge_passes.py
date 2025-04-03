@@ -4766,7 +4766,7 @@ def run_forge_compile_passes(
             DecomposeVariance(),
             ArgmaxAndMaxReconstruct(),
             ConvertArgmaxTakeToReduceMax(),
-            AddSqueezeForArgmax(),
+            # AddSqueezeForArgmax(),
             DecompEinsumWithWTranspose(),
             DecompWTranspose(),
             DecomposeEinsum(),
