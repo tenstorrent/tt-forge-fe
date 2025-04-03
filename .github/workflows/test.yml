@@ -46,11 +46,6 @@ on:
         required: false
         type: string
 
-permissions:
-  packages: write
-  checks: write
-  pull-requests: write # only required if `comment: true` was enabled
-
 jobs:
 
   docker-build:
