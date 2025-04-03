@@ -118,7 +118,7 @@ jobs:
       - build
       - set-inputs
     uses: ./.github/workflows/test-sub.yml
-    secrets: inherit    
+    secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       test_mark: ${{ needs.set-inputs.outputs.test_mark }}
