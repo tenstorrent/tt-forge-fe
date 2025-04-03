@@ -111,6 +111,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: Find and download forge wheel
+        if: ${{ !inputs.run_id }}
         uses: dawidd6/action-download-artifact@v9
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}

@@ -40,13 +40,14 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
+    name: "run-perf-benchmarks ${{matrix.build.name }} (${{ matrix.build.runs-on }}, ${{ matrix.build.bs }}, ${{ matrix.build.lp }})"
     steps:
 
     - name: Fetch job id
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "${{ github.job }}"
+        job_name: "run-perf-benchmarks ${{matrix.build.name }} (${{ matrix.build.runs-on }}, ${{ matrix.build.bs }}, ${{ matrix.build.lp }})"
 
     - name: Set reusable strings
       id: strings
@@ -119,6 +120,7 @@ jobs:
         run-id: ${{ inputs.run_id }}
 
     - name: Find and download forge wheel
+      if: ${{ !inputs.run_id }}
       uses: dawidd6/action-download-artifact@v9
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
