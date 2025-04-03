@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+
+# SPDX-License-Identifier: Apache-2.0
+
+import pytest
+import paddle
+
+import forge
+from forge.verify.verify import verify
+from forge.tvm_calls.forge_utils import paddle_trace
+
+from test.models.utils import Framework, Source, Task, build_module_name
+
+from paddlenlp.transformers import GLMTokenizer, GLMForConditionalGeneration, GLMModel
+
+variants = [
+            "THUDM/glm-515m", 
+            "THUDM/glm-2b",
+            "THUDM/glm-large-chinese"]
+
+@pytest.mark.nightly
+@pytest.mark.xfail()
+@pytest.mark.parametrize("variant", variants)
+def test_glm(variant, forge_property_recorder):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PADDLE,
+        model="glm",
+        variant=variant[10:],
+        source=Source.PADDLENLP,
+        task=Task.CONDITIONAL_GENERATION,
+    )
+    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_group("generality")
+
+    # Load Model and Tokenizer
+    model = GLMForConditionalGeneration.from_pretrained(variant)
+    tokenizer = GLMTokenizer.from_pretrained(variant)
+
+    # Load sample
+    text = ["写一首关于大海的诗"]
+    inputs = tokenizer(text, return_tensors="pd")
+
+    # Test framework model
+    outputs = model(**inputs)
+    logits = outputs[0]
+    decoded_tokens = paddle.argmax(logits, axis=-1)
+    decoded_text = tokenizer.decode(decoded_tokens[0].numpy().tolist(), skip_special_tokens=True)
+    print(decoded_text)
+
+    inputs = [inputs["input_ids"]]
+    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
+    framework_model,_ = paddle_trace(model, input_spec)
+
+    # Compile Model
+    compiled_model = forge.compile(framework_model, inputs)
+
+    # Verify
+    verify(inputs, framework_model, compiled_model)
+
