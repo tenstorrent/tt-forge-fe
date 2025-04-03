@@ -116,6 +116,12 @@ jobs:
         id: set-inputs
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -z "${{ github.event.inputs }}" ]]; then
+            echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
+            echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
+            echo "test_group_ids=${{ inputs.test_group_ids }}" >> $GITHUB_OUTPUT
+            echo "runs-on=${{ inputs.runs-on }}" >> $GITHUB_OUTPUT
+            echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
+          else
             echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
             echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
             echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
@@ -141,12 +147,6 @@ jobs:
                 exit 1
                 ;;
             esac
-          else
-            echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
-            echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
-            echo "test_group_ids=${{ inputs.test_group_ids }}" >> $GITHUB_OUTPUT
-            echo "runs-on=${{ inputs.runs-on }}" >> $GITHUB_OUTPUT
-            echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
           fi
 
   build:
