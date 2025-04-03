@@ -139,10 +139,6 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         std::string cpp_source;
         llvm::raw_string_ostream rso(cpp_source);
 
-        auto mdl = mlir_module.get();
-
-        mdl->dump();
-
         log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
         auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
         if (mlir::failed(res))
@@ -198,7 +194,10 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
             std::cerr << "Error: Python script execution failed with code: " << result << std::endl;
         }
 
-        return "test";
+        fs::path soPath = filePath;
+        soPath.replace_extension(".so");
+
+        return soPath.string();
     }
 }
 
