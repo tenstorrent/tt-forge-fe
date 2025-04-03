@@ -24,14 +24,11 @@ jobs:
       secrets: inherit
 
   build-if-neccessary:
-    runs-on: ubuntu-latest
+    if: ${{ !(github.event.workflow_run.id || github.event.inputs.run_id) }}
     needs: docker-build
-    steps:
-      - name: Build the wheel if necessary
-        if: ${{ !(github.event.workflow_run.id || github.event.inputs.run_id) }}
-        uses: ./.github/workflows/build.yml
-        with:
-          docker-image: ${{ needs.docker-build.outputs.docker-image }}
+    uses: ./.github/workflows/build.yml
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
     # Only build if no existing run ID is available
   test_full_model_xfailing:
