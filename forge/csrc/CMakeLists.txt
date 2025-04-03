@@ -11,7 +11,9 @@ set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
 set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/include
     ${TT_MLIR_ROOT_DIR}/build/include
-    ${TT_MLIR_ROOT_DIR}/runtime/include)
+    ${TT_MLIR_ROOT_DIR}/runtime/test/include
+    ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone
+)
 
 set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -51,6 +53,7 @@ file(GLOB CPP_FILES
     "forge_passes.cpp"
     "passes/*.cpp"
     "lower_to_forge/common.cpp"
+    "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/tools/ttnn-standalone/compile_so.cpp"
 )
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
