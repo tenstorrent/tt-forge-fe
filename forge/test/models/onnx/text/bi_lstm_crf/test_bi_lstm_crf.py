@@ -12,17 +12,12 @@ from forge.verify.verify import verify
 from test.models.onnx.text.bi_lstm_crf.utils.model import get_model
 from test.models.utils import Framework, Source, Task, build_module_name
 
-# Opset 11 is the minimum version to support bi_lstm_crf in Torch.
-# Opset 17 is the maximum version in Torchscript.
-opset_versions = [11, 17]
-
 
 @pytest.mark.nightly
 @pytest.mark.xfail(
     reason="NotImplementedError: The following operators are not implemented: ['aten::_pad_packed_sequence', 'aten::_pack_padded_sequence']"
 )
-@pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_birnn_crf_pypi(forge_property_recorder, tmp_path, opset_version):
+def test_birnn_crf_pypi(forge_property_recorder, tmp_path):
 
     # Build Module Name
     module_name = build_module_name(
@@ -33,7 +28,7 @@ def test_birnn_crf_pypi(forge_property_recorder, tmp_path, opset_version):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
@@ -43,7 +38,7 @@ def test_birnn_crf_pypi(forge_property_recorder, tmp_path, opset_version):
     model.eval()
 
     onnx_path = f"{tmp_path}/bilstm_crf.onnx"
-    torch.onnx.export(model, test_input, onnx_path, opset_version=opset_version)
+    torch.onnx.export(model, test_input, onnx_path, opset_version=17)
 
     # Load ONNX model
     onnx_model = onnx.load(onnx_path)
