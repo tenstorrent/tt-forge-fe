@@ -111,13 +111,12 @@ jobs:
         run-id: ${{ inputs.run_id }}
 
     - name: Find and download forge wheel
-      if: ${{ !inputs.run_id }}
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v9
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
         workflow_conclusion: success
+        workflow_search: true
         workflow: on-nightly.yml
-        branch: master
         name: forge-wheel
         repo: tenstorrent/tt-forge-fe
         check_artifacts: true
