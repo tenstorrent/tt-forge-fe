@@ -16,6 +16,7 @@ on:
           - All
           - Release
           - Debug
+          - None
   workflow_call:
     inputs:
       mlir_override:
