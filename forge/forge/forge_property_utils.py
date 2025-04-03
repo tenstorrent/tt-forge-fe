@@ -468,6 +468,7 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
@@ -627,6 +628,9 @@ class ForgePropertyHandler:
         """
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
+
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
 
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):

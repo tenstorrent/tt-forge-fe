@@ -196,5 +196,8 @@ def test_resnet_torchvision(variant):
     if variant == "resnet34":
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
+    if variant == "resnet50":
+        verify_cfg = VerifyConfig(verify_emitc_correctness=True)
+
     # Model Verification
     verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
