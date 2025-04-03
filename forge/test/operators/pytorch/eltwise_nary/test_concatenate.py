@@ -184,11 +184,7 @@ TestParamsData.test_plan = TestPlan(
         # Test all shapes and input sources collection:
         TestCollection(
             operators=TestParamsData.operators,
-            input_sources=[  # TODO: use TestCollectionCommon.all.input_sources when becames available
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
+            input_sources=TestCollectionCommon.all.input_sources,
             input_shapes=TestParamsData.generate_input_shapes(),
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),
