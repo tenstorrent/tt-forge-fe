@@ -98,6 +98,7 @@ jobs:
     if: always()
     outputs:
       docker-image: ${{ steps.set-docker.outputs.docker-image }}
+      buildtype: ${{ steps.set-docker.outputs.buildtype }}
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       test_mark: ${{ steps.set-inputs.outputs.test_mark }}
@@ -111,6 +112,11 @@ jobs:
             echo "docker-image=${{ needs.docker-build.outputs.docker-image }}" >> $GITHUB_OUTPUT
           else
             echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
+          fi
+          if [ ${{ inputs.rebuild }} == 'true' ]; then
+            echo "buildtype=Release" >> $GITHUB_OUTPUT
+          else
+            echo "buildtype=None" >> $GITHUB_OUTPUT
           fi
       - name: Inputs Management
         id: set-inputs
@@ -150,13 +156,12 @@ jobs:
           fi
 
   build:
-    if: ${{ inputs.rebuild == 'true' }}
     needs: set-docker-image
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.set-docker-image.outputs.docker-image }}
-      build: 'Release'
+      build: ${{ needs.set-docker-image.outputs.buildtype}}
 
 
   run-tests:
