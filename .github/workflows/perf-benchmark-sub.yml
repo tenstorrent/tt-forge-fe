@@ -121,6 +121,7 @@ jobs:
         name: forge-wheel
         repo: tenstorrent/tt-forge-fe
         check_artifacts: true
+        search_artifacts: true
 
     - name: Install wheel
       shell: bash
