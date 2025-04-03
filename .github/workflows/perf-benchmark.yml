@@ -16,34 +16,39 @@ on:
         type: string
 
 jobs:
-  build:
+  docker-build:
+    if: ${{ !inputs.docker-image }}
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  set-docker-image:
     runs-on: ubuntu-latest
+    needs: docker-build
     outputs:
-      docker-image: ${{ steps.docker-build.outputs.docker-image }}
+      docker-image: ${{ steps.set-docker.outputs.docker-image }}
     steps:
-      - name: Build Docker Image
-        id: docker-realbuild
-        if: ${{ !inputs.docker-image }}
-        uses: ./.github/workflows/build-image.yml
-        with:
-          secrets: ${{ secrets }}
       - name: Set docker image
-        id: docker-build
+        id: set-docker
         run: |
           if [ -z "${{ inputs.docker-image }}" ]; then
-            echo "docker-image=${{ steps.docker-realbuild.outputs.docker-image }}" >> $GITHUB_OUTPUT
+            echo "docker-image=${{ needs.docker-build.outputs.docker-image }}" >> $GITHUB_OUTPUT
           else
             echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
           fi
-      - name: Build
-        if: ${{ inputs.rebuild == 'true' }}
-        uses: ./.github/workflows/build.yml
-        with:
-          docker-image: ${{ steps.docker-build.outputs.docker-image }}
-          build: 'Release'
+
+  build:
+    if: ${{ inputs.rebuild == 'true' }}
+    needs: set-docker-image
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.set-docker-image.outputs.docker-image }}
+
 
   run-perf-benchmarks:
-    needs: build
+    needs:
+      - set-docker-image
+      - build
 
     strategy:
       fail-fast: false
@@ -53,7 +58,7 @@ jobs:
       - performance
 
     container:
-      image: ${{ needs.build.outputs.docker-image }}
+      image: ${{ needs.set-docker-image.outputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages

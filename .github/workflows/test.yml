@@ -87,35 +87,32 @@ permissions:
 
 jobs:
 
-  build:
+  docker-build:
+    if: ${{ !inputs.docker-image }}
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  set-docker-image:
     runs-on: ubuntu-latest
+    needs: docker-build
     outputs:
-      docker-image: ${{ steps.docker-build.outputs.docker-image }}
-      test_group_cnt: ${{ inputs.test_group_cnt }}
-      test_group_ids: ${{ inputs.test_group_ids }}
-      test_mark: ${{ inputs.test_mark }}
-      runs-on: ${{ inputs.runs-on }}
-      operators: ${{ inputs.operators }}
+      docker-image: ${{ steps.set-docker.outputs.docker-image }}
+      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
+      test_mark: ${{ steps.set-inputs.outputs.test_mark }}
+      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
+      operators: ${{ steps.set-inputs.outputs.operators }}
     steps:
-      - name: Build Docker Image
-        id: docker-realbuild
-        if: ${{ !inputs.docker-image }}
-        uses: ./.github/workflows/build-image.yml
       - name: Set docker image
-        id: docker-build
+        id: set-docker
         run: |
           if [ -z "${{ inputs.docker-image }}" ]; then
-            echo "docker-image=${{ steps.docker-realbuild.outputs.docker-image }}" >> $GITHUB_OUTPUT
+            echo "docker-image=${{ needs.docker-build.outputs.docker-image }}" >> $GITHUB_OUTPUT
           else
             echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
           fi
-      - name: Build
-        if: ${{ inputs.rebuild == 'true' }}
-        uses: ./.github/workflows/build.yml
-        with:
-          docker-image: ${{ steps.docker-build.outputs.docker-image }}
-          build: 'Release'
       - name: Inputs Management
+        id: set-inputs
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
@@ -151,22 +148,34 @@ jobs:
             echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
           fi
 
+  build:
+    if: ${{ inputs.rebuild == 'true' }}
+    needs: set-docker-image
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.set-docker-image.outputs.docker-image }}
+      build: 'Release'
+
+
   run-tests:
     needs:
+      - docker-build
+      - set-docker-image
       - build
 
     strategy:
       fail-fast: false
       matrix:
-        build: ${{ needs.build.outputs.runs-on }}
-        test_group_id: ${{ needs.build.outputs.test_group_ids }}
+        build: ${{ needs.set-docker-image.outputs.runs-on }}
+        test_group_id: ${{ needs.set-docker-image.outputs.test_group_ids }}
 
     runs-on:
       - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
-      image: ${{ needs.build.outputs.docker-image }}
+      image: ${{ needs.set-docker-image.outputs.docker-image }}
       options: --device /dev/tenstorrent/0
       volumes:
         - /dev/hugepages:/dev/hugepages
@@ -176,14 +185,14 @@ jobs:
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
 
-    name: "run-tests ${{ needs.build.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+    name: "run-tests ${{ needs.set-docker-image.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
     steps:
 
     - name: Fetch job id
       id: fetch-job-id
       uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
       with:
-        job_name: "run-tests ${{ needs.build.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+        job_name: "run-tests ${{ needs.set-docker-image.outputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
 
     - name: Set reusable strings
       id: strings
@@ -234,7 +243,7 @@ jobs:
         name: forge-wheel
         repo: tenstorrent/tt-forge-fe
         check_artifacts: true
-  
+
     - name: Install wheel
       shell: bash
       run: |
@@ -249,14 +258,14 @@ jobs:
         FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
         HF_HUB_DISABLE_PROGRESS_BARS: 1
         FORGE_DISABLE_REPORTIFY_DUMP: 1
-        OPERATORS: ${{ needs.build.outputs.operators }}
+        OPERATORS: ${{ needs.set-docker-image.outputs.operators }}
       shell: bash
       run: |
         source env/activate
-        pytest --splits ${{ needs.build.outputs.test_group_cnt }} \
+        pytest --splits ${{ needs.set-docker-image.outputs.test_group_cnt }} \
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
-               -m "${{ needs.build.outputs.test_mark }}" \
+               -m "${{ needs.set-docker-image.outputs.test_mark }}" \
                --junit-xml=${{ steps.strings.outputs.test_report_path }}
 
     - name: Upload Test Report
@@ -272,7 +281,7 @@ jobs:
       with:
         report_paths: ${{ steps.strings.outputs.test_report_path }}
         check_name: TT-Forge-FE Tests
-        comment: true
+        comment: false
         updateComment: false
         detailed_summary: true
         group_suite: true
