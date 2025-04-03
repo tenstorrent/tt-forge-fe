@@ -43,8 +43,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build: ${{ inputs.runs-on }}
-        test_group_id: ${{ inputs.test_group_ids }}
+        build: ${{ fromJson(inputs.runs-on) }}
+        test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
     runs-on:
       - in-service
