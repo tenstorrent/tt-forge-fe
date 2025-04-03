@@ -17,8 +17,8 @@ from PIL import Image
 from test.models.utils import Framework, Source, Task, build_module_name, print_cls_results
 
 params = [
-    pytest.param("mobilenetv2_050", marks=[pytest.mark.push]),
-    pytest.param("mobilenetv2_100"),
+    pytest.param("mobilenetv2_050"),
+    pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
     pytest.param("mobilenetv2_140"),
 ]
