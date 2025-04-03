@@ -317,7 +317,7 @@ def Sigmoid(name: str, operandA: Tensor) -> Tensor:
     return op("sigmoid", name, operandA).get_tensor()
 
 
-def Argmax(name: str, operandA: Tensor, dim: int = None) -> Tensor:
+def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim = False) -> Tensor:
     """
     Argmax
 
@@ -329,6 +329,13 @@ def Argmax(name: str, operandA: Tensor, dim: int = None) -> Tensor:
     operandA: Tensor
         First operand
 
+    dim: int
+        The dimension to reduce
+        
+    keep_dim: bool
+        If True, retains the dimension that is reduced, with size 1.
+        If False (default), the dimension is removed from the output shape.
+        
     Returns
     -------
     Tensor
@@ -336,9 +343,13 @@ def Argmax(name: str, operandA: Tensor, dim: int = None) -> Tensor:
     """
 
     if dim is not None:
-        return op("argmax", name, operandA, dim=dim).get_tensor()
+        
+        if dim < 0:
+            dim += len(operandA.shape)
+        
+        return op("argmax", name, operandA, dim=dim, keep_dim=keep_dim).get_tensor()
     else:
-        return op("argmax", name, operandA).get_tensor()
+        return op("argmax", name, operandA, keep_dim=keep_dim).get_tensor()
 
 
 def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
