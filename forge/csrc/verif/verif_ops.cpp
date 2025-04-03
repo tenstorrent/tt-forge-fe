@@ -257,8 +257,9 @@ bool has_special_values(torch::Tensor& a)
                     .add_input(a)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES_AND(
+    AT_DISPATCH_FLOATING_TYPES_AND2(
         at::kBFloat16,
+        at::kHalf,
         iter.input().scalar_type(),
         "has_special_values",
         [&]()
@@ -336,8 +337,9 @@ bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool 
                     .add_input(b)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES_AND(
+    AT_DISPATCH_FLOATING_TYPES_AND2(
         at::kBFloat16,
+        at::kHalf,
         iter.input().scalar_type(),
         "all_close",
         [&]()
@@ -393,7 +395,9 @@ double cov_ij(
 
     const auto N = a.numel() - 1;
 
-    AT_DISPATCH_FLOATING_TYPES(
+    AT_DISPATCH_FLOATING_TYPES_AND2(
+        at::kBFloat16,
+        at::kHalf,
         iter.input().scalar_type(),
         "cov_ij",
         [&]()
@@ -413,7 +417,7 @@ double cov_ij(
                     auto delta_b = b - b_mean_vec;
                     return (delta_a * delta_b) / N_vec;
                 },
-                std::numeric_limits<scalar_t>::lowest());
+                static_cast<scalar_t>(0));
         });
 
     return iter.output().item<double>();
