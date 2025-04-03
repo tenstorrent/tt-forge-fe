@@ -95,6 +95,7 @@ jobs:
   set-docker-image:
     runs-on: ubuntu-latest
     needs: docker-build
+    if: always()
     outputs:
       docker-image: ${{ steps.set-docker.outputs.docker-image }}
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
@@ -160,7 +161,6 @@ jobs:
 
   run-tests:
     needs:
-      - docker-build
       - set-docker-image
       - build
 
