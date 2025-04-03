@@ -20,6 +20,7 @@ jobs:
       build: 'None'
 
   test_full_model_passing:
+    if: always()
     needs:
       - docker-build
       - build
