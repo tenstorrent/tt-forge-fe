@@ -65,10 +65,11 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
 
     // Get the pipeline info for the wanted pipeline.
     static_assert(
-        output == MLIROutputKind::Flatbuffer || output == MLIROutputKind::Cpp,
+        output == MLIROutputKind::Flatbuffer || output == MLIROutputKind::Cpp || output == MLIROutputKind::SharedObject,
         "Handling only Flatbuffer and Cpp output correctly.");
-    constexpr auto pipeline_name =
-        (output == MLIROutputKind::Flatbuffer) ? "ttir-to-ttnn-backend-pipeline" : "ttir-to-emitc-pipeline";
+    constexpr auto pipeline_name = (output == MLIROutputKind::Flatbuffer) ? "ttir-to-ttnn-backend-pipeline"
+                                   : (output == MLIROutputKind::Cpp)      ? "ttir-to-emitc-pipeline"
+                                                                          : "ttir-to-emitc-so-pipeline";
     const auto pipelineInfo = mlir::PassPipelineInfo::lookup(pipeline_name);
 
     // Error handler for the pipeline. Will be called if there is an error during parsing of the pipeline options.
@@ -113,6 +114,8 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::
 template void run_mlir_passes<MLIROutputKind::Flatbuffer>(
     mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config);
 template void run_mlir_passes<MLIROutputKind::Cpp>(
+    mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config);
+template void run_mlir_passes<MLIROutputKind::SharedObject>(
     mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config);
 
 }  // namespace tt::passes
