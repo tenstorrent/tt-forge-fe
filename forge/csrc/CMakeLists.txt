@@ -11,7 +11,8 @@ set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
 set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/include
     ${TT_MLIR_ROOT_DIR}/build/include
-    ${TT_MLIR_ROOT_DIR}/runtime/include)
+    ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone
+)
 
 set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -80,11 +81,13 @@ target_link_libraries(ttforge_csrc PRIVATE
     reportify
     tt_torch_device
     runtime
+    runtime-testutils
     ttforge_csrc_objs
     verif
 
     TTMLIRCompiler
     TTMLIRRuntime
+    TTNNCompileSo
 
     xml2
     curses

@@ -4,8 +4,11 @@
 #include "runtime/state.hpp"
 
 #include <utils/logger.hpp>
+#include <vector>
 
+#include "runtime/runtime.hpp"
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 
 namespace tt
 {
@@ -89,4 +92,5 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
 
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
 }
+
 };  // namespace tt

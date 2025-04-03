@@ -24,7 +24,8 @@ from ..tensor import (
 )
 from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
-from forge._C.runtime import Tensor as CTensor
+from forge._C.runtime import Tensor as CTensor, ProgramType
+from forge._C.runtime_test import test_so, get_persistent_inputs
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
@@ -33,6 +34,7 @@ from forge.forge_property_utils import (
     record_execution,
     record_verify_config,
     record_consistency_limits,
+    record_emitc_status,
 )
 
 
@@ -392,12 +394,35 @@ def verify(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
-    # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
     record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
     record_execution(ExecutionStage.FAILED_VERIFICATION)
+
+    # EmitC verification
+    if verify_cfg.verify_emitc_correctness:
+        # Compile .so
+        so_path = compiled_model.export_to_shared_object()
+        # Run .so
+        all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
+        # consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
+        consts_and_params = get_persistent_inputs(ProgramType.Forward, compiled_model.runtime_model_state)
+        fwd_func_name = "forward"
+        is_success = test_so(
+            # is_success = compiled_model.runtime_model_state.test_so(
+            so_path,
+            fwd_func_name,
+            compiled_model.inputs,
+            consts_and_params,
+            all_outputs,
+        )
+
+        logger.info("SharedObject test is success: {}", is_success)
+
+        record_emitc_status(is_success)
+
+        assert is_success
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
