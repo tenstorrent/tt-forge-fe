@@ -151,8 +151,11 @@ jobs:
         name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
         path: ${{ steps.strings.outputs.test_report_path }}
 
+    # Show Test Report allowing it to fail without failing the job
+    # This is useful for the case of community PR runs.
     - name: Show Test Report
       uses: mikepenz/action-junit-report@v5
+      continue-on-error: true
       if: success() || failure()
       with:
         report_paths: ${{ steps.strings.outputs.test_report_path }}

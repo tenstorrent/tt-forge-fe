@@ -15,8 +15,8 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import mean_pooling
 from test.utils import download_model
-from test.models.model_utils import mean_pooling
 
 
 # Opset 9 is the minimum version to support BERT in Torch.

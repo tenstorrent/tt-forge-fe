@@ -12,8 +12,8 @@ import torch
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from test.models.model_utils import preprocess_input_data
 from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import preprocess_input_data
 
 
 @pytest.mark.nightly
