@@ -285,6 +285,7 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
@@ -464,6 +465,15 @@ class ForgePropertyHandler:
         """
         self.add("tags.model_name", model_name)
 
+    def record_op_name(self, op_name: str):
+        """
+        Records the operation name in the tags.
+
+        Args:
+            op_name (str): The operation name to be recorded.
+        """
+        self.add("tags.op_name", op_name)
+
     def record_pcc(self, pcc: float):
         """
         Records the PCC metric in the tags.
@@ -544,6 +554,9 @@ class ForgePropertyHandler:
         verify_config = verify_config.to_dict()
         verify_config["value_checker"] = verify_config["value_checker"].__dict__
         self.add("config.verify", verify_config)
+
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
 
     def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
         """
