@@ -27,6 +27,7 @@ jobs:
     if: always()
     outputs:
       docker-image: ${{ steps.set-docker.outputs.docker-image }}
+      buildtype: ${{ steps.set-docker.outputs.buildtype }}
     steps:
       - name: Set docker image
         id: set-docker
@@ -36,6 +37,11 @@ jobs:
           else
             echo "docker-image=${{ inputs.docker-image }}" >> $GITHUB_OUTPUT
           fi
+          if [ ${{ inputs.rebuild }} == 'true' ]; then
+            echo "buildtype=Release" >> $GITHUB_OUTPUT
+          else
+            echo "buildtype=None" >> $GITHUB_OUTPUT
+          fi
 
   build:
     if: ${{ inputs.rebuild == 'true' }}
@@ -44,7 +50,7 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.set-docker-image.outputs.docker-image }}
-      build: 'Release'
+      build: ${{ needs.set-docker-image.outputs.buildtype}}
 
 
   run-perf-benchmarks:
