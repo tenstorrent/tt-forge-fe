@@ -25,7 +25,13 @@ from test.models.pytorch.vision.mobilenet.utils.utils import (
     post_processing,
 )
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import (
+    Framework,
+    Source,
+    Task,
+    build_module_name,
+    print_cls_results,
+)
 from test.utils import download_model
 
 
@@ -218,7 +224,6 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["mobilenetv2_100"])
 def test_mobilenetv2_timm(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -241,7 +246,10 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
@@ -276,9 +284,9 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
