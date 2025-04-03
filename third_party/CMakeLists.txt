@@ -9,6 +9,7 @@ set(TTMLIR_INSTALL_PREFIX "${TTMLIR_BUILD_DIR}/install")
 
 ExternalProject_Add(
     tt-mlir
+    GIT_TAG "bf5f7bacd0d5f7ea000f2c193f73ea1c51b3ca5f"
     SOURCE_DIR ${TTMLIR_SOURCE_DIR}
     BINARY_DIR ${TTMLIR_BUILD_DIR} # for some reason BUILD_DIR for ExternalProject_Add doesn't exist, but they use BINARY_DIR instead
     INSTALL_COMMAND ${CMAKE_COMMAND} --install ${TTMLIR_BUILD_DIR} --component SharedLib
