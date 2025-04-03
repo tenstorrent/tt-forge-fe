@@ -30,10 +30,21 @@ TEST_P(VerifTest, test_all_close)
     // EXPECT_TRUE(tt::all_close(a, b, true /* equal_nan */));
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    VerifTest,
-    VerifTest,
-    ::testing::Values(at::kFloat, at::kDouble, at::kInt, at::kLong, at::kShort, at::kByte, at::kBool, at::kBFloat16));
+TEST_P(VerifTest, test_pcc)
+{
+    auto dtype = GetParam();
+
+    torch::Tensor a = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    torch::Tensor b = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    EXPECT_TRUE(tt::calculate_tensor_pcc(a, b) > 0.99);
+
+    a = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    b = torch::tensor({0.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    std::cerr << "pcc: " << tt::calculate_tensor_pcc(a, b) << std::endl;
+    EXPECT_TRUE(tt::calculate_tensor_pcc(a, b) < 0.99);
+}
+
+INSTANTIATE_TEST_SUITE_P(VerifTest, VerifTest, ::testing::Values(at::kFloat, at::kDouble, at::kBFloat16, at::kHalf));
 // ::testing::PrintToStringParamName());
 
 }  // namespace tt::test
