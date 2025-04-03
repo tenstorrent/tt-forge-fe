@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
+// SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -22,17 +22,6 @@ namespace tt
 torch::Tensor is_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan)
 {
     return torch::empty({1});
-}
-
-template <typename T>
-T reduce_max(at::vec::Vectorized<T> vec)
-{
-    T ret = 0;
-    for (int64_t i = 0; i != vec.size(); i++)
-    {
-        ret = std::max(ret, vec[i]);
-    }
-    return ret;
 }
 
 enum class ReduceOp
