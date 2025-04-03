@@ -23,7 +23,7 @@ jobs:
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly and not xfail'
@@ -31,29 +31,32 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
+      run_id: ${{ github.run_id }}
 
   perf-benchmark:
     if: always()
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/perf-benchmark.yml
+    uses: ./.github/workflows/perf-benchmark-sub.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}
 
   test_full_model_xfailing:
     if: always()
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly and xfail'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
 
   test_models_ops:
@@ -64,12 +67,13 @@ jobs:
       - test_full_model_passing
       - perf-benchmark
       - test_full_model_xfailing
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly_models_ops'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
+      run_id: ${{ github.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
 
@@ -79,12 +83,13 @@ jobs:
       - docker-build
       - build
       - test_models_ops
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly_sweeps'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
+      run_id: ${{ github.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       operators: ${{ github.event.inputs.operators }}
