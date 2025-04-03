@@ -38,8 +38,6 @@ params = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
 def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
-    if size != "base":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -111,16 +109,14 @@ params = [
     pytest.param("xxlarge", "v1"),
     pytest.param("base", "v2", marks=[pytest.mark.push]),
     pytest.param("large", "v2"),
-    pytest.param("xlarge", "v2"),
-    pytest.param("xxlarge", "v2"),
+    pytest.param("xlarge", "v2", marks=[pytest.mark.xfail]),
+    pytest.param("xxlarge", "v2", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
 def test_albert_token_classification_pytorch(forge_property_recorder, size, variant):
-    if size != "base":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
