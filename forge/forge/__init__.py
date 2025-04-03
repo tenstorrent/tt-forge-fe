@@ -52,6 +52,19 @@ def set_home_paths():
             )
             exit(1)
 
+    if "TT_METAL_HOME" in os.environ:
+        print(f"TT_METAL_HOME set to: {os.environ['TT_METAL_HOME']}")
+    if "TT_MLIR_HOME" in os.environ:
+        print(f"TT_MLIR_HOME set to: {os.environ['TT_MLIR_HOME']}")
+    if "FORGE_HOME" in os.environ:
+        print(f"FORGE_HOME set to: {os.environ['FORGE_HOME']}")
+    if "FORGE_OUT" in os.environ:
+        print(f"FORGE_OUT set to: {os.environ['FORGE_OUT']}")
+    if "TVM_HOME" in os.environ:
+        print(f"TVM_HOME set to: {os.environ['TVM_HOME']}")
+    if "LOGGER_FILE" in os.environ:
+        print(f"LOGGER_FILE set to: {os.environ['LOGGER_FILE']}")
+    print(f"  PRINTING FROM: {__file__}")
 
 set_home_paths()
 

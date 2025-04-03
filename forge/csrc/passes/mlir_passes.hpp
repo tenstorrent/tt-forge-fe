@@ -14,7 +14,8 @@ namespace tt::passes
 enum class MLIROutputKind
 {
     Flatbuffer,
-    Cpp
+    Cpp,
+    SharedObject,
 };
 
 /// Public API for running MLIR passes (pipeline) depending on the desired output.

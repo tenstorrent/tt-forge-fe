@@ -10,6 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 
+@pytest.mark.emitc
 @pytest.mark.parametrize("batch_size", [1, 7, 32])
 @pytest.mark.parametrize("outer_dim_x", [7, 32, 41, 64])
 @pytest.mark.parametrize("outer_dim_y", [7, 32, 41, 64])

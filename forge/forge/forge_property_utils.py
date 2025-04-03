@@ -460,6 +460,15 @@ class ForgePropertyHandler:
         """
         self.add("tags.model_name", model_name)
 
+    def record_op_name(self, op_name: str):
+        """
+        Records the operation name in the tags.
+
+        Args:
+            op_name (str): The operation name to be recorded.
+        """
+        self.add("tags.op_name", op_name)
+
     def record_pcc(self, pcc: float):
         """
         Records the PCC metric in the tags.

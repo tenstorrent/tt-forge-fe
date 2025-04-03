@@ -231,6 +231,8 @@ PYBIND11_MODULE(_C, m)
         &passes::run_mlir_compiler_to_cpp,
         py::arg("module"),
         py::arg("forge_property_handler") = std::nullopt);
+    m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
+    m.def("run_mlir_compiler_to_shared_object", &passes::run_mlir_compiler_to_shared_object);
     m.def("split_graph", &passes::split_graph);
 
     m.def(

@@ -7,6 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
+import tempfile
 from typing import Tuple, Dict, List, Any, Union, Optional
 
 from forge.module import FrameworkModule
@@ -26,7 +27,8 @@ from ..tensor import (
 )
 from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
-from forge._C.runtime import Tensor as CTensor
+from forge._C.runtime import Tensor as CTensor, ProgramType
+from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
@@ -426,7 +428,6 @@ def verify(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
-    # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
     if forge_property_handler is not None:
@@ -439,12 +440,34 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
+    # Compile EmitC .so
+    so_path = compiled_model.export_to_shared_object()
+    # Run EmitC .so
+    all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
+    consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
+    fwd_func_name = "forward"
+    fwd_func_name_len = len(fwd_func_name)
+    fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
+    print(f"GOT FWD FUNC SYM: {fwd_func_sym}")
+    is_success = compiled_model.runtime_model_state.test_so(
+        "/tmp/emitted.so",
+        fwd_func_sym,
+        compiled_model.inputs,
+        consts_and_params,
+        all_outputs,
+    )
+
+    print(f"TEST_SO: {is_success}")
+    assert is_success
+
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
     # - convert to dtypes that are supported by our hardware
     # - push tensors to cpu, perform any reshape if necessary,
     fw_out = to_pt_tensors(fw_out)
     fw_out = tuple(convert_to_supported_pytorch_dtype(o) for o in fw_out)
+
+    # compiled_model.export_to_cpp("todo_unique_name.cpp")
 
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 
