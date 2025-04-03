@@ -122,7 +122,7 @@ jobs:
     secrets: inherit    
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      test-mark: ${{ needs.set-inputs.outputs.test_mark }}
+      test_mark: ${{ needs.set-inputs.outputs.test_mark }}
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on }}
