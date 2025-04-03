@@ -16,9 +16,17 @@ jobs:
   run-perf-benchmarks:
     strategy:
       fail-fast: false
+      matrix:
+        build: [
+          { runs-on: "n150", name: "mnist_linear",      dir: "MNISTLinear", bs: 32, lp: 32 },
+          { runs-on: "n150", name: "resnet50_hf",       dir: "ResNetForImageClassification", bs: 3, lp: 32 },
+          { runs-on: "n150", name: "llama",             dir: "LlamaModel", bs: 1, lp: 32, allow-fail: true }, # TTRT does not support llama model yet, so allow it to fail
+          { runs-on: "n150", name: "mobilenetv2_basic", dir: "MobileNetv2Basic", bs: 1, lp: 32 },
+          { runs-on: "n150", name: "efficientnet_timm", dir: "EfficientNetTimmB0", bs: 1, lp: 32 }
+        ]
     runs-on:
+      - ${{ matrix.build.runs-on }}
       - in-service
-      - n150
       - performance
 
     container:
@@ -138,16 +146,8 @@ jobs:
       run: |
         source env/activate
         mkdir -p ${{ steps.strings.outputs.perf_report_path }}
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/LlamaModel/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mobilenetv2_basic_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MobileNetv2Basic/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m efficientnet_timm -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_efficientnet_timm_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/EfficientNetTimmB0/mlir_reports/ttir.mlir
+        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT
       shell: bash
@@ -158,12 +158,11 @@ jobs:
         pip install ttrt*.whl --force-reinstall
         echo "save artifacts"
         ttrt query --save-artifacts
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        # TTRT does not support llama model yet
-        # ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/MobileNetv2Basic/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mobilenetv2_basic_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/EfficientNetTimmB0/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_efficientnet_timm_${{ steps.fetch-job-id.outputs.job_id }}.json
+        if [ -z "${{ matrix.build.allow-fail }}" ]; then
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        else
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json || true
+        fi
 
     - name: Upload Perf Report
       uses: actions/upload-artifact@v4
