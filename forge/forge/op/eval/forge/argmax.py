@@ -29,9 +29,7 @@ class Argmax(PyEltwiseUnaryOp):
         assert len(tensors) == 1, "Argmax should have one input"
         original_types = [o.dtype for o in tensors]
 
-        dim = getattr(self, "dim", None)
-
-        ret = torch.argmax(tensors[0], dim, keepdim=self.keep_dim)
+        ret = torch.argmax(tensors[0], dim=self.dim, keepdim=self.keep_dim)
 
         if ret.dtype != original_types[0]:
             ret = ret.type(original_types[0])

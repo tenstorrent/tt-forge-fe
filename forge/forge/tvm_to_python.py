@@ -716,8 +716,6 @@ def populate_argmax_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
 
-    # if dim >= 0:
-    #     dim -= len(list(graph["nodes"][nid]["forge_shape"]))
     dim = int(node["attrs"]["axis"][0][0])
     args.append(
         ("dim", f"{dim}")
