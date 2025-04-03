@@ -25,4 +25,4 @@ def load_inputs(img):
     # Apply the transformation
     img_tensor = transforms(img).unsqueeze(0)  # Add batch dimension
 
-    return img_tensor
+    return [img_tensor]
