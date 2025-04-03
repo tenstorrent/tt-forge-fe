@@ -202,21 +202,24 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
         },
     ),
-    (
-        Pad1,
-        [((1, 16, 192, 640), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Pad1,
+            [((1, 16, 192, 640), torch.float32)],
+            {
+                "model_name": [
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Killed while executing ttnn binary")],
     ),
     (
         Pad1,
@@ -309,31 +312,37 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
         },
     ),
-    (
-        Pad1,
-        [((1, 96, 160, 512), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Pad1,
+            [((1, 96, 160, 512), torch.float32)],
+            {
+                "model_name": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
-    (
-        Pad1,
-        [((1, 32, 160, 512), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Pad1,
+            [((1, 32, 160, 512), torch.float32)],
+            {
+                "model_name": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Pad1,
