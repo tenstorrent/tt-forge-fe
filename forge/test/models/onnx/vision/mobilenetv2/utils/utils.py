@@ -15,6 +15,5 @@ def load_inputs(img, model):
     transforms = timm.data.create_transform(**data_config, is_training=False)
     # Apply the transformation
     img_tensor = transforms(img).unsqueeze(0)  # Add batch dimension
-    input_tensors.append(img_tensor)
 
-    return input_tensors
+    return [img_tensor]
