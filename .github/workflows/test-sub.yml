@@ -111,7 +111,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: Find and download forge wheel
-        if: failure() || ${{ !inputs.run_id }}
+        if: ${{ !inputs.run_id }}
         uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -121,6 +121,7 @@ jobs:
           name: forge-wheel
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
+          search_artifacts: true
 
       - name: Install wheel
         shell: bash

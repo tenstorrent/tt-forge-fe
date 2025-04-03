@@ -111,7 +111,7 @@ jobs:
         run-id: ${{ inputs.run_id }}
 
     - name: Find and download forge wheel
-      if: failure() || ${{ !inputs.run_id }}
+      if: ${{ !inputs.run_id }}
       uses: dawidd6/action-download-artifact@v6
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
