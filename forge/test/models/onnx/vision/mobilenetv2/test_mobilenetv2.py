@@ -38,7 +38,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     )
 
     # Record Forge Property
-    if variants == "mobilenetv2_050":
+    if variant == "mobilenetv2_050":
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
