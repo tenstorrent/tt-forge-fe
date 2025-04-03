@@ -221,10 +221,10 @@ def compare_tensor_to_golden(
             if relative_atol is None:
                 relative_atol = 0.1
 
-            if torch.all(torch.isnan(golden)):
+            if verif.has_special_values(golden):
                 atol = 0
             else:
-                max_value = (torch.max(torch.abs(golden[~torch.isnan(golden)]))).item()
+                max_value = verif.max_abs_diff(calculated, golden)
                 atol = max_value * relative_atol  # allow up to 'relative_atol' error
     elif isinstance(atol, dict):
         atol = atol[golden.dtype]
@@ -287,10 +287,7 @@ def compare_tensor_to_golden(
         logger.trace("Calculated: (shape = {}", calculated.shape)
         logger.trace(calculated)
         logger.info(
-            "Max ATOL Delta: "
-            + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
-            + ", atol="
-            + "{}".format(atol)
+            "Max ATOL Delta: " + "{:.3e}".format(verif.max_abs_diff(calculated, golden)) + ", atol=" + "{}".format(atol)
         )
         logger.info(
             "Max RTOL Delta: "

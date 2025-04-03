@@ -102,22 +102,23 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     }
 }
 
-template <ReduceOp reduce_op, typename func_t>
-inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t scalar_op)
+template <ReduceOp reduce_op, typename func_t, typename init_t>
+inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t scalar_op, init_t init_value)
 {
     using traits = unary_function_traits<func_t>;
     using scalar_t = typename traits::arg1_t;
-    using result_t = decltype(scalar_op(typename traits::arg1_t{}));
+    using op_result_t = decltype(scalar_op(typename traits::arg1_t{}));
+    using reduce_result_t = decltype(do_reduce_op<op_result_t, reduce_op>(op_result_t{}, op_result_t{}));
+    static_assert(std::is_same_v<init_t, reduce_result_t>, "init_value type must match reduce_result_t");
 
-    std::atomic<bool> barrier = std::numeric_limits<scalar_t>::min();
-    // FIXME: Need to pass in the init value
-    std::atomic<result_t> result = false;  // scalar_op(scalar_t{});
+    std::atomic<bool> barrier = false;
+    std::atomic<reduce_result_t> result = init_value;
 
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
     {
         auto first_val = *reinterpret_cast<scalar_t*>(data[1]);
-        result_t chunk_result = scalar_op(first_val);
+        op_result_t chunk_result = scalar_op(first_val);
 
         // FIXME: Handle different number of input tensors
         auto* a_data = data[1];
@@ -126,7 +127,7 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
         for (; i < n; ++i)
         {
             auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
-            chunk_result = do_reduce_op<result_t, reduce_op>(chunk_result, scalar_op(a_val));
+            chunk_result = do_reduce_op<op_result_t, reduce_op>(chunk_result, scalar_op(a_val));
         }
 
         // Wait for atomic to go false
@@ -137,7 +138,7 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
             expected = false;
         }
 
-        result = do_reduce_op<result_t, reduce_op>(result, chunk_result);
+        result = do_reduce_op<op_result_t, reduce_op>(result, chunk_result);
 
         barrier = false;
     };
@@ -156,23 +157,32 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
     iter.output().fill_(result.load());
 }
 
-template <ReduceOp reduce_op, typename func_t, typename vec_func_t>
+template <ReduceOp reduce_op, typename func_t, typename vec_func_t, typename init_t>
 inline void cpu_kernel_reduce_into_scalar_vec(
-    at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op, double init_val = 0)
+    at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op, init_t init_val)
 {
     using traits = binary_function_traits<func_t>;
     using scalar_t = typename traits::arg1_t;
+    using op_result_t = decltype(scalar_op(typename traits::arg1_t{}, typename traits::arg2_t{}));
+    using reduce_result_t = decltype(do_reduce_op<op_result_t, reduce_op>(op_result_t{}, op_result_t{}));
+
+    static_assert(
+        std::is_same_v<
+            at::vec::Vectorized<scalar_t>,
+            decltype(vec_op(typename traits::arg1_t{}, typename traits::arg2_t{}))>,
+        "vec_func_t must return at::vec::Vectorized<scalar_t>");
+    static_assert(std::is_same_v<init_t, reduce_result_t>, "init_value type must match reduce_result_t");
 
     using Vec = at::vec::Vectorized<scalar_t>;
     constexpr int64_t vec_size = Vec::size();
 
     std::atomic<bool> barrier = false;
-    std::atomic<scalar_t> result = init_val;
+    std::atomic<reduce_result_t> result = init_val;
 
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
     {
-        scalar_t chunk_result = init_val;
+        reduce_result_t chunk_result = init_val;
         auto* a_data = data[1];
         auto* b_data = data[2];
 
@@ -202,7 +212,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(
             auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
             auto b_val = *reinterpret_cast<scalar_t*>(b_data + i * sizeof(scalar_t));
             auto out = scalar_op(a_val, b_val);
-            chunk_result = do_reduce_op<scalar_t, reduce_op>(chunk_result, out);
+            chunk_result = do_reduce_op<reduce_result_t, reduce_op>(chunk_result, out);
         }
 
         // Wait for atomic to go false
@@ -213,7 +223,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(
             expected = false;
         }
 
-        result = do_reduce_op<scalar_t, reduce_op>(result, chunk_result);
+        result = do_reduce_op<reduce_result_t, reduce_op>(result, chunk_result);
 
         barrier = false;
     };
@@ -247,13 +257,14 @@ bool has_special_values(torch::Tensor& a)
                     .add_input(a)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES(
+    AT_DISPATCH_FLOATING_TYPES_AND(
+        at::kBFloat16,
         iter.input().scalar_type(),
         "has_special_values",
         [&]()
         {
             cpu_kernel_reduce_into_scalar<ReduceOp::LogicalOr>(
-                iter, [](scalar_t val) -> bool { return std::isinf(val) || std::isnan(val); });
+                iter, [](scalar_t val) -> bool { return std::isinf(val) || std::isnan(val); }, false);
         });
 
     return iter.output().item<bool>();
@@ -280,13 +291,15 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
         {
             cpu_kernel_reduce_into_scalar_vec<ReduceOp::Max>(
                 iter,
-                [](scalar_t a_val, scalar_t b_val) -> double { return static_cast<scalar_t>(std::abs(a_val - b_val)); },
+                [](scalar_t a_val, scalar_t b_val) -> scalar_t
+                { return static_cast<scalar_t>(std::abs(a_val - b_val)); },
                 [](at::native::Vectorized<scalar_t> a,
                    at::native::Vectorized<scalar_t> b) -> at::native::Vectorized<scalar_t>
                 {
                     auto delta = (a - b).abs();
                     return delta;
-                });
+                },
+                std::numeric_limits<scalar_t>::lowest());
         });
 
     return iter.output().item<double>();
@@ -297,7 +310,9 @@ bool unsupported_dtypes(torch::Tensor& a)
     switch (a.scalar_type())
     {
         case torch::kFloat:
-        case torch::kDouble: return false;
+        case torch::kDouble:
+        case torch::kBFloat16:
+        case torch::kHalf: return false;
         default: return true;
     }
 }
@@ -338,7 +353,8 @@ bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool 
                 {
                     auto delta = (a - b).abs() - atol_vec - b.abs() * rtol_vec;
                     return delta;
-                });
+                },
+                std::numeric_limits<scalar_t>::lowest());
         });
 
     return iter.output().item<double>() <= 0.0;
@@ -386,7 +402,7 @@ double cov_ij(
             const auto N_vec = at::native::Vectorized<scalar_t>(N);
             cpu_kernel_reduce_into_scalar_vec<ReduceOp::Sum>(
                 iter,
-                [&a_mean, &b_mean, &N](scalar_t a_val, scalar_t b_val) -> double
+                [&a_mean, &b_mean, &N](scalar_t a_val, scalar_t b_val) -> scalar_t
                 { return (a_val - a_mean.value()) * (b_val - b_mean.value()) / N; },
                 [&a_mean_vec, &b_mean_vec, &N_vec](
                     at::native::Vectorized<scalar_t> a,
@@ -395,7 +411,8 @@ double cov_ij(
                     auto delta_a = a - a_mean_vec;
                     auto delta_b = b - b_mean_vec;
                     return (delta_a * delta_b) / N_vec;
-                });
+                },
+                std::numeric_limits<scalar_t>::lowest());
         });
 
     return iter.output().item<double>();

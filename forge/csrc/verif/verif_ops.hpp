@@ -10,7 +10,7 @@ namespace tt
 {
 torch::Tensor is_close(
     torch::Tensor a, torch::Tensor b, double rtol = 1e-5, double atol = 1e-9, bool equal_nan = false);
-bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan = false);
+bool all_close(torch::Tensor a, torch::Tensor b, double rtol = 1e-5, double atol = 1e-9, bool equal_nan = false);
 
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b);
 bool has_special_values(torch::Tensor& a);
