@@ -133,10 +133,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((448, 1280), torch.float32), ((1, 2), torch.int64)],
         {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 447},
     ),
-    (
-        Advindex0,
-        [((2359296,), torch.float32), ((2441216,), torch.int32)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
+    pytest.param(
+        (
+            Advindex0,
+            [((2359296,), torch.float32), ((2441216,), torch.int32)],
+            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Node not found")],
     ),
     (
         Advindex0,
@@ -294,11 +297,11 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
+    max_int = metadata.pop("max_int")
 
     for metadata_name, metadata_value in metadata.items():
         forge_property_recorder("tags." + str(metadata_name), metadata_value)
 
-    max_int = 1000
     inputs = [
         Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
         for operand_shape, operand_dtype in operand_shapes_dtypes

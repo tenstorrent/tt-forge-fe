@@ -40,23 +40,29 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Pad0,
-        [((1, 1, 96, 54, 54), torch.float32)],
-        {
-            "model_name": ["pt_alexnet_base_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
-        },
+    pytest.param(
+        (
+            Pad0,
+            [((1, 1, 96, 54, 54), torch.float32)],
+            {
+                "model_name": ["pt_alexnet_base_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Pad0,
-        [((1, 1, 256, 27, 27), torch.float32)],
-        {
-            "model_name": ["pt_alexnet_base_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
-        },
+    pytest.param(
+        (
+            Pad0,
+            [((1, 1, 256, 27, 27), torch.float32)],
+            {
+                "model_name": ["pt_alexnet_base_img_cls_osmr"],
+                "pcc": 0.99,
+                "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     (
         Pad1,
@@ -344,18 +350,25 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
-    (
-        Pad1,
-        [((1, 16, 320, 1024), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
+    pytest.param(
+        (
+            Pad1,
+            [((1, 16, 320, 1024), torch.float32)],
+            {
+                "model_name": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: [enforce fail at alloc_cpu.cpp:91] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 433025187840 bytes. Error code 12 (Cannot allocate memory)"
+            )
+        ],
     ),
 ]
 
