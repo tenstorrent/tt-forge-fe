@@ -429,9 +429,26 @@ def verify(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
-    compiled_model.export_to_shared_object()
+    so_path = compiled_model.export_to_shared_object()
 
+    torch_inputs = [*to_pt_tensors(inputs)]
+    # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
+    torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in torch_inputs]
+    assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
+    cinputs = [CTensor(t) for t in torch_inputs]
+    # self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+    # all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
+    # The model_outputs will contain outputs that we need to return to the user, i.e. external outputs.
+    # model_outputs = []
+    # for idx, output_name in enumerate(self.fwd_compiled_graph_state.ordered_output_names):
+    #     output = all_outputs[idx]
+    #     if output_name in self.fwd_compiled_graph_state.ordered_intermediate_names:
+    #         self.intermediates.append(output)
+    #     if output_name in self.fwd_compiled_graph_state.ordered_external_output_names:
+    #         self.outputs[output_name] = output
+    #         model_outputs.append(output.to_torch())
     # 1st step: run forward pass for the networks
+
     fw_out = framework_model(*inputs)
 
     if forge_property_handler is not None:

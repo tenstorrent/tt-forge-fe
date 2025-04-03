@@ -473,7 +473,7 @@ class CompiledModel:
         logger.info(f"    Tool: https://github.com/tenstorrent/tt-mlir/tree/main/tools/ttnn-standalone")
         logger.info(f"    Docs: https://docs.tenstorrent.com/tt-mlir/ttnn-standalone.html")
 
-    def export_to_shared_object(self) -> None:
+    def export_to_shared_object(self) -> str:
         """
         Export the model to a shared object file.
 
@@ -484,9 +484,11 @@ class CompiledModel:
         """
 
         logger.info(f"Exporting model {self.framework_module.get_name()} to shared object file...")
-        run_mlir_compiler_to_shared_object(self.forge_graph_module, None)
+        path_to_so = run_mlir_compiler_to_shared_object(self.forge_graph_module, None)
 
-        logger.info(f'Exported model as shared object file...')
+        logger.info(f'Exported model as shared object file to "{path_to_so}"')
+
+        return path_to_so
 
     def update_host_weights(self):
         for name, param in self.framework_module.module.named_parameters():
