@@ -125,11 +125,11 @@ LlamaModel._update_causal_mask = _update_causal_mask
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.xfail(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B",
@@ -137,11 +137,11 @@ LlamaModel._update_causal_mask = _update_causal_mask
         ),
         pytest.param(
             "meta-llama/Llama-3.1-8B-Instruct",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
