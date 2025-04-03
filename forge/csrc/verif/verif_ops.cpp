@@ -336,7 +336,8 @@ bool all_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool 
                     .add_input(b)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES(
+    AT_DISPATCH_FLOATING_TYPES_AND(
+        at::kBFloat16,
         iter.input().scalar_type(),
         "all_close",
         [&]()
