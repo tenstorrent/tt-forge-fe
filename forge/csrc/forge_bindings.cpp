@@ -34,6 +34,7 @@ namespace py = pybind11;
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
+#include "runtime/testutils/python_bindings.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
@@ -143,6 +144,9 @@ PYBIND11_MODULE(_C, m)
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
 
+    py::module m_runtime_test = m.def_submodule("runtime_test", "Submodule defining runtime test functions");
+    RuntimeTestModule(m_runtime_test);
+
     py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification and test utilities");
     VerifModule(m_verif);
 
@@ -224,6 +228,11 @@ PYBIND11_MODULE(_C, m)
     m.def(
         "run_mlir_compiler_to_cpp",
         &passes::run_mlir_compiler_to_cpp,
+        py::arg("module"),
+        py::arg("mlir_config") = std::nullopt);
+    m.def(
+        "run_mlir_compiler_to_shared_object",
+        &passes::run_mlir_compiler_to_shared_object,
         py::arg("module"),
         py::arg("mlir_config") = std::nullopt);
     m.def("split_graph", &passes::split_graph);

@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, VerifyConfig
 
 
 @pytest.mark.parametrize("batch_size", [1, 7, 32])
@@ -31,7 +31,7 @@ def test_matmul(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     framework_model = Matmul()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True))
 
 
 @pytest.mark.parametrize(
