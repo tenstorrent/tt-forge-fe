@@ -8,7 +8,6 @@ import torch
 import forge
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-import forge.optimizers
 from forge.verify.verify import verify, verify_backward
 from test.mlir.llama.utils.utils import load_model
 
@@ -39,10 +38,11 @@ def test_llama_lora_fwd_pass(forge_property_recorder, model_path):
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
+@pytest.mark.xfail(reason="Missing bwd - NotImplementedError: index")
 @pytest.mark.push
 def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
-    if model_path == "openlm-research/open_llama_3b":
-        pytest.skip("Insufficient host DRAM to run this model")
+    # if model_path == "openlm-research/open_llama_3b":
+    #     pytest.skip("Insufficient host DRAM to run this model")
 
     # Load Model and Tokenizer for LoRA training
     use_lora = True
