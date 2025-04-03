@@ -17,8 +17,8 @@ from PIL import Image
 from test.models.utils import Framework, Source, Task, build_module_name, print_cls_results
 
 params = [
-    pytest.param("mobilenetv2_050", marks=[pytest.mark.push]),
-    pytest.param("mobilenetv2_100"),
+    pytest.param("mobilenetv2_050"),
+    pytest.param("mobilenetv2_100", marks=[pytest.mark.push]),
     pytest.param("mobilenetv2_110d"),
     pytest.param("mobilenetv2_140"),
 ]
@@ -40,6 +40,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     # Record Forge Property
     if variant == "mobilenetv2_050":
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("p1")
     else:
         forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
@@ -54,7 +55,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
     inputs = load_inputs(img, model)
     onnx_path = f"{tmp_path}/mobilenetv2.onnx"
-    torch.onnx.export(model, inputs[0], onnx_path, opset_version=17)
+    torch.onnx.export(model, inputs[0], onnx_path)
 
     # Load onnx model
     onnx_model = onnx.load(onnx_path)
