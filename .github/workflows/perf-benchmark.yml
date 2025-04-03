@@ -24,6 +24,7 @@ jobs:
   set-docker-image:
     runs-on: ubuntu-latest
     needs: docker-build
+    if: always()
     outputs:
       docker-image: ${{ steps.set-docker.outputs.docker-image }}
     steps:
@@ -43,6 +44,7 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.set-docker-image.outputs.docker-image }}
+      build: 'Release'
 
 
   run-perf-benchmarks:
