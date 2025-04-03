@@ -125,7 +125,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.xfail(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
