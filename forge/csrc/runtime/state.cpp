@@ -5,6 +5,7 @@
 
 #include <utils/logger.hpp>
 
+#include "runtime/runtime.hpp"
 #include "tt/runtime/runtime.h"
 
 namespace tt
@@ -88,5 +89,25 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
     }
 
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
+}
+
+void ModelState::test_so(std::string so_path, std::string func_name, std::vector<tt::Tensor> act_inputs, std::vector<tt::Tensor>& outputs)
+{
+    void* so_handle = tt::open_so(so_path);
+    std::vector<tt::runtime::Tensor> outs = tt::run_so_program(so_handle, func_name, act_inputs);
+
+
+    std::vector<runtime::Tensor> rt_outs;
+    rt_outs.reserve(outputs.size());
+
+    std::transform(
+        outputs.begin(),
+        outputs.end(),
+        std::back_inserter(rt_outs),
+        [](tt::Tensor& output) { return output.get_runtime_tensor(); });
+
+    tt::compareOuts(outs, rt_outs);
+
+    return;
 }
 };  // namespace tt

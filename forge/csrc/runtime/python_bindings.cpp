@@ -59,7 +59,11 @@ void RuntimeModule(py::module &m_runtime)
                 std::optional<ProgramState> &opt_program_state = self.program_states[program_idx(program_type)];
                 TT_ASSERT(opt_program_state.has_value(), "Program state for {} not initialized", program_type);
                 return opt_program_state.value().outputs;
-            });
+            })
+        .def(
+            "test_so",
+            [](ModelState &self, std::string so_path, std::string func_name, std::vector<tt::Tensor> &inputs, std::vector<tt::Tensor> &outputs)
+            { self.test_so(so_path, func_name, inputs, outputs); });
 
     m_runtime.def("create_program_state", &tt::create_program_state);
 

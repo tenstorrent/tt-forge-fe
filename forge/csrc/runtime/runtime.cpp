@@ -8,6 +8,7 @@
 
 #include "tensor.hpp"
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/ttnn/test/dylib.h"
 #include "tt_device.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
@@ -134,6 +135,49 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
         });
 
     return outputs;
+}
+
+void* open_so(std::string path) { return runtime::ttnn::test::openSo(path); }
+
+std::vector<tt::runtime::Tensor> run_so_program(void* so_handle, std::string func_name, std::vector<tt::Tensor>& inputs)
+{
+    auto& system = TTSystem::get_system();
+    for (auto& device : system.devices)
+    {
+        if (!device->is_open())
+        {
+            device->open_device();
+        }
+    }
+
+    // For now, we only support a single device.
+    constexpr size_t device_id = 0;
+    auto& tt_device = system.devices[device_id];
+    if (!tt_device->is_open())
+    {
+        log_fatal(LogTTDevice, "Failed to open device");
+    }
+
+    auto& device = *tt_device->rt_device;
+
+    std::vector<runtime::Tensor> rt_inputs;
+    rt_inputs.reserve(inputs.size());
+
+    std::transform(
+        inputs.begin(),
+        inputs.end(),
+        std::back_inserter(rt_inputs),
+        [](tt::Tensor& input) { return input.get_runtime_tensor(); });
+
+    std::vector<tt::runtime::Tensor> rt_outputs =
+        runtime::ttnn::test::runSoProgram(so_handle, func_name, rt_inputs, device);
+
+    return rt_outputs;
+}
+
+bool compareOuts(std::vector<tt::runtime::Tensor>& lhs, std::vector<tt::runtime::Tensor>& rhs)
+{
+    return runtime::ttnn::test::compareOuts(lhs, rhs);
 }
 
 }  // namespace tt

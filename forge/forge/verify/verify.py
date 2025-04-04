@@ -430,12 +430,14 @@ def verify(
         )
 
     so_path = compiled_model.export_to_shared_object()
-
     torch_inputs = [*to_pt_tensors(inputs)]
-    # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
-    torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in torch_inputs]
-    assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
     cinputs = [CTensor(t) for t in torch_inputs]
+
+    # compiled_model.runtime_model_state.test_so(so_path, "forward", cinputs)
+
+    # # After tensors are transformed to pt tensors, we have to cast them to dtypes that are actually supported by our hardware.
+    # torch_inputs = [cast_unsupported_torch_dtype(input_tensor) for input_tensor in torch_inputs]
+    # assert all([isinstance(t, torch.Tensor) for t in torch_inputs]), "All inputs should be torch tensors by now."
     # self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
     # all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
     # The model_outputs will contain outputs that we need to return to the user, i.e. external outputs.
