@@ -55,3 +55,4 @@ gliner==0.2.16
 ase==3.24.0
 hippynn==0.0.3
 bi-lstm-crf==0.2.1
+peft==0.15.0
