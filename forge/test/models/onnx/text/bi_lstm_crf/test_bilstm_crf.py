@@ -50,5 +50,3 @@ def test_birnn_crf_pypi(forge_property_recorder, tmp_path):
 
     # Model Verification
     verify(test_input, model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    
