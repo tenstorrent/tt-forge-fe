@@ -25,9 +25,6 @@ TEST_P(VerifTest, test_all_close)
     a = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
     b = torch::tensor({0.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
     EXPECT_FALSE(tt::all_close(a, b));
-    // a = torch::tensor({1.0, 2.0, std::nan("")});
-    // b = torch::tensor({1.0, 2.0, std::nan("")});
-    // EXPECT_TRUE(tt::all_close(a, b, true /* equal_nan */));
 }
 
 TEST_P(VerifTest, test_pcc)
@@ -42,6 +39,19 @@ TEST_P(VerifTest, test_pcc)
     b = torch::tensor({0.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
     std::cerr << "pcc: " << tt::calculate_tensor_pcc(a, b) << std::endl;
     EXPECT_TRUE(tt::calculate_tensor_pcc(a, b) < 0.99);
+}
+
+TEST_P(VerifTest, test_max_abs_diff)
+{
+    auto dtype = GetParam();
+
+    torch::Tensor a = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    torch::Tensor b = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    EXPECT_TRUE(tt::max_abs_diff(a, b) == 0);
+
+    a = torch::tensor({1.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    b = torch::tensor({0.0, 2.0, 3.0}, at::TensorOptions().dtype(dtype));
+    EXPECT_TRUE(tt::max_abs_diff(a, b) == 1);
 }
 
 INSTANTIATE_TEST_SUITE_P(
