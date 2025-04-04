@@ -2052,7 +2052,10 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Embedding")
+
+    forge_property_recorder.enable_single_op_details_recording()
+
+    forge_property_recorder.record_forge_op_name("Embedding")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -2060,7 +2063,12 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     max_int = metadata.pop("max_int")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            print("there is no utility function available to record these details")
 
     inputs = [
         Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)
