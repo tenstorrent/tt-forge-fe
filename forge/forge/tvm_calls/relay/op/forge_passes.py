@@ -186,6 +186,7 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         pad_mode = pad.attrs.pad_mode
 
+        # Fuse Pad Only if the mode is constant
         if pad_mode == "constant":
             padding = [top_pad, left_pad, bottom_pad, right_pad]
 
