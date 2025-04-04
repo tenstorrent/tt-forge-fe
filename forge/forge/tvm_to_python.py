@@ -713,19 +713,16 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
 
 
 def populate_argmax_args(graph, nid, compiler_cfg):
-    args = []
     node = graph["nodes"][nid]
 
     dim = int(node["attrs"]["axis"][0][0])
-    args.append(
-        ("dim", f"{dim}")
-    )
-    
-    keep_dim = int(node["attrs"]["keepdims"][0][0])
-    args.append(
-        ("keep_dim", f"{bool(keep_dim)}")
-    )
+    keep_dim = bool(node["attrs"]["keepdims"][0][0])
 
+    args = [
+        ("dim", f"{dim}"),
+        ("keep_dim", f"{keep_dim}")
+    ]
+    
     return args
 
 
