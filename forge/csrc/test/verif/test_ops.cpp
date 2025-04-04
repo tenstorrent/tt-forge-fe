@@ -44,7 +44,10 @@ TEST_P(VerifTest, test_pcc)
     EXPECT_TRUE(tt::calculate_tensor_pcc(a, b) < 0.99);
 }
 
-INSTANTIATE_TEST_SUITE_P(VerifTest, VerifTest, ::testing::Values(at::kFloat, at::kDouble, at::kBFloat16, at::kHalf));
+INSTANTIATE_TEST_SUITE_P(
+    VerifTest,
+    VerifTest,
+    ::testing::Values(at::kFloat, at::kBFloat16, at::kHalf, at::kDouble, at::kInt, at::kLong, at::kShort));
 // ::testing::PrintToStringParamName());
 
 }  // namespace tt::test
