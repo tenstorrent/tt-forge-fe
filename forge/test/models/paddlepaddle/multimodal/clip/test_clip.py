@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 import requests
 from PIL import Image
 
@@ -14,6 +17,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["openai/clip-vit-base-patch16"]
 
+
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail()
 def test_clip_text(variant):
@@ -25,11 +29,11 @@ def test_clip_text(variant):
     inputs = processor(text=text, return_tensors="pd", padding=True)
 
     inputs = [inputs["input_ids"]]
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     compiled_model = forge.compile(framework_model, inputs)
     verify(inputs, framework_model, compiled_model)
+
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail()
@@ -41,11 +45,11 @@ def test_clip_vision(variant):
     inputs = processor(images=image, return_tensors="pd")
 
     inputs = [inputs["pixel_values"]]
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     compiled_model = forge.compile(framework_model, inputs)
     verify(inputs, framework_model, compiled_model)
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
@@ -78,33 +82,27 @@ def test_clip(variant, forge_property_recorder):
 
     inputs = [inputs["input_ids"], inputs["pixel_values"]]
 
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     # Test framework model
     outputs = framework_model(*inputs)
 
-    image_embed = outputs.image_embeds  
-    text_embeds = outputs.text_embeds   
+    image_embed = outputs.image_embeds
+    text_embeds = outputs.text_embeds
 
     image_embed = paddle.nn.functional.normalize(image_embed, axis=-1)
     text_embeds = paddle.nn.functional.normalize(text_embeds, axis=-1)
 
-    similarities = paddle.matmul(text_embeds, image_embed.T) 
-    similarities = similarities.squeeze().numpy()             
+    similarities = paddle.matmul(text_embeds, image_embed.T)
+    similarities = similarities.squeeze().numpy()
 
     for t, sim in zip(text, similarities):
         print(f"{t}: similarity = {sim:.4f}")
 
     # Compile model
-    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+    )
 
     # Verify
     verify(inputs, framework_model, compiled_model)
-
-    
-
-
-
-
-

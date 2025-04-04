@@ -344,14 +344,20 @@ def has_op(module, opname, attrs={}):
     return visitor.has_op
 
 
-def paddle_trace(paddlemod, input_spec):
+def paddle_trace(paddlemod, input_spec=None, inputs=None):
     """
     Converts paddle.nn.Layer to paddle.nn.TranslatedLayer needed for TVM compilation.
     """
+    assert input_spec is not None or inputs is not None, "Either input_spec or inputs must be provided."
+
+    if input_spec is None and inputs is not None:
+        # Convert inputs to paddle static input spec
+        input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
+
     traced_model = paddle.jit.to_static(paddlemod, input_spec=input_spec, full_graph=True)
 
     # Model must be saved and loaded in order to have TranslatedLayer type which is needed for the next step
-    model_save_path = "traced_model"
+    model_save_path = "traced_model_tmp"
     paddle.jit.save(traced_model, model_save_path)
     loaded_model = paddle.jit.load(model_save_path)
 

@@ -13,10 +13,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 from paddlenlp.transformers import GLMTokenizer, GLMForConditionalGeneration, GLMModel
 
-variants = [
-            "THUDM/glm-515m", 
-            "THUDM/glm-2b",
-            "THUDM/glm-large-chinese"]
+variants = ["THUDM/glm-515m", "THUDM/glm-2b", "THUDM/glm-large-chinese"]
+
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
@@ -49,12 +47,10 @@ def test_glm(variant, forge_property_recorder):
     print(decoded_text)
 
     inputs = [inputs["input_ids"]]
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify
     verify(inputs, framework_model, compiled_model)
-

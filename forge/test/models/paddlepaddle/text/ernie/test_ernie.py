@@ -4,6 +4,12 @@
 
 import pytest
 import paddle
+from paddlenlp.transformers import (
+    ErnieForSequenceClassification,
+    ErnieForMaskedLM,
+    ErnieForQuestionAnswering,
+    ErnieTokenizer,
+)
 
 import forge
 from forge.verify.verify import verify
@@ -11,9 +17,8 @@ from forge.tvm_calls.forge_utils import paddle_trace
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-from paddlenlp.transformers import ErnieForSequenceClassification, ErnieForMaskedLM, ErnieForQuestionAnswering, ErnieTokenizer
-
 variant = "ernie-1.0"
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", [variant])
@@ -43,14 +48,14 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
         paddle.to_tensor(value) for value in encoded_input.values()
     ]  # [input_ids, token_type_ids, position_ids, attention_mask]
 
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
-    
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", [variant])
@@ -76,12 +81,9 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     input = ["One, [MASK], three, four"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
 
-    inputs = [
-        paddle.to_tensor(value) for value in encoded_input.values()
-    ]
+    inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
@@ -96,9 +98,10 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1).item()
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", [variant])
-def test_ernie_question_answering(forge_property_recorder,variant):
+def test_ernie_question_answering(forge_property_recorder, variant):
     module_name = build_module_name(
         framework=Framework.PADDLE,
         model="ernie",
@@ -117,14 +120,13 @@ def test_ernie_question_answering(forge_property_recorder,variant):
 
     # Load sample
     question = ["What is the capital of China?"]
-    encoded_input = tokenizer(question, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
+    encoded_input = tokenizer(
+        question, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True
+    )
 
-    inputs = [
-        paddle.to_tensor(value) for value in encoded_input.values()
-    ]
+    inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
-    input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
-    framework_model,_ = paddle_trace(model, input_spec)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
 
     # Compile Model
     compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
@@ -137,5 +139,5 @@ def test_ernie_question_answering(forge_property_recorder,variant):
     start_logits, end_logits = outputs
     start_index = start_logits.argmax(dim=-1).item()
     end_index = end_logits.argmax(dim=-1).item()
-    answer = tokenizer.decode(encoded_input["input_ids"][0][start_index:end_index+1])
+    answer = tokenizer.decode(encoded_input["input_ids"][0][start_index : end_index + 1])
     print("The answer is: ", answer)

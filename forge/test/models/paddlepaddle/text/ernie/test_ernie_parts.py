@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 import paddle
 
 import forge
@@ -6,6 +9,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from paddlenlp.transformers import ErnieForSequenceClassification
+
 
 def test_multi_head_attention():
     model = paddle.nn.MultiHeadAttention(embed_dim=128, num_heads=2)
@@ -48,11 +52,11 @@ def test_ernie_encoder():
     model_name = "ernie-1.0"
     model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)
     encoder = model.ernie.encoder
-    
+
     hidden_size = model.config.hidden_size
     input = paddle.rand((1, 12, hidden_size))
     inputs = [input]
-    
+
     compiled_model = forge.compile(encoder, inputs)
     verify(inputs, encoder, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)))
 
@@ -109,4 +113,3 @@ def test_ernie_model():
     inputs = [input_ids, token_type_ids, position_ids, attention_mask]
     compiled_model = forge.compile(model, inputs)
     verify(inputs, model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)))
-
