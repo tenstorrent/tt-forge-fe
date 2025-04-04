@@ -278,10 +278,9 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
                     items.append((new_key, v))
             return dict(items)
 
-        # TODO: Destupidify this! (Maybe we can sort by a substring of the weight names to make this more efficient)
-        found_weights = []
+        found_weights = set()
         param_name_lookup = {}
-        non_weight_params = {}  # Some parameters (like causal mask) are not weights
+        non_weight_params = {}
         model_params = {}
 
         if hasattr(model, "params"):  # For Tranformer's FlaxPreTrainedModel
@@ -290,15 +289,22 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
             model_params = model.variables["params"]._dict
 
         model_params = flatten(model_params)
-        for (bad_name, value) in params.items():
-            weight_found = False
-            for name, jax_value in model_params.items():
-                if name not in found_weights and np.array_equal(np.asarray(jax_value), value.numpy()):
-                    param_name_lookup[bad_name] = name
-                    weight_found = True
-                    found_weights.append(name)
-                    break
-            if not weight_found:
+        model_params_set = {name: np.asarray(jax_value) for name, jax_value in model_params.items()}
+
+        for bad_name, value in params.items():
+            value_np = value.numpy()
+            matched_name = next(
+                (
+                    name
+                    for name, jax_value in model_params_set.items()
+                    if name not in found_weights and np.array_equal(jax_value, value_np)
+                ),
+                None,
+            )
+            if matched_name:
+                param_name_lookup[bad_name] = matched_name
+                found_weights.add(matched_name)
+            else:
                 param_name_lookup[bad_name] = bad_name
                 non_weight_params[bad_name] = value
 
@@ -320,7 +326,7 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
                 tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
             )
     else:
-        raise RuntimeError("Unsupported framework type: {}".format(framework))
+        raise RuntimeError(f"Unsupported framework type: {framework}")
 
     return tvm_mod, param_name_lookup
 
