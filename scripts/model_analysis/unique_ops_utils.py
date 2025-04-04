@@ -12,7 +12,12 @@ import ast
 import torch
 
 from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
-from utils import dump_logs, collect_all_model_analysis_test
+from utils import (
+    dump_logs,
+    collect_all_model_analysis_test,
+    extract_framework_from_test_file_path,
+    extract_test_file_path_and_test_case_func,
+)
 
 
 def generate_and_export_unique_ops_tests(
@@ -32,52 +37,87 @@ def generate_and_export_unique_ops_tests(
 
     assert test_list != [], f"No tests found in the {test_directory_or_file_path} path"
 
-    # Create a dictonary contains model_name as key and model tests(i.e include variant, task) as values
-    model_name_to_tests = {}
+    # Create a dictonary contains framework as key and value as another dictonary containing model_name as key and list of test command as values
+    framework_and_model_name_to_tests = {}
     for test in test_list:
-        model_name = test.split("::")[0].split("/")[-1].replace(".py", "").replace("test_", "")
-        if model_name not in model_name_to_tests.keys():
-            model_name_to_tests[model_name] = [test]
+        test_file_path, _ = extract_test_file_path_and_test_case_func(test)
+        if test_file_path is None:
+            logger.warning(f"Unable to extract test_file_path from the test {test}")
+            continue
+        model_name = test_file_path.split("/")[-1].replace(".py", "").replace("test_", "")
+        framework_name = extract_framework_from_test_file_path(test_file_path)
+        if framework_name in framework_and_model_name_to_tests.keys():
+            if model_name in framework_and_model_name_to_tests[framework_name].keys():
+                framework_and_model_name_to_tests[framework_name][model_name].append(test)
+            else:
+                framework_and_model_name_to_tests[framework_name][model_name] = [test]
         else:
-            model_name_to_tests[model_name].append(test)
+            framework_and_model_name_to_tests[framework_name] = {model_name: [test]}
 
     # Generate unique op test for the all collected test and save the models unique ops test information in the unique_ops_output_directory_path
     model_output_dir_paths = []
-    for model_name, tests in model_name_to_tests.items():
-        model_output_dir_path = os.path.join(unique_ops_output_directory_path, model_name)
-        os.makedirs(model_output_dir_path, exist_ok=True)
-        model_output_dir_paths.append(model_output_dir_path)
-        for test in tests:
-            logger.info(f"Running the tests : {test}")
-            try:
-                result = subprocess.run(
-                    ["pytest", test, "-vss", "--no-skips"],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                    timeout=timeout,
-                    env=dict(
-                        os.environ,
-                        FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
-                        FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1" if extract_tvm_unique_ops_config else "0",
-                        FORGE_DISABLE_REPORTIFY_DUMP="1",
-                        FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS="1",
-                        FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
-                    ),
-                )
-                if result.returncode != 0:
-                    logger.error(f"Error while running the pytest:\n stdout: {result.stdout}\n stderr: {result.stderr}")
-                else:
-                    logger.info(f"Successfully generated and exported unique ops test")
+    for framework_name, model_name_to_tests in framework_and_model_name_to_tests.items():
+        for model_name, tests in model_name_to_tests.items():
+            model_output_dir_path = os.path.join(unique_ops_output_directory_path, framework_name, model_name)
+            os.makedirs(model_output_dir_path, exist_ok=True)
+            model_output_dir_paths.append(model_output_dir_path)
+            for test in tests:
+                logger.info(f"Running the tests : {test}")
+                test_file_path, test_case_name = extract_test_file_path_and_test_case_func(test)
+                if test_file_path is None or test_case_name is None:
+                    logger.warning(f"Unable to extract test_file_path and test_case_name from the test {test}")
+                    continue
+                framework = extract_framework_from_test_file_path(test_file_path)
+                model_script_output_logs_dir_path = os.path.join(model_output_dir_path, "model_script_logs")
+                test_case_name = test_case_name.replace("/", "-")
+                test_log_file_path = os.path.join(model_script_output_logs_dir_path, test_case_name + ".log")
+                try:
+                    result = subprocess.run(
+                        ["pytest", test, "-vss", "--no-skips"],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                        timeout=timeout,
+                        env=dict(
+                            os.environ,
+                            FORGE_TVM_GENERATE_UNIQUE_OPS_TESTS="1" if not extract_tvm_unique_ops_config else "0",
+                            FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG="1" if extract_tvm_unique_ops_config else "0",
+                            FORGE_DISABLE_REPORTIFY_DUMP="1",
+                            FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS="1",
+                            FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS_DIR_PATH=model_output_dir_path,
+                        ),
+                    )
 
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Error while running the pytest:\n {e.output}")
+                    message = ""
+                    if result.stderr:
+                        message += "STDERR: \n\n"
+                        message += result.stderr
+                    if result.stdout:
+                        message += "STDOUT: \n\n"
+                        message += result.stdout
+                    if result.returncode != 0:
+                        error_message = f"Error while running the pytest:"
+                        error_message += message
+                        logger.info(error_message)
+                        dump_logs(test_log_file_path, error_message)
+                    else:
+                        dump_logs(test_log_file_path, message)
+                        logger.info(f"Successfully generated and exported unique ops test")
 
-            except subprocess.TimeoutExpired as e:
-                logger.error(f"Test timed out after {timeout} seconds")
+                except subprocess.CalledProcessError as e:
+                    error_message = f"Error while running the pytest:\n {e.output}"
+                    logger.error(error_message)
+                    dump_logs(test_log_file_path, error_message)
 
-            except Exception as e:
-                logger.error(f"An unexpected error occurred while running {test}: {e}")
+                except subprocess.TimeoutExpired as e:
+                    error_message = f"Test timed out after {timeout} seconds"
+                    logger.error(error_message)
+                    dump_logs(test_log_file_path, error_message)
+
+                except Exception as e:
+                    error_message = f"An unexpected error occurred while running {test}: {e}"
+                    logger.error(error_message)
+                    dump_logs(test_log_file_path, error_message)
 
     return model_output_dir_paths
 
@@ -108,6 +148,9 @@ def extract_unique_op_tests_from_models(
 
         # Process each model variant
         for model_variant in model_variants:
+
+            if model_variant == "model_script_logs":
+                continue
 
             model_variant_dir_path = os.path.join(model_output_dir_path, model_variant)
 

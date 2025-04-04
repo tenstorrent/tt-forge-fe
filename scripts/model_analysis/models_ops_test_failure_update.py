@@ -6,7 +6,7 @@ import ast
 import re
 from loguru import logger
 import argparse
-from utils import check_path, run_precommit
+from utils import check_path, run_precommit, extract_test_file_path_and_test_case_func
 from typing import Dict, Optional, List, Tuple
 from forge.utils import create_excel_file
 import pandas as pd
@@ -133,28 +133,6 @@ def rename_marker(marker: str) -> str:
         return "xpass"
     else:
         return marker_lower
-
-
-def extract_test_file_path_and_test_case_func(test_case: str):
-    """
-    Extracts the test file path and test case function name from a given test case string.
-
-    Args:
-        test_case (str): A test case string in the format 'file_path::test_function'.
-
-    Returns:
-        Tuple[Optional[str], Optional[str]]: A tuple containing:
-            - test_file_path (str or None): The extracted file path if present.
-            - test_case_func (str or None): The extracted test case function name if present.
-    """
-    test_file_path = None
-    test_case_func = None
-
-    # Check if test case contains '::' separator
-    if "::" in test_case:
-        test_file_path, test_case_func = test_case.split("::", 1)  # Splitting into two parts
-
-    return test_file_path, test_case_func
 
 
 def extract_unique_test_file_paths(test_cases: List[str]) -> set:

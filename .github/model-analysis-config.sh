@@ -20,6 +20,7 @@ env_vars["OUTPUT_PATH"]="model_analysis_docs/"
 # 2) Script config
 env_vars["MARDOWN_DIR_PATH"]="./model_analysis_docs"
 env_vars["SCRIPT_OUTPUT_LOG"]="model_analysis.log"
+env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models/pytorch"
 
 
 # Model ops test generation
@@ -29,12 +30,12 @@ env_vars["MODELS_OPS_TEST_PACKAGE_NAME"]="models_ops"
 
 
 # Common Config for markdown generation and model ops test generation
-env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models"
 env_vars["UNIQUE_OPS_OUTPUT_DIR_PATH"]="./models_unique_ops_output"
 
 
 # If GENERATE_MODELS_OPS_TEST is set to true, Modify the PR config to model ops test generation.
 if [[ "$GENERATE_MODELS_OPS_TEST" == "true" ]]; then
+    env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models"
     env_vars["BRANCH_NAME"]="generate_models_ops_test"
     env_vars["COMMIT_MESSAGE"]="Generate and update models ops tests"
     env_vars["TITLE"]="Generate and update models ops tests"

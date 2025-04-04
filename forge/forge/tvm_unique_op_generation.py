@@ -8,9 +8,11 @@ from loguru import logger
 from typing import Any, Dict, List, Optional
 
 import torch
+import onnx
 
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file
+from forge.tensor import to_pt_tensor, AnyTensor
 
 
 class NodeType(Enum):
@@ -506,6 +508,16 @@ def export_unique_op_configuration_info(module_name, unique_operation_data, uniq
     )
 
 
+def to_pt_parameters(parameters: Dict[str, AnyTensor], framework: str):
+    pt_parameters = {}
+    for name, param in parameters.items():
+        if framework == "paddle" and hasattr(param, "name") and param.name is not None:
+            pt_parameters[param.name] = to_pt_tensor(param)
+        else:
+            pt_parameters[name] = to_pt_tensor(param)
+    return pt_parameters
+
+
 def extract_and_generate_unique_ops_tests(
     framework_mod,
     ops,
@@ -528,12 +540,20 @@ def extract_and_generate_unique_ops_tests(
     file is created, which includes a Forge module for different configurations and associated test cases.
     """
 
-    named_parameters = dict(framework_mod.module.state_dict().items())
-    named_buffers = dict(framework_mod.module.named_buffers())
+    if framework in ["pytorch", "paddle"]:
+        named_parameters = dict(framework_mod.module.state_dict().items())
+        named_buffers = dict(framework_mod.module.named_buffers())
+        named_parameters.update(named_buffers)
+    elif framework == "onnx":
+        named_parameters = {}
+        for weight in framework_mod.module.graph.initializer:
+            named_parameters[weight.name] = onnx.numpy_helper.to_array(weight)
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
-    named_parameters.update(named_buffers)
+
+    # Convert parameters from different framework to pytorch framework(i.e Convert paddle weight/buffer tensor to pytorch tensor)
+    named_parameters = to_pt_parameters(named_parameters, framework)
 
     # The model's named parameters and named buffers are stored for the following key reasons:
     #
@@ -1090,6 +1110,16 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 if op_name == "embedding":
                     # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
                     pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
+                elif op_name == "advindex":
+                    # Calculate advindex op indicies tensor maximum value based upon the reference tensor at dim = 0.
+                    if (
+                        len(operand_shapes[1]) > 1
+                        and len(operand_shapes[0]) > len(operand_shapes[1])
+                        and operand_shapes[0] == 1
+                    ):
+                        pytest_metadata["max_int"] = int(operand_shapes[0][1]) - 1
+                    else:
+                        pytest_metadata["max_int"] = int(operand_shapes[0][0]) - 1
 
                 pytest_metadata_list.append(pytest_metadata)
 
