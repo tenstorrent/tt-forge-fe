@@ -287,7 +287,9 @@ double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
                     .add_input(b)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES(
+    AT_DISPATCH_ALL_TYPES_AND2(
+        at::kBFloat16,
+        at::kHalf,
         iter.dtype(),
         "max_abs_diff",
         [&]()
