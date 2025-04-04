@@ -259,7 +259,7 @@ bool has_special_values(torch::Tensor& a)
                     .add_input(a)
                     .build();
 
-    AT_DISPATCH_FLOATING_TYPES_AND2(
+    AT_DISPATCH_ALL_TYPES_AND2(
         at::kBFloat16,
         at::kHalf,
         iter.input().scalar_type(),
@@ -275,6 +275,8 @@ bool has_special_values(torch::Tensor& a)
 
 double max_abs_diff(torch::Tensor& a, torch::Tensor& b)
 {
+    TT_ASSERT(
+        a.dtype() == b.dtype(), "Input tensors must have the same data type, but got {} and {}", a.dtype(), b.dtype());
     torch::Tensor output = at::empty({1}, a.options());
 
     a = a.flatten();
