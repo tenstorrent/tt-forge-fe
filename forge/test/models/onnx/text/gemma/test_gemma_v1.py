@@ -19,7 +19,9 @@ import torch
     [
         pytest.param(
             "google/gemma-1.1-2b-it",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model; Flakey test, not hitting host OOM on every run"
+            ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
