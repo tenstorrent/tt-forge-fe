@@ -15,11 +15,11 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 # Variants for testing
 variants = [
+    "Qwen/Qwen2.5-0.5B",
     pytest.param(
-        "Qwen/Qwen2.5-0.5B",
+        "Qwen/Qwen2.5-0.5B-Instruct",
         marks=[pytest.mark.xfail],
     ),
-    "Qwen/Qwen2.5-0.5B-Instruct",
     "Qwen/Qwen2.5-1.5B",
     "Qwen/Qwen2.5-1.5B-Instruct",
     "Qwen/Qwen2.5-3B",
@@ -32,7 +32,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_qwen_clm(forge_property_recorder, variant):
-    if variant != "Qwen/Qwen2.5-0.5B":
+    if variant != "Qwen/Qwen2.5-0.5B-Instruct":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -41,7 +41,7 @@ def test_qwen_clm(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
+    if variant == "Qwen/Qwen2.5-0.5B-Instruct":
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
