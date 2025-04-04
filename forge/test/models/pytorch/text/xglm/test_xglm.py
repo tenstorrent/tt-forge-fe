@@ -11,19 +11,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    pytest.param(
-        "facebook/xglm-564M",
-        marks=[pytest.mark.xfail],
-    ),
+    "facebook/xglm-564M",
     "facebook/xglm-1.7B",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_xglm_causal_lm(forge_property_recorder, variant):
-    if variant != "facebook/xglm-564M":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(

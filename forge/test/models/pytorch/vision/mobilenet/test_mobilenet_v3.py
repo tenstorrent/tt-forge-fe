@@ -30,8 +30,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv3_basic(forge_property_recorder, variant):
-    if variant != "mobilenet_v3_large":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -96,9 +94,9 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(

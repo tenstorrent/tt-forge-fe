@@ -27,10 +27,7 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
 
 
 variants = [
-    pytest.param(
-        "facebook/deit-base-patch16-224",
-        marks=[pytest.mark.xfail],
-    ),
+    "facebook/deit-base-patch16-224",
     "facebook/deit-base-distilled-patch16-224",
     "facebook/deit-small-patch16-224",
     "facebook/deit-tiny-patch16-224",
@@ -38,10 +35,9 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
-    if variant != "facebook/deit-base-patch16-224":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
