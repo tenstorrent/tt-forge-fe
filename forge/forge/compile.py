@@ -27,7 +27,7 @@ from forge._C import (
     dump_graph,
     extract_unique_op_configuration,
 )
-from forge._C import ForgeGraphModule, GraphType, ExecutionDepth
+from forge._C import ForgeGraphModule, GraphType, ExecutionDepth, record_singleop_operands_info
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
@@ -703,6 +703,9 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             return_intermediate=context.verify_cfg.intermediates,
             target_tensors=context.targets,
         )
+
+    if context.forge_property_handler.record_single_op_details:
+        record_singleop_operands_info(context.forge_property_handler, context.graph)
 
     context.graph.set_microbatch(context.microbatch_size)
     dump_graph(context.graph, context.graph_name, "initial_graph")

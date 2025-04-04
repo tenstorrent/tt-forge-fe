@@ -221,6 +221,7 @@ PYBIND11_MODULE(_C, m)
     m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
     m.def("split_graph", &passes::split_graph);
 
+    m.def("record_singleop_operands_info", &tt::property::record_singleop_operands_info);
     m.def(
         "extract_unique_op_configuration",
         [](tt::graphlib::Graph *graph, std::string stage, const std::optional<std::vector<std::string>> &supported_ops)

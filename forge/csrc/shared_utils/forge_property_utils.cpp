@@ -70,4 +70,49 @@ void record_flatbuffer_details(
     forge_property_handler->attr("record_flatbuffer_details")(binary_json_str);
 }
 
+// Helper function: converts a std::vector<std::uint32_t> to a py::tuple.
+py::tuple vector_to_pytuple(const std::vector<std::uint32_t>& vec)
+{
+    py::tuple tuple_obj(vec.size());
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+        tuple_obj[i] = py::cast(vec[i]);
+    }
+    return tuple_obj;
+}
+
+void record_singleop_operands_info(
+    const std::optional<py::object>& forge_property_handler, const tt::graphlib::Graph* graph)
+{
+    // Retrieve nodes of type kPyOp.
+    std::vector<tt::graphlib::Node*> ops = graph->nodes_by_type(graphlib::NodeType::kPyOp);
+    if (ops.size() != 1)
+    {
+        throw std::runtime_error("Expected one operation(i.e NodeType: kPyOp) inside the forge graph");
+    }
+
+    std::vector<OperandType> operands_info;
+    for (auto operand : graph->data_operands(ops[0]))
+    {
+        tt::graphlib::InputNode* input_node = operand->as<graphlib::InputNode>();
+        std::string input_type = input_node->input_type_string();
+        input_type = (input_type == "input") ? "activation" : input_type;
+        operands_info.emplace_back(input_type, input_node->shape().as_vector(), input_node->output_df());
+    }
+
+    py::list py_operands_info;
+    for (const auto& [input_type, shape_vec, data_format] : operands_info)
+    {
+        py_operands_info.append(py::make_tuple(py::str(input_type), vector_to_pytuple(shape_vec), data_format));
+    }
+
+    // Validate the handler; exit early if it fails.
+    if (!validate_handler_method(forge_property_handler, "record_operands_info"))
+    {
+        return;
+    }
+
+    forge_property_handler->attr("record_operands_info")(py_operands_info);
+}
+
 }  // namespace tt::property

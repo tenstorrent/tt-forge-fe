@@ -6,10 +6,12 @@ from enum import Enum
 import json
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
-from typing import Union, List, Optional, Any, get_origin, get_args, Dict
+from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
-from forge._C import ExecutionDepth
+from forge._C import ExecutionDepth, DataFormat
+from forge.tensor import forge_dataformat_to_pytorch_dtype
+from loguru import logger
 
 
 class ExecutionStage(Enum):
@@ -150,6 +152,25 @@ class FlatbufferDetailsExtractor:
 
 @dataclass_json
 @dataclass
+class Operand:
+    node_type: str = ""
+    shape: Optional[Tuple[int, ...]] = None
+    data_format: str = ""
+    torch_dtype: str = ""
+    representation: str = ""
+
+
+@dataclass_json
+@dataclass
+class OpInfo:
+    forge_op_name: str = ""
+    args: Dict[str, Any] = field(default_factory=lambda: dict())
+    operands: Optional[List[Operand]] = None
+    model_names: Optional[List[str]] = None
+
+
+@dataclass_json
+@dataclass
 class Config:
     compiler: Dict[str, Any] = field(default_factory=lambda: dict())
     verify: Dict[str, Any] = field(default_factory=lambda: dict())
@@ -158,13 +179,15 @@ class Config:
 @dataclass_json
 @dataclass
 class Tags:
-    model_name: Optional[Union[List[str], str]] = None
+    model_name: str = ""
     bringup_status: str = ""
+    execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
-    execution_stage: str = ""
-    op_name: str = ""
-    op_params: Dict[str, Any] = field(default_factory=lambda: dict())
+    op_info: Optional[OpInfo] = None
+    inputs: Optional[List[TensorDesc]] = None
+    outputs: Optional[List[TensorDesc]] = None
+    refined_error_message: str = ""
 
 
 @dataclass_json
@@ -174,8 +197,6 @@ class ForgePropertyStore:
     group: str = ""
     tags: Optional[Tags] = None
     config: Optional[Config] = None
-    inputs: Optional[List[TensorDesc]] = None
-    outputs: Optional[List[TensorDesc]] = None
 
 
 class ForgePropertyHandler:
@@ -193,6 +214,13 @@ class ForgePropertyHandler:
 
     def __init__(self, store: ForgePropertyStore):
         self.store = store
+        self.record_single_op_details = False
+
+    def enable_single_op_details_recording(self):
+        self.record_single_op_details = True
+
+    def disable_single_op_details_recording(self):
+        self.record_single_op_details = False
 
     def add(self, key: str, value: Any):
         """
@@ -303,23 +331,14 @@ class ForgePropertyHandler:
         """
         self.add("group", group)
 
-    def record_model_name(self, model_name: Union[str, List[str]]):
+    def record_model_name(self, model_name: str):
         """
         Records the model name in the tags.
 
         Args:
-            model_name (Union[str, List[str]]): The model name (or list of model names) to record.
+            model_name (str): The model name to record.
         """
         self.add("tags.model_name", model_name)
-
-    def record_op_name(self, op_name: str):
-        """
-        Records the operation name in the tags.
-
-        Args:
-            op_name (str): The operation name to be recorded.
-        """
-        self.add("tags.op_name", op_name)
 
     def record_pcc(self, pcc: float):
         """
@@ -409,7 +428,7 @@ class ForgePropertyHandler:
         Args:
             inputs (List[TensorDesc]): A list of TensorDesc objects for inputs.
         """
-        self.add("inputs", inputs)
+        self.add("tags.inputs", inputs)
 
     def record_flatbuffer_outputs(self, outputs: List[TensorDesc]):
         """
@@ -418,7 +437,7 @@ class ForgePropertyHandler:
         Args:
             outputs (List[TensorDesc]): A list of TensorDesc objects for outputs.
         """
-        self.add("outputs", outputs)
+        self.add("tags.outputs", outputs)
 
     def record_flatbuffer_details(self, binary_json_str: str):
         """
@@ -445,6 +464,42 @@ class ForgePropertyHandler:
                 )
             self.record_flatbuffer_inputs(inputs["forward"])
             self.record_flatbuffer_outputs(outputs["forward"])
+
+    def record_forge_op_name(self, forge_op_name: str):
+        if self.record_single_op_details:
+            self.add("tags.op_info.forge_op_name", forge_op_name)
+
+    def record_forge_op_args(self, op_args: Dict[str, Any]):
+        if self.record_single_op_details:
+            self.add("tags.op_info.args", op_args)
+
+    def record_operands_info(self, operands_info: List[Tuple[str, Tuple[int, ...], DataFormat]]):
+        if self.record_single_op_details:
+            logger.info(f"operands_info={operands_info}")
+            operands_list = []
+            for operand_info in operands_info:
+                node_type = operand_info[0]
+                shape = operand_info[1]
+                tt_dataformat = operand_info[2]
+                torch_dtype = forge_dataformat_to_pytorch_dtype(tt_dataformat)
+                operands_list.append(
+                    Operand(
+                        node_type=node_type,
+                        shape=shape,
+                        data_format=DataFormat.to_json(tt_dataformat),
+                        torch_dtype=str(torch_dtype),
+                        representation=f"Operand(node_type={node_type}, shape={shape}, data_format={DataFormat.to_json(tt_dataformat)}, torch_dtype={str(torch_dtype)})",
+                    )
+                )
+            self.add("tags.op_info.operands", operands_list)
+
+    def record_op_model_names(self, model_names: List[str]):
+        if self.record_single_op_details:
+            self.add("tags.op_info.model_names", model_names)
+
+    def record_refined_error_message(self, refined_error_message: str):
+        if self.record_single_op_details:
+            self.add("tags.refined_error_message", refined_error_message)
 
     def to_dict(self):
         """

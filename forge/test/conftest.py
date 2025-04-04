@@ -77,8 +77,28 @@ def pytest_sessionstart(session):
             print(f"{key}={value}")
 
 
+def refine_failure(failure_message: str):
+    refined_failure_message = ""
+    maximum_error_lines = 3
+    lines = failure_message.splitlines(True)
+    for idx, line in enumerate(lines):
+        if refined_failure_message:
+            return refined_failure_message
+        if line.startswith("E "):
+            if all(error_line.startswith("E ") for error_line in lines[idx : idx + maximum_error_lines]):
+                refined_failure_message = [
+                    error_line.replace("E ", "").strip("\n").strip()
+                    for error_line in lines[idx : idx + maximum_error_lines]
+                ]
+                refined_failure_message = " ".join(refined_failure_message)
+            else:
+                refined_failure_message = line.replace("E ", "").strip("\n").strip()
+    else:
+        return None
+
+
 @pytest.fixture(scope="function")
-def forge_property_recorder(record_property):
+def forge_property_recorder(request, record_property):
     forge_property_store = ForgePropertyStore()
 
     forge_property_handler = ForgePropertyHandler(forge_property_store)
@@ -88,7 +108,26 @@ def forge_property_recorder(record_property):
 
     yield forge_property_handler
 
+    report = getattr(request.node, "rep_call", None)
+    if (
+        report
+        and report.when == "call"
+        and (report.failed or (hasattr(report, "wasxfail") and report.outcome == "skipped"))
+    ):
+        failure_message = getattr(report, "longreprtext", None)
+        if failure_message:
+            refined_failure_message = refine_failure(failure_message)
+            if refined_failure_message is not None and forge_property_handler.record_single_op_details:
+                forge_property_handler.record_refined_error_message(refined_failure_message)
+
     forge_property_handler.store_property(record_property)
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
 
 
 @pytest.fixture(autouse=True)
