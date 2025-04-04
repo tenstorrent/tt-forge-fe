@@ -116,7 +116,7 @@ def calculate_or_estimate_pcc(
         a = a.type(torch.float32)
         b = b.type(torch.float32)
 
-    if a.dtype in (torch.float32, torch.double, torch.float16):
+    if a.dtype in (torch.float32, torch.double, torch.float16, torch.bfloat16):
         if not verif.has_special_values(a) and not verif.has_special_values(b):
             return verif.calculate_tensor_pcc(a, b)
 
