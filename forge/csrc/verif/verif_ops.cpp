@@ -19,11 +19,6 @@
 namespace tt
 {
 
-torch::Tensor is_close(torch::Tensor a, torch::Tensor b, double rtol, double atol, bool equal_nan)
-{
-    return torch::empty({1});
-}
-
 enum class ReduceOp
 {
     Max,
