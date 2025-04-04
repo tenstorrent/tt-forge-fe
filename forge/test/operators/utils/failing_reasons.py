@@ -67,6 +67,8 @@ class FailingReasons:
     # Always | FATAL    | Out of Memory: Not enough space to allocate 896204800 B DRAM buffer across 12 banks, where each bank needs to store 74686464 B
     ALLOCATION_FAILED = "Out of Memory"
 
+    INFERENCE_FROZE = "Inference froze without error message"
+
 
 # 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
 
