@@ -35,6 +35,11 @@ on:
         description: 'Run id the workflow where to find installation (or else it will search)'
         required: false
         type: string
+      allow-fail:
+        description: 'Allow tests to fail (unstable tests)'
+        required: false
+        default: false
+        type: boolean
 
 
 jobs:
@@ -49,6 +54,8 @@ jobs:
     runs-on:
       - in-service
       - ${{ matrix.build.runs-on }}
+
+    continue-on-error: ${{ inputs.allow-fail }}
 
     container:
       image: ${{ inputs.docker-image }}

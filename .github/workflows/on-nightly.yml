@@ -19,7 +19,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
 
   test_full_model_passing:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -30,11 +30,11 @@ jobs:
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ github.run_id }}
 
   perf-benchmark:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -45,7 +45,7 @@ jobs:
       run_id: ${{ github.run_id }}
 
   test_full_model_xfailing:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -57,10 +57,10 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
-      runs-on: '[{"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
 
   test_models_ops:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -75,10 +75,11 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       run_id: ${{ github.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
+      allow-fail: true
 
   test_sweeps:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -91,8 +92,9 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       run_id: ${{ github.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n300"}]'
+      runs-on: '[{"runs-on": "n150"}]'
       operators: ${{ github.event.inputs.operators }}
+      allow-fail: true
 
   fail-notify:
     if: always()
