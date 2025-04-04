@@ -3,10 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, List, Dict, TypeAlias
+from typing import Optional, Tuple, List, Dict, TypeAlias, get_args
 from collections import deque, OrderedDict
 import itertools
 
+import flax
+import jax.numpy as jnp
+import numpy as np
+import onnx
+from onnx import numpy_helper
 import paddle
 import torch
 import tensorflow as tf
@@ -25,10 +30,6 @@ from .tensor import (
     forge_dataformat_to_pytorch_dtype,
 )
 from .parameter import Parameter
-import onnx
-from onnx import numpy_helper
-import jax.numpy as jnp
-import numpy as np
 
 from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
 
@@ -579,7 +580,18 @@ class JaxModule(Module):
         self.module = module
 
     def call(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.forward(*args, **kwargs)
+
+    def forward(self, *args, **kwargs):
+        args = [
+            jnp.asarray(
+                x.detach().numpy(),
+            )
+            for x in args
+        ]
+        outputs = self.module(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        return to_pt_tensors(outputs)
 
     def backward(self, *args):
         raise NotImplementedError
@@ -587,21 +599,50 @@ class JaxModule(Module):
     def set_parameters(self, **kwargs):
         raise NotImplementedError
 
-    def cpu_eval_forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
-        args = [
-            jnp.asarray(
-                x.detach().numpy(),
-            )
-            for x in args
-        ]
-        outputs = self.module(*args)
-
-        outputs = to_pt_tensors(outputs)
-        outputs = flatten_structured_output([outputs])
-        return outputs
+    def cpu_eval_forward(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def get_parameters(self) -> List[Parameter]:
-        return []  # TODO
+        parameters = []
+
+        # Handle regular Flax modules
+        # Get parameters from params collection
+        if hasattr(self.module, "variables") and "params" in self.module.variables.keys():
+            params = self.module.variables["params"]
+            for name, param in params.items():
+                if isinstance(param, (dict, flax.core.frozen_dict.FrozenDict)):
+                    # Handle nested parameters (like BatchNorm)
+                    for subname, subparam in param.items():
+                        full_name = f"{name}_{subname}"
+                        param_tensor = to_pt_tensors(subparam)
+                        if isinstance(param_tensor, (list, tuple)):
+                            param_tensor = param_tensor[0]
+                        parameters.append(Parameter(param_tensor, requires_grad=True, name=full_name))
+                else:
+                    param_tensor = to_pt_tensors(param)
+                    if isinstance(param_tensor, (list, tuple)):
+                        param_tensor = param_tensor[0]
+                    parameters.append(Parameter(param_tensor, requires_grad=True, name=name))
+
+        # Get parameters from batch_stats collection
+        if hasattr(self.module, "variables") and "batch_stats" in self.module.variables.keys():
+            batch_stats = self.module.variables["batch_stats"]
+            for name, stat in batch_stats.items():
+                if isinstance(stat, (dict, flax.core.frozen_dict.FrozenDict)):
+                    # Handle nested statistics (like BatchNorm)
+                    for subname, substat in stat.items():
+                        full_name = f"{name}_{subname}"
+                        stat_tensor = to_pt_tensors(substat)
+                        if isinstance(stat_tensor, (list, tuple)):
+                            stat_tensor = stat_tensor[0]
+                        parameters.append(Parameter(stat_tensor, requires_grad=False, name=full_name))
+                else:
+                    stat_tensor = to_pt_tensors(stat)
+                    if isinstance(stat_tensor, (list, tuple)):
+                        stat_tensor = stat_tensor[0]
+                    parameters.append(Parameter(stat_tensor, requires_grad=False, name=name))
+
+        return parameters
 
 
 class ForgeModule(Module):
@@ -981,11 +1022,26 @@ def wrap_module(module, name: str) -> Module:
         return OnnxModule(name, module)
     elif isinstance(module, forge.module.OnnxModule):
         return module
+    elif isinstance(module, flax.linen.Module):
+        return JaxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
+def is_supported_module(module):
+    """
+    Check that the module is supported by Forge.
+    """
+    if isinstance(module, AnyModule):
+        return True
+    elif hasattr(module, "module") and isinstance(module.module, AnyModule):
+        # To support Pretrained Flax models from transformers.
+        return True
+    else:
+        return False
+
+
 FrameworkModule: TypeAlias = (
-    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule
+    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule | flax.linen.Module
 )
 AnyModule: TypeAlias = FrameworkModule | ForgeModule

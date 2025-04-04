@@ -8,6 +8,7 @@ import os
 
 import paddle
 import torch
+import flax
 import numpy as np
 import tensorflow as tf
 import onnxruntime as ort
@@ -263,67 +264,62 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
                 tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
             )
 
-    # elif framework == "jax":
+    elif framework == "jax":
 
-    #     def flatten(d, parent_key="", sep="."):
-    #         items = []
-    #         for k, v in d.items():
-    #             new_key = parent_key + sep + k if parent_key else k
-    #             if isinstance(v, MutableMapping):
-    #                 items.extend(flatten(v, new_key, sep=sep).items())
-    #             else:
-    #                 items.append((new_key, v))
-    #         return dict(items)
+        def flatten(d, parent_key="", sep="."):
+            items = []
+            for k, v in d.items():
+                new_key = parent_key + sep + k if parent_key else k
+                if isinstance(v, MutableMapping):
+                    items.extend(flatten(v, new_key, sep=sep).items())
+                else:
+                    items.append((new_key, v))
+            return dict(items)
 
-    #     # TODO: Destupidify this! (Maybe we can sort by a substring of the weight names to make this more efficient)
-    #     found_weights = []
-    #     param_name_lookup = {}
-    #     non_weight_params = {}  # Some parameters (like causal mask) are not weights
+        # TODO: Destupidify this! (Maybe we can sort by a substring of the weight names to make this more efficient)
+        found_weights = []
+        param_name_lookup = {}
+        non_weight_params = {}  # Some parameters (like causal mask) are not weights
 
-    #     if isinstance(model, FlaxPreTrainedModel):
-    #         model_params = model.params
-    #     elif isinstance(model, flax.linen.Module):
-    #         model_params = {}
-    #         if hasattr(model, 'params'):
-    #             model_params = model.variables['params']._dict
-    #     else:
-    #         raise RuntimeError("Unknown Jax module instance.")
+        # if isinstance(model, FlaxPreTrainedModel):
+        #    model_params = model.params
+        if isinstance(model, flax.linen.Module):
+            model_params = {}
+            if hasattr(model, "params"):
+                model_params = model.variables["params"]._dict
+        else:
+            raise RuntimeError("Unknown Jax module instance.")
 
-    #     model_params = flatten(model_params)
-    #     for (bad_name, value) in params.items():
-    #         weight_found = False
-    #         for name, jax_value in model_params.items():
-    #             if name not in found_weights and np.array_equal(jax_value.to_py(), value.numpy()):
-    #                 param_name_lookup[bad_name] = name
-    #                 weight_found = True
-    #                 found_weights.append(name)
-    #                 break
-    #         if not weight_found:
-    #             param_name_lookup[bad_name] = bad_name
-    #             non_weight_params[bad_name] = value
+        model_params = flatten(model_params)
+        for (bad_name, value) in params.items():
+            weight_found = False
+            for name, jax_value in model_params.items():
+                if name not in found_weights and np.array_equal(jax_value.to_py(), value.numpy()):
+                    param_name_lookup[bad_name] = name
+                    weight_found = True
+                    found_weights.append(name)
+                    break
+            if not weight_found:
+                param_name_lookup[bad_name] = bad_name
+                non_weight_params[bad_name] = value
 
-    #     if not compiler_cfg.enable_tvm_constant_prop:
-    #         tvm_mod = tvm.IRModule.from_expr(
-    #             tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], non_weight_params)
-    #         )
-    #     else:
-    #         if len(compiler_cfg.tvm_constnat_prop_mask):
-    #             propped_params = {
-    #                 k: v
-    #                 for k, v, in params.items()
-    #                 if any(
-    #                     [
-    #                         mask in param_name_lookup[k]
-    #                         for mask in compiler_cfg.tvm_constnat_prop_mask
-    #                     ]
-    #                 )
-    #             }
-    #             propped_params.update(non_weight_params)
-    #         else:
-    #             propped_params = params
-    #         tvm_mod = tvm.IRModule.from_expr(
-    #             tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
-    #         )
+        if not compiler_cfg.enable_tvm_constant_prop:
+            tvm_mod = tvm.IRModule.from_expr(
+                tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], non_weight_params)
+            )
+        else:
+            if len(compiler_cfg.tvm_constnat_prop_mask):
+                propped_params = {
+                    k: v
+                    for k, v, in params.items()
+                    if any([mask in param_name_lookup[k] for mask in compiler_cfg.tvm_constnat_prop_mask])
+                }
+                propped_params.update(non_weight_params)
+            else:
+                propped_params = params
+            tvm_mod = tvm.IRModule.from_expr(
+                tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
+            )
     else:
         raise RuntimeError("Unsupported framework type: {}".format(framework))
 

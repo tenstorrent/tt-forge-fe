@@ -156,7 +156,7 @@ def compile_tvm_graph(
     inputs: Tuple[Tensor, ...]
         Input tensors
 
-    module: Module(PyTorchModule or TFModule)
+    module: Wrapper Module (PyTorchModule, TFModule, ONNXModule, etc)
         Module that contains workload which can be assigned to a single device
 
     compiler_cfg: CompilerConfig
@@ -966,11 +966,20 @@ def get_frozen_graph_for_large_jax_model(
         tf_func = tf.function(tf_fn, autograph=False, jit_compile=True)
         tf_func = tf_func.get_concrete_function(*inputs)
     else:
-        predict_fn = lambda params, input: jaxmodel.apply({"params": params}, *input)
+        # If Jax model has batch_stats, pass it to the model.
+        batch_stats = jaxmodel.variables.get("batch_stats", {})
+        predict_fn = lambda params, batch_stats, input: jaxmodel.apply(
+            {"params": params, "batch_stats": batch_stats}, *input
+        )
+        # Convert Jax model to TF function.
         tf_fn = jax2tf.convert(predict_fn, enable_xla=compiler_cfg.enable_xla_jax_convert)
 
+        # Convert parameters TF variables.
         params_vars = tf.nest.map_structure(lambda param: tf.Variable(param, trainable=True), params)
-        tf_func = tf.function(lambda inputs: tf_fn(params_vars, inputs), autograph=False, jit_compile=True)
+        batch_stats_vars = tf.nest.map_structure(lambda stat: tf.Variable(stat, trainable=False), batch_stats)
+        variables = {"params": params_vars, "batch_stats": batch_stats_vars}
+        tf_func = tf.function(lambda inputs: tf_fn(params_vars, batch_stats, inputs), autograph=False, jit_compile=True)
+
         # Get graph definition
         tf_func = tf_func.get_concrete_function(inputs)
 
