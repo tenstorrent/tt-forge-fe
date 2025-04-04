@@ -15,13 +15,22 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Argmax0(ForgeModule):
+class Repeat0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, argmax_input_0):
-        argmax_output_1 = forge.op.Argmax("", argmax_input_0, dim=-1)
-        return argmax_output_1
+    def forward(self, repeat_input_0):
+        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 1, 1])
+        return repeat_output_1
+
+
+class Repeat1(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, repeat_input_0):
+        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 100, 1, 1, 1])
+        return repeat_output_1
 
 
 def ids_func(param):
@@ -31,41 +40,65 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 7), torch.int32)],
-            {
-                "model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    (
+        Repeat0,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_name": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"repeats": "[1, 1, 1]"},
+        },
     ),
     pytest.param(
         (
-            Argmax0,
-            [((1, 4), torch.int32)],
-            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+            Repeat1,
+            [((1, 1, 32, 107, 160), torch.float32)],
+            {
+                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     pytest.param(
         (
-            Argmax0,
-            [((1, 32), torch.int32)],
+            Repeat1,
+            [((1, 1, 64, 54, 80), torch.float32)],
             {
-                "model_name": [
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                ],
+                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1"},
+                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 128, 27, 40), torch.float32)],
+            {
+                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 256, 14, 20), torch.float32)],
+            {
+                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 
@@ -73,7 +106,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Argmax")
+    forge_property_recorder("tags.op_name", "Repeat")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
