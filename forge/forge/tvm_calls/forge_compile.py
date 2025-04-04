@@ -6,7 +6,8 @@ from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.forge_property_utils import ExecutionStage
 import torch
 import paddle
-
+import flax
+import jax.numpy as jnp
 import numpy as np
 import tvm
 from tvm.ir.transform import Pass
@@ -37,6 +38,7 @@ from forge.tvm_calls.relay.op.forge import verify_tvm_compile, flatten_IO, compi
 from jax.experimental import jax2tf
 from jax.tools.jax_to_ir import tf_wrap_with_input_names
 import collections
+from transformers import FlaxPreTrainedModel
 from transformers.utils.generic import ModelOutput
 from forge.tvm_calls.forge_utils import (
     extract_framework_model_outputs,
@@ -956,30 +958,45 @@ def get_frozen_graph_for_large_jax_model(
     #     - use helper function to handle variable freezing (This will avoid using Protobuf)
     #     - attach output shape for each node in frozen graph.
 
-    if "params" in jaxmodel.variables.keys():
-        params = jaxmodel.variables["params"]
-    else:
-        params = {}
+    params = {}
+    batch_stats = {}
+    if hasattr(jaxmodel, "variables"):
+        # Handle regular Flax nn.Module.
+        params = jaxmodel.variables.get("params", {})
+        batch_stats = jaxmodel.variables.get("batch_stats", {})
+    elif hasattr(jaxmodel, "params"):
+        # Handle FlaxPreTrainedModel of transformers.
+        params = jaxmodel.params.get("params", {})
+        batch_stats = jaxmodel.params.get("batch_stats", {})
 
     if len(params) == 0:
         tf_fn = jax2tf.convert(jaxmodel, enable_xla=compiler_cfg.enable_xla_jax_convert)
         tf_func = tf.function(tf_fn, autograph=False, jit_compile=True)
         tf_func = tf_func.get_concrete_function(*inputs)
     else:
-        # If Jax model has batch_stats, pass it to the model.
-        batch_stats = jaxmodel.variables.get("batch_stats", {})
-        predict_fn = lambda params, batch_stats, input: jaxmodel.apply(
-            {"params": params, "batch_stats": batch_stats}, *input
-        )
-        # Convert Jax model to TF function.
+        if isinstance(jaxmodel, FlaxPreTrainedModel):
+            # Wrap it to use transformers model's __call__ method.
+            def wrapped_flax_model(params, batch_stats, input):
+                variables = {"params": params}
+                if batch_stats is not None:
+                    variables["batch_stats"] = batch_stats
+                return jaxmodel(*input, variables, train=False)
+
+            predict_fn = wrapped_flax_model
+        else:
+            predict_fn = lambda params, batch_stats, input: jaxmodel.apply(
+                {"params": params, "batch_stats": batch_stats}, *input
+            )
+
+        # Convert model from Jax to TensorFlow
         tf_fn = jax2tf.convert(predict_fn, enable_xla=compiler_cfg.enable_xla_jax_convert)
 
         # Convert parameters TF variables.
-        params_vars = tf.nest.map_structure(lambda param: tf.Variable(param, trainable=True), params)
-        batch_stats_vars = tf.nest.map_structure(lambda stat: tf.Variable(stat, trainable=False), batch_stats)
-        variables = {"params": params_vars, "batch_stats": batch_stats_vars}
-        tf_func = tf.function(lambda inputs: tf_fn(params_vars, batch_stats, inputs), autograph=False, jit_compile=True)
-
+        tf_params = tf.nest.map_structure(lambda param: tf.Variable(param, trainable=True), params)
+        tf_batch_stats = tf.nest.map_structure(lambda stat: tf.Variable(stat, trainable=False), batch_stats)
+        tf_func = tf.function(
+            lambda inputs: tf_fn(tf_params, tf_batch_stats, inputs), autograph=False, jit_compile=True
+        )
         # Get graph definition
         tf_func = tf_func.get_concrete_function(inputs)
 
@@ -1079,15 +1096,10 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
 
         return dict(items)
 
-    # if isinstance(jaxmodel, FlaxPreTrainedModel):
-    #     model_params = jaxmodel.params
-    # else:
-    #     model_params = {}
-    #     if hasattr(jaxmodel, 'params'):
-    #         model_params = jaxmodel.variables['params']._dict
-
     model_params = {}
     if hasattr(jaxmodel, "params"):
+        model_params = jaxmodel.params
+    elif hasattr(jaxmodel, "variables") and "params" in jaxmodel.variables:
         model_params = jaxmodel.variables["params"]._dict
 
     weight_names = list(flatten_params(model_params).keys())
@@ -1343,19 +1355,13 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
 
             return dict(items)
 
-        # if isinstance(module, FlaxPreTrainedModel):
-        #     module_params = module.params
-        # else:
-        #     module_params = {}
-        #     if hasattr(module, 'params'):
-        #         module_params = module.variables['params']._dict
-
         module_params = {}
         if hasattr(module, "params"):
+            module_params = module.params
+        elif hasattr(module, "variables") and "params" in module.variables:
             module_params = module.variables["params"]._dict
 
         module_params = flatten_params(module_params)
-
         weights = {}
         for key, value in module_params.items():
             torch_tensor = torch.Tensor(np.array(value))

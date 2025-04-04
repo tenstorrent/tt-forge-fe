@@ -19,6 +19,7 @@ class Framework(StrEnum):
     TENSORFLOW = "tf"
     ONNX = "onnx"
     PADDLE = "pd"
+    JAX = "jax"
 
 
 class Task(StrEnum):

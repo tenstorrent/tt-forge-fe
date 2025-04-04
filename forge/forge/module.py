@@ -22,6 +22,7 @@ from .forgeglobal import lazy_trace_data
 from .tensor import (
     SomeTensor,
     Tensor,
+    to_pt_tensor,
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
@@ -605,42 +606,21 @@ class JaxModule(Module):
     def get_parameters(self) -> List[Parameter]:
         parameters = []
 
-        # Handle regular Flax modules
-        # Get parameters from params collection
-        if hasattr(self.module, "variables") and "params" in self.module.variables.keys():
-            params = self.module.variables["params"]
-            for name, param in params.items():
-                if isinstance(param, (dict, flax.core.frozen_dict.FrozenDict)):
-                    # Handle nested parameters (like BatchNorm)
-                    for subname, subparam in param.items():
-                        full_name = f"{name}_{subname}"
-                        param_tensor = to_pt_tensors(subparam)
-                        if isinstance(param_tensor, (list, tuple)):
-                            param_tensor = param_tensor[0]
-                        parameters.append(Parameter(param_tensor, requires_grad=True, name=full_name))
+        def _set_parameters(d, prefix=""):
+            for key, value in d.items():
+                if isinstance(value, (dict, flax.core.frozen_dict.FrozenDict)):
+                    _set_parameters(value, f"{prefix}{key}." if prefix else key + ".")
                 else:
-                    param_tensor = to_pt_tensors(param)
-                    if isinstance(param_tensor, (list, tuple)):
-                        param_tensor = param_tensor[0]
-                    parameters.append(Parameter(param_tensor, requires_grad=True, name=name))
+                    param_tensor = to_pt_tensor(value)
+                    parameters.append(Parameter(param_tensor, requires_grad=True, name=f"{prefix}{key}"))
 
-        # Get parameters from batch_stats collection
-        if hasattr(self.module, "variables") and "batch_stats" in self.module.variables.keys():
-            batch_stats = self.module.variables["batch_stats"]
-            for name, stat in batch_stats.items():
-                if isinstance(stat, (dict, flax.core.frozen_dict.FrozenDict)):
-                    # Handle nested statistics (like BatchNorm)
-                    for subname, substat in stat.items():
-                        full_name = f"{name}_{subname}"
-                        stat_tensor = to_pt_tensors(substat)
-                        if isinstance(stat_tensor, (list, tuple)):
-                            stat_tensor = stat_tensor[0]
-                        parameters.append(Parameter(stat_tensor, requires_grad=False, name=full_name))
-                else:
-                    stat_tensor = to_pt_tensors(stat)
-                    if isinstance(stat_tensor, (list, tuple)):
-                        stat_tensor = stat_tensor[0]
-                    parameters.append(Parameter(stat_tensor, requires_grad=False, name=name))
+        if hasattr(self.module, "params"):  # Handle transformers models
+            _set_parameters(self.module.params)
+        elif hasattr(self.module, "variables"):  # Handle regular Flax modules
+            if "params" in self.module.variables:
+                _set_parameters(self.module.variables["params"])
+            if "batch_stats" in self.module.variables:
+                _set_parameters(self.module.variables["batch_stats"])
 
         return parameters
 
@@ -1023,6 +1003,9 @@ def wrap_module(module, name: str) -> Module:
     elif isinstance(module, forge.module.OnnxModule):
         return module
     elif isinstance(module, flax.linen.Module):
+        return JaxModule(name, module)
+    elif hasattr(module, "module") and isinstance(module.module, flax.linen.Module):
+        # To support Pretrained Flax models from transformers.
         return JaxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))

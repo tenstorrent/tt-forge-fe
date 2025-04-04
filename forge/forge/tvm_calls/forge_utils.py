@@ -12,6 +12,7 @@ import flax
 import numpy as np
 import tensorflow as tf
 import onnxruntime as ort
+from transformers import FlaxPreTrainedModel
 from transformers.utils.generic import ModelOutput as HFModelOutput
 from transformers.modeling_outputs import ModelOutput
 
@@ -200,6 +201,7 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         # The tensorflow trace automatically flattens inputs
         flattened_inputs, _, _ = flatten_inputs(inputs)
         flattened_input_names = [tensor.name.split(":")[0] for tensor in model.inputs]
+
         flattened_name_map = None
         input_structure = None
 
@@ -280,21 +282,18 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
         found_weights = []
         param_name_lookup = {}
         non_weight_params = {}  # Some parameters (like causal mask) are not weights
+        model_params = {}
 
-        # if isinstance(model, FlaxPreTrainedModel):
-        #    model_params = model.params
-        if isinstance(model, flax.linen.Module):
-            model_params = {}
-            if hasattr(model, "params"):
-                model_params = model.variables["params"]._dict
-        else:
-            raise RuntimeError("Unknown Jax module instance.")
+        if hasattr(model, "params"):  # For Tranformer's FlaxPreTrainedModel
+            model_params = model.params
+        elif hasattr(model, "variables") and "params" in model.variables:
+            model_params = model.variables["params"]._dict
 
         model_params = flatten(model_params)
         for (bad_name, value) in params.items():
             weight_found = False
             for name, jax_value in model_params.items():
-                if name not in found_weights and np.array_equal(jax_value.to_py(), value.numpy()):
+                if name not in found_weights and np.array_equal(np.asarray(jax_value), value.numpy()):
                     param_name_lookup[bad_name] = name
                     weight_found = True
                     found_weights.append(name)
