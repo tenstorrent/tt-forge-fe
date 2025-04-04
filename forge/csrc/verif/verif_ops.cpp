@@ -176,7 +176,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(
     using Vec = at::vec::Vectorized<scalar_t>;
     constexpr int64_t vec_size = Vec::size();
 
-    std::atomic<bool> barrier = false;
+    // std::atomic<bool> barrier = false;
     std::atomic<reduce_result_t> result = init_val;
 
     int64_t numel = iter.input().numel();
@@ -216,16 +216,12 @@ inline void cpu_kernel_reduce_into_scalar_vec(
         }
 
         // Wait for atomic to go false
-        bool expected = false;
-        bool desired = true;
-        while (barrier.compare_exchange_weak(expected, desired))
+        auto expected = result.load();
+        auto desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
+        while (!result.compare_exchange_weak(expected, desired))
         {
-            expected = false;
+            desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
         }
-
-        result = do_reduce_op<reduce_result_t, reduce_op>(result, chunk_result);
-
-        barrier = false;
     };
 
     int64_t grain_size = at::internal::GRAIN_SIZE;
@@ -428,12 +424,12 @@ double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b)
     auto a_flat = a.flatten();
     auto b_flat = b.flatten();
 
-    if (a_flat.stride(0) != 1)
+    if (!a_flat.is_contiguous())
     {
         a_flat = a_flat.contiguous();
     }
 
-    if (b_flat.stride(0) != 1)
+    if (!b_flat.is_contiguous())
     {
         b_flat = b_flat.contiguous();
     }
@@ -443,11 +439,10 @@ double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b)
 
     TT_ASSERT(a_flat.numel() == b_flat.numel(), "Input tensors must have the same number of elements");
 
-    if (unsupported_dtypes(a_flat) || unsupported_dtypes(b_flat) || has_special_values(a_flat) ||
-        has_special_values(b_flat))
+    if (unsupported_dtypes(a_flat) || unsupported_dtypes(b_flat))
     {
         // Fallback to torch impl.
-        return at::max(at::corrcoef(at::stack({a_flat, b_flat}))).item<double>();
+        return at::min(at::corrcoef(at::stack({a_flat, b_flat}))).item<double>();
     }
 
     auto iter = at::TensorIteratorConfig()
