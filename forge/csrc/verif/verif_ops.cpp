@@ -27,10 +27,8 @@ torch::Tensor is_close(torch::Tensor a, torch::Tensor b, double rtol, double ato
 enum class ReduceOp
 {
     Max,
-    Min,
     Sum,
     LogicalOr,
-    LogicalAnd,
 };
 
 template <typename scalar_t, ReduceOp op>
@@ -40,10 +38,6 @@ inline auto do_reduce_op(scalar_t a, scalar_t b)
     {
         return std::max(a, b);
     }
-    else if constexpr (op == ReduceOp::Min)
-    {
-        return std::min(a, b);
-    }
     else if constexpr (op == ReduceOp::Sum)
     {
         return a + b;
@@ -51,10 +45,6 @@ inline auto do_reduce_op(scalar_t a, scalar_t b)
     else if constexpr (op == ReduceOp::LogicalOr)
     {
         return a || b;
-    }
-    else if constexpr (op == ReduceOp::LogicalAnd)
-    {
-        return a && b;
     }
     else
     {
@@ -80,10 +70,6 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     {
         a = at::vec::maximum(a, b);
     }
-    else if constexpr (op == ReduceOp::Min)
-    {
-        a = at::vec::minimum(a, b);
-    }
     else if constexpr (op == ReduceOp::Sum)
     {
         a += b;
@@ -91,10 +77,6 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     else if constexpr (op == ReduceOp::LogicalOr)
     {
         a = a || b;
-    }
-    else if constexpr (op == ReduceOp::LogicalAnd)
-    {
-        a = a && b;
     }
     else
     {
