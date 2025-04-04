@@ -212,6 +212,10 @@ def compare_tensor_to_golden(
     elif isinstance(rtol, dict):
         rtol = rtol[golden.dtype]
 
+    # Issue(1701): if dtypes are different, we need to convert the calculated tensor to the same dtype as golden
+    if golden.dtype != calculated.dtype:
+        calculated = calculated.type(golden.dtype)
+
     if atol is None or (isinstance(atol, dict) and (golden.dtype not in atol or atol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.atol and verify_cfg.atol[golden.dtype] is not None:
             atol = verify_cfg.atol[golden.dtype]
