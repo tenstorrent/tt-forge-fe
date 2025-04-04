@@ -84,17 +84,31 @@ inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vecto
     }
 }
 
+// Generic kernel template for performing elementwise nary operations on flattenened tensors and reducing the result
+// (producing a single scalar value at the end). The whole operation (operation + reduction) is performed in-place
+// (without allocating intermediate tensors).
+//
+// E.g. for checking if tensor contains special values (NaN, Inf) we can use this kernel to perform check on each
+// element while reducing the result using the `logical OR` operation down to a single boolean value.
+//
+// Template parameters:
+// - `reduce_op`: The reduction operation to be performed on the result of the elementwise operation.
+// - `func_t`: The elementwise operation to be performed on the input tensors. This should be a callable object (e.g.
+//    a lambda function) that takes N arguments (one for each input tensor) and returns a single value.
+// - `init_t`: The type of the initial value for the reduction operation. This should be the same type as the result of
+// the
+//   reduction operation.
+//
 template <ReduceOp reduce_op, typename func_t, typename init_t>
 inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t scalar_op, init_t init_value)
 {
-    using traits = unary_function_traits<func_t>;
-    using scalar_t = typename traits::arg1_t;
-    using op_result_t = decltype(scalar_op(typename traits::arg1_t{}));
+    using traits = function_traits<func_t>;
+    using scalar_t = typename traits::template arg<0>::type;
+    using op_result_t = typename traits::result_type;
     using reduce_result_t = decltype(do_reduce_op<op_result_t, reduce_op>(op_result_t{}, op_result_t{}));
     static_assert(std::is_same_v<init_t, reduce_result_t>, "init_value type must match reduce_result_t");
 
-    std::atomic<bool> barrier = false;
-    std::atomic<reduce_result_t> result = init_value;
+    std::atomic<reduce_result_t> global_result = init_value;
 
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
@@ -102,7 +116,6 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
         auto first_val = *reinterpret_cast<scalar_t*>(data[1]);
         op_result_t chunk_result = scalar_op(first_val);
 
-        // FIXME: Handle different number of input tensors
         auto* a_data = data[1];
         int64_t i = 1;
 
@@ -112,17 +125,13 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
             chunk_result = do_reduce_op<op_result_t, reduce_op>(chunk_result, scalar_op(a_val));
         }
 
-        // Wait for atomic to go false
-        bool expected = false;
-        bool desired = true;
-        while (barrier.compare_exchange_weak(expected, desired))
+        // Update the global result atomically.
+        auto expected = global_result.load();
+        auto desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
+        while (!global_result.compare_exchange_weak(expected, desired))
         {
-            expected = false;
+            desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
         }
-
-        result = do_reduce_op<op_result_t, reduce_op>(result, chunk_result);
-
-        barrier = false;
     };
 
     int64_t grain_size = at::internal::GRAIN_SIZE;
@@ -136,9 +145,25 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
             0, numel, grain_size, [&](int64_t begin, int64_t end) { iter.serial_for_each(loop_fn, {begin, end}); });
     }
 
-    iter.output().fill_(result.load());
+    iter.output().fill_(global_result.load());
 }
 
+// Generic kernel template for performing vectorized elementwise nary operations on flattenened tensors and reducing the
+// result (producing a single scalar value at the end). The whole operation (operation + reduction) is performed
+// in-place (without allocating intermediate tensors).
+//
+// E.g. for calculating max(|a - b|) we can use this kernel to perform |a - b| on each element while reducing the result
+// using the `max` operation down to a single scalar value.
+//
+// Template parameters:
+// - `reduce_op`: The reduction operation to be performed on the result of the elementwise operation.
+// - `func_t`: The elementwise operation to be performed on the input tensors. This should be a callable object (e.g.
+//   a lambda function) that takes N arguments (one for each input tensor) and returns a single value.
+// - `vec_func_t`: The vectorized elementwise operation to be performed on the input tensors. This should be a callable
+//   object (e.g. a lambda function) that takes N arguments (one for each input tensor) and returns a vectorized value.
+// - `init_t`: The type of the initial value for the reduction operation. This should be the same type as the result of
+//   the reduction operation.
+//
 template <ReduceOp reduce_op, typename func_t, typename vec_func_t, typename init_t>
 inline void cpu_kernel_reduce_into_scalar_vec(
     at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op, init_t init_val)
@@ -158,8 +183,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(
     using Vec = at::vec::Vectorized<scalar_t>;
     constexpr int64_t vec_size = Vec::size();
 
-    // std::atomic<bool> barrier = false;
-    std::atomic<reduce_result_t> result = init_val;
+    std::atomic<reduce_result_t> global_result = init_val;
 
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
@@ -197,10 +221,10 @@ inline void cpu_kernel_reduce_into_scalar_vec(
             chunk_result = do_reduce_op<reduce_result_t, reduce_op>(chunk_result, out);
         }
 
-        // Wait for atomic to go false
-        auto expected = result.load();
+        // Update the global result atomically.
+        auto expected = global_result.load();
         auto desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
-        while (!result.compare_exchange_weak(expected, desired))
+        while (!global_result.compare_exchange_weak(expected, desired))
         {
             desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
         }
@@ -217,7 +241,7 @@ inline void cpu_kernel_reduce_into_scalar_vec(
             0, numel, grain_size, [&](int64_t begin, int64_t end) { iter.serial_for_each(loop_fn, {begin, end}); });
     }
 
-    iter.output().fill_(result.load());
+    iter.output().fill_(global_result.load());
 }
 
 bool has_special_values(torch::Tensor& a)
@@ -351,6 +375,7 @@ double cov_ij(
     TT_ASSERT(a.dim() == 1, "Input tensors must be 1D");
     TT_ASSERT(b.dim() == 1, "Input tensors must be 1D");
     TT_ASSERT(a.strides() == b.strides(), "Input tensors must have the same strides");
+    TT_ASSERT(a.is_contiguous() && b.is_contiguous(), "Input tensors must be contiguous");
 
     if (!a_mean.has_value())
     {
