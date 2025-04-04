@@ -113,7 +113,12 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
         inputs.begin(),
         inputs.end(),
         std::back_inserter(rt_inputs),
-        [](tt::Tensor& input) { return input.get_runtime_tensor(); });
+        [](tt::Tensor& input)
+        {
+            runtime::Tensor& tensor = input.get_runtime_tensor();
+            runtime::setTensorRetain(tensor, /*retain=*/true);
+            return tensor;
+        });
 
     auto output_descs = binary.getProgramOutputs(program_idx);
     std::vector<runtime::Tensor> rt_outputs = runtime::submit(device, binary, program_idx, rt_inputs);
