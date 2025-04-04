@@ -12,10 +12,14 @@
 #include <ostream>
 #include <string>
 
+#include "graph_lib/node_types.hpp"
+
 namespace py = pybind11;
 
 namespace tt::property
 {
+
+using OperandType = std::tuple<std::string, std::vector<std::uint32_t>, tt::DataFormat>;
 
 enum class ExecutionDepth
 {
@@ -36,5 +40,8 @@ void record_execution_depth(
 
 void record_flatbuffer_details(
     const std::optional<py::object>& forge_property_handler, const std::string& binary_json_str);
+
+void record_singleop_operands_info(
+    const std::optional<py::object>& forge_property_handler, const tt::graphlib::Graph* graph);
 
 }  // namespace tt::property
