@@ -6,10 +6,10 @@ from typing import Optional, List, Dict, Any, Tuple, Union
 from dataclasses import dataclass, field
 
 import torch
-import tensorflow as tf
 from loguru import logger
 
 import forge
+from forge.module import is_supported_module
 from forge.compiled_graph_state import CompiledGraphState, CompiledModel, CompileResults
 from forge.config import (
     CompilerConfig,
@@ -194,7 +194,7 @@ def compile_main(
     Parameters
     ----------
     module: AnyModule
-        Torch, TensorFlow, ONNX or Forge module to compile
+        Torch, TensorFlow, Paddle, ONNX, Jax(Flax) or Forge module to compile
 
     sample_inputs: List[torch.Tensor]
         List of sample inputs for the module (used to infer shapes)
@@ -219,8 +219,7 @@ def compile_main(
     CompiledModel - Callable object that can be used to run the compiled module on device.
 
     """
-
-    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, ONNX, Paddle and Forge modules are supported."
+    assert is_supported_module(module), f"Forge only supports: {AnyModule}."
 
     if module_name is None:
         module_name = module.__class__.__name__
