@@ -35,9 +35,9 @@ python3 --version
 ```
 
 ## Build environment
-This is one off step to build the toolchain and create virtual environment for tt-forge. Generally you need to run this step only once, unless you want to update the toolchain (LLVM).
+This is one off step to build the toolchain and create virtual environment for `tt-forge-fe`.Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
 
-First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see build environment section below).
+First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see [Useful build environment variables](#useful-build-environment-flags) section below).
 ```sh
 # FFE related toolchain (dafault path)
 sudo mkdir -p /opt/ttforge-toolchain
@@ -60,6 +60,14 @@ git submodule update --init --recursive -f
 cmake -B env/build env
 cmake --build env/build
 ```
+
+> **Expert tip:** If you already have the `tt-mlir` toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the `tt-mlir` environment (toolchain) to save time.
+> ```sh
+> cmake -B env/build env -DTTFORGE_SKIP_BUILD_TTMLIR_ENV=ON
+> cmake --build env/build
+> ```
+>
+> **NOTE:** special care should be taken to ensure that the already built `tt-mlir` environment (toolchain) version is compatible with the one `tt-forge-fe` is using.
 
 ## Build Forge
 ```sh
