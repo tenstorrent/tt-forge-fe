@@ -152,7 +152,15 @@ jobs:
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }}
+                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                 2>&1 | tee pytest.log
+
+      - name: Upload Test Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
+          path: pytest.log
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
