@@ -101,12 +101,6 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
     {
     }
 
-    std::shared_ptr<void> borrow_host_data() const
-    {
-        TT_ASSERT(host_storage.has_value());
-        return host_storage->borrow_data();
-    }
-
     runtime::Tensor& get_runtime_tensor()
     {
         TT_ASSERT(rt_tensor.has_value());
@@ -169,7 +163,7 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
     void update_host_data()
     {
         TT_ASSERT(
-            rt_tensor.has_value() && borrow_host_data().get() != nullptr,
+            rt_tensor.has_value() && host_storage.has_value(),
             "We expect the tensor to have a host buffer as well as a handle to the device tensor");
 
         constexpr bool untilize_tensor = true;
@@ -178,7 +172,7 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
 
         auto host = sharded_tensor[0];
 
-        tt::runtime::memcpy(borrow_host_data().get(), host);
+        tt::runtime::memcpy(host_storage->data_ptr(), host);
     }
 
     bool on_device() const { return rt_tensor.has_value(); }
