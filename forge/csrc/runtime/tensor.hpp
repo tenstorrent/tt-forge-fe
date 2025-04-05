@@ -41,24 +41,6 @@ class TensorHostStorage
    public:
     explicit TensorHostStorage(torch::Tensor& tensor) : storage(tensor) {}
 
-    // Creates a new shared_ptr to the data of the tensor.
-    // NOTE: the shared_ptr is not owning the data and will not ever release it (see the lambda for the deleter),
-    // it is used only to provide a shared_ptr interface to the data which the device runtime (`tt-mlir` runtime)
-    // expects.
-    std::shared_ptr<void> borrow_data() const
-    {
-        return std::visit(
-            [](auto&& arg) -> std::shared_ptr<void>
-            {
-                using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, torch::Tensor>)
-                {
-                    return std::shared_ptr<void>(arg.data_ptr(), [arg](void*) { (void)arg; });
-                }
-            },
-            storage);
-    }
-
     void* data_ptr() const
     {
         return std::visit(
@@ -155,8 +137,8 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
         auto device = TTSystem::get_system().devices[device_id];
 
         TT_ASSERT(host_storage.has_value(), "Since the tensor is on host, we expect the host storage to be set");
-        rt_tensor =
-            runtime::createTensor(host_storage->borrow_data(), desc.shape, desc.stride, desc.itemsize, desc.dataType);
+        rt_tensor = runtime::createBorrowedHostTensor(
+            host_storage->data_ptr(), desc.shape, desc.stride, desc.itemsize, desc.dataType);
         rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
     }
 
