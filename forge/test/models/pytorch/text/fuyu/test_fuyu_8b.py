@@ -21,7 +21,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     FuyuModelWrapper,
     generate_fuyu_embedding,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
@@ -35,14 +35,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
     ],
 )
 def test_fuyu8b(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()

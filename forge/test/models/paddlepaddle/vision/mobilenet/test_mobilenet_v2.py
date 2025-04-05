@@ -17,14 +17,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.nightly
 def test_mobilenetv2_basic(forge_property_recorder):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="mobilenetv2",
         variant="basic",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
     framework_model = mobilenet_v2(pretrained=True)

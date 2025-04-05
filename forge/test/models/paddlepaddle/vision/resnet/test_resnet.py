@@ -29,14 +29,13 @@ variants = [
 @pytest.mark.nightly
 def test_resnet_pd(variant, forge_property_recorder):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="resnet",
         variant=variant[6:],
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
     framework_model = eval(variant)(pretrained=True)
