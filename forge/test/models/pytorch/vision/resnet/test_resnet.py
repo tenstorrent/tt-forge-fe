@@ -51,7 +51,9 @@ def test_resnet_hf(variant, forge_property_recorder):
 
     # Compile model
     input_sample = [torch.rand(1, 3, 224, 224)]
-    compiled_model = forge.compile(framework_model, input_sample, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        framework_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify data on sample input
     verify(

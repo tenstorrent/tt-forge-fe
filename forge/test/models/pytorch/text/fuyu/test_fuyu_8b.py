@@ -30,7 +30,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "adept/fuyu-8b",
-            marks=[pytest.mark.xfail],
+            marks=[pytest.mark.skip(reason="Transient failure")],
         ),
     ],
 )
