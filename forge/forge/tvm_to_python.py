@@ -716,12 +716,13 @@ def populate_argmax_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
     dim = int(node["attrs"]["axis"][0][0])
-    if dim >= 0:
-        dim -= len(list(graph["nodes"][nid]["forge_shape"]))
+    keep_dim = bool(node["attrs"]["keepdims"][0][0])
 
     args = [
         ("dim", f"{dim}"),
+        ("keep_dim", f"{keep_dim}")
     ]
+    
     return args
 
 
