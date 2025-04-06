@@ -269,6 +269,11 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
     elif framework == "jax":
 
         def flatten(d, parent_key="", sep="."):
+            """
+            Flatten a nested dictionary structure into a single level dictionary
+            with concatenated keys:
+            Example: {"a": {"b": 1, "c": 2}} -> {"a.b": 1, "a.c": 2}
+            """
             items = []
             for k, v in d.items():
                 new_key = parent_key + sep + k if parent_key else k
@@ -283,16 +288,26 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
         non_weight_params = {}
         model_params = {}
 
-        if hasattr(model, "params"):  # For Tranformer's FlaxPreTrainedModel
+        # Extract model parameters based on model type.
+        # Handle different JAX model types:
+        # - FlaxPreTrainedModel: model.params
+        # - flax.linen.Module: model.variables["params"]._dict
+        if hasattr(model, "params"):
             model_params = model.params
         elif hasattr(model, "variables") and "params" in model.variables:
             model_params = model.variables["params"]._dict
 
+        # Flatten the model parameters into a single level dictionary.
+        # And convert model parameters to a set of numpy arrays.
         model_params = flatten(model_params)
         model_params_set = {name: np.asarray(jax_value) for name, jax_value in model_params.items()}
 
+        # Map the model parameters to the corresponding parameters in the params dictionary.
         for bad_name, value in params.items():
             value_np = value.numpy()
+            # Find matching parameter by comparing array values.
+            # If match found, creating a mapping between the bad_name and the matched_name.
+            # If no match found, this parameter is not a weight.
             matched_name = next(
                 (
                     name
@@ -309,10 +324,12 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
                 non_weight_params[bad_name] = value
 
         if not compiler_cfg.enable_tvm_constant_prop:
+            # If constant propagation is disabled, bind the non-weight parameters to the TVM module.
             tvm_mod = tvm.IRModule.from_expr(
                 tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], non_weight_params)
             )
         else:
+            # If constant propagation is enabled, bind the parameters based on mask settings.
             if len(compiler_cfg.tvm_constnat_prop_mask):
                 propped_params = {
                     k: v

@@ -4,12 +4,12 @@
 import pytest
 import jax
 import flax.linen as nn
-
 import jax.random as random
 import jax.numpy as jnp
 
 import forge
 from forge.verify.verify import verify
+from test.mlir.utils import prepare_jax_test
 
 
 @pytest.mark.push
@@ -19,14 +19,10 @@ def test_add(forge_property_recorder):
         def __call__(self, x, y):
             return x + y
 
-    key = random.PRNGKey(0)
-    key1, key2 = random.split(key)
-    inputs = [random.uniform(key1, shape=(2, 32, 32)), random.uniform(key2, shape=(2, 32, 32))]
-
     framework_model = Add()
-    variables = framework_model.init(key, inputs[0], inputs[1])
-    framework_model = framework_model.bind(variables)
-
+    framework_model, inputs = prepare_jax_test(
+        framework_model, [(random.uniform, (2, 32, 32), jnp.float32), (random.uniform, (2, 32, 32), jnp.float32)]
+    )
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
@@ -41,13 +37,10 @@ def test_arithmetic(forge_property_recorder):
         def __call__(self, x, y):
             return jax.numpy.sqrt(x) + jax.numpy.exp(y)
 
-    key = random.PRNGKey(0)
-    key1, key2 = random.split(key)
-    inputs = [random.uniform(key1, shape=(2, 32, 32)), random.uniform(key2, shape=(2, 32, 32))]
-
     framework_model = Arithmetic()
-    variables = framework_model.init(key, inputs[0], inputs[1])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(
+        framework_model, [(random.uniform, (2, 32, 32), jnp.float32), (random.uniform, (2, 32, 32), jnp.float32)]
+    )
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -63,13 +56,10 @@ def test_matmul(forge_property_recorder):
         def __call__(self, x, y):
             return jnp.matmul(x, y)
 
-    key = random.PRNGKey(0)
-    key1, key2 = random.split(key)
-    inputs = [random.uniform(key1, shape=(32, 64)), random.uniform(key2, shape=(64, 32))]
-
     framework_model = Matmul()
-    variables = framework_model.init(key, inputs[0], inputs[1])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(
+        framework_model, [(random.uniform, (32, 64), jnp.float32), (random.uniform, (64, 32), jnp.float32)]
+    )
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -87,13 +77,10 @@ def test_squeeze(forge_property_recorder):
             squeezed_y = jnp.squeeze(y, axis=0)
             return squeezed_x.T + squeezed_y
 
-    key = random.PRNGKey(0)
-    key1, key2 = random.split(key)
-    inputs = [random.uniform(key1, shape=(1, 32, 32)), random.uniform(key2, shape=(1, 32, 32))]
-
     framework_model = Squeeze()
-    variables = framework_model.init(key, inputs[0], inputs[1])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(
+        framework_model, [(random.uniform, (1, 32, 32), jnp.float32), (random.uniform, (1, 32, 32), jnp.float32)]
+    )
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -109,12 +96,8 @@ def test_flatten(forge_property_recorder):
         def __call__(self, x):
             return jnp.reshape(x, (x.shape[0], -1))
 
-    key = random.PRNGKey(0)
-    inputs = [random.uniform(key, shape=(2, 32, 32))]
-
     framework_model = Flatten()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (2, 32, 32), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -131,12 +114,8 @@ def test_linear_layer(forge_property_recorder):
             dense = nn.Dense(features=10, use_bias=True)
             return dense(x)
 
-    key = random.PRNGKey(0)
-    inputs = [random.uniform(key, shape=(1, 784))]
-
     framework_model = Linear()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 784), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -169,12 +148,8 @@ def test_multiple_layers(forge_property_recorder):
             x = nn.Dense(features=10)(x)
             return x
 
-    key = random.PRNGKey(0)
-    inputs = [random.uniform(key, shape=(1, 3, 32, 32))]  # NCHW format
-
     framework_model = CNNClassifier()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 3, 32, 32), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -196,12 +171,8 @@ def test_mnist_linear(forge_property_recorder):
             x = nn.Dense(features=10)(x)
             return x
 
-    key = random.PRNGKey(0)
-    inputs = [random.uniform(key, shape=(1, 784))]
-
     framework_model = MNISTLinear()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 784), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -218,12 +189,8 @@ def test_batchnorm(forge_property_recorder):
             batch_norm = nn.BatchNorm(use_running_average=True, momentum=0.9, epsilon=1e-5, dtype=jnp.float32)
             return batch_norm(x)
 
-    key = random.PRNGKey(0)
-    inputs = [random.uniform(key, shape=(1, 32, 56, 56))]
-
     framework_model = BatchNorm()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 32, 56, 56), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
@@ -245,12 +212,8 @@ def test_convbn(forge_property_recorder):
             )(x)
             return x
 
-    key = random.PRNGKey(0)
-    inputs = [random.normal(key, shape=(1, 64, 64, 3))]
-
     framework_model = ConvBNLayer()
-    variables = framework_model.init(key, inputs[0])
-    framework_model = framework_model.bind(variables)
+    framework_model, inputs = prepare_jax_test(framework_model, [(random.normal, (1, 64, 64, 3), jnp.float32)])
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder

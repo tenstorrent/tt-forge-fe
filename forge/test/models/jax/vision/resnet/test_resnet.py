@@ -42,6 +42,7 @@ def test_resnet(forge_property_recorder, variant):
 
     # TODO: The constant folding pass causes the graph to break around the multiply operation at the end.
     # Therefore, this pass is skipped until the issue is resolved.
+    # ref: https://github.com/tenstorrent/tt-forge-fe/issues/1709
     os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
     compiled_model = forge.compile(
         framework_model, sample_inputs=input_sample, forge_property_handler=forge_property_recorder
@@ -51,6 +52,6 @@ def test_resnet(forge_property_recorder, variant):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
         forge_property_handler=forge_property_recorder,
     )

@@ -612,7 +612,7 @@ class JaxModule(Module):
                     _set_parameters(value, f"{prefix}{key}." if prefix else key + ".")
                 else:
                     param_tensor = to_pt_tensor(value)
-                    parameters.append(Parameter(param_tensor, requires_grad=True, name=f"{prefix}{key}"))
+                    parameters.append(Parameter(param_tensor, requires_grad=False, name=f"{prefix}{key}"))
 
         if hasattr(self.module, "params"):  # Handle transformers models
             _set_parameters(self.module.params)
