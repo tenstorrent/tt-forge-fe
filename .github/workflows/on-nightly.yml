@@ -31,7 +31,7 @@ jobs:
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
-      run_id: ${{ github.run_id }}
+      run_id: ${{ needs.build.outputs.run_id }}
 
   perf-benchmark:
     if: success() || failure()
@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ github.run_id }}
+      run_id: ${{ needs.build.outputs.run_id }}
 
   test_full_model_xfailing:
     if: success() || failure()
@@ -56,7 +56,7 @@ jobs:
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ github.run_id }}
+      run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
 
   test_models_ops:
@@ -73,7 +73,7 @@ jobs:
       test_mark: 'nightly_models_ops'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
-      run_id: ${{ github.run_id }}
+      run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
@@ -90,7 +90,7 @@ jobs:
       test_mark: 'nightly_sweeps'
       test_group_cnt: 4
       test_group_ids: '[1,2,3,4]'
-      run_id: ${{ github.run_id }}
+      run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       operators: ${{ github.event.inputs.operators }}

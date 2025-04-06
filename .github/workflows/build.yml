@@ -32,6 +32,10 @@ on:
         required: false
         default: 'All'
         type: string
+    outputs:
+      run_id:
+        description: 'Run id the workflow where to find installation (or undefined if build is not successful)'
+        value: ${{ jobs.build-conclusion.outputs.run_id }}
 
 permissions:
   packages: write
@@ -58,6 +62,9 @@ jobs:
       image: ${{ inputs.docker-image }}
 
     steps:
+
+    - name: Fail
+      run: exit 1
 
     - name: Fetch job id
       id: fetch-job-id
@@ -242,7 +249,17 @@ jobs:
     needs: [forge-build, unit-test-build]
     if: always()
     runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.conclusion.outputs.run_id }}
     steps:
       - name: Echo conclusion
+        id: conclusion
         shell: bash
-        run: echo "Build Done"
+        run: |
+          if [ "${{ needs.forge-build.result }}" == "success" ]; then
+            echo "Forge wheel is available"
+            echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
+          else
+            echo "Forge wheel is NOT available"
+            echo "run_id=" >> $GITHUB_OUTPUT
+          fi
