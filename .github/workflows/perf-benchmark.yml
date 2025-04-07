@@ -1,4 +1,4 @@
-name: On Nightly - Perf benchmark
+name: Performance benchmark
 
 on:
   workflow_dispatch:
