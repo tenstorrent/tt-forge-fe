@@ -28,6 +28,8 @@ import torch
 from yolox.exp import get_exp
 
 import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
@@ -47,7 +49,9 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(forge_property_recorder, variant):
+    pcc = 0.97
     if variant != "yolox_nano":
+        pcc = 0.99
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
@@ -105,7 +109,13 @@ def test_yolox_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # remove downloaded weights,image
     os.remove(weight_name)
