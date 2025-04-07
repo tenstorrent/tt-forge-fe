@@ -15,13 +15,13 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Argmax0(ForgeModule):
+class Reducesum0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, argmax_input_0):
-        argmax_output_1 = forge.op.Argmax("", argmax_input_0, dim=-1)
-        return argmax_output_1
+    def forward(self, reducesum_input_0):
+        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-2, keep_dim=True)
+        return reducesum_output_1
 
 
 def ids_func(param):
@@ -31,41 +31,14 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 7), torch.int32)],
-            {
-                "model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 4), torch.int32)],
-            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 32), torch.int32)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    (
+        Reducesum0,
+        [((1, 100, 8, 32, 280), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-2", "keep_dim": "True"},
+        },
     ),
 ]
 
@@ -73,7 +46,7 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Argmax")
+    forge_property_recorder("tags.op_name", "ReduceSum")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
