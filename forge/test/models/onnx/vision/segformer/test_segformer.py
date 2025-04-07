@@ -17,7 +17,6 @@ from test.utils import download_model
 variants_img_classification = [
     pytest.param(
         "nvidia/mit-b0",
-        marks=[pytest.mark.xfail],
     ),
     "nvidia/mit-b1",
     "nvidia/mit-b2",

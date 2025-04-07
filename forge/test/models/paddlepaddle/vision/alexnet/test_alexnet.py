@@ -14,7 +14,6 @@ from paddle.vision.models import alexnet
 from test.models.utils import Framework, Source, Task, build_module_name
 
 
-@pytest.mark.xfail()
 @pytest.mark.nightly
 def test_alexnet(forge_property_recorder):
     # Record model details
