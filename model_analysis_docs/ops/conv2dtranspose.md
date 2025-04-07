@@ -18,109 +18,139 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="17">1</td>
-			<td rowspan="17">[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: conv2d_transpose</td>
-			<td rowspan="17">17</td>
-			<td>1</td>
-			<td><ul><li>pt_autoencoder_conv_img_enc_github</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 4, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(4, 16, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
+			<td rowspan="13">1</td>
+			<td rowspan="13">[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+			<td rowspan="13">13</td>
 			<td>1</td>
 			<td><ul><li>pt_autoencoder_conv_img_enc_github</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 1, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 64, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 1, 4, 4), dtype=float32)</td>
-			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 64<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 1, 4, 4), dtype=float32)</td>
-			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 128<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 1, 4, 4), dtype=float32)</td>
-			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 256<br>channel_last : 0</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 512, 16, 16), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 256, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 128, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 64, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 64, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td><ul><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1024, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 512, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 64, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 32, 2, 2), dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_126293, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168293, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 192, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89209, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90209, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 96, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119209, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_120209, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 64, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td><ul><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 256, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 192, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89209, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90209, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 96, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119209, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_120209, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_126293, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168293, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td rowspan="7">2</td>
+			<td rowspan="7">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="7">7</td>
+			<td>1</td>
+			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 1, 4, 4), dtype=float32)</td>
+			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 64<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 1, 4, 4), dtype=float32)</td>
+			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 128<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 1, 4, 4), dtype=float32)</td>
+			<td>stride : 2<br>padding : 1<br>dilation : 1<br>groups : 256<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 64, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 64, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_unet_base_img_seg_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 128, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 32, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 128, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 64, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td rowspan="1">3</td>
+			<td rowspan="1">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+			<td rowspan="1">1</td>
+			<td>1</td>
+			<td><ul><li>pt_autoencoder_conv_img_enc_github</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 4, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(4, 16, 2, 2), dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 	</tbody>
 </table>
