@@ -34,7 +34,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(forge_property_recorder, size):
+def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -89,7 +89,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_640x640(forge_property_recorder, size):
+def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -143,7 +143,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_480x480(forge_property_recorder, size):
+def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
     if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -177,7 +177,7 @@ def test_yolov5_480x480(forge_property_recorder, size):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-def test_yolov5_1280x1280(forge_property_recorder, variant):
+def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name

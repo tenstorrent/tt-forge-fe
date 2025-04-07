@@ -334,6 +334,7 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
                     for model_variant_info in model_variant_info_list:
                         log_file_dir_path = os.path.join(
                             unique_ops_output_directory_path,
+                            framework,
                             model_variant_info["model_name"],
                             model_variant_info["variant_name"],
                             op_name,

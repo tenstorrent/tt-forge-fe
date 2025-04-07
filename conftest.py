@@ -8,6 +8,8 @@ import psutil
 import threading
 from loguru import logger
 from datetime import datetime
+from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
+from forge._C import ExecutionDepth
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -17,6 +19,21 @@ def record_test_timestamp(record_property):
     yield
     end_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z")
     record_property("end_timestamp", end_timestamp)
+
+
+@pytest.fixture(scope="function")
+def forge_property_recorder(record_property):
+    forge_property_store = ForgePropertyStore()
+
+    forge_property_handler = ForgePropertyHandler(forge_property_store)
+
+    # Set CI_FAILURE as default execution depth and FAILED_BEFORE_FORGE_COMPILATION_INITIATION as default execution stage
+    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
+    forge_property_handler.record_execution_stage(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
+
+    yield forge_property_handler
+
+    forge_property_handler.store_property(record_property)
 
 
 @pytest.fixture(autouse=True)

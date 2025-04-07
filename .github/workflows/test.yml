@@ -134,7 +134,15 @@ jobs:
                --group ${{ matrix.test_group_id }} \
                --splitting-algorithm least_duration \
                -m "${{ inputs.test_mark }}" \
-               --junit-xml=${{ steps.strings.outputs.test_report_path }}
+               --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+               2>&1 | tee pytest.log
+
+    - name: Upload Test Log
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}
+        path: pytest.log
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
@@ -143,8 +151,11 @@ jobs:
         name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
         path: ${{ steps.strings.outputs.test_report_path }}
 
+    # Show Test Report allowing it to fail without failing the job
+    # This is useful for the case of community PR runs.
     - name: Show Test Report
       uses: mikepenz/action-junit-report@v5
+      continue-on-error: true
       if: success() || failure()
       with:
         report_paths: ${{ steps.strings.outputs.test_report_path }}

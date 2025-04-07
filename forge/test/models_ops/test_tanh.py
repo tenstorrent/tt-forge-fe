@@ -36,6 +36,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 768), torch.float32)],
         {
             "model_name": [
+                "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
                 "pt_vilt_dandelin_vilt_b32_mlm_mlm_hf",
                 "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",
                 "pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf",
@@ -47,14 +48,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
+    (
+        Tanh0,
+        [((1, 384), torch.float32)],
+        {"model_name": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
+    ),
     (Tanh0, [((1, 32, 6144), torch.float32)], {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99}),
-    (Tanh0, [((1, 8, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
+    (Tanh0, [((1, 16, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99}),
     (
         Tanh0,
         [((1, 207, 256000), torch.float32)],
-        {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
+        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf", "pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
     ),
-    (Tanh0, [((1, 16, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99}),
+    (Tanh0, [((1, 8, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
 ]
 
 
