@@ -212,10 +212,6 @@ def compare_tensor_to_golden(
     elif isinstance(rtol, dict):
         rtol = rtol[golden.dtype]
 
-    # Issue(1701): if dtypes are different, we need to convert the calculated tensor to the same dtype as golden
-    if golden.dtype != calculated.dtype:
-        calculated = calculated.type(golden.dtype)
-
     if atol is None or (isinstance(atol, dict) and (golden.dtype not in atol or atol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.atol and verify_cfg.atol[golden.dtype] is not None:
             atol = verify_cfg.atol[golden.dtype]
@@ -228,7 +224,13 @@ def compare_tensor_to_golden(
             if verif.has_special_values(golden):
                 atol = 0
             else:
-                max_value = verif.max_abs_diff(calculated, golden)
+                # Issue(1701): types mismatch between golden and calculated.
+                # If dtypes are different, the `verify.max_abs_diff` function will fail,
+                # so we need to fallback to the previous calculation.
+                if golden.dtype != calculated.dtype:
+                    max_value = (torch.max(torch.abs(golden[~torch.isnan(golden)]))).item()
+                else:
+                    max_value = verif.max_abs_diff(calculated, golden)
                 atol = max_value * relative_atol  # allow up to 'relative_atol' error
     elif isinstance(atol, dict):
         atol = atol[golden.dtype]
