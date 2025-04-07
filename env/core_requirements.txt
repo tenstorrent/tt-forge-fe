@@ -6,7 +6,6 @@ chex==0.1.6
 dataclasses-json==0.5.7
 datasets==2.14.6
 decorator==5.1.1
-setuptools>=61.0.0
 flatbuffers==23.5.26
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
 ml-dtypes==0.2.0
