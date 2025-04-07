@@ -214,9 +214,16 @@ std::unique_ptr<Graph> extract_backward_graph(
             continue;
         }
 
-        if (node->node_type() == graphlib::NodeType::kQueue)
+        if (node->node_type() == graphlib::NodeType::kOutput)
         {
+            std::cout << "Output node: " << node->name() << std::endl;
             auto queue_node = node->as<graphlib::QueueNode>();
+
+            if (!queue_node->is_grad_accumulator())
+            {
+                continue;
+            }
+            std::cout << "Grad accumulator queue node: " << queue_node->name() << std::endl;
 
             // Previous compiler passes shouldn't have added any other type of queue nodes.
             TT_ASSERT(queue_node->is_grad_accumulator(), "Expected only grad accumulator queue nodes in the graph");
@@ -388,7 +395,7 @@ std::unique_ptr<Graph> extract_optimizer_graph(
     // Add all parameter gradients used in the optimizer graph as input nodes.
     for (auto grad_output : graph->nodes(
              [](const graphlib::Node *node) {
-                 return node->node_type() == graphlib::NodeType::kQueue &&
+                 return node->node_type() == graphlib::NodeType::kOutput &&
                         node->as<graphlib::QueueNode>()->is_grad_accumulator();
              }))
     {
