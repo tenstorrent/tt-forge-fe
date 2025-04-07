@@ -788,9 +788,9 @@ def test_floor(forge_property_recorder, input_data):
         # Core test cases for dimension-specific argmax
         # ((56,), 0, False),
         # ((56,), 0, True),
-        # ((1, 128), 1, False),
+        ((1, 128), 1, False),
         # ((1, 128), 1, True),
-        ((1, 64, 76), 2, False),
+        # ((1, 64, 76), 2, False),
         # ((1, 64, 76), 2, True),
         
         # # Core test cases for global argmax (dim=None)

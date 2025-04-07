@@ -716,7 +716,7 @@ def populate_argmax_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
 
     dim = int(node["attrs"]["axis"][0][0])
-    keep_dim = bool(node["attrs"]["keepdims"][0][0])
+    keep_dim = bool(int(node["attrs"]["keepdims"][0][0]))
 
     args = [
         ("dim", f"{dim}"),
