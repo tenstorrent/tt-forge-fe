@@ -17,7 +17,7 @@ variants = ["microsoft/phi-2"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Out of memory")
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_clm_onnx(forge_property_recorder, variant, tmp_path):
 

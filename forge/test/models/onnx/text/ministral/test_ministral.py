@@ -16,7 +16,7 @@ variants = ["ministral/Ministral-3b-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Out of memory")
 @pytest.mark.parametrize("variant", variants)
 def test_ministral(forge_property_recorder, variant, tmp_path):
 
