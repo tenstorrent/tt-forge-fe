@@ -25,13 +25,12 @@ def test_blip_text(variant):
     processor = BlipProcessor.from_pretrained(variant)
 
     text = "a photo of cats in bed"
-
     inputs = processor(text=text, return_tensors="pd", padding=True)
-
     inputs = [inputs["input_ids"]]
-    framework_model, _ = paddle_trace(model, inputs=inputs)
 
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(framework_model, inputs)
+
     verify(inputs, framework_model, compiled_model)
 
 
@@ -43,16 +42,16 @@ def test_blip_vision(variant):
 
     image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
     inputs = processor(images=image, return_tensors="pd", padding=True)
-
     inputs = [inputs["pixel_values"]]
-    framework_model, _ = paddle_trace(model, inputs=inputs)
 
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(framework_model, inputs)
+
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail()
 @pytest.mark.nightly
+@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_blip(variant, forge_property_recorder):
     # Build Module Name
@@ -114,4 +113,4 @@ def test_blip(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, model, compiled_model)
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

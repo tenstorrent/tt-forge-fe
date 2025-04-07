@@ -79,13 +79,10 @@ def test_clip(variant, forge_property_recorder):
     ]
     image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
     inputs = processor(images=image, text=text, return_tensors="pd")
-
     inputs = [inputs["input_ids"], inputs["pixel_values"]]
 
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Test framework model
-    outputs = framework_model(*inputs)
+    outputs = model(*inputs)
 
     image_embed = outputs.image_embeds
     text_embeds = outputs.text_embeds
@@ -100,9 +97,10 @@ def test_clip(variant, forge_property_recorder):
         print(f"{t}: similarity = {sim:.4f}")
 
     # Compile model
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(
         framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

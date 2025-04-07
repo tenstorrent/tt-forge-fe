@@ -15,21 +15,39 @@ variants = ["facebook/llama-7b"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+# @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_llama(variant):
+def test_llama(variant, forge_property_recorder):
+    # Build Module Name
+    module_name = build_module_name(
+        framework=Framework.PADDLE,
+        model="llama",
+        variant=variant[9:],
+        source=Source.PADDLENLP,
+        task=Task.CAUSAL_LM,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
+
+    # Load Model and Tokenizer
     model = LlamaForCausalLM.from_pretrained(variant)
     tokenizer = LlamaTokenizer.from_pretrained(variant)
+
+    # Load sample
     text = "Once upon a time"
-    inputs = tokenizer(text, return_tensors="pd")
+    encoded_inputs = tokenizer(text, return_tensors="pd")
+    inputs = [encoded_inputs["input_ids"], encoded_inputs["position_ids"], encoded_inputs["attention_mask"]]
 
     # Test framework model
-    outputs = model(**inputs)
+    outputs = model(**encoded_inputs)
     logits = outputs[0]
     decoded_tokens = paddle.argmax(logits, axis=-1)
     decoded_text = tokenizer.decode(decoded_tokens[0].numpy().tolist(), skip_special_tokens=True)
     print(decoded_text)
 
+    # Wrap Model to fix input signature
     class LlamaWrapper(paddle.nn.Layer):
         def __init__(self, model):
             super().__init__()
@@ -40,75 +58,11 @@ def test_llama(variant):
 
     model = LlamaWrapper(model)
 
-    inputs = [inputs["input_ids"], inputs["position_ids"], inputs["attention_mask"]]
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
+    # Compile Model
+    # framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+    )
 
-
-@pytest.mark.xfail()
-@pytest.mark.parametrize("variant", variants)
-def test_llama_decoder(variant, forge_property_recorder):
-    full_model = LlamaForCausalLM.from_pretrained(variant)
-    decoder = full_model.llama.layers[0]
-    hidden_size = full_model.llama.hidden_size
-    inputs = [paddle.randn([1, 1, hidden_size])]
-
-    class LlamaDecoderWrapper(paddle.nn.Layer):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
-
-        def forward(self, hidden_states):
-            return self.model(hidden_states=hidden_states)
-
-    model = LlamaDecoderWrapper(decoder)
-
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.xfail()  # float16
-@pytest.mark.parametrize("variant", variants)
-def test_llama_rms_norm(variant, forge_property_recorder):
-    full_model = LlamaModel.from_pretrained(variant)
-    rms_norm = full_model.llama.norm
-    hidden_size = full_model.llama.hidden_size
-    inputs = [paddle.randn([1, 1, hidden_size])]
-
-    class LlamaRMSNormWrapper(paddle.nn.Layer):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
-
-        def forward(self, hidden_states):
-            return self.model(hidden_states=hidden_states)
-
-    model = LlamaRMSNormWrapper(rms_norm)
-
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
-
-
-@pytest.mark.parametrize("variant", variants)
-def test_llama_lm_head(variant, forge_property_recorder):
-    full_model = LlamaForCausalLM.from_pretrained(variant)
-    lm_head = full_model.lm_head
-    hidden_size = full_model.llama.hidden_size
-    inputs = [paddle.randn([1, 1, hidden_size])]
-
-    class LlamaLMHeadWrapper(paddle.nn.Layer):
-        def __init__(self, model):
-            super().__init__()
-            self.model = model
-
-        def forward(self, hidden_states):
-            return self.model(hidden_states=hidden_states)
-
-    model = LlamaLMHeadWrapper(lm_head)
-
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

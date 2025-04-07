@@ -17,17 +17,17 @@ from forge.tvm_calls.forge_utils import paddle_trace
 
 from test.models.utils import Framework, Source, Task, build_module_name
 
-variant = "ernie-1.0"
+variants = ["ernie-1.0"]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
+@pytest.mark.parametrize("variant", variants)
 def test_ernie_for_sequence_classification(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PADDLE,
         model="ernie",
-        variant=variant,
+        variant=variant[6:],
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
@@ -43,28 +43,28 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
     # Load sample
     input = ["Hello, my dog is cute"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
-
     inputs = [
         paddle.to_tensor(value) for value in encoded_input.values()
     ]  # [input_ids, token_type_ids, position_ids, attention_mask]
 
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
-    compiled_model = forge.compile(framework_model, inputs)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, input, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
+@pytest.mark.parametrize("variant", variants)
 def test_ernie_maskedlm(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PADDLE,
         model="ernie",
-        variant=variant,
+        variant=variant[6:],
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
     )
@@ -80,13 +80,13 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
     # Load sample
     input = ["One, [MASK], three, four"]
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
-
     inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
-    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
@@ -100,12 +100,12 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", [variant])
+@pytest.mark.parametrize("variant", variants)
 def test_ernie_question_answering(forge_property_recorder, variant):
     module_name = build_module_name(
         framework=Framework.PADDLE,
         model="ernie",
-        variant=variant,
+        variant=variant[6:],
         task=Task.QA,
         source=Source.PADDLENLP,
     )
@@ -123,13 +123,13 @@ def test_ernie_question_answering(forge_property_recorder, variant):
     encoded_input = tokenizer(
         question, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True
     )
-
     inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
-    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

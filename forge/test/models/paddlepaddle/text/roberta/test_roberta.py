@@ -32,26 +32,26 @@ def test_roberta_sequence_classification(variant, forge_property_recorder):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
+
+    # Record Forge Property
     forge_property_recorder.record_model_name(module_name)
     forge_property_recorder.record_group("generality")
 
+    # Load Model and Tokenizer
     tokenizer = RobertaChineseTokenizer.from_pretrained(variant)
     model = RobertaForSequenceClassification.from_pretrained(variant)
 
     # Load sample
-    sample_text = ["多么美好的一天"]
-    inputs = tokenizer(sample_text, return_tensors="pd")
-
-    inputs = [inputs["input_ids"]]
+    input = ["多么美好的一天"]
+    encoded_input = tokenizer(input, return_tensors="pd")
+    inputs = [encoded_input["input_ids"]]
 
     # Test framework model
     outputs = model(*inputs)
     print(outputs)
 
-    # Trace the model
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(
         framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
@@ -72,15 +72,18 @@ def test_roberta_causal_lm(variant, forge_property_recorder):
         task=Task.CAUSAL_LM,
         source=Source.PADDLENLP,
     )
+
+    # Record Forge Property
     forge_property_recorder.record_model_name(module_name)
     forge_property_recorder.record_group("generality")
 
+    # Load Model and Tokenizer
     tokenizer = RobertaChineseTokenizer.from_pretrained(variant)
     model = RobertaForCausalLM.from_pretrained(variant, ignore_mismatched_sizes=True)
 
     # Load sample
-    sample_text = ["这是一首关于海的诗"]
-    inputs = tokenizer(sample_text, return_tensors="pd")
+    input = ["这是一首关于海的诗"]
+    inputs = tokenizer(input, return_tensors="pd")
     inputs = [inputs["input_ids"]]
 
     # Test framework model
@@ -90,10 +93,8 @@ def test_roberta_causal_lm(variant, forge_property_recorder):
     decoded_text = tokenizer.decode(decoded_tokens.numpy().tolist(), skip_special_tokens=True)
     print(decoded_text)
 
-    # Trace the model
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(
         framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )

@@ -14,12 +14,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
 from paddlenlp.transformers import AlbertForMaskedLM, AlbertTokenizer
 
 variants = ["albert-chinese-tiny"]
+inputs = [["一，[MASK]，三，四"]]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.parametrize("input", [["你好，我的狗很可爱"]])
+@pytest.mark.parametrize("input", inputs)
 def test_albert_maskedlm(forge_property_recorder, variant, input):
+    # Build Module Name
     module_name = build_module_name(
         framework=Framework.PADDLE,
         model="albert",
@@ -36,10 +38,11 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
     model = AlbertForMaskedLM.from_pretrained(variant)
     tokenizer = AlbertTokenizer.from_pretrained(variant)
 
+    # Load sample
     encoded_input = tokenizer(input, return_token_type_ids=True, return_position_ids=True, return_attention_mask=True)
-
     inputs = [paddle.to_tensor(value) for value in encoded_input.values()]
 
+    # Wrap Model to fix input signature
     class AlbertWrapper(paddle.nn.Layer):
         def __init__(self, model):
             super().__init__()
@@ -55,10 +58,11 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
 
     model = AlbertWrapper(model)
 
-    framework_model, _ = paddle_trace(model, inputs=inputs)
-
     # Compile Model
-    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
