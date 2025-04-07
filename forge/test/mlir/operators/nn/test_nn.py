@@ -577,6 +577,83 @@ def test_convtranspose2d(
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+@pytest.mark.parametrize(
+    "in_channels, out_channels, kernel_size, stride, padding, groups, bias, dilation, padding_mode, input_shape",
+    [
+        pytest.param(
+            64,
+            128,
+            (7, 7),
+            4,
+            (3, 5),
+            1,
+            False,
+            1,
+            "zeros",
+            (16, 64, 80, 80),
+        ),
+    ]
+)
+def test_convtranspose2d_bfloat16(
+    forge_property_recorder,
+    in_channels,
+    out_channels,
+    kernel_size,
+    stride,
+    padding,
+    groups,
+    bias,
+    dilation,
+    padding_mode,
+    input_shape,
+):
+    inputs = [torch.randn(*input_shape).to(torch.bfloat16)]
+
+    framework_model = torch.nn.ConvTranspose2d(
+        in_channels=in_channels,
+        out_channels=out_channels,
+        kernel_size=kernel_size,
+        stride=stride,
+        padding=padding,
+        groups=groups,
+        bias=bias,
+        dilation=dilation,
+        padding_mode=padding_mode,
+    ).to(torch.bfloat16)
+
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
+@pytest.mark.push
+def test_conv2d_bfloat16(forge_property_recorder, shape):
+    class Conv2d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.conv = nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=0)
+            self.conv.weight = nn.Parameter(self.conv.weight.to(torch.bfloat16))
+            if self.conv.bias is not None:
+                self.conv.bias = nn.Parameter(self.conv.bias.to(torch.bfloat16))
+
+        def forward(self, x):
+            return self.conv(x)
+
+    inputs = [torch.rand(shape).to(torch.bfloat16)]
+
+    framework_model = Conv2d()
+    framework_model.conv.to(torch.bfloat16)
+    print("*** model weights dtype",framework_model.conv.weight.dtype)
+    print("*** model bias dtype",framework_model.conv.bias.dtype)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
 @pytest.mark.push
 def test_avg_pool2d(forge_property_recorder):
     class AvgPool2d(nn.Module):

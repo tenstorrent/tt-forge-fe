@@ -63,7 +63,7 @@ def extract_framework_model_outputs(
 
             framework_outputs = flatten_outputs(framework_outputs)
 
-        framework_outputs = [x.detach().numpy() for x in framework_outputs]
+        framework_outputs = [x.detach() for x in framework_outputs]
 
     elif framework == "tensorflow":
         kwargs = {}

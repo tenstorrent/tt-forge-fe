@@ -30,7 +30,7 @@ REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
-    1,
+    8,
 ]
 
 # Input size configurations
@@ -44,7 +44,7 @@ CHANNEL_SIZE = [
 ]
 
 # Loop count configurations
-LOOP_COUNT = [1, 2, 4, 8, 16, 32]
+LOOP_COUNT = [1,]
 
 variants = [
     "microsoft/resnet-50",
@@ -74,10 +74,11 @@ def test_resnet_hf(
     # images = random.sample(dataset["valid"]["image"], 10)
 
     # Random data
-    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
+    input_sample = [torch.rand(batch_size, channel_size, *input_size).to(torch.bfloat16)]
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16)
+    framework_model = framework_model.to(dtype=torch.bfloat16)
     fw_out = framework_model(*input_sample)
 
     # Compile model

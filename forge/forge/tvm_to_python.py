@@ -2256,6 +2256,7 @@ def compile_tvm_to_python(
                     graph_input_names[inp_idx] = node["forge_name"]
                     node_name_to_node_type[node["forge_name"]] = NodeType.Activation
                     node["op"] = "*"
+                    print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: input")
                     logger.trace(f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: input")
                 else:
                     tensor, requires_grad = weights[node["name"]]
@@ -2275,6 +2276,7 @@ def compile_tvm_to_python(
                         logger.trace(
                             f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: parameter, requires_grad: {requires_grad}"
                         )
+                        print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: parameter")
                     else:
                         if torch.numel(tensor) == 1 and len(tensor.shape) == 0:
                             tensor = tensor.reshape((1,))
@@ -2292,6 +2294,7 @@ def compile_tvm_to_python(
                             logger.trace(
                                 f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Parameter"
                             )
+                            print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: parameter")
                         else:
                             node["op"] = "constant"
                             constants[node["nid"]] = (node["forge_name"], tensor.shape, _determine_node_dtype(node))
@@ -2299,6 +2302,7 @@ def compile_tvm_to_python(
                             logger.trace(
                                 f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Constant"
                             )
+                            print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: constant")
 
             elif node["op"] == "const":
                 if isinstance(json_graph["params"][node["name"]], np.ndarray):
@@ -2324,6 +2328,7 @@ def compile_tvm_to_python(
                     logger.trace(
                         f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: parameter, requires_grad: {requires_grad}"
                     )
+                    print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: parameter")
                 else:
                     if torch.numel(tensor) == 1 and len(tensor.shape) == 0:
                         tensor = tensor.reshape((1,))
@@ -2334,6 +2339,7 @@ def compile_tvm_to_python(
                     constants[node["nid"]] = (node["forge_name"], tensor.shape, _determine_node_dtype(node))
                     node_name_to_node_type[node["forge_name"]] = NodeType.Constant
                     logger.trace(f"Node: {nid} shape: {node['forge_shape']} name: {node['forge_name']} type: Constant")
+                    print("****** Node: ", nid, " shape: ", node["forge_shape"], " name: ", node["forge_name"], " type: constant")
 
             elif node["op"] == "kernel":
                 op_map = tvm_to_forge_op_map if json_graph["device"] == "tt" else tvm_to_pytorch_op_map
