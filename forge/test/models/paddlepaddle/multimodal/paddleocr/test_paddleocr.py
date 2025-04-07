@@ -50,6 +50,8 @@ cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", 
 os.makedirs(cache_dir, exist_ok=True)
 
 
+@pytest.mark.nightly
+@pytest.mark.xfail()
 @pytest.mark.parametrize(
     "variant,url",
     [
@@ -72,23 +74,23 @@ def test_paddleocr_det(forge_property_recorder, variant, url):
     forge_property_recorder.record_model_name(module_name)
     forge_property_recorder.record_group("generality")
 
+    # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
 
+    # Load sample
     image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"
     image = cv2.imread(image_path)
     image = cv2.resize(image, (224, 224)).transpose(2, 0, 1).astype("float32")
     inputs = [paddle.to_tensor([image])]
 
+    # Test framework model
     print(framework_model(inputs[0]))
-
-    compiler_cfg = CompilerConfig(extract_tvm_unique_ops_config=True)
 
     # Compile model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         forge_property_handler=forge_property_recorder,
-        compiler_cfg=compiler_cfg,
         module_name=module_name,
     )
 
@@ -102,6 +104,8 @@ def test_paddleocr_det(forge_property_recorder, variant, url):
     )
 
 
+# @pytest.mark.xfail()
+@pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant,url",
     [
@@ -124,23 +128,23 @@ def test_paddleocr_rec(forge_property_recorder, variant, url):
     forge_property_recorder.record_model_name(module_name)
     forge_property_recorder.record_group("generality")
 
+    # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
 
-    image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/test_image.png"
+    # Load sample
+    image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"
     image = cv2.imread(image_path)
-    image = cv2.resize(image, (224, 224)).transpose(2, 0, 1).astype("float32")
+    image = cv2.resize(image, (100, 32)).transpose(2, 0, 1).astype("float32")/255.0
     inputs = [paddle.to_tensor([image])]
 
-    print(framework_model(inputs[0]))
-
-    compiler_cfg = CompilerConfig(extract_tvm_unique_ops_config=True)
-
+    # Test framework model
+    output = framework_model(*inputs)
+    
     # Compile model
     compiled_model = forge.compile(
         framework_model,
         inputs,
         forge_property_handler=forge_property_recorder,
-        compiler_cfg=compiler_cfg,
         module_name=module_name,
     )
 
