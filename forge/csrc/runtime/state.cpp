@@ -4,9 +4,11 @@
 #include "runtime/state.hpp"
 
 #include <utils/logger.hpp>
+#include <vector>
 
 #include "runtime/runtime.hpp"
 #include "tt/runtime/runtime.h"
+#include "tt/runtime/types.h"
 
 namespace tt
 {
@@ -91,22 +93,47 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
 }
 
-void ModelState::test_so(std::string so_path, std::string func_name, std::vector<tt::Tensor> act_inputs, std::vector<tt::Tensor>& outputs)
+void ModelState::test_so(
+    std::string so_path,
+    std::string func_name,
+    std::vector<tt::Tensor>& act_inputs,
+    std::vector<tt::Tensor>& consts_and_params,
+    std::vector<tt::Tensor>& golden_outs)
 {
     void* so_handle = tt::open_so(so_path);
-    std::vector<tt::runtime::Tensor> outs = tt::run_so_program(so_handle, func_name, act_inputs);
+    std::vector<tt::runtime::Tensor> outs = tt::run_so_program(so_handle, func_name, act_inputs, consts_and_params);
 
+    std::vector<runtime::Tensor> host_outs;
+    std::transform(
+        outs.begin(),
+        outs.end(),
+        std::back_inserter(host_outs),
+        [](tt::runtime::Tensor& output)
+        {
+            std::vector<runtime::Tensor> vec_host_t = tt::runtime::toHost(output);
+            assert(vec_host_t.size() == 1 && "We expect only one host tensor");
+            return vec_host_t.front();
+        });
 
-    std::vector<runtime::Tensor> rt_outs;
-    rt_outs.reserve(outputs.size());
+    std::vector<runtime::Tensor> golden_host_outs;
+    golden_host_outs.reserve(golden_outs.size());
 
     std::transform(
-        outputs.begin(),
-        outputs.end(),
-        std::back_inserter(rt_outs),
-        [](tt::Tensor& output) { return output.get_runtime_tensor(); });
+        golden_outs.begin(),
+        golden_outs.end(),
+        std::back_inserter(golden_host_outs),
+        [](tt::Tensor& output)
+        {
+            runtime::Tensor rt_t = output.get_runtime_tensor();
+            std::vector<runtime::Tensor> vec_host_t = tt::runtime::toHost(rt_t);
+            assert(vec_host_t.size() == 1 && "We expect only one host tensor");
+            return vec_host_t.front();
+        });
 
-    tt::compareOuts(outs, rt_outs);
+    // tt::runtime::Tensor lhs = outs[0];
+    // tt::runtime::Tensor rhs = rt_outs[0];
+
+    tt::compareOuts(host_outs, golden_host_outs);
 
     return;
 }

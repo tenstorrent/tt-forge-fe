@@ -21,7 +21,10 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
 
 void* open_so(std::string path);
 std::vector<tt::runtime::Tensor> run_so_program(
-    void* so_handle, std::string func_name, std::vector<tt::Tensor>& inputs);
+    void* so_handle,
+    std::string func_name,
+    std::vector<tt::Tensor>& inputs,
+    std::vector<tt::Tensor>& consts_and_params);
 bool compareOuts(std::vector<tt::runtime::Tensor>& lhs, std::vector<tt::runtime::Tensor>& rhs);
 
 }  // namespace tt
