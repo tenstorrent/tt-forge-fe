@@ -291,11 +291,11 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
         # Extract model parameters based on model type.
         # Handle different JAX model types:
         # - FlaxPreTrainedModel: model.params
-        # - flax.linen.Module: model.variables["params"]._dict
+        # - flax.linen.Module: model.variables["params"]
         if hasattr(model, "params"):
             model_params = model.params
         elif hasattr(model, "variables") and "params" in model.variables:
-            model_params = model.variables["params"]._dict
+            model_params = model.variables["params"]
 
         # Flatten the model parameters into a single level dictionary.
         # And convert model parameters to a set of numpy arrays.

@@ -1100,7 +1100,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
     if hasattr(jaxmodel, "params"):
         model_params = jaxmodel.params
     elif hasattr(jaxmodel, "variables") and "params" in jaxmodel.variables:
-        model_params = jaxmodel.variables["params"]._dict
+        model_params = jaxmodel.variables["params"]
 
     weight_names = list(flatten_params(model_params).keys())
     json_graphs = extract_graphs(
@@ -1359,7 +1359,7 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
         if hasattr(module, "params"):
             module_params = module.params
         elif hasattr(module, "variables") and "params" in module.variables:
-            module_params = module.variables["params"]._dict
+            module_params = module.variables["params"]
 
         module_params = flatten_params(module_params)
         weights = {}

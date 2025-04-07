@@ -780,7 +780,7 @@ class ForgeWriter(PythonWriter):
             self.wl("model_params = {}")
             self.wl("if hasattr(model, 'variables') and 'params' in model.variables:")
             self.indent += 1
-            self.wl(f"model_params = model.variables['params']._dict")
+            self.wl(f"model_params = model.variables['params']")
             self.indent -= 1
             self.indent -= 1
             if param_file_name is not None:
@@ -1432,7 +1432,7 @@ class PyTorchWriter(PythonWriter):
             self.wl("model_params = {}")
             self.wl("if hasattr(model, 'params'):")
             self.indent += 1
-            self.wl(f"model_params = model.variables['params']._dict")
+            self.wl(f"model_params = model.variables['params']")
             self.indent -= 1
             self.indent -= 1
             self.wl("named_parameters = {}")
