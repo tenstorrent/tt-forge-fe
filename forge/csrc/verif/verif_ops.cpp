@@ -395,7 +395,7 @@ double cov_ij(
                     .add_input(b)
                     .build();
 
-    const auto N = a.numel() - 1;
+    const auto N = a.numel();
 
     AT_DISPATCH_FLOATING_TYPES_AND2(
         at::kBFloat16,
@@ -406,18 +406,26 @@ double cov_ij(
         {
             at::native::Vectorized<scalar_t> a_mean_vec(a_mean.value());
             at::native::Vectorized<scalar_t> b_mean_vec(b_mean.value());
+            const scalar_t scale = 1e-2;
             const auto N_vec = at::native::Vectorized<scalar_t>(N);
+            const auto scale_vec = at::native::Vectorized<scalar_t>(scale);
             cpu_kernel_reduce_into_scalar_vec<ReduceOp::Sum>(
                 iter,
-                [&a_mean, &b_mean, &N](scalar_t a_val, scalar_t b_val) -> scalar_t
-                { return (a_val - a_mean.value()) * (b_val - b_mean.value()) / N; },
-                [&a_mean_vec, &b_mean_vec, &N_vec](
+                [&a_mean, &b_mean, &N, &scale](scalar_t a_val, scalar_t b_val) -> scalar_t
+                {
+                    auto d_a = scale * a_val - scale * a_mean.value();
+                    auto d_b = scale * b_val - scale * b_mean.value();
+                    return d_a / N * d_b;
+                },
+                [&a_mean_vec, &b_mean_vec, &N_vec, &scale_vec](
                     at::native::Vectorized<scalar_t> a,
                     at::native::Vectorized<scalar_t> b) -> at::native::Vectorized<scalar_t>
                 {
-                    auto delta_a = a - a_mean_vec;
-                    auto delta_b = b - b_mean_vec;
-                    return (delta_a * delta_b) / N_vec;
+                    auto delta_a = scale_vec * a - scale_vec * a_mean_vec;
+                    auto delta_b = scale_vec * b - scale_vec * b_mean_vec;
+
+                    auto res = delta_a / N_vec * delta_b;
+                    return res;
                 },
                 static_cast<scalar_t>(0));
         });
@@ -472,6 +480,11 @@ double calculate_tensor_pcc(torch::Tensor& a, torch::Tensor& b)
     auto std_b = std::sqrt(cov[3].item<double>());
 
     double min = std::numeric_limits<double>::max();
+
+    // There should be no NaN/Inf in the covariance matrix.
+    TT_ASSERT(
+        has_special_values(cov) == false, "Covariance matrix contains NaN/Inf values - possibly due to an overflow");
+
     min = std::min(min, cov[0].item<double>() / (std_a * std_a));
     min = std::min(min, cov[1].item<double>() / (std_a * std_b));
     min = std::min(min, cov[2].item<double>() / (std_b * std_a));
