@@ -38,7 +38,7 @@ forge_modules_and_shapes_dtypes_list = [
             {
                 "model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1", "keep_dim" : "false"},
+                "op_params": {"dim": "-1", "keep_dim": "false"},
             },
         ),
     ),
@@ -46,7 +46,11 @@ forge_modules_and_shapes_dtypes_list = [
         (
             Argmax0,
             [((1, 4), torch.int32)],
-            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1", "keep_dim" : "false"}},
+            {
+                "model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1", "keep_dim": "false"},
+            },
         ),
     ),
     pytest.param(
@@ -60,10 +64,9 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_opt_facebook_opt_350m_seq_cls_hf",
                 ],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1", "keep_dim" : "false"},
+                "op_params": {"dim": "-1", "keep_dim": "false"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     pytest.param(
         (
@@ -71,8 +74,6 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 4), torch.int32)],
             {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
     ),
 ]
 
