@@ -47,31 +47,6 @@ def patch_oft_cayley_with_lstsq():
     oft_layer.Linear._cayley_batch = _safe_cayley
 
 
-def get_oft_configs():
-    config_te = OFTConfig(
-        r=8,
-        target_modules=["k_proj", "q_proj", "v_proj", "out_proj", "fc1", "fc2"],
-        module_dropout=0.0,
-        init_weights=True,
-    )
-    config_unet = OFTConfig(
-        r=8,
-        target_modules=[
-            "proj_in",
-            "proj_out",
-            "to_k",
-            "to_q",
-            "to_v",
-            "to_out.0",
-            "ff.net.0.proj",
-            "ff.net.2",
-        ],
-        module_dropout=0.0,
-        init_weights=True,
-    )
-    return config_te, config_unet
-
-
 class StableDiffusionWrapper(torch.nn.Module):
     def __init__(self, model):
         super().__init__()
@@ -132,15 +107,6 @@ def get_inputs(model, prompt: str = "A beautiful mountain landscape during sunse
     timestep = pipe.scheduler.timesteps[0].expand(latents.shape[0])
 
     return pipe, (latents, timestep, prompt_embeds)
-
-
-class StableDiffusionWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, latents, timesteps, prompt_embeds):
-        return self.model.unet(latents, timesteps, encoder_hidden_states=prompt_embeds).sample
 
 
 def get_models(inputs, tmp_path, pipe):
