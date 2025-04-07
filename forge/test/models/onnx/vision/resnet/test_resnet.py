@@ -57,7 +57,9 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
 
     # Compile model
     input_sample = [input_sample]
-    compiled_model = forge.compile(onnx_model, input_sample, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify data on sample input
     verify(
