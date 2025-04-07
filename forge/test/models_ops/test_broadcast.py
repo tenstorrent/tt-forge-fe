@@ -47,7 +47,7 @@ class Broadcast3(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=128)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=384)
         return broadcast_output_1
 
 
@@ -56,7 +56,7 @@ class Broadcast4(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=384)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=128)
         return broadcast_output_1
 
 
@@ -82,53 +82,32 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast1,
-            [((1, 1, 1, 128), torch.bool)],
+            [((1, 1, 1, 384), torch.bool)],
             {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                ],
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
                 "pcc": 0.99,
                 "op_params": {"dim": "-3", "shape": "12"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    pytest.param(
-        (
-            Broadcast2,
-            [((1, 1, 1, 128), torch.bool)],
-            {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "-4", "shape": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
+    (
+        Broadcast2,
+        [((1, 1, 1, 384), torch.bool)],
+        {
+            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-4", "shape": "1"},
+        },
     ),
     pytest.param(
         (
             Broadcast3,
-            [((1, 12, 1, 128), torch.bool)],
+            [((1, 12, 1, 384), torch.bool)],
             {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                ],
+                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-2", "shape": "128"},
+                "op_params": {"dim": "-2", "shape": "384"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
@@ -136,35 +115,50 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast1,
-            [((1, 1, 1, 384), torch.bool)],
+            [((1, 1, 1, 128), torch.bool)],
             {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
                 "pcc": 0.99,
                 "op_params": {"dim": "-3", "shape": "12"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    pytest.param(
-        (
-            Broadcast2,
-            [((1, 1, 1, 384), torch.bool)],
-            {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-4", "shape": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
+    (
+        Broadcast2,
+        [((1, 1, 1, 128), torch.bool)],
+        {
+            "model_name": [
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "-4", "shape": "1"},
+        },
     ),
     pytest.param(
         (
             Broadcast4,
-            [((1, 12, 1, 384), torch.bool)],
+            [((1, 12, 1, 128), torch.bool)],
             {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"dim": "-2", "shape": "384"},
+                "op_params": {"dim": "-2", "shape": "128"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],

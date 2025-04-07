@@ -38,8 +38,6 @@ def test_mistral(forge_property_recorder, variant):
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     framework_model.eval()
-    for param in framework_model.parameters():
-        param.requires_grad = False
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a DRAM allocation problem might occur (this model is already near maximum model size for single chip)
@@ -77,7 +75,7 @@ def test_mistral_v0_3(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model

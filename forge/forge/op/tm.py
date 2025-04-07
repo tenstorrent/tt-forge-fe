@@ -113,8 +113,8 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     Tensor
         Forge tensor
     """
-    if dim >= 0:
-        dim -= len(operandA.shape)
+    if dim < 0:
+        dim += len(operandA.shape)
 
     if stop is None:
         stop = start + 1
@@ -128,7 +128,9 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     assert stop <= operandA.shape[dim]
     assert stride <= operandA.shape[dim]
 
-    return op("index", name, operandA, attrs=(dim, start, stop, stride)).get_tensor()
+    return op(
+        "index", name, operandA, attrs=(dim, start, stop, stride), dim=dim, start=start, stop=stop, stride=stride
+    ).get_tensor()
 
 
 def AdvIndex(

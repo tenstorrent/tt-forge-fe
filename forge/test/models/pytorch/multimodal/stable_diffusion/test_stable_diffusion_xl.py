@@ -4,30 +4,34 @@
 
 import pytest
 import torch
-from diffusers import DiffusionPipeline
-from torchvision import transforms
 
 import forge
 from forge.verify.verify import verify
 
+from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
+    load_pipe,
+    stable_diffusion_preprocessing_xl,
+)
 from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
-    def __init__(self, pipeline):
+    def __init__(self, model, added_cond_kwargs, cross_attention_kwargs=None):
         super().__init__()
-        self.pipeline = pipeline
-        # Transformation to convert PIL Image to tensor
-        self.transform = transforms.Compose([transforms.ToTensor()])  # Convert PIL Image to PyTorch tensor
+        self.model = model
+        self.cross_attention_kwargs = cross_attention_kwargs
+        self.added_cond_kwargs = added_cond_kwargs
 
-    def forward(self, input_tensor):
-        # Decode the tensor to text prompt
-        tokenizer = self.pipeline.tokenizer
-        prompt = tokenizer.decode(input_tensor[0].tolist())
-        # Generate images using the pipeline
-        images = self.pipeline(prompt=prompt).images
-        # return images
-        return images
+    def forward(self, latent_model_input, timestep, prompt_embeds):
+        noise_pred = self.model(
+            latent_model_input,
+            timestep[0],
+            encoder_hidden_states=prompt_embeds,
+            timestep_cond=None,
+            cross_attention_kwargs=self.cross_attention_kwargs,
+            added_cond_kwargs=self.added_cond_kwargs,
+        )[0]
+        return noise_pred
 
 
 @pytest.mark.nightly
@@ -37,7 +41,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
     [
         pytest.param(
             "stable-diffusion-xl-base-1.0",
-            marks=[pytest.mark.xfail(reason="NotImplementedError: Unknown output type: <class 'PIL.Image.Image'>")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -45,29 +49,37 @@ def test_stable_diffusion_generation(forge_property_recorder, variant):
     # Build Module Name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
-        model="stereo",
+        model="stable_diffusion",
         variant=variant,
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
-    # Load the pipeline and set it to use the CPU
-    pipe = DiffusionPipeline.from_pretrained(f"stabilityai/{variant}", torch_dtype=torch.float32)  # Use float32 for CPU
-    pipe.to("cpu")  # Move the model to CPU
+    # Load the pipeline
+    pipe = load_pipe(variant, variant_type="xl")
 
-    # Wrap the pipeline in the wrapper
-    framework_model = StableDiffusionXLWrapper(pipe)
+    # Extract only the unet, as the forward pass occurs here.
+    framework_model = pipe.unet
 
     # Tokenize the prompt to a tensor
     tokenizer = pipe.tokenizer
     prompt = "An astronaut riding a green horse"
-    input_tensor = tokenizer(prompt, return_tensors="pt").input_ids
+    (
+        latent_model_input,
+        timestep,
+        prompt_embeds,
+        timestep_cond,
+        added_cond_kwargs,
+        add_time_ids,
+    ) = stable_diffusion_preprocessing_xl(pipe, prompt)
+    inputs = [latent_model_input, timestep, prompt_embeds]
 
-    inputs = [input_tensor]
+    # Wrap the pipeline in the wrapper
+    framework_model = StableDiffusionXLWrapper(framework_model, added_cond_kwargs, cross_attention_kwargs=None)
 
     # Forge compile framework model
     compiled_model = forge.compile(

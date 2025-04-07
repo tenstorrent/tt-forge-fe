@@ -8,7 +8,7 @@ import torch
 import forge
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
-    load_pipe_v35,
+    load_pipe,
     stable_diffusion_preprocessing_v35,
 )
 from test.models.utils import Framework, Source, Task, build_module_name
@@ -42,15 +42,15 @@ class StableDiffusionWrapper(torch.nn.Module):
     [
         pytest.param(
             "stable-diffusion-3.5-medium",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "stable-diffusion-3.5-large",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "stable-diffusion-3.5-large-turbo",
-            marks=pytest.mark.xfail(reason="Exception: warning unhandled case: <class 'NoneType'>"),
+            marks=pytest.mark.xfail,
         ),
     ],
 )
@@ -65,11 +65,11 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     # Load pipeline
-    pipe = load_pipe_v35(variant)
+    pipe = load_pipe(variant, variant_type="v35")
 
     # Extract only the transformer, as the forward pass occurs here.
     framework_model = pipe.transformer

@@ -38,9 +38,9 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
 def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
@@ -52,7 +52,7 @@ def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("priority")
+    forge_property_recorder.record_group("red")
     forge_property_recorder.record_model_name(module_name)
 
     processor = WhisperProcessor.from_pretrained(variant)

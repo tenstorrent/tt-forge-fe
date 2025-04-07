@@ -38,6 +38,8 @@ def test_resnet_hf(variant, forge_property_recorder):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
+
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load tiny dataset
@@ -49,7 +51,9 @@ def test_resnet_hf(variant, forge_property_recorder):
 
     # Compile model
     input_sample = [torch.rand(1, 3, 224, 224)]
-    compiled_model = forge.compile(framework_model, input_sample, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        framework_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify data on sample input
     verify(
@@ -106,6 +110,8 @@ def test_resnet_timm(forge_property_recorder):
     module_name = build_module_name(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
+
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
@@ -140,9 +146,7 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-)
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_resnet_torchvision(forge_property_recorder, variant):
 

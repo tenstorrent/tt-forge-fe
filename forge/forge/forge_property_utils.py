@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum
+from enum import Enum, auto
+import json
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict
@@ -12,25 +13,26 @@ from forge._C import ExecutionDepth
 
 
 class ExecutionStage(Enum):
-    FAILED_TVM_RELAY_IRMODULE_GENERATION = 0
-    FAILED_TVM_RELAY_IO_FLATTENING = 1
-    FAILED_TVM_RELAY_IR_TRANSFORMATION = 2
-    FAILED_TVM_PATTERN_CALLBACKS = 3
-    FAILED_TVM_GRAPH_PARTITIONING = 3
-    FAILED_FORGE_MODULE_GENERATION = 4
-    FAILED_FORGE_INITIAL_GRAPH_PASS = 5
-    FAILED_FORGE_POST_INITIAL_GRAPH_PASS = 6
-    FAILED_FORGE_CONSTEVAL = 7
-    FAILED_FORGE_OPTIMIZATION_GRAPH_PASS = 8
-    FAILED_FORGE_POST_OPTIMIZATION_DECOMP = 9
-    FAILED_FORGE_AUTOGRAD_PASS = 10
-    FAILED_FORGE_POST_AUTOGRAD_DECOMP = 11
-    FAILED_FORGE_PRE_LOWERING = 12
-    FAILED_FORGE_GRAPH_SPLIT = 13
-    FAILED_FORGE_MLIR_COMPILATION = 14
-    FAILED_TTNN_BINARY_EXECUTION = 15
-    FAILED_VERIFICATION = 16
-    PASSED = 17
+    FAILED_BEFORE_FORGE_COMPILATION_INITIATION = auto()
+    FAILED_TVM_RELAY_IRMODULE_GENERATION = auto()
+    FAILED_TVM_RELAY_IO_FLATTENING = auto()
+    FAILED_TVM_RELAY_IR_TRANSFORMATION = auto()
+    FAILED_TVM_PATTERN_CALLBACKS = auto()
+    FAILED_TVM_GRAPH_PARTITIONING = auto()
+    FAILED_FORGE_MODULE_GENERATION = auto()
+    FAILED_FORGE_INITIAL_GRAPH_PASS = auto()
+    FAILED_FORGE_POST_INITIAL_GRAPH_PASS = auto()
+    FAILED_FORGE_CONSTEVAL = auto()
+    FAILED_FORGE_OPTIMIZATION_GRAPH_PASS = auto()
+    FAILED_FORGE_POST_OPTIMIZATION_DECOMP = auto()
+    FAILED_FORGE_AUTOGRAD_PASS = auto()
+    FAILED_FORGE_POST_AUTOGRAD_DECOMP = auto()
+    FAILED_FORGE_PRE_LOWERING = auto()
+    FAILED_FORGE_GRAPH_SPLIT = auto()
+    FAILED_FORGE_MLIR_COMPILATION = auto()
+    FAILED_TTNN_BINARY_EXECUTION = auto()
+    FAILED_VERIFICATION = auto()
+    PASSED = auto()
 
     @classmethod
     def to_str(cls, value):
@@ -39,6 +41,112 @@ class ExecutionStage(Enum):
     @classmethod
     def from_str(cls, value):
         return cls[value.upper()]
+
+
+@dataclass_json
+@dataclass
+class TensorDesc:
+    shape: List[int]
+    data_type: str = ""
+    buffer_type: str = ""
+    layout: str = ""
+    grid_shape: Optional[List[int]] = None
+
+
+class FlatbufferDetailsExtractor:
+    """
+    A utility class to parse and extract comprehensive details from a generated flatbuffer binary JSON.
+
+    Args:
+        binary_json (Dict[str, Any]): The flatbuffer binary JSON containing program details.
+    """
+
+    def __init__(self, binary_json):
+        self.binary = binary_json
+
+    def extract_tensor_details(self, inputs_or_outputs):
+        """
+        Extracts tensor descriptions from a list of input/output entries.
+
+        Parameters:
+            inputs_or_outputs (list): A list of dictionaries, each containing a "desc" key
+                                      with tensor description details.
+
+        Returns:
+            list: A list of TensorDesc objects.
+        """
+        tensor_desc_list = []
+        for input_or_output in inputs_or_outputs:
+            desc = input_or_output["desc"]
+            if (
+                "shape" in desc
+                and "layout" in desc
+                and "memory_desc" in desc["layout"]
+                and "data_type" in desc["layout"]["memory_desc"]
+            ):
+                tensor_desc = TensorDesc(shape=desc["shape"], data_type=desc["layout"]["memory_desc"]["data_type"])
+
+                try:
+                    tensor_desc.buffer_type = desc["layout"]["memory_desc"]["memory_space"]
+                except KeyError:
+                    if "memory_config" in desc["layout"]["memory_desc"]:
+                        # If the tensor is on device, the descriptor will have a "memory_config" field.
+                        tensor_desc.buffer_type = desc["layout"]["memory_desc"]["memory_config"]["buffer_type"]
+                    else:
+                        # If the tensor is on host, the descriptor will have a "storage_type" field.
+                        tensor_desc.buffer_type = desc["layout"]["memory_desc"]["storage_type"]
+
+                try:
+                    tensor_desc.layout = desc["layout"]["memory_desc"]["memory_layout"]
+                except KeyError:
+                    if "memory_config" in desc["layout"]["memory_desc"]:
+                        # If the tensor is on device, use the tensor_memory_layout from memory_config.
+                        tensor_desc.layout = desc["layout"]["memory_desc"]["memory_config"]["tensor_memory_layout"]
+                    else:
+                        # If the tensor is on host, no tensor_memory_layout is available.
+                        tensor_desc.layout = ""
+
+                try:
+                    grid_shape = desc["layout"]["core_range_set"][0]["size"]
+                    tensor_desc.grid_shape = [grid_shape["x"], grid_shape["y"]]
+                except KeyError:
+                    pass
+
+                tensor_desc_list.append(tensor_desc)
+        return tensor_desc_list
+
+    def extract_program_io_details(self, program_filter: Optional[List[str]] = None):
+        """
+        Extracts detailed input and output configurations for each program from the flatbuffer binary JSON.
+
+        Args:
+            program_filter (Optional[List[str]]): A list of program names to filter the extraction process.
+                Only programs whose names appear in this list will have their input/output details extracted.
+                If None, details for all programs will be extracted.
+        Returns:
+            tuple: A tuple (program_inputs, program_outputs) where:
+                - program_inputs (Dict[str, List[TensorDesc]]): Maps program names to detailed input configurations.
+                - program_outputs (Dict[str, List[TensorDesc]]): Maps program names to detailed output configurations.
+            Returns (None, None) if the binary JSON does not contain a "programs" key.
+        """
+        if "programs" not in self.binary:
+            return None, None
+
+        program_inputs = {}
+        program_outputs = {}
+
+        for program in self.binary["programs"]:
+            program_name = program["name"]
+            if program_filter is not None and program_name not in program_filter:
+                continue
+            inputs = self.extract_tensor_details(program["inputs"])
+            outputs = self.extract_tensor_details(program["outputs"])
+            if len(inputs) > 0:
+                program_inputs[program_name] = inputs
+            if len(outputs) > 0:
+                program_outputs[program_name] = outputs
+
+        return program_inputs, program_outputs
 
 
 @dataclass_json
@@ -58,6 +166,8 @@ class Tags:
     execution_stage: str = ""
     op_name: str = ""
     op_params: Dict[str, Any] = field(default_factory=lambda: dict())
+    inputs: Optional[List[TensorDesc]] = None
+    outputs: Optional[List[TensorDesc]] = None
 
 
 @dataclass_json
@@ -292,6 +402,50 @@ class ForgePropertyHandler:
         verify_config = verify_config.to_dict()
         verify_config["value_checker"] = verify_config["value_checker"].__dict__
         self.add("config.verify", verify_config)
+
+    def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
+        """
+        Records forward program inputs tensor description extracted from a flatbuffer binary.
+
+        Args:
+            inputs (List[TensorDesc]): A list of TensorDesc objects for inputs.
+        """
+        self.add("tags.inputs", inputs)
+
+    def record_flatbuffer_outputs(self, outputs: List[TensorDesc]):
+        """
+        Records forward program outputs tensor description extracted from a flatbuffer binary.
+
+        Args:
+            outputs (List[TensorDesc]): A list of TensorDesc objects for outputs.
+        """
+        self.add("tags.outputs", outputs)
+
+    def record_flatbuffer_details(self, binary_json_str: str):
+        """
+        Records details from a flatbuffer binary JSON string.
+
+        This method convert provided JSON string into a dictionary, and uses the
+        FlatbufferDetailsExtractor to extract details and record it.
+
+        Args:
+            binary_json_str (str): The JSON string representation of the flatbuffer binary.
+        """
+        binary_json = json.loads(binary_json_str)
+
+        flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
+        inputs, outputs = flatbuffer_details_extractor.extract_program_io_details(program_filter=["forward"])
+        if inputs is not None and outputs is not None:
+            if len(inputs) != len(outputs):
+                logger.error(
+                    f"Mismatch in program count: inputs have {len(inputs)} programs, while outputs have {len(outputs)} programs."
+                )
+            if sorted(inputs.keys()) != sorted(outputs.keys()):
+                logger.error(
+                    f"Mismatch in program names: inputs contain {sorted(inputs.keys())}, while outputs contain {sorted(outputs.keys())}."
+                )
+            self.record_flatbuffer_inputs(inputs["forward"])
+            self.record_flatbuffer_outputs(outputs["forward"])
 
     def to_dict(self):
         """

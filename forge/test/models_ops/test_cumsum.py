@@ -57,7 +57,7 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[
             pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:903: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9981664 B which is beyond max L1 size of 1499136 B"
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9976800 B which is beyond max L1 size of 1499136 B"
             )
         ],
     ),
@@ -75,12 +75,12 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32), torch.int64)],
             {
                 "model_name": [
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_125m_qa_hf",
                     "pt_opt_facebook_opt_125m_seq_cls_hf",
                     "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_125m_qa_hf",
-                    "pt_opt_facebook_opt_1_3b_qa_hf",
-                    "pt_opt_facebook_opt_350m_qa_hf",
                 ],
                 "pcc": 0.99,
                 "op_params": {"dim": "1"},
@@ -95,8 +95,8 @@ forge_modules_and_shapes_dtypes_list = [
             {
                 "model_name": [
                     "pt_opt_facebook_opt_1_3b_clm_hf",
-                    "pt_opt_facebook_opt_125m_clm_hf",
                     "pt_opt_facebook_opt_350m_clm_hf",
+                    "pt_opt_facebook_opt_125m_clm_hf",
                 ],
                 "pcc": 0.99,
                 "op_params": {"dim": "1"},
