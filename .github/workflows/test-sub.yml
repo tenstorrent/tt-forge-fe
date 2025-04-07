@@ -11,8 +11,8 @@ on:
       test_group_cnt:
         description: 'Test group count'
         required: false
-        default: 2
-        type: number
+        default: "2"
+        type: string
       test_group_ids:
         description: 'Test group ids'
         required: false

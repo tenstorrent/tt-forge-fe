@@ -41,6 +41,7 @@ on:
           - "2"
           - "3"
           - "4"
+          - "8"
       operators:
         description: 'Operators to test (comma separated)'
         required: false
