@@ -140,36 +140,3 @@ class StableDiffusionWrapper(torch.nn.Module):
 
     def forward(self, latents, timesteps, prompt_embeds):
         return self.model.unet(latents, timesteps, encoder_hidden_states=prompt_embeds).sample
-
-
-def stable_diffusion_preprocessing(pipe, prompt, device="cpu", num_inference_steps=1):
-    height = pipe.unet.config.sample_size * pipe.vae_scale_factor
-    width = height
-
-    # Tokenize and encode prompt
-    prompt_embeds = pipe._encode_prompt(
-        prompt=prompt,
-        device=device,
-        num_images_per_prompt=1,
-        do_classifier_free_guidance=True,
-        negative_prompt=None,
-    )
-
-    # Timesteps
-    pipe.scheduler.set_timesteps(num_inference_steps, device=device)
-    timesteps = pipe.scheduler.timesteps
-
-    # Latents
-    latents = torch.randn(
-        (
-            prompt_embeds.shape[0],
-            pipe.unet.config.in_channels,
-            height // pipe.vae_scale_factor,
-            width // pipe.vae_scale_factor,
-        ),
-        device=device,
-        dtype=prompt_embeds.dtype,
-    )
-    latents = latents * pipe.scheduler.init_noise_sigma
-
-    return latents, timesteps, prompt_embeds
