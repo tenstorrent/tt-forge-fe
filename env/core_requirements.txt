@@ -1,3 +1,4 @@
+setuptools>=61
 # This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
 # jax requires any version of optax which requires any version of chex which in turn
 # requires jax>=0.4.6 which conflicts with our jax == 0.3.16
