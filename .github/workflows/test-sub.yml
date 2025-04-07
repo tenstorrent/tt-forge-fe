@@ -11,8 +11,8 @@ on:
       test_group_cnt:
         description: 'Test group count'
         required: false
-        default: 2
-        type: number
+        default: "2"
+        type: string
       test_group_ids:
         description: 'Test group ids'
         required: false
@@ -29,6 +29,10 @@ on:
         default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
       operators:
         description: 'Operators to test (comma separated)'
+        required: false
+        type: string
+      filters:
+        description: 'Filters for tests (comma separated)'
         required: false
         type: string
       run_id:
@@ -145,6 +149,7 @@ jobs:
           HF_HUB_DISABLE_PROGRESS_BARS: 1
           FORGE_DISABLE_REPORTIFY_DUMP: 1
           OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
         shell: bash
         run: |
           source env/activate
