@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
 
-from peft import OFTConfig
+import peft.tuners.oft.layer as oft_layer
+import torch
+from diffusers import StableDiffusionPipeline
+from peft import OFTConfig, OFTModel
 
 
 def get_oft_configs():
@@ -27,15 +30,6 @@ def get_oft_configs():
         init_weights=True,
     )
     return config_te, config_unet
-
-
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-# SPDX-License-Identifier: Apache-2.0
-
-import peft.tuners.oft.layer as oft_layer
-import torch
-from diffusers import StableDiffusionPipeline
-from peft import OFTConfig, OFTModel
 
 
 def patch_oft_cayley_with_lstsq():
@@ -90,9 +84,9 @@ class StableDiffusionWrapper(torch.nn.Module):
         ).sample
 
 
-def get_inputs(prompt: str = "A beautiful mountain landscape during sunset", num_inference_steps: int = 30):
+def get_inputs(model, prompt: str = "A beautiful mountain landscape during sunset", num_inference_steps: int = 30):
     patch_oft_cayley_with_lstsq()
-    pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
+    pipe = StableDiffusionPipeline.from_pretrained(model)
     config_te, config_unet = get_oft_configs()
     pipe.text_encoder = OFTModel(pipe.text_encoder, config_te, "default")
     pipe.unet = OFTModel(pipe.unet, config_unet, "default")

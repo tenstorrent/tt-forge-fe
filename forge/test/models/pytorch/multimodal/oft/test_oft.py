@@ -14,8 +14,16 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.xfail()
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "runwayml/stable-diffusion-v1-5",
+        ),
+    ],
+)
 @pytest.mark.nightly
-def test_oft(forge_property_recorder):
+def test_oft(forge_property_recorder, variant):
     # Build module name
     module_name = build_module_name(
         framework=Framework.PYTORCH,
@@ -29,7 +37,7 @@ def test_oft(forge_property_recorder):
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and inputs
-    pipe, inputs = get_inputs()
+    pipe, inputs = get_inputs(model=variant)
 
     # Forge compile framework model
     wrapped_model = StableDiffusionWrapper(pipe)
