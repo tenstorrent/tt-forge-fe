@@ -98,7 +98,7 @@ class FailingReasonsValidation:
     XFAIL_REASON_CHECKS = {
         FailingReasons.UNSUPPORTED_DATA_FORMAT: [
             # lambda ex: FailingReasonsValidation.validate_exception_message(ex, RuntimeError, "Unsupported data type"),
-            lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",
+            lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",  # TODO: Check if this change is correct
             # lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:466: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
