@@ -1037,24 +1037,47 @@ def decompose(type, attr, dc, inputs):
     if type == "adv_index":
         dim = attr[0]
         in0_shape = inputs[0].shape
-        in1_shape = inputs[1].shape
-        if len(in0_shape) == 1 or in0_shape[dim] == 1:
+        indeces_shape = inputs[1].shape
+
+        assert dim == 0, "Currently only dim=0 is supported for adv_index"
+        assert len(indeces_shape) == 2 or len(indeces_shape) == 1, "Indeces tensor should be 1D or 2D"
+
+        if in0_shape[dim] == 1:
             result = dc.op(Nop.create(), [inputs[0]])
             dc.fuse(result)
             return
-        if dim == 0 and len(in1_shape) <= 2:
-            # Consider the case adv_index(X,Y) where
-            #    X: (A, B), Y: (1, C) or (C,) and A != 1
-            if len(in0_shape) == 2:
-                # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
-                # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
-                # so swaping the operands.
-                result = dc.op(
-                    "embedding",
-                    (inputs[1], inputs[0]),
-                )
-                dc.fuse(result)
-                return
+
+        # Consider the case in0_shape.adv_index(indeces) where
+        # in0_shape: (A, B), indeces: (1, C) or (C,)
+
+        # Handle 1D input tensor case (A,)
+        if len(in0_shape) == 1:
+            # For 1D tensors, we need to unsqueeze the first tensor
+            # to make it 2D (A,) -> (A, 1)
+            reshaped_input = dc.op_with_named_attrs("unsqueeze", [inputs[0]], {"dim": 1}, [1, len(inputs[0].shape)])
+
+            # Use embedding with the reshaped input
+            selected = dc.op(
+                "embedding",
+                (inputs[1], reshaped_input),
+            )
+
+            # Reshape result back to proper dimensions if needed
+            # If indices is 1D (C,), result will be (C, 1), should be (C,)
+            result = dc.op_with_named_attrs("squeeze", [selected], {"dim": 1}, [1])
+            dc.fuse(result)
+            return
+
+        if len(in0_shape) == 2:
+            # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
+            # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
+            # so swaping the operands.
+            result = dc.op(
+                "embedding",
+                (inputs[1], inputs[0]),
+            )
+            dc.fuse(result)
+            return
 
     if type == "pad":
         if all([x == 0 for x in attr[0:-2]]):
