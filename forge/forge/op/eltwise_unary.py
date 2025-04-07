@@ -317,7 +317,7 @@ def Sigmoid(name: str, operandA: Tensor) -> Tensor:
     return op("sigmoid", name, operandA).get_tensor()
 
 
-def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim = False) -> Tensor:
+def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tensor:
     """
     Argmax
 
@@ -331,25 +331,28 @@ def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim = False) -> Te
 
     dim: int
         The dimension to reduce (if None, the output is the argmax of the whole tensor)
-        
+
     keep_dim: bool
         If True, retains the dimension that is reduced, with size 1.
         If False (default), the dimension is removed from the output shape.
-        
+
     Returns
     -------
     Tensor
         Forge tensor
     """
 
-    kwargs = {"keep_dim" : keep_dim}
-    
+    kwargs = {"keep_dim": keep_dim}
+
     if dim is not None:
         if dim < 0:
             dim += len(operandA.shape)
         kwargs["dim"] = dim
-    
-    return op("argmax", name, operandA, **kwargs).get_tensor()
+
+    dtype = pytorch_dtype_to_forge_dataformat(torch.int64)
+
+    return op("argmax", name, operandA, **kwargs).get_tensor(out_df=dtype)
+
 
 def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
     """

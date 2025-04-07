@@ -13,6 +13,7 @@ import numpy as np
 from loguru import logger
 from scipy.spatial import distance
 from typing import Union, Tuple, List, Optional
+from forge.verify.utils import convert_to_supported_pytorch_dtype
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
@@ -23,6 +24,10 @@ def compare_with_golden(
     atol: float = 1e-08,
     dissimilarity_threshold: float = 1e-03,  # threshold picked empirically. We will update it as TTNN evolves
 ):
+    # Convert golden to pytorch tensor for comparisons
+    # Also it will convert it to dtype that we have support for in our hardware
+    golden = convert_to_supported_pytorch_dtype(golden)
+
     if golden.dtype == torch.bool:
         calculated_dissimilarity = calculate_dissimilarity(golden, calculated)
         result = compare_dissimilarity(calculated_dissimilarity, dissimilarity_threshold)

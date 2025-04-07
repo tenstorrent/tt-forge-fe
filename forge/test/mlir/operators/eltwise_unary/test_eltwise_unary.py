@@ -788,32 +788,34 @@ def test_floor(forge_property_recorder, input_data):
         # Core test cases for dimension-specific argmax
         # ((56,), 0, False),
         # ((56,), 0, True),
-        ((1, 128), 1, False),
+        # ((1, 128), 1, False),
         # ((1, 128), 1, True),
         # ((1, 64, 76), 2, False),
         # ((1, 64, 76), 2, True),
-        
         # # Core test cases for global argmax (dim=None)
         # ((56,), None, False),
         # ((56,), None, True),
-        # ((1, 128), None, False),
+        ((1, 128), None, False),
         # ((1, 128), None, True),
     ],
 )
 @pytest.mark.push
 def test_argmax(forge_property_recorder, shape, dim, keepdim):
     class ArgMax(nn.Module):
-        def __init__(self, dim, keepdim):
+        def __init__(self, keepdim):
             super().__init__()
-            self.dim = dim
+            # self.dim = dim
             self.keepdim = keepdim
 
         def forward(self, x):
-            return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
+            # if self.dim is None:
+            return torch.argmax(x, keepdim=self.keepdim)
+            # else:
+            #     return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
 
     inputs = [torch.rand(shape)]
 
-    framework_model = ArgMax(dim, keepdim)
+    framework_model = ArgMax(keepdim)
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )

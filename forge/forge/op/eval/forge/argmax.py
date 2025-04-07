@@ -27,20 +27,16 @@ class Argmax(PyEltwiseUnaryOp):
 
     def eval(self, tensors):
         assert len(tensors) == 1, "Argmax should have one input"
-        original_types = [o.dtype for o in tensors]
 
         ret = torch.argmax(tensors[0], dim=self.dim, keepdim=self.keep_dim)
-
-        # if ret.dtype != original_types[0]:
-        #     ret = ret.type(original_types[0])
 
         return ret.to(dtype=torch.int32)
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1, "Argmax should have one input"
-        
+
         input_shape = tensor_shapes[0]
-        
+
         # Dimension-specific argmax
         if self.dim is not None:
             if self.keep_dim:
@@ -48,7 +44,7 @@ class Argmax(PyEltwiseUnaryOp):
                 shape[self.dim] = 1
             else:
                 shape = [d for i, d in enumerate(input_shape) if i != self.dim]
-        else: # Global argmax across all dimensions
+        else:  # Global argmax across all dimensions
             if self.keep_dim:
                 shape = [1] * len(input_shape)  # All dimensions become 1
             else:

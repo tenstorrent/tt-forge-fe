@@ -65,7 +65,7 @@ def eval(type, attr, ops):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        or (type == "argmax" and len(attr) == 1)
+        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -137,7 +137,7 @@ def eval(type, attr, ops):
         "sine": lambda i: torch.sin(i[0]),
         "atan": lambda i: torch.atan(i[0]),
         "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
-        "argmax": lambda i: torch.argmax(i[0], dim=attr[0] if len(attr) > 0 else None, keepdims=True),
+        # "argmax": lambda i: torch.argmax(i[0], dim=attr[0] if len(attr) > 0 else None, keepdims=True),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "logical_not": lambda i: torch.logical_not(i[0]),
@@ -159,7 +159,7 @@ def shape(type, attr, ops):
         len(attr) == 0
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
-        or (type == "argmax" and len(attr) == 1)
+        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -170,14 +170,14 @@ def shape(type, attr, ops):
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
 
-    if type == "argmax":
-        dim = attr[0] if len(attr) > 0 else None
-        if dim is not None:
-            shape = list(ops[0])
-            shape[dim] = 1
-        else:
-            shape = [1] * len(ops[0])
-        return tuple(shape), []
+    # if type == "argmax":
+    #     dim = attr[0] if len(attr) > 0 else None
+    #     if dim is not None:
+    #         shape = list(ops[0])
+    #         shape[dim] = 1
+    #     else:
+    #         shape = [1] * len(ops[0])
+    #     return tuple(shape), []
 
     if type == "tile_broadcast":
         assert len(attr) == 2, "Tile broadcast should have two attributes - dim and size"
@@ -374,7 +374,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        or (type == "argmax" and len(attr) == 1)
+        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -466,8 +466,8 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         res = ac.op("multiply", (subtract, grad))
         return res
 
-    if type == "argmax":
-        raise RuntimeError("Argmax does not require grad and does not have a backwards function")
+    # if type == "argmax":
+    #     raise RuntimeError("Argmax does not require grad and does not have a backwards function")
 
     if type == "cumsum":
         dim = attr[0]
@@ -515,83 +515,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
 
 
 def decompose(type, attr, dc, inputs):
-    if type == "argmax":
-        inp_node = inputs[0]
-        axis = attr[0] if len(attr) > 0 else None
-
-        if axis is None:
-            import math
-
-            inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))
-            axis = -1
-
-        input_shape = inp_node.shape.as_list()
-        if axis >= 0:
-            axis -= len(input_shape)
-            assert axis < 0, "valid axis should be < 0 after subtracting len(input_shape)"
-
-        # First we want to get array of zeros and ones, with ones standing on the indices of maximums.
-        # For example, starting array is [1, 3, 5, 2, 0, 5]. We want to get [0, 0, 1, 0, 0, 1].
-        # We do that by multiplying array with some large number (10^10), subtracting maximum of the array from array,
-        # then add 1 to each element to make sure that only maximums are now above 0 (equal to 1).
-        # Then we threshold the array with ReLu to get [0, 0, 1, 0, 0, 1].
-        # Then we multiply that array with array of indices [0,1,2,3,4,5] to get [0,0,2,0,0,5].
-        # The rest is manipulation how to extract first maximum index.
-        # We do that by taking complement of [0, 0, 1, 0, 0, 1] => [1, 1, 0, 1, 1, 0] and multiplying it
-        # with size(6) and add it to [0,0,2,0,0,5] => [6,6,2,6,6,5] and just find argmin of this array which is 2.
-
-        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
-        indices_shape = [dim if i == axis + len(input_shape) else 1 for i, dim in enumerate(input_shape)]
-
-        indices = torch.arange(input_shape[axis], dtype=data_type).reshape(indices_shape)
-        indices_tensor = dc.tensor(indices)
-
-        factor = torch.ones((input_shape), dtype=data_type) * 1e10
-        factor_tensor = dc.tensor(factor)
-
-        ones = torch.ones((input_shape), dtype=data_type)
-        ones_tensor = dc.tensor(ones)
-        negative_ones = dc.tensor(ones * (-1))
-
-        # this it the tensor that has all elements equal to input shape on axis on which we do argmax.
-        offset_tensor = dc.tensor(ones * input_shape[axis])
-
-        scaled_input = dc.op(
-            "multiply",
-            (inp_node, factor_tensor),
-        )
-        max_1 = dc.op("reduce_max", [scaled_input], [axis])
-        scaled_input = dc.op("subtract", (scaled_input, max_1))
-        scaled_input = dc.op(
-            "add",
-            [scaled_input, ones_tensor],
-        )
-
-        relu_1 = dc.op("relu", (scaled_input,))
-        relu_1_complement = dc.op("subtract", (ones_tensor, relu_1))
-
-        mul_1 = dc.op(
-            "multiply",
-            [relu_1, indices_tensor],
-        )
-        mul_2 = dc.op(
-            "multiply",
-            [relu_1_complement, offset_tensor],
-        )
-        add_1 = dc.op(
-            "add",
-            [mul_1, mul_2],
-        )
-        negative_add_1 = dc.op("multiply", [add_1, negative_ones])
-        negative_argmax = dc.op("reduce_max", [negative_add_1], [axis])
-
-        output_neg_ones = torch.ones((negative_argmax.shape.as_list()), dtype=data_type) * (-1)
-        output_neg_ones_tensor = dc.tensor(output_neg_ones)
-        argmax = dc.op("multiply", [negative_argmax, output_neg_ones_tensor])
-
-        dc.fuse(argmax)
-
-    elif type == "sigmoid" and bool(int(os.environ.get("FORGE_DECOMPOSE_SIGMOID", "0"))):
+    if type == "sigmoid" and bool(int(os.environ.get("FORGE_DECOMPOSE_SIGMOID", "0"))):
         inp = inputs[0]
         minus_one = dc.tensor(torch.ones([1, 1]) * -1)
         plus_one = dc.tensor(torch.ones([1, 1]))
@@ -635,7 +559,6 @@ def initial_flops_estimate(type, attr, ops):
         "abs",
         "cosine",
         "sine",
-        "argmax",
         "tanh",
         "cumsum",
         "pow",
