@@ -18,7 +18,7 @@ variants = ["microsoft/phi-1_5"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip("Out of memory")
+@pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
 def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
