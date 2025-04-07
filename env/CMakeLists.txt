@@ -8,6 +8,8 @@ get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 list(APPEND CMAKE_MODULE_PATH ${PARENT_DIR}/cmake)
 include(Utils)
 
+option(TTFORGE_SKIP_BUILD_TTMLIR_ENV "Skip building the tt-mlir environment" OFF)
+
 # Check if the environment variable is set, if not error out
 check_required_env_var(TTFORGE_PYTHON_VERSION)
 check_required_env_var(TTFORGE_TOOLCHAIN_DIR)
@@ -37,11 +39,13 @@ add_custom_target(python-venv
     TTFORGE_VENV_DIR=${TTFORGE_VENV_DIR}
     bash ${CMAKE_CURRENT_SOURCE_DIR}/create_venv.sh)
 
-add_custom_target(build_tt_mlir_env ALL
-    COMMAND ${CMAKE_COMMAND} -E env
-    TTMLIR_TOOLCHAIN_DIR=${TTMLIR_TOOLCHAIN_DIR} # Export TTMLIR_TOOLCHAIN_DIR to use
-    TTMLIR_VENV_DIR=${TTMLIR_VENV_DIR} # Export TTMLIR_VENV_DIR to use
-    bash ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/build_mlir_env.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/tt-mlir
-    USES_TERMINAL
-)
+if (NOT TTFORGE_SKIP_BUILD_TTMLIR_ENV)
+    add_custom_target(build_tt_mlir_env ALL
+        COMMAND ${CMAKE_COMMAND} -E env
+        TTMLIR_TOOLCHAIN_DIR=${TTMLIR_TOOLCHAIN_DIR} # Export TTMLIR_TOOLCHAIN_DIR to use
+        TTMLIR_VENV_DIR=${TTMLIR_VENV_DIR} # Export TTMLIR_VENV_DIR to use
+        bash ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/build_mlir_env.sh
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/tt-mlir
+        USES_TERMINAL
+    )
+endif()

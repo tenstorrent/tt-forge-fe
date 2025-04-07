@@ -6,9 +6,10 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+
   docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
 
   build:
     needs: docker-build
@@ -16,26 +17,84 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+
   test_full_model_passing:
+    if: success() || failure()
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly and not xfail'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
+      run_id: ${{ needs.build.outputs.run_id }}
+
   perf-benchmark:
+    if: success() || failure()
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/perf-benchmark.yml
+    uses: ./.github/workflows/perf-benchmark-sub.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+
+  test_full_model_xfailing:
+    if: success() || failure()
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "n150"}]'
+
+  test_models_ops:
+    if: success() || failure()
+    needs:
+      - docker-build
+      - build
+      - test_full_model_passing
+      - perf-benchmark
+      - test_full_model_xfailing
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_models_ops'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
+      run_id: ${{ needs.build.outputs.run_id }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      allow-fail: true
+
+  test_sweeps:
+    if: success() || failure()
+    needs:
+      - docker-build
+      - build
+      - test_models_ops
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_sweeps'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
+      run_id: ${{ needs.build.outputs.run_id }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      operators: ${{ github.event.inputs.operators }}
+      allow-fail: true
 
   fail-notify:
     if: always()
@@ -44,6 +103,9 @@ jobs:
       - build
       - test_full_model_passing
       - perf-benchmark
+      - test_full_model_xfailing
+      - test_models_ops
+      - test_sweeps
     runs-on: Ubuntu-latest
     outputs:
       is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
@@ -57,6 +119,7 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-failures: test_models_ops, test_sweeps
 
   fail-send-msg:
     if: always()

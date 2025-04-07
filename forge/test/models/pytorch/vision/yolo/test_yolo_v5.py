@@ -77,10 +77,7 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
 
 size = [
     pytest.param("n", id="yolov5n"),
-    pytest.param(
-        "s",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
     pytest.param("x", id="yolov5x"),
@@ -130,10 +127,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 
 
 size = [
-    pytest.param(
-        "n",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("n", id="yolov5n"),
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
