@@ -13,10 +13,10 @@ on:
         default: 'All'
         type: choice
         options:
-          - All
+          - All      # Build both Release and Debug
           - Release
           - Debug
-          - None
+          - None     # Build nothing
   workflow_call:
     inputs:
       mlir_override:

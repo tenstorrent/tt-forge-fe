@@ -27,8 +27,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly and not xfail'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
@@ -53,8 +53,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly and xfail'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
@@ -71,8 +71,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly_models_ops'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
@@ -88,8 +88,8 @@ jobs:
     secrets: inherit
     with:
       test_mark: 'nightly_sweeps'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: 10
+      test_group_ids: '[1,2,3,4,5,6,7,8,9,10]'
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
