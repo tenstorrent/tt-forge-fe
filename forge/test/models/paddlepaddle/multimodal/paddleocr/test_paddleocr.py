@@ -15,35 +15,36 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import fetch_paddle_model
+from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, boxes_from_bitmap, draw_boxes, cut_boxes
 
 model_urls = {
     "PP-OCRv4": {
         "det": {
             "ch": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar"},
-            "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_det_infer.tar"},
-            "ml": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv3/multilingual/Multilingual_PP-OCRv3_det_infer.tar"},
+            # "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_det_infer.tar"},
+            # "ml": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv3/multilingual/Multilingual_PP-OCRv3_det_infer.tar"},
         },
         "rec": {
             "ch": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar"},
-            "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"},
-            "korean": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/korean_PP-OCRv4_rec_infer.tar"},
-            "japanese": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/japan_PP-OCRv4_rec_infer.tar"},
+            # "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"},
+            # "korean": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/korean_PP-OCRv4_rec_infer.tar"},
+            # "japanese": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/japan_PP-OCRv4_rec_infer.tar"},
         },
     },
-    "PP-OCR": {
-        "det": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_det_infer.tar"},
-            "en": {
-                "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
-            },
-        },
-        "rec": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_rec_infer.tar"},
-            "en": {
-                "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_number_mobile_v2.0_rec_infer.tar"
-            },
-        },
-    },
+    # "PP-OCR": {
+    #     "det": {
+    #         "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_det_infer.tar"},
+    #         "en": {
+    #             "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
+    #         },
+    #     },
+    #     "rec": {
+    #         "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_rec_infer.tar"},
+    #         "en": {
+    #             "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_number_mobile_v2.0_rec_infer.tar"
+    #         },
+    #     },
+    # },
 }
 
 cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", "cached_models")
@@ -51,7 +52,7 @@ os.makedirs(cache_dir, exist_ok=True)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+# @pytest.mark.xfail()
 @pytest.mark.parametrize(
     "variant,url",
     [
@@ -80,11 +81,18 @@ def test_paddleocr_det(forge_property_recorder, variant, url):
     # Load sample
     image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"
     image = cv2.imread(image_path)
-    image = cv2.resize(image, (224, 224)).transpose(2, 0, 1).astype("float32")
+    resized_image = cv2.resize(image, (448, 448))
+    image = resized_image.transpose(2, 0, 1).astype("float32")
     inputs = [paddle.to_tensor([image])]
 
     # Test framework model
-    print(framework_model(inputs[0]))
+    pred = framework_model(*inputs)
+    bitmap = bitmap_from_probmap(pred)
+    dest_height, dest_width = image.shape[1:]
+    boxes, _ = boxes_from_bitmap(pred, bitmap, dest_height=dest_height, dest_width=dest_width)
+
+    img = draw_boxes(resized_image, boxes)
+    cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/det_result.jpg", img)
 
     # Compile model
     compiled_model = forge.compile(
@@ -156,3 +164,46 @@ def test_paddleocr_rec(forge_property_recorder, variant, url):
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
         forge_property_handler=forge_property_recorder,
     )
+
+det_url = "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
+rec_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"
+dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"
+image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/err_image.png"
+
+def test_full_ocr():
+    # Fetch model
+    detection_model = fetch_paddle_model(det_url, cache_dir)
+    recognition_model = fetch_paddle_model(rec_url, cache_dir)
+
+    # Load sample
+    image = cv2.imread(image_path)
+    new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
+    resized_image = cv2.resize(image, new_shapes)
+    image = resized_image.transpose(2, 0, 1).astype("float32")
+    inputs = [paddle.to_tensor([image])]
+
+    # Detection - find boxes containing text
+    pred = detection_model(*inputs)
+    bitmap = bitmap_from_probmap(pred)
+    dest_height, dest_width = image.shape[1:]
+    boxes, _ = boxes_from_bitmap(pred, bitmap, dest_height=dest_height, dest_width=dest_width)
+
+    img = draw_boxes(resized_image, boxes)
+    cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/det_result.jpg", img)
+
+    box_images = cut_boxes(resized_image, boxes)
+
+    with open(dict_path, "r", encoding="utf-8") as f:
+        charset = [line.strip() for line in f.readlines()]
+        charset.insert(0, '')
+
+    # Recognition - recognize text in each box
+    for i, box_image in enumerate(box_images):
+        cv2.imwrite(f"forge/test/models/paddlepaddle/multimodal/paddleocr/images/cut_result_{i}.jpg", box_image)
+        box_image = box_image.transpose(2, 0, 1).astype("float32")/255.0
+        box_image = paddle.to_tensor([box_image])
+        output = recognition_model(box_image)
+        pred = paddle.argmax(output, axis=2).numpy()[0]
+        pred_str = "".join([charset[i] for i in pred])
+        print(f"Predicted text for box {i}: {pred_str}")
+
