@@ -5,12 +5,18 @@
 # PyTorch repostiory operators
 
 
-from .datatypes import OperatorDefinition, OperatorRepository
-from .datatypes import OperatorParamNumber
+from .datatypes import OperandNumRange, OperatorDefinition, OperatorRepository, OperatorParamNumber
 
 
 # TODO describe operand and shapes
 _OPERATORS = [
+    # nn operators
+    OperatorDefinition(
+        "embedding",
+        "torch.nn.Embedding",
+        1,
+        instantiate=True,
+    ),
     OperatorDefinition(
         "linear",
         "torch.nn.Linear",
@@ -128,10 +134,44 @@ _OPERATORS = [
     OperatorDefinition("mul", "torch.mul", 2),
     OperatorDefinition("div", "torch.div", 2),
     OperatorDefinition("ge", "torch.ge", 2),
+    OperatorDefinition("ne", "torch.ne", 2),
+    OperatorDefinition("gt", "torch.gt", 2),
+    OperatorDefinition("lt", "torch.lt", 2),
+    OperatorDefinition("maximum", "torch.maximum", 2),
+    OperatorDefinition("minimum", "torch.minimum", 2),
     # Binary operators (not implemented)
+    OperatorDefinition("atan2", "torch.atan2", 2),
+    OperatorDefinition("arctan2", "torch.arctan2", 2),
+    OperatorDefinition("bitwise_and", "torch.bitwise_and", 2),
+    OperatorDefinition("bitwise_or", "torch.bitwise_or", 2),
+    OperatorDefinition("bitwise_xor", "torch.bitwise_xor", 2),
+    OperatorDefinition("bitwise_left_shift", "torch.bitwise_left_shift", 2),
+    OperatorDefinition("bitwise_right_shift", "torch.bitwise_right_shift", 2),
+    OperatorDefinition("floor_divide", "torch.floor_divide", 2),
+    OperatorDefinition("fmod", "torch.fmod", 2),
+    OperatorDefinition("logaddexp", "torch.logaddexp", 2),
+    OperatorDefinition("logaddexp2", "torch.logaddexp2", 2),
+    OperatorDefinition("nextafter", "torch.nextafter", 2),
+    OperatorDefinition("remainder", "torch.remainder", 2),
+    OperatorDefinition("fmax", "torch.fmax", 2),
+    OperatorDefinition("fmin", "torch.fmin", 2),
+    OperatorDefinition("eq", "torch.eq", 2),
+    OperatorDefinition("le", "torch.le", 2),
     # Matmul
     OperatorDefinition("matmul", "torch.matmul", 2),
     # Nary operators
+    OperatorDefinition("concatenate", "torch.concatenate", input_num_range=(2, 7)),
+    # Reduce operators
+    OperatorDefinition("max", "torch.max", 1),
+    OperatorDefinition("sum", "torch.sum", 1),
+    OperatorDefinition("mean", "torch.mean", 1),
+    # TM operators
+    OperatorDefinition("repeat_interleave", "torch.repeat_interleave", 1),
+    OperatorDefinition("reshape", "torch.reshape", 1),
+    OperatorDefinition("squeeze", "torch.squeeze", 1),
+    OperatorDefinition("unsqueeze", "torch.unsqueeze", 1),
+    OperatorDefinition("transpose", "torch.transpose", 1),
+    OperatorDefinition("layer_norm", "torch.nn.LayerNorm", 1),
 ]
 
 
