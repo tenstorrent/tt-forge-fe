@@ -117,10 +117,6 @@ class TestVerification:
     ):
         """Common verification function for all tests"""
 
-        input_source_flag: InputSourceFlags = None
-        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
-            input_source_flag = InputSourceFlags.FROM_DRAM
-
         operator = getattr(torch.nn, test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
@@ -150,7 +146,6 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            input_source_flag=input_source_flag,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
@@ -613,11 +608,7 @@ class TestCollectionData:
         operators=[
             "Conv2d",  # 00
         ],
-        input_sources=[
-            InputSource.FROM_ANOTHER_OP,
-            InputSource.FROM_HOST,
-            InputSource.CONST_EVAL_PASS,
-        ],
+        input_sources=TestCollectionCommon.all.input_sources,
         # only 4D input tensors are supported
         input_shapes=[input_shape for input_shape in TestCollectionCommon.all.input_shapes if len(input_shape) == 4],
         dev_data_formats=TestCollectionCommon.all.dev_data_formats,
