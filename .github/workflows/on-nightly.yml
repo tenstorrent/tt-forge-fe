@@ -93,7 +93,7 @@ jobs:
       build: ${{ needs.set-inputs.outputs.rebuild }}
 
   test_full_model_passing:
-    if: success() || failure()
+    if: always()
     needs:
       - set-inputs
       - docker-build
@@ -110,7 +110,7 @@ jobs:
       do_run: ${{ needs.set-inputs.outputs.run_full_model_passing }}
 
   perf-benchmark:
-    if: success() || failure()
+    if: always()
     needs:
       - docker-build
       - build
@@ -123,7 +123,7 @@ jobs:
       do_run: ${{ needs.set-inputs.outputs.run_perf_benchmark }}
 
   test_full_model_xfailing:
-    if: success() || failure()
+    if: always()
     needs:
       - docker-build
       - set-inputs
@@ -140,7 +140,7 @@ jobs:
       do_run: ${{ needs.set-inputs.outputs.run_full_model_xfailing }}
 
   test_models_ops:
-    if: success() || failure()
+    if: always()
     needs:
       - docker-build
       - set-inputs
@@ -161,7 +161,7 @@ jobs:
       do_run: ${{ needs.set-inputs.outputs.run_models_ops }}
 
   test_sweeps:
-    if: success() || failure()
+    if: always()
     needs:
       - docker-build
       - set-inputs
