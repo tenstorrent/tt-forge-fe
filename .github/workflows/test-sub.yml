@@ -44,10 +44,16 @@ on:
         required: false
         default: false
         type: boolean
-
+      do_run:
+        description: 'Actually run tests'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   run-tests:
+
+    if: ${{ inputs.do_run }}
 
     strategy:
       fail-fast: false
