@@ -4,7 +4,7 @@
 import re
 from enum import Enum
 import torch
-import requests
+import os
 from tabulate import tabulate
 import json
 
@@ -81,7 +81,19 @@ def build_module_name(
     return module_name
 
 
+imagenet_class_index_path = "forge/test/models/files/labels/imagenet_class_index.json"
+
+
+def load_class_labels(file_path):
+    """Load class labels from the local JSON file."""
+    with open(file_path, "r") as f:
+        class_idx = json.load(f)
+    return [class_idx[str(i)][1] for i in range(len(class_idx))]
+
+
 def print_cls_results(fw_out, compiled_model_out):
+
+    class_labels = load_class_labels(imagenet_class_index_path)
     fw_top1_probabilities, fw_top1_class_indices = torch.topk(fw_out.softmax(dim=1) * 100, k=1)
     compiled_model_top1_probabilities, compiled_model_top1_class_indices = torch.topk(
         compiled_model_out.softmax(dim=1) * 100, k=1
@@ -93,11 +105,7 @@ def print_cls_results(fw_out, compiled_model_out):
     fw_top1_class_prob = fw_top1_probabilities[0, 0].item()
     compiled_model_top1_class_prob = compiled_model_top1_probabilities[0, 0].item()
 
-    # Directly load ImageNet class labels inside post-process
-    class_labels_url = "https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json"
-    response = requests.get(class_labels_url)
-    class_idx = response.json()
-    class_labels = [class_idx[str(i)][1] for i in range(len(class_idx))]
+    # Get the class labels for top 1 class
     fw_top1_class_label = class_labels[fw_top1_class_idx]
     compiled_model_top1_class_label = class_labels[compiled_model_top1_class_idx]
 
