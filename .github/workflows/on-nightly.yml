@@ -78,8 +78,9 @@ jobs:
           else
             echo "rebuild=$(if [ ${{ inputs.rebuild }} == 'true' ]; then echo 'Release'; else echo 'None'; fi)" >> $GITHUB_OUTPUT
           fi
-          echo "test_group_cnt=$(if [ -z ${{ inputs.test_group_cnt }} ]; then echo '10'; else echo '${{ inputs.test_group_cnt }}'; fi)" >> $GITHUB_OUTPUT
-          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
+          tgc=$(if [ -z ${{ inputs.test_group_cnt }} ]; then echo '10'; else echo '${{ inputs.test_group_cnt }}'; fi)
+          echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
+          echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
 
   build:
     needs:
