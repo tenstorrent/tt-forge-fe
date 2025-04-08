@@ -111,10 +111,6 @@ def calculate_or_estimate_pcc(
       PCC is the average of all the PCCs calculated over the chunks.
 
     """
-    if a.dtype in (torch.float32, torch.double, torch.float16, torch.bfloat16):
-        if not verif.has_special_values(a) and not verif.has_special_values(b):
-            return verif.calculate_tensor_pcc(a, b)
-
     # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
     if a.dtype == torch.bfloat16 or b.dtype == torch.bfloat16:
         a = a.type(torch.float32)
@@ -166,6 +162,22 @@ def calculate_or_estimate_pcc(
 
 
 def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
+    """
+    Calculates the Pearson Correlation Coefficient (PCC) between two tensors using one of the following methods:
+
+        1. custom torch cpu kernel for pcc calculation - fastest, no memory overhead
+        2. numpy pcc calculation - slower, lots of memory overhead
+        3. numpy pcc estimation - slower, less memory overhead
+
+    Whenever possible (on floating point tensors, without nans/infs) uses the torch kernel, otherwise uses numpy pcc calculation / estimation.
+    """
+
+    # Check if we can use the custom torch kernel for PCC calculation.
+    if a.dtype in (torch.float32, torch.double, torch.float16, torch.bfloat16):
+        if not verif.has_special_values(a) and not verif.has_special_values(b):
+            return verif.calculate_tensor_pcc(a, b)
+
+    # We'll need to fallback to the numpy pcc calculation / estimation.
     TENSOR_SIZE_THRESHOLD = int(1e8)
     CHUNK_SIZE = int(1e6)
 

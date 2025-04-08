@@ -10,9 +10,11 @@ import numpy as np
 from forge.verify.compare import calculate_pcc, calculate_or_estimate_pcc, calculate_atol
 import pytest
 
+import forge._C.verif as verif
+
 
 @pytest.mark.push
-def test_pcc_calculation():
+def test_pcc_estimation():
     fw_out = torch.rand(1, 5 * 1000000)
     co_out = fw_out.clone()
 
@@ -63,6 +65,17 @@ def test_pcc_calculation():
 
     pcc = calculate_pcc(fw_out, co_out)
     assert torch.allclose(torch.tensor(pcc), torch.tensor(0.0))
+
+
+@pytest.mark.push
+def test_pcc_kernel():
+    fw_out = torch.rand(1, 5 * 1000000)
+    co_out = fw_out.clone()
+
+    pcc = verif.calculate_tensor_pcc(fw_out, co_out)
+    golden_pcc = np.min(np.corrcoef(fw_out.numpy().flatten(), co_out.numpy().flatten()))
+
+    assert torch.allclose(torch.tensor(pcc, dtype=torch.double), torch.tensor(golden_pcc, dtype=torch.double))
 
 
 @pytest.mark.push
