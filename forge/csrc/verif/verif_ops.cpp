@@ -4,6 +4,8 @@
 
 #include "verif_ops.hpp"
 
+#include <limits>
+#include <tuple>
 #include <utils/assert.hpp>
 
 #define INTRA_OP_PARALLEL
@@ -13,7 +15,6 @@
 #include <ATen/native/cpu/Loops.h>
 #include <ATen/native/cpu/Reduce.h>
 
-#include <limits>
 #include <utils/logger.hpp>
 
 namespace tt
@@ -26,6 +27,7 @@ enum class ReduceOp
     LogicalOr,
 };
 
+// Performs the reduction operation `op` on the two scalar values `a` and `b`.
 template <typename scalar_t, ReduceOp op>
 inline auto do_reduce_op(scalar_t a, scalar_t b)
 {
@@ -47,17 +49,20 @@ inline auto do_reduce_op(scalar_t a, scalar_t b)
     }
 }
 
-template <ReduceOp op, typename scalar_t>
-inline scalar_t scalar_reduce_op(at::vec::Vectorized<scalar_t> vec)
+// Reduces the vectorized type `vec` into a scalar value using the reduction operation `op`.
+template <ReduceOp op, typename scalar_t, typename init_t>
+inline init_t reduce_vec_into_scalar(at::vec::Vectorized<scalar_t> vec, init_t init_value)
 {
-    scalar_t ret = vec[0];
-    for (int64_t i = 1; i != vec.size(); i++)
+    auto ret = init_value;
+    for (int64_t i = 0; i != vec.size(); i++)
     {
         ret = do_reduce_op<scalar_t, op>(ret, vec[i]);
     }
     return ret;
 }
 
+// Generic reduction operation for vectorized types. This function performs the reduction operation on the
+// vectorized type `a` using the vectorized type `b` - in place.
 template <ReduceOp op, typename scalar_t>
 inline void vec_reduce_op(at::vec::Vectorized<scalar_t>& a, const at::vec::Vectorized<scalar_t>& b)
 {
@@ -98,9 +103,11 @@ template <ReduceOp reduce_op, typename func_t, typename init_t>
 inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t scalar_op, init_t init_value)
 {
     using traits = function_traits<func_t>;
-    using scalar_t = typename traits::template arg<0>::type;
+    // using scalar_t = typename traits::template arg<0>::type;
     using op_result_t = typename traits::result_type;
-    using reduce_result_t = decltype(do_reduce_op<op_result_t, reduce_op>(op_result_t{}, op_result_t{}));
+    using reduce_result_t = typename decltype(std::function{do_reduce_op<op_result_t, reduce_op>})::result_type;
+
+    static_assert(std::is_same_v<reduce_result_t, op_result_t>, "scalar_op must return the same type as the result");
     static_assert(std::is_same_v<init_t, reduce_result_t>, "init_value type must match reduce_result_t");
 
     std::atomic<reduce_result_t> global_result = init_value;
@@ -108,19 +115,22 @@ inline void cpu_kernel_reduce_into_scalar(at::TensorIteratorBase& iter, func_t s
     int64_t numel = iter.input().numel();
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
     {
-        auto first_val = *reinterpret_cast<scalar_t*>(data[1]);
-        op_result_t chunk_result = scalar_op(first_val);
+        op_result_t chunk_result = init_value;
 
-        auto* a_data = data[1];
-        int64_t i = 1;
+        int64_t i = 0;
 
         for (; i < n; ++i)
         {
-            auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
-            chunk_result = do_reduce_op<op_result_t, reduce_op>(chunk_result, scalar_op(a_val));
+            // Create the argument tuple for the elementwise operation and run it.
+            // NOTE: starting from data[1], since data[0] is the output tensor.
+            auto args = at::native::dereference<traits>(&data[1], &strides[1], i);
+            auto result = std::apply(scalar_op, args);
+
+            // Perform the reduction operation on the result to update the chunk result.
+            chunk_result = do_reduce_op<op_result_t, reduce_op>(chunk_result, result);
         }
 
-        // Update the global result atomically.
+        // Update the global result with new chunk result atomically.
         auto expected = global_result.load();
         auto desired = do_reduce_op<reduce_result_t, reduce_op>(expected, chunk_result);
         while (!global_result.compare_exchange_weak(expected, desired))
@@ -163,16 +173,16 @@ template <ReduceOp reduce_op, typename func_t, typename vec_func_t, typename ini
 inline void cpu_kernel_reduce_into_scalar_vec(
     at::TensorIteratorBase& iter, func_t scalar_op, vec_func_t vec_op, init_t init_val)
 {
-    using traits = binary_function_traits<func_t>;
-    using scalar_t = typename traits::arg1_t;
-    using op_result_t = decltype(scalar_op(typename traits::arg1_t{}, typename traits::arg2_t{}));
-    using reduce_result_t = decltype(do_reduce_op<op_result_t, reduce_op>(op_result_t{}, op_result_t{}));
+    using traits = function_traits<func_t>;
+    using vec_traits = function_traits<vec_func_t>;
+    using scalar_t = typename traits::template arg<0>::type;
+    using op_result_t = typename traits::result_type;
+    using vec_op_result_t = typename decltype(std::function{vec_op})::result_type;
+    using reduce_result_t = typename decltype(std::function{do_reduce_op<op_result_t, reduce_op>})::result_type;
 
     static_assert(
-        std::is_same_v<
-            at::vec::Vectorized<scalar_t>,
-            decltype(vec_op(typename traits::arg1_t{}, typename traits::arg2_t{}))>,
-        "vec_func_t must return at::vec::Vectorized<scalar_t>");
+        std::is_same_v<at::vec::Vectorized<op_result_t>, vec_op_result_t>,
+        "vec_func_t must return at::vec::Vectorized<op_result_t>");
     static_assert(std::is_same_v<init_t, reduce_result_t>, "init_value type must match reduce_result_t");
 
     using Vec = at::vec::Vectorized<scalar_t>;
@@ -184,36 +194,36 @@ inline void cpu_kernel_reduce_into_scalar_vec(
     auto loop_fn = [&](char** data, const int64_t* strides, int64_t n)
     {
         reduce_result_t chunk_result = init_val;
-        auto* a_data = data[1];
-        auto* b_data = data[2];
+
+        Vec chunk_result_vec = Vec(init_val);
+
+        // This is a dummy value to be used for dereference_vec() - the function has an option to use a default scalar
+        // value in case one of the operands is a scalar.
+        Vec opt_scalar = Vec(init_val);
+        // This is a dummy value to be used for dereference_vec() - inidcates that we don't have any arguments that are
+        // scalars.
+        constexpr int64_t opt_scalar_index = 0;
 
         int64_t i = 0;
-
-        Vec max_vec = Vec(init_val);
-
-        for (; i <= n - 2 * vec_size; i += 2 * vec_size)
+        for (; i <= n - vec_size; i += vec_size)
         {
-            auto a_vec = Vec::loadu(a_data + i * sizeof(scalar_t));
-            auto b_vec = Vec::loadu(b_data + i * sizeof(scalar_t));
-            Vec out = vec_op(a_vec, b_vec);
+            // Load the data for the current chunk and perform the vectorized operation.
+            // NOTE: starting from data[1], since data[0] is the output tensor.
+            auto args = at::native::dereference_vec<vec_traits>(&data[1], opt_scalar, opt_scalar_index, i);
+            auto out = std::apply(vec_op, std::move(args));
 
-            vec_reduce_op<reduce_op>(max_vec, out);
-
-            auto a_vec2 = Vec::loadu(a_data + (i + vec_size) * sizeof(scalar_t));
-            auto b_vec2 = Vec::loadu(b_data + (i + vec_size) * sizeof(scalar_t));
-            out = vec_op(a_vec2, b_vec2);
-
-            vec_reduce_op<reduce_op>(max_vec, out);
+            vec_reduce_op<reduce_op>(chunk_result_vec, std::move(out));
         }
 
-        chunk_result = scalar_reduce_op<reduce_op>(max_vec);
+        chunk_result = reduce_vec_into_scalar<reduce_op>(std::move(chunk_result_vec), init_val);
 
         for (; i < n; ++i)
         {
-            auto a_val = *reinterpret_cast<scalar_t*>(a_data + i * sizeof(scalar_t));
-            auto b_val = *reinterpret_cast<scalar_t*>(b_data + i * sizeof(scalar_t));
-            auto out = scalar_op(a_val, b_val);
-            chunk_result = do_reduce_op<reduce_result_t, reduce_op>(chunk_result, out);
+            // Create the argument tuple for the elementwise operation and run it.
+            // NOTE: starting from data[1], since data[0] is the output tensor.
+            auto args = at::native::dereference<traits>(&data[1], &strides[1], i);
+            auto result = std::apply(scalar_op, args);
+            chunk_result = do_reduce_op<reduce_result_t, reduce_op>(chunk_result, result);
         }
 
         // Update the global result atomically.
@@ -404,30 +414,15 @@ double cov_ij(
         "cov_ij",
         [&]()
         {
-            at::native::Vectorized<scalar_t> a_mean_vec(a_mean.value());
-            at::native::Vectorized<scalar_t> b_mean_vec(b_mean.value());
-            const scalar_t scale = 1e-2;
-            const auto N_vec = at::native::Vectorized<scalar_t>(N);
-            const auto scale_vec = at::native::Vectorized<scalar_t>(scale);
-            cpu_kernel_reduce_into_scalar_vec<ReduceOp::Sum>(
+            cpu_kernel_reduce_into_scalar<ReduceOp::Sum>(
                 iter,
-                [&a_mean, &b_mean, &N, &scale](scalar_t a_val, scalar_t b_val) -> scalar_t
+                [&a_mean, &b_mean, &N](scalar_t a_val, scalar_t b_val) -> double
                 {
-                    auto d_a = scale * a_val - scale * a_mean.value();
-                    auto d_b = scale * b_val - scale * b_mean.value();
+                    auto d_a = static_cast<double>(a_val) - a_mean.value();
+                    auto d_b = static_cast<double>(b_val) - b_mean.value();
                     return d_a / N * d_b;
                 },
-                [&a_mean_vec, &b_mean_vec, &N_vec, &scale_vec](
-                    at::native::Vectorized<scalar_t> a,
-                    at::native::Vectorized<scalar_t> b) -> at::native::Vectorized<scalar_t>
-                {
-                    auto delta_a = scale_vec * a - scale_vec * a_mean_vec;
-                    auto delta_b = scale_vec * b - scale_vec * b_mean_vec;
-
-                    auto res = delta_a / N_vec * delta_b;
-                    return res;
-                },
-                static_cast<scalar_t>(0));
+                static_cast<double>(0));
         });
 
     return iter.output().item<double>();

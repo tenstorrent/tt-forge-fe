@@ -8,6 +8,7 @@ import torch
 import numpy as np
 
 from forge.verify.compare import calculate_pcc, calculate_or_estimate_pcc, calculate_atol
+import pytest
 
 
 @pytest.mark.push
@@ -19,7 +20,7 @@ def test_pcc_calculation():
     pcc = calculate_or_estimate_pcc(fw_out, co_out, tensor_size_threshold=1, chunk_size=1000000)
     golden_pcc = np.min(np.corrcoef(fw_out.numpy().flatten(), co_out.numpy().flatten()))
 
-    assert torch.allclose(torch.tensor(pcc), torch.tensor(golden_pcc))
+    assert torch.allclose(torch.tensor(pcc, dtype=torch.double), torch.tensor(golden_pcc, dtype=torch.double))
 
     # Estimate pcc by splitting the tensors into chunks. Simulate not completely equal tensors.
     fw_out = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]], dtype=torch.float32)
