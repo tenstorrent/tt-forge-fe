@@ -68,17 +68,17 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          echo "run_full_model_passing=$(if [ -z ${{ inputs.run_full_model_passing }} ]; then echo 'true'; else echo '${{ inputs.run_full_model_passing }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_full_model_xfailing=$(if [ -z ${{ inputs.run_full_model_xfailing }} ]; then echo 'true'; else echo '${{ inputs.run_full_model_xfailing }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_perf_benchmark=$(if [ -z ${{ inputs.run_perf_benchmark }} ]; then echo 'true'; else echo '${{ inputs.run_perf_benchmark }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_models_ops=$(if [ -z ${{ inputs.run_models_ops }} ]; then echo 'true'; else echo '${{ inputs.run_models_ops }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_sweeps=$(if [ -z ${{ inputs.run_sweeps }} ]; then echo 'true'; else echo '${{ inputs.run_sweeps }}'; fi)" >> $GITHUB_OUTPUT
-          if [ -z ${{ inputs.rebuild }} ]; then
+          echo "run_full_model_passing=$(if [ -z "${{ inputs.run_full_model_passing }}" ]; then echo 'true'; else echo '${{ inputs.run_full_model_passing }}'; fi)" >> $GITHUB_OUTPUT
+          echo "run_full_model_xfailing=$(if [ -z "${{ inputs.run_full_model_xfailing }}" ]; then echo 'true'; else echo '${{ inputs.run_full_model_xfailing }}'; fi)" >> $GITHUB_OUTPUT
+          echo "run_perf_benchmark=$(if [ -z "${{ inputs.run_perf_benchmark }}" ]; then echo 'true'; else echo '${{ inputs.run_perf_benchmark }}'; fi)" >> $GITHUB_OUTPUT
+          echo "run_models_ops=$(if [ -z "${{ inputs.run_models_ops }}" ]; then echo 'true'; else echo '${{ inputs.run_models_ops }}'; fi)" >> $GITHUB_OUTPUT
+          echo "run_sweeps=$(if [ -z "${{ inputs.run_sweeps }}" ]; then echo 'true'; else echo '${{ inputs.run_sweeps }}'; fi)" >> $GITHUB_OUTPUT
+          if [ -z "${{ inputs.rebuild }}" ]; then
             echo "rebuild=All" >> $GITHUB_OUTPUT
           else
             echo "rebuild=$(if [ ${{ inputs.rebuild }} == 'true' ]; then echo 'Release'; else echo 'None'; fi)" >> $GITHUB_OUTPUT
           fi
-          tgc=$(if [ -z ${{ inputs.test_group_cnt }} ]; then echo '10'; else echo '${{ inputs.test_group_cnt }}'; fi)
+          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo '10'; else echo '${{ inputs.test_group_cnt }}'; fi)
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
 
