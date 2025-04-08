@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utils/assert.hpp>
 #include <variant>
 
@@ -59,6 +60,7 @@ enum class TargetType
     UI32Attr,
     I64Attr,
     I32Attr,
+    I32ArrayAttr,
     DenseI64ArrayAttr,
     DenseI32ArrayAttr,
 };
@@ -109,6 +111,9 @@ class AttributeMapper
     void initialize_default_mappings()
     {
         // Sort the mappings in lexicographical order
+
+        // argmax
+        add_op_mapping("argmax", "dim", AttributeRemap("dim_arg", TargetType::I32ArrayAttr));
 
         // conv2d_transpose
         add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
@@ -280,6 +285,28 @@ class MLIRGenerator
                 case TargetType::DenseI32ArrayAttr:
                     return builder_.getDenseI32ArrayAttr(std::vector<int32_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
+                case TargetType::I32ArrayAttr:
+                    return std::visit(
+                        [this](auto &&arg) -> mlir::Attribute
+                        {
+                            using T = std::decay_t<decltype(arg)>;
+                            // if we have a single int, convert it to an array of size 1
+                            if constexpr (std::is_same_v<T, int>)
+                            {
+                                return builder_.getI32ArrayAttr({arg});
+                            }
+                            // if we have a vector of ints, convert it to an array
+                            else if constexpr (std::is_same_v<T, std::vector<int>>)
+                            {
+                                return builder_.getI32ArrayAttr(llvm::SmallVector<int>(arg.begin(), arg.end()));
+                            }
+                            else
+                            {
+                                // If type not handled, throw an exception or handle it appropriately
+                                throw std::runtime_error("Unhandled attribute type");
+                            }
+                        },
+                        value);
                 default:
                     // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");

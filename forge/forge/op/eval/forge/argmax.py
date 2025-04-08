@@ -28,27 +28,42 @@ class Argmax(PyEltwiseUnaryOp):
     def eval(self, tensors):
         assert len(tensors) == 1, "Argmax should have one input"
 
-        ret = torch.argmax(tensors[0], dim=self.dim, keepdim=self.keep_dim)
+        # if dim is bool it is due to the way c++ pybind11 handles None
+        if not hasattr(self, "dim") or isinstance(self.dim, bool):
+            dim = None
+        else:
+            dim = self.dim
 
+        ret = torch.argmax(tensors[0], dim=dim, keepdim=self.keep_dim)
+
+        # by default torch returns long, but we support int32
         return ret.to(dtype=torch.int32)
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1, "Argmax should have one input"
 
+        # if dim is bool it is due to the way c++ pybind11 handles None
+        if not hasattr(self, "dim") or isinstance(self.dim, bool):
+            dim = None
+        else:
+            dim = self.dim
+
         input_shape = tensor_shapes[0]
 
         # Dimension-specific argmax
-        if self.dim is not None:
+        if dim is not None:
             if self.keep_dim:
                 shape = list(input_shape)
-                shape[self.dim] = 1
+                shape[dim] = 1
             else:
-                shape = [d for i, d in enumerate(input_shape) if i != self.dim]
+                shape = [d for i, d in enumerate(input_shape) if i != dim]
         else:  # Global argmax across all dimensions
             if self.keep_dim:
                 shape = [1] * len(input_shape)  # All dimensions become 1
             else:
-                shape = []  # Empty tuple for scalar result
+                raise RuntimeError("Global argmax should return a scalar, but that's not supported yet")
+                # shape = [] is what we should return
+                # but we get this error RuntimeError: Unable to cast Python instance to C++ type
 
         return tuple(shape), []
 

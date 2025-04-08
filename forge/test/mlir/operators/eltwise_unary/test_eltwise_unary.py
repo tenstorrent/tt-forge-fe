@@ -786,36 +786,33 @@ def test_floor(forge_property_recorder, input_data):
     "shape, dim, keepdim",
     [
         # Core test cases for dimension-specific argmax
-        # ((56,), 0, False),
+        # pytest.param((56,), 0, False, marks=pytest.mark.xfail(reason="Global argmax should return a scalar, but that's not supported yet")),
         # ((56,), 0, True),
         # ((1, 128), 1, False),
         # ((1, 128), 1, True),
         # ((1, 64, 76), 2, False),
         # ((1, 64, 76), 2, True),
         # # Core test cases for global argmax (dim=None)
-        # ((56,), None, False),
+        # pytest.param((56,), None, False, marks=pytest.mark.xfail(reason="Global argmax should return a scalar, but that's not supported yet")),
         # ((56,), None, True),
-        ((1, 128), None, False),
+        pytest.param((1, 128), None, False),
         # ((1, 128), None, True),
     ],
 )
 @pytest.mark.push
 def test_argmax(forge_property_recorder, shape, dim, keepdim):
     class ArgMax(nn.Module):
-        def __init__(self, keepdim):
+        def __init__(self, dim, keepdim):
             super().__init__()
-            # self.dim = dim
+            self.dim = dim
             self.keepdim = keepdim
 
         def forward(self, x):
-            # if self.dim is None:
-            return torch.argmax(x, keepdim=self.keepdim)
-            # else:
-            #     return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
+            return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
 
     inputs = [torch.rand(shape)]
 
-    framework_model = ArgMax(keepdim)
+    framework_model = ArgMax(dim, keepdim)
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
