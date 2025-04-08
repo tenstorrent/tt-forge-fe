@@ -21,7 +21,7 @@ import onnx
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(reason="The model exceeds the 2GB limit and cannot be serialized directly."),
         ),
         pytest.param(
             "google/gemma-2-9b-it",

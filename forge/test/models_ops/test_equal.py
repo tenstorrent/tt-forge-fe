@@ -62,9 +62,9 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32), torch.int64)],
             {
                 "model_name": [
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
                     "pt_opt_facebook_opt_125m_seq_cls_hf",
                     "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
                 ],
                 "pcc": 0.99,
             },

@@ -55,7 +55,9 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, t
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

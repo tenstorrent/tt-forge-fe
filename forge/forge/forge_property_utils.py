@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum
+from enum import Enum, auto
 import json
+import re
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict
@@ -13,25 +14,26 @@ from forge._C import ExecutionDepth
 
 
 class ExecutionStage(Enum):
-    FAILED_TVM_RELAY_IRMODULE_GENERATION = 0
-    FAILED_TVM_RELAY_IO_FLATTENING = 1
-    FAILED_TVM_RELAY_IR_TRANSFORMATION = 2
-    FAILED_TVM_PATTERN_CALLBACKS = 3
-    FAILED_TVM_GRAPH_PARTITIONING = 3
-    FAILED_FORGE_MODULE_GENERATION = 4
-    FAILED_FORGE_INITIAL_GRAPH_PASS = 5
-    FAILED_FORGE_POST_INITIAL_GRAPH_PASS = 6
-    FAILED_FORGE_CONSTEVAL = 7
-    FAILED_FORGE_OPTIMIZATION_GRAPH_PASS = 8
-    FAILED_FORGE_POST_OPTIMIZATION_DECOMP = 9
-    FAILED_FORGE_AUTOGRAD_PASS = 10
-    FAILED_FORGE_POST_AUTOGRAD_DECOMP = 11
-    FAILED_FORGE_PRE_LOWERING = 12
-    FAILED_FORGE_GRAPH_SPLIT = 13
-    FAILED_FORGE_MLIR_COMPILATION = 14
-    FAILED_TTNN_BINARY_EXECUTION = 15
-    FAILED_VERIFICATION = 16
-    PASSED = 17
+    FAILED_BEFORE_FORGE_COMPILATION_INITIATION = auto()
+    FAILED_TVM_RELAY_IRMODULE_GENERATION = auto()
+    FAILED_TVM_RELAY_IO_FLATTENING = auto()
+    FAILED_TVM_RELAY_IR_TRANSFORMATION = auto()
+    FAILED_TVM_PATTERN_CALLBACKS = auto()
+    FAILED_TVM_GRAPH_PARTITIONING = auto()
+    FAILED_FORGE_MODULE_GENERATION = auto()
+    FAILED_FORGE_INITIAL_GRAPH_PASS = auto()
+    FAILED_FORGE_POST_INITIAL_GRAPH_PASS = auto()
+    FAILED_FORGE_CONSTEVAL = auto()
+    FAILED_FORGE_OPTIMIZATION_GRAPH_PASS = auto()
+    FAILED_FORGE_POST_OPTIMIZATION_DECOMP = auto()
+    FAILED_FORGE_AUTOGRAD_PASS = auto()
+    FAILED_FORGE_POST_AUTOGRAD_DECOMP = auto()
+    FAILED_FORGE_PRE_LOWERING = auto()
+    FAILED_FORGE_GRAPH_SPLIT = auto()
+    FAILED_FORGE_MLIR_COMPILATION = auto()
+    FAILED_TTNN_BINARY_EXECUTION = auto()
+    FAILED_VERIFICATION = auto()
+    PASSED = auto()
 
     @classmethod
     def to_str(cls, value):
@@ -165,6 +167,8 @@ class Tags:
     execution_stage: str = ""
     op_name: str = ""
     op_params: Dict[str, Any] = field(default_factory=lambda: dict())
+    inputs: Optional[List[TensorDesc]] = None
+    outputs: Optional[List[TensorDesc]] = None
 
 
 @dataclass_json
@@ -174,8 +178,6 @@ class ForgePropertyStore:
     group: str = ""
     tags: Optional[Tags] = None
     config: Optional[Config] = None
-    inputs: Optional[List[TensorDesc]] = None
-    outputs: Optional[List[TensorDesc]] = None
 
 
 class ForgePropertyHandler:
@@ -409,7 +411,7 @@ class ForgePropertyHandler:
         Args:
             inputs (List[TensorDesc]): A list of TensorDesc objects for inputs.
         """
-        self.add("inputs", inputs)
+        self.add("tags.inputs", inputs)
 
     def record_flatbuffer_outputs(self, outputs: List[TensorDesc]):
         """
@@ -418,7 +420,7 @@ class ForgePropertyHandler:
         Args:
             outputs (List[TensorDesc]): A list of TensorDesc objects for outputs.
         """
-        self.add("outputs", outputs)
+        self.add("tags.outputs", outputs)
 
     def record_flatbuffer_details(self, binary_json_str: str):
         """
@@ -430,6 +432,8 @@ class ForgePropertyHandler:
         Args:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
+        binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
+        binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
         binary_json = json.loads(binary_json_str)
 
         flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
