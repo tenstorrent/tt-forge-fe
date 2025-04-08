@@ -57,9 +57,16 @@ def test_detr_detection(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/detr-resnet-50-panoptic",
+            marks=[pytest.mark.xfail],
+        )
+    ],
+)
 def test_detr_segmentation(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name
     module_name = build_module_name(
