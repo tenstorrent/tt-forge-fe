@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>AdvIndex</td>
-      <td>Operand(type=Activation, shape=(1, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1290, dtype=int64)</td>
+      <td>Operand(type=Activation, shape=(1, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_970, dtype=int64)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -135,11 +135,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 4), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128256, 4096), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>12</th>
@@ -694,8 +694,8 @@
     <tr>
       <th>62</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 4, 32, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Parameter, shape=(14336, 4096), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 64, 4), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(4096, 14336), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 4, 8, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 4, 32, 128), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(32, 4, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 4), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,8 +738,8 @@
     <tr>
       <th>66</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 4, 8, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,8 +749,8 @@
     <tr>
       <th>67</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Activation, shape=(32, 4, 128), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(32, 128, 4), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,8 +771,8 @@
     <tr>
       <th>69</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(14336, 4096), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(4096, 14336), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(32, 128, 4), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

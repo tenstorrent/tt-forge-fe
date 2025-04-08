@@ -113,11 +113,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 13), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32064, 3072), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>10</th>
@@ -291,9 +291,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>26</th>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(8192, 3072), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(3072, 8192), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(3072, 8192), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(2, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(2, 3072), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(8192, 3072), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
