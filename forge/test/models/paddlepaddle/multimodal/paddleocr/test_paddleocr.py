@@ -15,7 +15,7 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import fetch_paddle_model
-from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, boxes_from_bitmap, draw_boxes, cut_boxes
+from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, boxes_from_bitmap, draw_boxes, cut_boxes, polygons_from_bitmap
 
 model_urls = {
     "PP-OCRv4": {
@@ -168,7 +168,7 @@ def test_paddleocr_rec(forge_property_recorder, variant, url):
 det_url = "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
 rec_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"
 dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"
-image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/err_image.png"
+image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/testocr.png"
 
 def test_full_ocr():
     # Fetch model
@@ -178,27 +178,38 @@ def test_full_ocr():
     # Load sample
     image = cv2.imread(image_path)
     new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
-    resized_image = cv2.resize(image, new_shapes)
+    resized_image = cv2.resize(image, (new_shapes))
     image = resized_image.transpose(2, 0, 1).astype("float32")
     inputs = [paddle.to_tensor([image])]
 
     # Detection - find boxes containing text
     pred = detection_model(*inputs)
+
+    # Visualize prediction as heatmap
+    heatmap = (pred[0, 0].numpy() * 255).astype("uint8")
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/pred_heatmap.jpg", heatmap)
+
     bitmap = bitmap_from_probmap(pred)
     dest_height, dest_width = image.shape[1:]
-    boxes, _ = boxes_from_bitmap(pred, bitmap, dest_height=dest_height, dest_width=dest_width)
+    boxes, _ = polygons_from_bitmap(pred, bitmap, dest_height=dest_height, dest_width=dest_width)
+    # Visualize bitmap
+    bitmap_visual = (bitmap * 255).astype("uint8")
+    cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/bitmap_visual.jpg", bitmap_visual)
 
     img = draw_boxes(resized_image, boxes)
     cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/det_result.jpg", img)
 
-    box_images = cut_boxes(resized_image, boxes)
+    box_cuts, img = cut_boxes(resized_image, boxes)
+    # Visualize boxes
+    cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/box_result.jpg", img)
 
     with open(dict_path, "r", encoding="utf-8") as f:
         charset = [line.strip() for line in f.readlines()]
         charset.insert(0, '')
 
     # Recognition - recognize text in each box
-    for i, box_image in enumerate(box_images):
+    for i, box_image in enumerate(box_cuts):
         cv2.imwrite(f"forge/test/models/paddlepaddle/multimodal/paddleocr/images/cut_result_{i}.jpg", box_image)
         box_image = box_image.transpose(2, 0, 1).astype("float32")/255.0
         box_image = paddle.to_tensor([box_image])

@@ -3,12 +3,13 @@ import numpy as np
 import pyclipper
 import paddle
 from shapely.geometry import Polygon
+from shapely.ops import unary_union
 
-min_size = 4
+min_size = 5
 thresh = 0.2
 box_thresh = 0.6
 max_candidates = 1000
-unclip_ratio = 1.7
+unclip_ratio = 2
 
 
 def get_mini_boxes(contour):
@@ -37,9 +38,12 @@ def get_mini_boxes(contour):
 
 def bitmap_from_probmap(preds):
     prob_map = preds.numpy()[0, 0]  # (H, W)
-    bitmap = (prob_map > 0.3).astype(np.uint8)
+    bitmap = (prob_map > 0.2).astype(np.uint8)
     bitmap = np.ascontiguousarray(bitmap)
-    return bitmap
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    bitmap_smooth = cv2.morphologyEx(bitmap, cv2.MORPH_CLOSE, kernel)
+
+    return bitmap_smooth
 
 def boxes_from_bitmap(pred, bitmap, dest_width, dest_height):
     """
@@ -88,6 +92,58 @@ def boxes_from_bitmap(pred, bitmap, dest_width, dest_height):
     scores = scores[valid_indices]
     return boxes, scores
 
+def polygons_from_bitmap(pred, _bitmap, dest_width, dest_height):
+    """
+    _bitmap: single map with shape (1, H, W),
+        whose values are binarized as {0, 1}
+    """
+
+    bitmap = _bitmap
+    height, width = bitmap.shape
+
+    boxes = []
+    scores = []
+
+    contours, _ = cv2.findContours(
+        (bitmap * 255).astype(np.uint8), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    for contour in contours[: max_candidates]:
+        epsilon = 0.002 * cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour, epsilon, True)
+        points = approx.reshape((-1, 2))
+        if points.shape[0] < 4:
+            continue
+
+        score = box_score_fast(bitmap, points.reshape(-1, 2))
+        if box_thresh > score:
+            continue
+
+        if points.shape[0] > 2:
+            box = unclip(points, unclip_ratio)
+            if len(box) > 1:
+                continue
+        else:
+            continue
+        box = np.array(box).reshape(-1, 2)
+        if len(box) == 0:
+            continue
+
+        _, sside = get_mini_boxes(box.reshape((-1, 1, 2)))
+        if sside < min_size + 2:
+            continue
+
+        box = np.array(box)
+        box[:, 0] = np.clip(np.round(box[:, 0] / width * dest_width), 0, dest_width)
+        box[:, 1] = np.clip(
+            np.round(box[:, 1] / height * dest_height), 0, dest_height
+        )
+        boxes.append(box.tolist())
+        scores.append(score)
+
+    return boxes, scores
+
+
 def box_score_fast(bitmap, _box):
     h, w = bitmap.shape[:2]
     box = _box.copy()
@@ -122,15 +178,17 @@ def draw_boxes(image, boxes, color=(0, 255, 0), thickness=2):
 
 def cut_boxes(image, boxes):
     small_images = []
-    eps = 10
+
+    img_with_rectangles = image.copy()
     for box in boxes:
         box = np.int32(box)
         x_min = max(0, np.min(box[:, 0]))
-        x_max = min(image.shape[1], np.max(box[:, 0]) + eps)
-        y_min = max(0, np.min(box[:, 1]) - eps)
-        y_max = min(image.shape[0], np.max(box[:, 1]) + eps)
-        x_min = max(0, np.min(box[:, 0]) - eps)
+        x_max = min(image.shape[1], np.max(box[:, 0]))
+        y_min = max(0, np.min(box[:, 1]))
+        y_max = min(image.shape[0], np.max(box[:, 1]))
         cropped_image = image[y_min:y_max, x_min:x_max]
         small_images.append(cropped_image)
-    return small_images
+        cv2.rectangle(img_with_rectangles, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
+
+    return small_images, img_with_rectangles
     
