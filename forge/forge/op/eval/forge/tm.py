@@ -1036,48 +1036,65 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 def decompose(type, attr, dc, inputs):
     if type == "adv_index":
         dim = attr[0]
-        in0_shape = inputs[0].shape
-        indeces_shape = inputs[1].shape
+        in0_shape = inputs[0].shape.as_list()
+        indeces_shape = inputs[1].shape.as_list()
 
-        assert dim == 0, "Currently only dim=0 is supported for adv_index"
         assert len(indeces_shape) == 2 or len(indeces_shape) == 1, "Indeces tensor should be 1D or 2D"
 
-        if in0_shape[dim] == 1:
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
-            return
+        # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
+        # The embedding operation will select the appropriate indices from the reshaped tensor
+        # and then we will reshape the output back to the original shape.
+        # For example, if the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indeces shape [X],
+        # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
+        # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
+        # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
+        # Next, we will reshape the output back to the 4D shape [X, N * C * W] -> [X, N, C, W]
+        # and finally, we will transpose the output back to the original order.
+        # [X, N, C, W] -> [N, X, C, W] and [N, X, C, W] -> [N, C, X, W]
 
-        # Consider the case in0_shape.adv_index(indeces) where
-        # in0_shape: (A, B), indeces: (1, C) or (C,)
+        # Step 1: Move the indexed dimension to the front using a sequence of transposes
+        if dim != 0:
+            current = inputs[0]
+            for i in range(dim, 0, -1):
+                current = dc.op(TransposeTM.create(i, i - 1), [current])
+            permuted = current
+        else:
+            # No need to transpose if dim is already 0
+            permuted = inputs[0]
 
-        # Handle 1D input tensor case (A,)
-        if len(in0_shape) == 1:
-            # For 1D tensors, we need to unsqueeze the first tensor
-            # to make it 2D (A,) -> (A, 1)
-            reshaped_input = dc.op_with_named_attrs("unsqueeze", [inputs[0]], {"dim": 1}, [1, len(inputs[0].shape)])
+        # Step 2: Reshape to [in0_shape[dim], -1]
+        # Calculate product of all dimensions except the first (after transposition)
+        rest_dims_product = 1
+        permuted_shape = in0_shape[dim : dim + 1] + in0_shape[:dim] + in0_shape[dim + 1 :] if dim != 0 else in0_shape
+        for i in range(1, len(permuted_shape)):
+            rest_dims_product *= permuted_shape[i]
 
-            # Use embedding with the reshaped input
-            selected = dc.op(
-                "embedding",
-                (inputs[1], reshaped_input),
-            )
+        reshape_dims = [in0_shape[dim], rest_dims_product]
+        reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
 
-            # Reshape result back to proper dimensions if needed
-            # If indices is 1D (C,), result will be (C, 1), should be (C,)
-            result = dc.op_with_named_attrs("squeeze", [selected], {"dim": 1}, [1])
-            dc.fuse(result)
-            return
+        # Step 3: Apply embedding operation
+        # embedding op expects indices tensor as first argument and embedding_table as second argument
+        selected = dc.op("embedding", (inputs[1], reshaped))
 
-        if len(in0_shape) == 2:
-            # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
-            # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
-            # so swaping the operands.
-            result = dc.op(
-                "embedding",
-                (inputs[1], inputs[0]),
-            )
-            dc.fuse(result)
-            return
+        # Step 4: Reshape back to appropriate dimensions
+        # The new shape replaces the indexed dimension with the indices shape
+        output_shape = indeces_shape + permuted_shape[1:]
+
+        reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+
+        # Step 5: Restore original dimension order if necessary using transposes
+        if dim != 0:
+            # Move dimension 0 to position 'dim' using transposes
+            current = reshaped_output
+            for i in range(0, dim):
+                current = dc.op(TransposeTM.create(i, i + 1), [current])
+            result = current
+        else:
+            # No need to transpose if dim is already 0
+            result = reshaped_output
+
+        dc.fuse(result)
+        return
 
     if type == "pad":
         if all([x == 0 for x in attr[0:-2]]):
