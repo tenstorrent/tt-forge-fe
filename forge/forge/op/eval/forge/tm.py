@@ -1044,7 +1044,9 @@ def decompose(type, attr, dc, inputs):
         # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
         # The embedding operation will select the appropriate indices from the reshaped tensor
         # and then we will reshape the output back to the original shape.
-        # For example, if the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indeces shape [X],
+        #
+        # For example:
+        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indeces shape [X],
         # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
         # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
         # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
