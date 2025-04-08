@@ -44,13 +44,15 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          echo "run_ops_sweeps=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo 'true'; else echo '${{ inputs.run_ops_sweeps }}'; fi)" >> $GITHUB_OUTPUT
+          default_test_group_cnt=10
+          defult_run_ops_sweeps=true
+          echo "run_ops_sweeps=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $defult_run_ops_sweeps; else echo '${{ inputs.run_ops_sweeps }}'; fi)" >> $GITHUB_OUTPUT
           if [ -z "${{ inputs.rebuild }}" ]; then
             echo "rebuild=All" >> $GITHUB_OUTPUT
           else
             echo "rebuild=$(if [ ${{ inputs.rebuild }} == 'true' ]; then echo 'Release'; else echo 'None'; fi)" >> $GITHUB_OUTPUT
           fi
-          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo '10'; else echo '${{ inputs.test_group_cnt }}'; fi)
+          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo '${{ inputs.test_group_cnt }}'; fi)
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$(seq -s ',' 1 $tgc)]" >> $GITHUB_OUTPUT
 
