@@ -11,9 +11,15 @@ on:
         description: 'Docker image to use for build'
         required: true
         type: string
+      do_run:
+        description: 'Actually run tests'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   run-perf-benchmarks:
+    if: ${{ inputs.do_run }}
     strategy:
       fail-fast: false
       matrix:

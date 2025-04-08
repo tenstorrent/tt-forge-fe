@@ -93,7 +93,7 @@ jobs:
       build: ${{ needs.set-inputs.outputs.rebuild }}
 
   test_full_model_passing:
-    if: (success() || failure()) && ${{ needs.set-inputs.outputs.run_full_model_passing == 'true' }}
+    if: success() || failure()
     needs:
       - set-inputs
       - docker-build
@@ -107,9 +107,10 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      do_run: ${{ needs.set-inputs.outputs.run_full_model_passing }}
 
   perf-benchmark:
-    if: (success() || failure()) && ${{ needs.set-inputs.outputs.run_perf_benchmark == 'true' }}
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -119,9 +120,10 @@ jobs:
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
+      do_run: ${{ needs.set-inputs.outputs.run_perf_benchmark }}
 
   test_full_model_xfailing:
-    if: (success() || failure()) && ${{ needs.set-inputs.outputs.run_full_model_xfailing == 'true' }}
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -135,9 +137,10 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
+      do_run: ${{ needs.set-inputs.outputs.run_full_model_xfailing }}
 
   test_models_ops:
-    if: (success() || failure()) && ${{ needs.set-inputs.outputs.run_models_ops == 'true' }}
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -155,9 +158,10 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      do_run: ${{ needs.set-inputs.outputs.run_models_ops }}
 
   test_sweeps:
-    if: (success() || failure()) && ${{ needs.set-inputs.outputs.run_sweeps == 'true' }}
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -173,6 +177,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      do_run: ${{ needs.set-inputs.outputs.run_sweeps }}
 
   fail-notify:
     if: always()
@@ -198,6 +203,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
           allowed-failures: test_models_ops, test_sweeps
+          allowed-skips: test_full_model_passing, perf-benchmark, test_full_model_xfailing, test_models_ops, test_sweeps
 
   fail-send-msg:
     if: always()
