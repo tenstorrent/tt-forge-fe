@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-
+import torch
 from transformers import LlamaConfig, LlamaForCausalLM, AutoTokenizer
-
-import forge
+from peft import LoraConfig, get_peft_model
 
 
 def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
@@ -22,6 +21,13 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
     # Load the model
     framework_model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto", config=config)
     framework_model.eval()
+
+    use_lora = kwargs.get("use_lora", False)
+    if use_lora:
+        lora_r = kwargs.get("lora_r", 4)
+        lora_alpha = kwargs.get("lora_alpha", 8)
+        lora_config = LoraConfig(r=lora_r, lora_alpha=lora_alpha, task_type="CAUSAL_LM")
+        framework_model = get_peft_model(framework_model, lora_config)
 
     # Using AutoTokenizer for default tokenizers for both openllama and llama 3.2
     use_fast = kwargs.get("use_fast", True)
