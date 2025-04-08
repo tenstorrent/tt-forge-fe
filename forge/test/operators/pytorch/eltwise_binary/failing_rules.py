@@ -66,7 +66,6 @@ class FailingRulesData:
         # PCC check fails for buggy shapes for add
         TestCollection(
             input_sources=[
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.CONST_EVAL_PASS,
             ],
             dev_data_formats=[
@@ -204,7 +203,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 4),  # TODO remove fixed
@@ -270,7 +268,6 @@ class FailingRulesData:
             input_sources=[
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1),
@@ -285,7 +282,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1000),
@@ -308,7 +304,6 @@ class FailingRulesData:
             input_sources=[
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1),
@@ -334,7 +329,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1000),
@@ -346,7 +340,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (11, 45, 17),
@@ -362,7 +355,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (45, 17),
@@ -376,7 +368,6 @@ class FailingRulesData:
         # PCC check fails for Int8
         TestCollection(
             input_sources=[
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.CONST_EVAL_PASS,
             ],
             dev_data_formats=[
@@ -388,7 +379,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 4),
@@ -412,31 +402,22 @@ class FailingRulesData:
             # Exceptions for failing_rules[1]
             (InputSource.FROM_ANOTHER_OP,   (1, 1),             None,                               None,   None),
             (InputSource.FROM_HOST,         (1, 1),             None,                               None,   None),
-            (InputSource.FROM_DRAM_QUEUE,   (1, 1),             None,                               None,   None),
             # Exceptions for failing_rules[3]
             (InputSource.FROM_HOST,         (1, 4),             forge.DataFormat.Int8,              None,   None),
             (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.RawUInt32,         None,   None),
             (InputSource.FROM_HOST,         (1, 2, 3, 4),       forge.DataFormat.Int32,             None,   None),
             # PCC check fails for Int8
-            (InputSource.FROM_DRAM_QUEUE,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             (InputSource.CONST_EVAL_PASS,   None,               forge.DataFormat.Int8,              None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             # Exceptions for PCC check fails for Int8
-            (InputSource.FROM_DRAM_QUEUE,   (1, 4),             forge.DataFormat.Int8,              None,   None),
             # PCC check fails for buggy shapes
             (InputSource.FROM_HOST,         (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (1, 1000),          None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             (InputSource.FROM_HOST,         (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (5, 11, 64, 1),     None,                               None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             # PCC check fails for buggy shapes
             (InputSource.FROM_HOST,         (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (11, 45, 17),       [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             (InputSource.FROM_HOST,         (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (1, 11, 45, 17),    [forge.DataFormat.Int8, None],      None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             # PCC check fails for buggy shapes
             (InputSource.FROM_HOST,         (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             (InputSource.FROM_HOST,         (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
-            (InputSource.FROM_DRAM_QUEUE,   (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             # fmt: on
         ],
         params=["input_source", "input_shape", "dev_data_format", "math_fidelity", "result_failing"],
@@ -450,7 +431,6 @@ class FailingRulesData:
             input_sources=[
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1),
@@ -465,7 +445,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (5, 11, 64, 1),
@@ -476,7 +455,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (11, 45, 17),
@@ -492,7 +470,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (45, 17),
@@ -506,7 +483,6 @@ class FailingRulesData:
         # PCC check fails for Int8
         TestCollection(
             input_sources=[
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.CONST_EVAL_PASS,
             ],
             dev_data_formats=[
@@ -518,7 +494,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 4),
@@ -538,7 +513,6 @@ class FailingRulesData:
             input_sources=[
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 1),
@@ -553,7 +527,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (5, 11, 64, 1),
@@ -564,7 +537,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (11, 45, 17),
@@ -580,7 +552,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (45, 17),
@@ -601,7 +572,6 @@ class FailingRulesData:
         # PCC check fails for Int8
         TestCollection(
             input_sources=[
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.CONST_EVAL_PASS,
             ],
@@ -614,7 +584,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
             ],
             input_shapes=[
                 (1, 4),
@@ -636,7 +605,6 @@ class FailingRulesData:
         # PCC check fails for Int8
         TestCollection(
             input_sources=[
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.FROM_ANOTHER_OP,
                 InputSource.CONST_EVAL_PASS,
             ],
@@ -668,7 +636,6 @@ class FailingRulesData:
         TestCollection(
             input_sources=[
                 InputSource.FROM_HOST,
-                InputSource.FROM_DRAM_QUEUE,
                 InputSource.FROM_ANOTHER_OP,
             ],
             dev_data_formats=TestCollectionCommon.int.dev_data_formats,
