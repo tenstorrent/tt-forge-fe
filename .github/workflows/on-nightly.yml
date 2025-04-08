@@ -19,28 +19,8 @@ on:
           - "3"
           - "4"
           - "8"
-      run_full_model_passing:
-        description: 'Run full model passing tests'
-        required: false
-        default: true
-        type: boolean
-      run_full_model_xfailing:
-        description: 'Run full model xflailing tests'
-        required: false
-        default: true
-        type: boolean
-      run_perf_benchmark:
-        description: 'Run performance benchmark tests'
-        required: false
-        default: true
-        type: boolean
-      run_models_ops:
-        description: 'Run models ops tests'
-        required: false
-        default: false
-        type: boolean
-      run_sweeps:
-        description: 'Run sweeps tests'
+      run_ops_sweeps:
+        description: 'Run models ops and sweeps tests'
         required: false
         default: false
         type: boolean
@@ -59,20 +39,12 @@ jobs:
       rebuild: ${{ steps.set-inputs.outputs.rebuild }}
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
-      run_full_model_passing: ${{ steps.set-inputs.outputs.run_full_model_passing }}
-      run_full_model_xfailing: ${{ steps.set-inputs.outputs.run_full_model_xfailing }}
-      run_perf_benchmark: ${{ steps.set-inputs.outputs.run_perf_benchmark }}
-      run_models_ops: ${{ steps.set-inputs.outputs.run_models_ops }}
-      run_sweeps: ${{ steps.set-inputs.outputs.run_sweeps }}
+      run_ops_sweeps: ${{ steps.set-inputs.outputs.run_models_ops }}
     steps:
       - name: Set Inputs
         id: set-inputs
         run: |
-          echo "run_full_model_passing=$(if [ -z "${{ inputs.run_full_model_passing }}" ]; then echo 'true'; else echo '${{ inputs.run_full_model_passing }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_full_model_xfailing=$(if [ -z "${{ inputs.run_full_model_xfailing }}" ]; then echo 'true'; else echo '${{ inputs.run_full_model_xfailing }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_perf_benchmark=$(if [ -z "${{ inputs.run_perf_benchmark }}" ]; then echo 'true'; else echo '${{ inputs.run_perf_benchmark }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_models_ops=$(if [ -z "${{ inputs.run_models_ops }}" ]; then echo 'true'; else echo '${{ inputs.run_models_ops }}'; fi)" >> $GITHUB_OUTPUT
-          echo "run_sweeps=$(if [ -z "${{ inputs.run_sweeps }}" ]; then echo 'true'; else echo '${{ inputs.run_sweeps }}'; fi)" >> $GITHUB_OUTPUT
+          echo "run_ops_sweeps=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo 'true'; else echo '${{ inputs.run_ops_sweeps }}'; fi)" >> $GITHUB_OUTPUT
           if [ -z "${{ inputs.rebuild }}" ]; then
             echo "rebuild=All" >> $GITHUB_OUTPUT
           else
@@ -93,7 +65,7 @@ jobs:
       build: ${{ needs.set-inputs.outputs.rebuild }}
 
   test_full_model_passing:
-    if: always()
+    if: success() || failure()
     needs:
       - set-inputs
       - docker-build
@@ -107,10 +79,9 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
-      do_run: ${{ needs.set-inputs.outputs.run_full_model_passing }}
 
   perf-benchmark:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - build
@@ -120,10 +91,9 @@ jobs:
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
-      do_run: ${{ needs.set-inputs.outputs.run_perf_benchmark }}
 
   test_full_model_xfailing:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -137,10 +107,9 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
-      do_run: ${{ needs.set-inputs.outputs.run_full_model_xfailing }}
 
   test_models_ops:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -158,10 +127,10 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
-      do_run: ${{ needs.set-inputs.outputs.run_models_ops }}
+      do_run: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
 
   test_sweeps:
-    if: always()
+    if: success() || failure()
     needs:
       - docker-build
       - set-inputs
@@ -177,7 +146,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
-      do_run: ${{ needs.set-inputs.outputs.run_sweeps }}
+      do_run: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
 
   fail-notify:
     if: always()
@@ -203,7 +172,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
           allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_full_model_passing, perf-benchmark, test_full_model_xfailing, test_models_ops, test_sweeps
+          allowed-skips: test_models_ops, test_sweeps
 
   fail-send-msg:
     if: always()
