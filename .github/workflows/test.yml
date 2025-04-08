@@ -41,6 +41,7 @@ on:
           - "2"
           - "3"
           - "4"
+          - "8"
       operators:
         description: 'Operators to test (comma separated)'
         required: false
@@ -86,16 +87,16 @@ jobs:
           echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
           case "${{ inputs.preset }}" in
             "Full Model Passing")
-              echo "test_mark='nightly and not xfail'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
               ;;
             "Full Model XFailing")
-              echo "test_mark='nightly and xfail'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly and xfail" >> $GITHUB_OUTPUT
               ;;
             "Models Ops")
-              echo "test_mark='nightly_models_ops'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly_models_ops" >> $GITHUB_OUTPUT
               ;;
             "Sweeps")
-              echo "test_mark='nightly_sweeps'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly_sweeps" >> $GITHUB_OUTPUT
               ;;
             "Custom")
               echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
