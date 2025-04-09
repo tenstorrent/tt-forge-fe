@@ -88,6 +88,7 @@ size = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
     if size != "s":

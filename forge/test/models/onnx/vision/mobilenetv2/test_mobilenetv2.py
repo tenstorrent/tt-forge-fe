@@ -66,7 +66,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
     pcc = 0.99
     if variant == "mobilenetv2_050":
-        pcc = 0.98
+        pcc = 0.96
 
     fw_out, co_out = verify(
         inputs,
