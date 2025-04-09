@@ -65,7 +65,6 @@ def eval(type, attr, ops):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -137,7 +136,6 @@ def eval(type, attr, ops):
         "sine": lambda i: torch.sin(i[0]),
         "atan": lambda i: torch.atan(i[0]),
         "tile_broadcast": lambda i: tile_broadcast(attr, i[0]),
-        # "argmax": lambda i: torch.argmax(i[0], dim=attr[0] if len(attr) > 0 else None, keepdims=True),
         "tanh": lambda i: torch.tanh(i[0]),
         "cumsum": lambda i: torch.cumsum(i[0], dim=attr[0]),
         "logical_not": lambda i: torch.logical_not(i[0]),
@@ -159,7 +157,6 @@ def shape(type, attr, ops):
         len(attr) == 0
         or (type == "ethernet_datacopy" and (len(attr) == 1 or len(attr) == 2))
         or (type == "clip" and len(attr) == 2)
-        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -169,15 +166,6 @@ def shape(type, attr, ops):
         or (type == "gelu_derivative" and len(attr) == 1)
         or (type == "pow" and len(attr) == 1)
     ), "Eltwise unary should have no attributes, execpt for clip, leaky_relu and cumsum"
-
-    # if type == "argmax":
-    #     dim = attr[0] if len(attr) > 0 else None
-    #     if dim is not None:
-    #         shape = list(ops[0])
-    #         shape[dim] = 1
-    #     else:
-    #         shape = [1] * len(ops[0])
-    #     return tuple(shape), []
 
     if type == "tile_broadcast":
         assert len(attr) == 2, "Tile broadcast should have two attributes - dim and size"
@@ -374,7 +362,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
     assert (
         len(attr) == 0
         or (type == "clip" and len(attr) == 2)
-        # or (type == "argmax" and len(attr) == 1)
         or (type == "leaky_relu" and len(attr) == 1)
         or (type == "relu" and len(attr) <= 2)
         or (type == "cumsum" and len(attr) == 2)
@@ -465,9 +452,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         subtract = ac.op("subtract", (ac.constant(1), tanh_square))
         res = ac.op("multiply", (subtract, grad))
         return res
-
-    # if type == "argmax":
-    #     raise RuntimeError("Argmax does not require grad and does not have a backwards function")
 
     if type == "cumsum":
         dim = attr[0]
