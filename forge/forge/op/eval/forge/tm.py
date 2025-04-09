@@ -110,17 +110,15 @@ def eval(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "Indeces should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
+        indices = t_ops[1].type(torch.LongTensor)
+        if len(indices.shape) == 2:
+            # Indices are 2D, we need to reshape them to 1D
+            indices = indices.reshape(-1)
 
-        if len(t_ops[1].shape) > 1:
-            if len(t_ops[0].shape) > len(t_ops[1].shape) and t_ops[0].shape[0] == 1:
-                # Padded
-                ret = torch.unsqueeze(t_ops[0][0][t_ops[1].numpy()], 0)
-            else:
-                ret = torch.unsqueeze(t_ops[0][t_ops[1].numpy()], 0)
-        else:
-            ret = t_ops[0][t_ops[1].numpy()]
+        ret = torch.index_select(t_ops[0], dim, indices)
+
         return ret
 
     if type == "broadcast":
@@ -396,12 +394,10 @@ def shape(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(ops[1]) == 1 or len(ops[1]) == 2, "Indeces should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
         shape = list(ops[0])
         shape[dim] = ops[1][-1]
-        if len(ops[1]) > 1:
-            shape.insert(dim, 1)
         return shape, []
 
     if type == "select":
