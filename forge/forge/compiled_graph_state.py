@@ -320,13 +320,6 @@ class CompiledModel:
         fwd_func_name = "forward"
         fwd_func_name_len = len(fwd_func_name)
         fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
-        # self.runtime_model_state.test_so(
-        #     "/localdev/svuckovic/_workspace/repos/tt-forge-fe/resnet.so",
-        #     fwd_func_sym,
-        #     self.inputs,
-        #     consts_and_params,
-        #     all_outputs
-        # )
         self.runtime_model_state.test_so(
             "/localdev/svuckovic/_workspace/repos/tt-forge-fe/resnet.so",
             fwd_func_sym,

@@ -154,6 +154,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         // Define paths for .cpp files.
         //
+
+        // TODO: use test's tmp folder
         fs::path directoryPath = fs::path("/localdev/svuckovic/_workspace/repos/tt-forge-fe");
         fs::path filePath = directoryPath / "resnet.cpp";
 
@@ -166,6 +168,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         outFile << cpp_source;
         outFile.close();
         std::cout << "Successfully wrote C++ code to: " << filePath << std::endl;
+
+        // TODO: Make everything below an API in MLIR
 
         // Compile the C++ code to a shared object.
         //
