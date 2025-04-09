@@ -9,7 +9,7 @@ Verify by evaluating the forge graph
 import os
 from typing import Tuple, Dict, List, Any, Union, Optional
 
-from forge.module import FrameworkModule, is_supported_module
+from forge.module import FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
 import paddle
@@ -419,7 +419,7 @@ def verify(
                 f"Input tensor must be of type {verify_cfg.supported_tensor_types}, but got {type(input_tensor)}"
             )
 
-    if not is_supported_module(framework_model):
+    if not isinstance(framework_model, verify_cfg.framework_model_types):
         raise TypeError(
             f"Framework model must be of type {verify_cfg.framework_model_types}, but got {type(framework_model)}"
         )

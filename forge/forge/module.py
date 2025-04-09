@@ -16,6 +16,7 @@ import paddle
 import torch
 import tensorflow as tf
 from loguru import logger
+from transformers import FlaxPreTrainedModel
 
 import forge
 from .forgeglobal import lazy_trace_data
@@ -1011,20 +1012,13 @@ def wrap_module(module, name: str) -> Module:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
-def is_supported_module(module):
-    """
-    Check that the module is supported by Forge.
-    """
-    if isinstance(module, AnyModule):
-        return True
-    elif hasattr(module, "module") and isinstance(module.module, AnyModule):
-        # To support Pretrained Flax models from transformers.
-        return True
-    else:
-        return False
-
-
 FrameworkModule: TypeAlias = (
-    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule | flax.linen.Module
+    torch.nn.Module
+    | tf.keras.Model
+    | paddle.nn.Layer
+    | onnx.onnx_ml_pb2.ModelProto
+    | OnnxModule
+    | flax.linen.Module
+    | FlaxPreTrainedModel
 )
 AnyModule: TypeAlias = FrameworkModule | ForgeModule
