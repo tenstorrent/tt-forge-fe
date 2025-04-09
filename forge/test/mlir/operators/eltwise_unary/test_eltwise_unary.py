@@ -786,17 +786,46 @@ def test_floor(forge_property_recorder, input_data):
     "shape, dim, keepdim",
     [
         # Core test cases for dimension-specific argmax
-        # pytest.param((56,), 0, False, marks=pytest.mark.xfail(reason="Global argmax should return a scalar, but that's not supported yet")),
-        # ((56,), 0, True),
-        # ((1, 128), 1, False),
-        # ((1, 128), 1, True),
-        # ((1, 64, 76), 2, False),
-        # ((1, 64, 76), 2, True),
-        # # Core test cases for global argmax (dim=None)
-        # pytest.param((56,), None, False, marks=pytest.mark.xfail(reason="Global argmax should return a scalar, but that's not supported yet")),
-        # ((56,), None, True),
-        pytest.param((1, 128), None, False),
-        # ((1, 128), None, True),
+        pytest.param(
+            (56,),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), 0, True),
+        ((1, 128), 1, False),
+        ((1, 128), 1, True),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            False,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        ((1, 64, 76), 2, True),
+        pytest.param(
+            (1, 64, 76), 1, True, marks=pytest.mark.xfail(reason="TTNN: Only argmax on last dim is supported!")
+        ),
+        # Core test cases for global argmax (dim=None)
+        pytest.param(
+            (56,),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), None, True),
+        pytest.param(
+            (1, 128),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((1, 128), None, True),
     ],
 )
 @pytest.mark.push

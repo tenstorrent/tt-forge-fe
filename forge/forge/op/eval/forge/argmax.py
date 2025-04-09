@@ -61,7 +61,7 @@ class Argmax(PyEltwiseUnaryOp):
             if self.keep_dim:
                 shape = [1] * len(input_shape)  # All dimensions become 1
             else:
-                raise RuntimeError("Global argmax should return a scalar, but that's not supported yet")
+                raise RuntimeError("This argmax reduction should return a scalar, but that's not supported yet")
                 # shape = [] is what we should return
                 # but we get this error RuntimeError: Unable to cast Python instance to C++ type
 
