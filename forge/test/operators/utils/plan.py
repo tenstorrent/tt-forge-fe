@@ -221,9 +221,13 @@ class TestQuery:
                 yield test_vector
 
     def _filter_sample(self, percent: float, random_seed: int) -> Generator[TestVector, None, None]:
-        rng = Random(random_seed)
-        rate_limiter = RateLimiter(rng, 100 * 10**5, int(percent * 10**5))
+        # Sampling per operator requires a rate limiter per operator
+        rate_limiters = {}
         for test_vector in self.test_vectors:
+            if test_vector.operator not in rate_limiters:
+                rng = Random(random_seed)
+                rate_limiters[test_vector.operator] = RateLimiter(rng, 100 * 10**5, int(percent * 10**5))
+            rate_limiter = rate_limiters[test_vector.operator]
             if rate_limiter.is_allowed():
                 yield test_vector
 
