@@ -53,6 +53,7 @@ class Source(StrEnum):
     TORCHVISION = "torchvision"
     GITHUB = "github"
     PADDLE = "paddlemodels"
+    PADDLENLP = "paddlenlp"
 
 
 def build_module_name(
