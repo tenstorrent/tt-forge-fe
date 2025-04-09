@@ -90,23 +90,23 @@
       <th>7</th>
       <td>Conv2dTranspose</td>
       <td>Operand(type=Activation, shape=(1, 4, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(4, 16, 2, 2), dtype=float32)</td>
-      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: conv2d_transpose</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Conv2dTranspose</td>
       <td>Operand(type=Activation, shape=(1, 16, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 1, 2, 2), dtype=float32)</td>
-      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: conv2d_transpose</td>
+      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
     </tr>
     <tr>
       <th>9</th>
@@ -124,11 +124,11 @@
       <td>MaxPool2d</td>
       <td>Operand(type=Activation, shape=(1, 4, 14, 14), dtype=float32)</td>
       <td>kernel_size : 2<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : False<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[TT_METAL][ttnn shared operation] RuntimeError ttnn/cpp/ttnn/operations/data_movement/sharded/interleaved_to_sharded/device/interleaved_to_sharded_op.cpp (*this->output_mem_config.shard_spec).shape[1] * input_tensor.element_size() % hal.get_alignment(HalMemType::L1) == 0 Shard page size must currently have L1 aligned page size</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>11</th>

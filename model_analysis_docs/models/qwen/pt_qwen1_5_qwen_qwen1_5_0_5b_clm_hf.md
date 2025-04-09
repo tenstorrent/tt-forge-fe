@@ -113,11 +113,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 6), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(151936, 1024), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>10</th>
@@ -529,61 +529,6 @@
     <tr>
       <th>47</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 6, 16, 64), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>48</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(16, 6, 64), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>49</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 16, 6, 64), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>50</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 16, 6, 64), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>51</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(16, 64, 6), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>52</th>
-      <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(2816, 1024), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
@@ -593,7 +538,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>53</th>
+      <th>48</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(1024, 2816), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -604,9 +549,64 @@
       <td></td>
     </tr>
     <tr>
-      <th>54</th>
+      <th>49</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(151936, 1024), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 6, 16, 64), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(16, 6, 64), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 16, 6, 64), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 16, 6, 64), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(16, 64, 6), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

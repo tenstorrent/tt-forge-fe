@@ -135,22 +135,22 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 596, 4096), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>12</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(2441216,), dtype=float32)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8</td>
+      <td></td>
     </tr>
     <tr>
       <th>13</th>
@@ -234,22 +234,22 @@
       <td>Embedding</td>
       <td>Operand(type=Constant, name=model.vision_tower.vision_model.embeddings.position_ids, dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(577, 1024), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>21</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 596), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32064, 4096), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>22</th>
@@ -489,9 +489,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>44</th>
@@ -513,7 +513,7 @@
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32</td>
     </tr>
     <tr>
       <th>46</th>
@@ -1257,11 +1257,11 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(1, 596), dtype=uint1)</td>
       <td>dim : -1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>114</th>
@@ -1301,11 +1301,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(2441216,), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
   </tbody>
 </table>

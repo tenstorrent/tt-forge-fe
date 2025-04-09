@@ -4,6 +4,7 @@
 
 from enum import Enum, auto
 import json
+import re
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict
@@ -431,6 +432,8 @@ class ForgePropertyHandler:
         Args:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
+        binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
+        binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
         binary_json = json.loads(binary_json_str)
 
         flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)

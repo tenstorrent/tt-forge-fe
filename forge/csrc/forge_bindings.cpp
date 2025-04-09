@@ -217,8 +217,16 @@ PYBIND11_MODULE(_C, m)
         &run_pre_lowering_passes,
         py::arg("graph"),
         py::arg("default_df_override") = std::optional<DataFormat>{});
-    m.def("run_mlir_compiler", &passes::run_mlir_compiler);
-    m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
+    m.def(
+        "run_mlir_compiler",
+        &passes::run_mlir_compiler,
+        py::arg("module"),
+        py::arg("forge_property_handler") = std::nullopt);
+    m.def(
+        "run_mlir_compiler_to_cpp",
+        &passes::run_mlir_compiler_to_cpp,
+        py::arg("module"),
+        py::arg("forge_property_handler") = std::nullopt);
     m.def("split_graph", &passes::split_graph);
 
     m.def(
