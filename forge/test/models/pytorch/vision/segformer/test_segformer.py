@@ -16,10 +16,7 @@ from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_da
 from test.models.utils import Framework, Source, Task, build_module_name
 
 variants_img_classification = [
-    pytest.param(
-        "nvidia/mit-b0",
-        marks=[pytest.mark.xfail],
-    ),
+    "nvidia/mit-b0",
     "nvidia/mit-b1",
     "nvidia/mit-b2",
     "nvidia/mit-b3",
