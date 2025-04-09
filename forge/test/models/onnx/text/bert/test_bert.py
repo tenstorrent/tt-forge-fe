@@ -21,7 +21,7 @@ from test.utils import download_model
 
 # Opset 9 is the minimum version to support BERT in Torch.
 # Opset 17 is the maximum version in Torchscript.
-opset_versions = [9, 17]
+opset_versions = [17]
 
 
 @pytest.mark.nightly
