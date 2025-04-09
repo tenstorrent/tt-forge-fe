@@ -6,13 +6,13 @@ import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.inception.utils.model_utils import (
     get_image,
     preprocess_timm_model,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -29,14 +29,13 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_inception_v4_osmr_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
@@ -70,8 +69,8 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
     if variant != "inception_v4.tf_in1k":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="inception",
         variant=variant,
@@ -81,7 +80,6 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
 
