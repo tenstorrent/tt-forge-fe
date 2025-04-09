@@ -17,7 +17,6 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_alexnet_torchhub(forge_property_recorder):
     # Build Module Name
     module_name = build_module_name(
