@@ -157,11 +157,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>14</th>
@@ -179,33 +179,33 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32128, 768), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>16</th>
       <td>Embedding</td>
       <td>Operand(type=Constant, name=const_3153, dtype=int32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32, 12), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>17</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(2, 1), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2049, 1024), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>18</th>
@@ -311,44 +311,44 @@
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 0<br>stop : 1<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>28</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 1<br>stop : 2<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>29</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 2<br>stop : 3<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>30</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(2, 4, 1), dtype=int64)</td>
       <td>dim : -2<br>start : 3<br>stop : 4<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>31</th>
@@ -663,58 +663,69 @@
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
       <td>repeats : 1<br>dim : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>60</th>
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=int64)</td>
       <td>repeats : 1<br>dim : 2</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>61</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(8, 1), dtype=int64)</td>
       <td>shape : (2, 4, 1)</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>62</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 1, 1), dtype=int64)</td>
       <td>shape : (2, 1)</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>63</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
-      <td>shape : (2, 13)</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>Operand(type=Activation, shape=(2, 2048), dtype=float32)</td>
+      <td>shape : (2, 1, 2048)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>64</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
+      <td>shape : (2, 13)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>65</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 768), dtype=float32)</td>
       <td>shape : (26, 768)</td>
@@ -725,7 +736,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>65</th>
+      <th>66</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)</td>
       <td>shape : (2, 13, 12, 64)</td>
@@ -736,7 +747,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>66</th>
+      <th>67</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 768), dtype=float32)</td>
       <td>shape : (2, 13, 768)</td>
@@ -747,7 +758,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>67</th>
+      <th>68</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 64), dtype=float32)</td>
       <td>shape : (24, 13, 64)</td>
@@ -758,7 +769,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>68</th>
+      <th>69</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(24, 13, 13), dtype=float32)</td>
       <td>shape : (2, 12, 13, 13)</td>
@@ -769,7 +780,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>69</th>
+      <th>70</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 13, 13), dtype=float32)</td>
       <td>shape : (24, 13, 13)</td>
@@ -780,7 +791,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>70</th>
+      <th>71</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 12, 64, 13), dtype=float32)</td>
       <td>shape : (24, 64, 13)</td>
@@ -791,7 +802,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>71</th>
+      <th>72</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(24, 13, 64), dtype=float32)</td>
       <td>shape : (2, 12, 13, 64)</td>
@@ -802,7 +813,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>72</th>
+      <th>73</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 12, 64), dtype=float32)</td>
       <td>shape : (26, 768)</td>
@@ -813,7 +824,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>73</th>
+      <th>74</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(26, 3072), dtype=float32)</td>
       <td>shape : (2, 13, 3072)</td>
@@ -824,21 +835,10 @@
       <td></td>
     </tr>
     <tr>
-      <th>74</th>
+      <th>75</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 13, 3072), dtype=float32)</td>
       <td>shape : (26, 3072)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>75</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(2, 2048), dtype=float32)</td>
-      <td>shape : (2, 1, 2048)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1083,9 +1083,9 @@
       <td>axis : -3</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>98</th>
@@ -1356,33 +1356,33 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
       <td>dim : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>123</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
       <td>dim : 2</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>124</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 1, 13), dtype=int64)</td>
       <td>dim : 2</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
   </tbody>
 </table>

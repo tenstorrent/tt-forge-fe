@@ -1,149 +1,54 @@
-name: Perf benchmark
+name: Performance benchmark
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      docker-image:
-        description: 'Docker image to use for build'
-        required: true
-        type: string
+      rebuild:
+        description: 'Rebuild the Forge'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
+  docker-build:
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  set-inputs:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    outputs:
+      buildtype: ${{ steps.set-inputs.outputs.buildtype }}
+      run-id: ${{ steps.set-inputs.outputs.runid }}
+    steps:
+      - name: Set Inputs
+        id: set-inputs
+        run: |
+          if [ ${{ inputs.rebuild }} == 'true' ]; then
+            echo "buildtype=Release" >> $GITHUB_OUTPUT
+            echo "runid=${{ github.run_id }}" >> $GITHUB_OUTPUT
+          else
+            echo "buildtype=None" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs:
+      - docker-build
+      - set-inputs
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      build: ${{ needs.set-inputs.outputs.buildtype}}
 
   run-perf-benchmarks:
-
-    strategy:
-      fail-fast: false
-    runs-on:
-      - in-service
-      - n150
-      - performance
-
-    container:
-      image: ${{ inputs.docker-image }}
-      options: --device /dev/tenstorrent/0
-      volumes:
-        - /dev/hugepages:/dev/hugepages
-        - /dev/hugepages-1G:/dev/hugepages-1G
-        - /etc/udev/rules.d:/etc/udev/rules.d
-        - /lib/modules:/lib/modules
-        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-        - /mnt/dockercache:/mnt/dockercache
-    steps:
-
-    - name: Fetch job id
-      id: fetch-job-id
-      uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
-      with:
-        job_name: "${{ github.job }}"
-
-    - name: Set reusable strings
-      id: strings
-      shell: bash
-      env:
-        JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
-      run: |
-        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "perf_report_path=$(pwd)/benchmark_reports" >> "$GITHUB_OUTPUT"
-
-    - name: Git safe dir
-      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
-
-    - uses: actions/checkout@v4
-      with:
-          sparse-checkout: |
-            .github/
-            env/
-            forge/test
-            pytest.ini
-            conftest.py
-            .test_durations
-          fetch-depth: 0 # Fetch all history and tags
-
-    # Clean everything from submodules (needed to avoid issues
-    # with cmake generated files leftover from previous builds)
-    # Get tt-mlir commit hash
-    - name: Cleanup submodules
-      id: sumbmodules
-      run: |
-          git submodule foreach --recursive git clean -ffdx
-          git submodule foreach --recursive git reset --hard
-          echo "ttmlir=$(git submodule status third_party/tt-mlir | awk '{gsub(/^-/, \"\"); print $1}')" >> $GITHUB_OUTPUT
-
-    - name: Download ttrt wheel
-      uses: dawidd6/action-download-artifact@v6
-      with:
-        github_token: ${{secrets.GITHUB_TOKEN}}
-        workflow_conclusion: success
-        workflow: on-push.yml
-        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
-        name: ttrt-whl-tracy
-        repo: tenstorrent/tt-mlir
-        check_artifacts: true
-
-    - name: Download ttrt install
-      uses: dawidd6/action-download-artifact@v6
-      with:
-        github_token: ${{secrets.GITHUB_TOKEN}}
-        workflow_conclusion: success
-        workflow: on-push.yml
-        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
-        name: install-artifacts-tracy
-        repo: tenstorrent/tt-mlir
-        path: install
-        check_artifacts: true
-
-    - name: 'Untar install directory'
-      shell: bash
-      working-directory: install
-      run: tar xvf artifact.tar
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: forge-wheel
-
-    - name: Install wheel
-      shell: bash
-      run: |
-        source env/activate
-        pip install tvm*.whl --force-reinstall
-        pip install forge*.whl --force-reinstall
-
-    - name: Run Perf Benchmark
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        HF_HOME: /mnt/dockercache/huggingface
-        HF_HUB_DISABLE_PROGRESS_BARS: 1
-      shell: bash
-      run: |
-        source env/activate
-        mkdir -p ${{ steps.strings.outputs.perf_report_path }}
-        python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir.mlir
-        python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/LlamaModel/mlir_reports/ttir.mlir
-
-    - name: Install and run TTRT
-      shell: bash
-      run: |
-        cd third_party/tt-mlir
-        source env/activate
-        cd ../..
-        pip install ttrt*.whl --force-reinstall
-        echo "save artifacts"
-        ttrt query --save-artifacts
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/MNISTLinear/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_mnist_32_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/ResNetForImageClassification/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_rasnet50_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-        # TTRT does not support llama model yet
-        # ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/LlamaModel/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_llama_1_32_${{ steps.fetch-job-id.outputs.job_id }}.json
-
-    - name: Upload Perf Report
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-        name: perf-reports-${{ steps.fetch-job-id.outputs.job_id }}
-        path: ${{ steps.strings.outputs.perf_report_path }}
+    if: always()
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/perf-benchmark-sub.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.set-inputs.outputs.run-id }}

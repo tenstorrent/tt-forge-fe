@@ -330,3 +330,37 @@ def get_commit_id(repo_path="."):
         logger.warning(f"Error while fetching commit id: {e}")
 
         return None, None
+
+
+def extract_framework_from_test_file_path(test_file_path: str):
+    if "forge/test/models/pytorch" in test_file_path:
+        framework = "pytorch"
+    elif "forge/test/models/onnx" in test_file_path:
+        framework = "onnx"
+    elif "forge/test/models/paddlepaddle" in test_file_path:
+        framework = "paddlepaddle"
+    else:
+        framework = "unknown"
+    return framework
+
+
+def extract_test_file_path_and_test_case_func(test_case: str):
+    """
+    Extracts the test file path and test case function name from a given test case string.
+
+    Args:
+        test_case (str): A test case string in the format 'file_path::test_function'.
+
+    Returns:
+        Tuple[Optional[str], Optional[str]]: A tuple containing:
+            - test_file_path (str or None): The extracted file path if present.
+            - test_case_func (str or None): The extracted test case function name if present.
+    """
+    test_file_path = None
+    test_case_func = None
+
+    # Check if test case contains '::' separator
+    if "::" in test_case:
+        test_file_path, test_case_func = test_case.split("::", 1)  # Splitting into two parts
+
+    return test_file_path, test_case_func

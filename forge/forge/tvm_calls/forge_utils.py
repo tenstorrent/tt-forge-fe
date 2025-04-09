@@ -20,6 +20,7 @@ from forge.config import CompilerConfig
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
 from forge.tensor import to_pt_tensors, to_pd_tensors
 from forge.tvm_calls.relay.op.forge import extract_function_callnodes, trace_to_origin
+from typing import Optional
 
 
 def extract_framework_model_outputs(
@@ -28,6 +29,7 @@ def extract_framework_model_outputs(
     inputs,
     verify_tvm_compile: bool = False,
     input_dict={},
+    onnx_path: Optional[str] = None,
 ):
     framework_outputs = []
 
@@ -117,7 +119,11 @@ def extract_framework_model_outputs(
         so = ort.SessionOptions()
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
-        onnx_model = model.SerializeToString()
+
+        if onnx_path is not None:
+            onnx_model = onnx_path
+        else:
+            onnx_model = model.SerializeToString()
         ort_sess = ort.InferenceSession(onnx_model, sess_options=so)
         framework_outputs = ort_sess.run(output_names, input_dict)
 

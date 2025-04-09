@@ -1,0 +1,192 @@
+name: Test - subroutine
+
+on:
+  workflow_call:
+    inputs:
+      test_mark:
+        description: 'Test mark to run'
+        required: false
+        default: 'push'
+        type: string
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: "2"
+        type: string
+      test_group_ids:
+        description: 'Test group ids'
+        required: false
+        default: '[1,2]'
+        type: string
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
+        type: string
+      runs-on:
+        description: 'Runs on'
+        required: false
+        type: string
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      operators:
+        description: 'Operators to test (comma separated)'
+        required: false
+        type: string
+      filters:
+        description: 'Filters for tests (comma separated)'
+        required: false
+        type: string
+      run_id:
+        description: 'Run id the workflow where to find installation (or else it will search)'
+        required: false
+        type: string
+      allow-fail:
+        description: 'Allow tests to fail (unstable tests)'
+        required: false
+        default: false
+        type: boolean
+      do_run:
+        description: 'Actually run tests'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  run-tests:
+
+    if: ${{ inputs.do_run }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build: ${{ fromJson(inputs.runs-on) }}
+        test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
+
+    runs-on:
+      - in-service
+      - ${{ matrix.build.runs-on }}
+
+    continue-on-error: ${{ inputs.allow-fail }}
+
+    container:
+      image: ${{ inputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+
+    name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+
+    steps:
+
+      - name: Fetch job id
+        id: fetch-job-id
+        uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+        with:
+          job_name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        env:
+          JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
+        run: |
+          echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+          echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+          echo "test_report_path=reports/report_$JOB_ID.xml" >> "$GITHUB_OUTPUT"
+
+      - name: Git safe dir
+        run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
+
+        # Clean everything from submodules (needed to avoid issues
+        # with cmake generated files leftover from previous builds)
+      - name: Cleanup submodules
+        run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
+
+      - name: Download wheel
+        if: ${{ inputs.run_id }}
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: forge-wheel
+          # Prioritize input run ID, if not available use current run (for new builds)
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Find and download forge wheel
+        if: ${{ !inputs.run_id }}
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow_conclusion: success
+          workflow_search: true
+          workflow: on-nightly.yml
+          name: forge-wheel
+          repo: tenstorrent/tt-forge-fe
+          check_artifacts: true
+          search_artifacts: true
+
+      - name: Install wheel
+        shell: bash
+        run: |
+          source env/activate
+          pip install tvm*.whl --force-reinstall
+          pip install forge*.whl --force-reinstall
+
+      - name: Run Test
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+          OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
+        shell: bash
+        run: |
+          source env/activate
+          pytest --splits ${{ inputs.test_group_cnt }} \
+                 --group ${{ matrix.test_group_id }} \
+                 --splitting-algorithm least_duration \
+                 -m "${{ inputs.test_mark }}" \
+                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                 2>&1 | tee pytest.log
+
+      - name: Upload Test Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest.log
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: ${{ steps.strings.outputs.test_report_path }}
+
+      - name: Show Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure()
+        with:
+          report_paths: ${{ steps.strings.outputs.test_report_path }}
+          check_name: TT-Forge-FE Tests
+          comment: false
+          updateComment: false
+          detailed_summary: true
+          group_suite: true

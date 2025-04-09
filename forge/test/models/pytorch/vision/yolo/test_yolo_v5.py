@@ -34,7 +34,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(forge_property_recorder, size):
+def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -77,10 +77,7 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
 
 size = [
     pytest.param("n", id="yolov5n"),
-    pytest.param(
-        "s",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
     pytest.param("x", id="yolov5x"),
@@ -89,7 +86,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_640x640(forge_property_recorder, size):
+def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -130,10 +127,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 
 
 size = [
-    pytest.param(
-        "n",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("n", id="yolov5n"),
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
@@ -143,7 +137,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_480x480(forge_property_recorder, size):
+def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
     if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
@@ -177,7 +171,7 @@ def test_yolov5_480x480(forge_property_recorder, size):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
-def test_yolov5_1280x1280(forge_property_recorder, variant):
+def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Build Module Name

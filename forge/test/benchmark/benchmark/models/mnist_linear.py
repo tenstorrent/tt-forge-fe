@@ -20,9 +20,8 @@ import forge
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
+
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -122,7 +121,6 @@ def test_mnist_linear(
 
     verify(inputs, framework_model, compiled_model)
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
