@@ -301,7 +301,7 @@ class MLIRGenerator
                             }
                             else
                             {
-                                // If type not handled, throw an exception or handle it appropriately
+                                // If type not handled, throw an exception
                                 throw std::runtime_error("Unhandled attribute type");
                             }
                         },
