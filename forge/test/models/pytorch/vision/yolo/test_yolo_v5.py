@@ -6,9 +6,12 @@ import torch
 
 import forge
 from forge.forge_property_utils import Framework
+
 from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 from test.utils import fetch_model, yolov5_loader
+
 
 base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
 
@@ -44,8 +47,8 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="320x320",
     )
 
@@ -95,8 +98,8 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="640x640",
     )
 
@@ -146,8 +149,8 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="480x480",
     )
 
@@ -178,8 +181,8 @@ def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, var
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant=variant,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="1280x1280",
     )
 
