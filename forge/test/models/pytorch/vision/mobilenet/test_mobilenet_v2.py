@@ -21,12 +21,12 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import print_cls_results
 from test.utils import download_model
 
 
