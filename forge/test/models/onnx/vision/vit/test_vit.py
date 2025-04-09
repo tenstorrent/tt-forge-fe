@@ -18,7 +18,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
     # Record Forge Property

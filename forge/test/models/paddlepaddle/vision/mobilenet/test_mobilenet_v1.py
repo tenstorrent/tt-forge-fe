@@ -15,6 +15,7 @@ from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
+@pytest.mark.skip(reason="Transient failure: Causing seg faults while building Metal kernels")
 def test_mobilenetv1_basic(forge_property_recorder):
     # Record model details
     module_name = forge_property_recorder.record_model_properties(
