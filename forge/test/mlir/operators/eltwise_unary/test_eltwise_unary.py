@@ -807,6 +807,7 @@ def test_floor(forge_property_recorder, input_data):
         pytest.param(
             (1, 64, 76), 1, True, marks=pytest.mark.xfail(reason="TTNN: Only argmax on last dim is supported!")
         ),
+        #################################################
         # Core test cases for global argmax (dim=None)
         pytest.param(
             (56,),
