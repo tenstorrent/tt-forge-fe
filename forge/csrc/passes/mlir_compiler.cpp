@@ -43,6 +43,7 @@ namespace fs = std::filesystem;
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
+#include "adapter.hpp"
 
 // Reportify headers
 #include "reportify/reportify.hpp"
@@ -150,55 +151,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
 
-        // TODO: Implement shared object generation from MLIR module.
+        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/handmade");
 
-        // TODO: use test's tmp folder
-        fs::path directoryPath = fs::path("/localdev/svuckovic/_workspace/repos/tt-forge-fe");
-        fs::path filePath = directoryPath / "resnet.cpp";
-
-        std::ofstream outFile(filePath);
-        if (!outFile.is_open())
-        {
-            std::cerr << "Error: Could not open file for writing: " << filePath << std::endl;
-            exit(1);
-        }
-        outFile << cpp_source;
-        outFile.close();
-        std::cout << "Successfully wrote C++ code to: " << filePath << std::endl;
-
-        // TODO: Make everything below an API in MLIR
-
-        // Compile the C++ code to a shared object.
-        //
-        std::string pythonScriptPath =
-            "/localdev/svuckovic/_workspace/repos/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/"
-            "ci_compile_dylib.py";
-
-        // Check if the script exists
-        if (!fs::exists(pythonScriptPath))
-        {
-            std::cerr << "Error: Python script not found: " << pythonScriptPath << std::endl;
-            exit(1);
-        }
-
-        std::string command =
-            "/opt/ttforge-toolchain/venv/bin/python " + pythonScriptPath + " --file " + filePath.string();
-
-        int result = std::system(command.c_str());
-
-        if (result == 0)
-        {
-            std::cout << "Python script executed successfully." << std::endl;
-        }
-        else
-        {
-            std::cerr << "Error: Python script execution failed with code: " << result << std::endl;
-        }
-
-        fs::path soPath = filePath;
-        soPath.replace_extension(".so");
-
-        return soPath.string();
+        return soPathStr;
     }
 }
 

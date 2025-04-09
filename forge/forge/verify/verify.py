@@ -386,8 +386,8 @@ def verify(
     inputs: List[FrameworkTensor],
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
+    forge_property_handler: ForgePropertyHandler,
     verify_cfg: VerifyConfig = VerifyConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
