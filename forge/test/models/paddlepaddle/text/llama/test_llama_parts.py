@@ -13,6 +13,7 @@ from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["facebook/llama-7b"]
 
+
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_llama_decoder(variant, forge_property_recorder):
@@ -36,7 +37,7 @@ def test_llama_decoder(variant, forge_property_recorder):
     verify(inputs, framework_model, compiled_model)
 
 
-@pytest.mark.xfail()  
+@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_llama_rms_norm(variant, forge_property_recorder):
     full_model = LlamaModel.from_pretrained(variant)

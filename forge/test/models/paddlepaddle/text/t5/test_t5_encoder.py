@@ -11,11 +11,13 @@ from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
 
-variants = ["t5-small",
+variants = [
+    "t5-small",
     "t5-base",
-    ]
+]
 
-@pytest.mark.xfail() 
+
+@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_t5_encoder(forge_property_recorder, variant):
 
@@ -32,14 +34,22 @@ def test_t5_encoder(forge_property_recorder, variant):
     # Test framework model
     outputs = encoder(*inputs)
     print(outputs)
-    
-    # Trace the model   
+
+    # Trace the model
     class WrappedT5Encoder(paddle.nn.Layer):
         def __init__(self, model):
             super(WrappedT5Encoder, self).__init__()
             self.model = model
+
         def forward(self, input_ids, attention_mask):
-            return self.model(input_ids=input_ids, attention_mask=attention_mask, inputs_embeds=None,output_attentions=None,output_hidden_states=None)
+            return self.model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                inputs_embeds=None,
+                output_attentions=None,
+                output_hidden_states=None,
+            )
+
     model = WrappedT5Encoder(encoder)
 
     # Test framework model
@@ -47,7 +57,7 @@ def test_t5_encoder(forge_property_recorder, variant):
     print(outputs)
 
     # Compile Model
-    framework_model,_ = paddle_trace(model, inputs=inputs)
+    framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify
