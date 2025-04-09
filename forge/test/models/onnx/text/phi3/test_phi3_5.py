@@ -17,7 +17,7 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 

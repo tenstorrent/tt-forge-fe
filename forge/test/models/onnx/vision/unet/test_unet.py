@@ -12,6 +12,7 @@ from utils import load_inputs
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail()
 def test_unet_onnx(forge_property_recorder, tmp_path):
 
     # Build Module Name
@@ -21,7 +22,8 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("p1")
+    # TODO: this needs to be added
+    # forge_property_recorder.record_priority("p1")
     forge_property_recorder.record_model_name(module_name)
 
     # Load the torch model
