@@ -48,6 +48,7 @@ class AdvIndexWrapper(ForgeModule):
         ((((1, 2, 4, 8, 16), torch.float32), ((2,), torch.int32)), 0),
     ],
 )
+@pytest.mark.push
 def test_adv_indexing(operand_shapes_dtypes, dim):
 
     # Make sure we don't go out of bounds for the dimension we're indexing
