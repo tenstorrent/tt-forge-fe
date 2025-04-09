@@ -7,6 +7,7 @@ Verify by evaluating the forge graph
 """
 
 import os
+import tempfile
 from typing import Tuple, Dict, List, Any, Union, Optional
 
 from forge.module import FrameworkModule
@@ -441,6 +442,9 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
+    tmp_path = forge_property_handler.get("tags.tmp_path") if forge_property_handler else tempfile.mkdtemp()
+    assert(os.path.exists(tmp_path), f"Temporary path {tmp_path} does not exist!")
+
     # Compile EmitC .so
     so_path = compiled_model.export_to_shared_object()
     # Run EmitC .so
@@ -457,7 +461,7 @@ def verify(
         all_outputs,
     )
     print(f"TEST_SO: {is_success}")
-    assert(is_success)
+    assert is_success
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)

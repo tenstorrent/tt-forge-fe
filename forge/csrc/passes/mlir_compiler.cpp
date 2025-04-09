@@ -152,9 +152,6 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         // TODO: Implement shared object generation from MLIR module.
 
-        // Define paths for .cpp files.
-        //
-
         // TODO: use test's tmp folder
         fs::path directoryPath = fs::path("/localdev/svuckovic/_workspace/repos/tt-forge-fe");
         fs::path filePath = directoryPath / "resnet.cpp";

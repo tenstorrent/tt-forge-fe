@@ -321,6 +321,15 @@ class ForgePropertyHandler:
         """
         self.add("tags.op_name", op_name)
 
+    def record_tmp_path(self, tmp_path: str):
+        """
+        Records the temporary path in the tags.
+
+        Args:
+            tmp_path (str): The temporary path to be recorded.
+        """
+        self.add("tags.tmp_path", tmp_path)
+
     def record_pcc(self, pcc: float):
         """
         Records the PCC metric in the tags.

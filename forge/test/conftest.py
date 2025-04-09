@@ -78,13 +78,16 @@ def pytest_sessionstart(session):
 
 
 @pytest.fixture(scope="function")
-def forge_property_recorder(record_property):
+def forge_property_recorder(record_property, tmp_path):
     forge_property_store = ForgePropertyStore()
 
     forge_property_handler = ForgePropertyHandler(forge_property_store)
 
     # Set CI_FAILURE as default execution depth
     forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
+
+    # Attach tmp_path to the handler
+    forge_property_handler.record_tmp_path(tmp_path)
 
     yield forge_property_handler
 
