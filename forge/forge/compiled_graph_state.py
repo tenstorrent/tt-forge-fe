@@ -307,26 +307,9 @@ class CompiledModel:
         )
 
         self.inputs = [CTensor(t) for t in torch_inputs]
-
         self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+
         all_outputs = self.runtime_model_state.get_outputs(ProgramType.Forward)
-        consts_and_params = self.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
-
-        # consts_and_params = [
-        #     *[CTensor(t) for t in self.fwd_compiled_graph_state.get_ordered_constant_tensors()],
-        #     *[CTensor(t) for t in self.fwd_compiled_graph_state.get_ordered_parameter_tensors()],
-        # ]
-
-        fwd_func_name = "forward"
-        fwd_func_name_len = len(fwd_func_name)
-        fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
-        self.runtime_model_state.test_so(
-            "/localdev/svuckovic/_workspace/repos/tt-forge-fe/resnet.so",
-            fwd_func_sym,
-            self.inputs,
-            consts_and_params,
-            all_outputs,
-        )
 
         self.intermediates = []
 

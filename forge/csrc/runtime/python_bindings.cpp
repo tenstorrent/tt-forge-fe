@@ -76,7 +76,7 @@ void RuntimeModule(py::module &m_runtime)
                std::vector<tt::Tensor> &inputs,
                std::vector<tt::Tensor> &consts_and_params,
                std::vector<tt::Tensor> &outputs)
-            { self.test_so(so_path, func_name, inputs, consts_and_params, outputs); });
+            { return self.test_so(so_path, func_name, inputs, consts_and_params, outputs); });
 
     m_runtime.def("create_program_state", &tt::create_program_state);
 

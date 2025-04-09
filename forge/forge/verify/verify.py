@@ -29,7 +29,7 @@ from ..tensor import (
 )
 from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
 import forge._C.graph as pygraph
-from forge._C.runtime import Tensor as CTensor
+from forge._C.runtime import Tensor as CTensor, ProgramType
 from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
@@ -429,10 +429,6 @@ def verify(
             f"Compiled model must be of type {verify_cfg.compiled_model_types}, but got {type(compiled_model)}"
         )
 
-    so_path = compiled_model.export_to_shared_object()
-    torch_inputs = [*to_pt_tensors(inputs)]
-    cinputs = [CTensor(t) for t in torch_inputs]
-
     fw_out = framework_model(*inputs)
 
     if forge_property_handler is not None:
@@ -444,6 +440,24 @@ def verify(
         forge_property_handler.record_execution(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
+
+    # Compile EmitC .so
+    so_path = compiled_model.export_to_shared_object()
+    # Run EmitC .so
+    all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
+    consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
+    fwd_func_name = "forward"
+    fwd_func_name_len = len(fwd_func_name)
+    fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
+    is_success = compiled_model.runtime_model_state.test_so(
+        "/localdev/svuckovic/_workspace/repos/tt-forge-fe/resnet.so",
+        fwd_func_sym,
+        compiled_model.inputs,
+        consts_and_params,
+        all_outputs,
+    )
+    print(f"TEST_SO: {is_success}")
+    assert(is_success)
 
     # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
     #  cast from tensorflow tensors to pytorch tensors if needed)

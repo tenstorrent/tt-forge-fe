@@ -93,7 +93,7 @@ void ModelState::run_program(ProgramType program_type, std::vector<tt::Tensor> a
     program_state.outputs = ::tt::run_program(binary, pg_id, inputs);
 }
 
-void ModelState::test_so(
+bool ModelState::test_so(
     std::string so_path,
     std::string func_name,
     std::vector<tt::Tensor>& act_inputs,
@@ -133,8 +133,6 @@ void ModelState::test_so(
     // tt::runtime::Tensor lhs = outs[0];
     // tt::runtime::Tensor rhs = rt_outs[0];
 
-    tt::compareOuts(host_outs, golden_host_outs);
-
-    return;
+    return tt::compareOuts(host_outs, golden_host_outs);
 }
 };  // namespace tt
