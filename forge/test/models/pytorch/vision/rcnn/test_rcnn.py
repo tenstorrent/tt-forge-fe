@@ -16,7 +16,6 @@ from forge.verify.verify import verify
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_rcnn_pytorch(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
