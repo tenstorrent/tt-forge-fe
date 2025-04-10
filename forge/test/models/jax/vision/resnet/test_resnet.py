@@ -52,6 +52,5 @@ def test_resnet(forge_property_recorder, variant):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
         forge_property_handler=forge_property_recorder,
     )

@@ -1003,10 +1003,7 @@ def wrap_module(module, name: str) -> Module:
         return OnnxModule(name, module)
     elif isinstance(module, forge.module.OnnxModule):
         return module
-    elif isinstance(module, flax.linen.Module):
-        return JaxModule(name, module)
-    elif hasattr(module, "module") and isinstance(module.module, flax.linen.Module):
-        # To support Pretrained Flax models from transformers.
+    elif isinstance(module, (flax.linen.Module, FlaxPreTrainedModel)):
         return JaxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
