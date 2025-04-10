@@ -73,7 +73,10 @@ def test_falcon_3(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("generality")
+    if variant in ["tiiuae/Falcon3-1B-Base", "tiiuae/Falcon3-3B-Base", "tiiuae/Falcon3-7B-Base"]:
+        forge_property_recorder.record_group("red")
+    else:
+        forge_property_recorder.record_group("generality")
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = AutoModelForCausalLM.from_pretrained(variant)

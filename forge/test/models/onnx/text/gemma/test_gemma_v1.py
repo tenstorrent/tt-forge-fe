@@ -25,7 +25,7 @@ import torch
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
     ],
 )
@@ -56,11 +56,11 @@ def test_gemma_v1_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification
