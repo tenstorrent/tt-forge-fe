@@ -2,18 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
 import torch
 import torch.nn.functional
 from ..interface import PyEltwiseUnaryOp
-from loguru import logger
-from ..common import to_torch_operands
-from ....forgeglobal import TILE_DIM
-from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
-from forge.op.eval.common import calculate_tile_size
-from ..lforge.abs import Abs as ForgeAbs
 
 
 class Argmax(PyEltwiseUnaryOp):
@@ -36,8 +28,7 @@ class Argmax(PyEltwiseUnaryOp):
 
         ret = torch.argmax(tensors[0], dim=dim, keepdim=self.keep_dim)
 
-        # by default torch returns long, but we support int32
-        return ret.to(dtype=torch.int32)
+        return ret
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1, "Argmax should have one input"

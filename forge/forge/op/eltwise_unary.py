@@ -349,9 +349,7 @@ def Argmax(name: str, operandA: Tensor, dim: int = None, keep_dim=False) -> Tens
             dim += len(operandA.shape)
         kwargs["dim"] = dim
 
-    dtype = pytorch_dtype_to_forge_dataformat(torch.int64)
-
-    return op("argmax", name, operandA, **kwargs).get_tensor(out_df=dtype)
+    return op("argmax", name, operandA, **kwargs).get_tensor()
 
 
 def Clip(name: str, operandA: Tensor, min: float, max: float) -> Tensor:
