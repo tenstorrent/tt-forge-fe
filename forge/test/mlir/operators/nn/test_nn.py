@@ -632,8 +632,7 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
         pytest.param(
             (1, 2, 1, 2),
             marks=pytest.mark.xfail(
-                reason="TTNN only supports padding height/width attributes. Thus, padding_top "
-                "must equal padding_bottom for the op to execute as expected."
+                reason="RuntimeError: ttnn.pad: on device tile padding does not support front padding"
             ),
         ),
     ],
@@ -649,13 +648,6 @@ def test_conv2d_with_padding(forge_property_recorder, shape, padding):
         def forward(self, x):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
-
-    pad_top, pad_bottom, pad_left, pad_right = padding
-    if pad_top != pad_bottom or pad_left != pad_right:
-        pytest.xfail(
-            "TTNN only supports padding height/width attributes. Thus, padding_top "
-            "must equal padding_bottom for the op to execute as expected."
-        )
 
     inputs = [torch.rand(shape)]
 
