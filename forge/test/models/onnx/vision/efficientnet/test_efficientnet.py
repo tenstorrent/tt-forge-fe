@@ -16,8 +16,10 @@ from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task
 
 params = [
-    pytest.param("efficientnet_b0"),
-    pytest.param("efficientnet_b1", marks=[pytest.mark.push]),
+    pytest.param("efficientnet_b0", marks=[pytest.mark.push]),
+    pytest.param(
+        "efficientnet_b1",
+    ),
     pytest.param("efficientnet_b2"),
     pytest.param("efficientnet_b2a"),
     pytest.param("efficientnet_b3"),
