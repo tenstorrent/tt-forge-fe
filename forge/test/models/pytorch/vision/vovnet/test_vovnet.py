@@ -46,6 +46,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["vovnet27s"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

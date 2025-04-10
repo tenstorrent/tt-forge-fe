@@ -34,6 +34,7 @@ def test_gliner(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model
     model = GLiNER.from_pretrained(variant)

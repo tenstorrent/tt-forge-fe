@@ -86,6 +86,7 @@ def test_phi2_clm(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["microsoft/phi-2"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

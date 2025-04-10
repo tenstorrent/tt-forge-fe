@@ -41,6 +41,7 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False)

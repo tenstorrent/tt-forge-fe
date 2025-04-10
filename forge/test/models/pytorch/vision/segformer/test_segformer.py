@@ -43,6 +43,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     # Record Forge Property
     if variant in ["nvidia/mit-b0"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

@@ -31,6 +31,7 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     # Record Forge Property
     if variant == "microsoft/phi-3-mini-4k-instruct":
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

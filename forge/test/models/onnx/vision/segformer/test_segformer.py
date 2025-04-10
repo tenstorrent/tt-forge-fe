@@ -44,10 +44,9 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
     # Record Forge Property
     if variant == "nvidia/mit-b0":
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
-
-    forge_property_recorder.record_group("red")
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForImageClassification.from_pretrained, variant, return_dict=False)
@@ -109,6 +108,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     # Record Forge Property
     if variant == "nvidia/segformer-b0-finetuned-ade-512-512":
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

@@ -33,6 +33,7 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record model details
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")

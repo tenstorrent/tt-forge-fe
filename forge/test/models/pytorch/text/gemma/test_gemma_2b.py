@@ -108,6 +108,7 @@ def test_gemma_pytorch_v2(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)
