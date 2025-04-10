@@ -42,6 +42,7 @@ def test_qwen_clm(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 

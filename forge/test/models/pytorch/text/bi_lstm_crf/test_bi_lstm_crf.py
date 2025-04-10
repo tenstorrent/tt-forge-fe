@@ -13,18 +13,19 @@ from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_birnn_crf_pypi(forge_property_recorder):
+def test_birnn_crf(forge_property_recorder):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="BiRnnCrf_PyPI",
+        model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
 

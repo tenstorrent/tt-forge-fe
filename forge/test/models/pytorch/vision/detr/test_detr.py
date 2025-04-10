@@ -36,6 +36,7 @@ def test_detr_detection(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
