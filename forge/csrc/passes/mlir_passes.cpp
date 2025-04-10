@@ -63,6 +63,10 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
 
     // Pipeline options are empty for now.
     std::string options{""};
+    if (pipeline_name == std::string("ttir-to-ttnn-backend-pipeline"))
+    {
+        options = "enable-erase-inverse-ops-pass=true";
+    }
 
     auto result = pipelineInfo->addToPipeline(pm, options, err_handler);
     if (mlir::failed(result))
