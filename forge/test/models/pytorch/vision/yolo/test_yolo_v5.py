@@ -5,13 +5,10 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework
-
-from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.verify import verify
 
 from test.utils import fetch_model, yolov5_loader
-
 
 base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
 
