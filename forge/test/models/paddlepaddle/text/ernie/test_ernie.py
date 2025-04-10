@@ -15,7 +15,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, build_module_name
 
 variants = ["ernie-1.0"]
 
@@ -23,18 +23,15 @@ variants = ["ernie-1.0"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_for_sequence_classification(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
-    )
-
-    # Record Forge Property
+    )  
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
     model = ErnieForSequenceClassification.from_pretrained(variant, num_classes=2)
@@ -60,18 +57,15 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_maskedlm(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
-    )
-
-    # Record Forge Property
+    )  
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
     model = ErnieForMaskedLM.from_pretrained(variant)
@@ -102,17 +96,15 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_question_answering(forge_property_recorder, variant):
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],
         task=Task.QA,
         source=Source.PADDLENLP,
-    )
-
-    # Record Forge Property
+    )  
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
     model = ErnieForQuestionAnswering.from_pretrained(variant)

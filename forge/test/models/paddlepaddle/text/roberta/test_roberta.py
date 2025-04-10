@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, build_module_name
 
 from paddlenlp.transformers import (
     RobertaForSequenceClassification,
@@ -24,17 +24,14 @@ variants = ["hfl/rbt4"]
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_roberta_sequence_classification(variant, forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="roberta",
         variant="rbt4-ch",
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
-    )
-
-    # Record Forge Property
-    forge_property_recorder.record_model_name(module_name)
+    )  
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
@@ -64,17 +61,14 @@ def test_roberta_sequence_classification(variant, forge_property_recorder):
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_roberta_causal_lm(variant, forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="roberta",
         variant="rbt4-ch",
         task=Task.CAUSAL_LM,
         source=Source.PADDLENLP,
-    )
-
-    # Record Forge Property
-    forge_property_recorder.record_model_name(module_name)
+    )  
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

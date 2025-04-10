@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, build_module_name
 
 from paddlenlp.transformers import GLMTokenizer, GLMForConditionalGeneration
 
@@ -20,15 +20,14 @@ variants = ["THUDM/glm-515m", "THUDM/glm-2b", "THUDM/glm-large-chinese"]
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_glm(variant, forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="glm",
         variant=variant[10:],
         source=Source.PADDLENLP,
         task=Task.CONDITIONAL_GENERATION,
     )
-    forge_property_recorder.record_model_name(module_name)
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

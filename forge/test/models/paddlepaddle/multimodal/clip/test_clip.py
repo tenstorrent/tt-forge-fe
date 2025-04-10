@@ -13,7 +13,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, build_module_name
 
 variants = ["openai/clip-vit-base-patch16"]
 
@@ -55,18 +55,15 @@ def test_clip_vision(variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail()
 def test_clip(variant, forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="clip",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
-    )
-
-    # Record Forge Property
+    )  
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and processor
     model = CLIPModel.from_pretrained(variant)

@@ -19,7 +19,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, build_module_name
 
 variants = ["OFA-Sys/chinese-clip-vit-base-patch16"]
 
@@ -63,18 +63,15 @@ def test_chineseclip_vision(variant):
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_chineseclip(variant, forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="chineseclip",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
-    )
-
-    # Record Forge Property
+    )  
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Model and Tokenizer
     model = ChineseCLIPModel.from_pretrained(variant)
