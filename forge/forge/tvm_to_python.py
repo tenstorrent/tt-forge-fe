@@ -2126,7 +2126,7 @@ def compile_tvm_to_python(
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
     framework = get_framework(framework_mod)
-    if framework == "pytorch":
+    if framework in ["pytorch", "paddle"]:
         if is_training:
             framework_mod.module.train()
             verify_cfg.verify_tvm_compile = False
