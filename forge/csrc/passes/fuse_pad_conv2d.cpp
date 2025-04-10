@@ -21,17 +21,37 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
     {
         graphlib::OpNode *op = dynamic_cast<graphlib::OpNode *>(node);
         if (not op or op->op_name() != "pad")
-            continue;
-
-        auto attrs = op->op_attrs();
-        if (std::get<int>(attrs[attrs.size() - 2]) != 0)
         {
-            // Second last attr must be 0 (constant mode), otherwise cannot fuse into conv2d
             continue;
         }
-        auto users = graph->users(node);
 
+        auto attrs = op->named_attrs();
+        auto padding_variant = attrs["padding"];
+
+        if (std::get<std::string>(attrs["mode"]) != "constant")
+        {
+            continue;
+        }
+
+        // Check if padding is already a vector of ints
+        std::vector<int> *padding_vec = std::get_if<std::vector<int>>(&padding_variant);
+        if (!padding_vec)
+        {
+            // If not, make it a vector and populate with default padding values
+            padding_vec = new std::vector<int>(std::get<int>(attrs["pad_len"]), 0);
+            attrs["padding"] = *padding_vec;  // Update the "padding" in the attributes map
+        }
+
+        // Extract padding values, assuming the padding vector has at least 4 values
+
+        int top_pad = (*padding_vec)[-4];     // Top padding (index -4)
+        int bottom_pad = (*padding_vec)[-3];  // Bottom padding (index -3)
+        int left_pad = (*padding_vec)[-2];    // Left padding (index -2)
+        int right_pad = (*padding_vec)[-1];   // Right padding (index -1)
+
+        auto users = graph->users(node);
         bool all_users_are_conv2d = true;
+
         for (auto *user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
@@ -45,39 +65,46 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         if (not all_users_are_conv2d)
             continue;
 
-        auto pad_attrs = op->op_attrs();
-        TT_ASSERT(pad_attrs.size() == 4 or pad_attrs.size() == 6);
-
-        if (pad_attrs.size() == 4)
-        {
-            // Expand pad attributes to match conv2d attributes
-            pad_attrs.insert(pad_attrs.begin() + 2, 0);
-            pad_attrs.insert(pad_attrs.begin() + 3, 0);
-        }
         // Add Pad to Conv2d attributes
         for (auto user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
-            auto conv_attrs = user_op->op_attrs();
-            TT_ASSERT(conv_attrs.size() == 13);
-            // Conv2d attributes are
-            // [stride[0],stride[1],dilation,groups,padding[0],padding[1],padding[2],padding[3],channel_last]
-            int pad_idx_offset = 4;
-            for (uint32_t i = 0; i < 4; i++)
+            auto conv_attrs = user_op->named_attrs();
+            TT_ASSERT(conv_attrs.size() == 7);
+
+            // Conv2d attributes [stride, dilation, groups, padding]
+            auto &conv_padding_variant = conv_attrs["padding"];
+
+            // Ensure that the padding is a vector
+            std::vector<int> *conv_padding_vec = std::get_if<std::vector<int>>(&conv_padding_variant);
+            if (!conv_padding_vec)
             {
-                conv_attrs[pad_idx_offset + i] =
-                    std::get<int>(pad_attrs[i]) + std::get<int>(conv_attrs[pad_idx_offset + i]);
+                // If not a vector, we need to convert it to a vector
+                conv_padding_vec = new std::vector<int>(4, 0);  // Assuming 4 padding values (top, left, bottom, right)
+                conv_attrs["padding"] = *conv_padding_vec;      // Update the padding attribute
             }
+
+            // Now that we are sure it's a vector, update the values
+            (*conv_padding_vec)[0] = top_pad;     // Top
+            (*conv_padding_vec)[1] = left_pad;    // Left
+            (*conv_padding_vec)[2] = bottom_pad;  // Bottom
+            (*conv_padding_vec)[3] = right_pad;   // Right
+
+            // Now the conv_attrs["padding"] has been updated
             std::vector<int> int_conv_attrs;
             for (const auto &attr : conv_attrs)
             {
-                int_conv_attrs.push_back(std::get<int>(attr));
+                // Extract only integer attributes
+                if (std::holds_alternative<int>(attr.second))
+                {
+                    int_conv_attrs.push_back(std::get<int>(attr.second));
+                }
             }
 
             update_conv_attr(user_op, int_conv_attrs);
         }
 
-        // bypass the pad node
+        // Bypass the pad node
         graphlib::bypass_node(graph, node, true);
     }
 }
