@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 
@@ -26,8 +26,8 @@ variants = ["microsoft/phi-1"]
 @pytest.mark.parametrize("variant", variants)
 def test_phi_causal_lm(forge_property_recorder, variant, tmp_path):
 
-    # Record model details
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="phi1",
         variant=variant,
@@ -35,7 +35,6 @@ def test_phi_causal_lm(forge_property_recorder, variant, tmp_path):
         task=Task.CAUSAL_LM,
     )
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

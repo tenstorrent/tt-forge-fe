@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = [
     "resnet18",
@@ -29,14 +29,13 @@ variants = [
 @pytest.mark.nightly
 def test_resnet_pd(variant, forge_property_recorder):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="resnet",
         variant=variant[6:],
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    forge_property_recorder.record_model_name(module_name)
 
     # Load framework model
     framework_model = eval(variant)(pretrained=True)

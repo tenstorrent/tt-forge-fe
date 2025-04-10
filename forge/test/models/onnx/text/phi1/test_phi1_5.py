@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, PhiForCausalLM
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import build_optimum_cli_command
 
 from test.utils import download_model
@@ -22,8 +22,8 @@ variants = ["microsoft/phi-1_5"]
 @pytest.mark.parametrize("variant", variants)
 def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="phi_1_5",
         variant=variant,
@@ -33,7 +33,6 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record model details
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")

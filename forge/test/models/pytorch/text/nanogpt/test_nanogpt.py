@@ -7,9 +7,8 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 # Wrapper to get around attention mask
@@ -34,8 +33,8 @@ class Wrapper(torch.nn.Module):
 )
 def test_nanogpt_text_generation(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="nanogpt",
         variant=variant,
@@ -45,7 +44,6 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     tokenizer = AutoTokenizer.from_pretrained(variant)

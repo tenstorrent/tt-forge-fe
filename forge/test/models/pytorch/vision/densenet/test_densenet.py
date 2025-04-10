@@ -8,6 +8,7 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -16,7 +17,6 @@ from test.models.pytorch.vision.densenet.utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = ["densenet121", "densenet121_hf_xray"]
@@ -41,8 +41,8 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
     if variant == "densenet121":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -52,7 +52,6 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -100,8 +99,8 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
     ],
 )
 def test_densenet_161_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -111,7 +110,6 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -140,8 +138,8 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
     ],
 )
 def test_densenet_169_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -151,7 +149,6 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -175,8 +172,8 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
 def test_densenet_201_pytorch(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -186,7 +183,6 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)

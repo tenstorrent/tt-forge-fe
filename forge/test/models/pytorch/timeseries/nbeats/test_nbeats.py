@@ -4,6 +4,7 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.timeseries.nbeats.utils.dataset import (
@@ -14,21 +15,19 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithSeasonalityBasis,
     NBeatsWithTrendBasis,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["seasionality_basis"])
 def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -58,14 +57,13 @@ def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", ["generic_basis"])
 def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -88,14 +86,13 @@ def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", ["trend_basis"])
 def test_nbeats_with_trend_basis(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     x, x_mask = get_electricity_dataset_input()
 

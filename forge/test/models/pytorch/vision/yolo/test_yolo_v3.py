@@ -6,9 +6,8 @@ import torch
 from PIL import Image
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
@@ -37,8 +36,8 @@ def generate_model_yolotinyV3_imgcls_holli_pytorch():
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolov_3",
         variant="tiny_holli_pytorch",
@@ -48,7 +47,6 @@ def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
 
@@ -86,8 +84,8 @@ def generate_model_yoloV3_imgcls_holli_pytorch():
 def test_yolov3_holli_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v3",
         variant="holli_pytorch",
@@ -97,7 +95,6 @@ def test_yolov3_holli_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 

@@ -11,6 +11,8 @@ from forge._C import DataFormat
 from forge._C.graph import OpType
 import forge
 from forge.forgeglobal import get_unique_node_id, tracing
+from forge.tensor import pytorch_dtype_to_forge_dataformat
+
 
 depracated_name_dict = {}
 deprecated_op_id = 0
@@ -53,6 +55,15 @@ class ForgeOp:
         shapes = [o.shape.get_pytorch_shape() for o in self.operands]
         shape, self.operand_broadcast = get_f_forge_shape(self.cpp_op_type)(shapes)
 
+        has_reference_calculation = False
+        ref_output = None
+
+        # Calculate reference if there's one
+        if all([o.has_value() if isinstance(o, (Tensor, Parameter)) else True for o in self.operands]):
+            values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]
+            ref_output = get_f_forge_eval(self.cpp_op_type)(values)
+            has_reference_calculation = True
+
         # TODO: pick data formats in some way when mismatched inputs are coming...
         if out_df is not None:
             data_format = out_df  # User provided output dataformat
@@ -69,16 +80,24 @@ class ForgeOp:
             if self.op_type in ["where", "embedding"]:
                 data_format = self.operands[1].data_format
             else:
-                data_format = self.operands[0].data_format
+                # Use dataformat from the reference implementation if available (e.g. torch)
+                # NOTE: This might need to be changed once we introduce config where each op can have its own dataformat
+                # regardless of the reference implementation (e.g. running convolution in lower precision)
+                if has_reference_calculation:
+                    data_format = pytorch_dtype_to_forge_dataformat(ref_output.dtype)
+                else:
+                    data_format = self.operands[0].data_format
         else:
-            data_format = DataFormat.Float32  # what's correct here? TODO
+            if has_reference_calculation:
+                data_format = pytorch_dtype_to_forge_dataformat(ref_output.dtype)
+            else:
+                data_format = DataFormat.Float32
 
         result = Tensor.create_from_trace(src_op=self, shape=shape, data_format=data_format)
         result.requires_grad = any([o.requires_grad for o in self.operands])
 
         # Calculate reference if there's one
-        if all([o.has_value() if isinstance(o, (Tensor, Parameter)) else True for o in self.operands]):
-            values = [o.value() if isinstance(o, (Tensor, Parameter)) else o for o in self.operands]
-            result.set_value(get_f_forge_eval(self.cpp_op_type)(values))
+        if has_reference_calculation:
+            result.set_value(ref_output)
 
         return result

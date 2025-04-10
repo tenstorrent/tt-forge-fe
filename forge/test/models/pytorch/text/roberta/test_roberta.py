@@ -10,9 +10,9 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -24,14 +24,13 @@ from test.utils import download_model
     ],
 )
 def test_roberta_masked_lm(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -65,8 +64,8 @@ def test_roberta_masked_lm(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
 def test_roberta_sentiment_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="roberta",
         variant=variant,
@@ -76,7 +75,6 @@ def test_roberta_sentiment_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

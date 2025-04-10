@@ -4,11 +4,11 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.dla.utils.utils import load_dla_model, post_processing
 from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     "dla34",
@@ -30,14 +30,13 @@ def test_dla_pytorch(forge_property_recorder, variant):
     if variant != "dla34":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_dla_model(variant)
@@ -65,8 +64,8 @@ variants = ["dla34.in1k"]
 @pytest.mark.parametrize("variant", variants)
 def test_dla_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="dla",
         variant=variant,
@@ -76,7 +75,6 @@ def test_dla_timm(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)

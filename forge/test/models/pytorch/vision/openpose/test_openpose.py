@@ -6,6 +6,7 @@ import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.openpose.utils.model import (
@@ -14,7 +15,6 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -51,8 +51,8 @@ def test_openpose_basic(forge_property_recorder, variant):
     if variant != "body_basic":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="openpose",
         variant=variant,
@@ -62,7 +62,6 @@ def test_openpose_basic(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
@@ -99,14 +98,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_openpose_osmr(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,

@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import torch
+from forge.tensor import pytorch_dtype_to_forge_dataformat, forge_dataformat_to_pytorch_dtype
 
 
 class CPUCombiner(torch.nn.Module):
@@ -62,3 +63,12 @@ class LossMultiplier(torch.nn.Module):
         high_loss = loss * self.multiplicand
 
         return high_loss
+
+
+def convert_to_supported_pytorch_dtype(tensor: torch.Tensor) -> torch.Tensor:
+    # Convert framework dtype to Forge's internal representation
+    forge_dataformat = pytorch_dtype_to_forge_dataformat(tensor.dtype)
+
+    # Convert back to PyTorch dtype (this accounts for Forge's supported types)
+    equivalent_pytorch_dtype = forge_dataformat_to_pytorch_dtype(forge_dataformat)
+    return tensor.to(equivalent_pytorch_dtype)

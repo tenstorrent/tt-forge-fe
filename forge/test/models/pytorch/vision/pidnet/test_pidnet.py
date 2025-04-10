@@ -7,9 +7,8 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/model")
 # from model_pidnet import update_model_config, get_seg_model
@@ -22,8 +21,8 @@ variants = ["pidnet_s", "pidnet_m", "pidnet_l"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_pidnet_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="pidnet",
         variant=variant,
@@ -33,7 +32,6 @@ def test_pidnet_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"

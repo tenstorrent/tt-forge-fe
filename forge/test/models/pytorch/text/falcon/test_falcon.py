@@ -6,9 +6,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -16,14 +15,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
 def test_falcon(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
@@ -69,14 +67,16 @@ def test_falcon_3(forge_property_recorder, variant):
     if variant == "tiiuae/Falcon3-3B-Base":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 25 GB)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
+    if variant in ["tiiuae/Falcon3-1B-Base", "tiiuae/Falcon3-3B-Base", "tiiuae/Falcon3-7B-Base"]:
+        forge_property_recorder.record_group("red")
+    else:
+        forge_property_recorder.record_group("generality")
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = AutoModelForCausalLM.from_pretrained(variant)

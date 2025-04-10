@@ -6,10 +6,10 @@ from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 dataset = load_dataset("huggingface/cats-image")
@@ -39,8 +39,8 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     if variant != "google/vit-base-patch16-224":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
@@ -53,7 +53,6 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(variant)
 
@@ -90,8 +89,8 @@ def test_vit_torchvision(forge_property_recorder, variant):
     if variant != "vit_b_16":
         pytest.skip("Skipping this variant; only testing the small variant(vit_b_16) for now.")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
@@ -101,7 +100,6 @@ def test_vit_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

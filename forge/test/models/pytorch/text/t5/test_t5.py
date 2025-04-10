@@ -6,9 +6,9 @@ import torch
 from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -45,14 +45,13 @@ def test_t5_generation(forge_property_recorder, variant):
     if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
