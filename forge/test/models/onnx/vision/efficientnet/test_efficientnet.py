@@ -77,17 +77,3 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
-
-
-from forge.forge_property_utils import Framework, Source, Task
-from utils import load_inputs
-
-
-@pytest.mark.nightly
-@pytest.mark.xfail()
-def test_unet_onnx(forge_property_recorder, tmp_path):
-
-    # Build Module Name
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="unet", variant="base", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
-    )
