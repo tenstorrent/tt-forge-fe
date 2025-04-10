@@ -10,9 +10,9 @@ import torch
 from transformers import AutoProcessor, WhisperConfig, WhisperForConditionalGeneration
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -33,8 +33,8 @@ def test_whisper(forge_property_recorder, variant):
     if variant != "openai/whisper-tiny":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="whisper",
         variant=variant,
@@ -44,7 +44,6 @@ def test_whisper(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

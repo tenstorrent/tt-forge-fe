@@ -12,11 +12,11 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -30,8 +30,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
     ],
 )
 def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -41,7 +41,6 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -73,8 +72,8 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     ],
 )
 def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -84,7 +83,6 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -107,8 +105,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
 def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -118,7 +116,6 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -141,8 +138,8 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
 def test_swin_v2_tiny_masked(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -152,7 +149,6 @@ def test_swin_v2_tiny_masked(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
@@ -193,8 +189,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -204,7 +200,6 @@ def test_swin_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

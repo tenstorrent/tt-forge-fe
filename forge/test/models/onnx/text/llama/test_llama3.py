@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 import subprocess
@@ -151,8 +151,8 @@ LlamaModel._update_causal_mask = _update_causal_mask
 )
 def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -165,7 +165,6 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)

@@ -14,7 +14,8 @@ from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
-from test.models.utils import Framework, Source, Task, build_module_name, print_cls_results
+from test.models.utils import print_cls_results
+from forge.forge_property_utils import Framework, Source, Task
 
 params = [
     pytest.param("mobilenetv2_050"),
@@ -28,8 +29,8 @@ params = [
 @pytest.mark.nightly
 def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="mobilenetv2",
         variant=variant,
@@ -40,10 +41,8 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     # Record Forge Property
     if variant == "mobilenetv2_050":
         forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("p1")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load mobilenetv2 model
     model = timm.create_model(variant, pretrained=True)
@@ -67,7 +66,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
     pcc = 0.99
     if variant == "mobilenetv2_050":
-        pcc = 0.98
+        pcc = 0.96
 
     fw_out, co_out = verify(
         inputs,

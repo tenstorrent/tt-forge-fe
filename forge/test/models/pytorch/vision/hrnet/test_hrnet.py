@@ -14,15 +14,10 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import (
-    Framework,
-    Source,
-    Task,
-    build_module_name,
-    print_cls_results,
-)
+from test.models.utils import print_cls_results
 from test.utils import download_model
 
 
@@ -100,14 +95,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_hrnet_osmr_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
@@ -199,14 +193,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_hrnet_timm_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,

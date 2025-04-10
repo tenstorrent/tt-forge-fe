@@ -18,9 +18,9 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -135,8 +135,8 @@ LlamaModel._update_causal_mask = _update_causal_mask
 def test_llama3_causal_lm(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -145,7 +145,6 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -196,8 +195,8 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
 def test_llama3_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="llama3",
         variant=variant,
@@ -207,7 +206,6 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
