@@ -15,7 +15,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["microsoft/speecht5_asr"]
 
@@ -31,7 +31,7 @@ def test_speecht5_text_to_speech(variant, forge_property_recorder):
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.TEXT_TO_SPEECH,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

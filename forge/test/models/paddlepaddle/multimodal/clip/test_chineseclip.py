@@ -19,33 +19,63 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["OFA-Sys/chinese-clip-vit-base-patch16"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_chineseclip_text(variant):
+def test_chineseclip_text(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="chineseclip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load Model and Tokenizer
     model = ChineseCLIPTextModel.from_pretrained(variant)
     model.eval()
     tokenizer = ChineseCLIPTokenizer.from_pretrained(variant)
 
+    # Load sample
     inputs = tokenizer("一只猫的照片", padding=True, return_tensors="pd")
     inputs = [inputs["input_ids"]]
 
+    # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+@pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_chineseclip_vision(variant):
+def test_chineseclip_vision(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="chineseclip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load Model and Tokenizer
     model = ChineseCLIPVisionModel.from_pretrained(variant)
     model.eval()
     processor = ChineseCLIPProcessor.from_pretrained(variant)
 
+    # Load sample
     image = Image.open(
         requests.get("https://clip-cn-beijing.oss-cn-beijing.aliyuncs.com/pokemon.jpeg", stream=True).raw
     )
@@ -53,10 +83,14 @@ def test_chineseclip_vision(variant):
     inputs = processor(images=image, return_tensors="pd")
     inputs = [inputs["pixel_values"]]
 
+    # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -70,7 +104,7 @@ def test_chineseclip(variant, forge_property_recorder):
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

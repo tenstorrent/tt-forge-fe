@@ -15,7 +15,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["ernie-1.0"]
 
@@ -30,7 +30,7 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
         variant=variant[6:],
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
@@ -64,7 +64,7 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
         variant=variant[6:],
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
@@ -103,7 +103,7 @@ def test_ernie_question_answering(forge_property_recorder, variant):
         variant=variant[6:],
         task=Task.QA,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

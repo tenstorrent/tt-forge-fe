@@ -13,42 +13,75 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["openai/clip-vit-base-patch16"]
 
 
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 @pytest.mark.xfail()
-def test_clip_text(variant):
+@pytest.mark.parametrize("variant", variants)
+def test_clip_text(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="clip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load model and processor
     model = CLIPTextModel.from_pretrained(variant)
     processor = CLIPProcessor.from_pretrained(variant)
 
+    # Prepare inputs
     text = "a photo of cats in bed"
-
     inputs = processor(text=text, return_tensors="pd", padding=True)
-
     inputs = [inputs["input_ids"]]
+
+    # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
-@pytest.mark.parametrize("variant", variants)
+@pytest.mark.nightly
 @pytest.mark.xfail()
-def test_clip_vision(variant):
+@pytest.mark.parametrize("variant", variants)
+def test_clip_vision(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="clip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load model and processor
     model = CLIPVisionModel.from_pretrained(variant)
     processor = CLIPProcessor.from_pretrained(variant)
 
+    # Prepare inputs
     image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
     inputs = processor(images=image, return_tensors="pd")
-
     inputs = [inputs["pixel_values"]]
-    framework_model, _ = paddle_trace(model, inputs=inputs)
 
-    compiled_model = forge.compile(framework_model, inputs)
-    verify(inputs, framework_model, compiled_model)
+    # Compile model
+    framework_model, _ = paddle_trace(model, inputs=inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
+
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -62,7 +95,7 @@ def test_clip(variant, forge_property_recorder):
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load model and processor

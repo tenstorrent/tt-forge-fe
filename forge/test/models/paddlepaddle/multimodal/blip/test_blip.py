@@ -14,40 +14,74 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["Salesforce/blip-image-captioning-base"]
 
 
+@pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_blip_text(variant):
+def test_blip_text(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="blip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load Model and Tokenizer
     model = BlipTextModel.from_pretrained(variant)
     processor = BlipProcessor.from_pretrained(variant)
 
+    # Prepare inputs
     text = "a photo of cats in bed"
     inputs = processor(text=text, return_tensors="pd", padding=True)
     inputs = [inputs["input_ids"]]
 
+    # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+@pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_blip_vision(variant):
+def test_blip_vision(variant, forge_property_recorder):
+    # Record Forge properties
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="blip",
+        variant=variant,
+        source=Source.PADDLENLP,
+        task=Task.IMAGE_ENCODING,
+    )
+    forge_property_recorder.record_group("generality")
+
+    # Load Model and Tokenizer
     model = BlipVisionModel.from_pretrained(variant)
     processor = BlipProcessor.from_pretrained(variant)
 
+    # Prepare inputs
     image = Image.open(requests.get("http://images.cocodataset.org/val2017/000000039769.jpg", stream=True).raw)
     inputs = processor(images=image, return_tensors="pd", padding=True)
     inputs = [inputs["pixel_values"]]
 
+    # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
-    verify(inputs, framework_model, compiled_model)
+    # Verify
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -61,7 +95,7 @@ def test_blip(variant, forge_property_recorder):
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

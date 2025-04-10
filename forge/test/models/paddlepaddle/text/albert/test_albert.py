@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 from paddlenlp.transformers import AlbertForMaskedLM, AlbertTokenizer
 
@@ -28,7 +28,7 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
         variant=variant[7:],
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = [
     "t5-small",
@@ -29,7 +29,7 @@ def test_t5_conditional_generation(forge_property_recorder, variant):
         variant=variant[3:],
         task=Task.TEXT_GENERATION,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

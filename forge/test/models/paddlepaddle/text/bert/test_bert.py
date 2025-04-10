@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 from paddlenlp.transformers import (
     BertForSequenceClassification,
@@ -45,7 +45,7 @@ def test_bert_sequence_classification(forge_property_recorder, variant, input):
         source=Source.PADDLENLP,
     )
     forge_property_recorder.record_group("generality")
- 
+
     # Load Model and Tokenizer
     model = BertForSequenceClassification.from_pretrained(variant, num_classes=2)
     tokenizer = BertTokenizer.from_pretrained(variant)
@@ -74,7 +74,7 @@ def test_bert_maskedlm(forge_property_recorder, variant, input):
         variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
@@ -112,7 +112,7 @@ def test_bert_question_answering(forge_property_recorder, variant, input):
         variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.QA,
         source=Source.PADDLENLP,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer

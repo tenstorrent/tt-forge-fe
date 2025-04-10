@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["facebook/llama-7b"]
 
@@ -25,7 +25,7 @@ def test_llama(variant, forge_property_recorder):
         variant=variant[9:],
         source=Source.PADDLENLP,
         task=Task.CAUSAL_LM,
-    )  
+    )
     forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
