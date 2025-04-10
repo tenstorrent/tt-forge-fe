@@ -72,9 +72,10 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     verify(input_sample, framework_model, compiled_model)
 
     # Enable program cache on all devices
-    settings = DeviceSettings()
-    settings.enable_program_cache = True
-    configure_devices(device_settings=settings)
+    # This features intriduces a bug in tt-metal, we enable it when we solve the issue
+    # settings = DeviceSettings()
+    # settings.enable_program_cache = True
+    # configure_devices(device_settings=settings)
 
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
