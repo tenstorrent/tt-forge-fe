@@ -8,10 +8,9 @@ import jax.random as random
 
 import forge
 from forge.verify import verify
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
+from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.utils import download_model
 
 
 variants = [
@@ -25,17 +24,17 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet(forge_property_recorder, variant):
 
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.JAX,
         model="resnet",
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
-    framework_model = FlaxResNetForImageClassification.from_pretrained(variant)
+    forge_property_recorder.record_group("generality")
+
+    framework_model = download_model(FlaxResNetForImageClassification.from_pretrained, variant, return_dict=False)
 
     key = random.PRNGKey(0)
     input_sample = [random.normal(key, shape=(1, 3, 224, 224))]
@@ -45,7 +44,7 @@ def test_resnet(forge_property_recorder, variant):
     # ref: https://github.com/tenstorrent/tt-forge-fe/issues/1709
     os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
     compiled_model = forge.compile(
-        framework_model, sample_inputs=input_sample, forge_property_handler=forge_property_recorder
+        framework_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     verify(
