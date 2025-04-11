@@ -26,10 +26,7 @@ class Wrapper(torch.nn.Module):
 
 
 variants = [
-    pytest.param(
-        "state-spaces/mamba-790m-hf",
-        marks=[pytest.mark.xfail],
-    ),
+    "state-spaces/mamba-790m-hf",
     "state-spaces/mamba-2.8b-hf",
     "state-spaces/mamba-1.4b-hf",
     "state-spaces/mamba-370m-hf",
@@ -37,10 +34,9 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mamba(forge_property_recorder, variant):
-    if variant != "state-spaces/mamba-790m-hf":
-        pytest.skip("Skipping this variant; only testing the base model (mamba-790m-hf) for now.")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

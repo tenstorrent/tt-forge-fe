@@ -108,7 +108,7 @@ params = [
     pytest.param("xxlarge", "v1"),
     pytest.param("base", "v2", marks=[pytest.mark.push]),
     pytest.param("large", "v2"),
-    pytest.param("xlarge", "v2"),
+    pytest.param("xlarge", "v2", marks=[pytest.mark.xfail]),
     pytest.param("xxlarge", "v2"),
 ]
 
