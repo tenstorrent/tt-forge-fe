@@ -61,10 +61,12 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+from test.operators.utils import FailingReasonsEnum
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -773,6 +775,12 @@ TestParamsData.test_plan_implemented_float = TestPlan(
             input_shapes=[(1, 1)],
             kwargs=[{"negative_slope": 0.01, "inplace": True}],
             failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["cumsum"],
+            failing_reasons=[
+                FailingReasonsEnum.DATA_MISMATCH,
+            ],
         ),
     ],
 )

@@ -30,7 +30,8 @@ from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
 from .test_data import TestCollectionTorch
 from .failing_reasons import FailingReasons
-from .failing_reasons import FailingReasonsValidation
+from .failing_reasons_new import FailingReasonsEnum
+from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
 from .dual_output import global_string_buffer
@@ -66,6 +67,7 @@ __all__ = [
     "TestCollectionCommon",
     "TestCollectionTorch",
     "FailingReasons",
+    "FailingReasonsEnum",
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",

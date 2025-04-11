@@ -37,6 +37,8 @@ from test.operators.utils import (
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.utils import PytorchUtils
+from test.operators.utils import FailingReasonsEnum
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -770,6 +772,25 @@ TestParamsData.test_plan = TestPlan(
         TestCollection(
             criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_inference_froze,
             skip_reason=FailingReasons.INFERENCE_FROZE,
+        ),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.ALLOCATION_CIRCULAR_BUFFER),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.ALLOCATION_FAILED),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.ATTRIBUTE_ERROR),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.COMPILATION_FAILED),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.DATA_MISMATCH),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.NOT_IMPLEMENTED),
+        # TestIdsDataLoader.build_failing_rule(TestCollectionData.all.operators, FailingReasonsEnum.UNSUPPORTED_SPECIAL_CASE),
+        *TestIdsDataLoader.build_failing_rules(
+            operators=TestCollectionData.all.operators,
+            failing_reasons=[
+                FailingReasonsEnum.ALLOCATION_CIRCULAR_BUFFER,
+                FailingReasonsEnum.ALLOCATION_FAILED,
+                FailingReasonsEnum.ATTRIBUTE_ERROR,
+                FailingReasonsEnum.COMPILATION_FAILED,
+                FailingReasonsEnum.DATA_MISMATCH,
+                FailingReasonsEnum.NOT_IMPLEMENTED,
+                FailingReasonsEnum.UNSUPPORTED_SPECIAL_CASE,
+            ],
         ),
     ],
 )
