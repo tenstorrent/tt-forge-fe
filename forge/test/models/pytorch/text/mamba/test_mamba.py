@@ -8,9 +8,9 @@ import torch
 from transformers import AutoTokenizer, MambaForCausalLM
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -42,14 +42,13 @@ def test_mamba(forge_property_recorder, variant):
     if variant != "state-spaces/mamba-790m-hf":
         pytest.skip("Skipping this variant; only testing the base model (mamba-790m-hf) for now.")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="mamba", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

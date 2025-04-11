@@ -476,11 +476,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=uint1)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>43</th>
@@ -1105,9 +1105,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>100</th>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2036,7 +2036,7 @@
     <tr>
       <th>184</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2047,7 +2047,7 @@
     <tr>
       <th>185</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(1,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2058,7 +2058,7 @@
     <tr>
       <th>186</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1, 1), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(1,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2069,7 +2069,7 @@
     <tr>
       <th>187</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2170,220 +2170,220 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_63160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>197</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>198</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_66160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>199</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>200</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_69160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>201</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>202</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_72160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>203</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>204</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>205</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>206</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>207</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>208</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>209</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>210</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_84160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>211</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>212</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_87160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>213</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>214</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90160, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>215</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
   </tbody>
 </table>

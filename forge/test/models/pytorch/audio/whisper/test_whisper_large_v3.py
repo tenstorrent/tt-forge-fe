@@ -16,9 +16,8 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class Wrapper(torch.nn.Module):
@@ -42,8 +41,8 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
 def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="whisper",
         variant=variant,
@@ -53,7 +52,6 @@ def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)

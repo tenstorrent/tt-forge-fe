@@ -45,7 +45,6 @@ on:
         default: false
         type: boolean
 
-
 jobs:
   run-tests:
 

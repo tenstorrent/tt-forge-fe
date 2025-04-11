@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>AdvIndex</td>
-      <td>Operand(type=Activation, shape=(1, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1290, dtype=int64)</td>
+      <td>Operand(type=Activation, shape=(1, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_970, dtype=int64)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -91,33 +91,33 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>8</th>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(50257, 2560), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_00, dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048, 2560), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>9</th>
       <td>Embedding</td>
-      <td>Operand(type=Constant, name=const_00, dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048, 2560), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(50257, 2560), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>10</th>
@@ -157,33 +157,33 @@
       <td>Index</td>
       <td>Operand(type=Constant, name=model.transformer.h.0.attn.attention.bias, dtype=uint1)</td>
       <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>14</th>
       <td>Index</td>
-      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
-      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
+      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>15</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
-      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
+      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>16</th>
@@ -287,8 +287,8 @@
     <tr>
       <th>25</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 32, 2560), dtype=float32)</td>
-      <td>shape : (32, 2560)</td>
+      <td>Operand(type=Activation, shape=(1, 1, 2), dtype=float32)</td>
+      <td>shape : (1, 2)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,8 +298,8 @@
     <tr>
       <th>26</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(32, 2560), dtype=float32)</td>
-      <td>shape : (1, 32, 20, 128)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 2560), dtype=float32)</td>
+      <td>shape : (32, 2560)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -310,7 +310,7 @@
       <th>27</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(32, 2560), dtype=float32)</td>
-      <td>shape : (1, 32, 2560)</td>
+      <td>shape : (1, 32, 20, 128)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -319,6 +319,17 @@
     </tr>
     <tr>
       <th>28</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(32, 2560), dtype=float32)</td>
+      <td>shape : (1, 32, 2560)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>29</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 20, 32, 128), dtype=float32)</td>
       <td>shape : (20, 32, 128)</td>
@@ -329,7 +340,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>29</th>
+      <th>30</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(20, 32, 32), dtype=float32)</td>
       <td>shape : (1, 20, 32, 32)</td>
@@ -340,7 +351,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>30</th>
+      <th>31</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 20, 32, 32), dtype=float32)</td>
       <td>shape : (20, 32, 32)</td>
@@ -351,7 +362,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>31</th>
+      <th>32</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 20, 128, 32), dtype=float32)</td>
       <td>shape : (20, 128, 32)</td>
@@ -362,7 +373,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>32</th>
+      <th>33</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(20, 32, 128), dtype=float32)</td>
       <td>shape : (1, 20, 32, 128)</td>
@@ -373,21 +384,10 @@
       <td></td>
     </tr>
     <tr>
-      <th>33</th>
+      <th>34</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 32, 20, 128), dtype=float32)</td>
       <td>shape : (32, 2560)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 1, 2), dtype=float32)</td>
-      <td>shape : (1, 2)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,8 +419,8 @@
     <tr>
       <th>37</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 32, 20, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Parameter, shape=(10240, 2560), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(20, 32, 128), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(2560, 10240), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,8 +441,8 @@
     <tr>
       <th>39</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 20, 32, 128), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 32, 20, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,8 +452,8 @@
     <tr>
       <th>40</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 20, 32, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Activation, shape=(20, 32, 128), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(20, 128, 32), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 20, 32, 128), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,8 +474,8 @@
     <tr>
       <th>42</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(10240, 2560), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 20, 32, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(2560, 10240), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(20, 128, 32), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -509,11 +509,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
   </tbody>
 </table>
