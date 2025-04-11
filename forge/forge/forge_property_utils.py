@@ -31,6 +31,7 @@ class Framework(BaseEnum):
     TENSORFLOW = ("tf", "TensorFlow")
     ONNX = ("onnx", "ONNX")
     PADDLE = ("pd", "PaddlePaddle")
+    JAX = ("jax", "JAX")
 
 
 class Task(BaseEnum):
