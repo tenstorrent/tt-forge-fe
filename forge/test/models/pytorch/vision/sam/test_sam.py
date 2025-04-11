@@ -22,8 +22,9 @@ from test.models.utils import Framework, Source, Task, build_module_name
 )
 @pytest.mark.nightly
 def test_sam(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="sam",
         variant=variant,
@@ -31,10 +32,13 @@ def test_sam(forge_property_recorder, variant):
         source=Source.GITHUB,
     )
 
-    # Record Forge Property
+
 
     if variant == "facebook/sam-vit-base":
         forge_property_recorder.record_group("red")
+        
+        #To Do
+        #forge_property_recordeer.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 
