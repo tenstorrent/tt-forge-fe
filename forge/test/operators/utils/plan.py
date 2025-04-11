@@ -242,6 +242,11 @@ class TestQuery:
             test_vector.failing_result = test_vector.test_plan.check_test_failing(test_vector)
             yield test_vector
 
+    def _remove_failing_result(self) -> Generator[TestVector, None, None]:
+        for test_vector in self.test_vectors:
+            test_vector.failing_result = None
+            yield test_vector
+
     def _reverse(self) -> Generator[TestVector, None, None]:
         test_vectors = list(self.test_vectors)
         test_vectors = test_vectors[::-1]
@@ -294,6 +299,10 @@ class TestQuery:
         """Calculate and set the failing result based on the test plan"""
         return TestQuery(self._calculate_failing_result())
 
+    def remove_failing_result(self) -> "TestQuery":
+        """Remove failing result from test vector"""
+        return TestQuery(self._remove_failing_result())
+
     def reverse(self) -> "TestQuery":
         """Reverse the order of test vectors"""
         return TestQuery(self._reverse())
@@ -308,24 +317,6 @@ class TestQuery:
         for test_vector in test_vectors:
             yield test_vector.to_param()
         logger.trace("To params done")
-
-    @classmethod
-    def all(cls, test_plan: Union["TestPlan", "TestSuite"]) -> "TestQuery":
-        test_vectors = test_plan.generate()
-        query = TestQuery(test_vectors)
-        return query.calculate_failing_result()
-
-    @classmethod
-    def query_from_id_file(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids_file: str) -> "TestQuery":
-        test_vectors = test_plan.load_test_vectors_from_id_file(test_ids_file)
-        query = TestQuery(test_vectors)
-        return query.calculate_failing_result()
-
-    @classmethod
-    def query_from_id_list(cls, test_plan: Union["TestPlan", "TestSuite"], test_ids: List[str]) -> "TestQuery":
-        test_vectors = test_plan.load_test_vectors_from_id_list(test_ids)
-        query = TestQuery(test_vectors)
-        return query.calculate_failing_result()
 
 
 @dataclass
@@ -439,11 +430,6 @@ class TestPlan:
 
                                         yield test_vector
 
-    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
-        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
-
-        return self.load_test_vectors_from_id_list(test_ids)
-
     def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
@@ -453,15 +439,6 @@ class TestPlan:
             test_vector.test_plan = self
 
         return test_vectors
-
-    def query_all(self) -> TestQuery:
-        return TestQuery.all(self)
-
-    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
-        return TestQuery.query_from_id_file(self, test_ids_file)
-
-    def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
-        return TestQuery.query_from_id_list(self, test_ids)
 
 
 @dataclass
@@ -487,11 +464,6 @@ class TestSuite:
         generators = [test_plan.generate() for test_plan in self.test_plans]
         return chain(*generators)
 
-    def load_test_vectors_from_id_file(self, test_ids_file: str) -> List[TestVector]:
-        test_ids = TestPlanUtils.load_test_ids_from_file(test_ids_file)
-
-        return self.load_test_vectors_from_id_list(test_ids)
-
     def load_test_vectors_from_id_list(self, test_ids: List[str]) -> List[TestVector]:
         test_vectors = TestPlanUtils.test_ids_to_test_vectors(test_ids)
 
@@ -501,16 +473,6 @@ class TestSuite:
             test_vector.test_plan = self.indices[test_vector.operator]
 
         return test_vectors
-
-    def query_all(self) -> TestQuery:
-        logger.trace("Query all test vectors")
-        return TestQuery.all(self)
-
-    def query_from_id_file(self, test_ids_file: str) -> TestQuery:
-        return TestQuery.query_from_id_file(self, test_ids_file)
-
-    def query_from_id_list(self, test_ids: List[str]) -> TestQuery:
-        return TestQuery.query_from_id_list(self, test_ids)
 
 
 class TestPlanUtils:
@@ -645,19 +607,41 @@ class TestPlanUtils:
     @classmethod
     def load_test_ids_from_file(cls, test_ids_file: str) -> List[str]:
         """Load test ids from a file to a list of strings"""
+        return list(cls.load_test_ids_from_file_gen(test_ids_file))
+
+    @classmethod
+    def load_test_ids_from_file_gen(cls, test_ids_file: str) -> Generator[str, None, None]:
+        """Load test ids from a file as a generator of strings"""
         logger.trace(f"Loading test ids from file: {test_ids_file}")
         with open(test_ids_file, "r") as file:
             test_ids = file.readlines()
 
-            test_ids = [line.strip() for line in test_ids]
+            for test_id in test_ids:
+                test_id = test_id.strip()
+                # Remove empty lines
+                if not test_id:
+                    continue
+                # Remove lines starting with # as comments
+                if test_id.startswith("#"):
+                    continue
+                # Remove no_device prefix from test id
+                test_id = test_id.replace("no_device-", "")
+                yield test_id
 
-            # Remove empty lines
-            test_ids = [line for line in test_ids if line]
+    @classmethod
+    def load_test_ids_from_files(cls, base_dir: str, test_ids_files: List[str]) -> Generator[str, None, None]:
+        """Load test ids from multiple files to a list of strings"""
+        if len(test_ids_files) == 0:
+            return
+        for test_ids_file in test_ids_files:
+            test_ids_file = f"{base_dir}/{test_ids_file}"
 
-            # Remove lines starting with # as comments
-            test_ids = [line for line in test_ids if not line.startswith("#")]
+            if not os.path.exists(test_ids_file):
+                raise FileNotFoundError(f"Test ids file not found: {test_ids_file}")
 
-            return test_ids
+            test_ids = TestPlanUtils.load_test_ids_from_file_gen(test_ids_file)
+            for test_id in test_ids:
+                yield test_id
 
     @classmethod
     def test_id_to_test_vector(cls, test_id: str) -> TestVector:
@@ -842,7 +826,9 @@ class TestPlanScanner:
         # return functions_called
 
     @classmethod
-    def scan_and_invoke(cls, scan_file: str, scan_package: str, method_name: str) -> Generator:
+    def scan_and_invoke(
+        cls, scan_file: str, scan_package: str, ignore_test_plan_paths: List[str], method_name: str
+    ) -> Generator:
         """
         Scan the directory and invoke all method functions.
         Scan modules relative path to the current directory.
@@ -858,7 +844,17 @@ class TestPlanScanner:
 
         for module_name in modules:
             try:
+                with open(f"{directory}/{module_name.replace('.', '/')}.py") as f:
+                    # Load content of the module
+                    content = f.read()
+                    # Check if method is present in the module
+                    if "def get_test_plans(" not in content:
+                        logger.trace(f"Not found get_test_plans() method, skipping module: {module_name}")
+                        continue
                 module_name = f"{scan_package}.{module_name}"
+                if any([module_name.startswith(ignore_path) for ignore_path in ignore_test_plan_paths]):
+                    logger.trace(f"Ignoring module: {module_name} as it is in ignore_test_plan_paths")
+                    continue
                 logger.trace(f"Loading module: {module_name}")
                 # Dynamic module loading
                 module = importlib.import_module(module_name)
@@ -882,19 +878,21 @@ class TestPlanScanner:
             raise ValueError(f"Unsupported suite/plan type: {type(result)}")
 
     @classmethod
-    def get_all_test_plans(cls, scan_file: str, scan_package: str) -> Generator[TestPlan, None, None]:
+    def get_all_test_plans(
+        cls, scan_file: str, scan_package: str, ignore_test_plan_paths: List[str]
+    ) -> Generator[TestPlan, None, None]:
         """Get all test suites from the current directory."""
-        results = cls.scan_and_invoke(scan_file, scan_package, cls.METHOD_COLLECT_TEST_PLANS)
+        results = cls.scan_and_invoke(scan_file, scan_package, ignore_test_plan_paths, cls.METHOD_COLLECT_TEST_PLANS)
         for result in results:
             for test_plan in cls.collect_test_plans(result):
                 yield test_plan
         return results
 
     @classmethod
-    def build_test_suite(cls, scan_file: str, scan_package: str) -> TestSuite:
+    def build_test_suite(cls, scan_file: str, scan_package: str, ignore_test_plan_paths: List[str] = []) -> TestSuite:
         """Build test suite from scaned test plans."""
         logger.trace(f"Building test suite from file: {scan_file} and package: {scan_package}")
-        test_plans = cls.get_all_test_plans(scan_file, scan_package)
+        test_plans = cls.get_all_test_plans(scan_file, scan_package, ignore_test_plan_paths)
         test_plans = list(test_plans)
         logger.trace(f"Found test plans: {len(test_plans)}")
         return TestSuite(test_plans=test_plans)

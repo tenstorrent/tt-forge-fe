@@ -6,6 +6,7 @@
 
 
 import forge
+import torch
 
 from test.operators.utils import InputSource
 from test.operators.utils import TestCollection
@@ -53,6 +54,21 @@ class FailingRulesData:
             ],
             dev_data_formats=TestCollectionCommon.int.dev_data_formats,
             failing_reason=FailingReasons.DATA_MISMATCH,
+        ),
+        TestCollection(
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            dev_data_formats=[torch.float16],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            # failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+            skip_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        ),
+        TestCollection(
+            input_sources=[
+                InputSource.FROM_HOST,
+                InputSource.FROM_ANOTHER_OP,
+            ],
+            failing_reason=FailingReasons.DTYPE_MISMATCH,
         ),
     ]
 
@@ -124,6 +140,7 @@ class FailingRulesData:
             and test_vector.kwargs["alpha"] < 0,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        common[3],
     ]
 
     sub = [
@@ -155,6 +172,7 @@ class FailingRulesData:
             and test_vector.kwargs["alpha"] != 1,
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        common[3],
     ]
 
     mul = [
@@ -174,6 +192,7 @@ class FailingRulesData:
             ],
             failing_reason=None,
         ),
+        common[3],
     ]
 
     div = [
@@ -258,11 +277,12 @@ class FailingRulesData:
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        common[3],
     ]
 
     ge = [
         # PCC check fails for all input sources and buggy shapes
-        common[0],
+        # common[0],
         # Exception from DATA_MISMATCH
         TestCollection(
             input_sources=[
@@ -275,7 +295,7 @@ class FailingRulesData:
             failing_reason=None,
         ),
         # PCC check fails for CONST_EVAL_PASS and buggy shapes
-        common[1],
+        # common[1],
         # PCC check fails for FROM_HOST and all int dev data formats
         common[2],
         # PCC check fails for buggy shapes for ge
@@ -294,6 +314,8 @@ class FailingRulesData:
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        common[4],
+        common[3],
     ]
 
     ne_non_compact = [
@@ -388,6 +410,7 @@ class FailingRulesData:
             ],
             failing_reason=None,
         ),
+        common[3],
     ]
 
     ne = FailingRulesConverter.build_rules(
@@ -398,6 +421,7 @@ class FailingRulesData:
             common[1],
             # PCC check fails for FROM_HOST and all int dev data formats
             common[2],
+            common[4],
             # fmt: off
             # Exceptions for failing_rules[1]
             (InputSource.FROM_ANOTHER_OP,   (1, 1),             None,                               None,   None),
@@ -419,6 +443,7 @@ class FailingRulesData:
             (InputSource.FROM_HOST,         (45, 17),           forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             (InputSource.FROM_HOST,         (1, 45, 17),        forge.DataFormat.Float16_b,         None,   TestResultFailing(failing_reason=FailingReasons.DATA_MISMATCH)),
             # fmt: on
+            common[3],
         ],
         params=["input_source", "input_shape", "dev_data_format", "math_fidelity", "result_failing"],
     )
@@ -426,6 +451,7 @@ class FailingRulesData:
     gt = [
         # PCC check fails for all input sources and buggy shapes
         common[0],
+        common[4],
         # Exception from DATA_MISMATCH
         TestCollection(
             input_sources=[
@@ -503,11 +529,13 @@ class FailingRulesData:
             ],
             failing_reason=None,
         ),
+        common[3],
     ]
 
     lt = [
         # PCC check fails for all input sources and buggy shapes
         common[0],
+        common[4],
         # Exception from DATA_MISMATCH
         TestCollection(
             input_sources=[
@@ -593,6 +621,7 @@ class FailingRulesData:
             ],
             failing_reason=None,
         ),
+        common[3],
     ]
 
     maximum = [
@@ -613,6 +642,7 @@ class FailingRulesData:
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
+        common[3],
     ]
 
     minimum = [
@@ -641,4 +671,5 @@ class FailingRulesData:
             dev_data_formats=TestCollectionCommon.int.dev_data_formats,
             failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
+        common[3],
     ]
