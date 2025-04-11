@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
-from test.models.utils import print_cls_results
+from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task
 
 params = [
