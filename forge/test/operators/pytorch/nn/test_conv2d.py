@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+# Tests for testing of linear operators
+#
+# In this test we test pytorch conv2d operator
+
 from dataclasses import dataclass
 from functools import reduce
 import math
@@ -32,6 +36,7 @@ from test.operators.utils import (
 )
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.test_data import TestCollectionTorch
+from test.operators.utils.utils import PytorchUtils
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -117,7 +122,7 @@ class TestVerification:
     ):
         """Common verification function for all tests"""
 
-        operator = getattr(torch.nn, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -606,7 +611,7 @@ class TestCollectionData:
 
     all = TestCollection(
         operators=[
-            "Conv2d",  # 00
+            "conv2d",  # 00
         ],
         input_sources=TestCollectionCommon.all.input_sources,
         # only 4D input tensors are supported
