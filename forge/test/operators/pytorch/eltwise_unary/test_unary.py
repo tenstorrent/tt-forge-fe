@@ -86,8 +86,7 @@ class TestVerification:
         warm_reset: bool = False,
     ):
 
-        module = PytorchUtils.get_pytorch_module(test_vector.operator)
-        operator = getattr(module, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
