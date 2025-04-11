@@ -654,23 +654,13 @@ class MLIRGenerator
         TT_ASSERT(graph != nullptr);
         TT_ASSERT(node != nullptr);
 
-        // Extract source location from "layer" tag if available
-        std::string source_location;
         const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
 
-        if (tagged_node)
+        // Get source location from layer tag if available, otherwise use node name
+        std::string source_location = node->name();
+        if (tagged_node && tagged_node->has_tag("layer"))
         {
-            const tt::graphlib::TagHints &tags = tagged_node->get_tags();
-            tt::graphlib::TagHints::const_iterator it = tags.find("layer");
-
-            if (it != tags.end() && std::holds_alternative<std::string>(it->second))
-            {
-                source_location = std::get<std::string>(it->second) + "/" + node->name();
-            }
-            else
-            {
-                source_location = node->name();
-            }
+            source_location = std::get<std::string>(tagged_node->tag_value("layer")) + "/" + node->name();
         }
 
         // Create and return FileLineColLoc with the collected information
