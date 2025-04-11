@@ -24,16 +24,18 @@ from test.models.utils import Framework, Source, Task, build_module_name
 )
 @pytest.mark.nightly
 def test_oft(forge_property_recorder, variant):
-    # Build module name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="oft",
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
+
     forge_property_recorder.record_group("red")
+    # TODO add priority tags
+    #forger_proprty_recorder.record_priority("P1")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and inputs
