@@ -1062,7 +1062,12 @@ def decompose(type, attr, dc, inputs):
 
         # Step 2: Reshape to [in0_shape[dim], -1]
         # Calculate product of all dimensions except the first (after transposition)
-        permuted_shape = in0_shape[dim : dim + 1] + in0_shape[:dim] + in0_shape[dim + 1 :] if dim != 0 else in0_shape
+
+        # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
+        permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
+        indexed_dim_shape = permuted_shape.pop(dim)
+        permuted_shape = [indexed_dim_shape, *permuted_shape]
+
         rest_dims_product = math.prod(permuted_shape[1:])
 
         reshape_dims = [in0_shape[dim], rest_dims_product]
