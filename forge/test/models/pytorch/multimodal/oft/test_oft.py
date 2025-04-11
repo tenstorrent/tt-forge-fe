@@ -10,7 +10,7 @@ from test.models.pytorch.multimodal.oft.utils.oft_utils import (
     StableDiffusionWrapper,
     get_inputs,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.xfail()
@@ -32,10 +32,9 @@ def test_oft(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-
     forge_property_recorder.record_group("red")
     # TODO add priority tags
-    #forger_proprty_recorder.record_priority("P1")
+    # forger_proprty_recorder.record_priority("P1")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and inputs
