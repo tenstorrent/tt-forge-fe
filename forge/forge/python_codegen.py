@@ -983,10 +983,10 @@ class ForgeWriter(PythonWriter):
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
-                if isinstance(metadata_value, str):
-                    self.wl(f'forge_property_recorder("tags.{metadata_name}", "{metadata_value}")')
-                else:
-                    self.wl(f'forge_property_recorder("tags.{metadata_name}", {metadata_value})')
+                if metadata_name == "forge_op_name":
+                    self.wl("")
+                    self.wl("forge_property_recorder.enable_single_op_details_recording()")
+                    self.wl(f'forge_property_recorder.record_forge_op_name("{metadata_value}")')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
@@ -999,8 +999,20 @@ class ForgeWriter(PythonWriter):
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl(f'forge_property_recorder("tags." + str(metadata_name), metadata_value)')
+            self.wl('if metadata_name == "model_names":')
+            self.indent += 1
+            self.wl("forge_property_recorder.record_op_model_names(metadata_value)")
             self.indent -= 1
+            self.wl('elif metadata_name == "args":')
+            self.indent += 1
+            self.wl("forge_property_recorder.record_forge_op_args(metadata_value)")
+            self.indent -= 1
+            self.wl("else:")
+            self.indent += 1
+            self.wl(
+                'logger.warning("No utility function available in forge property handler to record %s property", metadata_name)'
+            )
+            self.indent -= 2
         self.wl("")
         if is_pytest_metadata_list_empty or (
             exclude_record_property is not None
@@ -1050,6 +1062,9 @@ class ForgeWriter(PythonWriter):
             self.wl("framework_model.set_constant(name, constant_tensor)")
             self.indent -= 1
         self.wl("")
+        if module_metadata is not None and len(module_metadata) != 0:
+            self.wl("forge_property_recorder.record_single_op_operands_info(framework_model, inputs)")
+            self.wl("")
         self.wl(
             "compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)"
         )
