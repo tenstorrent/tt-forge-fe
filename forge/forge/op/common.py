@@ -66,8 +66,6 @@ class ForgeOp:
             # NOTE: This might need to be changed once we introduce config where each op can have its own dataformat
             # regardless of the reference implementation (e.g. running convolution in lower precision)
             data_format = pytorch_dtype_to_forge_dataformat(ref_output.dtype)
-            if len(self.operands) <= 0:
-                raise RuntimeError(f"No operands provided for {self.op_type}")
 
         result = Tensor.create_from_trace(src_op=self, shape=shape, data_format=data_format)
         result.requires_grad = any([o.requires_grad for o in self.operands])
