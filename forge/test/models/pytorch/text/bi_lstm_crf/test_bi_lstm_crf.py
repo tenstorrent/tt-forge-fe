@@ -5,18 +5,18 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_birnn_crf_pypi(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="BiRnnCrf_PyPI",
         task=Task.TOKEN_CLASSIFICATION,
@@ -25,7 +25,6 @@ def test_birnn_crf_pypi(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
 
