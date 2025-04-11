@@ -110,7 +110,7 @@ def eval(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
-        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "Indeces should be 1D or 2D"
+        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "indices should be 1D or 2D"
         dim = attr[0]
         indices = t_ops[1].type(torch.LongTensor)
         if len(indices.shape) == 2:
@@ -394,7 +394,7 @@ def shape(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
-        assert len(ops[1]) == 1 or len(ops[1]) == 2, "Indeces should be 1D or 2D"
+        assert len(ops[1]) == 1 or len(ops[1]) == 2, "indices should be 1D or 2D"
         dim = attr[0]
         shape = list(ops[0])
         shape[dim] = ops[1][-1]
@@ -1033,16 +1033,16 @@ def decompose(type, attr, dc, inputs):
     if type == "adv_index":
         dim = attr[0]
         in0_shape = inputs[0].shape.as_list()
-        indeces_shape = inputs[1].shape.as_list()
+        indices_shape = inputs[1].shape.as_list()
 
-        assert len(indeces_shape) == 2 or len(indeces_shape) == 1, "Indeces tensor should be 1D or 2D"
+        assert len(indices_shape) == 2 or len(indices_shape) == 1, "indices tensor should be 1D or 2D"
 
         # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
         # The embedding operation will select the appropriate indices from the reshaped tensor
         # and then we will reshape the output back to the original shape.
         #
         # For example:
-        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indeces shape [X],
+        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indices shape [X],
         # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
         # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
         # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
@@ -1074,7 +1074,7 @@ def decompose(type, attr, dc, inputs):
 
         # Step 4: Reshape back to appropriate dimensions
         # The new shape replaces the indexed dimension with the indices shape
-        output_shape = indeces_shape + permuted_shape[1:]
+        output_shape = indices_shape + permuted_shape[1:]
 
         reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
 
