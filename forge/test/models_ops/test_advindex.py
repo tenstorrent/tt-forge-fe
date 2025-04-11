@@ -139,7 +139,7 @@ forge_modules_and_shapes_dtypes_list = [
             [((2359296,), torch.float32), ((2441216,), torch.int32)],
             {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Node not found")],
+        marks=[pytest.mark.xfail(reason="RuntimeError: circular buffers grow beyond max L1 size")],
     ),
     (
         Advindex0,

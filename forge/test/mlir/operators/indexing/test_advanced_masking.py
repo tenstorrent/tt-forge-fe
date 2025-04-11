@@ -16,7 +16,6 @@ from forge.verify.verify import verify
             torch.arange(10, dtype=torch.float32),  # 1D tensor
             torch.tensor([True, False, True, False, True, False, True, False, True, False]),  # Mask
             id="1d_masked_select",
-            marks=pytest.mark.xfail(reason="AssertionError: Dynamic shapes not supported"),
         ),
         pytest.param(
             torch.arange(16, dtype=torch.float32).reshape(4, 4),  # 2D tensor
