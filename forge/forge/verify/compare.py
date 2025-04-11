@@ -161,6 +161,22 @@ def calculate_or_estimate_pcc(
     return pcc
 
 
+def can_use_custom_kernel(a: torch.Tensor, b: torch.Tensor) -> bool:
+    """
+    Check if we can use the custom torch kernel for PCC calculation.
+    This is true if:
+        - a and b are of the same type
+        - a and b are not bool, int8 or uint8
+        - a and b do not contain special values (NaN, Inf)
+    """
+    return (
+        a.dtype == b.dtype
+        and a.dtype not in (torch.bool, torch.int8, torch.uint8)
+        and not verif.has_special_values(a)
+        and not verif.has_special_values(b)
+    )
+
+
 def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
     """
     Calculates the Pearson Correlation Coefficient (PCC) between two tensors using one of the following methods:
@@ -173,15 +189,14 @@ def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
     """
 
     # Check if we can use the custom torch kernel for PCC calculation.
-    if a.dtype == b.dtype and a.dtype != torch.bool:
-        if not verif.has_special_values(a) and not verif.has_special_values(b):
-            pcc = verif.calculate_tensor_pcc(a, b)
-            if pcc == torch.nan:
-                # If pcc is nan, than it can happen that the tensors are equal, but the variances are 0,
-                # causing division by 0.
-                # Verify that the tensors are equal, and return 1.0
-                if verif.all_close(a, b):
-                    return 1.0
+    if can_use_custom_kernel(a, b):
+        pcc = verif.calculate_tensor_pcc(a, b)
+        if pcc == torch.nan:
+            # If pcc is nan, than it can happen that the tensors are equal, but the variances are 0,
+            # causing division by 0.
+            # Verify that the tensors are equal, and return 1.0
+            if verif.all_close(a, b):
+                return 1.0
 
     # We'll need to fallback to the numpy pcc calculation / estimation.
     TENSOR_SIZE_THRESHOLD = int(1e8)
@@ -239,8 +254,11 @@ def compare_tensor_to_golden(
             if relative_atol is None:
                 relative_atol = 0.1
 
-            max_value = calculate_atol(golden, calculated)
-            atol = max_value * relative_atol  # allow up to 'relative_atol' error
+            if torch.all(torch.isnan(golden)):
+                atol = 0
+            else:
+                max_value = (torch.max(torch.abs(golden[~torch.isnan(golden)]))).item()
+                atol = max_value * relative_atol  # allow up to 'relative_atol' error
     elif isinstance(atol, dict):
         atol = atol[golden.dtype]
 
@@ -343,7 +361,7 @@ def calculate_atol(golden, calculated):
         golden = golden.type(torch.float32)
         calculated = calculated.type(torch.float32)
 
-    if not verif.has_special_values(golden) and not verif.has_special_values(calculated):
+    if can_use_custom_kernel(golden, calculated):
         return verif.max_abs_diff(golden, calculated)
 
     golden = golden.detach().numpy()
