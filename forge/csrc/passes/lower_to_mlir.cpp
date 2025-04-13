@@ -42,6 +42,7 @@
 // TTMLIR headers
 #include "ttmlir/Dialect/TT/IR/TTOpsTypes.h"
 #include "ttmlir/Dialect/TTIR/IR/TTIROps.h"
+#include "ttmlir/Dialect/TTIR/Utils/Utils.h"
 
 // Reportify headers
 #include "reportify/reportify.hpp"
@@ -529,7 +530,8 @@ class MLIRGenerator
             }
         }
 
-        auto op = builder_.create<TTIROp>(
+        auto op = ttir::utils::createDPSOp<TTIROp>(
+            builder_,
             get_tt_forge_operation_location(graph, op_node),
             mlir::TypeRange(return_types),
             mlir::ValueRange(operands),
@@ -571,22 +573,7 @@ class MLIRGenerator
             operands.push_back(symbolTable_.at(operand->name()).first);
         }
 
-        operands.push_back(emit_mlir_empty_tensor(graph, op_node));
         return operands;
-    }
-
-    /// Emit an MLIR operation for an empty tensor.
-    mlir::Value emit_mlir_empty_tensor(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
-    {
-        llvm::SmallVector<int64_t> shape_vec;
-
-        for (auto dim : node->shape().as_vector())
-        {
-            shape_vec.push_back((int64_t)dim);
-        }
-
-        return builder_.create<mlir::tt::ttir::EmptyOp>(
-            get_tt_forge_operation_location(graph, node), shape_vec, get_data_type(node));
     }
 
     /// Emit the return operation for the function.
