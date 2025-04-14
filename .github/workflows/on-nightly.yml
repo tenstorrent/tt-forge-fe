@@ -122,9 +122,6 @@ jobs:
       - docker-build
       - set-inputs
       - build
-      - test_full_model_passing
-      - perf-benchmark
-      - test_full_model_xfailing
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
@@ -142,7 +139,6 @@ jobs:
       - docker-build
       - set-inputs
       - build
-      - test_models_ops
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
