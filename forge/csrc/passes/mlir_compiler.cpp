@@ -151,7 +151,7 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
 
-        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/handmade");
+        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/");
 
         return soPathStr;
     }
