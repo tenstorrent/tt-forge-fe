@@ -4,16 +4,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # parameters:
-# <mlir_file> <json_file>
+# <mlir_file> <json_file> <ttnn_mlir_output>
+
+# Check all arguments provided
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+    echo "Error: Missing arguments. Usage: compile_and_run.sh <mlir_file> <json_file> <ttnn_mlir_output>"
+    exit 1
+fi
 
 echo "run ttmlir-opt on $1"
-./install/bin/ttmlir-opt --tt-register-device="system-desc-path=ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline $1 -o ttnn.mlir
+./install/bin/ttmlir-opt --tt-register-device="system-desc-path=ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline $1 -o $3
 if [ $? -ne 0 ]; then
     echo "Error: TTmlir opt command failed."
     exit 1
 fi
 echo "run ttmlir-translate"
-./install/bin/ttmlir-translate --ttnn-to-flatbuffer ttnn.mlir -o out.ttnn
+./install/bin/ttmlir-translate --ttnn-to-flatbuffer $3 -o out.ttnn
 if [ $? -ne 0 ]; then
     echo "Error: TTmlir translate command failed."
     exit 1
