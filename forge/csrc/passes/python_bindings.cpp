@@ -175,6 +175,7 @@ void PassesModule(py::module &m_passes)
                std::variant<std::string, py::object> const &type,
                std::vector<NodeContext> const &operands,
                std::vector<graphlib::OpType::Attr> const &attrs = {},
+               ForgeOpAttrs const &named_attrs = {},
                bool copy_tms = true,
                bool dont_decompose = false,
                bool optimize_hoist = false,
@@ -187,7 +188,7 @@ void PassesModule(py::module &m_passes)
                         "Error decomposing a type with old OpType interface, expects new OpType interface {}",
                         std::get<std::string>(type));
                     return self.op(
-                        graphlib::OpType(std::get<std::string>(type), attrs),
+                        graphlib::OpType(std::get<std::string>(type), attrs, {}, named_attrs),
                         operands,
                         copy_tms,
                         dont_decompose,
@@ -204,6 +205,7 @@ void PassesModule(py::module &m_passes)
             py::arg("type"),
             py::arg("operands"),
             py::arg("attrs") = std::vector<int>{},
+            py::arg("named_attrs") = ForgeOpAttrs{},
             py::arg("copy_tms") = true,
             py::arg("dont_decompose") = false,
             py::arg("optimize_hoist") = false,

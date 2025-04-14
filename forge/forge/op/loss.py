@@ -64,26 +64,29 @@ class CrossEntropyLoss(ForgeModule):
     loss = reduce_avg(-1 * sum(labels * log(softmax(predictions)), dim=-1), dim=0)
     """
 
+    def CrossEntropy(name, predictions, labels):
+        return CrossEntropyLoss(name)(predictions, labels)
+
     def __init__(self, name: str):
         super().__init__(name)
         self.is_loss = True
 
     @validate_shapes(min_dim=2, max_dim=2)
     def forward(self, predictions, labels):
-        softmax = Softmax("softmax", predictions, dim=-1)
-        log_softmax = Log("log", softmax)
+        # softmax = Softmax(self.name + ".softmax", predictions, dim=-1)
+        # log_softmax = Log(self.name + ".log", softmax)
 
-        product = Multiply("products", labels, log_softmax)
-        log_loss = ReduceSum("log_loss", product, dim=-1)
+        product = Multiply(self.name + ".products", labels, predictions)
+        log_loss = ReduceSum(self.name + ".log_loss", product, dim=-1)
 
-        negative_one_constant = Constant("negative_one_const", constant=-1.0)
+        negative_one_constant = Constant(self.name + ".negative_one_const", constant=-1.0)
         negative_log_loss = Multiply(
-            "negative_log_loss",
+            self.name + ".negative_log_loss",
             log_loss,
             negative_one_constant,
         )
 
-        reduction_mean = ReduceAvg("reduction_mean", negative_log_loss, dim=0)
+        reduction_mean = ReduceAvg(self.name + ".reduction_mean", negative_log_loss, dim=0)
         return reduction_mean
 
 
