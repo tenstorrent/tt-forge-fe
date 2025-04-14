@@ -160,8 +160,9 @@ class MLIRGenerator
     mlir::ModuleOp emit_mlir(tt::ForgeGraphModule &module)
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
+        std::string sysDescPath("/localdev/gfeng/mlir/ttrt-artifacts/system_desc.ttsys");
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
+            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getFromPath(builder_.getContext(), sysDescPath));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
