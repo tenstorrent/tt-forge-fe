@@ -1230,6 +1230,7 @@ std::unordered_map<int, std::vector<Node *>> Graph::get_gradient_nodes(Node *fwd
         if (edge.edge_type == EdgeType::kAutogradFwdToGradient)
         {
             Node *gradient = node_by_id(edge.consumer_node_id);
+            // Check this out
             Node *gradient_op =
                 (gradient->node_type() == NodeType::kQueue) ? this->data_operands(gradient).at(0) : gradient;
 
