@@ -192,3 +192,39 @@ def cut_boxes(image, boxes):
 
     return small_images, img_with_rectangles
     
+def process_and_pad_images(img_with_rectangles, img_size=None):
+    """
+    Rotates images if they are more horizontal than vertical, 
+    then pads them with white to make all images the same size.
+    """
+    processed_images = []
+    max_h, max_w = 0, 0
+
+    # Rotate and find max size
+    for img in img_with_rectangles:
+        h, w = img.shape[:2]
+        # Skip images that are too large 
+        if img_size is not None and (h > img_size[0]//4 or w > img_size[1]//2):
+            continue
+        if h > w:
+            img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            h, w = w, h
+        
+        max_h = max(max_h, h)
+        max_w = max(max_w, w)
+        processed_images.append(img)
+
+    # Pad images to max size
+    padded_images = []
+    for img in processed_images:
+        h, w = img.shape[:2]
+        top = (max_h - h) // 2
+        bottom = max_h - h - top
+        left = (max_w - w) // 2
+        right = max_w - w - left
+        padded_img = cv2.copyMakeBorder(
+            img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=[255, 255, 255]
+        )
+        padded_images.append(padded_img)
+
+    return padded_images

@@ -15,7 +15,7 @@ from forge.verify.verify import verify
 
 from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import fetch_paddle_model
-from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, boxes_from_bitmap, draw_boxes, cut_boxes, polygons_from_bitmap
+from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, boxes_from_bitmap, draw_boxes, cut_boxes, polygons_from_bitmap, process_and_pad_images
 
 model_urls = {
     "PP-OCRv4": {
@@ -165,10 +165,15 @@ def test_paddleocr_rec(forge_property_recorder, variant, url):
         forge_property_handler=forge_property_recorder,
     )
 
-det_url = "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
-rec_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"
-dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"
-image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/testocr.png"
+# det_url = "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
+# rec_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar"
+# dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"
+# image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/testocr.png"
+
+det_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar"
+rec_url = "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar"
+dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/ppocr_keys_v1.txt"
+image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"
 
 def test_full_ocr():
     # Fetch model
@@ -204,17 +209,33 @@ def test_full_ocr():
     # Visualize boxes
     cv2.imwrite("forge/test/models/paddlepaddle/multimodal/paddleocr/images/box_result.jpg", img)
 
+    padded_box_cuts = process_and_pad_images(box_cuts, img_size = (dest_height, dest_width))
+
     with open(dict_path, "r", encoding="utf-8") as f:
         charset = [line.strip() for line in f.readlines()]
         charset.insert(0, '')
+        charset.append('')
+
+    image_0 = padded_box_cuts[0]
+    image_0 = image_0.transpose(2, 0, 1).astype("float32")/255.0
+    image_0 = paddle.to_tensor([image_0])
+    inputs = [image_0]
+
+    compiled_model = forge.compile(recognition_model, inputs)
+    # Verify data on sample input
+    verify(
+        inputs,
+        recognition_model,
+        compiled_model
+    )
 
     # Recognition - recognize text in each box
-    for i, box_image in enumerate(box_cuts):
-        cv2.imwrite(f"forge/test/models/paddlepaddle/multimodal/paddleocr/images/cut_result_{i}.jpg", box_image)
+    for i, box_image in enumerate(padded_box_cuts):
+        cv2.imwrite(f"forge/test/models/paddlepaddle/multimodal/paddleocr/images/cut_pad_result_{i}.jpg", box_image)
         box_image = box_image.transpose(2, 0, 1).astype("float32")/255.0
         box_image = paddle.to_tensor([box_image])
-        output = recognition_model(box_image)
-        pred = paddle.argmax(output, axis=2).numpy()[0]
+        output = compiled_model(box_image)[0].numpy()
+        pred = output.argmax(axis=2)[0]
         pred_str = "".join([charset[i] for i in pred])
         print(f"Predicted text for box {i}: {pred_str}")
 
