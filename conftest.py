@@ -143,8 +143,8 @@ def memory_usage_tracker():
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
 
-    if max_mem > 10000:
-        logger.info("Memory usage exceeded 10GB, running garbage collection.")
+    if max_mem > 5000:
+        logger.info("Memory usage exceeded 5GB, running garbage collection.")
         (c1, c2, c3) = gc.get_count()
         (t1, t2, t3) = gc.get_threshold()
         logger.info(f"Garbage collector counts: {c1}, {c2}, {c3}")
