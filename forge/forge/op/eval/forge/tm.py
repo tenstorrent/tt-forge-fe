@@ -112,7 +112,7 @@ def eval(type, attr, ops):
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
         assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "indices should be 1D or 2D"
         dim = attr[0]
-        indices = t_ops[1]
+        indices = t_ops[1].type(torch.LongTensor)
         if len(indices.shape) == 2:
             # Indices are 2D, we need to reshape them to 1D
             indices = indices.reshape(-1)
