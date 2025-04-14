@@ -208,7 +208,6 @@ class MLIRGenerator
         // save what's dumped to a file named "{file_name}.mlir"
         reportify::dump_mlir("ttir", graphModule_.getNameAttr().getValue().str(), graphModule_.getOperation());
 
-#ifdef DEBUG
         // Create a string to store the output
         std::string moduleStr;
         llvm::raw_string_ostream rso(moduleStr);
@@ -220,8 +219,7 @@ class MLIRGenerator
 
         rso.flush();
 
-        log_trace(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
-#endif
+        log_info(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
 
         return graphModule_;
     }
