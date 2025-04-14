@@ -43,7 +43,7 @@ namespace fs = std::filesystem;
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
-#include "adapter.hpp"
+#include "compile_so.hpp"
 
 // Reportify headers
 #include "reportify/reportify.hpp"

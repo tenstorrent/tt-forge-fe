@@ -13,7 +13,8 @@ set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/build/include
     ${TT_MLIR_ROOT_DIR}/runtime/include
     ${TT_MLIR_ROOT_DIR}/runtime/test/include
-    ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone-adapter)
+    ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone
+)
 
 set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -53,6 +54,7 @@ file(GLOB CPP_FILES
     "forge_passes.cpp"
     "passes/*.cpp"
     "lower_to_forge/common.cpp"
+    "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/tools/ttnn-standalone/compile_so.cpp"
 )
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
@@ -65,7 +67,6 @@ add_dependencies(ttforge_csrc_objs tt-mlir)
 
 set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/lib")
 set(TTMLIR_LIB_DIR2 "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/test/ttnn")
-set(TTMLIR_LIB_DIR3 "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/tools/ttnn-standalone-adapter")
 set(TORCH_LIB_DIR "${TTFORGE_VENV_DIR}/lib/${TTFORGE_PYTHON_VERSION}/site-packages/torch/lib")
 
 add_library(ttforge_csrc SHARED)
@@ -90,7 +91,6 @@ target_link_libraries(ttforge_csrc PRIVATE
     TTMLIRCompiler
     TTMLIRRuntime
     TTRuntimeTTNNTestLib
-    ttnn-standalone-adapter
 
     xml2
     curses
@@ -114,7 +114,6 @@ target_link_directories(ttforge_csrc PRIVATE
     ${TTMLIR_TOOLCHAIN_DIR}/lib
     ${TTMLIR_LIB_DIR}
     ${TTMLIR_LIB_DIR2}
-    ${TTMLIR_LIB_DIR3}
     ${TORCH_LIB_DIR})
 
 # Change the output name (the part after 'lib' and before '.so')
