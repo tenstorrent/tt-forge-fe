@@ -1063,15 +1063,18 @@ def decompose(type, attr, dc, inputs):
         # Step 2: Reshape to [in0_shape[dim], -1]
         # Calculate product of all dimensions except the first (after transposition)
 
-        # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
-        permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
-        indexed_dim_shape = permuted_shape.pop(dim)
-        permuted_shape = [indexed_dim_shape, *permuted_shape]
+        if len(in0_shape) != 2:
+            # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
+            permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
+            indexed_dim_shape = permuted_shape.pop(dim)
+            permuted_shape = [indexed_dim_shape, *permuted_shape]
 
-        rest_dims_product = math.prod(permuted_shape[1:])
+            rest_dims_product = math.prod(permuted_shape[1:])
 
-        reshape_dims = [in0_shape[dim], rest_dims_product]
-        reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
+            reshape_dims = [in0_shape[dim], rest_dims_product]
+            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
+        else:
+            reshaped = permuted
 
         # Step 3: Apply embedding operation
         # embedding op expects indices tensor as first argument and embedding_table as second argument
@@ -1079,9 +1082,12 @@ def decompose(type, attr, dc, inputs):
 
         # Step 4: Reshape back to appropriate dimensions
         # The new shape replaces the indexed dimension with the indices shape
-        output_shape = indices_shape + permuted_shape[1:]
+        if len(in0_shape) != 2:
+            output_shape = indices_shape + permuted_shape[1:]
 
-        reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+        else:
+            reshaped_output = selected
 
         # Step 5: Restore original dimension order if necessary using transposes
         if dim != 0:
