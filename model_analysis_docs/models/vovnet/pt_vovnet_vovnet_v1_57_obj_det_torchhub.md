@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -89,7 +89,7 @@
     <tr>
       <th>7</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stem.stem_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stem.stem_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stem.stem_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.0.OSA2_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.0.OSA2_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.1.OSA2_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.1.OSA2_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.2.OSA2_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.2.OSA2_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.3.OSA2_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.3.OSA2_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.4.OSA2_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.4.OSA2_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.concat.OSA2_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.concat.OSA2_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.0.OSA3_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.0.OSA3_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.1.OSA3_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.1.OSA3_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.2.OSA3_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.2.OSA3_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.3.OSA3_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.3.OSA3_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.4.OSA3_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.4.OSA3_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.concat.OSA3_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.concat.OSA3_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.0.OSA4_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.0.OSA4_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.1.OSA4_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.1.OSA4_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.2.OSA4_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.2.OSA4_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.3.OSA4_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.3.OSA4_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.4.OSA4_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.4.OSA4_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.concat.OSA4_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.concat.OSA4_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.0.OSA4_2_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.0.OSA4_2_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.1.OSA4_2_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.1.OSA4_2_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -507,7 +507,7 @@
     <tr>
       <th>45</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.2.OSA4_2_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.2.OSA4_2_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -518,7 +518,7 @@
     <tr>
       <th>46</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.3.OSA4_2_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.3.OSA4_2_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -529,7 +529,7 @@
     <tr>
       <th>47</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.4.OSA4_2_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.4.OSA4_2_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -540,7 +540,7 @@
     <tr>
       <th>48</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.concat.OSA4_2_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.concat.OSA4_2_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.0.OSA4_3_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.0.OSA5_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.1.OSA4_3_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.1.OSA5_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.2.OSA4_3_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.2.OSA5_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.3.OSA4_3_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.3.OSA5_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -595,7 +595,7 @@
     <tr>
       <th>53</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.4.OSA4_3_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.4.OSA5_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.concat.OSA4_3_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.concat.OSA5_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.0.OSA4_4_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.0.OSA5_2_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.1.OSA4_4_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.1.OSA5_2_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.2.OSA4_4_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.2.OSA5_2_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.3.OSA4_4_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.3.OSA5_2_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.4.OSA4_4_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.4.OSA5_2_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.concat.OSA4_4_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.concat.OSA5_2_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.0.OSA5_1_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.0.OSA4_3_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.1.OSA5_1_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.1.OSA4_3_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.2.OSA5_1_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.2.OSA4_3_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.3.OSA5_1_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.3.OSA4_3_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.4.OSA5_1_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.4.OSA4_3_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.concat.OSA5_1_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.concat.OSA4_3_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.0.OSA5_2_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.0.OSA4_4_0/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.1.OSA5_2_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.1.OSA4_4_1/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.2.OSA5_2_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.2.OSA4_4_2/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.3.OSA5_2_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.3.OSA4_4_3/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.4.OSA5_2_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.4.OSA4_4_4/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.concat.OSA5_2_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.concat.OSA4_4_concat/norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1233,7 +1233,7 @@
     <tr>
       <th>111</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_61285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_61605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1141285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_211605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_271605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_61605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1354,7 +1354,7 @@
     <tr>
       <th>122</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_331605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1365,7 +1365,7 @@
     <tr>
       <th>123</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1376,7 +1376,7 @@
     <tr>
       <th>124</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_211605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1387,7 +1387,7 @@
     <tr>
       <th>125</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_391605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1409,7 +1409,7 @@
     <tr>
       <th>127</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_331605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1420,7 +1420,7 @@
     <tr>
       <th>128</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1431,7 +1431,7 @@
     <tr>
       <th>129</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1442,7 +1442,7 @@
     <tr>
       <th>130</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_391605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1141605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1453,7 +1453,7 @@
     <tr>
       <th>131</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1464,7 +1464,7 @@
     <tr>
       <th>132</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1475,7 +1475,7 @@
     <tr>
       <th>133</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1486,7 +1486,7 @@
     <tr>
       <th>134</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2131605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1497,7 +1497,7 @@
     <tr>
       <th>135</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1141605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1508,7 +1508,7 @@
     <tr>
       <th>136</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1519,7 +1519,7 @@
     <tr>
       <th>137</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1530,7 +1530,7 @@
     <tr>
       <th>138</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2611605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1541,7 +1541,7 @@
     <tr>
       <th>139</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2611605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1552,7 +1552,7 @@
     <tr>
       <th>140</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1024,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1563,7 +1563,7 @@
     <tr>
       <th>141</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1024,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1574,7 +1574,7 @@
     <tr>
       <th>142</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1596,7 +1596,7 @@
     <tr>
       <th>144</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stem.stem_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1607,7 +1607,7 @@
     <tr>
       <th>145</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stem.stem_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1618,7 +1618,7 @@
     <tr>
       <th>146</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stem.stem_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stem.stem_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1629,7 +1629,7 @@
     <tr>
       <th>147</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.0.OSA2_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.0.OSA2_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1640,7 +1640,7 @@
     <tr>
       <th>148</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.1.OSA2_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.1.OSA2_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1651,7 +1651,7 @@
     <tr>
       <th>149</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.2.OSA2_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.2.OSA2_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1662,7 +1662,7 @@
     <tr>
       <th>150</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.3.OSA2_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.3.OSA2_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1673,7 +1673,7 @@
     <tr>
       <th>151</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.4.OSA2_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.layers.4.OSA2_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1684,7 +1684,7 @@
     <tr>
       <th>152</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage2.OSA2_1.concat.OSA2_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage2.OSA2_1.concat.OSA2_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1695,7 +1695,7 @@
     <tr>
       <th>153</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.0.OSA3_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.0.OSA3_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1706,7 +1706,7 @@
     <tr>
       <th>154</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.1.OSA3_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.1.OSA3_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1717,7 +1717,7 @@
     <tr>
       <th>155</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.2.OSA3_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.2.OSA3_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1728,7 +1728,7 @@
     <tr>
       <th>156</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.3.OSA3_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.3.OSA3_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1739,7 +1739,7 @@
     <tr>
       <th>157</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.4.OSA3_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.layers.4.OSA3_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1750,7 +1750,7 @@
     <tr>
       <th>158</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage3.OSA3_1.concat.OSA3_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage3.OSA3_1.concat.OSA3_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1761,7 +1761,7 @@
     <tr>
       <th>159</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.0.OSA4_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.0.OSA4_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1772,7 +1772,7 @@
     <tr>
       <th>160</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.1.OSA4_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.1.OSA4_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1783,7 +1783,7 @@
     <tr>
       <th>161</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.2.OSA4_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.2.OSA4_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1794,7 +1794,7 @@
     <tr>
       <th>162</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.3.OSA4_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.3.OSA4_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1805,7 +1805,7 @@
     <tr>
       <th>163</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.4.OSA4_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.layers.4.OSA4_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1816,7 +1816,7 @@
     <tr>
       <th>164</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_1.concat.OSA4_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_1.concat.OSA4_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1827,7 +1827,7 @@
     <tr>
       <th>165</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.0.OSA4_2_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.0.OSA4_2_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1838,7 +1838,7 @@
     <tr>
       <th>166</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.1.OSA4_2_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.1.OSA4_2_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1849,7 +1849,7 @@
     <tr>
       <th>167</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.2.OSA4_2_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.2.OSA4_2_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1860,7 +1860,7 @@
     <tr>
       <th>168</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.3.OSA4_2_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.3.OSA4_2_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1871,7 +1871,7 @@
     <tr>
       <th>169</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.4.OSA4_2_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.layers.4.OSA4_2_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1882,7 +1882,7 @@
     <tr>
       <th>170</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_2.concat.OSA4_2_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_2.concat.OSA4_2_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1893,7 +1893,7 @@
     <tr>
       <th>171</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.0.OSA4_3_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.0.OSA5_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1904,7 +1904,7 @@
     <tr>
       <th>172</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.1.OSA4_3_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.1.OSA5_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1915,7 +1915,7 @@
     <tr>
       <th>173</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.2.OSA4_3_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.2.OSA5_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1926,7 +1926,7 @@
     <tr>
       <th>174</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.3.OSA4_3_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.3.OSA5_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1937,7 +1937,7 @@
     <tr>
       <th>175</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.4.OSA4_3_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.4.OSA5_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1948,7 +1948,7 @@
     <tr>
       <th>176</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_3.concat.OSA4_3_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_98454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_1.concat.OSA5_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_98310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1959,7 +1959,7 @@
     <tr>
       <th>177</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.0.OSA4_4_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.0.OSA5_2_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1970,7 +1970,7 @@
     <tr>
       <th>178</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.1.OSA4_4_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_104454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.1.OSA5_2_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_104310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.2.OSA4_4_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.2.OSA5_2_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.3.OSA4_4_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.3.OSA5_2_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.4.OSA4_4_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.4.OSA5_2_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage4.OSA4_4.concat.OSA4_4_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage5.OSA5_2.concat.OSA5_2_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116310, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.0.OSA5_1_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.0.OSA4_3_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2036,7 +2036,7 @@
     <tr>
       <th>184</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.1.OSA5_1_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_122454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.1.OSA4_3_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2047,7 +2047,7 @@
     <tr>
       <th>185</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.2.OSA5_1_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.2.OSA4_3_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2058,7 +2058,7 @@
     <tr>
       <th>186</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.3.OSA5_1_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.3.OSA4_3_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2069,7 +2069,7 @@
     <tr>
       <th>187</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.layers.4.OSA5_1_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.layers.4.OSA4_3_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2080,7 +2080,7 @@
     <tr>
       <th>188</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_1.concat.OSA5_1_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_134454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_3.concat.OSA4_3_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_98454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2091,7 +2091,7 @@
     <tr>
       <th>189</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.0.OSA5_2_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.0.OSA4_4_0/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2102,7 +2102,7 @@
     <tr>
       <th>190</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.1.OSA5_2_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_140454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.1.OSA4_4_1/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_104454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2113,7 +2113,7 @@
     <tr>
       <th>191</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.2.OSA5_2_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_143454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.2.OSA4_4_2/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2124,7 +2124,7 @@
     <tr>
       <th>192</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.3.OSA5_2_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.3.OSA4_4_3/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2135,7 +2135,7 @@
     <tr>
       <th>193</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.layers.4.OSA5_2_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_149454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.layers.4.OSA4_4_4/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2146,7 +2146,7 @@
     <tr>
       <th>194</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=stage5.OSA5_2.concat.OSA5_2_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_152454, dtype=float32)</td>
+      <td>Operand(type=Constant, name=stage4.OSA4_4.concat.OSA4_4_concat/norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116454, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2234,7 +2234,7 @@
     <tr>
       <th>202</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2245,7 +2245,7 @@
     <tr>
       <th>203</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2256,7 +2256,7 @@
     <tr>
       <th>204</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2267,7 +2267,7 @@
     <tr>
       <th>205</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2278,7 +2278,7 @@
     <tr>
       <th>206</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2289,7 +2289,7 @@
     <tr>
       <th>207</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2300,7 +2300,7 @@
     <tr>
       <th>208</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2333,7 +2333,7 @@
     <tr>
       <th>211</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2344,7 +2344,7 @@
     <tr>
       <th>212</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2355,7 +2355,7 @@
     <tr>
       <th>213</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2366,7 +2366,7 @@
     <tr>
       <th>214</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2377,7 +2377,7 @@
     <tr>
       <th>215</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 160, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2388,7 +2388,7 @@
     <tr>
       <th>216</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2399,7 +2399,7 @@
     <tr>
       <th>217</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2443,7 +2443,7 @@
     <tr>
       <th>221</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2454,7 +2454,7 @@
     <tr>
       <th>222</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2465,7 +2465,7 @@
     <tr>
       <th>223</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2476,7 +2476,7 @@
     <tr>
       <th>224</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2487,7 +2487,7 @@
     <tr>
       <th>225</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2498,7 +2498,7 @@
     <tr>
       <th>226</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2509,7 +2509,7 @@
     <tr>
       <th>227</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2608,7 +2608,7 @@
     <tr>
       <th>236</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2619,7 +2619,7 @@
     <tr>
       <th>237</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2630,7 +2630,7 @@
     <tr>
       <th>238</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2641,7 +2641,7 @@
     <tr>
       <th>239</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(128, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(160, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2652,7 +2652,7 @@
     <tr>
       <th>240</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2663,7 +2663,7 @@
     <tr>
       <th>241</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(160, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2674,7 +2674,7 @@
     <tr>
       <th>242</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(224,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(224, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2685,7 +2685,7 @@
     <tr>
       <th>243</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(224, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2696,7 +2696,7 @@
     <tr>
       <th>244</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2707,7 +2707,7 @@
     <tr>
       <th>245</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2718,7 +2718,7 @@
     <tr>
       <th>246</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(512, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
