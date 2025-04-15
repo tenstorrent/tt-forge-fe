@@ -11,6 +11,7 @@
 #include <sstream>
 #include <string>
 
+#include "forge_graph_module.hpp"
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
@@ -100,6 +101,16 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     {
         // Save generated ttnn module to a file named "{name}.mlir".
         reportify::dump_mlir("ttnn", mlir_module->getName()->str(), mlir_module.get());
+
+        std::string outputString;
+        llvm::raw_string_ostream outStream(outputString);
+
+        // Put data into string
+        auto printFlags = mlir::OpPrintingFlags();
+        printFlags.enableDebugInfo();
+        mlir_module.get().getOperation()->print(outStream, printFlags);
+        outStream.flush();
+        module.add_mlir_dialect("ttnn", outputString);
 
         // Generate binary from the MLIR module.
         auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());

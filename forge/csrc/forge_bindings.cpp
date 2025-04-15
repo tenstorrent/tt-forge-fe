@@ -128,7 +128,8 @@ PYBIND11_MODULE(_C, m)
     py::class_<tt::ForgeGraphModule>(m, "ForgeGraphModule")
         .def(py::init<std::string, tt::graphlib::Graph *>(), py::arg("name"), py::arg("forward_graph"))
         .def("set_graph", &tt::ForgeGraphModule::set_graph)
-        .def("get_graph", &tt::ForgeGraphModule::get_graph);
+        .def("get_graph", &tt::ForgeGraphModule::get_graph)
+        .def("get_mlirs", &tt::ForgeGraphModule::mlir_dialects);
 
     py::module_ m_autograd = m.def_submodule("autograd", "Submodule defining autograd_engine.");
     AutogradModule(m_autograd);

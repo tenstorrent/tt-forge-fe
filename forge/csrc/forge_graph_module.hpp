@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
 
 #include "utils/assert.hpp"
 
@@ -80,11 +81,17 @@ class ForgeGraphModule
 
     std::string name() const { return name_; }
 
+    void add_mlir_dialect(const std::string& name, const std::string& code) { mlir_dialects_[name] = code; }
+
+    const std::unordered_map<std::string, std::string>& mlir_dialects() const { return mlir_dialects_; }
+
    private:
     std::string name_;
 
     // Static array of graphs, indexed by GraphType.
     StaticGraphArray graphs_;
+
+    std::unordered_map<std::string, std::string> mlir_dialects_;
 };
 
 }  // namespace tt

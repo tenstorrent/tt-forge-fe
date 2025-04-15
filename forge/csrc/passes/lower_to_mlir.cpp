@@ -214,14 +214,24 @@ class MLIRGenerator
         // save what's dumped to a file named "{file_name}.mlir"
         reportify::dump_mlir("ttir", graphModule_.getNameAttr().getValue().str(), graphModule_.getOperation());
 
+        std::string outputString;
+        llvm::raw_string_ostream outStream(outputString);
+
+        // Put data into string
+        auto printFlags = mlir::OpPrintingFlags();
+        printFlags.enableDebugInfo();
+        graphModule_.getOperation()->print(outStream, printFlags);
+        outStream.flush();
+        module.add_mlir_dialect("ttir", outputString);
+
 #ifdef DEBUG
         // Create a string to store the output
         std::string moduleStr;
         llvm::raw_string_ostream rso(moduleStr);
 
         // Print the MLIR module
-        mlir::OpPrintingFlags printFlags;
-        printFlags.enableDebugInfo();
+        // mlir::OpPrintingFlags printFlags;
+        // printFlags.enableDebugInfo();
         graphModule_.print(rso, printFlags);
 
         rso.flush();

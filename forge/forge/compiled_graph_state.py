@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 from loguru import logger
 import torch
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 
 from forge._C import ForgeGraphModule
@@ -520,3 +520,33 @@ class CompiledModel:
         for name, param in self.framework_module.module.named_parameters():
             if param.requires_grad:
                 self.tensor_pool.get_tensor(name).detach_from_device()
+
+    def get_gradients(self) -> Tuple[Dict[str, torch.Tensor], List[torch.Tensor]]:
+        assert self.training(), "Gradients can only be fetched for training."
+
+        co_gradient_outputs = self.gradient_outputs
+
+        parametar_gradients: Dict[str, torch.Tensor] = {}
+        input_gradients: List[torch.Tensor] = [None] * len(self.fwd_compiled_graph_state.ordered_input_names)
+
+        for name, grad in zip(self.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
+            if name.startswith("grad_acc_"):
+                name = name.replace("grad_acc_", "")
+                name = name.replace("_grad_accumulator", "")
+                parametar_gradients[name] = grad.to_torch()
+            elif name.startswith("output_grad_"):
+                name = name.replace("output_grad_", "")
+                input_gradients[self.fwd_compiled_graph_state.ordered_input_names.index(name)] = grad.to_torch()
+
+        return parametar_gradients, input_gradients
+
+    def dump_mlir(self, path):
+        mlir_dialects = self.forge_graph_module.get_mlirs()
+        self.compiled_binary.store("flatbuffer.ttnn")
+        for dialect in mlir_dialects:
+            print(dialect)
+            print("----")
+            print(mlir_dialects[dialect])
+            with open(f"{path}/{dialect}.mlir", "w") as f:
+                f.write(mlir_dialects[dialect])
+            print("----")
