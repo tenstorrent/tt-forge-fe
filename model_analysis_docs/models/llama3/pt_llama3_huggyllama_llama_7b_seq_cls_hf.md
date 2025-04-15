@@ -47,11 +47,11 @@
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 32, 4, 4), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>4</th>
@@ -79,12 +79,12 @@
       <th>6</th>
       <td>Argmax</td>
       <td>Operand(type=Activation, shape=(1, 4), dtype=int32)</td>
-      <td>dim : -1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>dim : -1<br>keep_dim : False</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
+      <td></td>
     </tr>
     <tr>
       <th>7</th>
@@ -390,9 +390,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>35</th>
@@ -594,17 +594,6 @@
     </tr>
     <tr>
       <th>53</th>
-      <td>Squeeze</td>
-      <td>Operand(type=Activation, shape=(1, 1), dtype=int32)</td>
-      <td>dim : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>54</th>
       <td>Subtract</td>
       <td>Operand(type=Activation, shape=(1,), dtype=int32)<br><div align='center'>X</div>Operand(type=Constant, name=const_520, dtype=int32)</td>
       <td></td>
@@ -615,7 +604,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>55</th>
+      <th>54</th>
       <td>Subtract</td>
       <td>Operand(type=Constant, name=const_1940, dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 4), dtype=int32)</td>
       <td></td>
@@ -626,7 +615,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>56</th>
+      <th>55</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(4096, 4096), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -637,7 +626,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>57</th>
+      <th>56</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(11008, 4096), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -648,7 +637,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>58</th>
+      <th>57</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(4096, 11008), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -659,7 +648,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>59</th>
+      <th>58</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(2, 4096), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -670,7 +659,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>60</th>
+      <th>59</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 4, 32, 128), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -681,7 +670,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>61</th>
+      <th>60</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 64, 4), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -692,9 +681,20 @@
       <td></td>
     </tr>
     <tr>
-      <th>62</th>
+      <th>61</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(32, 4, 128), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -706,17 +706,6 @@
       <th>63</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>64</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 32, 4, 128), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -725,7 +714,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>65</th>
+      <th>64</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(32, 128, 4), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -736,7 +725,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>66</th>
+      <th>65</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(1, 64), dtype=float32)</td>
       <td>dim : 2</td>
@@ -747,7 +736,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>67</th>
+      <th>66</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Constant, name=model.rotary_emb.inv_freq, dtype=float32)</td>
       <td>dim : 0</td>
@@ -758,7 +747,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>68</th>
+      <th>67</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(1, 4, 128), dtype=float32)</td>
       <td>dim : 1</td>

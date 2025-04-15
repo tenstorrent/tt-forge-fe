@@ -11,55 +11,40 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="62">Forge-Fe</td>
+			<td rowspan="59">Forge-Fe</td>
 			<td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
-			<td>15</td>
-			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_mnist_base_img_cls_github</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [144, 1, 1, 1], got [1, 32, 4608, 4608]</td>
-			<td>6</td>
-			<td><ul><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [32, 1, 1, 1], got [1, 192, 6144, 6144]</td>
-			<td>6</td>
-			<td><ul><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
+			<td>10</td>
+			<td><ul><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_mnist_base_img_cls_github</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1152, 384]</td>
 			<td>6</td>
-			<td><ul><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 2880, 960]</td>
-			<td>5</td>
-			<td><ul><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [1280, 1], got [1, 1001]</td>
 			<td>3</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [16, 1, 1, 1], got [1, 96, 1536, 1536]</td>
 			<td>2</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [96, 1, 1, 1], got [1, 24, 2304, 2304]</td>
 			<td>2</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [24, 1, 1, 1], got [1, 144, 3456, 3456]</td>
 			<td>2</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [144, 1, 1, 1], got [1, 24, 3456, 3456]</td>
 			<td>2</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [24, 1, 1, 1], got [1, 48, 1152, 1152]</td>
@@ -105,6 +90,66 @@
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [768, 1, 1, 1], got [1, 768, 589824, 589824]</td>
 			<td>1</td>
 			<td><ul><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [24, 1, 1, 1], got [1, 16, 384, 384]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [144, 1, 1, 1], got [1, 48, 6912, 6912]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [48, 1, 1, 1], got [1, 288, 13824, 13824]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [288, 1, 1, 1], got [1, 48, 13824, 13824]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [288, 1, 1, 1], got [1, 72, 20736, 20736]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [72, 1, 1, 1], got [1, 432, 31104, 31104]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [432, 1, 1, 1], got [1, 72, 31104, 31104]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [432, 1, 1, 1], got [1, 120, 51840, 51840]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [120, 1, 1, 1], got [1, 720, 86400, 86400]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [720, 1, 1, 1], got [1, 120, 86400, 86400]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [720, 1, 1, 1], got [1, 240, 172800, 172800]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [240, 1, 1, 1], got [1, 1280, 307200, 307200]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [192, 1, 1, 1], got [1, 64, 12288, 12288]</td>
@@ -192,6 +237,16 @@
 			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [144, 1, 1, 1], got [1, 32, 4608, 4608]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [32, 1, 1, 1], got [1, 192, 6144, 6144]</td>
+			<td>1</td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
+		</tr>
+		<tr>
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [192, 1, 1, 1], got [1, 32, 6144, 6144]</td>
 			<td>1</td>
 			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
@@ -220,76 +275,6 @@
 			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [112, 1, 1, 1], got [1, 1280, 143360, 143360]</td>
 			<td>1</td>
 			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [24, 1, 1, 1], got [1, 16, 384, 384]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [144, 1, 1, 1], got [1, 48, 6912, 6912]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [48, 1, 1, 1], got [1, 288, 13824, 13824]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [288, 1, 1, 1], got [1, 48, 13824, 13824]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [288, 1, 1, 1], got [1, 72, 20736, 20736]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [72, 1, 1, 1], got [1, 432, 31104, 31104]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [432, 1, 1, 1], got [1, 72, 31104, 31104]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [432, 1, 1, 1], got [1, 120, 51840, 51840]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [120, 1, 1, 1], got [1, 720, 86400, 86400]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [720, 1, 1, 1], got [1, 120, 86400, 86400]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [720, 1, 1, 1], got [1, 240, 172800, 172800]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [240, 1, 1, 1], got [1, 1280, 307200, 307200]</td>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [24, 1], got [1, 12]</td>
-			<td>1</td>
-			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 1 - stride mismatch: expected [72, 1], got [1, 12]</td>
-			<td>1</td>
-			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32</td>
@@ -325,38 +310,38 @@
 			<td rowspan="1">MLIR</td>
 			<td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
 			<td>11</td>
-			<td><ul><li>pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf</li><li>pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf</li><li>pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td rowspan="6">Metalium</td>
 			<td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td>149</td>
-			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_phi2_microsoft_phi_2_seq_cls_hf</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_densenet_densenet121_hf_xray_img_cls_torchvision</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_gemma_google_gemma_1_1_2b_it_qa_hf</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</li><li>pt_vgg_vgg19_obj_det_osmr</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_gemma_google_gemma_2_9b_it_qa_hf</li><li>pt_vgg_vgg11_obj_det_osmr</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_dla_dla169_visual_bb_torchvision</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_vgg_vgg11_bn_img_cls_torchvision</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_hrnet_hrnet_w48_pose_estimation_timm</li><li>pt_vgg_vgg11_img_cls_torchvision</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_vgg_vgg19_img_cls_torchvision</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_gemma_google_gemma_2b_text_gen_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_vgg_vgg13_bn_img_cls_torchvision</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_vgg_19_obj_det_hf</li><li>pt_autoencoder_conv_img_enc_github</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_vgg_vgg16_bn_img_cls_torchvision</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf</li><li>pt_vgg_vgg19_bn_obj_det_timm</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_fuyu_adept_fuyu_8b_qa_hf</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_falcon_tiiuae_falcon_7b_instruct_clm_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_vgg_bn_vgg19b_obj_det_osmr</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_mnist_base_img_cls_github</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mistral_mistralai_mistral_7b_v0_1_clm_hf</li><li>pt_albert_twmkn9_albert_base_v2_squad2_qa_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf</li><li>pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf</li><li>pt_vgg_vgg16_img_cls_torchvision</li><li>pt_gemma_google_gemma_2_2b_it_qa_hf</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_vgg_vgg13_img_cls_torchvision</li><li>pt_gemma_google_gemma_1_1_7b_it_qa_hf</li><li>pt_t5_t5_small_text_gen_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
-			<td>37</td>
-			<td><ul><li>pt_segformer_nvidia_mit_b5_img_cls_hf</li><li>pt_segformer_nvidia_mit_b1_img_cls_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li><li>pt_yolox_yolox_m_obj_det_torchhub</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_segformer_nvidia_mit_b3_img_cls_hf</li><li>pt_segformer_nvidia_mit_b2_img_cls_hf</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_480x480</li><li>pt_segformer_nvidia_mit_b4_img_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li><li>pt_autoencoder_conv_img_enc_github</li><li>pt_yolox_yolox_darknet_obj_det_torchhub</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280</li><li>pt_segformer_nvidia_mit_b0_img_cls_hf</li><li>pt_yolox_yolox_l_obj_det_torchhub</li><li>pt_unet_carvana_base_img_seg_github</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_yolo_v5_yolov5n_imgcls_torchhub_480x480</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_480x480</li><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li><li>pt_yolo_v5_yolov5x_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li><li>pt_unet_base_img_seg_torchhub</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_480x480</li></ul></td>
+			<td>144</td>
+			<td><ul><li>pt_fuyu_adept_fuyu_8b_qa_hf</li><li>pt_densenet_densenet121_hf_xray_img_cls_torchvision</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</li><li>pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_gemma_google_gemma_2_2b_it_qa_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_vgg_vgg19_obj_det_osmr</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_vgg_19_obj_det_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_vgg_vgg16_bn_img_cls_torchvision</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_vgg_vgg13_bn_img_cls_torchvision</li><li>pt_phi2_microsoft_phi_2_seq_cls_hf</li><li>pt_mnist_base_img_cls_github</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</li><li>pt_gemma_google_gemma_1_1_7b_it_qa_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_gemma_google_gemma_2b_text_gen_hf</li><li>pt_autoencoder_conv_img_enc_github</li><li>pt_vgg_bn_vgg19b_obj_det_osmr</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_vgg_vgg16_img_cls_torchvision</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_vgg_vgg13_img_cls_torchvision</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_gemma_google_gemma_1_1_2b_it_qa_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</li><li>pt_vgg_vgg11_img_cls_torchvision</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_albert_twmkn9_albert_base_v2_squad2_qa_hf</li><li>pt_falcon_tiiuae_falcon_7b_instruct_clm_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vgg_vgg11_bn_img_cls_torchvision</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_vgg_vgg11_obj_det_osmr</li><li>pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf</li><li>pt_falcon3_tiiuae_falcon3_3b_base_clm_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_monodepth2_mono_640x192_depth_prediction_torchvision</li><li>pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_monodepth2_stereo_640x192_depth_prediction_torchvision</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_vgg_vgg19_img_cls_torchvision</li><li>pt_gemma_google_gemma_2_9b_it_qa_hf</li><li>pt_mistral_mistralai_mistral_7b_v0_1_clm_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_dla_dla169_visual_bb_torchvision</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_vgg_vgg19_bn_obj_det_timm</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_t5_t5_base_text_gen_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[TT_METAL][ttnn elementwise binary] RuntimeError BinaryOpType cannot be mapped to BcastOpMath</td>
-			<td>37</td>
-			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
+			<td>38</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+			<td>12</td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_unet_base_img_seg_torchhub</li><li>pt_autoencoder_conv_img_enc_github</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li><li>pt_yolo_v5_yolov5x_img_cls_torchhub_480x480</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li><li>pt_unet_carvana_base_img_seg_github</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[TT_METAL][ttnn elementwise binary] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast</td>
 			<td>11</td>
-			<td><ul><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>[TT_METAL][tt-metal buffer allocation] RuntimeError tt_metal/impl/allocator/bank_manager.cpp Out of Memory: Not enough space to allocate DRAM buffer</td>
 			<td>3</td>
-			<td><ul><li>pt_inception_v4_img_cls_osmr</li><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li><li>pt_inception_v4_img_cls_osmr</li></ul></td>
 		</tr>
 		<tr>
 			<td>[TT_METAL][ttnn softmax] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B Inputs must be of bfloat16 or bfloat8_b type</td>
 			<td>3</td>
-			<td><ul><li>pt_yolov8_default_obj_det_github</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolov8_default_obj_det_github</li></ul></td>
 		</tr>
 	</tbody>
 </table>
@@ -366,7 +351,7 @@
 <table border="2">
 	<thead>
 		<tr style="text-align: center;">
-			<th colspan="5">Total no of models : 364</th>
+			<th colspan="5">Total no of models : 362</th>
 		</tr>
 		<tr style="text-align: center;">
 			<th>Compiler Component</th>
@@ -379,24 +364,24 @@
 	<tbody>
 		<tr>
 			<td>Forge-Fe</td>
-			<td>289</td>
-			<td>79 %</td>
+			<td>204</td>
+			<td>56 %</td>
 			<td>99 %</td>
-			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf (86 %)</li><li>pt_alexnet_base_img_cls_osmr (92 %)</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf (93 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf (93 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf (94 %)</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf (94 %)</li><li>pt_autoencoder_conv_img_enc_github (95 %)</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf (96 %)</li><li>pt_distilbert_distilbert_base_cased_mlm_hf (96 %)</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf (96 %)</li></ul></td>
+			<td><ul><li>pt_alexnet_base_img_cls_osmr (92 %)</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf (93 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf (93 %)</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf (94 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf (94 %)</li><li>pt_autoencoder_conv_img_enc_github (95 %)</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf (95 %)</li><li>pt_distilbert_distilbert_base_cased_mlm_hf (95 %)</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf (95 %)</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf (95 %)</li></ul></td>
 		</tr>
 		<tr>
 			<td>MLIR</td>
-			<td>284</td>
-			<td>78 %</td>
+			<td>199</td>
+			<td>55 %</td>
 			<td>99 %</td>
-			<td><ul><li>pt_nbeats_seasionality_basis_clm_hf (86 %)</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf (90 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf (91 %)</li><li>pt_alexnet_base_img_cls_osmr (92 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf (92 %)</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf (93 %)</li><li>pt_autoencoder_conv_img_enc_github (95 %)</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf (96 %)</li><li>pt_distilbert_distilbert_base_cased_mlm_hf (96 %)</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf (96 %)</li></ul></td>
+			<td><ul><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf (90 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf (91 %)</li><li>pt_alexnet_base_img_cls_osmr (92 %)</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf (92 %)</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf (94 %)</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf (94 %)</li><li>pt_autoencoder_conv_img_enc_github (95 %)</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf (95 %)</li><li>pt_distilbert_distilbert_base_cased_mlm_hf (95 %)</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf (95 %)</li></ul></td>
 		</tr>
 		<tr>
 			<td>Metalium</td>
-			<td>152</td>
-			<td>42 %</td>
+			<td>141</td>
+			<td>39 %</td>
 			<td>98 %</td>
-			<td><ul><li>pt_autoencoder_conv_img_enc_github (84 %)</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf (85 %)</li><li>pt_nbeats_seasionality_basis_clm_hf (86 %)</li><li>pt_opt_facebook_opt_125m_seq_cls_hf (86 %)</li><li>pt_opt_facebook_opt_350m_seq_cls_hf (86 %)</li><li>pt_alexnet_base_img_cls_osmr (89 %)</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf (89 %)</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf (90 %)</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf (90 %)</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf (90 %)</li></ul></td>
+			<td><ul><li>pt_autoencoder_conv_img_enc_github (84 %)</li><li>pt_opt_facebook_opt_125m_seq_cls_hf (85 %)</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf (85 %)</li><li>pt_opt_facebook_opt_350m_seq_cls_hf (86 %)</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf (88 %)</li><li>pt_opt_facebook_opt_125m_clm_hf (88 %)</li><li>pt_opt_facebook_opt_125m_qa_hf (88 %)</li><li>pt_opt_facebook_opt_1_3b_clm_hf (88 %)</li><li>pt_opt_facebook_opt_1_3b_qa_hf (88 %)</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf (89 %)</li></ul></td>
 		</tr>
 	</tbody>
 </table>
@@ -414,63 +399,63 @@
 	<tbody>
 		<tr>
 			<td>1</td>
-			<td><a href="../ops/conv2d.md">Conv2d</a></td>
-			<td>84</td>
-			<td><ul><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_beit_microsoft_beit_base_patch16_224_img_cls_hf</li><li>pt_beit_microsoft_beit_large_patch16_224_img_cls_hf</li><li>pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf</li><li>pt_deit_facebook_deit_base_patch16_224_img_cls_hf</li><li>pt_deit_facebook_deit_small_patch16_224_img_cls_hf</li><li>pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf</li><li>pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm</li><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm</li><li>pt_mlp_mixer_mixer_b16_224_img_cls_timm</li><li>pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm</li><li>pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm</li><li>pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm</li><li>pt_mlp_mixer_mixer_l16_224_img_cls_timm</li><li>pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_retinanet_retinanet_rn101fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn18fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn34fpn_obj_det_hf</li><li>pt_retinanet_retinanet_rn50fpn_obj_det_hf</li><li>pt_segformer_nvidia_mit_b0_img_cls_hf</li><li>pt_segformer_nvidia_mit_b1_img_cls_hf</li><li>pt_segformer_nvidia_mit_b2_img_cls_hf</li><li>pt_segformer_nvidia_mit_b3_img_cls_hf</li><li>pt_segformer_nvidia_mit_b4_img_cls_hf</li><li>pt_segformer_nvidia_mit_b5_img_cls_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf</li><li>pt_unet_carvana_base_img_seg_github</li><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_vgg_vgg19_bn_obj_det_timm</li><li>pt_vit_google_vit_base_patch16_224_img_cls_hf</li><li>pt_vit_google_vit_large_patch16_224_img_cls_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5l_imgcls_torchhub_640x640</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5m_imgcls_torchhub_640x640</li><li>pt_yolo_v5_yolov5n_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5n_imgcls_torchhub_640x640</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5s_imgcls_torchhub_640x640</li><li>pt_yolo_v5_yolov5x_imgcls_torchhub_480x480</li><li>pt_yolo_v5_yolov5x_imgcls_torchhub_640x640</li><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li><li>pt_yolo_v6_yolov6m_obj_det_torchhub</li><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li><li>pt_yolov8_default_obj_det_github</li><li>pt_yolox_yolox_darknet_obj_det_torchhub</li><li>pt_yolox_yolox_l_obj_det_torchhub</li><li>pt_yolox_yolox_m_obj_det_torchhub</li><li>pt_yolox_yolox_x_obj_det_torchhub</li></ul></td>
+			<td><a href="../ops/add.md">Add</a></td>
+			<td>103</td>
+			<td><ul><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_codegen_salesforce_codegen_350m_mono_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_multi_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_nl_clm_hf</li><li>pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf</li><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li><li>pt_densenet_densenet121_hf_xray_img_cls_torchvision</li><li>pt_dla_dla169_visual_bb_torchvision</li><li>pt_falcon3_tiiuae_falcon3_1b_base_clm_hf</li><li>pt_falcon3_tiiuae_falcon3_3b_base_clm_hf</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_falcon_tiiuae_falcon_7b_instruct_clm_hf</li><li>pt_fuyu_adept_fuyu_8b_qa_hf</li><li>pt_gemma_google_gemma_1_1_2b_it_qa_hf</li><li>pt_gemma_google_gemma_1_1_7b_it_qa_hf</li><li>pt_gemma_google_gemma_2_2b_it_qa_hf</li><li>pt_gemma_google_gemma_2_9b_it_qa_hf</li><li>pt_gemma_google_gemma_2b_text_gen_hf</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_mistral_mistralai_mistral_7b_v0_1_clm_hf</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</li><li>pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf</li><li>pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><a href="../ops/matmul.md">Matmul</a></td>
-			<td>73</td>
-			<td><ul><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_falcon_tiiuae_falcon_7b_instruct_clm_hf</li><li>pt_fuyu_adept_fuyu_8b_qa_hf</li><li>pt_gemma_google_gemma_1_1_2b_it_qa_hf</li><li>pt_gemma_google_gemma_1_1_7b_it_qa_hf</li><li>pt_gemma_google_gemma_2_2b_it_qa_hf</li><li>pt_gemma_google_gemma_2_9b_it_qa_hf</li><li>pt_gemma_google_gemma_2b_text_gen_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_mistral_mistralai_mistral_7b_v0_1_clm_hf</li><li>pt_mnist_base_img_cls_github</li><li>pt_nbeats_seasionality_basis_clm_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_vgg_19_obj_det_hf</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_vgg_bn_vgg19b_obj_det_osmr</li><li>pt_vgg_vgg11_bn_img_cls_torchvision</li><li>pt_vgg_vgg11_img_cls_torchvision</li><li>pt_vgg_vgg11_obj_det_osmr</li><li>pt_vgg_vgg13_bn_img_cls_torchvision</li><li>pt_vgg_vgg13_img_cls_torchvision</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_vgg_vgg16_bn_img_cls_torchvision</li><li>pt_vgg_vgg16_img_cls_torchvision</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_vgg_vgg19_img_cls_torchvision</li><li>pt_vgg_vgg19_obj_det_osmr</li></ul></td>
+			<td><a href="../ops/multiply.md">Multiply</a></td>
+			<td>83</td>
+			<td><ul><li>pt_albert_base_v1_mlm_hf</li><li>pt_albert_base_v1_token_cls_hf</li><li>pt_albert_base_v2_mlm_hf</li><li>pt_albert_base_v2_token_cls_hf</li><li>pt_albert_large_v1_mlm_hf</li><li>pt_albert_large_v1_token_cls_hf</li><li>pt_albert_large_v2_mlm_hf</li><li>pt_albert_large_v2_token_cls_hf</li><li>pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf</li><li>pt_albert_twmkn9_albert_base_v2_squad2_qa_hf</li><li>pt_albert_xlarge_v1_mlm_hf</li><li>pt_albert_xlarge_v1_token_cls_hf</li><li>pt_albert_xlarge_v2_mlm_hf</li><li>pt_albert_xlarge_v2_token_cls_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf</li><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder</li><li>pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder</li><li>pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder</li><li>pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_gpt2_gpt2_text_gen_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_nanogpt_financialsupport_nanogpt_text_gen_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_perceiverio_deepmind_language_perceiver_mlm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf</li><li>pt_vilt_dandelin_vilt_b32_mlm_mlm_hf</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><a href="../ops/add.md">Add</a></td>
-			<td>37</td>
-			<td><ul><li>pt_densenet_densenet121_hf_xray_img_cls_torchvision</li><li>pt_dla_dla169_visual_bb_torchvision</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w32_pose_estimation_timm</li><li>pt_hrnet_hrnet_w40_pose_estimation_timm</li><li>pt_hrnet_hrnet_w44_pose_estimation_timm</li><li>pt_hrnet_hrnet_w48_pose_estimation_timm</li><li>pt_hrnet_hrnet_w64_pose_estimation_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_retinanet_retinanet_rn152fpn_obj_det_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
+			<td><a href="../ops/matmul.md">Matmul</a></td>
+			<td>72</td>
+			<td><ul><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_alexnet_alexnet_img_cls_torchhub</li><li>pt_alexnet_base_img_cls_osmr</li><li>pt_deepseek_deepseek_math_7b_instruct_qa_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_falcon3_tiiuae_falcon3_3b_base_clm_hf</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_falcon_tiiuae_falcon_7b_instruct_clm_hf</li><li>pt_fuyu_adept_fuyu_8b_qa_hf</li><li>pt_gemma_google_gemma_1_1_2b_it_qa_hf</li><li>pt_gemma_google_gemma_1_1_7b_it_qa_hf</li><li>pt_gemma_google_gemma_2_2b_it_qa_hf</li><li>pt_gemma_google_gemma_2_9b_it_qa_hf</li><li>pt_gemma_google_gemma_2b_text_gen_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_mistral_mistralai_mistral_7b_v0_1_clm_hf</li><li>pt_mnist_base_img_cls_github</li><li>pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</li><li>pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</li><li>pt_rcnn_base_obj_det_torchvision_rect_0</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_vgg_19_obj_det_hf</li><li>pt_vgg_bn_vgg19_obj_det_osmr</li><li>pt_vgg_bn_vgg19b_obj_det_osmr</li><li>pt_vgg_vgg11_bn_img_cls_torchvision</li><li>pt_vgg_vgg11_img_cls_torchvision</li><li>pt_vgg_vgg11_obj_det_osmr</li><li>pt_vgg_vgg13_bn_img_cls_torchvision</li><li>pt_vgg_vgg13_img_cls_torchvision</li><li>pt_vgg_vgg13_obj_det_osmr</li><li>pt_vgg_vgg16_bn_img_cls_torchvision</li><li>pt_vgg_vgg16_img_cls_torchvision</li><li>pt_vgg_vgg16_obj_det_osmr</li><li>pt_vgg_vgg19_bn_obj_det_torchhub</li><li>pt_vgg_vgg19_img_cls_torchvision</li><li>pt_vgg_vgg19_obj_det_osmr</li></ul></td>
 		</tr>
 		<tr>
 			<td>4</td>
 			<td><a href="../ops/greater.md">Greater</a></td>
-			<td>33</td>
-			<td><ul><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
+			<td>34</td>
+			<td><ul><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><a href="../ops/reshape.md">Reshape</a></td>
-			<td>23</td>
-			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li></ul></td>
+			<td><a href="../ops/conv2d.md">Conv2d</a></td>
+			<td>29</td>
+			<td><ul><li>pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm</li><li>pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm</li><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_monodepth2_mono_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</li><li>pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</li><li>pt_regnet_regnet_y_128gf_img_cls_torchvision</li><li>pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_vgg_vgg19_bn_obj_det_timm</li><li>pt_whisper_openai_whisper_base_speech_recognition_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li><li>pt_whisper_openai_whisper_small_speech_recognition_hf</li><li>pt_whisper_openai_whisper_tiny_speech_recognition_hf</li><li>pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280</li><li>pt_yolo_v5_yolov5x_img_cls_torchhub_480x480</li><li>pt_yolo_v5_yolov5x_img_cls_torchhub_640x640</li><li>pt_yolox_yolox_darknet_obj_det_torchhub</li><li>pt_yolox_yolox_x_obj_det_torchhub</li></ul></td>
 		</tr>
 		<tr>
 			<td>6</td>
 			<td><a href="../ops/cast.md">Cast</a></td>
-			<td>17</td>
-			<td><ul><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
+			<td>18</td>
+			<td><ul><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>7</td>
+			<td><a href="../ops/reshape.md">Reshape</a></td>
+			<td>14</td>
+			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li><li>pt_whisper_openai_whisper_large_speech_recognition_hf</li><li>pt_whisper_openai_whisper_medium_speech_recognition_hf</li></ul></td>
+		</tr>
+		<tr>
+			<td>8</td>
 			<td><a href="../ops/cumsum.md">CumSum</a></td>
 			<td>13</td>
 			<td><ul><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>8</td>
+			<td>9</td>
 			<td><a href="../ops/max.md">Max</a></td>
 			<td>12</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>9</td>
+			<td>10</td>
 			<td><a href="../ops/subtract.md">Subtract</a></td>
 			<td>12</td>
 			<td><ul><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>10</td>
-			<td><a href="../ops/multiply.md">Multiply</a></td>
-			<td>11</td>
-			<td><ul><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li></ul></td>
 		</tr>
 		<tr>
 			<td>11</td>
@@ -522,15 +507,15 @@
 		</tr>
 		<tr>
 			<td>19</td>
-			<td><a href="../ops/reduceavg.md">ReduceAvg</a></td>
+			<td><a href="../ops/reciprocal.md">Reciprocal</a></td>
 			<td>6</td>
 			<td><ul><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>20</td>
-			<td><a href="../ops/argmax.md">Argmax</a></td>
-			<td>5</td>
-			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td><a href="../ops/reduceavg.md">ReduceAvg</a></td>
+			<td>6</td>
+			<td><ul><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li></ul></td>
 		</tr>
 		<tr>
 			<td>21</td>
@@ -558,66 +543,60 @@
 		</tr>
 		<tr>
 			<td>25</td>
-			<td><a href="../ops/remainder.md">Remainder</a></td>
-			<td>4</td>
-			<td><ul><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
-		</tr>
-		<tr>
-			<td>26</td>
 			<td><a href="../ops/avgpool2d.md">AvgPool2d</a></td>
 			<td>3</td>
 			<td><ul><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li><li>pt_inception_v4_img_cls_osmr</li></ul></td>
 		</tr>
 		<tr>
-			<td>27</td>
+			<td>26</td>
 			<td><a href="../ops/concatenate.md">Concatenate</a></td>
 			<td>3</td>
 			<td><ul><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li><li>pt_inception_v4_img_cls_osmr</li></ul></td>
 		</tr>
 		<tr>
-			<td>28</td>
+			<td>27</td>
 			<td><a href="../ops/layernorm.md">Layernorm</a></td>
 			<td>3</td>
 			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>29</td>
+			<td>28</td>
 			<td><a href="../ops/maxpool2d.md">MaxPool2d</a></td>
 			<td>3</td>
 			<td><ul><li>pt_autoencoder_conv_img_enc_github</li><li>pt_googlenet_base_img_cls_torchvision</li><li>pt_xception_xception_img_cls_timm</li></ul></td>
 		</tr>
 		<tr>
-			<td>30</td>
+			<td>29</td>
 			<td><a href="../ops/stack.md">Stack</a></td>
 			<td>3</td>
 			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>31</td>
+			<td>30</td>
 			<td><a href="../ops/notequal.md">NotEqual</a></td>
 			<td>2</td>
 			<td><ul><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>32</td>
+			<td>31</td>
 			<td><a href="../ops/avgpool1d.md">AvgPool1d</a></td>
 			<td>1</td>
 			<td><ul><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li></ul></td>
 		</tr>
 		<tr>
-			<td>33</td>
+			<td>32</td>
 			<td><a href="../ops/avgpool3d.md">AvgPool3d</a></td>
 			<td>1</td>
 			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
 		</tr>
 		<tr>
-			<td>34</td>
+			<td>33</td>
 			<td><a href="../ops/logsoftmax.md">LogSoftmax</a></td>
 			<td>1</td>
 			<td><ul><li>pt_mnist_base_img_cls_github</li></ul></td>
 		</tr>
 		<tr>
-			<td>35</td>
+			<td>34</td>
 			<td><a href="../ops/min.md">Min</a></td>
 			<td>1</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>

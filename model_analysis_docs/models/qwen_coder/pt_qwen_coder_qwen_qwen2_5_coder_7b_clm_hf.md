@@ -80,11 +80,11 @@
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 28, 35, 35), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>7</th>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 64, 35), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(3584, 3584), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,8 +672,8 @@
     <tr>
       <th>60</th>
       <td>Transpose</td>
-      <td>Operand(type=Parameter, shape=(3584, 3584), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 35, 28, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,8 +683,8 @@
     <tr>
       <th>61</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 35, 28, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Activation, shape=(1, 64, 35), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
