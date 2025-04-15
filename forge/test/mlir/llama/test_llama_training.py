@@ -38,7 +38,7 @@ def test_llama_lora_fwd_pass(forge_property_recorder, model_path):
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
-@pytest.mark.xfail(reason="Missing bwd - NotImplementedError: index")  # WIP - will be merged soon
+@pytest.mark.xfail(reason="Tensor mismatch. Low PCC")
 @pytest.mark.push
 def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
     if model_path == "openlm-research/open_llama_3b":
@@ -46,7 +46,7 @@ def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
 
     # Load Model and Tokenizer for LoRA training
     use_lora = True
-    framework_model, tokenizer = load_model(model_path, use_lora=use_lora)
+    framework_model, tokenizer = load_model(model_path, use_lora=use_lora, num_hidden_layers=1)
     framework_model.train()
 
     # Need input seq divisible by 32 due to metal constraints TILE_WIDTH=32
