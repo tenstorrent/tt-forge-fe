@@ -78,8 +78,13 @@ run_post_initial_graph_passes(
     graphlib::Graph *graph, py::object compiler_cfg_object, passes::FractureGroups const &fracture_groups)
 {
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
-
+    // Extract optional default_df_override from Python
+    std::optional<DataFormat> default_df_override = std::nullopt;
+    py::object attr = compiler_cfg_object.attr("default_df_override");
+    if (!attr.is_none())
+        default_df_override = attr.cast<DataFormat>();
     passes::print_graph(graph, "INITIAL");
+    passes::configure_output_data_formats(graph, default_df_override);
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
@@ -211,12 +216,6 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
     // Note this is not lowering, these are still forge tms
     convert_broadcast_ops_to_tms(graph);
-
-    //
-    // Data formats
-    //
-    // Apply user overrides
-    passes::configure_output_data_formats(graph, default_df_override);
 
     passes::remove_nops(graph);
 

@@ -23,6 +23,8 @@ import forge
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
+from forge.config import CompilerConfig
+from forge._C import DataFormat
 
 # Common constants
 GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
@@ -30,7 +32,7 @@ REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 BATCH_SIZE = [
-    1,
+    8,
 ]
 
 # Input size configurations
@@ -74,14 +76,18 @@ def test_resnet_hf(
     # images = random.sample(dataset["valid"]["image"], 10)
 
     # Random data
-    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
+    input_sample = [torch.rand(batch_size, channel_size, *input_size).to(torch.bfloat16)]
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model = download_model(
+        ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16
+    )
+    framework_model = framework_model.to(dtype=torch.bfloat16)
+    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
     fw_out = framework_model(*input_sample)
 
     # Compile model
-    compiled_model = forge.compile(framework_model, *input_sample)
+    compiled_model = forge.compile(framework_model, *input_sample, compiler_cfg=compiler_cfg)
     # Run for the first time to warm up the model.
     # This is required to get accurate performance numbers.
 
@@ -133,7 +139,7 @@ def test_resnet_hf(
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        "precision": "bf16",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",

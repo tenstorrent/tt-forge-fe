@@ -16,7 +16,7 @@ import pytest
 from forge.module import OnnxModule, ForgeModule, TFLiteModule
 from forge.verify.config import _get_global_verify_config
 import forge
-from forge.tensor import to_pt_tensors
+from forge.tensor import to_pt_tensors, forge_dataformat_to_pytorch_dtype
 from forge.tvm_utils import flatten_inputs
 
 import os
@@ -2072,13 +2072,18 @@ def generate_forge_module(
         TestClass = getattr(module, writer.class_name)
 
         devices.append(writer.dev)
+        torch_dtype_override = (
+            forge_dataformat_to_pytorch_dtype(compiler_cfg.default_df_override)
+            if compiler_cfg.default_df_override is not None
+            else None
+        )
         if writer.dev == "CPUDevice":
             forge_mod = forge.PyTorchModule(writer.module_name, TestClass())
-            forge_mod.module.process_framework_parameters(framework_mod.module)
+            forge_mod.module.process_framework_parameters(framework_mod.module, torch_dtype_override)
         else:
             forge_mod = TestClass(writer.module_name)
 
-            forge_mod.process_framework_parameters(framework_mod.module)
+            forge_mod.process_framework_parameters(framework_mod.module, torch_dtype_override)
 
             assert not any(
                 [param.value() is None for param in forge_mod.get_parameters()]

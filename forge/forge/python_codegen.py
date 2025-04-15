@@ -300,7 +300,7 @@ class ForgeWriter(PythonWriter):
             # Case 1: No parameter or buffer files provided. Extract parameters and buffers
             # directly from the model.
             if not named_params_file_name and not named_buffers_file_name:
-                self.wl(f"def process_framework_parameters(self, model):")
+                self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
                 self.indent += 1
                 self.wl(f"named_parameters = dict(model.state_dict().items())")
                 if param_file_name is not None:
@@ -354,6 +354,10 @@ class ForgeWriter(PythonWriter):
                 self.indent -= 1
 
                 self.wl("tensor = torch_param.data")
+                self.wl("if default_dtype_override is not None:")
+                self.indent += 1
+                self.wl("tensor = tensor.to(dtype=default_dtype_override)")
+                self.indent -= 1
 
             if len(param_names):
                 self.wl("if torch.numel(tensor) == 1 and len(tensor.shape) == 0:")
@@ -403,10 +407,10 @@ class ForgeWriter(PythonWriter):
             self.wl("tensor = tensor.reshape((1, 1))")
             self.indent -= 1
             self.wl("tensor.requires_grad = False")
-            self.wl("if not torch.is_floating_point(tensor):")
-            self.indent += 1
-            self.wl("tensor = tensor.float()")
-            self.indent -= 1
+            # self.wl("if not torch.is_floating_point(tensor):")
+            # self.indent += 1
+            # self.wl("tensor = tensor.float()")
+            # self.indent -= 1
             self.wl("self.set_constant(name, tensor)")
             self.indent -= 1
 
@@ -419,7 +423,7 @@ class ForgeWriter(PythonWriter):
             self.indent = 0
 
         elif self.framework == "tensorflow":
-            self.wl(f"def process_framework_parameters(self, model):")
+            self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
             self.indent += 1
             self.wl(f"weights = model.weights")
             self.wl("flattened_to_hierarchical_map = {")
@@ -509,6 +513,10 @@ class ForgeWriter(PythonWriter):
                 self.wl(f"for name, torch_param in serialized_params.items():")
                 self.indent += 1
                 self.wl("tensor = torch_param.data")
+                self.wl("if default_dtype_override is not None:")
+                self.indent += 1
+                self.wl("tensor = tensor.to(dtype=default_dtype_override)")
+                self.indent -= 1
                 self.wl("if name in flattened_to_hierarchical_map:")
                 self.indent += 1
                 self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
@@ -559,7 +567,7 @@ class ForgeWriter(PythonWriter):
                 self.indent -= 1
                 self.indent -= 1
         elif self.framework == "tf_graphdef":
-            self.wl(f"def process_framework_parameters(self, model):")
+            self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
             self.indent += 1
             self.wl("flattened_to_hierarchical_map = {")
             self.indent += 1
@@ -572,6 +580,10 @@ class ForgeWriter(PythonWriter):
             self.wl(f"for name, torch_param in serialized_params.items():")
             self.indent += 1
             self.wl("tensor = torch_param.data")
+            self.wl("if default_dtype_override is not None:")
+            self.indent += 1
+            self.wl("tensor = tensor.to(dtype=default_dtype_override)")
+            self.indent -= 1
             self.wl("if name in flattened_to_hierarchical_map:")
             self.indent += 1
             self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
@@ -623,7 +635,7 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
 
         elif self.framework == "onnx":
-            self.wl(f"def process_framework_parameters(self, model):")
+            self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
             self.indent += 1
             self.wl(f"import onnx")
             self.wl(f"import onnx.numpy_helper")
@@ -700,6 +712,10 @@ class ForgeWriter(PythonWriter):
                 self.wl(f"for name, torch_param in serialized_params.items():")
                 self.indent += 1
                 self.wl("tensor = torch_param.data")
+                self.wl("if default_dtype_override is not None:")
+                self.indent += 1
+                self.wl("tensor = tensor.to(dtype=default_dtype_override)")
+                self.indent -= 1
 
                 self.wl("if name in flattened_to_hierarchical_map:")
                 self.indent += 1
@@ -752,7 +768,7 @@ class ForgeWriter(PythonWriter):
                 self.indent -= 1
 
         elif self.framework == "jax":
-            self.wl(f"def process_framework_parameters(self, model):")
+            self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
             self.indent += 1
             self.wl(f"def flatten_params(params, parent_key='', sep='.'):")
             self.indent += 1
@@ -794,6 +810,9 @@ class ForgeWriter(PythonWriter):
             self.indent += 1
             self.wl(f"name = key")
             self.wl(f"tensor = torch.Tensor(np.array(value))")
+            self.wl("if default_dtype_override is not None:")
+            self.indent += 1
+            self.wl("tensor = tensor.to(dtype=default_dtype_override)")
 
             self.wl(f"if name in self._parameters:")
             self.indent += 1
@@ -816,7 +835,7 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
             self.indent -= 1
         elif self.framework == "tflite":
-            self.wl(f"def process_framework_parameters(self, model):")
+            self.wl(f"def process_framework_parameters(self, model, default_dtype_override = None):")
             self.indent += 1
             self.wl("flattened_to_hierarchical_map = {")
             self.indent += 1
@@ -829,6 +848,10 @@ class ForgeWriter(PythonWriter):
             self.wl(f"for name, torch_param in serialized_params.items():")
             self.indent += 1
             self.wl("tensor = torch_param.data")
+            self.wl("if default_dtype_override is not None:")
+            self.indent += 1
+            self.wl("tensor = tensor.to(dtype=default_dtype_override)")
+            self.indent -= 1
             self.wl("if name in flattened_to_hierarchical_map:")
             self.indent += 1
             self.wl("layer_name, param_name = flattened_to_hierarchical_map[name]")
