@@ -965,7 +965,7 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         if stride != 1:
             raise NotImplementedError("Only stride == 1 is supported for index op backward")
         shape = inputs[0].shape.as_list()
-        # return pad op
+
         if dim > 0:
             dim = dim - len(shape)
 
