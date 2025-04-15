@@ -45,10 +45,14 @@ def bitmap_from_probmap(preds):
 
     return bitmap_smooth
 
-def boxes_from_bitmap(pred, bitmap, dest_width, dest_height):
+def boxes_from_bitmap(bitmap, dest_width, dest_height):
     """
-    _bitmap: single map with shape (H, W),
+    bitmap: single map with shape (1, H, W),
         whose values are binarized as {0, 1}
+
+    return:
+        boxes: (N, 4, 2) numpy array - 4 points of each box
+        scores: (N,) numpy array
     """
 
     assert len(bitmap.shape) == 2
@@ -92,10 +96,14 @@ def boxes_from_bitmap(pred, bitmap, dest_width, dest_height):
     scores = scores[valid_indices]
     return boxes, scores
 
-def polygons_from_bitmap(pred, _bitmap, dest_width, dest_height):
+def polygons_from_bitmap(_bitmap, dest_width, dest_height):
     """
     _bitmap: single map with shape (1, H, W),
         whose values are binarized as {0, 1}
+
+    return:
+        boxes: numpy array of polygons of variable length
+        scores: numpy array of scores for each polygon
     """
 
     bitmap = _bitmap
@@ -141,6 +149,10 @@ def polygons_from_bitmap(pred, _bitmap, dest_width, dest_height):
         boxes.append(box.tolist())
         scores.append(score)
 
+    # Filter boxes with scores > 0
+    valid_indices = scores > 0
+    boxes = boxes[valid_indices]
+    scores = scores[valid_indices]
     return boxes, scores
 
 
