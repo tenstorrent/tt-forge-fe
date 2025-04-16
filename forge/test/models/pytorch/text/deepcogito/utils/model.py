@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import torch
 import torch.nn as nn
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -8,7 +9,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 class CogitoWrapper(nn.Module):
     def __init__(self, model_name):
         super().__init__()
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype="auto", device_map=None)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float32, device_map=None)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     def forward(self, input_ids):
