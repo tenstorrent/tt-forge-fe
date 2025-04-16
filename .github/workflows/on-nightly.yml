@@ -77,56 +77,47 @@ jobs:
 
   test_full_model_passing:
     if: success() || failure()
-    # needs:
-    #   - set-inputs
-    #   - docker-build
-    #   - build
-    # uses: ./.github/workflows/test-sub.yml
-    # secrets: inherit
-    # with:
-    #   test_mark: 'nightly and not xfail'
-    #   test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-    #   test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-    #   docker-image: ${{ needs.docker-build.outputs.docker-image }}
-    #   runs-on: '[{"runs-on": "n150"}]'
-    #   run_id: ${{ needs.build.outputs.run_id }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Not run"
+    needs:
+      - set-inputs
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and not xfail'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      run_id: ${{ needs.build.outputs.run_id }}
 
   perf-benchmark:
     if: success() || failure()
-    # needs:
-    #   - docker-build
-    #   - build
-    #   - set-inputs
-    # uses: ./.github/workflows/perf-benchmark-sub.yml
-    # secrets: inherit
-    # with:
-    #   docker-image: ${{ needs.docker-build.outputs.docker-image }}
-    #   run_id: ${{ needs.build.outputs.run_id }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Not run"
+    needs:
+      - docker-build
+      - build
+      - set-inputs
+    uses: ./.github/workflows/perf-benchmark-sub.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
 
   test_full_model_xfailing:
     if: success() || failure()
-    # needs:
-    #   - docker-build
-    #   - set-inputs
-    #   - build
-    # uses: ./.github/workflows/test-sub.yml
-    # secrets: inherit
-    # with:
-    #   test_mark: 'nightly and xfail'
-    #   test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-    #   test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
-    #   docker-image: ${{ needs.docker-build.outputs.docker-image }}
-    #   run_id: ${{ needs.build.outputs.run_id }}
-    #   runs-on: '[{"runs-on": "n150"}]'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Not run"
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "n150"}]'
 
   test_models_ops:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
