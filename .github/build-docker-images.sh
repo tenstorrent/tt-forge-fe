@@ -21,25 +21,25 @@ build_and_push() {
     local dockerfile=$2
     local from_image=$3
 
-    if docker manifest inspect $image_name:$DOCKER_TAG > /dev/null; then
-        echo "Image $image_name:$DOCKER_TAG already exists"
-    else
-        echo "Building image $image_name:$DOCKER_TAG"
-        # Prepare build arguments
-        build_args=("--build-arg" "FROM_TAG=$DOCKER_TAG")
+    # Prepare build arguments
+    build_args=("--build-arg" "FROM_TAG=$DOCKER_TAG")
         
-        # Add main tag if on specific branch
-        if [ "$BRANCH" == "jmcgrath/create-latest-for-all-images" ]; then
-            build_args+=("-t" "$image_name:test-latest")
-        fi
-        
-        # Add the required tag and dockerfile
-        build_args+=("-t" "$image_name:$DOCKER_TAG" "-f" "$dockerfile" ".")
-        
-        # Execute the docker build command with all arguments
-        echo "Docker build arguments: ${build_args[@]}"
-        docker build --push "${build_args[@]}"
+    # Add FROM_IMAGE tag if declared
+    if [ -z "$from_image" ]; then
+        build_args+=("--build-arg" "FROM_IMAGE=$image_name")
     fi
+        
+    # Add main tag if on specific branch
+    if [ "$BRANCH" == "jmcgrath/create-latest-for-all-images" ]; then
+        build_args+=("-t" "$image_name:test-latest")
+    fi
+        
+    # Add the required tag and dockerfile
+    build_args+=("-t" "$image_name:$DOCKER_TAG" "-f" "$dockerfile" ".")
+        
+    # Execute the docker build command with all arguments
+    echo "Docker build arguments: ${build_args[@]}"
+    docker build --push "${build_args[@]}"
 }
 
 build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
