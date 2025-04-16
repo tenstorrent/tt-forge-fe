@@ -648,17 +648,30 @@ class MLIRGenerator
         return mlir::FileLineColLoc::get(builder_.getContext(), module.name(), 0, 0);
     }
 
-    /// Get the simple location for a node in a format "graph_name", (graph_id), (node_id)
+    /// Get the node location in format "source_location", (graph_id), (node_id)
     mlir::Location get_node_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::FileLineColLoc::get(builder_.getContext(), graph->name(), graph->id(), node->id());
+        TT_ASSERT(graph != nullptr);
+        TT_ASSERT(node != nullptr);
+
+        const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+
+        // Get source location from layer tag if available, otherwise use node name
+        std::string source_location = node->name();
+        if (tagged_node && tagged_node->has_tag("layer"))
+        {
+            source_location = std::get<std::string>(tagged_node->tag_value("layer")) + "/" + node->name();
+        }
+
+        // Create and return FileLineColLoc with the collected information
+        return mlir::FileLineColLoc::get(builder_.getContext(), source_location, graph->id(), node->id());
     }
 
     /// Get the location for a TTForge operation. The location is a combination of the operation name and the node
     /// location.
     mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::NameLoc::get(builder_.getStringAttr(node->name()), get_node_location(graph, node));
+        return mlir::NameLoc::get(builder_.getStringAttr(graph->name()), get_node_location(graph, node));
     }
 
     /// Convert an MLIR value to a string.

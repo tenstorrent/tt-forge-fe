@@ -22,62 +22,62 @@
 			<td rowspan="21">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
 			<td rowspan="21">33</td>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 16, 16), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 32, 32), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 64, 64), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 128, 128), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 16, 16), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 32, 32), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 64, 64), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 128, 128), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_beit_microsoft_beit_base_patch16_224_img_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 12, 27, 27), dtype=float32)</td>
+			<td><ul><li>pt_beit_microsoft_beit_large_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 16, 27, 27), dtype=float32)</td>
 			<td>sizes : [27, 27]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_beit_microsoft_beit_large_patch16_224_img_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 16, 27, 27), dtype=float32)</td>
+			<td><ul><li>pt_beit_microsoft_beit_base_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 12, 27, 27), dtype=float32)</td>
 			<td>sizes : [27, 27]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>

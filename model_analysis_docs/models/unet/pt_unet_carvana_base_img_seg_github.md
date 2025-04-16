@@ -342,17 +342,6 @@
     <tr>
       <th>30</th>
       <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 128, 224, 224), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 128, 3, 3), dtype=float32)</td>
-      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 1024, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
@@ -362,7 +351,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>32</th>
+      <th>31</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 1024, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -373,7 +362,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>33</th>
+      <th>32</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 512, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 512, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -384,9 +373,20 @@
       <td></td>
     </tr>
     <tr>
-      <th>34</th>
+      <th>33</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 256, 3, 3), dtype=float32)</td>
+      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Conv2d</td>
+      <td>Operand(type=Activation, shape=(1, 128, 224, 224), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 128, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

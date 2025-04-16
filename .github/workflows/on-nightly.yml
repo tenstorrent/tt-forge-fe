@@ -122,9 +122,6 @@ jobs:
       - docker-build
       - set-inputs
       - build
-      - test_full_model_passing
-      - perf-benchmark
-      - test_full_model_xfailing
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
@@ -142,7 +139,6 @@ jobs:
       - docker-build
       - set-inputs
       - build
-      - test_models_ops
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
@@ -174,7 +170,7 @@ jobs:
         run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
       - name: Check if the needed jobs succeeded or failed
         id: check
-        uses: re-actors/alls-green@release/v1
+        uses: re-actors/alls-green@v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
           allowed-failures: test_models_ops, test_sweeps

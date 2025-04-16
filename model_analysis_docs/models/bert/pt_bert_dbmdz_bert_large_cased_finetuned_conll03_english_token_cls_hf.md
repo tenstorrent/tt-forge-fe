@@ -265,28 +265,6 @@
     <tr>
       <th>23</th>
       <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
-      <td>shape : (16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>Reshape</td>
-      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
-      <td>shape : (1, 16, 128, 128)</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (128, 1024)</td>
       <td>&#x2705;</td>
@@ -296,7 +274,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>26</th>
+      <th>24</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 16, 64)</td>
@@ -307,7 +285,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>27</th>
+      <th>25</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(128, 1024), dtype=float32)</td>
       <td>shape : (1, 128, 1024)</td>
@@ -318,10 +296,32 @@
       <td></td>
     </tr>
     <tr>
-      <th>28</th>
+      <th>26</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 16, 128, 64), dtype=float32)</td>
       <td>shape : (16, 128, 64)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(16, 128, 128), dtype=float32)</td>
+      <td>shape : (1, 16, 128, 128)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Reshape</td>
+      <td>Operand(type=Activation, shape=(1, 16, 128, 128), dtype=float32)</td>
+      <td>shape : (16, 128, 128)</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
