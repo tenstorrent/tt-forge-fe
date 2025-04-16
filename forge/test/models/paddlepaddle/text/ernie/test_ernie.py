@@ -47,7 +47,7 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
     compiled_model = forge.compile(
-        framework_model, input, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     # Verify
