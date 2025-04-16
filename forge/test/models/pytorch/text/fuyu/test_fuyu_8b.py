@@ -30,7 +30,7 @@ from test.models.pytorch.text.fuyu.utils.model import (
     [
         pytest.param(
             "adept/fuyu-8b",
-            marks=[pytest.mark.skip(reason="Transient failure")],
+            marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
         ),
     ],
 )

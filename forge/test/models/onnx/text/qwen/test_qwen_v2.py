@@ -24,11 +24,23 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Segmentation Fault"),
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-0.5B-Instruct",
+            marks=pytest.mark.xfail,
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-1.5B-Instruct",
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+        ),
+        pytest.param(
+            "Qwen/Qwen2.5-3B-Instruct",
+            marks=pytest.mark.skip(reason="Segmentation Fault"),
         ),
     ],
 )
@@ -40,8 +52,11 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
+    if variant in ["Qwen/Qwen2.5-0.5B-Instruct", "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-3B-Instruct"]:
+        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
+    else:
+        forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False)
@@ -59,7 +74,7 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Export model to ONNX
     onnx_path = f"{tmp_path}/model.onnx"
-    if variant != "Qwen/Qwen2.5-0.5B":
+    if variant not in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-0.5B-Instruct"]:
         command = build_optimum_cli_command(variant, tmp_path)
         subprocess.run(command, check=True)
     else:
@@ -70,11 +85,11 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

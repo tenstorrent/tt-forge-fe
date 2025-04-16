@@ -15,22 +15,17 @@ from test.models.models_utils import get_sample_data
 from test.utils import download_model
 
 variants_img_classification = [
-    pytest.param(
-        "nvidia/mit-b0",
-    ),
-    "nvidia/mit-b1",
-    "nvidia/mit-b2",
-    "nvidia/mit-b3",
-    "nvidia/mit-b4",
-    "nvidia/mit-b5",
+    pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
+    pytest.param("nvidia/mit-b2", marks=pytest.mark.skip),
+    pytest.param("nvidia/mit-b3", marks=pytest.mark.skip),
+    pytest.param("nvidia/mit-b4", marks=pytest.mark.skip),
+    pytest.param("nvidia/mit-b5", marks=pytest.mark.skip),
 ]
 
 
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly
 def test_segformer_image_classification_onnx(forge_property_recorder, variant, tmp_path):
-    if variant != "nvidia/mit-b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -79,10 +74,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
 
 
 variants_semseg = [
-    pytest.param(
-        "nvidia/segformer-b0-finetuned-ade-512-512",
-        marks=[pytest.mark.xfail],
-    ),
+    "nvidia/segformer-b0-finetuned-ade-512-512",
     "nvidia/segformer-b1-finetuned-ade-512-512",
     "nvidia/segformer-b2-finetuned-ade-512-512",
     "nvidia/segformer-b3-finetuned-ade-512-512",
@@ -92,9 +84,8 @@ variants_semseg = [
 
 @pytest.mark.parametrize("variant", variants_semseg)
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, tmp_path):
-    if variant != "nvidia/segformer-b0-finetuned-ade-512-512":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -106,11 +97,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     )
 
     # Record Forge Property
-    if variant == "nvidia/segformer-b0-finetuned-ade-512-512":
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_group("generality")
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForSemanticSegmentation.from_pretrained, variant, return_dict=False)

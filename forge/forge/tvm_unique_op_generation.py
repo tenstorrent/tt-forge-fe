@@ -907,7 +907,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
     # Iterate over the unique operations dictonary after sorting it by operation name.
     for forge_op_function_name in sorted(unique_operations):
 
-        module_metadata = {"op_name": forge_op_function_name.split(".")[-1]}
+        module_metadata = {"forge_op_name": forge_op_function_name.split(".")[-1]}
 
         # Extract operation name from forge op function name
         op_name = forge_op_function_name.split(".")[-1].lower()
@@ -1098,14 +1098,14 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
 
                 # A dictonary contain metadata info for the specific operation configuration which will be recorded in record_property fixture
                 pytest_metadata = {
-                    "model_name": [
+                    "model_names": [
                         model_variant_info["variant_name"] for model_variant_info in model_variant_info_list
                     ],
                     "pcc": 0.99,
                 }
 
                 if len(args) != 0:
-                    pytest_metadata["op_params"] = dict(args)
+                    pytest_metadata["args"] = dict(args)
 
                 if op_name == "embedding":
                     # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
@@ -1128,7 +1128,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
 
         # To avoid recording pcc in record_property pytest fixture and add the pcc to the exclude metadata property list
         exclude_record_property = ["pcc"]
-        if op_name == "embedding":
+        if op_name in ["embedding", "advindex"]:
             exclude_record_property.append("max_int")
 
         # Generate pytest function for the operation with pytest parameter containing list of tuple

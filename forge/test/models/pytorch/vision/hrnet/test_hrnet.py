@@ -17,7 +17,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import print_cls_results
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 

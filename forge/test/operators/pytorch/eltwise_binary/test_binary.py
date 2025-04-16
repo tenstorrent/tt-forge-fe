@@ -70,6 +70,7 @@ from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
+from test.operators.utils.utils import PytorchUtils
 
 from forge.op_repo import TensorShape
 
@@ -133,7 +134,7 @@ class TestVerification:
         if dev_data_format is None:
             value_range = ValueRanges.SMALL_POSITIVE
 
-        operator = getattr(torch, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 

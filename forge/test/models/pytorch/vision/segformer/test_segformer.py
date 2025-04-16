@@ -16,7 +16,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
 
 variants_img_classification = [
-    "nvidia/mit-b0",
+    pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
     "nvidia/mit-b1",
     "nvidia/mit-b2",
     "nvidia/mit-b3",
@@ -67,7 +67,12 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Post processing
+    logits = co_out[0]
+    predicted_label = logits.argmax(-1).item()
+    print("Predicted class: ", framework_model.config.id2label[predicted_label])
 
 
 variants_semseg = [

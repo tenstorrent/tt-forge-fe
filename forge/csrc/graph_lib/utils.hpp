@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#pragma clang diagnostic pop
 
 #include <functional>
 #include <string_view>

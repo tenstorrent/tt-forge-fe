@@ -22,7 +22,7 @@
 			<td rowspan="1">[TT_METAL][tt-metal buffer allocation] RuntimeError tt_metal/impl/allocator/bank_manager.cpp Out of Memory: Not enough space to allocate DRAM buffer</td>
 			<td rowspan="1">3</td>
 			<td>3</td>
-			<td><ul><li>pt_inception_v4_img_cls_osmr</li><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_inception_inception_v4_img_cls_timm</li><li>pt_inception_inception_v4_tf_in1k_img_cls_timm</li><li>pt_inception_v4_img_cls_osmr</li></ul></td>
 			<td>Operand(type=Parameter, shape=(256, 1536, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384, 1536, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384, 1536, 1, 1), dtype=float32)</td>
 			<td>axis : -4</td>
 		</tr>

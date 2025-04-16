@@ -125,27 +125,27 @@ LlamaModel._update_causal_mask = _update_causal_mask
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.xfail,
-        ),
-        pytest.param(
-            "meta-llama/Llama-3.2-3B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
-        ),
-        pytest.param(
-            "meta-llama/Llama-3.1-8B-Instruct",
             marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
+            "meta-llama/Llama-3.2-3B",
+            marks=pytest.mark.skip(reason="Segmentation fault"),
+        ),
+        pytest.param(
+            "meta-llama/Llama-3.1-8B-Instruct",
+            marks=pytest.mark.skip(reason="Segmentation fault"),
+        ),
+        pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
     ],
 )
@@ -205,11 +205,11 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

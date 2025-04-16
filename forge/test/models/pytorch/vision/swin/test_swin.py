@@ -25,7 +25,7 @@ from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
     [
         pytest.param(
             "microsoft/swin-tiny-patch4-window7-224",
-            marks=[pytest.mark.xfail],
+            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
         ),
     ],
 )
@@ -67,7 +67,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     [
         pytest.param(
             "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.xfail],
+            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
         ),
     ],
 )

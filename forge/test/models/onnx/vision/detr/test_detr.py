@@ -74,8 +74,7 @@ def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
+    forge_property_recorder.record_group("generality")
 
     # Load the model
     framework_model = download_model(DetrForSegmentation.from_pretrained, variant, return_dict=False)
