@@ -35,6 +35,7 @@ from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
 
 import test.utils
+from test.exception_utils import extract_refined_error_message, extract_failure_category
 
 collect_ignore = ["legacy_tests"]
 
@@ -164,6 +165,49 @@ def restore_package_versions():
             logger.info(cmd_output)
     else:
         logger.info("No package version changes detected after the test.")
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    This hook is intended to be executed during the 'call' phase.
+    It performs the following actions:
+      - If the test is either a genuine failure or an expected failure marked as xfail,
+        it extracts the test's error message.
+      - It uses helper functions to refine the error message and to determine an appropriate failure category.
+      - These details are attached to the test item as attributes, which can later be accessed by forge_property_recorder fixture for additional property recording.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    # Only process reports that are generated during the execution phase of the test ("call")
+    if not report or report.when != "call":
+        return
+
+    # Determine if the test is expected to fail (xfail) or actually failed.
+    xfail = hasattr(report, "wasxfail")
+    is_xfailed = report.skipped and xfail
+    is_failed = report.failed and not xfail
+    if not (is_xfailed or is_failed):
+        return
+
+    # Extract the error message from the test report; exit if no message is found.
+    error_message = getattr(report, "longreprtext", None)
+    if not error_message:
+        return
+
+    # Refine the error message using a helper function to remove unnecessary details and extract relevant info.
+    refined_error_message = extract_refined_error_message(error_message)
+    if refined_error_message is None:
+        return
+
+    # Attach the refined error message to the test item so that other hooks or fixtures can access it.
+    setattr(item, "refined_error_message", refined_error_message)
+
+    # Extract a failure category from the refined error message and attach it to the test item. if one is determined.
+    failure_category = extract_failure_category(refined_error_message)
+    if failure_category is not None:
+        setattr(item, "failure_category", failure_category)
 
 
 def pytest_addoption(parser):

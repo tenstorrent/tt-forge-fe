@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.project.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.project.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.project.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,7 +815,7 @@
     <tr>
       <th>73</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.project.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -826,7 +826,7 @@
     <tr>
       <th>74</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -837,7 +837,7 @@
     <tr>
       <th>75</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -848,7 +848,7 @@
     <tr>
       <th>76</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -859,7 +859,7 @@
     <tr>
       <th>77</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_142838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -870,7 +870,7 @@
     <tr>
       <th>78</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_145838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -881,7 +881,7 @@
     <tr>
       <th>79</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -892,7 +892,7 @@
     <tr>
       <th>80</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_151838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -903,7 +903,7 @@
     <tr>
       <th>81</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_154838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -914,7 +914,7 @@
     <tr>
       <th>82</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -925,7 +925,7 @@
     <tr>
       <th>83</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_160838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -936,7 +936,7 @@
     <tr>
       <th>84</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_163838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_166838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -947,7 +947,7 @@
     <tr>
       <th>85</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_166838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -958,7 +958,7 @@
     <tr>
       <th>86</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_172838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -969,7 +969,7 @@
     <tr>
       <th>87</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_172838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -980,7 +980,7 @@
     <tr>
       <th>88</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_175838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -991,7 +991,7 @@
     <tr>
       <th>89</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_178838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1002,7 +1002,7 @@
     <tr>
       <th>90</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_181838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1013,7 +1013,7 @@
     <tr>
       <th>91</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_184838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1024,7 +1024,7 @@
     <tr>
       <th>92</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_187838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1035,7 +1035,7 @@
     <tr>
       <th>93</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_190838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_193838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1046,7 +1046,7 @@
     <tr>
       <th>94</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_193838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_196838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1057,7 +1057,7 @@
     <tr>
       <th>95</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_196838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_199838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1068,7 +1068,7 @@
     <tr>
       <th>96</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_199838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_202838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_202838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_205838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_205838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_208838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_211838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_214838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_220838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_223838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_223838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_226838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1167,7 +1167,7 @@
     <tr>
       <th>105</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_226838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_229838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1178,7 +1178,7 @@
     <tr>
       <th>106</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_229838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_232838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1189,7 +1189,7 @@
     <tr>
       <th>107</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_232838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_235838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1200,7 +1200,7 @@
     <tr>
       <th>108</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_235838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_238838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1211,7 +1211,7 @@
     <tr>
       <th>109</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_238838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_241838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1222,7 +1222,7 @@
     <tr>
       <th>110</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_241838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_244838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1233,7 +1233,7 @@
     <tr>
       <th>111</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_244838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_247838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_247838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_250838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_250838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_253838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_253838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_256838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_256838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_259838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_259838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_262838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_262838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_265838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_265838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_268838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_268838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_271838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_271838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_274838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_274838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_277838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1354,7 +1354,7 @@
     <tr>
       <th>122</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_277838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_280838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1365,7 +1365,7 @@
     <tr>
       <th>123</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_280838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_283838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1376,7 +1376,7 @@
     <tr>
       <th>124</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_283838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_286838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1387,7 +1387,7 @@
     <tr>
       <th>125</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_286838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_289838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.root.bn.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_289838, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1728,7 +1728,7 @@
     <tr>
       <th>156</th>
       <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 32, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 2816, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1739,6 +1739,17 @@
     <tr>
       <th>157</th>
       <td>Conv2d</td>
+      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 32, 1, 1), dtype=float32)</td>
+      <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>158</th>
+      <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 4, 3, 3), dtype=float32)</td>
       <td>stride : [2, 2]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
       <td>&#x2705;</td>
@@ -1748,7 +1759,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>158</th>
+      <th>159</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128, 4, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1759,7 +1770,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>159</th>
+      <th>160</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 128, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 128, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1770,7 +1781,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>160</th>
+      <th>161</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 8, 3, 3), dtype=float32)</td>
       <td>stride : [2, 2]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1781,7 +1792,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>161</th>
+      <th>162</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(256, 8, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1792,7 +1803,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>162</th>
+      <th>163</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 256, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 256, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1803,7 +1814,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>163</th>
+      <th>164</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 512, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 16, 3, 3), dtype=float32)</td>
       <td>stride : [2, 2]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1814,7 +1825,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>164</th>
+      <th>165</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 512, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 16, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1825,7 +1836,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>165</th>
+      <th>166</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 512, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 512, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1836,7 +1847,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>166</th>
+      <th>167</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 32, 3, 3), dtype=float32)</td>
       <td>stride : [2, 2]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
@@ -1847,7 +1858,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>167</th>
+      <th>168</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 1024, 1, 1), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
@@ -1858,21 +1869,10 @@
       <td></td>
     </tr>
     <tr>
-      <th>168</th>
+      <th>169</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 1024, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1024, 32, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 32<br>channel_last : 0</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>169</th>
-      <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 2816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(512, 2816, 1, 1), dtype=float32)</td>
-      <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2663,7 +2663,7 @@
     <tr>
       <th>241</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2674,7 +2674,7 @@
     <tr>
       <th>242</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2685,7 +2685,7 @@
     <tr>
       <th>243</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.project.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2696,7 +2696,7 @@
     <tr>
       <th>244</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2707,7 +2707,7 @@
     <tr>
       <th>245</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.project.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2718,7 +2718,7 @@
     <tr>
       <th>246</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26294, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2729,7 +2729,7 @@
     <tr>
       <th>247</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2740,7 +2740,7 @@
     <tr>
       <th>248</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2751,7 +2751,7 @@
     <tr>
       <th>249</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32502, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_122838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2762,7 +2762,7 @@
     <tr>
       <th>250</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_122838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2773,7 +2773,7 @@
     <tr>
       <th>251</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2784,7 +2784,7 @@
     <tr>
       <th>252</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.project.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2795,7 +2795,7 @@
     <tr>
       <th>253</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.project.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_134838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2806,7 +2806,7 @@
     <tr>
       <th>254</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_134838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2817,7 +2817,7 @@
     <tr>
       <th>255</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_140838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2828,7 +2828,7 @@
     <tr>
       <th>256</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_140838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_143838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2839,7 +2839,7 @@
     <tr>
       <th>257</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_143838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2850,7 +2850,7 @@
     <tr>
       <th>258</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_149838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2861,7 +2861,7 @@
     <tr>
       <th>259</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_149838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_152838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2872,7 +2872,7 @@
     <tr>
       <th>260</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_152838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_155838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2883,7 +2883,7 @@
     <tr>
       <th>261</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_155838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_158838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2894,7 +2894,7 @@
     <tr>
       <th>262</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_158838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2905,7 +2905,7 @@
     <tr>
       <th>263</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_164838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2916,7 +2916,7 @@
     <tr>
       <th>264</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree1.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_164838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2927,7 +2927,7 @@
     <tr>
       <th>265</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_170838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2938,7 +2938,7 @@
     <tr>
       <th>266</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_170838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_173838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2949,7 +2949,7 @@
     <tr>
       <th>267</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_173838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_176838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2960,7 +2960,7 @@
     <tr>
       <th>268</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_176838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_179838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2971,7 +2971,7 @@
     <tr>
       <th>269</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_179838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_182838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2982,7 +2982,7 @@
     <tr>
       <th>270</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_182838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_185838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2993,7 +2993,7 @@
     <tr>
       <th>271</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_185838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_188838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3004,7 +3004,7 @@
     <tr>
       <th>272</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_188838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_191838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3015,7 +3015,7 @@
     <tr>
       <th>273</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_191838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_194838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3026,7 +3026,7 @@
     <tr>
       <th>274</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_194838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_197838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3037,7 +3037,7 @@
     <tr>
       <th>275</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_197838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_200838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3048,7 +3048,7 @@
     <tr>
       <th>276</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_200838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_203838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3059,7 +3059,7 @@
     <tr>
       <th>277</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_203838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_206838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3070,7 +3070,7 @@
     <tr>
       <th>278</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree1.tree2.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_206838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_209838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3081,7 +3081,7 @@
     <tr>
       <th>279</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_209838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_212838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3092,7 +3092,7 @@
     <tr>
       <th>280</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_212838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_215838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3103,7 +3103,7 @@
     <tr>
       <th>281</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_215838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_218838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3114,7 +3114,7 @@
     <tr>
       <th>282</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_218838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_221838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3125,7 +3125,7 @@
     <tr>
       <th>283</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_221838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_224838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3136,7 +3136,7 @@
     <tr>
       <th>284</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_224838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_227838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3147,7 +3147,7 @@
     <tr>
       <th>285</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_227838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_230838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3158,7 +3158,7 @@
     <tr>
       <th>286</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_230838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_233838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3169,7 +3169,7 @@
     <tr>
       <th>287</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_233838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_236838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3180,7 +3180,7 @@
     <tr>
       <th>288</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_236838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_239838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3191,7 +3191,7 @@
     <tr>
       <th>289</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_239838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_242838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3202,7 +3202,7 @@
     <tr>
       <th>290</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_242838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_245838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3213,7 +3213,7 @@
     <tr>
       <th>291</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_245838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_248838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3224,7 +3224,7 @@
     <tr>
       <th>292</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree1.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_248838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_251838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3235,7 +3235,7 @@
     <tr>
       <th>293</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_251838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_254838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3246,7 +3246,7 @@
     <tr>
       <th>294</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_254838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_257838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3257,7 +3257,7 @@
     <tr>
       <th>295</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_257838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_260838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3268,7 +3268,7 @@
     <tr>
       <th>296</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_260838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_263838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3279,7 +3279,7 @@
     <tr>
       <th>297</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_263838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_266838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3290,7 +3290,7 @@
     <tr>
       <th>298</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_266838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_269838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3301,7 +3301,7 @@
     <tr>
       <th>299</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree1.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_269838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_272838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3312,7 +3312,7 @@
     <tr>
       <th>300</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_272838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_275838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3323,7 +3323,7 @@
     <tr>
       <th>301</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_275838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_278838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3334,7 +3334,7 @@
     <tr>
       <th>302</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_278838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_281838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3345,7 +3345,7 @@
     <tr>
       <th>303</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_281838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_284838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3356,7 +3356,7 @@
     <tr>
       <th>304</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_284838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_287838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3367,7 +3367,7 @@
     <tr>
       <th>305</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.tree2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_287838, dtype=float32)</td>
+      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_290838, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3378,7 +3378,7 @@
     <tr>
       <th>306</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=level4.tree2.tree2.tree2.root.bn.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_290838, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

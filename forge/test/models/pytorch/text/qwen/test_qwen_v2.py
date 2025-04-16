@@ -18,21 +18,40 @@ variants = [
         "Qwen/Qwen2.5-0.5B",
         marks=[pytest.mark.xfail],
     ),
-    "Qwen/Qwen2.5-0.5B-Instruct",
-    "Qwen/Qwen2.5-1.5B",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "Qwen/Qwen2.5-3B",
-    "Qwen/Qwen2.5-3B-Instruct",
-    "Qwen/Qwen2.5-7B",
-    "Qwen/Qwen2.5-7B-Instruct",
+    pytest.param(
+        "Qwen/Qwen2.5-0.5B-Instruct",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-1.5B",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-1.5B-Instruct",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-3B",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-3B-Instruct",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-7B",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-7B-Instruct",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_qwen_clm(forge_property_recorder, variant):
-    if variant != "Qwen/Qwen2.5-0.5B":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -40,7 +59,12 @@ def test_qwen_clm(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
+    if variant in [
+        "Qwen/Qwen2.5-0.5B-Instruct",
+        "Qwen/Qwen2.5-1.5B-Instruct",
+        "Qwen/Qwen2.5-3B-Instruct",
+        "Qwen/Qwen2.5-7B-Instruct",
+    ]:
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")

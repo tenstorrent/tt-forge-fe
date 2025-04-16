@@ -12,27 +12,24 @@ from typing import Tuple, Dict, List, Any, Union, Optional
 from forge.module import FrameworkModule
 from loguru import logger
 from forge.forgeglobal import align_up_tile
-import paddle
-import onnx
+
 import torch
-import tensorflow as tf
 from forge.tensor import to_pt_tensors
 
 from ..tensor import (
     FrameworkTensor,
     Tensor,
-    TensorShape,
     pad_pytorch_tensor_to_forge,
     narrow_forge_tensor_to_pytorch,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
-from .config import DepricatedVerifyConfig, VerifyConfig, VerifyTensorMetadata, should_waive_gradient
+from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor
-from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
+from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge._C import ExecutionDepth
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
@@ -442,9 +439,12 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
-    # 2nd step: apply preprocessing (push tensors to cpu, perform any reshape if necessary,
-    #  cast from tensorflow tensors to pytorch tensors if needed)
+    # 2nd step: apply preprocessing:
+    # - cast framework tensors to pytorch tensors if needed
+    # - convert to dtypes that are supported by our hardware
+    # - push tensors to cpu, perform any reshape if necessary,
     fw_out = to_pt_tensors(fw_out)
+    fw_out = tuple(convert_to_supported_pytorch_dtype(o) for o in fw_out)
 
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 

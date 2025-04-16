@@ -780,3 +780,71 @@ def test_floor(forge_property_recorder, input_data):
     )
 
     verify([input_data], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape, dim, keepdim",
+    [
+        # Core test cases for dimension-specific argmax
+        pytest.param(
+            (56,),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), 0, True),
+        ((1, 128), 1, False),
+        ((1, 128), 1, True),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            False,
+            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+        ),
+        ((1, 64, 76), 2, True),
+        pytest.param(
+            (1, 64, 76), 1, True, marks=pytest.mark.xfail(reason="TTNN: Only argmax on last dim is supported!")
+        ),
+        #################################################
+        # Core test cases for global argmax (dim=None)
+        pytest.param(
+            (56,),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), None, True),
+        pytest.param(
+            (1, 128),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((1, 128), None, True),
+    ],
+)
+@pytest.mark.push
+def test_argmax(forge_property_recorder, shape, dim, keepdim):
+    class ArgMax(nn.Module):
+        def __init__(self, dim, keepdim):
+            super().__init__()
+            self.dim = dim
+            self.keepdim = keepdim
+
+        def forward(self, x):
+            return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = ArgMax(dim, keepdim)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
