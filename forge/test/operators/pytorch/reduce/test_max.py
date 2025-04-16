@@ -25,6 +25,7 @@ from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
+from test.operators.utils.utils import PytorchUtils
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -89,7 +90,7 @@ class TestVerification:
         warm_reset: bool = False,
     ):
 
-        operator = getattr(torch, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         if not kwargs:
