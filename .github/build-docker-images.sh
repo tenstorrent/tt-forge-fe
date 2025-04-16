@@ -25,13 +25,19 @@ build_and_push() {
         echo "Image $image_name:$DOCKER_TAG already exists"
     else
         echo "Building image $image_name:$DOCKER_TAG"
-        docker build \
-            --progress=plain \
-            --build-arg FROM_TAG=$DOCKER_TAG \
-            ${from_image:+--build-arg FROM_IMAGE=$from_image} \
-            if $BRANCH == "jmcgrath/create-latest-for-all-images"; then -t $image_name:test-latest; fi \
-            -t $image_name:$DOCKER_TAG \
-            -f $dockerfile .
+        # Prepare build arguments
+        build_args=("--build-arg" "FROM_TAG=$DOCKER_TAG")
+        
+        # Add main tag if on specific branch
+        if [ "$BRANCH" == "jmcgrath/create-latest-for-all-images" ]; then
+            build_args+=("-t" "$image_name:test-latest")
+        fi
+        
+        # Add the required tag and dockerfile
+        build_args+=("-t" "$image_name:$DOCKER_TAG" "-f" "$dockerfile" ".")
+        
+        # Execute the docker build command with all arguments
+        docker build "${build_args[@]}"
 
         echo "Pushing image $image_name:$DOCKER_TAG"
         docker push $image_name:$DOCKER_TAG
