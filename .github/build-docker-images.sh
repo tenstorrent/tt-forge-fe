@@ -12,6 +12,7 @@ BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ird-ubuntu-22-04
 IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ird-ubuntu-22-04
 
 # Compute the hash of the Dockerfile
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 DOCKER_TAG=$(./.github/get-docker-tag.sh)
 echo "Docker tag: $DOCKER_TAG"
 
@@ -28,6 +29,7 @@ build_and_push() {
             --progress=plain \
             --build-arg FROM_TAG=$DOCKER_TAG \
             ${from_image:+--build-arg FROM_IMAGE=$from_image} \
+            if $BRANCH == "jmcgrath/create-latest-for-all-images"; then -t $image_name:test-latest; fi \
             -t $image_name:$DOCKER_TAG \
             -f $dockerfile .
 
