@@ -37,6 +37,7 @@ build_and_push() {
         build_args+=("-t" "$image_name:$DOCKER_TAG" "-f" "$dockerfile" ".")
         
         # Execute the docker build command with all arguments
+        echo "Docker build arguments: ${build_args[@]}"
         docker build --push "${build_args[@]}"
     fi
 }
