@@ -128,7 +128,7 @@ jobs:
       - run: echo "Not run"
 
   test_models_ops:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps == 'true' }}
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
       - docker-build
       - set-inputs
@@ -145,7 +145,7 @@ jobs:
       allow-fail: true
 
   test_sweeps:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps == 'true' }}
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
       - docker-build
       - set-inputs
