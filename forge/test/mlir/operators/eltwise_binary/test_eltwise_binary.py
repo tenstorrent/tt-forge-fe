@@ -451,3 +451,35 @@ def test_remainder(forge_property_recorder):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - floor_divide"
+)
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (18),
+        (4, 15),
+        (3, 41, 5),
+        (24, 3, 44, 5),
+        (1, 21, 3, 4, 45),
+    ],
+)
+@pytest.mark.push
+def test_floor_div(shape, forge_property_recorder):
+    class floor_div(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, y):
+            return x // y
+
+    x = torch.randn(shape)
+    y = torch.randn(shape) + 0.1  # Avoid division by zero
+
+    inputs = [x, y]
+
+    framework_model = floor_div()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
