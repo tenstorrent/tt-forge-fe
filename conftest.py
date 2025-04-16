@@ -22,7 +22,7 @@ def record_test_timestamp(record_property):
 
 
 @pytest.fixture(scope="function")
-def forge_property_recorder(request, record_property, tmp_path):
+def forge_property_recorder(request, record_property):
     """
     Pytest fixture to initialize and manage a ForgePropertyHandler instance for recording test properties.
 
@@ -47,9 +47,6 @@ def forge_property_recorder(request, record_property, tmp_path):
     # Set CI_FAILURE as default execution depth and FAILED_BEFORE_FORGE_COMPILATION_INITIATION as default execution stage
     forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
     forge_property_handler.record_execution_stage(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
-
-    # Attach tmp_path to the handler
-    forge_property_handler.record_tmp_path(tmp_path)
 
     # Provide the handler instance to the test function so it can record properties during test execution.
     yield forge_property_handler

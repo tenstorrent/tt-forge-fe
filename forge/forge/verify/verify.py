@@ -440,9 +440,6 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
-    tmp_path = forge_property_handler.get("tags.tmp_path") if forge_property_handler else tempfile.mkdtemp()
-    assert(os.path.exists(tmp_path), f"Temporary path {tmp_path} does not exist!")
-
     # Compile EmitC .so
     so_path = compiled_model.export_to_shared_object()
     # Run EmitC .so
