@@ -555,7 +555,7 @@ def compile_pytorch_for_forge(
 
     # Extract Graphs (TT, CPU, ...)
     json_graphs = extract_graphs(
-        partitioned_mod, forge_params, flattened_input_names, torchmod.state_dict().keys(), graph_hash=m.hexdigest()
+        partitioned_mod, forge_params, flattened_input_names, torchmod.state_dict().keys(), graph_hash=""
     )
 
     return json_graphs, flattened_inputs
