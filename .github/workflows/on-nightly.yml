@@ -63,7 +63,7 @@ jobs:
           echo "test_group_ids=[$test_group_ids]" >> $GITHUB_OUTPUT
           echo "test_group_ids_os=[$test_group_ids]" >> $GITHUB_OUTPUT
           #echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
-          echo "run_ops_sweeps=[$(if [ $ros_res == 'No' ]; then echo; else echo true; fi)]" >> $GITHUB_OUTPUT
+          echo "run_ops_sweeps=[$(if [ $ros_res == 'No' ]; then echo false; else echo true; fi)]" >> $GITHUB_OUTPUT
 
   build:
     needs:
