@@ -53,7 +53,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
     constexpr auto pipeline_name =
         (output == MLIROutputKind::Flatbuffer) ? "ttir-to-ttnn-backend-pipeline" :
         (output == MLIROutputKind::Cpp) ? "ttir-to-emitc-pipeline" :
-        "ttir-to-sharedobject-pipeline";
+        "ttir-to-emitc-so-pipeline";
     const auto pipelineInfo = mlir::PassPipelineInfo::lookup(pipeline_name);
 
     // Error handler for the pipeline. Will be called if there is an error during parsing of the pipeline options.
