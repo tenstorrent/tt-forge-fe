@@ -4,6 +4,7 @@
 import os
 import random
 from typing import Any, List, Optional, Dict, Tuple
+import resource
 from loguru import logger
 from dataclasses import dataclass
 import subprocess
@@ -53,6 +54,10 @@ def pytest_sessionstart(session):
     tf.config.threading.set_inter_op_parallelism_threads(num_threads)
     torch._dynamo.reset()
     reset_state()
+
+    max_mem = 20 * 1024 * 1024 * 1024  # 20 GB in bytes
+    resource.setrlimit(resource.RLIMIT_AS, (max_mem, max_mem))
+
     # If specified by env variable, print the environment variables
     # It can be useful in CI jobs to get the state of the enviroment variables before test session starts
     print_env_variables = bool(int(os.environ.get("PYTEST_PRINT_ENV_VARIABLES", "0")))
