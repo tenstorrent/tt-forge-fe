@@ -14,16 +14,14 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.utils import fetch_paddle_model
 
 
 model_urls = {
     "v4": {
             "ch": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar",
-            "en":  "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_det_infer.tar",
-            "ml": "https://paddleocr.bj.bcebos.com/PP-OCRv3/multilingual/Multilingual_PP-OCRv3_det_infer.tar",
-        
+            "en": "https://paddleocr.bj.bcebos.com/PP-OCRv3/english/en_PP-OCRv3_det_infer.tar"
     },
     "v0": {
             "ch": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_det_infer.tar",
@@ -41,22 +39,22 @@ os.makedirs(cache_dir, exist_ok=True)
 )
 def test_paddleocr_det(forge_property_recorder, variant, url):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="paddleocr",
         variant=variant,
         source=Source.PADDLE,
-        task=Task.TEXT_DETECTION,
+        task=Task.SCENE_TEXT_RECOGNITION,
     )
-    forge_property_recorder.record_model_name(module_name)
+
     forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
 
     # Generate a random image
-    image_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"
-    image = cv2.imread(image_path)
+    image = (np.random.rand(32, 100, 3) * 255).astype("uint8")
     resized_image = cv2.resize(image, (448, 448))
     image = resized_image.transpose(2, 0, 1).astype("float32")
     inputs = [paddle.to_tensor([image])]

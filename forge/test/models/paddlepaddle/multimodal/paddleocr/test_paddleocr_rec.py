@@ -14,17 +14,14 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.utils import fetch_paddle_model
 
 model_urls = {
     "v4": {
             "ch": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar",
             "en": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar",
-            "ko":  "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/korean_PP-OCRv4_rec_infer.tar",
-            "ja": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/japan_PP-OCRv4_rec_infer.tar",
         },
-    
     "v0": {
             "ch": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_rec_infer.tar",
             "en": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_number_mobile_v2.0_rec_infer.tar",
@@ -41,15 +38,16 @@ os.makedirs(cache_dir, exist_ok=True)
 )
 def test_paddleocr_rec(forge_property_recorder, variant, url):
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
         model="paddleocr",
         variant=variant,
         source=Source.PADDLE,
-        task=Task.TEXT_RECOGNITION,
+        task=Task.SCENE_TEXT_RECOGNITION,
     )
-    forge_property_recorder.record_model_name(module_name)
+
     forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
     # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)

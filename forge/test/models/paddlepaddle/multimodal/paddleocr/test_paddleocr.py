@@ -9,67 +9,50 @@ import cv2
 
 import forge
 from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
+
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 
 from test.utils import fetch_paddle_model
 from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import bitmap_from_probmap, draw_boxes, cut_boxes, polygons_from_bitmap, process_and_pad_images
-from enum import Enum
-import argparse
 
 model_urls = {
     "v4": {
-        "det": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar"},
-            "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_det_infer.tar"},
-            "ml": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv3/multilingual/Multilingual_PP-OCRv3_det_infer.tar"},
-        },
-        "rec": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar",
-                   "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/ppocr_keys_v1.txt"},
-            "en": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar",
-                     "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"},
-            "ko": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/korean_PP-OCRv4_rec_infer.tar",
-                       "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/korean_dict.txt"},
-            "ja": {"url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/japan_PP-OCRv4_rec_infer.tar",
-                   "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/japan_dict.txt"},
-        },
-    },
-    "v0": {
-        "det": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_det_infer.tar"},
-            "en": {
-                "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar"
-            },
-        },
-        "rec": {
-            "ch": {"url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_rec_infer.tar",
-                   "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/ppocr_keys_v1.txt"},
-            "en": {
-                "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_number_mobile_v2.0_rec_infer.tar",
-                "dict_path": "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/en_dict.txt"
-            },
-        },
-    },
+        "det": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar",
+        "rec": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar"
+    }
 }
 
 cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", "cached_models")
+dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/ppocr_keys_v1.txt"
 os.makedirs(cache_dir, exist_ok=True)
 
-class PaddleOCRVariant(Enum):
-    PP_OCR = "v0"
-    PP_OCRv4 = "v4"
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant,det_url,rec_url",
+[
+    (variant, urls["det"], urls["rec"])
+    for variant, urls in model_urls.items()
+])
+@pytest.mark.parametrize("image_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"])
+@pytest.mark.parametrize("cache_dir", [cache_dir])
+@pytest.mark.parametrize("dict_path", [dict_path])
+# Uncomment if you want to save results
+# @pytest.mark.parametrize("results_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/results"])
+def test_paddleocr_det_on_cpu_rec_on_tt(forge_property_recorder, variant, det_url, rec_url, dict_path, image_path, cache_dir, results_path=None):
+    # Record model details
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PADDLE,
+        model="paddleocr",
+        variant=f"{variant}_det_on_cpu_rec_on_tt",
+        source=Source.PADDLE,
+        task=Task.SCENE_TEXT_RECOGNITION,
+    )
 
-class Language(Enum):
-    CHINESE = "ch"
-    ENGLISH = "en"
-    KOREAN = "ko"
-    JAPANESE = "ja"
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_model_name(module_name)
 
-def paddleocr(variant, language, image_path, results_path, cache_dir):
     # Fetch model
-    det_url = model_urls[variant]["det"][language]["url"]
-    rec_url = model_urls[variant]["rec"][language]["url"]
-    dict_path = model_urls[variant]["rec"][language]["dict_path"]
-
     detection_model = fetch_paddle_model(det_url, cache_dir)
     recognition_model = fetch_paddle_model(rec_url, cache_dir)
 
@@ -86,23 +69,31 @@ def paddleocr(variant, language, image_path, results_path, cache_dir):
     # Visualize prediction as heatmap
     heatmap = (pred[0, 0].numpy() * 255).astype("uint8")
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
+    if results_path:
+        cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
 
     bitmap = bitmap_from_probmap(pred)
     dest_height, dest_width = image.shape[1:]
     boxes, _ = polygons_from_bitmap(bitmap, dest_height=dest_height, dest_width=dest_width)
 
+    # Make sure results_path exists
+    if results_path:
+        os.makedirs(results_path, exist_ok=True)
+
     # Visualize bitmap
     bitmap_visual = (bitmap * 255).astype("uint8")
-    cv2.imwrite(f"{results_path}/bitmap.jpg", bitmap_visual)
+    if results_path:
+        cv2.imwrite(f"{results_path}/bitmap.jpg", bitmap_visual)
 
     # Visualize polygons over image
     img = draw_boxes(resized_image, boxes)
-    cv2.imwrite(f"{results_path}/det_clouds.jpg", img)
+    if results_path:
+        cv2.imwrite(f"{results_path}/det_clouds.jpg", img)
 
     # Visualize boxes over image
     box_cuts, img = cut_boxes(resized_image, boxes)
-    cv2.imwrite(f"{results_path}/det_boxes.jpg", img)
+    if results_path:
+        cv2.imwrite(f"{results_path}/det_boxes.jpg", img)
 
     # Unify image sizes for recognition with compiled model
     padded_box_cuts = process_and_pad_images(box_cuts, img_size = (dest_height, dest_width))
@@ -113,14 +104,7 @@ def paddleocr(variant, language, image_path, results_path, cache_dir):
     inputs = [image_0]
 
     # Compile model
-    compiled_model = forge.compile(recognition_model, inputs)
-
-    # Verify data on sample input
-    verify(
-        inputs,
-        recognition_model,
-        compiled_model
-    )
+    compiled_model = forge.compile(recognition_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder)
 
     # Load dictionary
     with open(dict_path, "r", encoding="utf-8") as f:
@@ -130,40 +114,28 @@ def paddleocr(variant, language, image_path, results_path, cache_dir):
 
     # Recognition - recognize text in each box
     for i, box_image in enumerate(padded_box_cuts):
-        # Save image of each box
-        cv2.imwrite(f"{results_path}/box_{i}.jpg", box_image)
+        if results_path:
+            # Save image of each box
+            cv2.imwrite(f"{results_path}/box_{i}.jpg", box_image)
 
         # Preprocess box image
         box_image = box_image.transpose(2, 0, 1).astype("float32")/255.0
         box_image = paddle.to_tensor([box_image])
 
-        # Run compiled recognition model
-        output = compiled_model(box_image)[0].numpy()
+        # Run and verify compiled recognition model
+        _, co_output = verify(
+            [box_image],
+            recognition_model,
+            compiled_model,VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.9)),
+            forge_property_handler=forge_property_recorder,
+        )
+        
+        output = co_output[0].numpy()
 
         # Decode output
         pred = output.argmax(axis=2)[0]
         pred_str = "".join([charset[i] for i in pred])
         print(f"Predicted text for box {i}: {pred_str}")
 
-if __name__ == "__main__":
-    # Example usage:
-    # python test_paddleocr.py --variant PP-OCRv4 --language en --image_path /path/to/image.jpg --results_path /path/to/results
-
-    parser = argparse.ArgumentParser(description="Run PaddleOCR on an image.")
-    parser.add_argument("--variant", type=str, required=True, choices=[v.value for v in PaddleOCRVariant],
-                        help="PaddleOCR variant to use (e.g., PP-OCR, PP-OCRv4).")
-    parser.add_argument("--language", type=str, required=True, choices=[l.value for l in Language],
-                        help="Language to use for OCR (e.g., ch, en, ko, ja).")
-    parser.add_argument("--image_path", type=str, required=True, help="Path to the input image.")
-    parser.add_argument("--results_path", type=str, required=True, help="Path to save the results.")
-    args = parser.parse_args()
-
-    paddleocr(
-        variant=args.variant,
-        language=args.language,
-        image_path=args.image_path,
-        results_path=args.results_path,
-        cache_dir=cache_dir
-    )
 
  
