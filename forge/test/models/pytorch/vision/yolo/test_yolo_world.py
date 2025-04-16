@@ -4,8 +4,6 @@
 
 
 import pytest
-import torch
-from ultralytics import YOLO
 
 import forge
 from forge._C import DataFormat
@@ -20,19 +18,14 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import get_test_input
+from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
+    WorldModelWrapper,
+    get_test_input,
+)
 
 
-class YoloWorldWrapper(torch.nn.Module):
-    def __init__(self, model_url: str):
-        super().__init__()
-        self.yolo = YOLO(model_url)
-
-    def forward(self, x):
-        return self.yolo.model.forward(x, augment=False)
-
-
-@pytest.mark.xfail
+@pytest.mark.push
+# @pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference():
 
@@ -52,8 +45,8 @@ def test_yolo_world_inference():
     framework_model = YoloWorldWrapper(model_url).to(torch.bfloat16)
     inputs = [get_test_input().to(torch.bfloat16)]
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    framework_model = WorldModelWrapper(model_url)
+    inputs = [get_test_input()]
 
     # Compile with Forge
     compiled_model = forge.compile(
