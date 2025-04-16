@@ -66,8 +66,9 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     "variant",
     [
         pytest.param(
-            "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.xfail],
+            "microsoft/swinv2-tiny-patch4-window8-256"
+            # ,
+            # marks=[pytest.mark.xfail],
         ),
     ],
 )
