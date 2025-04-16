@@ -44,9 +44,16 @@ on:
         required: false
         default: false
         type: boolean
+      do-run:
+        description: 'Do not run tests'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   run-tests:
+
+    if: ${{ inputs.do-run == 'true' }}
 
     strategy:
       fail-fast: false

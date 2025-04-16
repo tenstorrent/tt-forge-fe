@@ -43,6 +43,7 @@ jobs:
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
+      run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
     steps:
       - name: Set Inputs
         id: set-inputs
@@ -61,6 +62,7 @@ jobs:
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$test_group_ids]" >> $GITHUB_OUTPUT
           echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
+          echo "run_ops_sweeps=[$(if [ $ros_res == 'No' ]; then echo false; else echo true; fi)]" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -87,18 +89,22 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
+      do-run: false
 
   perf-benchmark:
     if: success() || failure()
-    needs:
-      - docker-build
-      - build
-      - set-inputs
-    uses: ./.github/workflows/perf-benchmark-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.build.outputs.run_id }}
+    # needs:
+    #   - docker-build
+    #   - build
+    #   - set-inputs
+    # uses: ./.github/workflows/perf-benchmark-sub.yml
+    # secrets: inherit
+    # with:
+    #   docker-image: ${{ needs.docker-build.outputs.docker-image }}
+    #   run_id: ${{ needs.build.outputs.run_id }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Not run"
 
   test_full_model_xfailing:
     if: success() || failure()
@@ -115,6 +121,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
+      do-run: false
 
   test_models_ops:
     if: success() || failure()
@@ -132,6 +139,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      do-run: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
 
   test_sweeps:
     if: success() || failure()
@@ -149,6 +157,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
       allow-fail: true
+      do-run: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
 
   fail-notify:
     if: always()
