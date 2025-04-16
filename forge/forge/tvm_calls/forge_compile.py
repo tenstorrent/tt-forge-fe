@@ -822,10 +822,10 @@ def compile_onnx_for_forge(
     framework_outputs = extract_framework_model_outputs(
         framework="onnx",
         model=onnx_mod,
-        onnx_path=onnx_path,
         inputs=inputs,
         verify_tvm_compile=verify_cfg.verify_tvm_compile,
         input_dict=input_dict,
+        onnx_session=ort_sess,
     )
 
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
