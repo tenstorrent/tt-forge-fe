@@ -5,7 +5,7 @@
 
 set -e
 
-REPO=ghcr.io/$REPO/tenstorrent/tt-forge-fe
+REPO=ghcr.io/tenstorrent/tt-forge-fe
 BASE_IMAGE_NAME=tt-forge-fe-base-ubuntu-22-04
 CI_IMAGE_NAME=tt-forge-fe-ci-ubuntu-22-04
 BASE_IRD_IMAGE_NAME=tt-forge-fe-base-ird-ubuntu-22-04
