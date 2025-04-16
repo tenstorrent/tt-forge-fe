@@ -49,7 +49,6 @@ from forge.tvm_calls.forge_utils import (
     trace_to_origin,
     has_op,
 )
-import hashlib
 
 dev_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "tt"}
 cpu_json_graph = {"functions": {}, "graph": "", "param_names": {}, "device": "cpu"}
@@ -515,12 +514,6 @@ def compile_pytorch_for_forge(
         convert_params = compiler_cfg.convert_framework_params_to_tvm
         mod, params = tvm.relay.frontend.from_pytorch(traced_model, input_structure, do_convert_params=convert_params)
 
-    graph_string = traced_model.graph.str().encode("utf-8")
-    m = hashlib.sha256()
-    m.update(graph_string)
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="pytorch")
-    if cached_graphs is not None:
-        return cached_graphs, flattened_inputs
     if forge_property_handler is not None:
         forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
     logger.trace("From PyTorch")
@@ -835,13 +828,6 @@ def compile_onnx_for_forge(
         input_dict=input_dict,
     )
 
-    graph_string = str(onnx_mod).encode("utf-8")
-    m = hashlib.sha256()
-    m.update(graph_string)
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="onnx")
-    if cached_graphs is not None:
-        return cached_graphs, inputs
-
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
     mod = relay.transform.DynamicToStatic()(mod)
     if forge_property_handler is not None:
@@ -870,7 +856,7 @@ def compile_onnx_for_forge(
     )
 
     weight_names = [weight.name for weight in onnx_mod.graph.initializer]
-    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, weight_names, graph_hash=m.hexdigest())
+    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, weight_names, graph_hash="")
 
     return json_graphs, inputs
 
@@ -910,13 +896,6 @@ def compile_tflite_for_forge(
         input_shape_dict[details["name"]] = list(details["shape"])
         input_dict[details["name"]] = inputs[i]
 
-    graph_string = str(module).encode("utf-8")
-    m = hashlib.sha256()
-    m.update(graph_string)
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="tflite")
-    if cached_graphs is not None:
-        return cached_graphs, inputs
-
     mod, params = relay.frontend.from_tflite(
         tflite_model,
         shape_dict=input_shape_dict,
@@ -948,7 +927,7 @@ def compile_tflite_for_forge(
         forge_property_handler=forge_property_handler,
     )
 
-    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=m.hexdigest())
+    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash="")
 
     return json_graphs, inputs
 
@@ -1052,12 +1031,6 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
         inputs=inputs,
     )
 
-    m = hashlib.sha256()
-    m.update(str(graph_def).encode("utf-8"))
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="jax")
-    if cached_graphs is not None:
-        return cached_graphs, flattened_inputs
-
     outputs = [output.name for output in tf_func.outputs]
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=outputs)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
@@ -1115,7 +1088,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
 
     weight_names = list(flatten_params(model_params).keys())
     json_graphs = extract_graphs(
-        partitioned_mod, forge_params, flattened_input_names, weight_names, param_name_lookup, graph_hash=m.hexdigest()
+        partitioned_mod, forge_params, flattened_input_names, weight_names, param_name_lookup, graph_hash=""
     )
 
     return json_graphs, flattened_inputs
@@ -1155,12 +1128,6 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
         inputs=inputs,
     )
 
-    m = hashlib.sha256()
-    m.update(str(graph_def).encode("utf-8"))
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="tensorflow")
-    if cached_graphs is not None:
-        return cached_graphs, flattened_inputs
-
     flattened_outputs = flatten_structured_output([full_model.structured_outputs])
     # Generate TVM module
     outputs = [x.name for x in flattened_outputs]
@@ -1198,7 +1165,7 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
     # Extract Graphs (TT, CPU, ...)
     weight_names = [weight.name for weight in tfmod.weights]
     json_graphs = extract_graphs(
-        partitioned_mod, forge_params, flattened_input_names, weight_names, param_name_lookup, graph_hash=m.hexdigest()
+        partitioned_mod, forge_params, flattened_input_names, weight_names, param_name_lookup, graph_hash=""
     )
 
     return json_graphs, flattened_inputs
@@ -1232,12 +1199,6 @@ def compile_tf_graphdef_for_forge(
     for node in graph_def.node:
         if "input" in node.name and node.op == "Placeholder":
             input_names.append(node.name)
-
-    m = hashlib.sha256()
-    m.update(str(graph_def).encode("utf-8"))
-    cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="tf_graphdef")
-    if cached_graphs is not None:
-        return cached_graphs
 
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=output_list_)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
@@ -1277,7 +1238,7 @@ def compile_tf_graphdef_for_forge(
     if forge_property_handler is not None:
         forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
-    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=m.hexdigest())
+    json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash="")
 
     return json_graphs
 
