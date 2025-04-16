@@ -21,7 +21,8 @@ build_and_push() {
     local dockerfile=$2
     local from_image=$3
     
-    curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://ghcr.io/v2/tenstorrent/$image_name/tags/list
+    GHCR_TOKEN=$(echo ${{ secrets.GITHUB_TOKEN }} | base64)
+    curl -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/tenstorrent/$image_name/tags/list
 
     # Prepare build arguments
     build_args=("--build-arg" "FROM_TAG=$DOCKER_TAG")
