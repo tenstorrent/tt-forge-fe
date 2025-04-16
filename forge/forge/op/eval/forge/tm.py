@@ -1057,6 +1057,229 @@ def decompose(type, attr, dc, inputs):
         dc.fuse(result)
         return
 
+    if type == "pad":
+        if all([x == 0 for x in attr[0:-2]]):
+            # Pad size is 0
+            result = dc.op(Nop.create(), [inputs[0]])
+            dc.fuse(result)
+
+        activations = inputs[0]
+        mode_idx = attr[-2]
+        channel_last = attr[-1]
+        if channel_last:
+            r = activations.shape[-3]
+            r_dim_axis = -3
+            c = activations.shape[-2]
+            c_dim_axis = -2
+        else:
+            r = activations.shape[-2]
+            r_dim_axis = -2
+            c = activations.shape[-1]
+            c_dim_axis = -1
+
+        # Find out if padding exceeds tile boundary
+        # R, C are flipped because pytorch pad starts from last axis
+        if len(attr) == 4:
+            total_padding_c = attr[0] + attr[1]
+            total_padding_r = 0
+        elif len(attr) == 6:
+            total_padding_c = attr[0] + attr[1]
+            total_padding_r = attr[2] + attr[3]
+        else:
+            raise RuntimeError("Forge only support Pad with either 2 or 4 attributes")
+
+        # Lower into concats
+        left, right, top, bottom = 0, 0, 0, 0
+        if len(attr) == 4:
+            left, right, _, _ = attr
+
+        elif len(attr) == 6:
+            left, right, top, bottom, _, _ = attr
+        else:
+            raise RuntimeError("Forge only support Pad with either 3 or 5 attributes")
+
+        if mode_idx == 1:  # 'replicate' mode
+            result = activations
+
+            if channel_last:
+                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+
+                orig_shape = result.shape
+                result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                spm = create_pad_replicate_sparse_picker(c, r, top, bottom, left, right)
+                spm = dc.tensor(spm)
+                result = dc.op("sparse_matmul", [spm, result])
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                result = dc.op(
+                    "reshape",
+                    [result],
+                    (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
+                )
+
+                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+            else:
+                orig_shape = result.shape
+                if len(orig_shape) == 2:
+                    result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
+                else:
+                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
+                spm = dc.tensor(spm)
+                result = dc.op("sparse_matmul", [spm, result])
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                if len(orig_shape) == 2:
+                    result = dc.op(
+                        "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+                    )
+                else:
+                    result = dc.op(
+                        "reshape",
+                        [result],
+                        (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
+                    )
+
+            dc.fuse(result)
+            return
+
+        elif mode_idx == 0:  # 'constant' mode
+            c_dim_axis = -2 if channel_last else -1
+            r_dim_axis = -3 if channel_last else -2
+
+            # On right or bottom, we can concat all the way to TILE boundary
+            result = activations
+            if left > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[c_dim_axis] = left
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
+
+            if right > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[c_dim_axis] = (
+                    TILE_DIM if pad_shape[c_dim_axis] % TILE_DIM == 0 and right < TILE_DIM else right
+                )
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
+
+            if top > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[r_dim_axis] = top
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
+
+            if bottom > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[r_dim_axis] = (
+                    TILE_DIM if pad_shape[r_dim_axis] % TILE_DIM == 0 and bottom < TILE_DIM else bottom
+                )
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
+
+            result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
+            if channel_last:
+                result = dc.op("select", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
+            else:
+                result = dc.op("narrow", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
+
+            dc.fuse(result)
+            return
+
+        elif mode_idx == 2:
+            # Reflect mode
+            result = activations
+
+            if left > c - 1 or right > c - 1:
+                raise RuntimeError(f"Both left padding ({left}) and right padding ({right}) has to be max {c - 1} each")
+
+            if top > r - 1 or bottom > r - 1:
+                raise RuntimeError(f"Both top padding ({top}) and bottom padding ({bottom}) has to be max {r - 1} each")
+
+            # Step 1: Extract left and right patches which are on the c axis (width)
+            left_patch = dc.op_with_named_attrs(
+                "index",
+                [result],
+                {"dim": c_dim_axis, "start": 1, "stop": left + 1, "stride": 1},
+                (c_dim_axis, 1, left + 1, 1),
+            )
+            right_patch = dc.op_with_named_attrs(
+                "index",
+                [result],
+                {"dim": c_dim_axis, "start": c - right - 1, "stop": c - 1, "stride": 1},
+                (c_dim_axis, c - right - 1, c - 1, 1),
+            )
+
+            # Step 2: Mirror these patches horizontally
+            left_indices = torch.arange(left - 1, -1, -1, dtype=torch.int64)
+            left_indices_tensor = dc.tensor(left_indices)
+            left_patch_mirrored = dc.op("adv_index", [left_patch, left_indices_tensor], (c_dim_axis,))
+
+            right_indices = torch.arange(right - 1, -1, -1, dtype=torch.int64)
+            right_indices_tensor = dc.tensor(right_indices)
+            right_patch_mirrored = dc.op("adv_index", [right_patch, right_indices_tensor], (c_dim_axis,))
+
+            # TODO: Implement reflect mode
+            raise NotImplementedError("Reflect mode is not implemented yet")
+
+            # if channel_last:
+            #     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+
+            #     orig_shape = result.shape
+            #     result = dc.op_with_named_attrs(
+            #         "reshape",
+            #         [result],
+            #         {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
+            #         (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
+            #     )
+            #     result = dc.op(TransposeTM.create(-2, -1), [result])
+            #     spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
+            #     spm = dc.tensor(spm.to_dense())
+            #     result = dc.op("matmul", [spm, result])
+            #     result = dc.op(TransposeTM.create(-2, -1), [result])
+            #     result = dc.op_with_named_attrs(
+            #         "reshape",
+            #         [result],
+            #         {
+            #             "shape": (
+            #                 1,
+            #                 orig_shape[-3],
+            #                 orig_shape[-1] + total_padding_r,
+            #                 orig_shape[-2] + total_padding_c,
+            #             )
+            #         },
+            #         (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
+            #     )
+
+            #     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+            # else:
+            #     orig_shape = result.shape
+            #     if len(orig_shape) == 2:
+            #         shape = (1, orig_shape[-2] * orig_shape[-1])
+            #     else:
+            #         shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
+
+            #     result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
+            #     result = dc.op(TransposeTM.create(-2, -1), [result])
+            #     spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
+            #     spm = dc.tensor(spm.to_dense())
+            #     result = dc.op("matmul", [spm, result])
+            #     result = dc.op(TransposeTM.create(-2, -1), [result])
+
+            #     if len(orig_shape) == 2:
+            #         shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+            #     else:
+            #         shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+
+            #     result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
+
+            # dc.fuse(result)
+            # return
+
     if type == "broadcast":
         if attr[1] == 1:
             dc.fuse(dc.op(Nop.create(), [inputs[0]]))
