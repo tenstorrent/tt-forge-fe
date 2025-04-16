@@ -36,6 +36,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 768), torch.float32)],
         {
             "model_name": [
+                "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
                 "pt_vilt_dandelin_vilt_b32_mlm_mlm_hf",
                 "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",
                 "pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf",
@@ -47,28 +48,40 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
+    (
+        Tanh0,
+        [((1, 384), torch.float32)],
+        {"model_name": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
+    ),
     (Tanh0, [((1, 32, 6144), torch.float32)], {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99}),
-    (Tanh0, [((1, 8, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
+    (Tanh0, [((1, 16, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99}),
     (
         Tanh0,
         [((1, 207, 256000), torch.float32)],
-        {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
+        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf", "pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
     ),
-    (Tanh0, [((1, 16, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99}),
+    (Tanh0, [((1, 8, 207, 207), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Tanh")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Tanh")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -90,6 +103,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

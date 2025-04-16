@@ -3,20 +3,27 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, List, Dict, TypeAlias
+from typing import Optional, Tuple, List, Dict, TypeAlias, get_args
 from collections import deque, OrderedDict
 import itertools
 
+import flax
+import jax.numpy as jnp
+import numpy as np
+import onnx
+from onnx import numpy_helper
 import paddle
 import torch
 import tensorflow as tf
 from loguru import logger
+from transformers import FlaxPreTrainedModel
 
 import forge
 from .forgeglobal import lazy_trace_data
 from .tensor import (
     SomeTensor,
     Tensor,
+    to_pt_tensor,
     to_pt_tensors,
     to_tf_tensors,
     to_tf_variables,
@@ -25,10 +32,6 @@ from .tensor import (
     forge_dataformat_to_pytorch_dtype,
 )
 from .parameter import Parameter
-import onnx
-from onnx import numpy_helper
-import jax.numpy as jnp
-import numpy as np
 
 from forge.tvm_utils import map_pt_dtype_to_tf, flatten_structured_output
 
@@ -361,7 +364,7 @@ class OnnxModule(Module):
     A wrapper around a Onnx module.
     """
 
-    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto):
+    def __init__(self, name: str, module: onnx.onnx_ml_pb2.ModelProto, onnx_path: Optional[str] = None):
         """
         Create Onnx module wrapper.
 
@@ -369,12 +372,15 @@ class OnnxModule(Module):
         ----------
         module: onnx.onnx_ml_pb2.ModelProto
             onnx module
+        onnx_path: Optional[str]
+            Path to the ONNX model file. Used to directly load the model when its size exceeds 2GB (with external data).
         """
         super().__init__(name)
 
         if not isinstance(module, onnx.onnx_ml_pb2.ModelProto):
             raise RuntimeError("onnx.onnx_ml_pb2.ModelProto module expected, got " + str(type(module)))
         self.module = module
+        self.onnx_path = onnx_path
 
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
@@ -386,9 +392,20 @@ class OnnxModule(Module):
         so.inter_op_num_threads = 2
         so.intra_op_num_threads = 2
 
-        module_bytes = self.module.SerializeToString()
+        if self.onnx_path is None:
+            try:
+                model = self.module.SerializeToString()
+            except Exception as e:
+                raise RuntimeError(
+                    "The model exceeds the 2GB limit and cannot be serialized directly. \n"
+                    "To proceed, please provide an 'onnx_path' to load the model\n"
+                    f"Original error: {e}"
+                )
+        else:
+            model = self.onnx_path
+
         ort_sess = ort.InferenceSession(
-            module_bytes,
+            model,
             sess_options=so,
             use_deterministic_compute=True,
             providers=["CPUExecutionProvider"],
@@ -565,7 +582,18 @@ class JaxModule(Module):
         self.module = module
 
     def call(self, *args, **kwargs):
-        raise NotImplementedError
+        return self.forward(*args, **kwargs)
+
+    def forward(self, *args, **kwargs):
+        args = [
+            jnp.asarray(
+                x.detach().numpy(),
+            )
+            for x in args
+        ]
+        outputs = self.module(*args, **kwargs)
+        outputs = flatten_structured_output([outputs])
+        return to_pt_tensors(outputs)
 
     def backward(self, *args):
         raise NotImplementedError
@@ -573,21 +601,29 @@ class JaxModule(Module):
     def set_parameters(self, **kwargs):
         raise NotImplementedError
 
-    def cpu_eval_forward(self, *args, **kwargs) -> Tuple[tf.Tensor]:
-        args = [
-            jnp.asarray(
-                x.detach().numpy(),
-            )
-            for x in args
-        ]
-        outputs = self.module(*args)
-
-        outputs = to_pt_tensors(outputs)
-        outputs = flatten_structured_output([outputs])
-        return outputs
+    def cpu_eval_forward(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def get_parameters(self) -> List[Parameter]:
-        return []  # TODO
+        parameters = []
+
+        def _set_parameters(d, prefix=""):
+            for key, value in d.items():
+                if isinstance(value, (dict, flax.core.frozen_dict.FrozenDict)):
+                    _set_parameters(value, f"{prefix}{key}." if prefix else key + ".")
+                else:
+                    param_tensor = to_pt_tensor(value)
+                    parameters.append(Parameter(param_tensor, requires_grad=False, name=f"{prefix}{key}"))
+
+        if hasattr(self.module, "params"):  # Handle transformers models
+            _set_parameters(self.module.params)
+        elif hasattr(self.module, "variables"):  # Handle regular Flax modules
+            if "params" in self.module.variables:
+                _set_parameters(self.module.variables["params"])
+            if "batch_stats" in self.module.variables:
+                _set_parameters(self.module.variables["batch_stats"])
+
+        return parameters
 
 
 class ForgeModule(Module):
@@ -965,11 +1001,21 @@ def wrap_module(module, name: str) -> Module:
         return PaddleModule(name, module)
     elif isinstance(module, onnx.onnx_ml_pb2.ModelProto):
         return OnnxModule(name, module)
+    elif isinstance(module, forge.module.OnnxModule):
+        return module
+    elif isinstance(module, (flax.linen.Module, FlaxPreTrainedModel)):
+        return JaxModule(name, module)
     else:
         raise RuntimeError("Unsupported module type: " + str(type(module)))
 
 
 FrameworkModule: TypeAlias = (
-    torch.nn.Module | tf.keras.Model | paddle.nn.Layer | onnx.onnx_ml_pb2.ModelProto | OnnxModule
+    torch.nn.Module
+    | tf.keras.Model
+    | paddle.nn.Layer
+    | onnx.onnx_ml_pb2.ModelProto
+    | OnnxModule
+    | flax.linen.Module
+    | FlaxPreTrainedModel
 )
 AnyModule: TypeAlias = FrameworkModule | ForgeModule

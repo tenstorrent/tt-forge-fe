@@ -56,7 +56,7 @@
     <tr>
       <th>4</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -67,18 +67,18 @@
     <tr>
       <th>5</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -113,44 +113,44 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>10</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)</td>
       <td>dtype : torch.int32</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>11</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8</td>
+      <td></td>
     </tr>
     <tr>
       <th>12</th>
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=int32)</td>
       <td>dtype : torch.bool</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>13</th>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 8, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 8, 256, 64), dtype=float32)</td>
       <td>axis : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Concatenate</td>
-      <td>Operand(type=Activation, shape=(1, 8, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 8, 256, 64), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)</td>
       <td>axis : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -212,11 +212,11 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 256), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(128256, 4096), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>19</th>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
       <td>dim : -1<br>start : 64<br>stop : 128<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 64<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
       <td>dim : -1<br>start : 64<br>stop : 128<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 64<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -368,67 +368,12 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>33</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 1), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>Multiply</td>
-      <td>Operand(type=Parameter, shape=(4096,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>36</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 128), dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>37</th>
-      <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
-      <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>38</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 8, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 128), dtype=float32)</td>
       <td></td>
@@ -439,7 +384,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>39</th>
+      <th>34</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 8, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
       <td></td>
@@ -450,9 +395,64 @@
       <td></td>
     </tr>
     <tr>
+      <th>35</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Multiply</td>
+      <td>Operand(type=Constant, name=const_100, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Multiply</td>
+      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Multiply</td>
+      <td>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 1), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Multiply</td>
+      <td>Operand(type=Parameter, shape=(4096,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 4096), dtype=float32)</td>
+      <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
       <th>40</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 128), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_100, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,17 +815,6 @@
     <tr>
       <th>73</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 256, 32, 128), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>74</th>
-      <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 64, 256), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
@@ -835,9 +824,20 @@
       <td></td>
     </tr>
     <tr>
-      <th>75</th>
+      <th>74</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 256, 8, 128), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 256, 32, 128), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

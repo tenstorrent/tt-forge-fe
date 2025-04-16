@@ -42,6 +42,51 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Reduceavg0,
+        [((100, 8, 9240), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((100, 8, 4480), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((100, 8, 8640), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((100, 8, 17280), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((100, 8, 34240), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
         [((2, 13, 768), torch.float32)],
         {
             "model_name": [
@@ -82,18 +127,27 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 10, 3072), torch.float32)],
+        [((1, 10, 2048), torch.float32)],
         {
-            "model_name": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
+            "model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
         Reduceavg0,
-        [((1, 10, 2048), torch.float32)],
+        [((1, 10, 3072), torch.float32)],
         {
-            "model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
+            "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 207, 3584), torch.float32)],
+        {
+            "model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -118,15 +172,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 207, 3584), torch.float32)],
-        {
-            "model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
         [((1, 107, 2048), torch.float32)],
         {
             "model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -145,14 +190,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 4, 4096), torch.float32)],
+        [((1, 256, 4096), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -160,11 +204,26 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 4, 2048), torch.float32)],
+        [((1, 256, 2048), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 4, 4096), torch.float32)],
+        {
+            "model_name": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -181,25 +240,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 256, 4096), torch.float32)],
+        [((1, 4, 2048), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
-        [((1, 256, 2048), torch.float32)],
-        {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -234,18 +279,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 256, 3072), torch.float32)],
-        {
-            "model_name": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
         [((1, 5, 3072), torch.float32)],
         {
             "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -264,9 +297,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 6, 1024), torch.float32)],
+        [((1, 256, 3072), torch.float32)],
         {
-            "model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
+            "model_name": [
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -282,11 +318,32 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 35, 2048), torch.float32)],
+        [((1, 6, 1024), torch.float32)],
+        {
+            "model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 35, 1536), torch.float32)],
         {
             "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 35, 3584), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -303,11 +360,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 35, 1536), torch.float32)],
+        [((1, 35, 2048), torch.float32)],
         {
             "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -315,12 +372,18 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 35, 3584), torch.float32)],
+        [((1, 39, 2048), torch.float32)],
         {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-            ],
+            "model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 29, 2048), torch.float32)],
+        {
+            "model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -345,9 +408,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 13, 3584), torch.float32)],
+        [((1, 39, 896), torch.float32)],
         {
-            "model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
+            "model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -363,15 +426,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 39, 896), torch.float32)],
-        {
-            "model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
         [((1, 29, 896), torch.float32)],
         {
             "model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
@@ -381,18 +435,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 29, 2048), torch.float32)],
+        [((1, 13, 3584), torch.float32)],
         {
-            "model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
-        [((1, 39, 2048), torch.float32)],
-        {
-            "model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
+            "model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -409,9 +454,9 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Reduceavg0,
-            [((1, 1, 1024), torch.float32)],
+            [((1, 1, 768), torch.float32)],
             {
-                "model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
+                "model_name": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
                 "pcc": 0.99,
                 "op_params": {"dim": "-1", "keep_dim": "True"},
             },
@@ -420,9 +465,9 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 61, 1024), torch.float32)],
+        [((1, 61, 768), torch.float32)],
         {
-            "model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
+            "model_name": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
         },
@@ -451,9 +496,9 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Reduceavg0,
-            [((1, 1, 768), torch.float32)],
+            [((1, 1, 1024), torch.float32)],
             {
-                "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+                "model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
                 "pcc": 0.99,
                 "op_params": {"dim": "-1", "keep_dim": "True"},
             },
@@ -462,24 +507,11 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 61, 768), torch.float32)],
+        [((1, 61, 1024), torch.float32)],
         {
-            "model_name": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
+            "model_name": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg1,
-        [((1, 196, 1024), torch.float32)],
-        {
-            "model_name": [
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-2", "keep_dim": "True"},
         },
     ),
     (
@@ -488,11 +520,24 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 196, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-2", "keep_dim": "True"},
@@ -618,8 +663,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -633,8 +678,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -648,8 +693,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -663,8 +708,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -678,8 +723,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -693,8 +738,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -941,8 +986,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -955,8 +1000,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 72, 1, 28), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -969,8 +1014,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 120, 28, 28), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -983,8 +1028,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 120, 1, 28), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -997,8 +1042,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -1011,8 +1056,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 960, 1, 7), torch.float32)],
         {
             "model_name": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
             ],
@@ -1152,9 +1197,9 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_mit_b4_img_cls_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
             ],
             "pcc": 0.99,
@@ -1166,9 +1211,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-2", "keep_dim": "True"},
@@ -1179,9 +1224,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256, 1, 56), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -1192,9 +1237,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 512, 28, 28), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-2", "keep_dim": "True"},
@@ -1205,9 +1250,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 512, 1, 28), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -1218,9 +1263,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 768, 14, 14), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-2", "keep_dim": "True"},
@@ -1231,9 +1276,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 768, 1, 14), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -1244,9 +1289,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 7, 7), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-2", "keep_dim": "True"},
@@ -1257,9 +1302,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1024, 1, 7), torch.float32)],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"dim": "-1", "keep_dim": "True"},
@@ -1271,14 +1316,21 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "ReduceAvg")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("ReduceAvg")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -1300,6 +1352,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

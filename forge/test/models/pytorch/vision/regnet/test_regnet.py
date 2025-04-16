@@ -5,18 +5,18 @@ import pytest
 from transformers import RegNetForImageClassification, RegNetModel
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.regnet.utils.image_utils import preprocess_input_data
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="regnet",
         variant=variant,
@@ -26,7 +26,6 @@ def test_regnet(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load RegNet model
     framework_model = RegNetModel.from_pretrained("facebook/regnet-y-040", return_dict=False)
@@ -45,12 +44,12 @@ def test_regnet(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
 def test_regnet_img_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="regnet",
         variant=variant,
@@ -60,7 +59,6 @@ def test_regnet_img_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")
@@ -97,10 +95,7 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param(
-        "regnet_y_400mf",
-        marks=[pytest.mark.xfail],
-    ),
+    "regnet_y_400mf",
     "regnet_y_800mf",
     "regnet_y_1_6gf",
     "regnet_y_3_2gf",
@@ -119,14 +114,12 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_regnet_torchvision(forge_property_recorder, variant):
 
-    if variant != "regnet_y_400mf":
-        pytest.skip("Skipping this variant; only testing the small variant(regnet_y_400mf) for now.")
-
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="regnet",
         variant=variant,
@@ -136,7 +129,6 @@ def test_regnet_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

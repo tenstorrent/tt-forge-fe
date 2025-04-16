@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 variants = [
@@ -33,7 +33,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     random.seed(0)
 
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="resnet",
         variant="50",
@@ -41,7 +41,6 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
         task=Task.IMAGE_CLASSIFICATION,
     )
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Export model to ONNX
     torch_model = ResNetForImageClassification.from_pretrained(variant)
@@ -57,7 +56,9 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
 
     # Compile model
     input_sample = [input_sample]
-    compiled_model = forge.compile(onnx_model, input_sample, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Verify data on sample input
     verify(

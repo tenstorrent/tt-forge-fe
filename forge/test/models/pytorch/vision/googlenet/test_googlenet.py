@@ -10,11 +10,9 @@ from PIL import Image
 from torchvision import models, transforms
 
 import forge
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -55,14 +53,12 @@ def test_googlenet_paddle(forge_property_recorder):
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_googlenet_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
-        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
-    )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model

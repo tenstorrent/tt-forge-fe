@@ -9,12 +9,60 @@ from transformers import (
     PhiForCausalLM,
     PhiForSequenceClassification,
     PhiForTokenClassification,
+    PhiModel,
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+
+def _prepare_4d_causal_attention_mask_with_cache_position(
+    self,
+    attention_mask: torch.Tensor,
+    sequence_length: int,
+    target_length: int,
+    dtype: torch.dtype,
+    device: torch.device,
+    cache_position: torch.Tensor,
+    batch_size: int,
+    **kwargs,
+):
+
+    if attention_mask is not None and attention_mask.dim() == 4:
+        # In this case we assume that the mask comes already in inverted form and requires no inversion or slicing.
+        causal_mask = attention_mask
+    else:
+        min_dtype = torch.finfo(dtype).min
+        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=device)
+        if sequence_length != 1:
+            causal_mask = torch.triu(causal_mask, diagonal=1)
+        causal_mask *= torch.arange(target_length, device=device) > cache_position.reshape(-1, 1)
+        causal_mask = causal_mask[None, None, :, :].expand(batch_size, 1, -1, -1)
+        if attention_mask is not None:
+            causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
+            mask_length = attention_mask.shape[-1]
+            padding_mask = causal_mask[:, :, :, :mask_length] + attention_mask[:, None, None, :]
+            padding_mask = padding_mask == 0
+
+            # Replace Implace Slice Update
+            # causal_mask[:, :, :, :mask_length] = causal_mask[:, :, :, :mask_length].masked_fill(
+            #     padding_mask, min_dtype
+            # )
+
+            if causal_mask.shape[-1] > mask_length:
+                part_1 = causal_mask[:, :, :, :mask_length]
+                part_2 = causal_mask[:, :, :, mask_length:]
+                part_1 = part_1.masked_fill(padding_mask, min_dtype)
+                causal_mask = torch.cat([part_1, part_2], dim=-1)
+            else:
+                causal_mask = causal_mask.masked_fill(padding_mask, min_dtype)
+
+    return causal_mask
+
+
+PhiModel._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
+
 
 variants = [
     pytest.param(
@@ -30,8 +78,8 @@ variants = [
 @pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -40,7 +88,6 @@ def test_phi2_clm(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -68,7 +115,7 @@ def test_phi2_clm(forge_property_recorder, variant):
     )
 
     input_ids = inputs["input_ids"]
-    attn_mask = inputs["attention_mask"].to(torch.float32)
+    attn_mask = inputs["attention_mask"]
 
     inputs = [input_ids, attn_mask]
 
@@ -86,8 +133,8 @@ def test_phi2_clm(forge_property_recorder, variant):
 def test_phi2_token_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi2",
         variant=variant,
@@ -97,7 +144,6 @@ def test_phi2_token_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -133,8 +179,8 @@ def test_phi2_token_classification(forge_property_recorder, variant):
 def test_phi2_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi2",
         variant=variant,
@@ -144,7 +190,6 @@ def test_phi2_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

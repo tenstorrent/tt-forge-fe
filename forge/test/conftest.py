@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import os
 import random
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Dict, Tuple
 from loguru import logger
 from dataclasses import dataclass
 import subprocess
@@ -15,7 +15,6 @@ import torch.multiprocessing as mp
 import torch
 import tensorflow as tf
 
-from forge._C import ExecutionDepth
 
 # This is a workaround to set RTLD_GLOBAL flag to load emulation ZeBu library.
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
@@ -34,9 +33,9 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore
 
 import test.utils
+from test.exception_utils import extract_refined_error_message, extract_failure_category
 
 collect_ignore = ["legacy_tests"]
 
@@ -77,20 +76,6 @@ def pytest_sessionstart(session):
             print(f"{key}={value}")
 
 
-@pytest.fixture(scope="function")
-def forge_property_recorder(record_property):
-    forge_property_store = ForgePropertyStore()
-
-    forge_property_handler = ForgePropertyHandler(forge_property_store)
-
-    # Set CI_FAILURE as default execution depth
-    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
-
-    yield forge_property_handler
-
-    forge_property_handler.store_property(record_property)
-
-
 @pytest.fixture(autouse=True)
 def reset_seeds_fixture():
     test.utils.reset_seeds()
@@ -102,6 +87,127 @@ def reset_device():
         # Reset device between tests
         # For this to work, pytest must be called with --forked
         subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
+
+
+def run_command(cmd: List[str]) -> str:
+    """
+    Executes a shell command using subprocess.run and returns the command's output.
+
+    Args:
+        cmd (List[str]): The command to execute as a list of arguments.
+
+    Returns:
+        str: The standard output from the command execution.
+    """
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        logger.debug(f"Command '{' '.join(cmd)}' executed successfully.")
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        cmd_str = " ".join(cmd)
+        logger.error(f"Error executing '{cmd_str}': {e}")
+        return ""
+
+
+def parse_pip_freeze(freeze_output: str) -> Dict[str, str]:
+    """
+    Parses the output of 'pip freeze' and returns a dictionary of package names and versions.
+
+    Args:
+        freeze_output (str): The output string from 'pip freeze'.
+
+    Returns:
+        Dict[str, str]: A dictionary where keys are package names and values are their versions.
+    """
+    packages = {}
+    for line in freeze_output.splitlines():
+        if "==" in line:
+            pkg, version = line.split("==", maxsplit=1)
+            packages[pkg.strip()] = version.strip()
+    return packages
+
+
+@pytest.fixture(scope="function")
+def restore_package_versions():
+    """
+    A pytest fixture that ensures package versions remain consistent during tests.
+
+    This fixture captures the installed packages before the test runs, and after the test,
+    compares the versions. If any package version has changed, it logs the difference and attempts
+    to revert the package back to its original version.
+    """
+    # Capture the state of installed packages before test execution.
+    logger.info("Capturing the initial state of installed packages using 'pip freeze'.")
+    before_freeze = run_command(["pip", "freeze"])
+    before_packages = parse_pip_freeze(before_freeze)
+
+    yield
+
+    # Capture the state after test execution.
+    logger.info("Capturing the final state of installed packages using 'pip freeze'.")
+    after_freeze = run_command(["pip", "freeze"])
+    after_packages = parse_pip_freeze(after_freeze)
+
+    # Determine which packages have changed versions.
+    diff_packages: Dict[str, Tuple[str, str]] = {}
+    for pkg, orig_version in before_packages.items():
+        if pkg in after_packages:
+            new_version = after_packages[pkg]
+            if new_version != orig_version:
+                diff_packages[pkg] = (orig_version, new_version)
+
+    # If differences are detected, log and revert the changed packages.
+    if diff_packages:
+        logger.info("Detected changes in package versions during the test:")
+        for pkg, (orig_version, new_version) in diff_packages.items():
+            logger.info(f"Package '{pkg}': current version {new_version}; reverting to {orig_version}")
+            cmd_output = run_command(["pip", "install", f"{pkg}=={orig_version}"])
+            logger.info(cmd_output)
+    else:
+        logger.info("No package version changes detected after the test.")
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    This hook is intended to be executed during the 'call' phase.
+    It performs the following actions:
+      - If the test is either a genuine failure or an expected failure marked as xfail,
+        it extracts the test's error message.
+      - It uses helper functions to refine the error message and to determine an appropriate failure category.
+      - These details are attached to the test item as attributes, which can later be accessed by forge_property_recorder fixture for additional property recording.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    # Only process reports that are generated during the execution phase of the test ("call")
+    if not report or report.when != "call":
+        return
+
+    # Determine if the test is expected to fail (xfail) or actually failed.
+    xfail = hasattr(report, "wasxfail")
+    is_xfailed = report.skipped and xfail
+    is_failed = report.failed and not xfail
+    if not (is_xfailed or is_failed):
+        return
+
+    # Extract the error message from the test report; exit if no message is found.
+    error_message = getattr(report, "longreprtext", None)
+    if not error_message:
+        return
+
+    # Refine the error message using a helper function to remove unnecessary details and extract relevant info.
+    refined_error_message = extract_refined_error_message(error_message)
+    if refined_error_message is None:
+        return
+
+    # Attach the refined error message to the test item so that other hooks or fixtures can access it.
+    setattr(item, "refined_error_message", refined_error_message)
+
+    # Extract a failure category from the refined error message and attach it to the test item. if one is determined.
+    failure_category = extract_failure_category(refined_error_message)
+    if failure_category is not None:
+        setattr(item, "failure_category", failure_category)
 
 
 def pytest_addoption(parser):

@@ -18,21 +18,10 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
-
-variants = [
-    "meta-llama/Meta-Llama-3-8B",
-    "meta-llama/Meta-Llama-3-8B-Instruct",
-    "meta-llama/Llama-3.1-8B",
-    "meta-llama/Llama-3.1-8B-Instruct",
-    "meta-llama/Llama-3.2-1B",
-    "meta-llama/Llama-3.2-1B-Instruct",
-    "meta-llama/Llama-3.2-3B",
-    "huggyllama/llama-7b",
-]
 
 
 # Monkey Patching Casual Mask Update
@@ -105,7 +94,7 @@ def _update_causal_mask(
             #     padding_mask, min_dtype
             # )
 
-            if causal_mask.shape[-1] < mask_length:
+            if causal_mask.shape[-1] > mask_length:
                 part_1 = causal_mask[:, :, :, :mask_length]
                 part_2 = causal_mask[:, :, :, mask_length:]
                 part_1 = part_1.masked_fill(padding_mask, min_dtype)
@@ -130,22 +119,39 @@ def _update_causal_mask(
 LlamaModel._update_causal_mask = _update_causal_mask
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llama3_causal_lm(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+variants = [
+    pytest.param("meta-llama/Meta-Llama-3-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param("meta-llama/Meta-Llama-3-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param("meta-llama/Llama-3.1-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
+    pytest.param("meta-llama/Llama-3.2-3B", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")
+    ),
+    pytest.param("huggyllama/llama-7b", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
+]
 
-    # Build Module Name
-    module_name = build_module_name(
+
+@pytest.mark.nightly
+@pytest.mark.parametrize("variant", variants)
+def test_llama3_causal_lm(forge_property_recorder, variant):
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    if variant in ["meta-llama/Llama-3.1-8B", "meta-llama/Llama-3.2-1B", "meta-llama/Llama-3.2-3B"]:
+    if variant in [
+        "meta-llama/Llama-3.1-8B-Instruct",
+        "meta-llama/Llama-3.2-1B-Instruct",
+        "meta-llama/Llama-3.2-3B-Instruct",
+    ]:
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -192,12 +198,12 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_llama3_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="llama3",
         variant=variant,
@@ -207,7 +213,6 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

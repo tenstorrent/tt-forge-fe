@@ -86,7 +86,7 @@ class TestVector:
 
     operator: Optional[str]
     input_source: InputSource
-    input_shape: TensorShape  # TODO - Support multiple input shapes
+    input_shape: Union[TensorShape, List[TensorShape]]
     dev_data_format: Optional[FrameworkDataFormat] = None
     math_fidelity: Optional[MathFidelity] = None
     kwargs: Optional[OperatorParameterTypes.Kwargs] = None
@@ -143,7 +143,7 @@ class TestCollection:
 
     operators: Optional[List[str]] = None
     input_sources: Optional[List[InputSource]] = None
-    input_shapes: Optional[List[TensorShape]] = None  # TODO - Support multiple input shapes
+    input_shapes: Optional[List[Union[TensorShape, List[TensorShape]]]] = None
     dev_data_formats: Optional[List[FrameworkDataFormat]] = None
     math_fidelities: Optional[List[MathFidelity]] = None
     kwargs: Optional[
