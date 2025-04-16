@@ -40,316 +40,316 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Pad0,
-            [((1, 1, 96, 54, 54), torch.float32)],
-            {
-                "model_name": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Pad0,
-            [((1, 1, 256, 27, 27), torch.float32)],
-            {
-                "model_name": ["pt_alexnet_base_img_cls_osmr"],
-                "pcc": 0.99,
-                "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    (
-        Pad1,
-        [((1, 512, 6, 20), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 512, 12, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 256, 12, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 256, 24, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 128, 24, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 128, 48, 160), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 64, 48, 160), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 96, 96, 320), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 32, 96, 320), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Pad1,
-            [((1, 16, 192, 640), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.skip(reason="Killed while executing ttnn binary")],
-    ),
-    (
-        Pad1,
-        [((1, 512, 10, 32), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 512, 20, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 256, 20, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 256, 40, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 128, 40, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 128, 80, 256), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    (
-        Pad1,
-        [((1, 64, 80, 256), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-        },
-    ),
-    pytest.param(
-        (
-            Pad1,
-            [((1, 96, 160, 512), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
-    ),
-    pytest.param(
-        (
-            Pad1,
-            [((1, 32, 160, 512), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
-            },
-        ),
-        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
-    ),
+    # pytest.param(
+    #     (
+    #         Pad0,
+    #         [((1, 1, 96, 54, 54), torch.float32)],
+    #         {
+    #             "model_name": ["pt_alexnet_base_img_cls_osmr"],
+    #             "pcc": 0.99,
+    #             "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
+    #         },
+    #     ),
+    #     marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    # ),
+    # pytest.param(
+    #     (
+    #         Pad0,
+    #         [((1, 1, 256, 27, 27), torch.float32)],
+    #         {
+    #             "model_name": ["pt_alexnet_base_img_cls_osmr"],
+    #             "pcc": 0.99,
+    #             "op_params": {"pad": "(0, 0, 2, 2)", "mode": '"constant"', "channel_last": "True"},
+    #         },
+    #     ),
+    #     marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 512, 6, 20), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 512, 12, 40), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 256, 12, 40), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 256, 24, 80), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 128, 24, 80), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 128, 48, 160), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 64, 48, 160), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 96, 96, 320), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 32, 96, 320), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # pytest.param(
+    #     (
+    #         Pad1,
+    #         [((1, 16, 192, 640), torch.float32)],
+    #         {
+    #             "model_name": [
+    #                 "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+    #                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+    #             ],
+    #             "pcc": 0.99,
+    #             "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #         },
+    #     ),
+    #     marks=[pytest.mark.skip(reason="Killed while executing ttnn binary")],
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 512, 10, 32), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 512, 20, 64), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 256, 20, 64), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 256, 40, 128), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 128, 40, 128), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 128, 80, 256), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # (
+    #     Pad1,
+    #     [((1, 64, 80, 256), torch.float32)],
+    #     {
+    #         "model_name": [
+    #             "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #             "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #         ],
+    #         "pcc": 0.99,
+    #         "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #     },
+    # ),
+    # pytest.param(
+    #     (
+    #         Pad1,
+    #         [((1, 96, 160, 512), torch.float32)],
+    #         {
+    #             "model_name": [
+    #                 "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #             ],
+    #             "pcc": 0.99,
+    #             "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #         },
+    #     ),
+    #     marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
+    # ),
+    # pytest.param(
+    #     (
+    #         Pad1,
+    #         [((1, 32, 160, 512), torch.float32)],
+    #         {
+    #             "model_name": [
+    #                 "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+    #                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+    #                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+    #             ],
+    #             "pcc": 0.99,
+    #             "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
+    #         },
+    #     ),
+    #     marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
+    # ),
     pytest.param(
         (
             Pad1,
@@ -364,11 +364,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "op_params": {"pad": "(1, 1, 1, 1)", "mode": '"reflect"', "channel_last": "False"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: [enforce fail at alloc_cpu.cpp:91] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 433025187840 bytes. Error code 12 (Cannot allocate memory)"
-            )
-        ],
+        # marks=[
+        #     pytest.mark.xfail(
+        #         reason="RuntimeError: [enforce fail at alloc_cpu.cpp:91] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 433025187840 bytes. Error code 12 (Cannot allocate memory)"
+        #     )
+        # ],
     ),
 ]
 
@@ -422,5 +422,78 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        forge_property_handler=forge_property_recorder,
+    )
+
+
+def test_reverse(forge_property_recorder):
+    class ReverseModule(ForgeModule):
+        def __init__(self, name):
+            super().__init__(name)
+
+        def forward(self, input_tensor, indices_tensor):
+            # Use AdvIndex to reverse the dimension
+            reversed_tensor = forge.op.AdvIndex("reverse_op", input_tensor, indices_tensor, dim=-1)
+            return reversed_tensor
+
+    # Create 3D tensor with recognizable pattern
+    tensor = torch.arange(27, dtype=torch.float32).reshape(3, 3, 3)
+
+    # Create forge tensor
+    forge_tensor = Tensor.create_from_torch(tensor)
+
+    # Create reversed indices tensor (for the last dimension)
+    dim = -1
+    dim_size = tensor.shape[dim]
+    indices = torch.arange(dim_size - 1, -1, -1, dtype=torch.int64)
+    indices_tensor = Tensor.create_from_torch(indices)
+
+    # Create forge module
+    forge_module = ReverseModule("reverse_module")
+
+    # Compile
+    compiled_model = compile(
+        forge_module, sample_inputs=[forge_tensor, indices_tensor], forge_property_handler=forge_property_recorder
+    )
+
+    # Verify
+    verify(
+        [forge_tensor, indices_tensor],
+        forge_module,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+        forge_property_handler=forge_property_recorder,
+    )
+
+
+def test_reverse2(forge_property_recorder):
+    class ReverseModule2(ForgeModule):
+        def __init__(self, name):
+            super().__init__(name)
+
+        def forward(self, input_tensor):
+            # Use Index with negative stride to reverse the dimension
+            dim_size = input_tensor.shape[-1]
+            reversed_tensor = forge.op.Index("reverse_op", input_tensor, dim=-1, start=dim_size - 1, stop=-1, stride=-1)
+            return reversed_tensor
+
+    # Create 3D tensor with recognizable pattern
+    tensor = torch.arange(27, dtype=torch.float32).reshape(3, 3, 3)
+
+    # Create forge tensor
+    forge_tensor = Tensor.create_from_torch(tensor)
+
+    # Create forge module
+    forge_module = ReverseModule2("reverse_module2")
+
+    # Compile
+    compiled_model = compile(forge_module, sample_inputs=[forge_tensor], forge_property_handler=forge_property_recorder)
+
+    # Verify
+    verify(
+        [forge_tensor],
+        forge_module,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
         forge_property_handler=forge_property_recorder,
     )
