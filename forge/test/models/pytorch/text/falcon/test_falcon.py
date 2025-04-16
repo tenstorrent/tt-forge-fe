@@ -9,9 +9,6 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.models_utils import generate_no_cache, pad_inputs
-from test.utils import download_model
-
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
@@ -54,25 +51,21 @@ def test_falcon(forge_property_recorder, variant):
 
 
 variants = [
-    pytest.param("tiiuae/Falcon3-1B-Base", marks=pytest.mark.push),
-    pytest.param(
-        "tiiuae/Falcon3-3B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB)"),
-    ),
-    pytest.param(
-        "tiiuae/Falcon3-7B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
-    ),
-    pytest.param(
-        "tiiuae/Falcon3-Mamba-7B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
-    ),
+    "tiiuae/Falcon3-1B-Base",
+    "tiiuae/Falcon3-3B-Base",
+    "tiiuae/Falcon3-7B-Base",
+    "tiiuae/Falcon3-Mamba-7B-Base",
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_falcon_3(forge_property_recorder, variant):
+
+    if variant == "tiiuae/Falcon3-Mamba-7B-Base" or variant == "tiiuae/Falcon3-7B-Base":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 36 GB)")
+    if variant == "tiiuae/Falcon3-3B-Base":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 25 GB)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -85,30 +78,18 @@ def test_falcon_3(forge_property_recorder, variant):
     else:
         forge_property_recorder.record_group("generality")
 
-    # Load model and tokenizer
-    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
-    framework_model.eval()
+    tokenizer = AutoTokenizer.from_pretrained(variant)
+    model = AutoModelForCausalLM.from_pretrained(variant)
+    model.config.use_cache = False
+    model.config.return_dict = False
 
-    # prepare input
     input_text = "Write a function to calculate the factorial of a number"
-    inputs = tokenizer.encode(input_text, return_tensors="pt")
-    padded_inputs, seq_len = pad_inputs(inputs)
+    input_data = tokenizer.encode(input_text, return_tensors="pt")
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=[padded_inputs],
-        module_name=module_name,
-        forge_property_handler=forge_property_recorder,
+        model, sample_inputs=input_data, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # post processing
-    generated_text = generate_no_cache(
-        max_new_tokens=500, model=framework_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
-    )
-
-    print("generated_text : ", generated_text)
+    verify([input_data], model, compiled_model, forge_property_handler=forge_property_recorder)

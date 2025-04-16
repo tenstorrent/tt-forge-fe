@@ -8,7 +8,6 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vovnet.utils.model_utils import (
     get_image,
     preprocess_steps,
@@ -17,8 +16,17 @@ from test.models.pytorch.vision.vovnet.utils.model_utils import (
 from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
 from test.utils import download_model
 
+
+def generate_model_vovnet_imgcls_osmr_pytorch(variant):
+    # STEP 2: Create Forge module from PyTorch model
+    model = download_model(ptcv_get_model, variant, pretrained=True)
+    image_tensor = get_image()
+
+    return model, [image_tensor], {}
+
+
 varaints = [
-    pytest.param("vovnet27s", marks=pytest.mark.push),
+    "vovnet27s",
     "vovnet39",
     "vovnet57",
 ]
@@ -32,7 +40,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
@@ -41,12 +49,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     else:
         forge_property_recorder.record_group("generality")
 
-    # Load model
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
-
-    # prepare input
-    image_tensor = get_image()
-    inputs = [image_tensor]
+    framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -54,10 +57,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Run model on sample data and print results
-    print_cls_results(fw_out[0], co_out[0])
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():

@@ -88,7 +88,10 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    if variant in ["microsoft/phi-3-mini-4k-instruct"]:
+        forge_property_recorder.record_group("red")
+    else:
+        forge_property_recorder.record_group("generality")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
