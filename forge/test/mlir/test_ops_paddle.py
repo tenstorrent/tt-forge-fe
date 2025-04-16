@@ -308,6 +308,7 @@ def test_convbn_pp(forge_property_recorder):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
+@pytest.mark.xfail(reason="paddle embedding not supported yet")
 def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_dim):
     class Embedding(paddle.nn.Layer):
         def __init__(self):

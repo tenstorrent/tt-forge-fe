@@ -58,11 +58,11 @@
       <td>Add</td>
       <td>Operand(type=Activation, shape=(2, 8, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>5</th>
@@ -124,11 +124,11 @@
       <td>Cast</td>
       <td>Operand(type=Activation, shape=(2, 1, 7, 7), dtype=uint1)</td>
       <td>dtype : torch.float32</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>11</th>
@@ -146,22 +146,22 @@
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(2, 7), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(49408, 512), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>13</th>
       <td>Embedding</td>
       <td>Operand(type=Activation, shape=(1, 7), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(77, 512), dtype=float32)</td>
       <td></td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>14</th>
@@ -190,11 +190,11 @@
       <td>Index</td>
       <td>Operand(type=Constant, name=clip_model.text_model.embeddings.position_ids, dtype=int64)</td>
       <td>dim : -1<br>start : 0<br>stop : 7<br>stride : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+      <td></td>
     </tr>
     <tr>
       <th>17</th>
@@ -289,11 +289,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 7, 7), dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>26</th>
@@ -322,33 +322,33 @@
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 7), dtype=int64)</td>
       <td>repeats : 1<br>dim : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>29</th>
       <td>RepeatInterleave</td>
       <td>Operand(type=Activation, shape=(2, 1, 1, 7), dtype=int64)</td>
       <td>repeats : 7<br>dim : 2</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>30</th>
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(2, 7), dtype=int64)</td>
       <td>shape : (2, 7)</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
     <tr>
       <th>31</th>
@@ -586,22 +586,22 @@
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 7), dtype=int64)</td>
       <td>dim : 1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>53</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(2, 1, 7), dtype=int64)</td>
       <td>dim : 2</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
+      <td></td>
     </tr>
   </tbody>
 </table>

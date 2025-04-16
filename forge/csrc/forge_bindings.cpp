@@ -39,6 +39,7 @@ namespace py = pybind11;
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
+#include "verif/python_bindings.hpp"
 
 namespace tt
 {
@@ -143,6 +144,9 @@ PYBIND11_MODULE(_C, m)
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
 
+    py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification functions");
+    VerifModule(m_verif);
+
     py::enum_<tt::MathFidelity>(m, "MathFidelity")
         .value("LoFi", tt::MathFidelity::LoFi)
         .value("HiFi2", tt::MathFidelity::HiFi2)
@@ -217,8 +221,16 @@ PYBIND11_MODULE(_C, m)
         &run_pre_lowering_passes,
         py::arg("graph"),
         py::arg("default_df_override") = std::optional<DataFormat>{});
-    m.def("run_mlir_compiler", &passes::run_mlir_compiler);
-    m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
+    m.def(
+        "run_mlir_compiler",
+        &passes::run_mlir_compiler,
+        py::arg("module"),
+        py::arg("forge_property_handler") = std::nullopt);
+    m.def(
+        "run_mlir_compiler_to_cpp",
+        &passes::run_mlir_compiler_to_cpp,
+        py::arg("module"),
+        py::arg("forge_property_handler") = std::nullopt);
     m.def("split_graph", &passes::split_graph);
 
     m.def(

@@ -7,9 +7,8 @@ import torch
 from PIL import Image
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -19,14 +18,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
 def test_fchardnet(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="fchardnet", task=Task.IMAGE_CLASSIFICATION, source=Source.TORCHVISION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"

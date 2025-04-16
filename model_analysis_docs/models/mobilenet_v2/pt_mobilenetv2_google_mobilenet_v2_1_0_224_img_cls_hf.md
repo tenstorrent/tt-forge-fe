@@ -23,7 +23,7 @@
     <tr>
       <th>1</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -34,7 +34,7 @@
     <tr>
       <th>2</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -45,7 +45,7 @@
     <tr>
       <th>3</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1280, 7, 7), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 576, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 7, 7), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Clip</td>
-      <td>Operand(type=Activation, shape=(1, 1280, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 7, 7), dtype=float32)</td>
       <td>min : 0.0<br>max : 6.0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1157,12 +1157,12 @@
       <th>104</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 3, 224, 224), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32, 3, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>105</th>
@@ -1201,12 +1201,12 @@
       <th>108</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 96<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 96<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>109</th>
@@ -1245,12 +1245,12 @@
       <th>112</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 144<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 144<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>113</th>
@@ -1333,12 +1333,12 @@
       <th>120</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 192<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 192<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>121</th>
@@ -1421,12 +1421,12 @@
       <th>128</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 576<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 576<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>129</th>
@@ -1508,7 +1508,7 @@
     <tr>
       <th>136</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1519,7 +1519,7 @@
     <tr>
       <th>137</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1530,7 +1530,7 @@
     <tr>
       <th>138</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2916,17 +2916,6 @@
     <tr>
       <th>264</th>
       <td>Reshape</td>
-      <td>Operand(type=Parameter, shape=(384, 1, 3, 3), dtype=float32)</td>
-      <td>shape : (384, 1, 3, 3)</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td></td>
-      <td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1152, 384]</td>
-    </tr>
-    <tr>
-      <th>265</th>
-      <td>Reshape</td>
       <td>Operand(type=Parameter, shape=(576, 1, 3, 3), dtype=float32)</td>
       <td>shape : (576, 1, 3, 3)</td>
       <td>&#x2705;</td>
@@ -2934,6 +2923,17 @@
       <td>&#x2705;</td>
       <td></td>
       <td></td>
+    </tr>
+    <tr>
+      <th>265</th>
+      <td>Reshape</td>
+      <td>Operand(type=Parameter, shape=(384, 1, 3, 3), dtype=float32)</td>
+      <td>shape : (384, 1, 3, 3)</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td>&#x274C;</td>
+      <td></td>
+      <td>[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1152, 384]</td>
     </tr>
     <tr>
       <th>266</th>
@@ -3125,7 +3125,7 @@
     <tr>
       <th>283</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3136,7 +3136,7 @@
     <tr>
       <th>284</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(384, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3147,7 +3147,7 @@
     <tr>
       <th>285</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3158,7 +3158,7 @@
     <tr>
       <th>286</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3169,7 +3169,7 @@
     <tr>
       <th>287</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3180,7 +3180,7 @@
     <tr>
       <th>288</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

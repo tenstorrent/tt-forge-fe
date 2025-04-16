@@ -2,101 +2,64 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
 import torch
 import torch.nn.functional
 from ..interface import PyEltwiseUnaryOp
-from loguru import logger
-from ..common import to_torch_operands
-from ....forgeglobal import TILE_DIM
-from ....tensor import forge_dataformat_to_pytorch_dtype
 import numpy as np
-from forge.op.eval.common import calculate_tile_size
-from ..lforge.abs import Abs as ForgeAbs
 
 
 class Argmax(PyEltwiseUnaryOp):
     @classmethod
-    def create(cls, dim=None):
+    def create(cls, dim=None, keep_dim=False):
         self = cls("argmax")
         self.dim = dim
+        self.keep_dim = keep_dim
 
         return self
 
     def eval(self, tensors):
         assert len(tensors) == 1, "Argmax should have one input"
-        shape = tensors[0].shape
-        original_types = [o.dtype for o in tensors]
 
-        if hasattr(self, "dim"):
-            dim = self.dim
-        else:
+        # if dim is bool it is due to the way c++ pybind11 handles None
+        if not hasattr(self, "dim") or isinstance(self.dim, bool):
             dim = None
+        else:
+            dim = self.dim
 
-        ret = torch.argmax(tensors[0], dim, keepdims=True)
-
-        if ret.dtype != original_types[0]:
-            ret = ret.type(original_types[0])
+        ret = torch.argmax(tensors[0], dim=dim, keepdim=self.keep_dim)
 
         return ret
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1, "Argmax should have one input"
 
-        if hasattr(self, "dim"):
-            dim = self.dim
-        else:
+        # if dim is bool it is due to the way c++ pybind11 handles None
+        if not hasattr(self, "dim") or isinstance(self.dim, bool):
             dim = None
-
-        if dim is not None:
-            shape = list(tensor_shapes[0])
-            shape[dim] = 1
         else:
-            shape = [1] * len(tensor_shapes[0])
+            dim = self.dim
+
+        input_shape = tensor_shapes[0]
+
+        # Dimension-specific argmax
+        if dim is not None:
+            if self.keep_dim:
+                shape = list(input_shape)
+                shape[dim] = 1
+            else:
+                shape = [d for i, d in enumerate(input_shape) if i != dim]
+        else:  # Global argmax across all dimensions
+            if self.keep_dim:
+                shape = [1] * len(input_shape)  # All dimensions become 1
+            else:
+                raise RuntimeError("This argmax reduction should return a scalar, but that's not supported yet")
+                # shape = [] is what we should return
+                # but we get this error RuntimeError: Unable to cast Python instance to C++ type
+
         return tuple(shape), []
 
     def backward(self, ac, operand, inputs, output, grad):
         raise RuntimeError("Argmax does not require grad and does not have a backwards function")
-
-    def decompose(self, dc, inputs):
-        inp_node = inputs[0]
-
-        if hasattr(self, "dim"):
-            axis = self.dim
-        else:
-            axis = None
-
-        if axis is None:
-            import math
-
-            inp_node = dc.op("reshape", [inp_node], (1, math.prod(inp_node.shape.as_list())))
-            axis = -1
-
-        input_shape = inp_node.shape.as_list()
-        if axis >= 0:
-            axis -= len(input_shape)
-
-        data_type = forge_dataformat_to_pytorch_dtype(inp_node.output_df)
-        range_shape = [dim if i == axis + len(input_shape) else 1 for i, dim in enumerate(input_shape)]
-
-        range = torch.arange(input_shape[axis], dtype=data_type).reshape(range_shape)
-        range_tensor = dc.tensor(range)
-
-        factor = torch.ones((input_shape), dtype=data_type) * 1e10
-        factor_tensor = dc.tensor(factor)
-
-        mult_1 = dc.op(
-            "multiply",
-            [inp_node, factor_tensor],
-        )
-        softmax = dc.op("softmax", [mult_1], (axis, 1))
-        mult_2 = dc.op("multiply", [softmax, range_tensor])
-        reduce_sum = dc.op_with_named_attrs(
-            "reduce_sum", (mult_2,), {"dim_arg": [axis], "keep_dim": True}, (axis, True)
-        )
-
-        dc.fuse(reduce_sum)
 
     def lower(self, lc, tensors, outputs):
         return None

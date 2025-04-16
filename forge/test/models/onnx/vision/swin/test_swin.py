@@ -14,7 +14,7 @@ import forge
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.nightly
@@ -22,18 +22,15 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.xfail
 def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -66,18 +63,15 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -110,18 +104,15 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant, tmp_pat
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
         task=Task.MASKED_IMAGE_MODELLING,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
@@ -157,18 +148,15 @@ variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
 @pytest.mark.parametrize("variant", ["swin_v2_t"])
 def test_swin_torchvision(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

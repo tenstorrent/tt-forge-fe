@@ -5,34 +5,29 @@ import pytest
 from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    pytest.param(
-        "facebook/xglm-564M",
-        marks=[pytest.mark.xfail],
-    ),
+    "facebook/xglm-564M",
     "facebook/xglm-1.7B",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_xglm_causal_lm(forge_property_recorder, variant):
-    if variant != "facebook/xglm-564M":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()

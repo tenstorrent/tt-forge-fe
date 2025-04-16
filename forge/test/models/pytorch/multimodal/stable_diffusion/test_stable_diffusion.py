@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
+from forge.forge_property_utils import Framework
+
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     denoising_loop,
     stable_diffusion_postprocessing,
     stable_diffusion_preprocessing,
 )
-from test.models.utils import Framework, build_module_name
 
 
 @pytest.mark.skip_model_analysis
@@ -15,12 +16,13 @@ from test.models.utils import Framework, build_module_name
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
 def test_stable_diffusion_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="stable_diffusion", variant=variant
+    )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     batch_size = 1
 

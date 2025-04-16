@@ -10,24 +10,23 @@ import torchvision.transforms as transforms
 from datasets import load_dataset
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 def test_conv_ae_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -65,8 +64,8 @@ def test_conv_ae_pytorch(forge_property_recorder):
 @pytest.mark.push
 @pytest.mark.nightly
 def test_linear_ae_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="autoencoder",
         variant="linear",
@@ -76,7 +75,6 @@ def test_linear_ae_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.

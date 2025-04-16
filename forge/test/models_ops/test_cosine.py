@@ -237,14 +237,21 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Cosine")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Cosine")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -266,6 +273,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

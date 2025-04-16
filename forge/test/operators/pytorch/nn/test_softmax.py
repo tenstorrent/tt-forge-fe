@@ -43,8 +43,9 @@ class TestVerification:
         input_params: List[Dict] = [],
         warm_reset: bool = False,
     ):
-        module = PytorchUtils.get_pytorch_module(test_vector.operator)
-        operator = getattr(module, test_vector.operator)
+
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
         model_type = cls.MODEL_TYPES[test_vector.input_source]
 
@@ -114,22 +115,14 @@ TestParamsData.test_plan = TestPlan(
         # Test all shapes and input sources collection:
         TestCollection(
             operators=TestParamsData.operators,
-            input_sources=[  # TODO: use TestCollectionCommon.all.input_sources when becames available
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
+            input_sources=TestCollectionCommon.all.input_sources,
             input_shapes=TestCollectionCommon.all.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_pos(test_vector),
         ),
         # Test some shapes and input sources with negative dim values:
         TestCollection(
             operators=TestParamsData.operators,
-            input_sources=[  # TODO: use TestCollectionCommon.single.input_sources when becames available
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
+            input_sources=TestCollectionCommon.all.input_sources,
             input_shapes=TestCollectionCommon.quick.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_neg(test_vector),
         ),

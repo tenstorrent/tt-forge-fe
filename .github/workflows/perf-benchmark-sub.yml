@@ -1,0 +1,174 @@
+name: On Nightly - Perf benchmark - subroutine
+
+on:
+  workflow_call:
+    inputs:
+      run_id:
+        description: 'Run id the workflow where to find installation (or else it will search)'
+        required: false
+        type: string
+      docker-image:
+        description: 'Docker image to use for build'
+        required: true
+        type: string
+
+jobs:
+  run-perf-benchmarks:
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [
+          { runs-on: "n150", name: "mnist_linear",      dir: "MNISTLinear", bs: 32, lp: 32 },
+          { runs-on: "n150", name: "resnet50_hf",       dir: "ResNetForImageClassification", bs: 3, lp: 32 },
+          { runs-on: "n150", name: "llama",             dir: "LlamaModel", bs: 1, lp: 32, allow-fail: true }, # TTRT does not support llama model yet, so allow it to fail
+          { runs-on: "n150", name: "mobilenetv2_basic", dir: "MobileNetv2Basic", bs: 1, lp: 32 },
+          { runs-on: "n150", name: "efficientnet_timm", dir: "EfficientNetTimmB0", bs: 1, lp: 32 }
+        ]
+    runs-on:
+      - ${{ matrix.build.runs-on }}
+      - in-service
+      - performance
+
+    container:
+      image: ${{ inputs.docker-image }}
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+
+    name: "run-perf-benchmarks ${{matrix.build.name }} (${{ matrix.build.runs-on }}, ${{ matrix.build.bs }}, ${{ matrix.build.lp }})"
+    steps:
+
+    - name: Fetch job id
+      id: fetch-job-id
+      uses: tenstorrent/tt-github-actions/.github/actions/job_id@main
+      with:
+        job_name: "run-perf-benchmarks ${{matrix.build.name }} (${{ matrix.build.runs-on }}, ${{ matrix.build.bs }}, ${{ matrix.build.lp }})"
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      env:
+        JOB_ID: ${{ steps.fetch-job-id.outputs.job_id }}
+      run: |
+        echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
+        echo "perf_report_path=$(pwd)/benchmark_reports" >> "$GITHUB_OUTPUT"
+
+    - name: Git safe dir
+      run: git config --global --add safe.directory ${{ steps.strings.outputs.work-dir }}
+
+    - uses: actions/checkout@v4
+      with:
+          sparse-checkout: |
+            .github/
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
+          fetch-depth: 0 # Fetch all history and tags
+
+    # Clean everything from submodules (needed to avoid issues
+    # with cmake generated files leftover from previous builds)
+    # Get tt-mlir commit hash
+    - name: Cleanup submodules
+      id: sumbmodules
+      run: |
+          git submodule foreach --recursive git clean -ffdx
+          git submodule foreach --recursive git reset --hard
+          echo "ttmlir=$(git submodule status third_party/tt-mlir | awk '{gsub(/^-/, \"\"); print $1}')" >> $GITHUB_OUTPUT
+
+    - name: Download ttrt wheel
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-push.yml
+        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
+        name: ttrt-whl-tracy
+        repo: tenstorrent/tt-mlir
+        check_artifacts: true
+
+    - name: Download ttrt install
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow: on-push.yml
+        commit: ${{ steps.sumbmodules.outputs.ttmlir }}
+        name: install-artifacts-tracy
+        repo: tenstorrent/tt-mlir
+        path: install
+        check_artifacts: true
+
+    - name: 'Untar install directory'
+      shell: bash
+      working-directory: install
+      run: tar xvf artifact.tar
+
+    - name: Download built artifacts
+      if: ${{ inputs.run_id }}
+      continue-on-error: true
+      uses: actions/download-artifact@v4
+      with:
+        name: forge-wheel
+        run-id: ${{ inputs.run_id }}
+
+    - name: Find and download forge wheel
+      if: ${{ !inputs.run_id }}
+      uses: dawidd6/action-download-artifact@v9
+      with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow_conclusion: success
+        workflow_search: true
+        workflow: on-nightly.yml
+        name: forge-wheel
+        repo: tenstorrent/tt-forge-fe
+        check_artifacts: true
+        search_artifacts: true
+
+    - name: Install wheel
+      shell: bash
+      run: |
+        source env/activate
+        pip install tvm*.whl --force-reinstall
+        pip install forge*.whl --force-reinstall
+
+    - name: Run Perf Benchmark
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_HOME: /mnt/dockercache/huggingface
+        HF_HUB_DISABLE_PROGRESS_BARS: 1
+      shell: bash
+      run: |
+        source env/activate
+        mkdir -p ${{ steps.strings.outputs.perf_report_path }}
+        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
+
+    - name: Install and run TTRT
+      shell: bash
+      run: |
+        cd third_party/tt-mlir
+        source env/activate
+        cd ../..
+        pip install ttrt*.whl --force-reinstall
+        echo "save artifacts"
+        ttrt query --save-artifacts
+        if [ -z "${{ matrix.build.allow-fail }}" ]; then
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        else
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json || true
+        fi
+
+    - name: Upload Perf Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: perf-reports-${{ steps.fetch-job-id.outputs.job_id }}
+        path: ${{ steps.strings.outputs.perf_report_path }}

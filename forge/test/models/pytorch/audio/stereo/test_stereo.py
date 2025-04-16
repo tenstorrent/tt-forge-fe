@@ -6,29 +6,36 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from .utils import load_inputs, load_model
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     pytest.param(
         "facebook/musicgen-small",
-        marks=[pytest.mark.xfail],
+        marks=pytest.mark.xfail,
     ),
-    "facebook/musicgen-medium",
-    "facebook/musicgen-large",
+    pytest.param(
+        "facebook/musicgen-medium",
+        marks=pytest.mark.xfail,
+    ),
+    pytest.param(
+        "facebook/musicgen-large",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(forge_property_recorder, variant):
-    if variant != "facebook/musicgen-small":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="stereo",
         variant=variant,
@@ -38,7 +45,6 @@ def test_stereo(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, processor = load_model(variant)
 

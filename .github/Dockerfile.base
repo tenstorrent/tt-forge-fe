@@ -38,6 +38,9 @@ RUN apt-get update && apt-get install -y \
     libgl1 \
     libglx-mesa0
 
+# Upgrade pip, setuptools, wheel (do this *after* installing python3-pip)
+RUN pip install --upgrade pip setuptools wheel
+
 # Install clang 17
 RUN wget https://apt.llvm.org/llvm.sh && \
     chmod u+x llvm.sh && \

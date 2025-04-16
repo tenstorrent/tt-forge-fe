@@ -11,7 +11,7 @@
 # 2. Operand source(s):
 # (+)  2.1 From another op
 #       - Operator -> input
-# (+)  2.2 From DRAM queue
+# (+)  2.2 From DRAM queue - removed from test plan
 #       - Operator is first node in network
 #       - Input_queue flag = false
 # (+)  2.3 Const Inputs (const eval pass)
@@ -71,6 +71,7 @@ from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils.utils import PytorchUtils
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -136,7 +137,6 @@ class TestVerification:
     MODEL_TYPES = {
         InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
         InputSource.FROM_HOST: ModelDirect,
-        InputSource.FROM_DRAM_QUEUE: ModelDirect,
         InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
     }
 
@@ -151,11 +151,7 @@ class TestVerification:
     ):
         """Common verification function for all tests"""
 
-        input_source_flag: InputSourceFlags = None
-        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
-            input_source_flag = InputSourceFlags.FROM_DRAM
-
-        operator = getattr(torch, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -176,7 +172,6 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            input_source_flag=input_source_flag,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,

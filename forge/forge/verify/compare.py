@@ -14,6 +14,8 @@ from loguru import logger
 from scipy.spatial import distance
 from typing import Union, Tuple, List, Optional
 
+from forge._C import verif
+
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
@@ -34,7 +36,7 @@ def compare_with_golden(
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
 
-        all_close = torch.allclose(golden, calculated, rtol=rtol, atol=atol)
+        all_close = verif.all_close(golden, calculated, rtol=rtol, atol=atol)
         if not all_close:
             req_atol, req_rtol = compute_required_tolerances(golden, calculated)
             logger.error("Tensor mismatch. Required rtol={}, atol={}", rtol, atol)
@@ -159,7 +161,44 @@ def calculate_or_estimate_pcc(
     return pcc
 
 
+def can_use_custom_kernel(a: torch.Tensor, b: torch.Tensor) -> bool:
+    """
+    Check if we can use the custom torch kernel for PCC calculation.
+    This is true if:
+        - a and b are of the same type
+        - a and b are not bool, int8 or uint8
+        - a and b do not contain special values (NaN, Inf)
+    """
+    return (
+        a.dtype == b.dtype
+        and a.dtype not in (torch.bool, torch.int8, torch.uint8)
+        and not verif.has_special_values(a)
+        and not verif.has_special_values(b)
+    )
+
+
 def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
+    """
+    Calculates the Pearson Correlation Coefficient (PCC) between two tensors using one of the following methods:
+
+        1. custom torch cpu kernel for pcc calculation - fastest, no memory overhead
+        2. numpy pcc calculation - slower, lots of memory overhead
+        3. numpy pcc estimation - slower, less memory overhead
+
+    Whenever possible (on floating point tensors, without nans/infs) uses the torch kernel, otherwise uses numpy pcc calculation / estimation.
+    """
+
+    # Check if we can use the custom torch kernel for PCC calculation.
+    if can_use_custom_kernel(a, b):
+        pcc = verif.calculate_tensor_pcc(a, b)
+        if pcc == torch.nan:
+            # If pcc is nan, than it can happen that the tensors are equal, but the variances are 0,
+            # causing division by 0.
+            # Verify that the tensors are equal, and return 1.0
+            if verif.all_close(a, b):
+                return 1.0
+
+    # We'll need to fallback to the numpy pcc calculation / estimation.
     TENSOR_SIZE_THRESHOLD = int(1e8)
     CHUNK_SIZE = int(1e6)
 
@@ -238,10 +277,11 @@ def compare_tensor_to_golden(
         logger.debug("Calculated: (shape = {}", calculated.shape)
         return False
 
+    # Issue(1701): types mismatch between golden and calculated.
     if golden.dtype != calculated.dtype:
         calculated = calculated.type(golden.dtype)
 
-    ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
+    ok = verif.all_close(golden, calculated, rtol=rtol, atol=atol)
     callback_ok = (
         True
         if verify_cfg is None or verify_cfg.golden_compare_callback is None
@@ -258,10 +298,7 @@ def compare_tensor_to_golden(
             logger.trace("Calculated: (shape = {}", calculated.shape)
             logger.trace(calculated)
             logger.warning(
-                "Max ATOL Delta: "
-                + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
-                + ", atol="
-                + "{}".format(atol)
+                "Max ATOL Delta: " + "{:.3e}".format(calculate_atol(golden, calculated)) + ", atol=" + "{}".format(atol)
             )
             logger.warning(
                 "Max RTOL Delta: "
@@ -281,10 +318,7 @@ def compare_tensor_to_golden(
         logger.trace("Calculated: (shape = {}", calculated.shape)
         logger.trace(calculated)
         logger.info(
-            "Max ATOL Delta: "
-            + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
-            + ", atol="
-            + "{}".format(atol)
+            "Max ATOL Delta: " + "{:.3e}".format(calculate_atol(calculated, golden)) + ", atol=" + "{}".format(atol)
         )
         logger.info(
             "Max RTOL Delta: "
@@ -326,6 +360,9 @@ def calculate_atol(golden, calculated):
         # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
         golden = golden.type(torch.float32)
         calculated = calculated.type(torch.float32)
+
+    if can_use_custom_kernel(golden, calculated):
+        return verif.max_abs_diff(golden, calculated)
 
     golden = golden.detach().numpy()
     calculated = calculated.detach().numpy()

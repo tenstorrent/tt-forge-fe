@@ -280,9 +280,9 @@
       <td>stride : [2, 2]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+      <td></td>
     </tr>
     <tr>
       <th>25</th>
@@ -1938,23 +1938,23 @@
       <th>175</th>
       <td>Conv2dTranspose</td>
       <td>Operand(type=Activation, shape=(1, 256, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_126293, dtype=float32)</td>
-      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: conv2d_transpose</td>
+      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
     </tr>
     <tr>
       <th>176</th>
       <td>Conv2dTranspose</td>
       <td>Operand(type=Activation, shape=(1, 128, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168293, dtype=float32)</td>
-      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[FORGE][lower_to_mlir] RuntimeError Found Unsupported operations while lowering from TTForge to TTIR in forward graph Unsupported Ops: conv2d_transpose</td>
+      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
     </tr>
     <tr>
       <th>177</th>

@@ -18,300 +18,273 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="126">1</td>
-			<td rowspan="126">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="126">265</td>
+			<td rowspan="33">1</td>
+			<td rowspan="33">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="33">101</td>
+			<td>22</td>
+			<td><ul><li>pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder</li><li>pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder</li><li>pt_albert_xlarge_v1_token_cls_hf</li><li>pt_albert_xlarge_v1_mlm_hf</li><li>pt_albert_xxlarge_v1_mlm_hf</li><li>pt_albert_xlarge_v2_token_cls_hf</li><li>pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder</li><li>pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder</li><li>pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader</li><li>pt_albert_xxlarge_v1_token_cls_hf</li><li>pt_albert_large_v2_token_cls_hf</li><li>pt_albert_base_v2_mlm_hf</li><li>pt_albert_large_v1_mlm_hf</li><li>pt_albert_base_v2_token_cls_hf</li><li>pt_albert_base_v1_mlm_hf</li><li>pt_albert_xxlarge_v2_mlm_hf</li><li>pt_albert_large_v1_token_cls_hf</li><li>pt_albert_large_v2_mlm_hf</li><li>pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader</li><li>pt_albert_xxlarge_v2_token_cls_hf</li><li>pt_albert_xlarge_v2_mlm_hf</li><li>pt_albert_base_v1_token_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_100, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_30, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td>5</td>
-			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li></ul></td>
+			<td><ul><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_4115, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 12, 128, 128), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5153, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_33153, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_90, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</li><li>pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_30, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_nanogpt_financialsupport_nanogpt_text_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li><li>pt_nanogpt_financialsupport_nanogpt_text_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_100, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_40, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_70, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_20, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li></ul></td>
+			<td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2, 1, 7, 7), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 201), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_vilt_dandelin_vilt_b32_mlm_mlm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 204), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_albert_twmkn9_albert_base_v2_squad2_qa_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 9), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_4115, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 12, 384, 384), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_gpt2_gpt2_text_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_gpt2_gpt2_text_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_perceiverio_deepmind_language_perceiver_mlm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 2048), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_110, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_60, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_roberta_xlm_roberta_base_mlm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 1, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td rowspan="19">2</td>
+			<td rowspan="19">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+			<td rowspan="19">60</td>
+			<td>7</td>
+			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
+			<td>5</td>
+			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58680, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 480, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_149680, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 672, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169680, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_218680, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td>4</td>
-			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1024, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_157358, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58680, dtype=float32)</td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Constant, name=blocks.1.0.ghost2.primary_conv.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 480, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_149680, dtype=float32)</td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td>Operand(type=Constant, name=blocks.1.0.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 672, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_169680, dtype=float32)</td>
+			<td><ul><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25208, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_218680, dtype=float32)</td>
+			<td><ul><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 512, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42208, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28802, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 512, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_84802, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet99b_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 768, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_248802, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.0.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_111166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.0.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_171166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.0.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_231166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.1.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_321166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.1.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_381166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.1.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_441166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.2.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_531166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.2.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_591166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.2.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_651166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.3.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_741166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.3.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_801166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.3.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_861166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.4.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_951166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.4.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1011166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.4.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1071166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.5.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1161166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.5.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1221166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.5.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1281166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.6.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1341166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.6.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1401166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.6.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1461166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.7.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1521166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.7.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1581166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.7.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1641166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.8.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1701166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.8.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1761166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.8.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1821166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.9.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1881166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.9.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1941166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.9.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2001166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.10.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2061166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.10.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2121166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.10.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2181166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.11.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2241166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.11.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2301166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.11.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2361166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.12.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2421166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.12.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2481166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception41_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.12.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2541166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128), dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128), dtype=int32)</td>
+			<td><ul><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 768, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59208, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -351,444 +324,15 @@
 			<td></td>
 		</tr>
 		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.3.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.4.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.5.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_42452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.6.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.7.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.8.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.9.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.10.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.11.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.13.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2601166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.13.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2661166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.13.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2721166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.14.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2781166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.14.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2841166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.14.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2901166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.15.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2961166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.15.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3021166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.15.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3081166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.16.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3141166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.16.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3201166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.16.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3261166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.17.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3321166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.17.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3381166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.17.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3441166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.18.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3501166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.18.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3561166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.18.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3621166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.19.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3681166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.19.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3741166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.19.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3801166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.20.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3861166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.20.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3921166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li><li>pt_xception_xception65_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.20.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3981166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td>1</td>
-			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 96, 54, 54), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_alexnet_base_img_cls_osmr</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256, 27, 27), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.1.0.ghost2.primary_conv.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.1.0.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.3.0.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.5.0.ghost2.primary_conv.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_96680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.5.0.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_105680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.6.3.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.7.0.shortcut.3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_198680, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li></ul></td>
-			<td>Operand(type=Constant, name=segmentation_head.conv_pool.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_155430, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li></ul></td>
-			<td>Operand(type=Constant, name=segmentation_head.conv_aspp.normalization.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_158430, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.2.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.3.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.4.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.5.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.6.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.7.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.8.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.9.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.10.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.11.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.12.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.13.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.14.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.15.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.16.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.17.conv.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146414, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.18.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_155414, dtype=float32)</td>
+			<td><ul><li>pt_bloom_bigscience_bloom_1b1_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_1445, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 32), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1280, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_195452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.12.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.13.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_146452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.14.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.15.block.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_176452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.16.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_191452, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li></ul></td>
-			<td>Operand(type=Constant, name=features.12.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_153358, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.21.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4041166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.21.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4101166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_xception_xception71_img_cls_timm</li></ul></td>
-			<td>Operand(type=Constant, name=blocks.21.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4161166, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td rowspan="2">2</td>
-			<td rowspan="2">[FORGE][TT-Metal vs Forge Output Dtype mismatch] E                   TypeError: Dtype mismatch: framework_model.dtype=torch.int64, compiled_model.dtype=torch.int32</td>
-			<td rowspan="2">9</td>
-			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32), dtype=int64)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256), dtype=int64)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256), dtype=int64)</td>
 			<td></td>
 		</tr>
 	</tbody>

@@ -8,10 +8,10 @@ import pytest
 from transformers import DetrForObjectDetection, DetrForSegmentation
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -25,8 +25,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
     ],
 )
 def test_detr_detection(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,
@@ -36,7 +36,6 @@ def test_detr_detection(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -57,12 +56,19 @@ def test_detr_detection(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "facebook/detr-resnet-50-panoptic",
+            marks=[pytest.mark.xfail],
+        )
+    ],
+)
 def test_detr_segmentation(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,
@@ -72,7 +78,6 @@ def test_detr_segmentation(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)

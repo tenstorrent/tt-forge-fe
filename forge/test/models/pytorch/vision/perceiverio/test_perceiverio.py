@@ -14,9 +14,8 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 def get_sample_data(model_name):
@@ -51,8 +50,8 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
     if variant != "deepmind/vision-perceiver-conv":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="perceiverio",
         variant=variant,
@@ -62,7 +61,6 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Sample Image
     pixel_values = get_sample_data(variant)

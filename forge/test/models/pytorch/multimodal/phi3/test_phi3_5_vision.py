@@ -7,10 +7,10 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.utils.utils import load_input
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -31,8 +31,8 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_vision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3_5_vision",
         variant=variant,
@@ -42,7 +42,6 @@ def test_phi3_5_vision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and processor
     model = download_model(

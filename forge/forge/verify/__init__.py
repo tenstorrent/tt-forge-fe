@@ -12,3 +12,4 @@ from .verify import (
 )
 from .compare import compare_with_golden
 from .value_checkers import AutomaticValueChecker, AllCloseValueChecker, FullValueChecker
+from .utils import convert_to_supported_pytorch_dtype

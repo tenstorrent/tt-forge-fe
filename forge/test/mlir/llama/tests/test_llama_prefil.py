@@ -9,7 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 class LlamaPrefillModel(torch.nn.Module):
@@ -78,7 +78,7 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         group = "generality"
 
     # Record model details
-    module_name = build_module_name(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model=model_name,
         variant=variant,
@@ -86,7 +86,6 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         task=Task.TEXT_GENERATION,
     )
     forge_property_recorder.record_group(group)
-    forge_property_recorder.record_model_name(module_name)
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)

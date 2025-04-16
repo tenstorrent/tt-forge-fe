@@ -80,7 +80,7 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
     tt::property::record_execution_depth(
-        forge_property_handler, tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION);
+        tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION, forge_property_handler);
 
     // Run MLIR pipeline.
     run_mlir_passes<output>(mlir_module);
@@ -103,10 +103,10 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
             throw std::runtime_error("Failed to generate flatbuffer binary.");
         }
 
-        tt::property::record_execution_depth(forge_property_handler, tt::property::ExecutionDepth::FAILED_RUNTIME);
+        tt::property::record_execution_depth(tt::property::ExecutionDepth::FAILED_RUNTIME, forge_property_handler);
 
         std::string binary_json_str = runtime::Binary(binary).asJson();
-        tt::property::record_flatbuffer_details(forge_property_handler, binary_json_str);
+        tt::property::record_flatbuffer_details(binary_json_str, forge_property_handler);
 
         return binary;
     }

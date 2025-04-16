@@ -103,30 +103,7 @@ def Layernorm(
         Forge tensor
     """
 
-    if name == "":
-        name = f"layernorm_{get_unique_node_id()}"
-
-    operand_shape = operandA.shape
-    layernorm_flag = True
-    for item in operand_shape[:-2]:
-        if item != 1:
-            layernorm_flag &= False
-            break
-
-    if (dim != -1 and dim != len(operandA.shape) - 1) or not layernorm_flag:
-
-        epsilon_constant = Constant(name + "_eps", constant=epsilon)
-        mean = ReduceAvg(name + "_mean", operandA, dim)
-        x_minus_mean = Subtract(name + "_sub", operandA, mean)
-        squared = Multiply(name + "_sq", x_minus_mean, x_minus_mean)
-        var = ReduceAvg(name + "_var", squared, dim)
-        var_plus_eps = Add(name + "_var_plus_eps", var, epsilon_constant)
-        recip = Reciprocal(name + "_recip", Sqrt(name + "_sqrt", var_plus_eps))
-        out = Multiply(name + "_output", x_minus_mean, recip)
-        return Add(name + "_bias", Multiply(name + "_weights", out, weights), bias)
-
-    else:
-        return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon)).get_tensor()
+    return op("layernorm", name, operandA, weights, bias, attrs=(dim, epsilon)).get_tensor()
 
 
 def Batchnorm(

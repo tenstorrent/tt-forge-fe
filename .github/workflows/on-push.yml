@@ -19,10 +19,11 @@ jobs:
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'push'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}

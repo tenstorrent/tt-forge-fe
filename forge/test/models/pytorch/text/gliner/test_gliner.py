@@ -6,6 +6,7 @@ import pytest
 from gliner import GLiNER
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gliner.utils.model_utils import (
@@ -13,7 +14,6 @@ from test.models.pytorch.text.gliner.utils.model_utils import (
     post_processing,
     pre_processing,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = ["urchade/gliner_multi-v2.1"]
 
@@ -23,8 +23,8 @@ variants = ["urchade/gliner_multi-v2.1"]
 @pytest.mark.parametrize("variant", variants)
 def test_gliner(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="Gliner",
         variant=variant,
@@ -34,7 +34,6 @@ def test_gliner(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     model = GLiNER.from_pretrained(variant)

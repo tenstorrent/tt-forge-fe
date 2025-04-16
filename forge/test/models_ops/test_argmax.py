@@ -20,7 +20,7 @@ class Argmax0(ForgeModule):
         super().__init__(name)
 
     def forward(self, argmax_input_0):
-        argmax_output_1 = forge.op.Argmax("", argmax_input_0, dim=-1)
+        argmax_output_1 = forge.op.Argmax("", argmax_input_0, dim=-1, keep_dim=False)
         return argmax_output_1
 
 
@@ -38,18 +38,20 @@ forge_modules_and_shapes_dtypes_list = [
             {
                 "model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1"},
+                "op_params": {"dim": "-1", "keep_dim": "false"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     pytest.param(
         (
             Argmax0,
             [((1, 4), torch.int32)],
-            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+            {
+                "model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1", "keep_dim": "false"},
+            },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     pytest.param(
         (
@@ -57,15 +59,21 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32), torch.int32)],
             {
                 "model_name": [
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
                     "pt_opt_facebook_opt_125m_seq_cls_hf",
                     "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                    "pt_opt_facebook_opt_350m_seq_cls_hf",
                 ],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1"},
+                "op_params": {"dim": "-1", "keep_dim": "false"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Argmax0,
+            [((1, 4), torch.int32)],
+            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+        ),
     ),
 ]
 
@@ -73,14 +81,21 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Argmax")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Argmax")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -102,6 +117,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

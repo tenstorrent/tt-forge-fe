@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_10432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_16432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_19432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_22432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_28432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_31432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_34432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_43432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_46432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_49432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_52432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_58432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_61432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_64432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_67432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_70432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_79432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -507,7 +507,7 @@
     <tr>
       <th>45</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -518,7 +518,7 @@
     <tr>
       <th>46</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.downsample.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_82432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -529,7 +529,7 @@
     <tr>
       <th>47</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -540,7 +540,7 @@
     <tr>
       <th>48</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_85432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_88432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_91432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_94432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_97432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -595,7 +595,7 @@
     <tr>
       <th>53</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_103432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_106432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_109432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_112432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_115432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_118432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_121432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_124432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 16, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn3.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_127432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=additional_blocks.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 16, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(16, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=additional_blocks.0.4.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.0.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_130432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.0.4.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_133432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 24, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=additional_blocks.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 24, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(24, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_136432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=additional_blocks.1.4.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.1.4.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_139432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1453,7 +1453,7 @@
     <tr>
       <th>131</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1464,7 +1464,7 @@
     <tr>
       <th>132</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1475,7 +1475,7 @@
     <tr>
       <th>133</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_01605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1629,7 +1629,7 @@
     <tr>
       <th>147</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1640,7 +1640,7 @@
     <tr>
       <th>148</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1651,7 +1651,7 @@
     <tr>
       <th>149</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1662,7 +1662,7 @@
     <tr>
       <th>150</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(64, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1673,7 +1673,7 @@
     <tr>
       <th>151</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1684,7 +1684,7 @@
     <tr>
       <th>152</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1695,7 +1695,7 @@
     <tr>
       <th>153</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1706,7 +1706,7 @@
     <tr>
       <th>154</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1717,7 +1717,7 @@
     <tr>
       <th>155</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_14432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1728,7 +1728,7 @@
     <tr>
       <th>156</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_17432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1739,7 +1739,7 @@
     <tr>
       <th>157</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_20432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1750,7 +1750,7 @@
     <tr>
       <th>158</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_23432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1761,7 +1761,7 @@
     <tr>
       <th>159</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_26432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1772,7 +1772,7 @@
     <tr>
       <th>160</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_29432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1783,7 +1783,7 @@
     <tr>
       <th>161</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.4.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_32432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1794,7 +1794,7 @@
     <tr>
       <th>162</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1805,7 +1805,7 @@
     <tr>
       <th>163</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_35432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1816,7 +1816,7 @@
     <tr>
       <th>164</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(128, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1827,7 +1827,7 @@
     <tr>
       <th>165</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_38432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1838,7 +1838,7 @@
     <tr>
       <th>166</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1849,7 +1849,7 @@
     <tr>
       <th>167</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1860,7 +1860,7 @@
     <tr>
       <th>168</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_44432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1871,7 +1871,7 @@
     <tr>
       <th>169</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_47432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1882,7 +1882,7 @@
     <tr>
       <th>170</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1893,7 +1893,7 @@
     <tr>
       <th>171</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_53432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1904,7 +1904,7 @@
     <tr>
       <th>172</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1915,7 +1915,7 @@
     <tr>
       <th>173</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_59432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1926,7 +1926,7 @@
     <tr>
       <th>174</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_62432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1937,7 +1937,7 @@
     <tr>
       <th>175</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_65432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1948,7 +1948,7 @@
     <tr>
       <th>176</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_68432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1959,7 +1959,7 @@
     <tr>
       <th>177</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.5.3.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1970,7 +1970,7 @@
     <tr>
       <th>178</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_74432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1024, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_80432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.0.downsample.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_83432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2036,7 +2036,7 @@
     <tr>
       <th>184</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_86432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2047,7 +2047,7 @@
     <tr>
       <th>185</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_89432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2058,7 +2058,7 @@
     <tr>
       <th>186</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.1.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_92432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2069,7 +2069,7 @@
     <tr>
       <th>187</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_98432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_95432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2080,7 +2080,7 @@
     <tr>
       <th>188</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_98432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2091,7 +2091,7 @@
     <tr>
       <th>189</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_104432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.2.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2102,7 +2102,7 @@
     <tr>
       <th>190</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_104432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2113,7 +2113,7 @@
     <tr>
       <th>191</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_107432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2124,7 +2124,7 @@
     <tr>
       <th>192</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.3.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2135,7 +2135,7 @@
     <tr>
       <th>193</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_113432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2146,7 +2146,7 @@
     <tr>
       <th>194</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_116432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2157,7 +2157,7 @@
     <tr>
       <th>195</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_122432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.4.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_119432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2168,7 +2168,7 @@
     <tr>
       <th>196</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_122432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2179,7 +2179,7 @@
     <tr>
       <th>197</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2190,7 +2190,7 @@
     <tr>
       <th>198</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=additional_blocks.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131432, dtype=float32)</td>
+      <td>Operand(type=Constant, name=feature_extractor.feature_extractor.6.5.bn3.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_128432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2201,7 +2201,7 @@
     <tr>
       <th>199</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.0.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2212,7 +2212,7 @@
     <tr>
       <th>200</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=additional_blocks.0.4.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_134432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2223,7 +2223,7 @@
     <tr>
       <th>201</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.0.4.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_134432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2234,7 +2234,7 @@
     <tr>
       <th>202</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=additional_blocks.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137432, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(256, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2245,7 +2245,7 @@
     <tr>
       <th>203</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(512, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=additional_blocks.1.1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_137432, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2454,7 +2454,7 @@
     <tr>
       <th>222</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2465,7 +2465,7 @@
     <tr>
       <th>223</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 150, 150), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2476,7 +2476,7 @@
     <tr>
       <th>224</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 64, 75, 75), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2487,7 +2487,7 @@
     <tr>
       <th>225</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 75, 75), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2498,7 +2498,7 @@
     <tr>
       <th>226</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 75, 75), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2509,7 +2509,7 @@
     <tr>
       <th>227</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 128, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2520,7 +2520,7 @@
     <tr>
       <th>228</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2531,7 +2531,7 @@
     <tr>
       <th>229</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2542,7 +2542,7 @@
     <tr>
       <th>230</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 38, 38), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2553,7 +2553,7 @@
     <tr>
       <th>231</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 512, 19, 19), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2564,7 +2564,7 @@
     <tr>
       <th>232</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 512, 10, 10), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 256, 19, 19), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2828,7 +2828,7 @@
     <tr>
       <th>256</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2839,7 +2839,7 @@
     <tr>
       <th>257</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(64, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2850,7 +2850,7 @@
     <tr>
       <th>258</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(16,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2861,7 +2861,7 @@
     <tr>
       <th>259</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(64,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(16, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2872,7 +2872,7 @@
     <tr>
       <th>260</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2883,7 +2883,7 @@
     <tr>
       <th>261</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(128, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2894,7 +2894,7 @@
     <tr>
       <th>262</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(128, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2905,7 +2905,7 @@
     <tr>
       <th>263</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2916,7 +2916,7 @@
     <tr>
       <th>264</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(512, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2927,7 +2927,7 @@
     <tr>
       <th>265</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(512, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2938,7 +2938,7 @@
     <tr>
       <th>266</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1024, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1024,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

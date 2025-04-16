@@ -19,7 +19,7 @@
 	<tbody>
 		<tr>
 			<td rowspan="1">1</td>
-			<td rowspan="1">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected UInt32, got Float32</td>
+			<td rowspan="1">[FORGE][Runtime Datatype mismatch] E       RuntimeError: Tensor 1 - data type mismatch: expected Int32, got Float32</td>
 			<td rowspan="1">1</td>
 			<td>1</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>

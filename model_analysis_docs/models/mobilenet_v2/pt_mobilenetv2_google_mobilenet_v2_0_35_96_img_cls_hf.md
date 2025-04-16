@@ -1124,12 +1124,12 @@
       <th>101</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 3, 96, 96), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 3, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>102</th>
@@ -1168,12 +1168,12 @@
       <th>105</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 48, 48, 48), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 48<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 48<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>106</th>
@@ -1212,12 +1212,12 @@
       <th>109</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 48, 24, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(48, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 48<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 48<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>110</th>
@@ -1256,12 +1256,12 @@
       <th>113</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 96, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 96<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 96<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>114</th>
@@ -1355,12 +1355,12 @@
       <th>122</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 192, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 3, 3), dtype=float32)</td>
-      <td>stride : [2, 2]<br>padding : [0, 1, 0, 1]<br>dilation : 1<br>groups : 192<br>channel_last : 0</td>
+      <td>stride : [2, 2]<br>padding : [0, 0, 1, 1]<br>dilation : 1<br>groups : 192<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][TTIR to TTNN Conv2dOpConversionPattern] tt_forge_signal_handler tt-mlir/lib/Conversion/TTIRToTTNN/TTIRToTTNN.cpp Conv2dOpConversionPattern::matchAndRewrite(ttir::Conv2dOp, OpAdaptor, ConversionPatternRewriter &) adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN only supports padding height/width attributes. Thus, padding_top must equal padding_bottom for the op to execute as expected</td>
+      <td>[MLIR][mlir pipeline] RuntimeError Failed to run MLIR compiler pass pipeline</td>
     </tr>
     <tr>
       <th>123</th>

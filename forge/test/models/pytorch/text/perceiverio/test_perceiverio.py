@@ -7,9 +7,9 @@ import pytest
 from transformers import PerceiverForMaskedLM, PerceiverTokenizer
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -18,8 +18,8 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["deepmind/language-perceiver"])
 def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="perceiverio",
         variant=variant,
@@ -29,7 +29,6 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     tokenizer = download_model(PerceiverTokenizer.from_pretrained, variant)

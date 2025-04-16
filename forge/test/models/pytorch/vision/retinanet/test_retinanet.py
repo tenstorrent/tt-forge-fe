@@ -9,12 +9,12 @@ import pytest
 import requests
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     "retinanet_rn18fpn",
@@ -30,8 +30,8 @@ variants = [
 def test_retinanet(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="retinanet",
         variant=variant,
@@ -41,7 +41,6 @@ def test_retinanet(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
@@ -93,8 +92,8 @@ variants_with_weights = {
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_retinanet_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="retinanet",
         variant=variant,
@@ -104,7 +103,6 @@ def test_retinanet_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

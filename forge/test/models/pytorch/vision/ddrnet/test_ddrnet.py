@@ -8,9 +8,8 @@ from PIL import Image
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path.append("third_party/confidential_customer_models/generated/scripts/")
 # from model_ddrnet import DualResNet_23, DualResNet_39, BasicBlock
@@ -29,8 +28,8 @@ def test_ddrnet_pytorch(forge_property_recorder, variant):
     if variant != "ddrnet23s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="ddrnet",
         variant=variant,
@@ -40,7 +39,6 @@ def test_ddrnet_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
@@ -96,8 +94,8 @@ variants = ["ddrnet23s_cityscapes", "ddrnet23_cityscapes"]
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="ddrnet",
         variant=variant,
@@ -107,7 +105,6 @@ def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":

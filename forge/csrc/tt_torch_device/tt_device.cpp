@@ -129,12 +129,8 @@ std::vector<std::uint32_t> fromIntArrayRef(torch::IntArrayRef arr)
 
 runtime::Tensor create_tensor(const torch::Tensor& tensor)
 {
-    auto data = std::shared_ptr<void>(
+    return runtime::createBorrowedHostTensor(
         tensor.data_ptr(),
-        [tensor](void*) { (void)tensor; }  // Capture tensor by value to increase ref count and keep it alive
-    );
-    return runtime::createTensor(
-        data,
         fromIntArrayRef(tensor.sizes()),
         fromIntArrayRef(tensor.strides()),
         tensor.element_size(),

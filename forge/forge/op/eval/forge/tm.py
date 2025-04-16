@@ -110,17 +110,15 @@ def eval(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "indices should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
+        indices = t_ops[1].type(torch.LongTensor)
+        if len(indices.shape) == 2:
+            # Indices are 2D, we need to reshape them to 1D
+            indices = indices.reshape(-1)
 
-        if len(t_ops[1].shape) > 1:
-            if len(t_ops[0].shape) > len(t_ops[1].shape) and t_ops[0].shape[0] == 1:
-                # Padded
-                ret = torch.unsqueeze(t_ops[0][0][t_ops[1].numpy()], 0)
-            else:
-                ret = torch.unsqueeze(t_ops[0][t_ops[1].numpy()], 0)
-        else:
-            ret = t_ops[0][t_ops[1].numpy()]
+        ret = torch.index_select(t_ops[0], dim, indices)
+
         return ret
 
     if type == "broadcast":
@@ -396,12 +394,10 @@ def shape(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(ops[1]) == 1 or len(ops[1]) == 2, "indices should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
         shape = list(ops[0])
         shape[dim] = ops[1][-1]
-        if len(ops[1]) > 1:
-            shape.insert(dim, 1)
         return shape, []
 
     if type == "select":
@@ -1036,25 +1032,76 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 def decompose(type, attr, dc, inputs):
     if type == "adv_index":
         dim = attr[0]
-        in0_shape = inputs[0].shape
-        in1_shape = inputs[1].shape
-        if len(in0_shape) == 1 or in0_shape[dim] == 1:
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
-            return
-        if dim == 0 and len(in1_shape) <= 2:
-            # Consider the case adv_index(X,Y) where
-            #    X: (A, B), Y: (1, C) or (C,) and A != 1
-            if len(in0_shape) == 2:
-                # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
-                # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
-                # so swaping the operands.
-                result = dc.op(
-                    "embedding",
-                    (inputs[1], inputs[0]),
-                )
-                dc.fuse(result)
-                return
+        in0_shape = inputs[0].shape.as_list()
+        indices_shape = inputs[1].shape.as_list()
+
+        assert len(indices_shape) == 2 or len(indices_shape) == 1, "indices tensor should be 1D or 2D"
+
+        # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
+        # The embedding operation will select the appropriate indices from the reshaped tensor
+        # and then we will reshape the output back to the original shape.
+        #
+        # For example:
+        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indices shape [X],
+        # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
+        # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
+        # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
+        # Next, we will reshape the output back to the 4D shape [X, N * C * W] -> [X, N, C, W]
+        # and finally, we will transpose the output back to the original order.
+        # [X, N, C, W] -> [N, X, C, W] and [N, X, C, W] -> [N, C, X, W]
+
+        # Step 1: Move the indexed dimension to the front using a sequence of transposes
+        if dim != 0:
+            current = inputs[0]
+            for i in range(dim, 0, -1):
+                current = dc.op(TransposeTM.create(i, i - 1), [current])
+            permuted = current
+        else:
+            # No need to transpose if dim is already 0
+            permuted = inputs[0]
+
+        # Step 2: Reshape to [in0_shape[dim], -1]
+        # Calculate product of all dimensions except the first (after transposition)
+
+        if len(in0_shape) != 2:
+            # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
+            permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
+            indexed_dim_shape = permuted_shape.pop(dim)
+            permuted_shape = [indexed_dim_shape, *permuted_shape]
+
+            rest_dims_product = math.prod(permuted_shape[1:])
+
+            reshape_dims = [in0_shape[dim], rest_dims_product]
+            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
+        else:
+            reshaped = permuted
+
+        # Step 3: Apply embedding operation
+        # embedding op expects indices tensor as first argument and embedding_table as second argument
+        selected = dc.op("embedding", (inputs[1], reshaped))
+
+        # Step 4: Reshape back to appropriate dimensions
+        # The new shape replaces the indexed dimension with the indices shape
+        if len(in0_shape) != 2:
+            output_shape = indices_shape + permuted_shape[1:]
+
+            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
+        else:
+            reshaped_output = selected
+
+        # Step 5: Restore original dimension order if necessary using transposes
+        if dim != 0:
+            # Move dimension 0 to position 'dim' using transposes
+            current = reshaped_output
+            for i in range(0, dim):
+                current = dc.op(TransposeTM.create(i, i + 1), [current])
+            result = current
+        else:
+            # No need to transpose if dim is already 0
+            result = reshaped_output
+
+        dc.fuse(result)
+        return
 
     if type == "pad":
         if all([x == 0 for x in attr[0:-2]]):

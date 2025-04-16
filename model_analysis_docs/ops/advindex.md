@@ -18,9 +18,9 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="6">1</td>
-			<td rowspan="6">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="6">8</td>
+			<td rowspan="8">1</td>
+			<td rowspan="8">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="8">10</td>
 			<td>3</td>
 			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(32, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
@@ -30,6 +30,18 @@
 			<td>1</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(2359296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=int32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(7, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(4, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
 			<td></td>
 		</tr>
 		<tr>
