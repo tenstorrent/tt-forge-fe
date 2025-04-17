@@ -74,6 +74,7 @@ class Source(BaseEnum):
     TORCHVISION = ("torchvision", "Torchvision")
     GITHUB = ("github", "GitHub")
     PADDLE = ("paddlemodels", "Paddle Models")
+    PADDLENLP = ("padlenlp", "PaddleNLP")
 
 
 def build_module_name(
@@ -279,6 +280,7 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
+    group: str = ""
 
 
 @dataclass_json
@@ -433,6 +435,7 @@ class ForgePropertyHandler:
             group (str): The group value to be recorded.
         """
         self.add("group", group)
+        self.add("tags.group", group)
 
     def record_priority(self, priority: str):
 

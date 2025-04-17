@@ -11,6 +11,7 @@
 #include "graph_lib/defines.hpp"
 #include "lower_to_forge/common.hpp"
 #include "passes/amp.hpp"
+#include "python_bindings_common.hpp"
 
 namespace tt
 {
@@ -40,6 +41,7 @@ void configure_a_b_format_conversion(
 void validate_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config);
 void validate_post_placer_data_formats(const graphlib::Graph *graph, const DeviceConfig &device_config);
 void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFormat> default_df_override);
+void apply_user_data_format_override(graphlib::Graph *graph, py::object compiler_cfg_object);
 
 void run_dataformat_passes(
     graphlib::Graph *graph,
