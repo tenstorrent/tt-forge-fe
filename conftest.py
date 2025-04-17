@@ -102,7 +102,7 @@ def memory_usage_tracker():
     process = psutil.Process()
 
     # Initialize memory tracking variables
-    start_mem = process.memory_full_info().uss / (1024 * 1024)  # MB
+    start_mem = process.memory_info().rss / (1024 * 1024)  # MB
     min_mem = start_mem
     max_mem = start_mem
     total_mem = start_mem
@@ -114,7 +114,7 @@ def memory_usage_tracker():
     def track_memory():
         nonlocal min_mem, max_mem, total_mem, count
         while tracking:
-            current_mem = process.memory_full_info().uss / (1024 * 1024)
+            current_mem = process.memory_info().rss / (1024 * 1024)
             min_mem = min(min_mem, current_mem)
             max_mem = max(max_mem, current_mem)
             total_mem += current_mem
@@ -149,15 +149,15 @@ def memory_usage_tracker():
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
 
-    logger.info(f"memory usage before gc.collect(): {process.memory_full_info().uss / (1024 * 1024)} MB")
+    logger.info(f"memory usage before gc.collect(): {process.memory_info().rss / (1024 * 1024)} MB")
     (c1, c2, c3) = gc.get_count()
     (t1, t2, t3) = gc.get_threshold()
     logger.info(f"Garbage collector counts: {c1}, {c2}, {c3}")
     logger.info(f"Garbage collector thresholds: {t1}, {t2}, {t3}")
     collected = gc.collect()
     logger.info(f"Garbage collector collected {collected} objects.")
-    logger.info(f"memory usage after gc.collect(): {process.memory_full_info().uss / (1024 * 1024)} MB")
+    logger.info(f"memory usage after gc.collect(): {process.memory_info().rss / (1024 * 1024)} MB")
 
     logger.info(f"trimming memory")
     trim_memory()
-    logger.info(f"memory usage after trim_memory: {process.memory_full_info().uss / (1024 * 1024)} MB")
+    logger.info(f"memory usage after trim_memory: {process.memory_info().rss / (1024 * 1024)} MB")
