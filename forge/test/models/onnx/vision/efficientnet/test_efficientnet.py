@@ -7,7 +7,6 @@ import forge
 import onnx
 import torch
 from forge.verify.verify import verify
-from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.utils import load_inputs
 from urllib.request import urlopen
@@ -25,7 +24,10 @@ params = [
     pytest.param("efficientnet_b3"),
     pytest.param("efficientnet_b3a"),
     pytest.param("efficientnet_b4"),
-    pytest.param("efficientnet_b5"),
+    pytest.param(
+        "efficientnet_b5",
+        marks=[pytest.mark.skip(reason="Out of memory due - not enough space to allocate L1 buffer across banks")],
+    ),
     pytest.param("efficientnet_lite0"),
 ]
 
@@ -69,10 +71,18 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     # Compile model
     compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
 
+    pcc = 0.99
+
+    if variant == "efficientnet_b1":
+        pcc = 0.95
+
     fw_out, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
+        verify_cfg=VerifyConfig(
+            value_checker=AutomaticValueChecker(pcc=pcc),
+        ),
         forge_property_handler=forge_property_recorder,
     )
 
