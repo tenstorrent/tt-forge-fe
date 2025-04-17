@@ -131,12 +131,3 @@ def get_inputs(model, prompt: str = "A beautiful mountain landscape during sunse
     timestep = pipe.scheduler.timesteps[0].expand(latents.shape[0])
 
     return pipe, (latents, timestep, prompt_embeds)
-
-
-class StableDiffusionWrapper(torch.nn.Module):
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, latents, timesteps, prompt_embeds):
-        return self.model.unet(latents, timesteps, encoder_hidden_states=prompt_embeds).sample

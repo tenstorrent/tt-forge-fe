@@ -33,8 +33,7 @@ def test_oft(forge_property_recorder, variant):
     )
 
     forge_property_recorder.record_group("red")
-    # TODO add priority tags
-    # forger_proprty_recorder.record_priority("P1")
+    forger_proprty_recorder.record_priority("P1")
     forge_property_recorder.record_model_name(module_name)
 
     # Load model and inputs
