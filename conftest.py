@@ -11,6 +11,7 @@ from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
 from forge._C import ExecutionDepth
+import ctypes
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -74,6 +75,11 @@ def forge_property_recorder(request, record_property):
     finally:
         # Store the recorded properties using the 'record_property' function from pytest.
         forge_property_handler.store_property(record_property)
+
+
+def trim_memory() -> int:
+    libc = ctypes.CDLL("libc.so.6")
+    return libc.malloc_trim(0)
 
 
 @pytest.fixture(autouse=True)
@@ -143,11 +149,15 @@ def memory_usage_tracker():
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
 
-    logger.info(f"memory usage before gc.collect(): {process.memory_info().rss / (1024 * 1024)} MB")
+    logger.info(f"memory usage before gc.collect(): {process.memory_full_info().uss / (1024 * 1024)} MB")
     (c1, c2, c3) = gc.get_count()
     (t1, t2, t3) = gc.get_threshold()
     logger.info(f"Garbage collector counts: {c1}, {c2}, {c3}")
     logger.info(f"Garbage collector thresholds: {t1}, {t2}, {t3}")
     collected = gc.collect()
     logger.info(f"Garbage collector collected {collected} objects.")
-    logger.info(f"memory usage after gc.collect(): {process.memory_info().rss / (1024 * 1024)} MB")
+    logger.info(f"memory usage after gc.collect(): {process.memory_full_info().uss / (1024 * 1024)} MB")
+
+    logger.info(f"trimming memory")
+    trim_memory()
+    logger.info(f"memory usage after trim_memory: {process.memory_full_info().uss / (1024 * 1024)} MB")

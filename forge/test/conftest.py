@@ -55,9 +55,6 @@ def pytest_sessionstart(session):
     torch._dynamo.reset()
     reset_state()
 
-    max_mem = 20 * 1024 * 1024 * 1024  # 20 GB in bytes
-    resource.setrlimit(resource.RLIMIT_AS, (max_mem, max_mem))
-
     # If specified by env variable, print the environment variables
     # It can be useful in CI jobs to get the state of the enviroment variables before test session starts
     print_env_variables = bool(int(os.environ.get("PYTEST_PRINT_ENV_VARIABLES", "0")))
