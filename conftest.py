@@ -96,7 +96,7 @@ def memory_usage_tracker():
     process = psutil.Process()
 
     # Initialize memory tracking variables
-    start_mem = process.memory_info().rss / (1024 * 1024)  # MB
+    start_mem = process.memory_full_info().uss / (1024 * 1024)  # MB
     min_mem = start_mem
     max_mem = start_mem
     total_mem = start_mem
@@ -108,12 +108,12 @@ def memory_usage_tracker():
     def track_memory():
         nonlocal min_mem, max_mem, total_mem, count
         while tracking:
-            current_mem = process.memory_info().rss / (1024 * 1024)
+            current_mem = process.memory_full_info().uss / (1024 * 1024)
             min_mem = min(min_mem, current_mem)
             max_mem = max(max_mem, current_mem)
             total_mem += current_mem
             count += 1
-            time.sleep(0.1)  # Adjust the interval as needed
+            time.sleep(0.01)  # Adjust the interval as needed
 
     # Start tracking in a background thread
     import threading
