@@ -30,9 +30,10 @@ build_and_push() {
     if [ $? -eq 0 ]; then
         echo "Tag $DOCKER_TAG already exists in ghcr.io"
         # Check if the image tag already exists in the local docker
-        if !docker manifest inspect $DOMAIN/$REPO/$image_name:$DOCKER_TAG > /dev/null; then
-            docker pull $DOMAIN/$REPO/$image_name:$DOCKER_TAG
+        if docker manifest inspect $DOMAIN/$REPO/$image_name:$DOCKER_TAG > /dev/null; then
+            return
         fi
+        docker pull $DOMAIN/$REPO/$image_name:$DOCKER_TAG
         return
     fi
 
