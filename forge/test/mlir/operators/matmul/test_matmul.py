@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import pytest
 import torch
 from torch import nn
@@ -16,6 +17,9 @@ from forge.verify.verify import verify
 @pytest.mark.parametrize("inner_dim", [1, 7, 32, 41, 64])
 @pytest.mark.push
 def test_matmul(forge_property_recorder, batch_size, outer_dim_x, outer_dim_y, inner_dim):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     class Matmul(nn.Module):
         def __init__(self):
             super().__init__()

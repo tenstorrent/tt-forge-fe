@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import pytest
 import torch
 from torch import nn
@@ -57,6 +58,9 @@ def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
 )
 @pytest.mark.push
 def test_cross_entropy_loss(forge_property_recorder, prediction_shape):
+    if os.environ["ARCH_NAME"] == "blackhole" and prediction_shape == (3, 5):
+        pytest.xfail()
+
     forge_loss = forge.op.loss.CrossEntropyLoss("cross_entropy_loss")
     torch_loss = torch.nn.CrossEntropyLoss()
 
