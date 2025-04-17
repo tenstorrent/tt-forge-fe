@@ -1,11 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import paddle
 import pytest
 import torch
 from loguru import logger
-from paddle.vision.models import googlenet
 from PIL import Image
 from torchvision import models, transforms
 
@@ -14,6 +12,7 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.utils import download_model
+
 
 @pytest.mark.nightly
 @pytest.mark.xfail

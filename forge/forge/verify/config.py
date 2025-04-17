@@ -272,7 +272,8 @@ class VerifyConfig:
 
     @property
     def compiled_model_types(self) -> Tuple:
-        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency 
+        from forge.compiled_graph_state import CompiledModel  # Local import to avoid circular dependency
+
         return (CompiledModel,)
 
     @property

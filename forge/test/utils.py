@@ -19,7 +19,6 @@ import tensorflow as tf
 from forge.module import FrameworkModule
 
 
-
 def download_model(download_func, *args, num_retries=3, timeout=180, **kwargs):
     for _ in range(num_retries):
         try:
@@ -129,6 +128,7 @@ def fetch_model(
     model = loader(model_path, **kwargs) if loader else None
     return model
 
+
 def fetch_paddle_model(url, save_dir):
     model_name = os.path.splitext(os.path.basename(url))[0]
     file_names = ["inference.pdiparams", "inference.pdiparams.info", "inference.pdmodel"]
@@ -139,10 +139,7 @@ def fetch_paddle_model(url, save_dir):
 
     # Check if the model is already downloaded
     model_dir = os.path.join(save_dir, model_name)
-    if os.path.exists(model_dir) and all(
-        os.path.exists(os.path.join(model_dir, file))
-        for file in file_names
-    ):
+    if os.path.exists(model_dir) and all(os.path.exists(os.path.join(model_dir, file)) for file in file_names):
         print(f"Model already downloaded at {model_dir}. Skipping download.")
 
     else:
@@ -162,7 +159,6 @@ def fetch_paddle_model(url, save_dir):
     model = paddle.jit.load(model_path)
 
     return model
-
 
 
 def reset_seeds():
