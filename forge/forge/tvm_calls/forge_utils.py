@@ -381,7 +381,7 @@ def paddle_trace(paddlemod, input_spec=None, inputs=None):
     traced_model = paddle.jit.to_static(paddlemod, input_spec=input_spec, full_graph=True)
 
     # Model must be saved and loaded in order to have TranslatedLayer type which is needed for the next step
-    model_save_path = "traced_model_tmp"
+    model_save_path = "traced_model"
     paddle.jit.save(traced_model, model_save_path)
     loaded_model = paddle.jit.load(model_save_path)
 

@@ -539,8 +539,6 @@ def extract_and_generate_unique_ops_tests(
     and datatypes, as well as operation arguments (if any). For operation, a test module
     file is created, which includes a Forge module for different configurations and associated test cases.
     """
-    if framework == "paddle":
-        named_parameters = {value.name: value for value in framework_mod.module.parameters()}
 
     if framework in ["pytorch", "paddle"]:
         named_parameters = dict(framework_mod.module.state_dict().items())
