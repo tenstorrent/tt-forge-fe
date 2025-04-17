@@ -418,3 +418,27 @@ def LogicalAnd(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) 
 
 def Remainder(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
     return _Eltwise(name, operandA, operandB, "remainder")
+
+
+def FloorDivide(name: str, operandA: Tensor, operandB: Union[Tensor, Parameter]) -> Tensor:
+    """
+    Floor divide operation.
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        First operand
+
+    operandB: Tensor or Parameter
+        Second operand
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+
+    return op("floor_divide", name, operandA, operandB).get_tensor()
