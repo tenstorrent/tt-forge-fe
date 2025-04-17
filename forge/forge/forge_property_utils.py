@@ -433,6 +433,7 @@ class ForgePropertyHandler:
             group (str): The group value to be recorded.
         """
         self.add("group", group)
+        self.add("tags.group", group)
 
     def record_model_name(self, model_name: str):
         """
