@@ -731,3 +731,40 @@ def test_select(forge_property_recorder, shape, dim, begin, length, stride):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    ["input_shape", "padding", "mode", "value"],
+    [
+        # 2D Input = 1D Padding
+        # pytest.param((1, 8), (2, 2), "constant", 0.0),
+        # pytest.param((1, 8), (1, 3), "replicate", None),
+        pytest.param((1, 8), (1, 3), "reflect", None),
+        # 2D Input = 2D Padding
+        # pytest.param((1, 3, 8), (0, 0, 2, 2), "constant", 0.0),
+        # pytest.param((1, 3, 8), (2, 2, 2, 2), "replicate", None),
+        pytest.param((1, 3, 8), (2, 1, 1, 2), "reflect", None),
+        # 4D Input = 2D Padding
+        # pytest.param((2, 3, 4, 5), (1, 1, 2, 2), "constant", 42.0),
+        # pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "replicate", None),
+        pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
+    ],
+)
+def test_padding(forge_property_recorder, input_shape, padding, mode, value):
+    class Padding(nn.Module):
+        def __init__(self, padding, mode, value):
+            super().__init__()
+            self.padding = padding
+            self.mode = mode
+            self.value = value
+
+        def forward(self, x):
+            return torch.nn.functional.pad(x, self.padding, mode=self.mode, value=self.value)
+
+    inputs = [torch.rand(input_shape)]
+    framework_model = Padding(padding, mode, value)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
