@@ -66,6 +66,7 @@ def test_qwen_clm(forge_property_recorder, variant):
         "Qwen/Qwen2.5-7B-Instruct",
     ]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 

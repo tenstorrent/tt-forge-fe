@@ -63,6 +63,7 @@ def test_efficientnet_timm(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["efficientnet_b0"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

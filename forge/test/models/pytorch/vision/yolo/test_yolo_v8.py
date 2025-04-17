@@ -29,6 +29,7 @@ def test_yolov8(forge_property_recorder):
         source=Source.GITHUB,
     )
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
