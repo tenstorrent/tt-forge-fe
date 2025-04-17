@@ -57,7 +57,7 @@ build_and_push() {
     
 }
 
-build_and_push $REPO $BASE_IMAGE_NAME .github/Dockerfile.base
-build_and_push $REPO $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
+build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
+build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
 build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
-build_and_push $REPO $IRD_IMAGE_NAME .github/Dockerfile.ird ci
+build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
