@@ -34,6 +34,7 @@ from ..lforge.splice import Splice
 from .nop import Nop
 from ..lforge.nop import Nop as ForgeNop
 from .buffer import Buffer
+from forge._C import DataFormat
 
 
 def eval(type, attr, ops):
@@ -1077,6 +1078,10 @@ def decompose(type, attr, dc, inputs):
             c = activations.shape[-1]
             c_dim_axis = -1
 
+        # convert axis to positive numbers due to the decomposition ops working with positive numbers
+        r_dim_axis = r_dim_axis if r_dim_axis >= 0 else len(activations.shape) + r_dim_axis
+        c_dim_axis = c_dim_axis if c_dim_axis >= 0 else len(activations.shape) + c_dim_axis
+
         # Find out if padding exceeds tile boundary
         # R, C are flipped because pytorch pad starts from last axis
         if len(attr) == 4:
@@ -1215,70 +1220,49 @@ def decompose(type, attr, dc, inputs):
             )
 
             # Step 2: Mirror these patches horizontally
-            left_indices = torch.arange(left - 1, -1, -1, dtype=torch.int64)
-            left_indices_tensor = dc.tensor(left_indices)
+            left_indices = torch.arange(left - 1, -1, -1)
+            left_indices_tensor = dc.tensor(left_indices, DataFormat.Int32)
             left_patch_mirrored = dc.op("adv_index", [left_patch, left_indices_tensor], (c_dim_axis,))
 
-            right_indices = torch.arange(right - 1, -1, -1, dtype=torch.int64)
-            right_indices_tensor = dc.tensor(right_indices)
+            right_indices = torch.arange(right - 1, -1, -1)
+            right_indices_tensor = dc.tensor(right_indices, DataFormat.Int32)
             right_patch_mirrored = dc.op("adv_index", [right_patch, right_indices_tensor], (c_dim_axis,))
 
-            # TODO: Implement reflect mode
-            raise NotImplementedError("Reflect mode is not implemented yet")
+            # Step 3: Concatenate the mirrored patches to the original result
+            result = dc.op_with_named_attrs(
+                "concatenate", [left_patch_mirrored, result, right_patch_mirrored], {"dim": c_dim_axis}, (c_dim_axis,)
+            )
 
-            # if channel_last:
-            #     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+            # Step 4: Extract top and bottom patches which are on the r axis (height)
+            top_patch = dc.op_with_named_attrs(
+                "index",
+                [result],
+                {"dim": r_dim_axis, "start": 1, "stop": top + 1, "stride": 1},
+                (r_dim_axis, 1, top + 1, 1),
+            )
+            bot_patch = dc.op_with_named_attrs(
+                "index",
+                [result],
+                {"dim": r_dim_axis, "start": r - bottom - 1, "stop": r - 1, "stride": 1},
+                (r_dim_axis, r - bottom - 1, r - 1, 1),
+            )
 
-            #     orig_shape = result.shape
-            #     result = dc.op_with_named_attrs(
-            #         "reshape",
-            #         [result],
-            #         {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
-            #         (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
-            #     )
-            #     result = dc.op(TransposeTM.create(-2, -1), [result])
-            #     spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
-            #     spm = dc.tensor(spm.to_dense())
-            #     result = dc.op("matmul", [spm, result])
-            #     result = dc.op(TransposeTM.create(-2, -1), [result])
-            #     result = dc.op_with_named_attrs(
-            #         "reshape",
-            #         [result],
-            #         {
-            #             "shape": (
-            #                 1,
-            #                 orig_shape[-3],
-            #                 orig_shape[-1] + total_padding_r,
-            #                 orig_shape[-2] + total_padding_c,
-            #             )
-            #         },
-            #         (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
-            #     )
+            # Step 5: Mirror these patches vertically
+            top_indices = torch.arange(top - 1, -1, -1)
+            top_indices_tensor = dc.tensor(top_indices, DataFormat.Int32)
+            top_patch_mirrored = dc.op("adv_index", [top_patch, top_indices_tensor], (r_dim_axis,))
 
-            #     result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-            # else:
-            #     orig_shape = result.shape
-            #     if len(orig_shape) == 2:
-            #         shape = (1, orig_shape[-2] * orig_shape[-1])
-            #     else:
-            #         shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
+            bot_indices = torch.arange(bottom - 1, -1, -1)
+            bot_indices_tensor = dc.tensor(bot_indices, DataFormat.Int32)
+            bot_patch_mirrored = dc.op("adv_index", [bot_patch, bot_indices_tensor], (r_dim_axis,))
 
-            #     result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-            #     result = dc.op(TransposeTM.create(-2, -1), [result])
-            #     spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
-            #     spm = dc.tensor(spm.to_dense())
-            #     result = dc.op("matmul", [spm, result])
-            #     result = dc.op(TransposeTM.create(-2, -1), [result])
+            # Step 6: Concatenate the mirrored patches to the original result
+            result = dc.op_with_named_attrs(
+                "concatenate", [top_patch_mirrored, result, bot_patch_mirrored], {"dim": r_dim_axis}, (r_dim_axis,)
+            )
 
-            #     if len(orig_shape) == 2:
-            #         shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-            #     else:
-            #         shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-
-            #     result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-
-            # dc.fuse(result)
-            # return
+            dc.fuse(result)
+            return
 
     if type == "broadcast":
         if attr[1] == 1:
