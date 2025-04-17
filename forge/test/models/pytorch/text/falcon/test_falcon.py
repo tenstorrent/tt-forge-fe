@@ -108,7 +108,7 @@ def test_falcon_3(forge_property_recorder, variant):
 
     # post processing
     generated_text = generate_no_cache(
-        max_new_tokens=500, model=framework_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
+        max_new_tokens=50, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
     )
 
     print("generated_text : ", generated_text)

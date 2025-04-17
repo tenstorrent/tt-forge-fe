@@ -161,6 +161,9 @@ def AdvIndex(
     Tensor
         Forge tensor
     """
+    if dim < 0:
+        dim += len(operandA.shape)
+
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
