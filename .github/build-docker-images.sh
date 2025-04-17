@@ -14,7 +14,7 @@ IRD_IMAGE_NAME=tt-forge-fe-ird-ubuntu-22-04
 
 # Compute the hash of the Dockerfile
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-DOCKER_TAG=$(./get-docker-tag.sh)
+DOCKER_TAG=$(./.github/get-docker-tag.sh)
 echo "Docker tag: $DOCKER_TAG"
 
 build_and_push() {
