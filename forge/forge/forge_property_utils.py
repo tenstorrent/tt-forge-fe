@@ -74,6 +74,7 @@ class Source(BaseEnum):
     TORCHVISION = ("torchvision", "Torchvision")
     GITHUB = ("github", "GitHub")
     PADDLE = ("paddlemodels", "Paddle Models")
+    PADDLENLP = ("padlenlp", "PaddleNLP")
 
 
 def build_module_name(
