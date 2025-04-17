@@ -4,6 +4,7 @@
 
 
 from multiprocessing.pool import ThreadPool
+import math
 import os
 from typing import Union
 
@@ -191,12 +192,15 @@ def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
     # Check if we can use the custom torch kernel for PCC calculation.
     if can_use_custom_kernel(a, b):
         pcc = verif.calculate_tensor_pcc(a, b)
-        if pcc == torch.nan:
+        if math.isnan(pcc):
             # If pcc is nan, than it can happen that the tensors are equal, but the variances are 0,
             # causing division by 0.
             # Verify that the tensors are equal, and return 1.0
             if verif.all_close(a, b):
                 return 1.0
+
+            assert False, "PCC is nan, but tensors are not equal"
+        return pcc
 
     # We'll need to fallback to the numpy pcc calculation / estimation.
     TENSOR_SIZE_THRESHOLD = int(1e8)
