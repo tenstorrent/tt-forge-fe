@@ -280,6 +280,7 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
+    group: str = ""
 
 
 @dataclass_json
