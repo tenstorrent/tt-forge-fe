@@ -51,11 +51,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Release },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Release },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -142,11 +141,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Debug },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Debug },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
