@@ -25,6 +25,7 @@ build_and_push() {
 
     GHCR_TOKEN=$(echo $GHCR_TOKEN | base64)
     # Check if the image tag already exists in ghcr.io
+    #curl -s -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/$REPO/$image_name/tags/list | grep -q "$DOCKER_TAG"
     curl -s -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/$REPO/$image_name/tags/list | grep -q "$DOCKER_TAG"
     if [ $? -eq 0 ]; then
         echo "Tag $DOCKER_TAG already exists in ghcr.io"
