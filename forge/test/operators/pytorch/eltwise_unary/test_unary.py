@@ -86,8 +86,7 @@ class TestVerification:
         warm_reset: bool = False,
     ):
 
-        module = PytorchUtils.get_pytorch_module(test_vector.operator)
-        operator = getattr(module, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -163,8 +162,7 @@ class TestParamsData:
         if test_vector.operator in ("leaky_relu",):
             return cls.kwargs_leaky_relu
         if test_vector.operator in ("cumsum",):
-            for d in range(0, len(test_vector.input_shape)):
-                yield {"dim": d}
+            return [{"dim": d} for d in range(0, len(test_vector.input_shape))]
         return cls.no_kwargs
 
 

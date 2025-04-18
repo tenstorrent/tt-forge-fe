@@ -48,6 +48,7 @@ def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 

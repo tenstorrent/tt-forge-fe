@@ -801,7 +801,6 @@ def test_floor(forge_property_recorder, input_data):
             (1, 64, 76),
             2,
             False,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
         ),
         ((1, 64, 76), 2, True),
         pytest.param(

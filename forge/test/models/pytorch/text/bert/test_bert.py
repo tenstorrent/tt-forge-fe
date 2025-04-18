@@ -282,6 +282,7 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

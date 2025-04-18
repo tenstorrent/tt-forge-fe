@@ -31,6 +31,7 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
         source=Source.HUGGINGFACE,
     )
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)

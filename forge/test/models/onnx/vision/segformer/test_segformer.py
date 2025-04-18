@@ -39,6 +39,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
     # Record Forge Property
     if variant == "nvidia/mit-b0":
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

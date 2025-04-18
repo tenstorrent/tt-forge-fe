@@ -230,7 +230,57 @@ void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallbac
     }
 }
 
-// Apply user overrides
+// Inserts a cast node after every input node in the graph,
+// placing it on the first user edge and re-routing all other edges.
+// The cast node will convert outputs to the given DataFormat.
+static void insert_cast_on_input_nodes(graphlib::Graph *graph, DataFormat df_override)
+{
+    for (Node *node : graph->nodes())
+    {
+        if (node->node_type() != graphlib::NodeType::kInput)
+            continue;
+
+        std::vector<Edge> user_edges = graph->user_data_edges(node);
+        if (user_edges.empty())
+            continue;
+
+        // Generate cast node
+        std::stringstream ss;
+        ss << df_override;
+        std::string dtype_str = ss.str();
+        graphlib::OpType::Attrs named_attr = graphlib::OpType::Attrs{{"dtype", dtype_str}};
+        graphlib::OpType op_type = graphlib::OpType("cast", {}, {}, named_attr);
+
+        Node *cast_node = graph->add_node(
+            graphlib::create_node<graphlib::PyOpNode>("cast_input_" + node->name(), op_type),
+            graph->get_subgraph_id_for_node(node->id()));
+
+        cast_node->set_shape(node->shape());
+        cast_node->set_output_df(df_override);
+
+        // First edge: insert cast node on it.
+        graphlib::insert_node_on_edge(graph, user_edges[0], cast_node);
+        TT_ASSERT(cast_node != nullptr, "Cast node should not be null");
+
+        // Remaining edges: reconnect edges to cast node.
+        for (size_t i = 1; i < user_edges.size(); ++i)
+        {
+            Edge &edge = user_edges[i];
+
+            Edge new_edge = Edge(
+                cast_node->id(),
+                0,  // output port
+                edge.consumer_node_id,
+                edge.consumer_input_port_id,
+                edge.edge_type);
+            graph->add_edge(new_edge);
+            graph->copy_edge_attributes(edge, new_edge);
+            graph->remove_edge(edge);
+        }
+    }
+}
+
+// Sets output data formats of all nodes to user specified data format.
 void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFormat> default_df_override)
 {
     for (Node *node : graph->nodes())
@@ -241,6 +291,24 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
             node->set_output_df(preserve_lower_precision_cast(node->output_df(), *default_df_override));
         }
     }
+}
+
+// Inserts cast nodes (user specified data format) on all input nodes in the graph,
+// and sets output data formats of all nodes to user specified data format.
+void apply_user_data_format_override(graphlib::Graph *graph, py::object compiler_cfg_object)
+{
+    // Extract optional default_df_override from Python
+    std::optional<DataFormat> default_df_override = std::nullopt;
+    py::object attr = compiler_cfg_object.attr("default_df_override");
+    if (!attr.is_none())
+        default_df_override = attr.cast<DataFormat>();
+
+    // Skip everything if no override is provided
+    if (!default_df_override)
+        return;
+
+    insert_cast_on_input_nodes(graph, *default_df_override);
+    configure_output_data_formats(graph, default_df_override);
 }
 
 void configure_input_data_formats(graphlib::Graph *graph)

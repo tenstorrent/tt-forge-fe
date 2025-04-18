@@ -448,6 +448,13 @@ class ConvertEmulatedDtypes:
                 self.param_dfs[name] = param.dtype
                 param.data = param.data.to(self.fallback)
 
+        # Convert buffers
+        self.buffer_dfs = {}
+        for name, buf in self.model.named_buffers():
+            if buf.dtype in self.emulated_dfs:
+                self.buffer_dfs[name] = buf.dtype
+                buf.data = buf.data.to(self.fallback)
+
         # Convert emulated inputs to fallback
         self.input_dfs = []
         for inp in self.flatten_object(self.inputs):
@@ -462,6 +469,10 @@ class ConvertEmulatedDtypes:
 
                 param.data = param.data.to(self.param_dfs[name])
 
+        for name, buf in self.model.named_buffers():
+            if name in self.buffer_dfs:
+                buf.data = buf.data.to(self.buffer_dfs[name])
+
         # Convert inputs back to original dtype
         for inp, df in zip(self.flatten_object(self.inputs), self.input_dfs):
             inp.data = inp.data.to(df)
@@ -474,6 +485,8 @@ def compile_pytorch_for_forge(
 
     with ConvertEmulatedDtypes(torchmod, inputs):
         # Extract framework model outputs
+        # ConvertEmulatedDtypes converts tochmod parameters to float32 if they are bfloat16
+        # It also converts inputs to float32 if they are bfloat16
         framework_outputs = extract_framework_model_outputs(
             framework="pytorch",
             model=torchmod,
@@ -491,14 +504,16 @@ def compile_pytorch_for_forge(
 
         # Trace framework model
         traced_model = torch.jit.trace(torchmod, inputs, check_trace=False, strict=False)
-
-    # Extract flatten inputs
-    flattened_inputs, flattened_input_names, flattened_name_map, input_structure = extract_flatten_inputs(
-        framework="pytorch",
-        model=traced_model,
-        inputs=inputs,
-        input_names=input_names,
-    )
+        # Extract flatten inputs
+        flattened_inputs, flattened_input_names, flattened_name_map, input_structure = extract_flatten_inputs(
+            framework="pytorch",
+            model=traced_model,
+            inputs=inputs,
+            input_names=input_names,
+        )
+        # Generate TVM module
+        convert_params = compiler_cfg.convert_framework_params_to_tvm
+        mod, params = tvm.relay.frontend.from_pytorch(traced_model, input_structure, do_convert_params=convert_params)
 
     graph_string = traced_model.graph.str().encode("utf-8")
     m = hashlib.sha256()
@@ -506,10 +521,6 @@ def compile_pytorch_for_forge(
     cached_graphs = load_serialized_tvm_graph(compiler_cfg, m.hexdigest(), framework="pytorch")
     if cached_graphs is not None:
         return cached_graphs, flattened_inputs
-
-    # Generate TVM module
-    convert_params = compiler_cfg.convert_framework_params_to_tvm
-    mod, params = tvm.relay.frontend.from_pytorch(traced_model, input_structure, do_convert_params=convert_params)
     if forge_property_handler is not None:
         forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
     logger.trace("From PyTorch")

@@ -150,6 +150,7 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 

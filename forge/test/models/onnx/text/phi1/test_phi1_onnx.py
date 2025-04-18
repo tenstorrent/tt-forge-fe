@@ -24,7 +24,7 @@ variants = ["microsoft/phi-1"]
 @pytest.mark.nightly
 @pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)")
 @pytest.mark.parametrize("variant", variants)
-def test_phi_causal_lm(forge_property_recorder, variant, tmp_path):
+def test_phi_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -35,6 +35,7 @@ def test_phi_causal_lm(forge_property_recorder, variant, tmp_path):
         task=Task.CAUSAL_LM,
     )
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
