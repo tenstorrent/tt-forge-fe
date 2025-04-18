@@ -64,7 +64,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker images and output the image name
+      - name: Build Docker images
         id: build
         shell: bash
         env:
