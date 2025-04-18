@@ -429,6 +429,38 @@ struct OpType
 
     void set_attr(std::string const &name, Attr attr) { named_attrs[name] = attr; }
 
+    static bool is_eltwise(const OpType &op_type)
+    {
+        static std::unordered_map<std::string, bool> cache_op = {};
+        const auto &op_name = op_type.op;
+        if (cache_op.find(op_name) != cache_op.end())
+        {
+            return cache_op[op_name];
+        }
+
+        py::object eval_module = py::module_::import("forge.op.eval.forge");
+        py::function check_eltwise = eval_module.attr("is_eltwise");
+        bool res = check_eltwise(op_type).cast<bool>();
+        cache_op[op_name] = res;
+        return res;
+    }
+
+    static bool is_tm(const OpType &op_type)
+    {
+        static std::unordered_map<std::string, bool> cache_op = {};
+        const auto &op_name = op_type.op;
+        if (cache_op.find(op_name) != cache_op.end())
+        {
+            return cache_op[op_name];
+        }
+
+        py::object eval_module = py::module_::import("forge.op.eval.forge");
+        py::function check_tm = eval_module.attr("is_tm");
+        bool res = check_tm(op_type).cast<bool>();
+        cache_op[op_name] = res;
+        return res;
+    }
+
     std::string as_string() const
     {
         std::string ret = op;
