@@ -4,26 +4,19 @@
 
 
 import pytest
-import torch
-from ultralytics import YOLO
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolovx_utils import get_test_input
+from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
+    WorldModelWrapper,
+    get_test_input,
+)
 
 
-class YoloWorldWrapper(torch.nn.Module):
-    def __init__(self, model_url: str):
-        super().__init__()
-        self.yolo = YOLO(model_url)
-
-    def forward(self, x):
-        return self.yolo.model.forward(x, augment=False)
-
-
-@pytest.mark.xfail
+@pytest.mark.push
+# @pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference(forge_property_recorder):
 
@@ -44,7 +37,7 @@ def test_yolo_world_inference(forge_property_recorder):
 
     # Load framework_model and input
 
-    framework_model = YoloWorldWrapper(model_url)
+    framework_model = WorldModelWrapper(model_url)
     inputs = [get_test_input()]
 
     # Compile with Forge
