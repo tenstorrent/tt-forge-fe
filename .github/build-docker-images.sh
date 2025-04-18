@@ -64,8 +64,9 @@ build_and_push() {
     docker build --push "${build_args[@]}"
     
 }
-
-#build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
-build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
+if [ "$SKIP_LONG_BUILDS" != "true" ]; then
+    build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
+    build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
+fi
 build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
 build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci

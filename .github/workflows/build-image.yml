@@ -69,6 +69,7 @@ jobs:
         shell: bash
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SKIP_LONG_BUILDS: true
         run: |
           # Output the image name
           set pipefail
