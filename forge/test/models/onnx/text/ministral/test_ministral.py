@@ -16,7 +16,6 @@ variants = ["ministral/Ministral-3b-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
 def test_ministral(forge_property_recorder, variant, tmp_path):
 
