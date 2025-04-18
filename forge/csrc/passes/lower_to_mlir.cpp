@@ -203,7 +203,7 @@ class MLIRGenerator
         }
 
         log_info(LogMLIRCompiler, "MLIR module generated successfully.");
-        graphModule_.dump();
+        // graphModule_.dump();
 
         // save what's dumped to a file named "{file_name}.mlir"
         reportify::dump_mlir("ttir", graphModule_.getNameAttr().getValue().str(), graphModule_.getOperation());

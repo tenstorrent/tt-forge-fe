@@ -86,8 +86,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     run_mlir_passes<output>(mlir_module);
 
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
-
-    mlir_module->dump();
+    //
+    // mlir_module->dump();
 
     if constexpr (output == MLIROutputKind::Flatbuffer)
     {
