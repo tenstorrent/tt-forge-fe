@@ -14,7 +14,7 @@ from test.models.pytorch.vision.yolo.utils.yolo_utils import (
 )
 
 
-@pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolov10(forge_property_recorder):
     # Record Forge Property
