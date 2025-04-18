@@ -1545,13 +1545,6 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
     // Apply TMs and get post-TM operand shapes
     std::vector<Shape> operand_shapes;
 
-    // Validate / Canonicalize TileDim
-    auto op_node = dynamic_cast<graphlib::OpNode *>(node);
-    if (op_node)
-    {
-        validate_tile_dims(graph, op_node);
-    }
-
     for (graphlib::Edge &e : graph->operand_data_edges(node))
     {
         auto operand_shape = graph->node_by_id(e.producer_node_id)->shape();

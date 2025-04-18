@@ -82,9 +82,9 @@ void explicate_unsqueeze(graphlib::Graph *graph)
             {
                 insert(operand_b, operand_a, node);
             }
-            recalculate_shapes(graph);
         }
     }
+    recalculate_shapes(graph);
 }
 
 void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
