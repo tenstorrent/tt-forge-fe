@@ -39,7 +39,6 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REGISTRY: ghcr.io
           REPO: tenstorrent/tt-forge-fe
-          SKIP_LONG_BUILDS: false
         run: |
           .github/build-docker-images.sh tt-forge-fe-base-ird-ubuntu-22-04 .github/Dockerfile.ird base
           .github/build-docker-images.sh tt-forge-fe-base-ubuntu-22-04 .github/Dockerfile.base
