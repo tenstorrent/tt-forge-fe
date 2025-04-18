@@ -48,10 +48,10 @@ build_and_push() {
        
     # Add FROM_IMAGE tag if declared
     if [ -z "$from_image" ]; then
-        build_args+=("--build-arg" "FROM_IMAGE=$DOMAIN/$REPO/$image_name")
+        build_args+=("--build-arg" "FROM_IMAGE=$image_name")
     fi
        
-    # Add main tag if on specific branch
+    # Add main tag if on main branch
     if [ "$BRANCH" == "jmcgrath/create-latest-for-all-images" ]; then
         build_args+=("-t" "$DOMAIN/$REPO/$image_name:test-latest")
     fi
@@ -66,6 +66,6 @@ build_and_push() {
 }
 
 #build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
-#build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
+build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
 build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
-#build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
+build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
