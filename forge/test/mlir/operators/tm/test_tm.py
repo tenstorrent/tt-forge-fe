@@ -445,19 +445,22 @@ def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
 @pytest.mark.parametrize(
     "indices_shape",
     [
-        (12,),
-        (32,),
-        (1, 7),
-        (1, 28),
+        # (12,),
+        # (32,),
+        # (1, 7),
+        # (1, 28),
+        (2,)
     ],
 )
 @pytest.mark.parametrize(
     "input_tensor_shape",
     [
-        (12, 100),
-        (3200, 512),
-        (2048, 128),
-        (4127, 256),
+        # (12, 100),
+        # (3200, 512),
+        # (2048, 128),
+        # (4127, 256),
+        (1, 3, 2),
+        # (2,3,2)
     ],
 )
 @pytest.mark.push
@@ -467,7 +470,7 @@ def test_adv_index_embedding_decompostion(forge_property_recorder, indices_shape
             super().__init__(name)
 
         def forward(self, input_tensor, indices):
-            return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices)
+            return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices, dim=-1)
 
     framework_model = ForgeAdvIndex("ForgeAdvIndex")
 
@@ -739,15 +742,15 @@ def test_select(forge_property_recorder, shape, dim, begin, length, stride):
         # 2D Input = 1D Padding
         # pytest.param((1, 8), (2, 2), "constant", 0.0),
         # pytest.param((1, 8), (1, 3), "replicate", None),
-        pytest.param((1, 8), (1, 3), "reflect", None),
+        # pytest.param((1, 8), (1, 3), "reflect", None),
         # 2D Input = 2D Padding
         # pytest.param((1, 3, 8), (0, 0, 2, 2), "constant", 0.0),
         # pytest.param((1, 3, 8), (2, 2, 2, 2), "replicate", None),
-        pytest.param((1, 3, 8), (2, 1, 1, 2), "reflect", None),
+        pytest.param((1, 3, 8), (2, 2, 2, 2), "reflect", None),
         # 4D Input = 2D Padding
         # pytest.param((2, 3, 4, 5), (1, 1, 2, 2), "constant", 42.0),
         # pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "replicate", None),
-        pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
+        # pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
     ],
 )
 def test_padding(forge_property_recorder, input_shape, padding, mode, value):

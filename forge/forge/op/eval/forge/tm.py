@@ -1195,8 +1195,7 @@ def decompose(type, attr, dc, inputs):
             dc.fuse(result)
             return
 
-        elif mode_idx == 2:
-            # Reflect mode
+        elif mode_idx == 2:  # Reflect mode
             result = activations
 
             if left > c - 1 or right > c - 1:
