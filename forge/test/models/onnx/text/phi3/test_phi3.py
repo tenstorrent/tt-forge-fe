@@ -20,6 +20,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.skip(reason="Large model")
 def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
