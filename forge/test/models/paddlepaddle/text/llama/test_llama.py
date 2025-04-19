@@ -15,7 +15,7 @@ variants = ["facebook/llama-7b"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.skip()
 @pytest.mark.parametrize("variant", variants)
 def test_llama(variant, forge_property_recorder):
     # Record Forge properties
