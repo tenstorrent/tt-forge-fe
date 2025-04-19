@@ -2,16 +2,6 @@ cmake_minimum_required(VERSION 3.24.0)
 
 project(ttforge LANGUAGES CXX)
 
-find_program(CLANG_17 clang++-17)
-find_program(CLANG clang)
-if(CLANG_17 AND CLANG)
-    message(STATUS "Found Clang-17 here: ${CLANG_17}")
-    set(CMAKE_CXX_COMPILER "${CLANG_17}")
-    set(CMAKE_C_COMPILER "${CLANG}")
-else()
-    message(FATAL_ERROR "Clang++-17 or clang not found!!!")
-endif()
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
