@@ -1005,6 +1005,28 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
 
+    elif type == "index":
+        assert len(attr) == 4
+        dim, start, stop, stride = attr
+        if stride != 1:
+            raise NotImplementedError("Only stride == 1 is supported for index op backward")
+        shape = inputs[0].shape.as_list()
+
+        if dim > 0:
+            dim = dim - len(shape)
+
+        if dim == -1:
+            pad = [start, shape[dim] - stop]
+            padding = [0, 0] * (len(shape) - 1) + pad
+            return ac.op("pad", (grad,), (*pad, 0, 0), {"padding": padding, "value": 0.0})
+
+        if dim == -2:
+            pad = [start, shape[dim] - stop]
+            padding = [0, 0] + pad + [0, 0]
+            return ac.op("pad", (grad,), (*pad, 0, 0), {"padding": padding, "value": 0.0})
+
+        raise NotImplementedError("Only dim == -1 or -2 is supported for index op backward")
+
     raise NotImplementedError(f"{type}")
 
 
