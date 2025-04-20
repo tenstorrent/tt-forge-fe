@@ -146,8 +146,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
             const char* var_value;
 
             var_value = std::getenv("TT_METAL_HOME");
-            std::cout << "  TT_METAL_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
-                      << std::endl;
+            std::cout << "  TT_METAL_HOME"
+                      << " environment variable: " << (var_value != nullptr ? var_value : "not set") << std::endl;
 
             var_value = std::getenv("CMAKE_INSTALL_PREFIX");
             std::cout << "  CMAKE_INSTALL_PREFIX"
@@ -160,6 +160,8 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
             var_value = std::getenv("FORGE_HOME");
             std::cout << "  FORGE_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
                       << std::endl;
+
+            std::cout << "  PRINTING FROM " << __FILE__ << std::endl;
         }
 
         log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");

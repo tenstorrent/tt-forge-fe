@@ -64,6 +64,7 @@ def set_home_paths():
         print(f"TVM_HOME set to: {os.environ['TVM_HOME']}")
     if "LOGGER_FILE" in os.environ:
         print(f"LOGGER_FILE set to: {os.environ['LOGGER_FILE']}")
+    print(f"  PRINTING FROM: {__file__}")
 
 set_home_paths()
 
