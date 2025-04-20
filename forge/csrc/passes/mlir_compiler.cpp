@@ -35,6 +35,7 @@ namespace fs = std::filesystem;
 #pragma clang diagnostic pop
 
 // TTMLIR headers
+#include "compile_so.hpp"
 #include "mlir/Target/Cpp/CppEmitter.h"
 #include "tt/runtime/types.h"
 #include "tt_torch_device/tt_device.hpp"
@@ -43,7 +44,6 @@ namespace fs = std::filesystem;
 #include "ttmlir/Dialect/TTNN/IR/TTNN.h"
 #include "ttmlir/Dialect/TTNN/Transforms/TTNNToCpp.h"
 #include "ttmlir/Target/TTNN/TTNNToFlatbuffer.h"
-#include "compile_so.hpp"
 
 // Reportify headers
 #include "reportify/reportify.hpp"
@@ -139,6 +139,28 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
     {
         std::string cpp_source;
         llvm::raw_string_ostream rso(cpp_source);
+
+        {
+            std::cout << "PRINTING ENVS RMCG" << std::endl;
+            std::cout << "I'm in run_mlir_compiler_generic<MLIROutputKind::SharedObject>" << std::endl;
+            const char* var_value;
+
+            var_value = std::getenv("TT_METAL_HOME");
+            std::cout << "  TT_METAL_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
+                      << std::endl;
+
+            var_value = std::getenv("CMAKE_INSTALL_PREFIX");
+            std::cout << "  CMAKE_INSTALL_PREFIX"
+                      << " environment variable: " << (var_value != nullptr ? var_value : "not set") << std::endl;
+
+            var_value = std::getenv("TT_MLIR_HOME");
+            std::cout << "  TT_MLIR_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
+                      << std::endl;
+
+            var_value = std::getenv("FORGE_HOME");
+            std::cout << "  FORGE_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
+                      << std::endl;
+        }
 
         log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
         auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
