@@ -54,7 +54,7 @@ file(GLOB CPP_FILES
     "forge_passes.cpp"
     "passes/*.cpp"
     "lower_to_forge/common.cpp"
-    "../third_party/tt-mlir/tools/ttnn-standalone/compile_so.cpp"
+    "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/tools/ttnn-standalone/compile_so.cpp"
 )
 
 add_library(ttforge_csrc_objs OBJECT ${CPP_FILES})
