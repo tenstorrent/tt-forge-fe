@@ -19,6 +19,7 @@ variants = ["microsoft/phi-1_5"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.skip(reason="Test uses >31GB of memory")
 def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
