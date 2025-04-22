@@ -152,6 +152,9 @@ jobs:
         shell: bash
         run: |
           source env/activate
+          echo "PRINTING /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt"
+          cat /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt
+          echo "END PRINTING /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt"
           pytest -svv --splits ${{ inputs.test_group_cnt }} \
                  --group ${{ matrix.test_group_id }} \
                  --splitting-algorithm least_duration \
