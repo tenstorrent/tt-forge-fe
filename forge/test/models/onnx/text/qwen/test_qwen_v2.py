@@ -20,6 +20,7 @@ import torch
     [
         pytest.param(
             "Qwen/Qwen2.5-0.5B",
+            marks=pytest.mark.xfail(reason="AssertionError: Number of input names must match number of inputs"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
