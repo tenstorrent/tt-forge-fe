@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pyclipper
 import paddle
+import requests
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
@@ -236,3 +237,22 @@ def process_and_pad_images(img_with_rectangles, img_size=None):
         padded_images.append(padded_img)
 
     return padded_images
+
+def fetch_img_and_charset(img_url, dict_url):
+    try:
+        # Load image
+        resp_img = requests.get(img_url)
+        img_array = np.frombuffer(resp_img.content, np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        if img is None:
+            raise ValueError("Failed to decode image from content")
+
+        # Load charset
+        resp_dict = requests.get(dict_url)
+        lines = resp_dict.text.splitlines()
+        charset = [""] + [line.strip() for line in lines] + [""]
+
+    except Exception as e:
+        raise RuntimeError(f"Error fetching image or charset: {e}")
+
+    return img, charset

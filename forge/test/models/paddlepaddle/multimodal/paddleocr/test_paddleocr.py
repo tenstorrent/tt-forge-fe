@@ -15,12 +15,13 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
 from test.utils import fetch_paddle_model
-from test.models.paddlepaddle.multimodal.paddleocr.det_post_processing import (
+from test.models.paddlepaddle.multimodal.paddleocr.utils import (
     bitmap_from_probmap,
     draw_boxes,
     cut_boxes,
     polygons_from_bitmap,
     process_and_pad_images,
+    fetch_img_and_charset,
 )
 
 model_urls = {
@@ -30,8 +31,10 @@ model_urls = {
     }
 }
 
+image_url = "https://raw.githubusercontent.com/ycdhqzhiai/PaddleOCR-demo/main/imgs/11.jpg"
+dict_url = "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/main/ppocr/utils/ppocr_keys_v1.txt"
+
 cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", "cached_models")
-dict_path = "forge/test/models/paddlepaddle/multimodal/paddleocr/cached_models/ppocr_keys_v1.txt"
 os.makedirs(cache_dir, exist_ok=True)
 
 
@@ -39,13 +42,13 @@ os.makedirs(cache_dir, exist_ok=True)
 @pytest.mark.parametrize(
     "variant,det_url,rec_url", [(variant, urls["det"], urls["rec"]) for variant, urls in model_urls.items()]
 )
-@pytest.mark.parametrize("image_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/images/ch_text.jpg"])
+@pytest.mark.parametrize("image_url", [image_url])
 @pytest.mark.parametrize("cache_dir", [cache_dir])
-@pytest.mark.parametrize("dict_path", [dict_path])
+@pytest.mark.parametrize("dict_url", [dict_url])
 # Uncomment if you want to save results
 # @pytest.mark.parametrize("results_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/results"])
 def test_paddleocr_det_on_cpu_rec_on_tt(
-    forge_property_recorder, variant, det_url, rec_url, dict_path, image_path, cache_dir, results_path=None
+    forge_property_recorder, variant, det_url, rec_url, dict_url, image_url, cache_dir, results_path=None
 ):
     # Record model details
     module_name = forge_property_recorder.record_model_properties(
@@ -63,8 +66,10 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     detection_model = fetch_paddle_model(det_url, cache_dir)
     recognition_model = fetch_paddle_model(rec_url, cache_dir)
 
-    # Load sample
-    image = cv2.imread(image_path)
+    # Fetch image and dictionary
+    image, charset = fetch_img_and_charset(image_url, dict_url)
+
+    # Prepare inputs
     new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
     resized_image = cv2.resize(image, (new_shapes))
     image = resized_image.transpose(2, 0, 1).astype("float32")
@@ -79,6 +84,7 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     if results_path:
         cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
 
+    # Convert prediction to bitmap and find polygons
     bitmap = bitmap_from_probmap(pred)
     dest_height, dest_width = image.shape[1:]
     boxes, _ = polygons_from_bitmap(bitmap, dest_height=dest_height, dest_width=dest_width)
@@ -114,12 +120,6 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     compiled_model = forge.compile(
         recognition_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
-
-    # Load dictionary
-    with open(dict_path, "r", encoding="utf-8") as f:
-        charset = [line.strip() for line in f.readlines()]
-        charset.insert(0, "")
-        charset.append("")
 
     # Recognition - recognize text in each box
     for i, box_image in enumerate(padded_box_cuts):
