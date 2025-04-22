@@ -291,6 +291,36 @@ def test_softmax(forge_property_recorder):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+@pytest.mark.push
+@pytest.mark.parametrize(
+    "input_shape, dim",
+    [
+        ((1, 128), 1),
+        ((4, 32), 1),
+        ((2, 3, 5), 2),
+        ((2, 3, 5), -1),
+        ((10,), 0),
+    ],
+)
+def test_log_softmax(forge_property_recorder, input_shape, dim):
+    class LogSoftmax(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.log_softmax = nn.LogSoftmax(dim=dim)
+
+        def forward(self, a):
+            return self.log_softmax(a)
+
+    inputs = [torch.rand(*input_shape)]
+
+    framework_model = LogSoftmax(dim)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
 # @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
 # @pytest.mark.parametrize("token_num", [1, 7, 32])
 # @pytest.mark.parametrize("embedding_dim", [128, 512, 3200])
