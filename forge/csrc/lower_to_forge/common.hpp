@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <map>
 #include <ostream>
@@ -10,7 +11,6 @@
 #include <unordered_map>
 #include <variant>
 #include <vector>
-#include <array>
 
 namespace tt
 {
