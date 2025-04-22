@@ -67,7 +67,6 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32), torch.int64)],
             {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     (
         Cumsum2,

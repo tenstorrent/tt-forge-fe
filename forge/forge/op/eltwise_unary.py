@@ -493,6 +493,8 @@ def CumSum(name: str, operandA: Tensor, dim: int) -> Tensor:
     Tensor
         Forge tensor
     """
+    if dim < 0:
+        dim += len(operandA.shape)
 
     return op("cumsum", name, operandA, dim=dim).get_tensor()
 
