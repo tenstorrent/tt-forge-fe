@@ -34,7 +34,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
+        framework=Framework.ONNX, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
@@ -73,7 +73,7 @@ def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="vovnet_v1",
         variant=variant,
         source=Source.TORCH_HUB,
@@ -116,7 +116,7 @@ def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="vovnet",
         variant=variant,
         source=Source.TORCH_HUB,
@@ -158,7 +158,7 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="vovnet",
         variant=variant,
         source=Source.TORCH_HUB,
