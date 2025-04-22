@@ -22,8 +22,7 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    # TODO: this needs to be added
-    # forge_property_recorder.record_priority("p1")
+    forge_property_recorder.record_priority("P1")
 
     # Load the torch model
     torch_model = torch.hub.load(

@@ -54,6 +54,7 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
     # Record Forge Property
     if variant in ["Qwen/Qwen2.5-0.5B-Instruct", "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-3B-Instruct"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 

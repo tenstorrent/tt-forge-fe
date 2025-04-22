@@ -280,6 +280,7 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
+    group: str = ""
 
 
 @dataclass_json
@@ -287,6 +288,7 @@ class Tags:
 class ForgePropertyStore:
     owner: str = "tt-forge-fe"
     group: str = ""
+    priority: str = ""
     tags: Optional[Tags] = None
     config: Optional[Config] = None
 
@@ -434,6 +436,20 @@ class ForgePropertyHandler:
         """
         self.add("group", group)
         self.add("tags.group", group)
+
+    def record_priority(self, priority: str):
+
+        """
+
+         Records the priority property in the tags.
+
+        Args:
+
+             priority (str): The priority value to be recorded.
+
+        """
+
+        self.add("priority", priority)
 
     def record_model_name(self, model_name: str):
         """
