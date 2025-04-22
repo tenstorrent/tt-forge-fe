@@ -43,6 +43,7 @@ jobs:
       test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
       test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
+      run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
     steps:
       - name: Set Inputs
         id: set-inputs
@@ -60,7 +61,9 @@ jobs:
           test_group_ids=$(seq -s ',' 1 $tgc)
           echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
           echo "test_group_ids=[$test_group_ids]" >> $GITHUB_OUTPUT
-          echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
+          echo "test_group_ids_os=[$test_group_ids]" >> $GITHUB_OUTPUT
+          #echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
+          echo "run_ops_sweeps=$(if [ $ros_res == 'No' ]; then echo; else echo true; fi)" >> $GITHUB_OUTPUT
 
   build:
     needs:
@@ -117,14 +120,11 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
 
   test_models_ops:
-    if: success() || failure()
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
       - docker-build
       - set-inputs
       - build
-      - test_full_model_passing
-      - perf-benchmark
-      - test_full_model_xfailing
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
@@ -137,12 +137,11 @@ jobs:
       allow-fail: true
 
   test_sweeps:
-    if: success() || failure()
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
       - docker-build
       - set-inputs
       - build
-      - test_models_ops
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
@@ -174,7 +173,7 @@ jobs:
         run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
       - name: Check if the needed jobs succeeded or failed
         id: check
-        uses: re-actors/alls-green@release/v1
+        uses: re-actors/alls-green@v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
           allowed-failures: test_models_ops, test_sweeps

@@ -59,6 +59,7 @@ enum class TargetType
     UI32Attr,
     I64Attr,
     I32Attr,
+    F32Attr,
     I32ArrayAttr,
     DenseI64ArrayAttr,
     DenseI32ArrayAttr,
@@ -145,6 +146,8 @@ class AttributeMapper
 
         // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
+        add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
+        add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
         // Add more default mappings here
     }
@@ -277,7 +280,7 @@ class MLIRGenerator
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
                 case TargetType::I32Attr: return builder_.getI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
                 case TargetType::I64Attr: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
-
+                case TargetType::F32Attr: return builder_.getF32FloatAttr(static_cast<float>(std::get<float>(value)));
                 case TargetType::DenseI64ArrayAttr:
                     return builder_.getDenseI64ArrayAttr(std::vector<int64_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
@@ -736,6 +739,7 @@ class MLIRGenerator
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
+        lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
     }
 };
 

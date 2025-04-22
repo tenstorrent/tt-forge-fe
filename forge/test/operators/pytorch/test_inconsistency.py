@@ -11,25 +11,21 @@
 # pytest -svv forge/test/operators/pytorch/test_inconsistency.py::test_binary_with_reset
 
 
-import os
 import pytest
 
 from loguru import logger
+from typing import List
 
 from test.operators.utils import DeviceUtils
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
-from test.operators.utils import TestPlanScanner
+from test.operators.utils import TestQuery
+
+from .test_all import TestSuiteData
+from .test_all import TestQueries
 
 
-class TestParamsData:
-
-    __test__ = False  # Avoid collecting TestParamsData as a pytest test
-
-    test_suite = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
-
-
-test_suite = TestParamsData.test_suite
+test_suite = TestSuiteData.all
 
 
 class TestInconsistency:
@@ -54,6 +50,28 @@ class TestInconsistency:
     )
 
 
+class TestInconsistencyQueries:
+
+    __test__ = False  # Avoid collecting TestPushQueries as a pytest test
+
+    @classmethod
+    def query_source(cls, test_ids: List[str]) -> TestQuery:
+        test_suite = TestSuiteData.filtered
+
+        logger.info("Using test ids from ids list")
+        test_ids = TestQueries._filter_tests_ids_by_operators(test_ids)
+        test_vectors = test_suite.load_test_vectors_from_id_list(test_ids)
+        query = TestQuery(test_vectors)
+
+        return query
+
+    @classmethod
+    def query_from_id_list(cls, test_ids: List[str]) -> TestQuery:
+        query = cls.query_source(test_ids)
+        query = TestQueries.query_filter(query)
+        return query
+
+
 # The fixture is used to setup warm reset before the test, based on the warm_reset_collection_inconsistency collection
 @pytest.fixture
 def warm_reset_inconsistency(test_vector: TestVector):
@@ -72,7 +90,7 @@ def warm_reset_all():
 
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_from_id_list(TestInconsistency.test_ids).to_params(),
+    TestInconsistencyQueries.query_from_id_list(TestInconsistency.test_ids).to_params(),
 )
 def test_binary_order1(test_vector: TestVector, test_device):
     test_vector.verify(test_device)
@@ -80,7 +98,7 @@ def test_binary_order1(test_vector: TestVector, test_device):
 
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_from_id_list(TestInconsistency.test_ids).reverse().to_params(),
+    TestInconsistencyQueries.query_from_id_list(TestInconsistency.test_ids).reverse().to_params(),
 )
 def test_binary_order2(test_vector: TestVector, test_device):
     test_vector.verify(test_device)
@@ -88,7 +106,7 @@ def test_binary_order2(test_vector: TestVector, test_device):
 
 @pytest.mark.parametrize(
     "test_vector",
-    test_suite.query_from_id_list(TestInconsistency.test_ids).to_params(),
+    TestInconsistencyQueries.query_from_id_list(TestInconsistency.test_ids).to_params(),
 )
 # @pytest.mark.usefixtures("warm_reset_inconsistency")
 def test_binary_with_reset(test_vector: TestVector, test_device, warm_reset_inconsistency):

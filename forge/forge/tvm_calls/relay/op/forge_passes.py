@@ -186,12 +186,16 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         pad_mode = pad.attrs.pad_mode
 
-        if pad_mode == "constant":
-            padding = [top_pad, left_pad, bottom_pad, right_pad]
+        # Fuse Pad Only if the mode is constant
+        # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
+            pad_mode == "edge" or pad_mode == "reflect"
+        ):
+            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode=pad_mode)
 
-        if pad_mode == "reflect":
-            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode="reflect")
             padding = [0, 0, 0, 0]
+        else:
+            padding = [top_pad, left_pad, bottom_pad, right_pad]
 
         op_attrs = {**conv_pool.attrs}
         op_attrs["padding"] = padding

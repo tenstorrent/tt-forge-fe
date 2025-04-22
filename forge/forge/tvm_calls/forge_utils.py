@@ -8,9 +8,11 @@ import os
 
 import paddle
 import torch
+import flax
 import numpy as np
 import tensorflow as tf
 import onnxruntime as ort
+from transformers import FlaxPreTrainedModel
 from transformers.utils.generic import ModelOutput as HFModelOutput
 from transformers.modeling_outputs import ModelOutput
 
@@ -199,6 +201,7 @@ def extract_flatten_inputs(framework: str, model, inputs, input_names=[]):
         # The tensorflow trace automatically flattens inputs
         flattened_inputs, _, _ = flatten_inputs(inputs)
         flattened_input_names = [tensor.name.split(":")[0] for tensor in model.inputs]
+
         flattened_name_map = None
         input_structure = None
 
@@ -263,69 +266,84 @@ def construct_tvm_ir(framework: str, model, tvm_mod, params, compiler_cfg: Compi
                 tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
             )
 
-    # elif framework == "jax":
+    elif framework == "jax":
 
-    #     def flatten(d, parent_key="", sep="."):
-    #         items = []
-    #         for k, v in d.items():
-    #             new_key = parent_key + sep + k if parent_key else k
-    #             if isinstance(v, MutableMapping):
-    #                 items.extend(flatten(v, new_key, sep=sep).items())
-    #             else:
-    #                 items.append((new_key, v))
-    #         return dict(items)
+        def flatten(d, parent_key="", sep="."):
+            """
+            Flatten a nested dictionary structure into a single level dictionary
+            with concatenated keys:
+            Example: {"a": {"b": 1, "c": 2}} -> {"a.b": 1, "a.c": 2}
+            """
+            items = []
+            for k, v in d.items():
+                new_key = parent_key + sep + k if parent_key else k
+                if isinstance(v, MutableMapping):
+                    items.extend(flatten(v, new_key, sep=sep).items())
+                else:
+                    items.append((new_key, v))
+            return dict(items)
 
-    #     # TODO: Destupidify this! (Maybe we can sort by a substring of the weight names to make this more efficient)
-    #     found_weights = []
-    #     param_name_lookup = {}
-    #     non_weight_params = {}  # Some parameters (like causal mask) are not weights
+        found_weights = set()
+        param_name_lookup = {}
+        non_weight_params = {}
+        model_params = {}
 
-    #     if isinstance(model, FlaxPreTrainedModel):
-    #         model_params = model.params
-    #     elif isinstance(model, flax.linen.Module):
-    #         model_params = {}
-    #         if hasattr(model, 'params'):
-    #             model_params = model.variables['params']._dict
-    #     else:
-    #         raise RuntimeError("Unknown Jax module instance.")
+        # Extract model parameters based on model type.
+        # Handle different JAX model types:
+        # - FlaxPreTrainedModel: model.params
+        # - flax.linen.Module: model.variables["params"]
+        if hasattr(model, "params"):
+            model_params = model.params
+        elif hasattr(model, "variables") and "params" in model.variables:
+            model_params = model.variables["params"]
 
-    #     model_params = flatten(model_params)
-    #     for (bad_name, value) in params.items():
-    #         weight_found = False
-    #         for name, jax_value in model_params.items():
-    #             if name not in found_weights and np.array_equal(jax_value.to_py(), value.numpy()):
-    #                 param_name_lookup[bad_name] = name
-    #                 weight_found = True
-    #                 found_weights.append(name)
-    #                 break
-    #         if not weight_found:
-    #             param_name_lookup[bad_name] = bad_name
-    #             non_weight_params[bad_name] = value
+        # Flatten the model parameters into a single level dictionary.
+        # And convert model parameters to a set of numpy arrays.
+        model_params = flatten(model_params)
+        model_params_set = {name: np.asarray(jax_value) for name, jax_value in model_params.items()}
 
-    #     if not compiler_cfg.enable_tvm_constant_prop:
-    #         tvm_mod = tvm.IRModule.from_expr(
-    #             tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], non_weight_params)
-    #         )
-    #     else:
-    #         if len(compiler_cfg.tvm_constnat_prop_mask):
-    #             propped_params = {
-    #                 k: v
-    #                 for k, v, in params.items()
-    #                 if any(
-    #                     [
-    #                         mask in param_name_lookup[k]
-    #                         for mask in compiler_cfg.tvm_constnat_prop_mask
-    #                     ]
-    #                 )
-    #             }
-    #             propped_params.update(non_weight_params)
-    #         else:
-    #             propped_params = params
-    #         tvm_mod = tvm.IRModule.from_expr(
-    #             tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
-    #         )
+        # Map the model parameters to the corresponding parameters in the params dictionary.
+        for bad_name, value in params.items():
+            value_np = value.numpy()
+            # Find matching parameter by comparing array values.
+            # If match found, creating a mapping between the bad_name and the matched_name.
+            # If no match found, this parameter is not a weight.
+            matched_name = next(
+                (
+                    name
+                    for name, jax_value in model_params_set.items()
+                    if name not in found_weights and np.array_equal(jax_value, value_np)
+                ),
+                None,
+            )
+            if matched_name:
+                param_name_lookup[bad_name] = matched_name
+                found_weights.add(matched_name)
+            else:
+                param_name_lookup[bad_name] = bad_name
+                non_weight_params[bad_name] = value
+
+        if not compiler_cfg.enable_tvm_constant_prop:
+            # If constant propagation is disabled, bind the non-weight parameters to the TVM module.
+            tvm_mod = tvm.IRModule.from_expr(
+                tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], non_weight_params)
+            )
+        else:
+            # If constant propagation is enabled, bind the parameters based on mask settings.
+            if len(compiler_cfg.tvm_constnat_prop_mask):
+                propped_params = {
+                    k: v
+                    for k, v, in params.items()
+                    if any([mask in param_name_lookup[k] for mask in compiler_cfg.tvm_constnat_prop_mask])
+                }
+                propped_params.update(non_weight_params)
+            else:
+                propped_params = params
+            tvm_mod = tvm.IRModule.from_expr(
+                tvm.relay.build_module.bind_params_by_name(tvm_mod["main"], propped_params)
+            )
     else:
-        raise RuntimeError("Unsupported framework type: {}".format(framework))
+        raise RuntimeError(f"Unsupported framework type: {framework}")
 
     return tvm_mod, param_name_lookup
 
@@ -350,14 +368,20 @@ def has_op(module, opname, attrs={}):
     return visitor.has_op
 
 
-def paddle_trace(paddlemod, input_spec):
+def paddle_trace(paddlemod, input_spec=None, inputs=None):
     """
     Converts paddle.nn.Layer to paddle.nn.TranslatedLayer needed for TVM compilation.
     """
+    assert input_spec is not None or inputs is not None, "Either input_spec or inputs must be provided."
+
+    if input_spec is None and inputs is not None:
+        # Convert inputs to paddle static input spec
+        input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
+
     traced_model = paddle.jit.to_static(paddlemod, input_spec=input_spec, full_graph=True)
 
     # Model must be saved and loaded in order to have TranslatedLayer type which is needed for the next step
-    model_save_path = "traced_model"
+    model_save_path = "traced_model_tmp"
     paddle.jit.save(traced_model, model_save_path)
     loaded_model = paddle.jit.load(model_save_path)
 

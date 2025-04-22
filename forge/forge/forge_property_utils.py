@@ -35,6 +35,7 @@ class Framework(BaseEnum):
     TENSORFLOW = ("tf", "TensorFlow")
     ONNX = ("onnx", "ONNX")
     PADDLE = ("pd", "PaddlePaddle")
+    JAX = ("jax", "JAX")
 
 
 class Task(BaseEnum):
@@ -73,6 +74,7 @@ class Source(BaseEnum):
     TORCHVISION = ("torchvision", "Torchvision")
     GITHUB = ("github", "GitHub")
     PADDLE = ("paddlemodels", "Paddle Models")
+    PADDLENLP = ("padlenlp", "PaddleNLP")
 
 
 def build_module_name(
@@ -278,6 +280,7 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
+    group: str = ""
 
 
 @dataclass_json
@@ -285,6 +288,7 @@ class Tags:
 class ForgePropertyStore:
     owner: str = "tt-forge-fe"
     group: str = ""
+    priority: str = ""
     tags: Optional[Tags] = None
     config: Optional[Config] = None
 
@@ -431,6 +435,21 @@ class ForgePropertyHandler:
             group (str): The group value to be recorded.
         """
         self.add("group", group)
+        self.add("tags.group", group)
+
+    def record_priority(self, priority: str):
+
+        """
+
+         Records the priority property in the tags.
+
+        Args:
+
+             priority (str): The priority value to be recorded.
+
+        """
+
+        self.add("priority", priority)
 
     def record_model_name(self, model_name: str):
         """

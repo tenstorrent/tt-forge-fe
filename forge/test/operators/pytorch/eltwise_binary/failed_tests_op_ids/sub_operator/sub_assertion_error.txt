@@ -1,0 +1,9 @@
+# AssertionError: Data mismatch on output 0 between framework and Forge codegen:
+
+sub-FROM_ANOTHER_OP-{'alpha': -37}-(1, 1)-None-None
+sub-FROM_HOST-{'alpha': 37}-(1, 1)-None-None
+sub-FROM_HOST-{'alpha': 0.17234435}-(1, 1)-None-None
+sub-FROM_HOST-{'alpha': -37}-(1, 2, 3, 4)-torch.int32-HiFi4
+sub-FROM_HOST-{'alpha': 37}-(1, 2, 3, 4)-torch.int32-HiFi4
+sub-FROM_HOST-{'alpha': -37}-(1, 2, 3, 4)-torch.int64-HiFi4
+sub-FROM_HOST-{'alpha': 37}-(1, 2, 3, 4)-torch.int64-HiFi4
