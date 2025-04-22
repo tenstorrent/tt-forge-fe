@@ -847,3 +847,33 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "pattern, input_shape",
+    [
+        ("nhwpqc->nchpwq", (2, 64, 64, 2, 2, 16)),
+        ("nhwpqc->nchpwq", (1, 32, 32, 4, 4, 8)),
+        ("nhwpqc->nchpwq", (4, 16, 16, 2, 2, 32)),
+        ("nhwpqc->nchpwq", (3, 8, 8, 1, 1, 64)),
+    ],
+)
+@pytest.mark.push
+def test_einsum(forge_property_recorder, pattern, input_shape):
+    class EinsumModel(torch.nn.Module):
+        def __init__(self, pattern):
+            super().__init__()
+            self.pattern = pattern
+
+        def forward(self, x):
+            return torch.einsum(self.pattern, x)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = EinsumModel(pattern)
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

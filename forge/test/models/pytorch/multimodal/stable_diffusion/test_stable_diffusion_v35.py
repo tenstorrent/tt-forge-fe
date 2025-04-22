@@ -7,6 +7,7 @@ import torch
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     load_pipe,
@@ -35,7 +36,7 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+    reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
 )
 @pytest.mark.parametrize(
     "variant",
