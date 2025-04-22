@@ -147,7 +147,7 @@ jobs:
       run: |
         source env/activate
         mkdir -p ${{ steps.strings.outputs.perf_report_path }}
-        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -df ${{ matrix.build.df }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT
