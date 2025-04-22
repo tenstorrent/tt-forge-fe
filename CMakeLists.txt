@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.24.0)
 
 project(ttforge LANGUAGES CXX)
 
+if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "18"))
+    message(STATUS "CXX compiler in use: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+    message(WARNING "The compiler you are using is not officially tested - you may run into issues. Official builds are created with Clang-17.")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
