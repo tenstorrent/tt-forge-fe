@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import os
 import cv2
 import numpy as np
 import pyclipper
@@ -42,62 +43,13 @@ def get_mini_boxes(contour):
 
 
 def bitmap_from_probmap(preds):
-    prob_map = preds.numpy()[0, 0]  # (H, W)
+    prob_map = preds[0][0].numpy()  # (H, W)
     bitmap = (prob_map > 0.2).astype(np.uint8)
     bitmap = np.ascontiguousarray(bitmap)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     bitmap_smooth = cv2.morphologyEx(bitmap, cv2.MORPH_CLOSE, kernel)
 
     return bitmap_smooth
-
-
-def boxes_from_bitmap(bitmap, dest_width, dest_height):
-    """
-    bitmap: single map with shape (1, H, W),
-        whose values are binarized as {0, 1}
-
-    return:
-        boxes: (N, 4, 2) numpy array - 4 points of each box
-        scores: (N,) numpy array
-    """
-
-    assert len(bitmap.shape) == 2
-    height, width = bitmap.shape
-    contours, _ = cv2.findContours((bitmap * 255).astype(np.uint8), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    num_contours = min(len(contours), max_candidates)
-    boxes = np.zeros((num_contours, 4, 2), dtype=np.int16)
-    scores = np.zeros((num_contours,), dtype=np.float32)
-
-    for index in range(num_contours):
-        contour = contours[index].squeeze(1)
-        points, sside = get_mini_boxes(contour)
-        if sside < min_size:
-            continue
-        points = np.array(points)
-        score = box_score_fast(bitmap, points)
-        if box_thresh > score:
-            continue
-
-        box = unclip(points, unclip_ratio=unclip_ratio).reshape(-1, 1, 2)
-        box, sside = get_mini_boxes(box)
-        if sside < min_size + 2:
-            continue
-        box = np.array(box)
-        if not isinstance(dest_width, int):
-            dest_width = dest_width.item()
-            dest_height = dest_height.item()
-
-        box[:, 0] = np.clip(np.round(box[:, 0] / width * dest_width), 0, dest_width)
-        box[:, 1] = np.clip(np.round(box[:, 1] / height * dest_height), 0, dest_height)
-        boxes[index, :, :] = box.astype(np.int16)
-        scores[index] = score
-
-    # Filter boxes with scores > 0
-    valid_indices = scores > 0
-    boxes = boxes[valid_indices]
-    scores = scores[valid_indices]
-    return boxes, scores
-
 
 def polygons_from_bitmap(_bitmap, dest_width, dest_height):
     """
@@ -238,7 +190,6 @@ def process_and_pad_images(img_with_rectangles, img_size=None):
 
     return padded_images
 
-
 def fetch_img_and_charset(img_url, dict_url):
     try:
         # Load image
@@ -257,3 +208,25 @@ def fetch_img_and_charset(img_url, dict_url):
         raise RuntimeError(f"Error fetching image or charset: {e}")
 
     return img, charset
+
+def get_boxes_from_pred(pred, image, resized_image, results_path=None):
+    # Convert prediction to bitmap and find polygons
+    bitmap = bitmap_from_probmap(pred)
+    dest_height, dest_width = image.shape[1:]
+    boxes, _ = polygons_from_bitmap(bitmap, dest_height=dest_height, dest_width=dest_width)
+
+    # Visualize boxes over image
+    box_cuts, img_boxes = cut_boxes(resized_image, boxes)
+
+    if results_path:
+        os.makedirs(results_path, exist_ok=True)
+        heatmap = (pred[0,0].numpy() * 255).astype("uint8")
+        heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+        cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
+        bitmap_visual = (bitmap * 255).astype("uint8")
+        cv2.imwrite(f"{results_path}/bitmap.jpg", bitmap_visual)
+        img_clouds = draw_boxes(resized_image, boxes)
+        cv2.imwrite(f"{results_path}/det_clouds.jpg", img_clouds)
+        cv2.imwrite(f"{results_path}/det_boxes.jpg", img_boxes)
+
+    return box_cuts

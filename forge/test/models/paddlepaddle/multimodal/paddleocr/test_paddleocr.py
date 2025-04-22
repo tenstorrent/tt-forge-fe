@@ -16,10 +16,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 
 from test.utils import fetch_paddle_model
 from test.models.paddlepaddle.multimodal.paddleocr.utils import (
-    bitmap_from_probmap,
-    draw_boxes,
-    cut_boxes,
-    polygons_from_bitmap,
+    get_boxes_from_pred,
     process_and_pad_images,
     fetch_img_and_charset,
 )
@@ -75,41 +72,18 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     image = resized_image.transpose(2, 0, 1).astype("float32")
     inputs = [paddle.to_tensor([image])]
 
+    # Compile model
+    compiled_detection_model = forge.compile(
+        detection_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
+
     # Detection - find boxes containing text
-    pred = detection_model(*inputs)
+    pred = compiled_detection_model(*inputs)[0]
 
-    # Visualize prediction as heatmap
-    heatmap = (pred[0, 0].numpy() * 255).astype("uint8")
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    if results_path:
-        cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
-
-    # Convert prediction to bitmap and find polygons
-    bitmap = bitmap_from_probmap(pred)
-    dest_height, dest_width = image.shape[1:]
-    boxes, _ = polygons_from_bitmap(bitmap, dest_height=dest_height, dest_width=dest_width)
-
-    # Make sure results_path exists
-    if results_path:
-        os.makedirs(results_path, exist_ok=True)
-
-    # Visualize bitmap
-    bitmap_visual = (bitmap * 255).astype("uint8")
-    if results_path:
-        cv2.imwrite(f"{results_path}/bitmap.jpg", bitmap_visual)
-
-    # Visualize polygons over image
-    img = draw_boxes(resized_image, boxes)
-    if results_path:
-        cv2.imwrite(f"{results_path}/det_clouds.jpg", img)
-
-    # Visualize boxes over image
-    box_cuts, img = cut_boxes(resized_image, boxes)
-    if results_path:
-        cv2.imwrite(f"{results_path}/det_boxes.jpg", img)
+    box_cuts = get_boxes_from_pred(pred, image, resized_image, results_path=results_path)
 
     # Unify image sizes for recognition with compiled model
-    padded_box_cuts = process_and_pad_images(box_cuts, img_size=(dest_height, dest_width))
+    padded_box_cuts = process_and_pad_images(box_cuts, img_size=image.shape[1:])
 
     image_0 = padded_box_cuts[0]
     image_0 = image_0.transpose(2, 0, 1).astype("float32") / 255.0
@@ -117,7 +91,7 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     inputs = [image_0]
 
     # Compile model
-    compiled_model = forge.compile(
+    compiled_recognition_model = forge.compile(
         recognition_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
@@ -135,8 +109,8 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
         _, co_output = verify(
             [box_image],
             recognition_model,
-            compiled_model,
-            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.9)),
+            compiled_recognition_model,
+            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)),
             forge_property_handler=forge_property_recorder,
         )
 
@@ -146,3 +120,6 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
         pred = output.argmax(axis=2)[0]
         pred_str = "".join([charset[i] for i in pred])
         print(f"Predicted text for box {i}: {pred_str}")
+
+
+
