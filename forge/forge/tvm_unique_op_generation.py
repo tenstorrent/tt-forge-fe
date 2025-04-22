@@ -570,6 +570,9 @@ def extract_and_generate_unique_ops_tests(
                 named_parameters = framework_mod.module.variables["params"]
         if named_parameters:
             named_parameters = flatten_params(named_parameters)
+    elif framework == "tensorflow":
+        for weight in framework_mod.module.weights:
+            named_parameters[weight.name] = weight.value()
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
@@ -1136,7 +1139,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                     # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
                     pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
                 elif op_name == "advindex":
-                    # Calculate the maximum value for the advindex operation based on the length of the reference tensor along the specified dimension (default is 0).
+                    # Calculate advindex op indicies tensor maximum value based upon the reference tensor along the specified dimension (default is 0).
                     advindex_dim = args["dim"] if not args.is_empty() and "dim" in args else 0
                     pytest_metadata["max_int"] = int(operand_shapes[0][advindex_dim]) - 1
 
