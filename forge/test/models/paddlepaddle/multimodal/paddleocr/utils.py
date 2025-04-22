@@ -238,6 +238,7 @@ def process_and_pad_images(img_with_rectangles, img_size=None):
 
     return padded_images
 
+
 def fetch_img_and_charset(img_url, dict_url):
     try:
         # Load image
