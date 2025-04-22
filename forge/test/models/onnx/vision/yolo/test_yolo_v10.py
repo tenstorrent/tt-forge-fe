@@ -18,7 +18,7 @@ from forge.forge_property_utils import Framework, Source, Task
 def test_yolov10(forge_property_recorder, tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="Yolov10",
         variant="default",
         task=Task.OBJECT_DETECTION,
