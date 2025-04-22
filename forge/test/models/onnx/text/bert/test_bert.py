@@ -122,6 +122,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
     onnx_path = f"{tmp_path}/bert_qa.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
+    del framework_model
 
     # Load ONNX model
     onnx_model = onnx.load(onnx_path)

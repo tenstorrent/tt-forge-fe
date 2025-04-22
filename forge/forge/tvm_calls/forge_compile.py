@@ -828,6 +828,10 @@ def compile_onnx_for_forge(
         onnx_session=ort_sess,
     )
 
+    # These are large objects - release them since we don't need them anymore.
+    del ort_sess
+    del onnx_model
+
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
     mod = relay.transform.DynamicToStatic()(mod)
     if forge_property_handler is not None:
