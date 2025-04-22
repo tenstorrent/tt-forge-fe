@@ -77,9 +77,6 @@ jobs:
       run: |
         echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-        echo "PRINTING /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt"
-        cat /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt
-        echo "END PRINTING /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/tools/ttnn-standalone/CMakeLists.txt"
 
     - name: Git safe dir
       run: |
