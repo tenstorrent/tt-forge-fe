@@ -69,8 +69,8 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         for (auto user : users)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
-            auto conv_attrs = user_op->named_attrs();
-            TT_ASSERT(conv_attrs.size() == 7);
+            graphlib::OpType::Attrs conv_attrs = user_op->named_attrs();
+            TT_ASSERT(conv_attrs.size() == 7 && "Expected 7 attributes in conv2d op but got {}", conv_attrs.size());
 
             // Conv2d attributes [stride, dilation, groups, padding]
             auto &conv_padding_variant = conv_attrs["padding"];
@@ -83,14 +83,12 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
                 conv_padding_vec = new std::vector<int>(4, 0);  // Assuming 4 padding values (top, left, bottom, right)
                 conv_attrs["padding"] = *conv_padding_vec;      // Update the padding attribute
             }
+            // Adding up the pad values with the existing conv2d pad va;ues
+            (*conv_padding_vec)[0] += top_pad;     // Top
+            (*conv_padding_vec)[1] += left_pad;    // Left
+            (*conv_padding_vec)[2] += bottom_pad;  // Bottom
+            (*conv_padding_vec)[3] += right_pad;   // Right
 
-            // Now that we are sure it's a vector, update the values
-            (*conv_padding_vec)[0] = top_pad;     // Top
-            (*conv_padding_vec)[1] = left_pad;    // Left
-            (*conv_padding_vec)[2] = bottom_pad;  // Bottom
-            (*conv_padding_vec)[3] = right_pad;   // Right
-
-            // Now the conv_attrs["padding"] has been updated
             std::vector<int> int_conv_attrs;
             for (const auto &attr : conv_attrs)
             {
