@@ -46,25 +46,25 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 16, 16), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 32, 32), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 64, 64), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 128, 128), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>

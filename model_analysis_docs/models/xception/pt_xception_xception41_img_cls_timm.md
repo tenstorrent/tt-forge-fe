@@ -1961,11 +1961,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.0.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_111166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>178</th>
@@ -1983,11 +1983,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.0.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_171166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>180</th>
@@ -2005,11 +2005,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.0.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_231166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>182</th>
@@ -2038,11 +2038,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.1.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_321166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>185</th>
@@ -2060,11 +2060,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.1.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_381166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>187</th>
@@ -2082,11 +2082,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.1.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_441166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>189</th>
@@ -2115,11 +2115,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.2.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_531166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>192</th>
@@ -2137,11 +2137,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.2.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_591166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>194</th>
@@ -2159,11 +2159,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.2.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_651166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>196</th>
@@ -2225,11 +2225,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.3.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_741166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>202</th>
@@ -2258,11 +2258,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.3.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_801166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>205</th>
@@ -2280,11 +2280,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.3.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_861166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>207</th>
@@ -2302,11 +2302,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.4.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_951166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>209</th>
@@ -2324,11 +2324,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.4.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1011166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>211</th>
@@ -2357,11 +2357,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.4.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1071166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>214</th>
@@ -2379,11 +2379,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.5.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1161166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>216</th>
@@ -2401,11 +2401,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.5.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1221166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>218</th>
@@ -2423,11 +2423,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.5.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1281166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>220</th>
@@ -2445,11 +2445,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.6.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1341166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>222</th>
@@ -2467,11 +2467,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.6.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1401166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>224</th>
@@ -2489,11 +2489,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.6.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1461166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>226</th>
@@ -2511,11 +2511,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.7.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1521166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>228</th>
@@ -2533,11 +2533,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.7.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1581166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>230</th>
@@ -2555,11 +2555,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.7.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1641166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>232</th>
@@ -2577,11 +2577,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.8.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1701166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>234</th>
@@ -2599,11 +2599,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.8.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1761166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>236</th>
@@ -2621,11 +2621,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.8.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1821166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>238</th>
@@ -2643,11 +2643,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.9.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1881166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>240</th>
@@ -2665,11 +2665,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.9.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1941166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>242</th>
@@ -2687,11 +2687,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.9.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2001166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>244</th>
@@ -2709,11 +2709,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.10.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2061166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>246</th>
@@ -2731,11 +2731,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.10.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2121166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>248</th>
@@ -2753,11 +2753,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.10.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2181166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>250</th>
@@ -2775,11 +2775,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.11.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2241166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>252</th>
@@ -2797,11 +2797,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.11.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2301166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>254</th>
@@ -2819,11 +2819,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.11.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2361166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>256</th>
@@ -2841,11 +2841,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.12.stack.conv1.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2421166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>258</th>
@@ -2863,11 +2863,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.12.stack.conv2.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2481166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>260</th>
@@ -2885,11 +2885,11 @@
       <td>Multiply</td>
       <td>Operand(type=Constant, name=blocks.12.stack.conv3.bn_pw.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2541166, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>262</th>

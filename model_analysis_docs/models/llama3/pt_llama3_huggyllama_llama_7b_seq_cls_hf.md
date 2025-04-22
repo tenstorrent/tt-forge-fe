@@ -104,9 +104,9 @@
       <td>dtype : torch.bool</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>9</th>
@@ -608,11 +608,11 @@
       <td>Subtract</td>
       <td>Operand(type=Constant, name=const_1940, dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 4), dtype=int32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>55</th>

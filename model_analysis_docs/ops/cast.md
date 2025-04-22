@@ -18,31 +18,67 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="8">1</td>
-			<td rowspan="8">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="8">25</td>
-			<td>9</td>
-			<td><ul><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_phi2_microsoft_phi_2_clm_hf</li></ul></td>
+			<td rowspan="14">1</td>
+			<td rowspan="14">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+			<td rowspan="14">61</td>
+			<td>17</td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_bart_facebook_bart_large_mnli_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
+		</tr>
+		<tr>
+			<td>10</td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=int32)</td>
 			<td>dtype : torch.bool</td>
 		</tr>
 		<tr>
+			<td>8</td>
+			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
+		</tr>
+		<tr>
 			<td>5</td>
-			<td><ul><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li></ul></td>
+			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128), dtype=int64)</td>
 			<td>dtype : torch.bool</td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li></ul></td>
+			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128), dtype=int32)</td>
 			<td>dtype : torch.bool</td>
 		</tr>
 		<tr>
+			<td>5</td>
+			<td><ul><li>pt_distilbert_distilbert_base_uncased_mlm_hf</li><li>pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</li><li>pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_cased_mlm_hf</li><li>pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 12, 128, 128), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 1, 1, 13), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
+		</tr>
+		<tr>
 			<td>2</td>
-			<td><ul><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=int32)</td>
 			<td>dtype : torch.bool</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li></ul></td>
+			<td>Operand(type=Activation, shape=(2, 1, 7, 7), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 596, 4096), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
 		</tr>
 		<tr>
 			<td>1</td>
@@ -58,9 +94,9 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 4), dtype=int64)</td>
-			<td>dtype : torch.bool</td>
+			<td><ul><li>pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 12, 384, 384), dtype=uint1)</td>
+			<td>dtype : torch.float32</td>
 		</tr>
 		<tr>
 			<td>1</td>

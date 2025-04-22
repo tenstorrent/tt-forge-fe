@@ -1,5 +1,5 @@
 <h1>List of models and current compiler support rates</h1>
-<p><b>Last updated date and time(in GMT) :</b> Monday, 14 Apr 2025 11:05:30 PM</p><p><b>Commit Id :</b> <a href="https://github.com/tenstorrent/tt-forge-fe/commit/91ff38c75aad159d19913d1275534220abaf753a">91ff38c75aad159d19913d1275534220abaf753a</a></p><p><b>Note:</b> For detailed insights into compiler failures and their effects on models, please refer to the <a href="./stats/compiler_analysis_report.md">compiler_analysis_report.md</a>.</p><table border="1" class="dataframe">
+<p><b>Last updated date and time(in GMT) :</b> Tuesday, 22 Apr 2025 02:00:12 AM</p><p><b>Commit Id :</b> <a href="https://github.com/tenstorrent/tt-forge-fe/commit/b3339ddd9f18ff37b7b919843edf0431212135fe">b3339ddd9f18ff37b7b919843edf0431212135fe</a></p><p><b>Note:</b> For detailed insights into compiler failures and their effects on models, please refer to the <a href="./stats/compiler_analysis_report.md">compiler_analysis_report.md</a>.</p><table border="1" class="dataframe">
   <thead>
     <tr>
       <th></th>
@@ -213,10 +213,10 @@
       <td>alexnet</td>
       <td><a href="./models/alexnet/pt_alexnet_base_img_cls_osmr.md">pt_alexnet_base_img_cls_osmr</a></td>
       <td>pytorch</td>
-      <td>92 %</td>
-      <td>92 %</td>
-      <td>91 %</td>
-      <td>0 %</td>
+      <td>89 %</td>
+      <td>89 %</td>
+      <td>87 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>21</th>
@@ -245,7 +245,7 @@
       <td>pytorch</td>
       <td>96 %</td>
       <td>96 %</td>
-      <td>94 %</td>
+      <td>92 %</td>
       <td>4 %</td>
     </tr>
     <tr>
@@ -493,60 +493,60 @@
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf.md">pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf</a></td>
       <td>pytorch</td>
-      <td>94 %</td>
-      <td>94 %</td>
-      <td>89 %</td>
-      <td>2 %</td>
+      <td>92 %</td>
+      <td>92 %</td>
+      <td>85 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>49</th>
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf.md">pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>88 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>85 %</td>
+      <td>3 %</td>
     </tr>
     <tr>
       <th>50</th>
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_distilbert_base_cased_mlm_hf.md">pt_distilbert_distilbert_base_cased_mlm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>89 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>85 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>51</th>
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_distilbert_base_multilingual_cased_mlm_hf.md">pt_distilbert_distilbert_base_multilingual_cased_mlm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>89 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>85 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>52</th>
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf.md">pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>90 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>86 %</td>
+      <td>3 %</td>
     </tr>
     <tr>
       <th>53</th>
       <td>distilbert</td>
       <td><a href="./models/distilbert/pt_distilbert_distilbert_base_uncased_mlm_hf.md">pt_distilbert_distilbert_base_uncased_mlm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>89 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>85 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>54</th>
@@ -825,7 +825,7 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>97 %</td>
+      <td>99 %</td>
       <td>1 %</td>
     </tr>
     <tr>
@@ -835,7 +835,7 @@
       <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>97 %</td>
+      <td>99 %</td>
       <td>1 %</td>
     </tr>
     <tr>
@@ -923,30 +923,30 @@
       <td>ghostnet</td>
       <td><a href="./models/ghostnet/pt_ghostnet_ghostnet_100_img_cls_timm.md">pt_ghostnet_ghostnet_100_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>98 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>97 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
       <th>92</th>
       <td>ghostnet</td>
       <td><a href="./models/ghostnet/pt_ghostnet_ghostnet_100_in1k_img_cls_timm.md">pt_ghostnet_ghostnet_100_in1k_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>98 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>97 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
       <th>93</th>
       <td>ghostnet</td>
       <td><a href="./models/ghostnet/pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm.md">pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
       <td>98 %</td>
-      <td>0 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
       <th>94</th>
@@ -973,80 +973,80 @@
       <td>gpt2</td>
       <td><a href="./models/gpt2/pt_gpt2_gpt2_text_gen_hf.md">pt_gpt2_gpt2_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>4 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>97</th>
       <td>gpt2</td>
       <td><a href="./models/gpt2/pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf.md">pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>92 %</td>
-      <td>5 %</td>
+      <td>94 %</td>
+      <td>94 %</td>
+      <td>91 %</td>
+      <td>6 %</td>
     </tr>
     <tr>
       <th>98</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_125m_clm_hf.md">pt_gptneo_eleutherai_gpt_neo_125m_clm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>5 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>99</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf.md">pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>4 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>100</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf.md">pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>95 %</td>
-      <td>5 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>101</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf.md">pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>4 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>102</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf.md">pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
-      <td>95 %</td>
       <td>93 %</td>
-      <td>5 %</td>
+      <td>93 %</td>
+      <td>90 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>103</th>
       <td>gptneo</td>
       <td><a href="./models/gptneo/pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf.md">pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
       <td>93 %</td>
-      <td>4 %</td>
+      <td>93 %</td>
+      <td>91 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>104</th>
@@ -1223,40 +1223,40 @@
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_huggyllama_llama_7b_clm_hf.md">pt_llama3_huggyllama_llama_7b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>91 %</td>
-      <td>4 %</td>
+      <td>94 %</td>
+      <td>94 %</td>
+      <td>89 %</td>
+      <td>6 %</td>
     </tr>
     <tr>
       <th>122</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_huggyllama_llama_7b_seq_cls_hf.md">pt_llama3_huggyllama_llama_7b_seq_cls_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
+      <td>96 %</td>
+      <td>96 %</td>
       <td>91 %</td>
-      <td>3 %</td>
+      <td>4 %</td>
     </tr>
     <tr>
       <th>123</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_1_8b_clm_hf.md">pt_llama3_meta_llama_llama_3_1_8b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>93 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>91 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>124</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf.md">pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>93 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>91 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>125</th>
@@ -1283,20 +1283,20 @@
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_2_1b_clm_hf.md">pt_llama3_meta_llama_llama_3_2_1b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>94 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>92 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>128</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf.md">pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>94 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>92 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>129</th>
@@ -1323,20 +1323,20 @@
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_2_3b_clm_hf.md">pt_llama3_meta_llama_llama_3_2_3b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>94 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>92 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>132</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf.md">pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>94 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>92 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>133</th>
@@ -1363,20 +1363,20 @@
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_meta_llama_3_8b_clm_hf.md">pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>93 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>91 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>136</th>
       <td>llama3</td>
       <td><a href="./models/llama3/pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf.md">pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</a></td>
       <td>pytorch</td>
-      <td>97 %</td>
-      <td>97 %</td>
-      <td>93 %</td>
-      <td>3 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>91 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>137</th>
@@ -1403,10 +1403,10 @@
       <td>llava</td>
       <td><a href="./models/llava/pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf.md">pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>89 %</td>
-      <td>3 %</td>
+      <td>97 %</td>
+      <td>97 %</td>
+      <td>88 %</td>
+      <td>2 %</td>
     </tr>
     <tr>
       <th>140</th>
@@ -1513,10 +1513,10 @@
       <td>mobilenet_v1</td>
       <td><a href="./models/mobilenet_v1/pt_mobilenet_v1_basic_img_cls_torchvision.md">pt_mobilenet_v1_basic_img_cls_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>151</th>
@@ -1553,10 +1553,10 @@
       <td>mobilenet_v2</td>
       <td><a href="./models/mobilenet_v2/pt_mobilenetv2_basic_img_cls_torchhub.md">pt_mobilenetv2_basic_img_cls_torchhub</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>155</th>
@@ -1593,10 +1593,10 @@
       <td>mobilenet_v2</td>
       <td><a href="./models/mobilenet_v2/pt_mobilenetv2_mobilenet_v2_img_cls_torchvision.md">pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>159</th>
@@ -1613,30 +1613,30 @@
       <td>mobilenet_v2</td>
       <td><a href="./models/mobilenet_v2/pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf.md">pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</a></td>
       <td>pytorch</td>
-      <td>95 %</td>
       <td>94 %</td>
       <td>94 %</td>
-      <td>0 %</td>
+      <td>94 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
       <th>161</th>
       <td>mobilenet_v3</td>
       <td><a href="./models/mobilenet_v3/pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub.md">pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>98 %</td>
-      <td>0 %</td>
+      <td>97 %</td>
+      <td>97 %</td>
+      <td>94 %</td>
+      <td>3 %</td>
     </tr>
     <tr>
       <th>162</th>
       <td>mobilenet_v3</td>
       <td><a href="./models/mobilenet_v3/pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub.md">pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>96 %</td>
-      <td>0 %</td>
+      <td>97 %</td>
+      <td>97 %</td>
+      <td>94 %</td>
+      <td>3 %</td>
     </tr>
     <tr>
       <th>163</th>
@@ -1713,113 +1713,143 @@
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_1024x320_depth_prediction_torchvision.md">pt_monodepth2_mono_1024x320_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
       <td>93 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>88 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>171</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_640x192_depth_prediction_torchvision.md">pt_monodepth2_mono_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>172</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision.md">pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>173</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision.md">pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
       <td>93 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>88 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>174</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision.md">pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>175</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision.md">pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>176</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_stereo_1024x320_depth_prediction_torchvision.md">pt_monodepth2_stereo_1024x320_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
       <td>93 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>88 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
       <th>177</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_stereo_640x192_depth_prediction_torchvision.md">pt_monodepth2_stereo_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>178</th>
       <td>monodepth2</td>
       <td><a href="./models/monodepth2/pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision.md">pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>95 %</td>
-      <td>0 %</td>
+      <td>95 %</td>
+      <td>90 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>179</th>
       <td>monodle</td>
       <td><a href="./models/monodle/pt_monodle_base_obj_det_torchvision.md">pt_monodle_base_obj_det_torchvision</a></td>
       <td>pytorch</td>
-      <td>99 %</td>
-      <td>99 %</td>
-      <td>99 %</td>
-      <td>1 %</td>
+      <td>97 %</td>
+      <td>97 %</td>
+      <td>97 %</td>
+      <td>3 %</td>
     </tr>
     <tr>
       <th>180</th>
       <td>nanogpt</td>
       <td><a href="./models/nanogpt/pt_nanogpt_financialsupport_nanogpt_text_gen_hf.md">pt_nanogpt_financialsupport_nanogpt_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>4 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
       <th>181</th>
+      <td>nbeats</td>
+      <td><a href="./models/nbeats/pt_nbeats_generic_basis_clm_hf.md">pt_nbeats_generic_basis_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>100 %</td>
+      <td>100 %</td>
+      <td>100 %</td>
+      <td>0 %</td>
+    </tr>
+    <tr>
+      <th>182</th>
+      <td>nbeats</td>
+      <td><a href="./models/nbeats/pt_nbeats_seasionality_basis_clm_hf.md">pt_nbeats_seasionality_basis_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>86 %</td>
+      <td>86 %</td>
+      <td>86 %</td>
+      <td>0 %</td>
+    </tr>
+    <tr>
+      <th>183</th>
+      <td>nbeats</td>
+      <td><a href="./models/nbeats/pt_nbeats_trend_basis_clm_hf.md">pt_nbeats_trend_basis_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>100 %</td>
+      <td>100 %</td>
+      <td>100 %</td>
+      <td>0 %</td>
+    </tr>
+    <tr>
+      <th>184</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_125m_clm_hf.md">pt_opt_facebook_opt_125m_clm_hf</a></td>
       <td>pytorch</td>
@@ -1829,7 +1859,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>182</th>
+      <th>185</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_125m_qa_hf.md">pt_opt_facebook_opt_125m_qa_hf</a></td>
       <td>pytorch</td>
@@ -1839,7 +1869,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>183</th>
+      <th>186</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_125m_seq_cls_hf.md">pt_opt_facebook_opt_125m_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -1849,7 +1879,7 @@
       <td>4 %</td>
     </tr>
     <tr>
-      <th>184</th>
+      <th>187</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_1_3b_clm_hf.md">pt_opt_facebook_opt_1_3b_clm_hf</a></td>
       <td>pytorch</td>
@@ -1859,7 +1889,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>185</th>
+      <th>188</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_1_3b_qa_hf.md">pt_opt_facebook_opt_1_3b_qa_hf</a></td>
       <td>pytorch</td>
@@ -1869,7 +1899,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>186</th>
+      <th>189</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_1_3b_seq_cls_hf.md">pt_opt_facebook_opt_1_3b_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -1879,7 +1909,7 @@
       <td>4 %</td>
     </tr>
     <tr>
-      <th>187</th>
+      <th>190</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_350m_clm_hf.md">pt_opt_facebook_opt_350m_clm_hf</a></td>
       <td>pytorch</td>
@@ -1889,7 +1919,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>188</th>
+      <th>191</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_350m_qa_hf.md">pt_opt_facebook_opt_350m_qa_hf</a></td>
       <td>pytorch</td>
@@ -1899,7 +1929,7 @@
       <td>3 %</td>
     </tr>
     <tr>
-      <th>189</th>
+      <th>192</th>
       <td>opt</td>
       <td><a href="./models/opt/pt_opt_facebook_opt_350m_seq_cls_hf.md">pt_opt_facebook_opt_350m_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -1909,7 +1939,7 @@
       <td>4 %</td>
     </tr>
     <tr>
-      <th>190</th>
+      <th>193</th>
       <td>perceiverio</td>
       <td><a href="./models/perceiverio/pt_perceiverio_deepmind_language_perceiver_mlm_hf.md">pt_perceiverio_deepmind_language_perceiver_mlm_hf</a></td>
       <td>pytorch</td>
@@ -1919,7 +1949,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>191</th>
+      <th>194</th>
       <td>perceiverio</td>
       <td><a href="./models/perceiverio/pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf.md">pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -1929,7 +1959,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>192</th>
+      <th>195</th>
       <td>perceiverio</td>
       <td><a href="./models/perceiverio/pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf.md">pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -1939,7 +1969,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>193</th>
+      <th>196</th>
       <td>perceiverio</td>
       <td><a href="./models/perceiverio/pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf.md">pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -1949,27 +1979,87 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>194</th>
+      <th>197</th>
+      <td>phi1_5_pt</td>
+      <td><a href="./models/phi1_5_pt/pt_phi1_5_microsoft_phi_1_5_clm_hf.md">pt_phi1_5_microsoft_phi_1_5_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>198</th>
+      <td>phi1_5_pt</td>
+      <td><a href="./models/phi1_5_pt/pt_phi1_5_microsoft_phi_1_5_seq_cls_hf.md">pt_phi1_5_microsoft_phi_1_5_seq_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>199</th>
+      <td>phi1_5_pt</td>
+      <td><a href="./models/phi1_5_pt/pt_phi1_5_microsoft_phi_1_5_token_cls_hf.md">pt_phi1_5_microsoft_phi_1_5_token_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>200</th>
+      <td>phi1_pt</td>
+      <td><a href="./models/phi1_pt/pt_phi1_microsoft_phi_1_clm_hf.md">pt_phi1_microsoft_phi_1_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>201</th>
+      <td>phi1_pt</td>
+      <td><a href="./models/phi1_pt/pt_phi1_microsoft_phi_1_seq_cls_hf.md">pt_phi1_microsoft_phi_1_seq_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>202</th>
+      <td>phi1_pt</td>
+      <td><a href="./models/phi1_pt/pt_phi1_microsoft_phi_1_token_cls_hf.md">pt_phi1_microsoft_phi_1_token_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>203</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_clm_hf.md">pt_phi2_microsoft_phi_2_clm_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>92 %</td>
-      <td>4 %</td>
+      <td>94 %</td>
+      <td>94 %</td>
+      <td>89 %</td>
+      <td>6 %</td>
     </tr>
     <tr>
-      <th>195</th>
+      <th>204</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_pytdml_clm_hf.md">pt_phi2_microsoft_phi_2_pytdml_clm_hf</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>92 %</td>
-      <td>4 %</td>
+      <td>94 %</td>
+      <td>94 %</td>
+      <td>89 %</td>
+      <td>6 %</td>
     </tr>
     <tr>
-      <th>196</th>
+      <th>205</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf.md">pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -1979,7 +2069,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>197</th>
+      <th>206</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_pytdml_token_cls_hf.md">pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</a></td>
       <td>pytorch</td>
@@ -1989,7 +2079,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>198</th>
+      <th>207</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_seq_cls_hf.md">pt_phi2_microsoft_phi_2_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -1999,7 +2089,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>199</th>
+      <th>208</th>
       <td>phi2</td>
       <td><a href="./models/phi2/pt_phi2_microsoft_phi_2_token_cls_hf.md">pt_phi2_microsoft_phi_2_token_cls_hf</a></td>
       <td>pytorch</td>
@@ -2009,17 +2099,17 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>200</th>
+      <th>209</th>
       <td>phi3</td>
       <td><a href="./models/phi3/pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf.md">pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</a></td>
       <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
-      <td>98 %</td>
-      <td>2 %</td>
+      <td>95 %</td>
+      <td>95 %</td>
+      <td>91 %</td>
+      <td>5 %</td>
     </tr>
     <tr>
-      <th>201</th>
+      <th>210</th>
       <td>phi3</td>
       <td><a href="./models/phi3/pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf.md">pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -2029,7 +2119,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>202</th>
+      <th>211</th>
       <td>phi3</td>
       <td><a href="./models/phi3/pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf.md">pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</a></td>
       <td>pytorch</td>
@@ -2039,17 +2129,47 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>203</th>
+      <th>212</th>
       <td>phi3_5</td>
       <td><a href="./models/phi3_5/pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf.md">pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf</a></td>
       <td>pytorch</td>
       <td>97 %</td>
       <td>97 %</td>
-      <td>96 %</td>
+      <td>94 %</td>
       <td>3 %</td>
     </tr>
     <tr>
-      <th>204</th>
+      <th>213</th>
+      <td>phi4</td>
+      <td><a href="./models/phi4/pt_phi4_microsoft_phi_4_clm_hf.md">pt_phi4_microsoft_phi_4_clm_hf</a></td>
+      <td>pytorch</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>97 %</td>
+      <td>1 %</td>
+    </tr>
+    <tr>
+      <th>214</th>
+      <td>phi4</td>
+      <td><a href="./models/phi4/pt_phi4_microsoft_phi_4_seq_cls_hf.md">pt_phi4_microsoft_phi_4_seq_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>97 %</td>
+      <td>1 %</td>
+    </tr>
+    <tr>
+      <th>215</th>
+      <td>phi4</td>
+      <td><a href="./models/phi4/pt_phi4_microsoft_phi_4_token_cls_hf.md">pt_phi4_microsoft_phi_4_token_cls_hf</a></td>
+      <td>pytorch</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>97 %</td>
+      <td>1 %</td>
+    </tr>
+    <tr>
+      <th>216</th>
       <td>qwen</td>
       <td><a href="./models/qwen/pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf.md">pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf</a></td>
       <td>pytorch</td>
@@ -2059,7 +2179,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>205</th>
+      <th>217</th>
       <td>qwen</td>
       <td><a href="./models/qwen/pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf.md">pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2069,7 +2189,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>206</th>
+      <th>218</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2079,7 +2199,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>207</th>
+      <th>219</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2089,7 +2209,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>208</th>
+      <th>220</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2099,7 +2219,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>209</th>
+      <th>221</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2109,7 +2229,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>210</th>
+      <th>222</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2119,7 +2239,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>211</th>
+      <th>223</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2129,7 +2249,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>212</th>
+      <th>224</th>
       <td>qwen_coder</td>
       <td><a href="./models/qwen_coder/pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf.md">pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2139,7 +2259,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>213</th>
+      <th>225</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2149,7 +2269,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>214</th>
+      <th>226</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2159,7 +2279,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>215</th>
+      <th>227</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2169,7 +2289,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>216</th>
+      <th>228</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2179,7 +2299,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>217</th>
+      <th>229</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_3b_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2189,7 +2309,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>218</th>
+      <th>230</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2199,7 +2319,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>219</th>
+      <th>231</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_7b_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_7b_clm_hf</a></td>
       <td>pytorch</td>
@@ -2209,7 +2329,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>220</th>
+      <th>232</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf.md">pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf</a></td>
       <td>pytorch</td>
@@ -2219,7 +2339,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>221</th>
+      <th>233</th>
       <td>qwen_v2</td>
       <td><a href="./models/qwen_v2/pt_qwen_v2_qwen_qwen2_7b_token_cls_hf.md">pt_qwen_v2_qwen_qwen2_7b_token_cls_hf</a></td>
       <td>pytorch</td>
@@ -2229,7 +2349,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>222</th>
+      <th>234</th>
       <td>rcnn</td>
       <td><a href="./models/rcnn/pt_rcnn_base_obj_det_torchvision_rect_0.md">pt_rcnn_base_obj_det_torchvision_rect_0</a></td>
       <td>pytorch</td>
@@ -2239,7 +2359,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>223</th>
+      <th>235</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_facebook_regnet_y_040_img_cls_hf.md">pt_regnet_facebook_regnet_y_040_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2249,7 +2369,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>224</th>
+      <th>236</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_16gf_img_cls_torchvision.md">pt_regnet_regnet_x_16gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2259,7 +2379,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>225</th>
+      <th>237</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_1_6gf_img_cls_torchvision.md">pt_regnet_regnet_x_1_6gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2269,7 +2389,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>226</th>
+      <th>238</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_32gf_img_cls_torchvision.md">pt_regnet_regnet_x_32gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2279,7 +2399,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>227</th>
+      <th>239</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_3_2gf_img_cls_torchvision.md">pt_regnet_regnet_x_3_2gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2289,7 +2409,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>228</th>
+      <th>240</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_400mf_img_cls_torchvision.md">pt_regnet_regnet_x_400mf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2299,7 +2419,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>229</th>
+      <th>241</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_800mf_img_cls_torchvision.md">pt_regnet_regnet_x_800mf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2309,7 +2429,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>230</th>
+      <th>242</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_x_8gf_img_cls_torchvision.md">pt_regnet_regnet_x_8gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2319,7 +2439,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>231</th>
+      <th>243</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_128gf_img_cls_torchvision.md">pt_regnet_regnet_y_128gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2329,7 +2449,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>232</th>
+      <th>244</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_16gf_img_cls_torchvision.md">pt_regnet_regnet_y_16gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2339,7 +2459,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>233</th>
+      <th>245</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_1_6gf_img_cls_torchvision.md">pt_regnet_regnet_y_1_6gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2349,7 +2469,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>234</th>
+      <th>246</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_32gf_img_cls_torchvision.md">pt_regnet_regnet_y_32gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2359,7 +2479,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>235</th>
+      <th>247</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_3_2gf_img_cls_torchvision.md">pt_regnet_regnet_y_3_2gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2369,7 +2489,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>236</th>
+      <th>248</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_400mf_img_cls_torchvision.md">pt_regnet_regnet_y_400mf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2379,7 +2499,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>237</th>
+      <th>249</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_800mf_img_cls_torchvision.md">pt_regnet_regnet_y_800mf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2389,7 +2509,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>238</th>
+      <th>250</th>
       <td>regnet</td>
       <td><a href="./models/regnet/pt_regnet_regnet_y_8gf_img_cls_torchvision.md">pt_regnet_regnet_y_8gf_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2399,7 +2519,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>239</th>
+      <th>251</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_50_img_cls_hf.md">pt_resnet_50_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2409,7 +2529,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>240</th>
+      <th>252</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_50_img_cls_timm.md">pt_resnet_50_img_cls_timm</a></td>
       <td>pytorch</td>
@@ -2419,7 +2539,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>241</th>
+      <th>253</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_resnet101_img_cls_torchvision.md">pt_resnet_resnet101_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2429,7 +2549,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>242</th>
+      <th>254</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_resnet152_img_cls_torchvision.md">pt_resnet_resnet152_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2439,7 +2559,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>243</th>
+      <th>255</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_resnet18_img_cls_torchvision.md">pt_resnet_resnet18_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2449,7 +2569,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>244</th>
+      <th>256</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_resnet34_img_cls_torchvision.md">pt_resnet_resnet34_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2459,7 +2579,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>245</th>
+      <th>257</th>
       <td>resnet</td>
       <td><a href="./models/resnet/pt_resnet_resnet50_img_cls_torchvision.md">pt_resnet_resnet50_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2469,7 +2589,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>246</th>
+      <th>258</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext101_32x8d_img_cls_torchhub.md">pt_resnext_resnext101_32x8d_img_cls_torchhub</a></td>
       <td>pytorch</td>
@@ -2479,7 +2599,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>247</th>
+      <th>259</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub.md">pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub</a></td>
       <td>pytorch</td>
@@ -2489,7 +2609,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>248</th>
+      <th>260</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext101_64x4d_img_cls_osmr.md">pt_resnext_resnext101_64x4d_img_cls_osmr</a></td>
       <td>pytorch</td>
@@ -2499,7 +2619,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>249</th>
+      <th>261</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext14_32x4d_img_cls_osmr.md">pt_resnext_resnext14_32x4d_img_cls_osmr</a></td>
       <td>pytorch</td>
@@ -2509,7 +2629,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>250</th>
+      <th>262</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext26_32x4d_img_cls_osmr.md">pt_resnext_resnext26_32x4d_img_cls_osmr</a></td>
       <td>pytorch</td>
@@ -2519,7 +2639,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>251</th>
+      <th>263</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext50_32x4d_img_cls_osmr.md">pt_resnext_resnext50_32x4d_img_cls_osmr</a></td>
       <td>pytorch</td>
@@ -2529,7 +2649,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>252</th>
+      <th>264</th>
       <td>resnext</td>
       <td><a href="./models/resnext/pt_resnext_resnext50_32x4d_img_cls_torchhub.md">pt_resnext_resnext50_32x4d_img_cls_torchhub</a></td>
       <td>pytorch</td>
@@ -2539,7 +2659,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>253</th>
+      <th>265</th>
       <td>retinanet</td>
       <td><a href="./models/retinanet/pt_retinanet_retinanet_rn101fpn_obj_det_hf.md">pt_retinanet_retinanet_rn101fpn_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2549,7 +2669,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>254</th>
+      <th>266</th>
       <td>retinanet</td>
       <td><a href="./models/retinanet/pt_retinanet_retinanet_rn152fpn_obj_det_hf.md">pt_retinanet_retinanet_rn152fpn_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2559,7 +2679,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>255</th>
+      <th>267</th>
       <td>retinanet</td>
       <td><a href="./models/retinanet/pt_retinanet_retinanet_rn18fpn_obj_det_hf.md">pt_retinanet_retinanet_rn18fpn_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2569,7 +2689,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>256</th>
+      <th>268</th>
       <td>retinanet</td>
       <td><a href="./models/retinanet/pt_retinanet_retinanet_rn34fpn_obj_det_hf.md">pt_retinanet_retinanet_rn34fpn_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2579,7 +2699,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>257</th>
+      <th>269</th>
       <td>retinanet</td>
       <td><a href="./models/retinanet/pt_retinanet_retinanet_rn50fpn_obj_det_hf.md">pt_retinanet_retinanet_rn50fpn_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2589,27 +2709,27 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>258</th>
+      <th>270</th>
       <td>roberta</td>
       <td><a href="./models/roberta/pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf.md">pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</a></td>
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
-      <td>94 %</td>
+      <td>96 %</td>
       <td>0 %</td>
     </tr>
     <tr>
-      <th>259</th>
+      <th>271</th>
       <td>roberta</td>
       <td><a href="./models/roberta/pt_roberta_xlm_roberta_base_mlm_hf.md">pt_roberta_xlm_roberta_base_mlm_hf</a></td>
       <td>pytorch</td>
       <td>98 %</td>
       <td>98 %</td>
-      <td>92 %</td>
+      <td>94 %</td>
       <td>2 %</td>
     </tr>
     <tr>
-      <th>260</th>
+      <th>272</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b0_img_cls_hf.md">pt_segformer_nvidia_mit_b0_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2619,7 +2739,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>261</th>
+      <th>273</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b1_img_cls_hf.md">pt_segformer_nvidia_mit_b1_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2629,7 +2749,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>262</th>
+      <th>274</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b2_img_cls_hf.md">pt_segformer_nvidia_mit_b2_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2639,7 +2759,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>263</th>
+      <th>275</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b3_img_cls_hf.md">pt_segformer_nvidia_mit_b3_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2649,7 +2769,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>264</th>
+      <th>276</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b4_img_cls_hf.md">pt_segformer_nvidia_mit_b4_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2659,7 +2779,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>265</th>
+      <th>277</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_mit_b5_img_cls_hf.md">pt_segformer_nvidia_mit_b5_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2669,7 +2789,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>266</th>
+      <th>278</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf.md">pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</a></td>
       <td>pytorch</td>
@@ -2679,7 +2799,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>267</th>
+      <th>279</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf.md">pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</a></td>
       <td>pytorch</td>
@@ -2689,7 +2809,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>268</th>
+      <th>280</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf.md">pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</a></td>
       <td>pytorch</td>
@@ -2699,7 +2819,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>269</th>
+      <th>281</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf.md">pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</a></td>
       <td>pytorch</td>
@@ -2709,7 +2829,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>270</th>
+      <th>282</th>
       <td>segformer</td>
       <td><a href="./models/segformer/pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf.md">pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</a></td>
       <td>pytorch</td>
@@ -2719,7 +2839,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>271</th>
+      <th>283</th>
       <td>squeezebert</td>
       <td><a href="./models/squeezebert/pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf.md">pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf</a></td>
       <td>pytorch</td>
@@ -2729,7 +2849,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>272</th>
+      <th>284</th>
       <td>ssd300_resnet50</td>
       <td><a href="./models/ssd300_resnet50/pt_ssd300_resnet50_base_img_cls_torchhub.md">pt_ssd300_resnet50_base_img_cls_torchhub</a></td>
       <td>pytorch</td>
@@ -2739,29 +2859,9 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>273</th>
+      <th>285</th>
       <td>stereo</td>
       <td><a href="./models/stereo/pt_stereo_facebook_musicgen_large_music_generation_hf.md">pt_stereo_facebook_musicgen_large_music_generation_hf</a></td>
-      <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
-      <td>91 %</td>
-      <td>2 %</td>
-    </tr>
-    <tr>
-      <th>274</th>
-      <td>stereo</td>
-      <td><a href="./models/stereo/pt_stereo_facebook_musicgen_medium_music_generation_hf.md">pt_stereo_facebook_musicgen_medium_music_generation_hf</a></td>
-      <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
-      <td>91 %</td>
-      <td>2 %</td>
-    </tr>
-    <tr>
-      <th>275</th>
-      <td>stereo</td>
-      <td><a href="./models/stereo/pt_stereo_facebook_musicgen_small_music_generation_hf.md">pt_stereo_facebook_musicgen_small_music_generation_hf</a></td>
       <td>pytorch</td>
       <td>98 %</td>
       <td>98 %</td>
@@ -2769,7 +2869,27 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>276</th>
+      <th>286</th>
+      <td>stereo</td>
+      <td><a href="./models/stereo/pt_stereo_facebook_musicgen_medium_music_generation_hf.md">pt_stereo_facebook_musicgen_medium_music_generation_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>93 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>287</th>
+      <td>stereo</td>
+      <td><a href="./models/stereo/pt_stereo_facebook_musicgen_small_music_generation_hf.md">pt_stereo_facebook_musicgen_small_music_generation_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>93 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>288</th>
       <td>swin</td>
       <td><a href="./models/swin/pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf.md">pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -2779,7 +2899,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>277</th>
+      <th>289</th>
       <td>swin</td>
       <td><a href="./models/swin/pt_swin_swin_b_img_cls_torchvision.md">pt_swin_swin_b_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2789,7 +2909,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>278</th>
+      <th>290</th>
       <td>swin</td>
       <td><a href="./models/swin/pt_swin_swin_s_img_cls_torchvision.md">pt_swin_swin_s_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2799,7 +2919,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>279</th>
+      <th>291</th>
       <td>swin</td>
       <td><a href="./models/swin/pt_swin_swin_t_img_cls_torchvision.md">pt_swin_swin_t_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2809,67 +2929,67 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>280</th>
+      <th>292</th>
       <td>t5</td>
       <td><a href="./models/t5/pt_t5_google_flan_t5_base_text_gen_hf.md">pt_t5_google_flan_t5_base_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>99 %</td>
-      <td>99 %</td>
-      <td>97 %</td>
-      <td>1 %</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>96 %</td>
+      <td>2 %</td>
     </tr>
     <tr>
-      <th>281</th>
+      <th>293</th>
       <td>t5</td>
       <td><a href="./models/t5/pt_t5_google_flan_t5_large_text_gen_hf.md">pt_t5_google_flan_t5_large_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>97 %</td>
-      <td>0 %</td>
-    </tr>
-    <tr>
-      <th>282</th>
-      <td>t5</td>
-      <td><a href="./models/t5/pt_t5_google_flan_t5_small_text_gen_hf.md">pt_t5_google_flan_t5_small_text_gen_hf</a></td>
-      <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>97 %</td>
-      <td>0 %</td>
-    </tr>
-    <tr>
-      <th>283</th>
-      <td>t5</td>
-      <td><a href="./models/t5/pt_t5_t5_base_text_gen_hf.md">pt_t5_t5_base_text_gen_hf</a></td>
-      <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
-      <td>97 %</td>
+      <td>96 %</td>
       <td>1 %</td>
     </tr>
     <tr>
-      <th>284</th>
+      <th>294</th>
+      <td>t5</td>
+      <td><a href="./models/t5/pt_t5_google_flan_t5_small_text_gen_hf.md">pt_t5_google_flan_t5_small_text_gen_hf</a></td>
+      <td>pytorch</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>96 %</td>
+      <td>1 %</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>t5</td>
+      <td><a href="./models/t5/pt_t5_t5_base_text_gen_hf.md">pt_t5_t5_base_text_gen_hf</a></td>
+      <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>96 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>296</th>
       <td>t5</td>
       <td><a href="./models/t5/pt_t5_t5_large_text_gen_hf.md">pt_t5_t5_large_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>97 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>96 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
-      <th>285</th>
+      <th>297</th>
       <td>t5</td>
       <td><a href="./models/t5/pt_t5_t5_small_text_gen_hf.md">pt_t5_t5_small_text_gen_hf</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>97 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>96 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
-      <th>286</th>
+      <th>298</th>
       <td>unet</td>
       <td><a href="./models/unet/pt_unet_base_img_seg_torchhub.md">pt_unet_base_img_seg_torchhub</a></td>
       <td>pytorch</td>
@@ -2879,37 +2999,37 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>287</th>
+      <th>299</th>
       <td>unet</td>
       <td><a href="./models/unet/pt_unet_carvana_base_img_seg_github.md">pt_unet_carvana_base_img_seg_github</a></td>
       <td>pytorch</td>
-      <td>98 %</td>
-      <td>98 %</td>
-      <td>96 %</td>
-      <td>2 %</td>
+      <td>93 %</td>
+      <td>93 %</td>
+      <td>91 %</td>
+      <td>7 %</td>
     </tr>
     <tr>
-      <th>288</th>
+      <th>300</th>
       <td>unet</td>
       <td><a href="./models/unet/pt_unet_cityscape_img_seg_osmr.md">pt_unet_cityscape_img_seg_osmr</a></td>
       <td>pytorch</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>96 %</td>
-      <td>4 %</td>
+      <td>92 %</td>
+      <td>92 %</td>
+      <td>92 %</td>
+      <td>8 %</td>
     </tr>
     <tr>
-      <th>289</th>
+      <th>301</th>
       <td>unet</td>
       <td><a href="./models/unet/pt_unet_qubvel_img_seg_torchhub.md">pt_unet_qubvel_img_seg_torchhub</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>99 %</td>
+      <td>98 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
-      <th>290</th>
+      <th>302</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_19_obj_det_hf.md">pt_vgg_19_obj_det_hf</a></td>
       <td>pytorch</td>
@@ -2919,7 +3039,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>291</th>
+      <th>303</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_bn_vgg19_obj_det_osmr.md">pt_vgg_bn_vgg19_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -2929,7 +3049,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>292</th>
+      <th>304</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_bn_vgg19b_obj_det_osmr.md">pt_vgg_bn_vgg19b_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -2939,7 +3059,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>293</th>
+      <th>305</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg11_bn_img_cls_torchvision.md">pt_vgg_vgg11_bn_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2949,7 +3069,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>294</th>
+      <th>306</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg11_img_cls_torchvision.md">pt_vgg_vgg11_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2959,7 +3079,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>295</th>
+      <th>307</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg11_obj_det_osmr.md">pt_vgg_vgg11_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -2969,7 +3089,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>296</th>
+      <th>308</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg13_bn_img_cls_torchvision.md">pt_vgg_vgg13_bn_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2979,7 +3099,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>297</th>
+      <th>309</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg13_img_cls_torchvision.md">pt_vgg_vgg13_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -2989,7 +3109,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>298</th>
+      <th>310</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg13_obj_det_osmr.md">pt_vgg_vgg13_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -2999,7 +3119,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>299</th>
+      <th>311</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg16_bn_img_cls_torchvision.md">pt_vgg_vgg16_bn_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -3009,7 +3129,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>300</th>
+      <th>312</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg16_img_cls_torchvision.md">pt_vgg_vgg16_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -3019,7 +3139,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>301</th>
+      <th>313</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg16_obj_det_osmr.md">pt_vgg_vgg16_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -3029,7 +3149,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>302</th>
+      <th>314</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg19_bn_obj_det_timm.md">pt_vgg_vgg19_bn_obj_det_timm</a></td>
       <td>pytorch</td>
@@ -3039,7 +3159,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>303</th>
+      <th>315</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg19_bn_obj_det_torchhub.md">pt_vgg_vgg19_bn_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3049,7 +3169,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>304</th>
+      <th>316</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg19_img_cls_torchvision.md">pt_vgg_vgg19_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -3059,7 +3179,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>305</th>
+      <th>317</th>
       <td>vgg</td>
       <td><a href="./models/vgg/pt_vgg_vgg19_obj_det_osmr.md">pt_vgg_vgg19_obj_det_osmr</a></td>
       <td>pytorch</td>
@@ -3069,7 +3189,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>306</th>
+      <th>318</th>
       <td>vilt</td>
       <td><a href="./models/vilt/pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf.md">pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf</a></td>
       <td>pytorch</td>
@@ -3079,7 +3199,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>307</th>
+      <th>319</th>
       <td>vilt</td>
       <td><a href="./models/vilt/pt_vilt_dandelin_vilt_b32_mlm_mlm_hf.md">pt_vilt_dandelin_vilt_b32_mlm_mlm_hf</a></td>
       <td>pytorch</td>
@@ -3089,7 +3209,7 @@
       <td>2 %</td>
     </tr>
     <tr>
-      <th>308</th>
+      <th>320</th>
       <td>vit</td>
       <td><a href="./models/vit/pt_vit_google_vit_base_patch16_224_img_cls_hf.md">pt_vit_google_vit_base_patch16_224_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -3099,7 +3219,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>309</th>
+      <th>321</th>
       <td>vit</td>
       <td><a href="./models/vit/pt_vit_google_vit_large_patch16_224_img_cls_hf.md">pt_vit_google_vit_large_patch16_224_img_cls_hf</a></td>
       <td>pytorch</td>
@@ -3109,7 +3229,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>310</th>
+      <th>322</th>
       <td>vovnet</td>
       <td><a href="./models/vovnet/pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub.md">pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3119,7 +3239,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>311</th>
+      <th>323</th>
       <td>vovnet</td>
       <td><a href="./models/vovnet/pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub.md">pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3129,7 +3249,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>312</th>
+      <th>324</th>
       <td>vovnet</td>
       <td><a href="./models/vovnet/pt_vovnet_ese_vovnet39b_obj_det_torchhub.md">pt_vovnet_ese_vovnet39b_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3139,7 +3259,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>313</th>
+      <th>325</th>
       <td>vovnet</td>
       <td><a href="./models/vovnet/pt_vovnet_v1_vovnet39_obj_det_torchhub.md">pt_vovnet_v1_vovnet39_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3149,9 +3269,9 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>314</th>
+      <th>326</th>
       <td>vovnet</td>
-      <td><a href="./models/vovnet/pt_vovnet_vovnet27s_obj_det_osmr.md">pt_vovnet_vovnet27s_obj_det_osmr</a></td>
+      <td><a href="./models/vovnet/pt_vovnet_vovnet27s_img_cls_osmr.md">pt_vovnet_vovnet27s_img_cls_osmr</a></td>
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
@@ -3159,9 +3279,9 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>315</th>
+      <th>327</th>
       <td>vovnet</td>
-      <td><a href="./models/vovnet/pt_vovnet_vovnet39_obj_det_osmr.md">pt_vovnet_vovnet39_obj_det_osmr</a></td>
+      <td><a href="./models/vovnet/pt_vovnet_vovnet39_img_cls_osmr.md">pt_vovnet_vovnet39_img_cls_osmr</a></td>
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
@@ -3169,9 +3289,9 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>316</th>
+      <th>328</th>
       <td>vovnet</td>
-      <td><a href="./models/vovnet/pt_vovnet_vovnet57_obj_det_osmr.md">pt_vovnet_vovnet57_obj_det_osmr</a></td>
+      <td><a href="./models/vovnet/pt_vovnet_vovnet57_img_cls_osmr.md">pt_vovnet_vovnet57_img_cls_osmr</a></td>
       <td>pytorch</td>
       <td>100 %</td>
       <td>100 %</td>
@@ -3179,7 +3299,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>317</th>
+      <th>329</th>
       <td>vovnet</td>
       <td><a href="./models/vovnet/pt_vovnet_vovnet_v1_57_obj_det_torchhub.md">pt_vovnet_vovnet_v1_57_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3189,57 +3309,57 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>318</th>
+      <th>330</th>
       <td>whisper</td>
       <td><a href="./models/whisper/pt_whisper_openai_whisper_base_speech_recognition_hf.md">pt_whisper_openai_whisper_base_speech_recognition_hf</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>99 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>98 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
-      <th>319</th>
+      <th>331</th>
       <td>whisper</td>
       <td><a href="./models/whisper/pt_whisper_openai_whisper_large_speech_recognition_hf.md">pt_whisper_openai_whisper_large_speech_recognition_hf</a></td>
       <td>pytorch</td>
-      <td>99 %</td>
-      <td>99 %</td>
       <td>98 %</td>
-      <td>1 %</td>
+      <td>98 %</td>
+      <td>97 %</td>
+      <td>2 %</td>
     </tr>
     <tr>
-      <th>320</th>
+      <th>332</th>
       <td>whisper</td>
       <td><a href="./models/whisper/pt_whisper_openai_whisper_medium_speech_recognition_hf.md">pt_whisper_openai_whisper_medium_speech_recognition_hf</a></td>
       <td>pytorch</td>
+      <td>98 %</td>
+      <td>98 %</td>
+      <td>97 %</td>
+      <td>2 %</td>
+    </tr>
+    <tr>
+      <th>333</th>
+      <td>whisper</td>
+      <td><a href="./models/whisper/pt_whisper_openai_whisper_small_speech_recognition_hf.md">pt_whisper_openai_whisper_small_speech_recognition_hf</a></td>
+      <td>pytorch</td>
       <td>99 %</td>
       <td>99 %</td>
       <td>98 %</td>
       <td>1 %</td>
     </tr>
     <tr>
-      <th>321</th>
-      <td>whisper</td>
-      <td><a href="./models/whisper/pt_whisper_openai_whisper_small_speech_recognition_hf.md">pt_whisper_openai_whisper_small_speech_recognition_hf</a></td>
-      <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>99 %</td>
-      <td>0 %</td>
-    </tr>
-    <tr>
-      <th>322</th>
+      <th>334</th>
       <td>whisper</td>
       <td><a href="./models/whisper/pt_whisper_openai_whisper_tiny_speech_recognition_hf.md">pt_whisper_openai_whisper_tiny_speech_recognition_hf</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
       <td>99 %</td>
-      <td>0 %</td>
+      <td>99 %</td>
+      <td>98 %</td>
+      <td>1 %</td>
     </tr>
     <tr>
-      <th>323</th>
+      <th>335</th>
       <td>whisper_large_v3</td>
       <td><a href="./models/whisper_large_v3/pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf.md">pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf</a></td>
       <td>pytorch</td>
@@ -3249,7 +3369,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>324</th>
+      <th>336</th>
       <td>wideresnet</td>
       <td><a href="./models/wideresnet/pt_wideresnet_wide_resnet101_2_img_cls_timm.md">pt_wideresnet_wide_resnet101_2_img_cls_timm</a></td>
       <td>pytorch</td>
@@ -3259,7 +3379,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>325</th>
+      <th>337</th>
       <td>wideresnet</td>
       <td><a href="./models/wideresnet/pt_wideresnet_wide_resnet101_2_img_cls_torchvision.md">pt_wideresnet_wide_resnet101_2_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -3269,7 +3389,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>326</th>
+      <th>338</th>
       <td>wideresnet</td>
       <td><a href="./models/wideresnet/pt_wideresnet_wide_resnet50_2_img_cls_timm.md">pt_wideresnet_wide_resnet50_2_img_cls_timm</a></td>
       <td>pytorch</td>
@@ -3279,7 +3399,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>327</th>
+      <th>339</th>
       <td>wideresnet</td>
       <td><a href="./models/wideresnet/pt_wideresnet_wide_resnet50_2_img_cls_torchvision.md">pt_wideresnet_wide_resnet50_2_img_cls_torchvision</a></td>
       <td>pytorch</td>
@@ -3289,47 +3409,47 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>328</th>
+      <th>340</th>
       <td>xception</td>
       <td><a href="./models/xception/pt_xception_xception41_img_cls_timm.md">pt_xception_xception41_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>88 %</td>
+      <td>88 %</td>
+      <td>88 %</td>
+      <td>12 %</td>
     </tr>
     <tr>
-      <th>329</th>
+      <th>341</th>
       <td>xception</td>
       <td><a href="./models/xception/pt_xception_xception65_img_cls_timm.md">pt_xception_xception65_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>15 %</td>
     </tr>
     <tr>
-      <th>330</th>
+      <th>342</th>
       <td>xception</td>
       <td><a href="./models/xception/pt_xception_xception71_img_cls_timm.md">pt_xception_xception71_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>15 %</td>
     </tr>
     <tr>
-      <th>331</th>
+      <th>343</th>
       <td>xception</td>
       <td><a href="./models/xception/pt_xception_xception71_tf_in1k_img_cls_timm.md">pt_xception_xception71_tf_in1k_img_cls_timm</a></td>
       <td>pytorch</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>100 %</td>
-      <td>0 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>85 %</td>
+      <td>15 %</td>
     </tr>
     <tr>
-      <th>332</th>
+      <th>344</th>
       <td>xception</td>
       <td><a href="./models/xception/pt_xception_xception_img_cls_timm.md">pt_xception_xception_img_cls_timm</a></td>
       <td>pytorch</td>
@@ -3339,27 +3459,27 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>333</th>
+      <th>345</th>
       <td>xglm</td>
       <td><a href="./models/xglm/pt_xglm_facebook_xglm_1_7b_clm_hf.md">pt_xglm_facebook_xglm_1_7b_clm_hf</a></td>
       <td>pytorch</td>
       <td>96 %</td>
       <td>96 %</td>
-      <td>92 %</td>
+      <td>91 %</td>
       <td>4 %</td>
     </tr>
     <tr>
-      <th>334</th>
+      <th>346</th>
       <td>xglm</td>
       <td><a href="./models/xglm/pt_xglm_facebook_xglm_564m_clm_hf.md">pt_xglm_facebook_xglm_564m_clm_hf</a></td>
       <td>pytorch</td>
       <td>96 %</td>
       <td>96 %</td>
-      <td>92 %</td>
+      <td>91 %</td>
       <td>4 %</td>
     </tr>
     <tr>
-      <th>335</th>
+      <th>347</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5l_img_cls_torchhub_320x320.md">pt_yolo_v5_yolov5l_img_cls_torchhub_320x320</a></td>
       <td>pytorch</td>
@@ -3369,7 +3489,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>336</th>
+      <th>348</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5l_img_cls_torchhub_480x480.md">pt_yolo_v5_yolov5l_img_cls_torchhub_480x480</a></td>
       <td>pytorch</td>
@@ -3379,7 +3499,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>337</th>
+      <th>349</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5l_img_cls_torchhub_640x640.md">pt_yolo_v5_yolov5l_img_cls_torchhub_640x640</a></td>
       <td>pytorch</td>
@@ -3389,7 +3509,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>338</th>
+      <th>350</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5m_img_cls_torchhub_320x320.md">pt_yolo_v5_yolov5m_img_cls_torchhub_320x320</a></td>
       <td>pytorch</td>
@@ -3399,7 +3519,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>339</th>
+      <th>351</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5m_img_cls_torchhub_480x480.md">pt_yolo_v5_yolov5m_img_cls_torchhub_480x480</a></td>
       <td>pytorch</td>
@@ -3409,7 +3529,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>340</th>
+      <th>352</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5m_img_cls_torchhub_640x640.md">pt_yolo_v5_yolov5m_img_cls_torchhub_640x640</a></td>
       <td>pytorch</td>
@@ -3419,7 +3539,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>341</th>
+      <th>353</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5n_img_cls_torchhub_320x320.md">pt_yolo_v5_yolov5n_img_cls_torchhub_320x320</a></td>
       <td>pytorch</td>
@@ -3429,7 +3549,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>342</th>
+      <th>354</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5n_img_cls_torchhub_480x480.md">pt_yolo_v5_yolov5n_img_cls_torchhub_480x480</a></td>
       <td>pytorch</td>
@@ -3439,7 +3559,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>343</th>
+      <th>355</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5n_img_cls_torchhub_640x640.md">pt_yolo_v5_yolov5n_img_cls_torchhub_640x640</a></td>
       <td>pytorch</td>
@@ -3449,7 +3569,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>344</th>
+      <th>356</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280.md">pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280</a></td>
       <td>pytorch</td>
@@ -3459,7 +3579,7 @@
       <td>1 %</td>
     </tr>
     <tr>
-      <th>345</th>
+      <th>357</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5s_img_cls_torchhub_320x320.md">pt_yolo_v5_yolov5s_img_cls_torchhub_320x320</a></td>
       <td>pytorch</td>
@@ -3469,7 +3589,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>346</th>
+      <th>358</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5s_img_cls_torchhub_480x480.md">pt_yolo_v5_yolov5s_img_cls_torchhub_480x480</a></td>
       <td>pytorch</td>
@@ -3479,7 +3599,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>347</th>
+      <th>359</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5s_img_cls_torchhub_640x640.md">pt_yolo_v5_yolov5s_img_cls_torchhub_640x640</a></td>
       <td>pytorch</td>
@@ -3489,7 +3609,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>348</th>
+      <th>360</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5x_img_cls_torchhub_320x320.md">pt_yolo_v5_yolov5x_img_cls_torchhub_320x320</a></td>
       <td>pytorch</td>
@@ -3499,7 +3619,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>349</th>
+      <th>361</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5x_img_cls_torchhub_480x480.md">pt_yolo_v5_yolov5x_img_cls_torchhub_480x480</a></td>
       <td>pytorch</td>
@@ -3509,7 +3629,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>350</th>
+      <th>362</th>
       <td>yolo_v5</td>
       <td><a href="./models/yolo_v5/pt_yolo_v5_yolov5x_img_cls_torchhub_640x640.md">pt_yolo_v5_yolov5x_img_cls_torchhub_640x640</a></td>
       <td>pytorch</td>
@@ -3519,7 +3639,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>351</th>
+      <th>363</th>
       <td>yolo_v6</td>
       <td><a href="./models/yolo_v6/pt_yolo_v6_yolov6l_obj_det_torchhub.md">pt_yolo_v6_yolov6l_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3529,7 +3649,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>352</th>
+      <th>364</th>
       <td>yolo_v6</td>
       <td><a href="./models/yolo_v6/pt_yolo_v6_yolov6m_obj_det_torchhub.md">pt_yolo_v6_yolov6m_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3539,7 +3659,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>353</th>
+      <th>365</th>
       <td>yolo_v6</td>
       <td><a href="./models/yolo_v6/pt_yolo_v6_yolov6n_obj_det_torchhub.md">pt_yolo_v6_yolov6n_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3549,7 +3669,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>354</th>
+      <th>366</th>
       <td>yolo_v6</td>
       <td><a href="./models/yolo_v6/pt_yolo_v6_yolov6s_obj_det_torchhub.md">pt_yolo_v6_yolov6s_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3559,7 +3679,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>355</th>
+      <th>367</th>
       <td>yolo_v8</td>
       <td><a href="./models/yolo_v8/pt_yolov8_default_obj_det_github.md">pt_yolov8_default_obj_det_github</a></td>
       <td>pytorch</td>
@@ -3569,7 +3689,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>356</th>
+      <th>368</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_darknet_obj_det_torchhub.md">pt_yolox_yolox_darknet_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3579,7 +3699,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>357</th>
+      <th>369</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_l_obj_det_torchhub.md">pt_yolox_yolox_l_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3589,7 +3709,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>358</th>
+      <th>370</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_m_obj_det_torchhub.md">pt_yolox_yolox_m_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3599,7 +3719,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>359</th>
+      <th>371</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_nano_obj_det_torchhub.md">pt_yolox_yolox_nano_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3609,7 +3729,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>360</th>
+      <th>372</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_s_obj_det_torchhub.md">pt_yolox_yolox_s_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3619,7 +3739,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>361</th>
+      <th>373</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_tiny_obj_det_torchhub.md">pt_yolox_yolox_tiny_obj_det_torchhub</a></td>
       <td>pytorch</td>
@@ -3629,7 +3749,7 @@
       <td>0 %</td>
     </tr>
     <tr>
-      <th>362</th>
+      <th>374</th>
       <td>yolox</td>
       <td><a href="./models/yolox/pt_yolox_yolox_x_obj_det_torchhub.md">pt_yolox_yolox_x_obj_det_torchhub</a></td>
       <td>pytorch</td>

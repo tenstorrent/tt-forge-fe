@@ -18,18 +18,12 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="8">1</td>
-			<td rowspan="8">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="8">10</td>
+			<td rowspan="7">1</td>
+			<td rowspan="7">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="7">9</td>
 			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(32, 2), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1,), dtype=int64)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2359296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=int32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -66,6 +60,15 @@
 			<td>1</td>
 			<td><ul><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li></ul></td>
 			<td>Operand(type=Parameter, shape=(169, 24), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2401,), dtype=int64)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td rowspan="1">2</td>
+			<td rowspan="1">[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+			<td rowspan="1">1</td>
+			<td>1</td>
+			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(2359296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2441216,), dtype=int32)</td>
 			<td></td>
 		</tr>
 	</tbody>

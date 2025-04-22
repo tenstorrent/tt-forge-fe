@@ -22,27 +22,12 @@
 			<td rowspan="1">[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1152, 384]</td>
 			<td rowspan="1">6</td>
 			<td>6</td>
-			<td><ul><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li></ul></td>
+			<td><ul><li>pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf</li><li>pt_mobilenetv2_mobilenetv2_100_img_cls_timm</li><li>pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf</li><li>pt_mobilenetv2_basic_img_cls_torchhub</li><li>pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf</li><li>pt_mobilenetv2_mobilenet_v2_img_cls_torchvision</li></ul></td>
 			<td>Operand(type=Parameter, shape=(384, 1, 3, 3), dtype=float32)</td>
 			<td>shape : (384, 1, 3, 3)</td>
 		</tr>
 		<tr>
-			<td rowspan="2">2</td>
-			<td rowspan="2">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="2">4</td>
-			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(8, 1), dtype=int64)</td>
-			<td>shape : (2, 4, 1)</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf</li></ul></td>
-			<td>Operand(type=Constant, name=swin.encoder.layers.0.blocks.0.attention.self.relative_position_index, dtype=int64)</td>
-			<td>shape : (2401,)</td>
-		</tr>
-		<tr>
-			<td rowspan="3">3</td>
+			<td rowspan="3">2</td>
 			<td rowspan="3">[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
 			<td rowspan="3">3</td>
 			<td>1</td>
@@ -63,7 +48,7 @@
 			<td>shape : (1, 596, 4096)</td>
 		</tr>
 		<tr>
-			<td rowspan="2">4</td>
+			<td rowspan="2">3</td>
 			<td rowspan="2">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
 			<td rowspan="2">2</td>
 			<td>1</td>
@@ -78,7 +63,7 @@
 			<td>shape : (1280, 1280, 3, 1)</td>
 		</tr>
 		<tr>
-			<td rowspan="1">5</td>
+			<td rowspan="1">4</td>
 			<td rowspan="1">[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 2304, 768]</td>
 			<td rowspan="1">1</td>
 			<td>1</td>
@@ -87,7 +72,7 @@
 			<td>shape : (768, 1, 3, 3)</td>
 		</tr>
 		<tr>
-			<td rowspan="1">6</td>
+			<td rowspan="1">5</td>
 			<td rowspan="1">[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 1296, 432]</td>
 			<td rowspan="1">1</td>
 			<td>1</td>
@@ -96,7 +81,7 @@
 			<td>shape : (432, 1, 3, 3)</td>
 		</tr>
 		<tr>
-			<td rowspan="1">7</td>
+			<td rowspan="1">6</td>
 			<td rowspan="1">[FORGE][Runtime stride mismatch] E       RuntimeError: Tensor 0 - stride mismatch: expected [9, 9, 3, 1], got [1, 1, 2160, 720]</td>
 			<td rowspan="1">1</td>
 			<td>1</td>

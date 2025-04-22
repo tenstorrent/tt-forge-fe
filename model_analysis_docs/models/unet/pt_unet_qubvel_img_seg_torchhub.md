@@ -278,44 +278,44 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=model.0.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1214, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>25</th>
       <td>Add</td>
       <td>Operand(type=Constant, name=model.1.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7214, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>26</th>
       <td>Add</td>
       <td>Operand(type=Constant, name=model.2.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13214, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>27</th>
       <td>Add</td>
       <td>Operand(type=Constant, name=model.4.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25214, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>28</th>
@@ -1510,11 +1510,11 @@
       <td>Add</td>
       <td>Operand(type=Constant, name=decoder.blocks.4.conv1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_337910, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>137</th>
