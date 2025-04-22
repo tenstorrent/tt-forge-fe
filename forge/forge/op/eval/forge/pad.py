@@ -1,185 +1,264 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
-import os
-import ast
-import torch
-import math
-
-from forge._C.graph import NodeType
-from forge.forgeglobal import TILE_DIM
-from forge.utils import align_up_tile, round_up_div, clamp
-from forge import Tensor
-from .transpose import TransposeTM
-from .nop import Nop
 
 import torch
-from ..interface import PyOp, PyTM
-from ..common import to_torch_operands
-from ..sparse_utils import create_pad_reflect_sparse_picker, create_pad_replicate_sparse_picker
+import torch.nn.functional
+from ..interface import PyTM
+from forge._C import DataFormat
 
 
 class Pad(PyTM):
     @classmethod
-    def create(cls, padding, value, mode, pad_len):
+    def create(cls, padding, mode, channel_last):
         self = cls("pad")
         self.padding = padding
-        self.value = value
         self.mode = mode
-        self.pad_len = pad_len
+        self.channel_last = channel_last
         return self
 
     def eval(self, tensors):
-        t_ops = to_torch_operands(*tensors)
+        # Expect (padding_left, padding_right, mode, channel_last) or (padding_left, padding_right, padding_top, padding_bottom, mode, channel_last)
+        assert len(self.padding) == 2 or len(self.padding) == 4
 
-        # We know that for TVM padding (top, bottom, left, right, etc.)
-        # PyTorch expects (left, right, top, bottom, etc.)
-        # So, we just need to swap top/bottom and left/right for every two elements in pad_len
-        mode = self.mode
-        torch_padding = []
-        for i in range(self.pad_len - 2, -1, -2):
-            torch_padding.append(self.padding[i])
-            torch_padding.append(self.padding[i + 1])
-
-        if mode in ["replicate", "reflect"] and (self.pad_len != 4 or self.pad_len != 2):
-            torch_padding = torch_padding[: int(self.pad_len / 2)]
-
-        return torch.nn.functional.pad(t_ops[0], tuple(torch_padding), mode=mode)
+        mode_options = ["constant", "replicate", "reflect"]
+        return torch.nn.functional.pad(tensors[0], tuple(self.padding), mode=mode_options[self.mode])
 
     def shape(self, tensor_shapes):
+        assert len(tensor_shapes) == 1
         shape = list(tensor_shapes[0])
 
-        mode = self.mode
-        torch_padding = []
-        for i in range(self.pad_len - 2, -1, -2):
-            torch_padding.append(self.padding[i])
-            torch_padding.append(self.padding[i + 1])
-
-        if mode in ["replicate", "reflect"] and (self.pad_len != 4 or self.pad_len != 2):
-            torch_padding = torch_padding[: int(self.pad_len / 2)]
-
-        shape = torch.nn.functional.pad(torch.rand(shape), tuple(torch_padding), mode=mode).shape
+        if self.channel_last:
+            shape[-2] += self.padding[0] + self.padding[1]
+            if len(self.padding) == 4:
+                shape[-3] += self.padding[2] + self.padding[3]
+        else:
+            shape[-1] += self.padding[0] + self.padding[1]
+            if len(self.padding) == 4:
+                shape[-2] += self.padding[2] + self.padding[3]
         return tuple(shape), []
 
     def decompose(self, dc, inputs):
-        mode = self.mode
-        padding = []
-
-        # Reverses padding order from end to start in steps of 2
-        # Example: if self.pad_len is 4, get pairs (2, 3), (0, 1)
-        for i in range(self.pad_len - 2, -1, -2):
-            padding.append(self.padding[i])
-            padding.append(self.padding[i + 1])
-
-        # Special handling for 'replicate' and 'reflect' modes.
-        # If padding length isn't standard (2 or 4), only use half (remove redundant pairs)
-        if mode in ["replicate", "reflect"] and (self.pad_len != 4 or self.pad_len != 2):
-            padding = padding[: int(self.pad_len / 2)]
-
-        # Early exit if all padding values are 0 (no padding needed)
-        if all([x == 0 for x in padding]):
+        if all([x == 0 for x in self.padding]):
+            # Pad size is 0
             result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)  # Fuse the no-op into graph and return
+            dc.fuse(result)
             return
 
         activations = inputs[0]
-        r = activations.shape[-2]  # Number of rows
-        c = activations.shape[-1]  # Number of columns
+        if self.channel_last:
+            r = activations.shape[-3]
+            r_dim_axis = -3
+            c = activations.shape[-2]
+            c_dim_axis = -2
+        else:
+            r = activations.shape[-2]
+            r_dim_axis = -2
+            c = activations.shape[-1]
+            c_dim_axis = -1
 
-        # Identify total padding across each axis based on 2D or 4D padding
-        if len(padding) == 2:
-            total_padding_c = padding[0] + padding[1]
+        # convert axis to positive numbers due to the decomposition ops working with positive numbers
+        r_dim_axis = r_dim_axis if r_dim_axis >= 0 else len(activations.shape) + r_dim_axis
+        c_dim_axis = c_dim_axis if c_dim_axis >= 0 else len(activations.shape) + c_dim_axis
+
+        # R, C are flipped because pytorch pad starts from last axis
+        if len(self.padding) == 2:
+            total_padding_c = self.padding[0] + self.padding[1]
             total_padding_r = 0
-            all_around_padding = padding + [0, 0]
-        elif len(padding) == 4:
-            total_padding_c = padding[0] + padding[1]
-            total_padding_r = padding[2] + padding[3]
-            all_around_padding = padding
+        elif len(self.padding) == 4:
+            total_padding_c = self.padding[0] + self.padding[1]
+            total_padding_r = self.padding[2] + self.padding[3]
+        else:
+            raise RuntimeError("Forge only support Pad with either 2 or 4 padding tuple size")
 
-        # Optimization: Check if padding is only on the trailing sides
-        # and doesn't cross tile boundaries, allowing us to skip adding pad ops
-        if (
-            ((self.pad_len == 2 and padding[0] == 0) or (self.pad_len == 4 and padding[0] == 0 and padding[2] == 0))
-            and not channel_last
-            and math.ceil((total_padding_r + r) / TILE_DIM) == math.ceil(r / TILE_DIM)
-            and math.ceil((total_padding_c + c) / TILE_DIM) == math.ceil(c / TILE_DIM)
-            and mode == "constant"
-        ):
-            return  # No need to decompose padding if it doesn't affect tiling layout
-
-        # Unpack padding into named variables
+        # Lower into concats
         left, right, top, bottom = 0, 0, 0, 0
-        if len(padding) == 2:
-            left, right = padding
-        elif len(padding) == 4:
-            left, right, top, bottom = padding
+        if len(self.padding) == 2:
+            left, right = self.padding
 
-        # Handle 'replicate' padding mode
-        if mode == "replicate":
+        elif len(self.padding) == 4:
+            left, right, top, bottom = self.padding
+        else:
+            raise RuntimeError("Forge only support Pad with either 3 or 5 attributes")
+
+        ###############################################################
+        if self.mode == 0:  # 'constant' mode
+            c_dim_axis = -2 if channel_last else -1
+            r_dim_axis = -3 if channel_last else -2
+
+            # On right or bottom, we can concat all the way to TILE boundary
             result = activations
-            orig_shape = result.shape
+            if left > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[c_dim_axis] = left
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
 
-            # Flatten to 2D for matrix operation
-            if len(orig_shape) == 2:
-                shape = (1, orig_shape[-2] * orig_shape[-1])
+            if right > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[c_dim_axis] = (
+                    TILE_DIM if pad_shape[c_dim_axis] % TILE_DIM == 0 and right < TILE_DIM else right
+                )
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
+
+            if top > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[r_dim_axis] = top
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
+
+            if bottom > 0:
+                pad_shape = result.shape.as_list().copy()
+                pad_shape[r_dim_axis] = (
+                    TILE_DIM if pad_shape[r_dim_axis] % TILE_DIM == 0 and bottom < TILE_DIM else bottom
+                )
+                tensor = torch.zeros(pad_shape)
+                const_tensor = dc.tensor(tensor)
+                result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
+
+            result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
+            if channel_last:
+                result = dc.op("select", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
             else:
-                shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
-
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-            result = dc.op(TransposeTM.create(-2, -1), [result])  # Transpose for matmul
-
-            # Create sparse matrix that applies replicate padding
-            spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
-            spm = dc.tensor(spm.to_dense())
-
-            result = dc.op("matmul", [spm, result])
-            result = dc.op(TransposeTM.create(-2, -1), [result])  # Transpose back
-
-            # Reshape back to original or padded shape
-            if len(orig_shape) == 2:
-                shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-            else:
-                shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-
-            dc.fuse(result)  # Finalize into graph
-            return
-
-        # Handle 'reflect' padding mode (similar to replicate)
-        elif mode == "reflect":
-            result = activations
-            orig_shape = result.shape
-
-            # Flatten to 2D for sparse op
-            if len(orig_shape) == 2:
-                shape = (1, orig_shape[-2] * orig_shape[-1])
-            else:
-                shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
-
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-            result = dc.op(TransposeTM.create(-2, -1), [result])
-
-            # Create sparse matrix for reflect padding
-            spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
-            spm = dc.tensor(spm.to_dense())
-
-            result = dc.op("matmul", [spm, result])
-            result = dc.op(TransposeTM.create(-2, -1), [result])
-
-            # Reshape to padded shape
-            if len(orig_shape) == 2:
-                shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-            else:
-                shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-
-            result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
+                result = dc.op("narrow", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
 
             dc.fuse(result)
             return
 
-    def backward(self, ac, operand, inputs, output, grad):
-        pass
+        ###############################################################
+        if self.mode == 1:  # 'replicate' mode
+            result = activations
 
-    def lower(self, lc, tensors, outputs):
-        pass
+            if self.channel_last:
+                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+
+                orig_shape = result.shape
+                result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                spm = create_pad_replicate_sparse_picker(c, r, top, bottom, left, right)
+                spm = dc.tensor(spm)
+                result = dc.op("sparse_matmul", [spm, result])
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                result = dc.op(
+                    "reshape",
+                    [result],
+                    (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
+                )
+
+                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+            else:
+                orig_shape = result.shape
+                if len(orig_shape) == 2:
+                    result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
+                else:
+                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
+                spm = dc.tensor(spm)
+                result = dc.op("sparse_matmul", [spm, result])
+                result = dc.op(TransposeTM.create(-2, -1), [result])
+                if len(orig_shape) == 2:
+                    result = dc.op(
+                        "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
+                    )
+                else:
+                    result = dc.op(
+                        "reshape",
+                        [result],
+                        (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
+                    )
+
+            dc.fuse(result)
+            return
+
+        ###############################################################
+        elif self.mode == 2:  # Reflect mode
+            result = activations
+
+            if left > c - 1 or right > c - 1:
+                raise RuntimeError(f"Both left padding ({left}) and right padding ({right}) has to be max {c - 1} each")
+
+            if top > r - 1 or bottom > r - 1:
+                raise RuntimeError(f"Both top padding ({top}) and bottom padding ({bottom}) has to be max {r - 1} each")
+
+            # Step 1: Extract left and right patches which are on the c axis (width) and mirror them horizontally
+            left_patch_mirrored, right_patch_mirrored = None, None
+            if left > 0:
+                left_patch_mirrored = extract_and_mirror(dc, result, c_dim_axis, 1, left + 1)
+
+            if right > 0:
+                right_patch_mirrored = extract_and_mirror(dc, result, c_dim_axis, c - right - 1, c - 1)
+
+            # Step 2: Concatenate the mirrored patches to the original result
+            result = concat_patches(dc, left_patch_mirrored, result, right_patch_mirrored, c_dim_axis)
+
+            # Step 3: Extract top and bottom patches which are on the r axis (height) and mirror them vertically
+            top_patch_mirrored, bot_patch_mirrored = None, None
+            if top > 0:
+                top_patch_mirrored = extract_and_mirror(dc, result, r_dim_axis, 1, top + 1)
+
+            if bottom > 0:
+                bot_patch_mirrored = extract_and_mirror(dc, result, r_dim_axis, r - bottom - 1, r - 1)
+
+            # Step 4: Concatenate the mirrored patches to the original result
+            result = concat_patches(dc, top_patch_mirrored, result, bot_patch_mirrored, r_dim_axis)
+
+            dc.fuse(result)
+            return
+            dc.fuse(result)
+            return
+
+    def backward(self, ac, operand, inputs, output, grad):
+        # TODO: Check whether this is valid backward
+        assert len(self.padding) == 2 or len(self.padding) == 4, "Not supported padding type"
+
+        height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
+        original_height, original_width = grad.shape[height_dim], grad.shape[width_dim]
+
+        if len(self.padding) == 4:
+            pad_left, pad_right, pad_top, pad_bottom = self.padding
+            grad = ac.op(
+                "narrow", (grad,), (height_dim, pad_top, original_height - pad_top - pad_bottom, original_height)
+            )
+            return ac.op(
+                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
+            )
+        else:
+            pad_left, pad_right = self.padding
+            return ac.op(
+                "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
+            )
+
+
+def extract_and_mirror(dc, input, dim_axis, start, stop):
+    # Extract patch
+    patch = dc.op_with_named_attrs(
+        "index",
+        [input],
+        {"dim": dim_axis, "start": start, "stop": stop, "stride": 1},
+        (dim_axis, start, stop, 1),
+    )
+
+    # Mirror patch
+    indices = torch.arange(stop - start - 1, -1, -1)
+    indices_tensor = dc.tensor(indices, DataFormat.Int32)
+    patch_mirrored = dc.op("adv_index", [patch, indices_tensor], (dim_axis,))
+
+    return patch_mirrored
+
+
+def concat_patches(dc, first_patch, center, second_patch, dim_axis):
+    if first_patch and second_patch:
+        return dc.op_with_named_attrs(
+            "concatenate", [first_patch, center, second_patch], {"dim": dim_axis}, (dim_axis,)
+        )
+    elif first_patch:
+        return dc.op_with_named_attrs("concatenate", [first_patch, center], {"dim": dim_axis}, (dim_axis,))
+    elif second_patch:
+        return dc.op_with_named_attrs("concatenate", [center, second_patch], {"dim": dim_axis}, (dim_axis,))
+    else:
+        return center
