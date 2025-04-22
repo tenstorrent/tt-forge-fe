@@ -18,6 +18,7 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.skip(reason="Test uses >31GB of memory")
 def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
