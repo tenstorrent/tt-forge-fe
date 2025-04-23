@@ -8,7 +8,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
-from test.models.utils import Framework, Source, Task
+from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.xfail()
@@ -21,7 +21,7 @@ from test.models.utils import Framework, Source, Task
     ],
 )
 @pytest.mark.nightly
-def test_sam(forge_property_recorder, variant):
+def test_sam_onnx(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -44,14 +44,31 @@ def test_sam(forge_property_recorder, variant):
 
     framework_model, sample_inputs = get_model_inputs(variant)
 
-    # Forge compile framework model
-    framework_model = SamWrapper(framework_model)
+    input_tensor = sample_inputs[0]
+    onnx_path_str = str(tmp_path / "sam.onnx")
+
+    # Export to ONNX
+    torch.onnx.export(
+        model,
+        input_tensor,
+        onnx_path_str,
+        input_names=["image"],
+        output_names=["segmentation"],
+        dynamic_axes={"image": {0: "batch_size"}},
+        opset_version=17,
+    )
+
+    # Save model with external tensor data if necessary
+    onnx_model = onnx.load(onnx_path_str)
+    onnx.save_model(onnx_model, onnx_path_str, save_as_external_data=True)
+
+    # Forge ONNX inference
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path_str)
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=sample_inputs,
+        sample_inputs=[input_tensor],
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Model Verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([input_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
