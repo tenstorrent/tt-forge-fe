@@ -25,7 +25,7 @@ from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
 
 
 @pytest.mark.push
-# @pytest.mark.xfail
+@pytest.mark.skip(reason="Long Eexcution Time")
 @pytest.mark.nightly
 def test_yolo_world_inference():
 
