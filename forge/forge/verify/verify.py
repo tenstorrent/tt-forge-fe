@@ -448,6 +448,7 @@ def verify(
     fwd_func_name = "forward"
     fwd_func_name_len = len(fwd_func_name)
     fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
+    print(f"GOT FWD FUNC SYM: {fwd_func_sym}")
     is_success = compiled_model.runtime_model_state.test_so(
         "/tmp/emitted.so",
         fwd_func_sym,
@@ -455,6 +456,7 @@ def verify(
         consts_and_params,
         all_outputs,
     )
+
     print(f"TEST_SO: {is_success}")
     assert is_success
 
