@@ -18,6 +18,8 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
+from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge._C import DataFormat
 from forge.config import CompilerConfig
@@ -108,16 +110,16 @@ def test_resnet_hf(
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
     # TODO: PCC is not good for this model, so we are skipping it for now.
-    # verify(input_sample, framework_model, compiled_model)
-    co_out = compiled_model(*input_sample)
+    verify(input_sample, framework_model, compiled_model)
+    # co_out = compiled_model(*input_sample)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
     end = time.time()
 
     # TODO: PCC is not good for this model, so we are skipping it for now.
-    # co_out = [co.to("cpu") for co in co_out]
-    # AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out[0], co_out=co_out[0])
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
