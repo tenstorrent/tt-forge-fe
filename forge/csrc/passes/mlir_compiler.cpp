@@ -196,7 +196,7 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         const fs::path in_wheel_path = fs::path(FORGE_HOME) / "forge/tt-metal";
         tt::log_info(LogMLIRCompiler, "after in_wheel_path");
         const fs::path in_source_path =
-            fs::canonical(fs::path(FORGE_HOME).parent_path() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal");
+            fs::path(FORGE_HOME).parent_path() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal";
         tt::log_info(LogMLIRCompiler, "after in_source_path");
 
         std::cout << "in_wheel_path: " << in_wheel_path << std::endl;
@@ -233,9 +233,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
             assert(in_source_path == std::string(TT_METAL_HOME));
             std::cout << "Using in_source_path: " << in_source_path << std::endl;
             metal_src_dir = fs::path(std::string(TT_METAL_HOME));
-            metal_lib_dir = fs::canonical(fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal-build/lib");
-            standalone_dir = fs::canonical(
-                fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone");
+            metal_lib_dir = fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal-build/lib";
+            standalone_dir =
+                fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
         }
 
         tt::log_info(LogMLIRCompiler, "before compile_cpp_to_so");
