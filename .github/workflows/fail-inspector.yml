@@ -1,0 +1,111 @@
+name: Failure Inspector
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    outputs:
+      should-build: ${{ steps.success-failed.outputs.should-build }}
+      matrix: ${{ steps.success-failed.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get success-failed workflow
+        id: success-failed
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+            # get json of the last 2 workflow runs
+            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 2 --json attempt,conclusion,databaseId,headSha >runs.json
+            echo "Extracted runs: $(cat runs.json)"
+            DATABASE_ID_1=$(jq -r '.[0].databaseId' runs.json)
+            HEAD_SHA_1=$(jq -r '.[0].headSha' runs.json)
+            DATABASE_ID_2=$(jq -r '.[1].databaseId' runs.json)
+            HEAD_SHA_2=$(jq -r '.[1].headSha' runs.json)
+            # get list of commits between last 2 workflow runs
+            git checkout $HEAD_SHA_2
+            git rev-list --reverse HEAD..main >commits.txt
+            # Remove all lines after $HEAD_SHA_1 in commits.txt
+            if ! grep -q "$HEAD_SHA_1" commits.txt; then
+                echo "WARNING: $HEAD_SHA_1 not found in commits"
+                exit 1
+            else
+                echo "$HEAD_SHA_1 found in commits, setting as last commit"
+                sed -n "/$HEAD_SHA_1/ {p;q;}; p" commits.txt >filtered_commits.txt
+                mv filtered_commits.txt commits.txt
+            fi
+            if [ ! -s commits.txt ]; then
+                echo "No commits found between the last two workflow runs."
+                echo "should-build=false" >>$GITHUB_OUTPUT
+                echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
+                exit 0
+            fi
+            # cleanup before processing
+            rm -rf log-a
+            rm -rf log-b
+            # get list of failed tests from the last two workflow runs
+            gh run download $DATABASE_ID_2 --pattern "test-log*" -R tenstorrent/tt-forge-fe -D log-a
+            gh run download $DATABASE_ID_1 --pattern "test-log*" -R tenstorrent/tt-forge-fe -D log-b
+            # get machine names
+            find log-a -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-a.log
+            find log-b -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-b.log
+            cat machines-a.log machines-b.log | sort -u >machines.log
+            while read -r machine; do
+                for dir in log-a/test-log-"$machine"-*/; do
+                    grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>a-"$machine".log
+                done
+                for dir in log-b/test-log-"$machine"-*/; do
+                    grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>b-"$machine".log
+                done
+                # get only the lines that are in b.log but not in a.log
+                grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
+            done <machines.log
+            # Filter out machines with empty test logs
+            while read -r machine; do
+            if [ ! -s tests-"$machine".log ]; then
+                echo "No failed tests for machine $machine, removing from list."
+                sed -i "/^$machine$/d" machines.log
+                rm -f tests-"$machine".log
+            fi
+            done <machines.log
+            if [ ! -s machines.log ]; then
+                echo "No new failed tests found."
+                echo "should-build=false" >>$GITHUB_OUTPUT
+                echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
+                exit 0
+            fi
+            # cleanup
+            rm -rf log-a
+            rm -rf log-b
+            rm -f a-*.log
+            rm -f b-*.log
+            rm -f machines-*.log
+            # prepare build-test matrix
+            echo "matrix=[" >>$GITHUB_OUTPUT
+            c=0
+            while read -r commit; do
+                while read -r machine; do
+                    echo "{ runs-on: \"$machine\", commit: \"$commit\", c: \"$c\" }," >>$GITHUB_OUTPUT
+                done <machines.log
+                c=$((c+1))
+            done <commits.txt
+            echo "]" >>$GITHUB_OUTPUT
+            # set should-build to true
+            echo "should-build=true" >>$GITHUB_OUTPUT
+
+      - name: Upload tests.log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-to-run
+          path: tests-*.log
+
+  build-test:
+    needs: inspect
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inspect.outputs.matrix) }}
+    name: "Build and Test ${{ matrix.c }}-${{ matrix.commit }}"
+    uses: ./.github/workflows/fail-inspector-sub.yml@${{ matrix.commit }}
+    with:
+      runs-on: ${{ matrix.runs-on }}
