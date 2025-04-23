@@ -175,7 +175,67 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
         tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
 
-        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/");
+        // if "FORGE_HOME" not in os.environ:
+        //     os.environ["FORGE_HOME"] = str(forge_path)
+        // if "TVM_HOME" not in os.environ:
+        //     os.environ["TVM_HOME"] = str(base_path) + "/tvm"
+        // if "FORGE_OUT" not in os.environ:
+        //     os.environ["FORGE_OUT"] = str(out_path)
+        // if "LOGGER_FILE" in os.environ:
+        //     sys.stdout = open(os.environ["LOGGER_FILE"], "w")
+        //     logger.remove()
+        //     logger.add(sys.stdout)
+
+        // # TT_METAL_HOME should be one of the following:
+        // in_wheel_path = forge_path / "forge/tt-metal"
+        // in_source_path = (forge_path.parent.resolve() /
+        // "third_party/tt-mlir/third_party/tt-metal/src/tt-metal").resolve()
+
+        // if "TT_METAL_HOME" not in os.environ:
+        //     if in_wheel_path.exists():
+        //         os.environ["TT_METAL_HOME"] = str(in_wheel_path)
+        //     elif in_source_path.exists():
+        //         os.environ["TT_METAL_HOME"] = str(in_source_path)
+
+        const char* TT_METAL_HOME = std::getenv("TT_METAL_HOME");
+        const char* FORGE_HOME = std::getenv("FORGE_HOME");
+        if (TT_METAL_HOME == nullptr)
+        {
+            throw std::runtime_error("TT_METAL_HOME environment variable is not set.");
+        }
+        if (FORGE_HOME == nullptr)
+        {
+            throw std::runtime_error("FORGE_HOME environment variable is not set.");
+        }
+
+        const fs::path in_wheel_path = fs::path(FORGE_HOME) / "forge/tt-metal";
+        const fs::path in_source_path =
+            fs::canonical(fs::path(FORGE_HOME).parent_path() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal");
+
+        if (!fs::exists(in_wheel_path) && !fs::exists(in_source_path))
+        {
+            throw std::runtime_error("Neither tt-metal wheel nor source path exists.");
+        }
+
+        fs::path metal_src_dir, metal_lib_dir;
+        if (fs::exists(in_wheel_path))
+        {
+            assert(in_wheel_path == std::string(TT_METAL_HOME));
+            std::cout << "Using in_wheel_path: " << in_wheel_path << std::endl;
+            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
+            metal_lib_dir = fs::path(std::string(FORGE_HOME)) / "forge/lib";
+        }
+        else if (fs::exists(in_source_path))
+        {
+            assert(in_source_path == std::string(TT_METAL_HOME));
+            std::cout << "Using in_source_path: " << in_source_path << std::endl;
+            std::cout << "Using TT_METAL_HOME: " << std::string(TT_METAL_HOME) << std::endl;
+            std::cout << "Using FORGE_HOME: " << std::string(FORGE_HOME) << std::endl;
+            metal_src_dir = fs::path(std::string(TT_METAL_HOME));
+            metal_lib_dir = fs::canonical(fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal-build/lib");
+        }
+
+        std::string soPathStr = compile_cpp_to_so(cpp_source, "/tmp/", metal_src_dir.string(), metal_lib_dir.string());
 
         return soPathStr;
     }
