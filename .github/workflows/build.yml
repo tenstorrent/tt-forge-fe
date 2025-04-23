@@ -254,6 +254,7 @@ jobs:
           files: ${{ steps.strings.outputs.test_report_path }}
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
 
   build-conclusion:
     needs: [forge-build, unit-test-build]
