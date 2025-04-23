@@ -18,7 +18,7 @@ from test.models.paddlepaddle.multimodal.paddleocr.utils import (
     process_and_pad_images,
     fetch_img_and_charset,
     prep_image_for_recognition,
-    prep_image_for_detection
+    prep_image_for_detection,
 )
 
 model_urls = {
@@ -36,17 +36,13 @@ os.makedirs(cache_dir, exist_ok=True)
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "det_url,rec_url", [(urls["det"], urls["rec"]) for _, urls in model_urls.items()]
-)
+@pytest.mark.parametrize("det_url,rec_url", [(urls["det"], urls["rec"]) for _, urls in model_urls.items()])
 @pytest.mark.parametrize("image_url", [image_url])
 @pytest.mark.parametrize("cache_dir", [cache_dir])
 @pytest.mark.parametrize("dict_url", [dict_url])
 # Uncomment if you want to save results
 # @pytest.mark.parametrize("results_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/results"])
-def test_paddleocr(
-    det_url, rec_url, dict_url, image_url, cache_dir, results_path=None
-):
+def test_paddleocr(det_url, rec_url, dict_url, image_url, cache_dir, results_path=None):
     # Fetch model
     detection_model = fetch_paddle_model(det_url, cache_dir)
     recognition_model = fetch_paddle_model(rec_url, cache_dir)
@@ -58,16 +54,11 @@ def test_paddleocr(
     inputs, resized_image = prep_image_for_detection(image)
 
     # Compile detection model
-    compiled_detection_model = forge.compile(
-        detection_model, inputs
-    )
+    compiled_detection_model = forge.compile(detection_model, inputs)
 
     # Run and verify compiled detection model
     _, co_output = verify(
-        inputs,
-        detection_model,
-        compiled_detection_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8))
+        inputs, detection_model, compiled_detection_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8))
     )
 
     pred = co_output[0].numpy()
@@ -80,9 +71,7 @@ def test_paddleocr(
     inputs = prep_image_for_recognition(padded_box_cuts[0])
 
     # Compile recognition model
-    compiled_recognition_model = forge.compile(
-        recognition_model, inputs
-    )
+    compiled_recognition_model = forge.compile(recognition_model, inputs)
 
     for i, box_image in enumerate(padded_box_cuts):
         if results_path:
@@ -105,6 +94,3 @@ def test_paddleocr(
         pred = output.argmax(axis=2)[0]
         pred_str = "".join([charset[i] for i in pred])
         print(f"Predicted text for box {i}: {pred_str}")
-
-
-

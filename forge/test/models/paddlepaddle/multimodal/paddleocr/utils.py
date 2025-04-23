@@ -51,6 +51,7 @@ def bitmap_from_probmap(preds):
 
     return bitmap_smooth
 
+
 def polygons_from_bitmap(_bitmap, dest_width=None, dest_height=None):
     """
     _bitmap: single map with shape (1, H, W),
@@ -195,6 +196,7 @@ def process_and_pad_images(img_with_rectangles, img_size=None):
 
     return padded_images
 
+
 def fetch_img_and_charset(img_url, dict_url):
     try:
         # Load image
@@ -214,6 +216,7 @@ def fetch_img_and_charset(img_url, dict_url):
 
     return img, charset
 
+
 def get_boxes_from_pred(pred, image, results_path=None):
 
     # Convert prediction to bitmap and find polygons
@@ -225,7 +228,7 @@ def get_boxes_from_pred(pred, image, results_path=None):
 
     if results_path:
         os.makedirs(results_path, exist_ok=True)
-        heatmap = (pred[0,0] * 255).astype("uint8")
+        heatmap = (pred[0, 0] * 255).astype("uint8")
         heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
         cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
         bitmap_visual = (bitmap * 255).astype("uint8")
@@ -236,11 +239,13 @@ def get_boxes_from_pred(pred, image, results_path=None):
 
     return box_cuts
 
+
 def prep_image_for_detection(image):
     new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
     resized_image = cv2.resize(image, (new_shapes))
     image = resized_image.transpose(2, 0, 1).astype("float32")
     return [paddle.to_tensor([image])], resized_image
+
 
 def prep_image_for_recognition(image):
     image = image.transpose(2, 0, 1).astype("float32") / 255.0
