@@ -243,7 +243,12 @@ def Pad(
     pad: Tuple[int, ...],
     pad_len: int,
     mode: str = "constant",
+<<<<<<< HEAD
     value: int = 0,
+=======
+    channel_last: bool = False,
+    value: float = 0.0,
+>>>>>>> fc326306 (wip for constant mode)
 ) -> Tensor:
     """
     TM
@@ -295,9 +300,10 @@ def Pad(
         "padding": list(pad),
         "mode": mode_index[mode],
         "channel_last": channel_last,
+        "value": value,
     }
 
-    attrs = list(pad) + [mode_index[mode], channel_last]
+    attrs = list(pad) + [mode_index[mode], channel_last, value]
     return op(
         "pad",
         name,

@@ -6,15 +6,17 @@ import torch
 import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
+from forge.tensor import forge_dataformat_to_pytorch_dtype
 
 
 class Pad(PyTM):
     @classmethod
-    def create(cls, padding, mode, channel_last):
+    def create(cls, padding, mode, channel_last, value):
         self = cls("pad")
         self.padding = padding
         self.mode = mode
         self.channel_last = channel_last
+        self.value = value
         return self
 
     def eval(self, tensors):
@@ -22,7 +24,7 @@ class Pad(PyTM):
         assert len(self.padding) == 2 or len(self.padding) == 4
 
         mode_options = ["constant", "replicate", "reflect"]
-        return torch.nn.functional.pad(tensors[0], tuple(self.padding), mode=mode_options[self.mode])
+        return torch.nn.functional.pad(tensors[0], self.padding, mode=mode_options[self.mode], value=self.value)
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1
@@ -75,56 +77,35 @@ class Pad(PyTM):
         left, right, top, bottom = 0, 0, 0, 0
         if len(self.padding) == 2:
             left, right = self.padding
-
         elif len(self.padding) == 4:
             left, right, top, bottom = self.padding
-        else:
-            raise RuntimeError("Forge only support Pad with either 3 or 5 attributes")
 
         ###############################################################
         if self.mode == 0:  # 'constant' mode
-            c_dim_axis = -2 if channel_last else -1
-            r_dim_axis = -3 if channel_last else -2
-
-            # On right or bottom, we can concat all the way to TILE boundary
             result = activations
+
+            left_pad, right_pad, top_pad, bot_pad = None, None, None, None
+            height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
+
+            width_shape = [1] * len(result.shape)
             if left > 0:
-                pad_shape = result.shape.as_list().copy()
-                pad_shape[c_dim_axis] = left
-                tensor = torch.zeros(pad_shape)
-                const_tensor = dc.tensor(tensor)
-                result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
-
+                width_shape[width_dim] = left
+                left_pad = create_pad(dc, width_shape, self.value, result.data_format)
             if right > 0:
-                pad_shape = result.shape.as_list().copy()
-                pad_shape[c_dim_axis] = (
-                    TILE_DIM if pad_shape[c_dim_axis] % TILE_DIM == 0 and right < TILE_DIM else right
-                )
-                tensor = torch.zeros(pad_shape)
-                const_tensor = dc.tensor(tensor)
-                result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
+                width_shape[width_dim] = right
+                right_pad = create_pad(dc, width_shape, self.value, result.data_format)
 
+            result = concat_patches(dc, left_pad, result, right_pad, width_dim)
+
+            height_shape = [1] * len(result.shape)
             if top > 0:
-                pad_shape = result.shape.as_list().copy()
-                pad_shape[r_dim_axis] = top
-                tensor = torch.zeros(pad_shape)
-                const_tensor = dc.tensor(tensor)
-                result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
-
+                height_shape[height_dim] = top
+                top_pad = create_pad(dc, height_shape, self.value, result.data_format)
             if bottom > 0:
-                pad_shape = result.shape.as_list().copy()
-                pad_shape[r_dim_axis] = (
-                    TILE_DIM if pad_shape[r_dim_axis] % TILE_DIM == 0 and bottom < TILE_DIM else bottom
-                )
-                tensor = torch.zeros(pad_shape)
-                const_tensor = dc.tensor(tensor)
-                result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
+                height_shape[height_dim] = bottom
+                bot_pad = create_pad(dc, height_shape, self.value, result.data_format)
 
-            result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
-            if channel_last:
-                result = dc.op("select", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
-            else:
-                result = dc.op("narrow", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
+            result = concat_patches(dc, top_pad, result, bot_pad, height_dim)
 
             dc.fuse(result)
             return
@@ -262,3 +243,11 @@ def concat_patches(dc, first_patch, center, second_patch, dim_axis):
         return dc.op_with_named_attrs("concatenate", [center, second_patch], {"dim": dim_axis}, (dim_axis,))
     else:
         return center
+
+
+def create_pad(dc, shape, value, data_format):
+    torch_dtype = forge_dataformat_to_pytorch_dtype(data_format)
+    torch_tensor = torch.full(shape, value, dtype=torch_dtype)
+
+    forge_tensor = dc.tensor(torch_tensor, data_format)
+    return forge_tensor
