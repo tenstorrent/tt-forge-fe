@@ -106,6 +106,6 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.inspect.outputs.matrix) }}
     name: "Build and Test ${{ matrix.c }}-${{ matrix.commit }}"
-    uses: ./.github/workflows/fail-inspector-sub.yml@${{ matrix.commit }}
+    uses: tentorrent/tt-forge-fe/.github/workflows/fail-inspector-sub.yml@${{ matrix.commit }}
     with:
       runs-on: ${{ matrix.runs-on }}
