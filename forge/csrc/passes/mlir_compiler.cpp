@@ -201,10 +201,12 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         const char* FORGE_HOME = std::getenv("FORGE_HOME");
         if (TT_METAL_HOME == nullptr)
         {
+            std::cout << "FAILED AT 1" << std::endl;
             throw std::runtime_error("TT_METAL_HOME environment variable is not set.");
         }
         if (FORGE_HOME == nullptr)
         {
+            std::cout << "FAILED AT 2" << std::endl;
             throw std::runtime_error("FORGE_HOME environment variable is not set.");
         }
 
@@ -212,8 +214,12 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         const fs::path in_source_path =
             fs::canonical(fs::path(FORGE_HOME).parent_path() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal");
 
+        std::cout << "in_wheel_path: " << in_wheel_path << std::endl;
+        std::cout << "in_source_path: " << in_source_path << std::endl;
+
         if (!fs::exists(in_wheel_path) && !fs::exists(in_source_path))
         {
+            std::cout << "FAILED AT 3" << std::endl;
             throw std::runtime_error("Neither tt-metal wheel nor source path exists.");
         }
 
@@ -222,6 +228,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         fs::path standalone_dir;
         if (fs::exists(in_wheel_path))
         {
+            std::cout << "in_wheel_path exists" << std::endl;
+            std::cout << in_wheel_path << std::endl;
+            std::cout << std::string(TT_METAL_HOME) << std::endl;
             assert(in_wheel_path == std::string(TT_METAL_HOME));
             std::cout << "Using in_wheel_path: " << in_wheel_path << std::endl;
             metal_src_dir = fs::path(std::string(TT_METAL_HOME));
@@ -230,6 +239,9 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         }
         else if (fs::exists(in_source_path))
         {
+            std::cout << "in_source_path exists" << std::endl;
+            std::cout << in_source_path << std::endl;
+            std::cout << std::string(TT_METAL_HOME) << std::endl;
             assert(in_source_path == std::string(TT_METAL_HOME));
             std::cout << "Using in_source_path: " << in_source_path << std::endl;
             metal_src_dir = fs::path(std::string(TT_METAL_HOME));
