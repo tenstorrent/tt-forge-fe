@@ -125,7 +125,6 @@ def test_linear_layer(forge_property_recorder):
 
 
 @pytest.mark.push
-@pytest.mark.xfail(reason="unsupported broadcast operation in ttnn at runtime")
 def test_multiple_layers(forge_property_recorder):
     class CNNClassifier(nn.Module):
         @nn.compact
