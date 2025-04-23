@@ -597,9 +597,6 @@ def test_log(forge_property_recorder, shape):
         ((1, 32, 32, 32), (1,)),
     ],
 )
-@pytest.mark.xfail(
-    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
-)
 @pytest.mark.push
 def test_maximum(forge_property_recorder, shape_x, shape_y):
     class Maximum(nn.Module):

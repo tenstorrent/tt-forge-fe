@@ -315,9 +315,6 @@ def test_squeeze(forge_property_recorder, input_shape_and_dim):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
-@pytest.mark.xfail(
-    reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
-)
 @pytest.mark.push
 @pytest.mark.parametrize(
     "attn_weights_shape, attention_mask_shape, module_name",
