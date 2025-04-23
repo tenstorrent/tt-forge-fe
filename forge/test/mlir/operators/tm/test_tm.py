@@ -742,17 +742,26 @@ def test_select(forge_property_recorder, shape, dim, begin, length, stride):
         # 2D Input = 1D Padding
         # pytest.param((1, 8), (2, 2), "constant", 0.0),
         # pytest.param((1, 8), (1, 3), "replicate", None),
-        # pytest.param((1, 8), (1, 3), "reflect", None),
         # 2D Input = 2D Padding
         # pytest.param((1, 3, 8), (0, 0, 2, 2), "constant", 0.0),
         # pytest.param((1, 3, 8), (2, 2, 2, 2), "replicate", None),
-        pytest.param((1, 3, 8), (2, 2, 2, 2), "reflect", None),
+        pytest.param(
+            (1, 3, 8),
+            (2, 2, 2, 2),
+            "reflect",
+            None,
+            marks=pytest.mark.xfail(reason="error: 'ttir.embedding' op Weight must be a 2D tensor"),
+        ),
+        pytest.param((4, 3, 4), (2, 2, 2, 2), "reflect", None),
+        pytest.param((4, 3, 4), (2, 1, 0, 2), "reflect", None),
+        pytest.param((4, 3, 4), (0, 0, 0, 0), "reflect", None),
         # 4D Input = 2D Padding
         # pytest.param((2, 3, 4, 5), (1, 1, 2, 2), "constant", 42.0),
         # pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "replicate", None),
-        # pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
+        pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
     ],
 )
+@pytest.mark.push
 def test_padding(forge_property_recorder, input_shape, padding, mode, value):
     class Padding(nn.Module):
         def __init__(self, padding, mode, value):

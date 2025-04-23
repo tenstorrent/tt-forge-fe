@@ -274,9 +274,37 @@ def Pad(
     Returns
     -------
     Tensor
-        A tensor with the specified padding applied to the input tensor.
+        Forge tensor
     """
-    return op("pad", name, operandA, padding=pad, mode=mode, value=float(value), pad_len=pad_len).get_tensor()
+    assert (
+        len(pad) == 2 or len(pad) == 4
+    ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
+    assert mode in [
+        "constant",
+        "replicate",
+        "reflect",
+    ], "Currently pad op only supports constant/replicate/reflect mode"
+
+    mode_index = {
+        "constant": 0,
+        "replicate": 1,
+        "reflect": 2,
+    }
+
+    named_attrs = {
+        "padding": list(pad),
+        "mode": mode_index[mode],
+        "channel_last": channel_last,
+    }
+
+    attrs = list(pad) + [mode_index[mode], channel_last]
+    return op(
+        "pad",
+        name,
+        operandA,
+        attrs=attrs,
+        **named_attrs,
+    ).get_tensor()
 
 
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
