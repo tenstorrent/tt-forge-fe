@@ -14,14 +14,7 @@ from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.xfail()
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "runwayml/stable-diffusion-v1-5",
-        ),
-    ],
-)
+@pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
 def test_oft(forge_property_recorder, variant):
     # Record Forge Property
@@ -40,13 +33,13 @@ def test_oft(forge_property_recorder, variant):
     pipe, inputs = get_inputs(model=variant)
 
     # Forge compile framework model
-    wrapped_model = StableDiffusionWrapper(pipe)
+    framework_model = StableDiffusionWrapper(pipe)
     compiled_model = forge.compile(
-        wrapped_model,
+        framework_model,
         sample_inputs=inputs,
         module_name=module_name,
         forge_property_recorder=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, wrapped_model, compiled_model, forge_property_recorder=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, forge_property_recorder=forge_property_recorder)
