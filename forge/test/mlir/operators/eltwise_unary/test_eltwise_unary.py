@@ -445,6 +445,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     [
         ((56), 0),
         ((1, 128), 1),
+        ((1, 32), -1),
         pytest.param(
             (1, 64, 76),
             2,
