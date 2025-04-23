@@ -3,13 +3,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import paddle
 import pytest
 import cv2
 
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
 
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -19,6 +17,8 @@ from test.models.paddlepaddle.multimodal.paddleocr.utils import (
     get_boxes_from_pred,
     process_and_pad_images,
     fetch_img_and_charset,
+    prep_image_for_recognition,
+    prep_image_for_detection
 )
 
 model_urls = {
@@ -37,28 +37,16 @@ os.makedirs(cache_dir, exist_ok=True)
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
-    "variant,det_url,rec_url", [(variant, urls["det"], urls["rec"]) for variant, urls in model_urls.items()]
+    "det_url,rec_url", [(urls["det"], urls["rec"]) for _, urls in model_urls.items()]
 )
 @pytest.mark.parametrize("image_url", [image_url])
 @pytest.mark.parametrize("cache_dir", [cache_dir])
 @pytest.mark.parametrize("dict_url", [dict_url])
 # Uncomment if you want to save results
 # @pytest.mark.parametrize("results_path", ["forge/test/models/paddlepaddle/multimodal/paddleocr/results"])
-def test_paddleocr_det_on_cpu_rec_on_tt(
-    forge_property_recorder, variant, det_url, rec_url, dict_url, image_url, cache_dir, results_path=None
+def test_paddleocr(
+    det_url, rec_url, dict_url, image_url, cache_dir, results_path=None
 ):
-    # Record model details
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PADDLE,
-        model="paddleocr",
-        variant=f"{variant}_det_on_cpu_rec_on_tt",
-        source=Source.PADDLE,
-        task=Task.SCENE_TEXT_RECOGNITION,
-    )
-
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
-
     # Fetch model
     detection_model = fetch_paddle_model(det_url, cache_dir)
     recognition_model = fetch_paddle_model(rec_url, cache_dir)
@@ -67,51 +55,48 @@ def test_paddleocr_det_on_cpu_rec_on_tt(
     image, charset = fetch_img_and_charset(image_url, dict_url)
 
     # Prepare inputs
-    new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
-    resized_image = cv2.resize(image, (new_shapes))
-    image = resized_image.transpose(2, 0, 1).astype("float32")
-    inputs = [paddle.to_tensor([image])]
+    inputs, resized_image = prep_image_for_detection(image)
 
-    # Compile model
+    # Compile detection model
     compiled_detection_model = forge.compile(
-        detection_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        detection_model, inputs
     )
 
-    # Detection - find boxes containing text
-    pred = compiled_detection_model(*inputs)[0]
+    # Run and verify compiled detection model
+    _, co_output = verify(
+        inputs,
+        detection_model,
+        compiled_detection_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8))
+    )
 
-    box_cuts = get_boxes_from_pred(pred, image, resized_image, results_path=results_path)
+    pred = co_output[0].numpy()
+    box_cuts = get_boxes_from_pred(pred, resized_image, results_path=results_path)
 
     # Unify image sizes for recognition with compiled model
-    padded_box_cuts = process_and_pad_images(box_cuts, img_size=image.shape[1:])
+    padded_box_cuts = process_and_pad_images(box_cuts, img_size=resized_image.shape[:2])
 
-    image_0 = padded_box_cuts[0]
-    image_0 = image_0.transpose(2, 0, 1).astype("float32") / 255.0
-    image_0 = paddle.to_tensor([image_0])
-    inputs = [image_0]
+    # Use first box image for input shape as they are all the same
+    inputs = prep_image_for_recognition(padded_box_cuts[0])
 
-    # Compile model
+    # Compile recognition model
     compiled_recognition_model = forge.compile(
-        recognition_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        recognition_model, inputs
     )
 
-    # Recognition - recognize text in each box
     for i, box_image in enumerate(padded_box_cuts):
         if results_path:
-            # Save image of each box
             cv2.imwrite(f"{results_path}/box_{i}.jpg", box_image)
 
-        # Preprocess box image
-        box_image = box_image.transpose(2, 0, 1).astype("float32") / 255.0
-        box_image = paddle.to_tensor([box_image])
+        # Prepare inputs for recognition
+        box_image_input = prep_image_for_recognition(box_image)
 
         # Run and verify compiled recognition model
         _, co_output = verify(
-            [box_image],
+            box_image_input,
             recognition_model,
             compiled_recognition_model,
             VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)),
-            forge_property_handler=forge_property_recorder,
         )
 
         output = co_output[0].numpy()

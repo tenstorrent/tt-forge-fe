@@ -43,7 +43,7 @@ def get_mini_boxes(contour):
 
 
 def bitmap_from_probmap(preds):
-    prob_map = preds[0][0].numpy()  # (H, W)
+    prob_map = preds[0][0]  # (H, W)
     bitmap = (prob_map > 0.2).astype(np.uint8)
     bitmap = np.ascontiguousarray(bitmap)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
@@ -51,7 +51,7 @@ def bitmap_from_probmap(preds):
 
     return bitmap_smooth
 
-def polygons_from_bitmap(_bitmap, dest_width, dest_height):
+def polygons_from_bitmap(_bitmap, dest_width=None, dest_height=None):
     """
     _bitmap: single map with shape (1, H, W),
         whose values are binarized as {0, 1}
@@ -63,6 +63,11 @@ def polygons_from_bitmap(_bitmap, dest_width, dest_height):
 
     bitmap = _bitmap
     height, width = bitmap.shape
+
+    if dest_width is None:
+        dest_width = width
+    if dest_height is None:
+        dest_height = height
 
     boxes = []
     scores = []
@@ -209,24 +214,34 @@ def fetch_img_and_charset(img_url, dict_url):
 
     return img, charset
 
-def get_boxes_from_pred(pred, image, resized_image, results_path=None):
+def get_boxes_from_pred(pred, image, results_path=None):
+
     # Convert prediction to bitmap and find polygons
     bitmap = bitmap_from_probmap(pred)
-    dest_height, dest_width = image.shape[1:]
-    boxes, _ = polygons_from_bitmap(bitmap, dest_height=dest_height, dest_width=dest_width)
+    boxes, _ = polygons_from_bitmap(bitmap)
 
     # Visualize boxes over image
-    box_cuts, img_boxes = cut_boxes(resized_image, boxes)
+    box_cuts, img_boxes = cut_boxes(image, boxes)
 
     if results_path:
         os.makedirs(results_path, exist_ok=True)
-        heatmap = (pred[0,0].numpy() * 255).astype("uint8")
+        heatmap = (pred[0,0] * 255).astype("uint8")
         heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
         cv2.imwrite(f"{results_path}/pred_heatmap.jpg", heatmap)
         bitmap_visual = (bitmap * 255).astype("uint8")
         cv2.imwrite(f"{results_path}/bitmap.jpg", bitmap_visual)
-        img_clouds = draw_boxes(resized_image, boxes)
+        img_clouds = draw_boxes(image, boxes)
         cv2.imwrite(f"{results_path}/det_clouds.jpg", img_clouds)
         cv2.imwrite(f"{results_path}/det_boxes.jpg", img_boxes)
 
     return box_cuts
+
+def prep_image_for_detection(image):
+    new_shapes = ((image.shape[1] // 32) * 32, (image.shape[0] // 32) * 32)
+    resized_image = cv2.resize(image, (new_shapes))
+    image = resized_image.transpose(2, 0, 1).astype("float32")
+    return [paddle.to_tensor([image])], resized_image
+
+def prep_image_for_recognition(image):
+    image = image.transpose(2, 0, 1).astype("float32") / 255.0
+    return [paddle.to_tensor([image])]

@@ -60,6 +60,7 @@ class Task(BaseEnum):
     VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
     DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
     SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
+    SCENE_TEXT_DETECTION = ("scene_text_detection", "Scene Text Detection")
     TEXT_TO_SPEECH = ("text_to_speech", "Text to Speech")
     SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
     MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
