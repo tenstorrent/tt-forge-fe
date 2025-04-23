@@ -10,6 +10,5 @@ class Graph;
 
 namespace tt::passes
 {
-void explicate_unsqueeze(graphlib::Graph *graph);
 void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph);
 }  // namespace tt::passes

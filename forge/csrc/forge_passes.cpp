@@ -85,7 +85,6 @@ run_post_initial_graph_passes(
     passes::decompose_nd_reshape_split(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
     passes::fuse_pad_conv2d(graph);
-    passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
 
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);

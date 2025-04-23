@@ -11,81 +11,9 @@
 #include "graph_lib/utils.hpp"
 #include "passes/passes_utils.hpp"
 #include "passes/print_graph.hpp"
-#include "utils/logger.hpp"
 
 namespace tt::passes
 {
-
-void explicate_unsqueeze(graphlib::Graph *graph)
-{
-    // Insert explicit unsqueeze op for eltwise binary ops
-    for (auto *node : graphlib::topological_sort(*graph))
-    {
-        auto op = dynamic_cast<graphlib::OpNode *>(node);
-
-        if (not op)
-        {
-            continue;
-        }
-        if (graphlib::is_eltwise_binary(op))
-        {
-            auto operand_a = graph->operands(node)[0];
-            auto operand_b = graph->operands(node)[1];
-            if (operand_a->shape().size() == operand_b->shape().size())
-            {
-                continue;
-            }
-
-            bool operand_a_is_input = dynamic_cast<graphlib::InputNode const *>(operand_a) != NULL;
-            bool operand_b_is_input = dynamic_cast<graphlib::InputNode const *>(operand_b) != NULL;
-            if ((operand_a->shape().size() < operand_b->shape().size() and operand_a_is_input) or
-                (operand_a->shape().size() > operand_b->shape().size() and operand_b_is_input))
-            {
-                continue;
-            }
-
-            auto insert = [graph](graphlib::Node *to_be_unsqueeze, graphlib::Node *reference, graphlib::Node *eltwise)
-            {
-                auto current_node = to_be_unsqueeze;
-                while (current_node->shape().size() < reference->shape().size())
-                {
-                    auto rank = current_node->shape().size();
-                    std::string name = to_be_unsqueeze->name() + "_" + eltwise->name() + "_unsqueeze_" +
-                                       std::to_string(rank) + "_operand_0";
-                    auto attr = std::vector<graphlib::OpType::Attr>{0, ((int)rank)};
-                    auto named_attr = graphlib::OpType::Attrs{{"dim", ((int)rank)}};
-                    auto op_type = graphlib::OpType("unsqueeze", attr, {}, named_attr);
-                    auto change_rank = graph->add_node(
-                        std::make_unique<graphlib::PyOpNode>(name, op_type),
-                        graph->get_subgraph_id_for_node(current_node->id()));
-
-                    // graphlib::OpNode *change_rank = dynamic_cast<graphlib::OpNode
-                    // *>(graph->add_node(current_node->clone(name))); TT_ASSERT(change_rank);
-                    change_rank->set_shape(current_node->shape().as_rank(rank + 1));
-                    change_rank->set_output_df(to_be_unsqueeze->output_df());
-
-                    auto current_edge = graph->get_edges(current_node, eltwise)[0];
-                    auto current_tms = graph->get_edge_attributes(current_edge)->get_tms();
-                    auto [incoming_edge, outgoing_edge] = insert_node_on_edge(graph, current_edge, change_rank);
-                    graph->get_edge_attributes(incoming_edge)->set_tms({});
-                    graph->get_edge_attributes(outgoing_edge)->set_tms(current_tms);
-                    current_node = change_rank;
-                }
-            };
-
-            // Add explicit unsqueeze op
-            if (operand_a->shape().size() < operand_b->shape().size())
-            {
-                insert(operand_a, operand_b, node);
-            }
-            else
-            {
-                insert(operand_b, operand_a, node);
-            }
-            recalculate_shapes(graph);
-        }
-    }
-}
 
 void hoist_unsqueeze_squeeze_to_reshape(graphlib::Graph *graph)
 {
