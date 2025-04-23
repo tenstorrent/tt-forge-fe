@@ -14,11 +14,9 @@ from .utils import load_inputs, load_model
 variants = [
     pytest.param(
         "facebook/musicgen-small",
-        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "facebook/musicgen-medium",
-        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "facebook/musicgen-large",
@@ -30,7 +28,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(forge_property_recorder, variant):
 
