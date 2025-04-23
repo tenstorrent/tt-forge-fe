@@ -11,7 +11,7 @@ from forge.tensor import forge_dataformat_to_pytorch_dtype
 
 class Pad(PyTM):
     @classmethod
-    def create(cls, padding, mode, channel_last, value):
+    def create(cls, padding, mode, value, channel_last):
         self = cls("pad")
         self.padding = padding
         self.mode = mode
@@ -20,7 +20,6 @@ class Pad(PyTM):
         return self
 
     def eval(self, tensors):
-        # Expect (padding_left, padding_right, mode, channel_last) or (padding_left, padding_right, padding_top, padding_bottom, mode, channel_last)
         assert len(self.padding) == 2 or len(self.padding) == 4
 
         mode_options = ["constant", "replicate", "reflect"]
@@ -31,13 +30,13 @@ class Pad(PyTM):
         shape = list(tensor_shapes[0])
 
         if self.channel_last:
-            shape[-2] += self.padding[0] + self.padding[1]
+            shape[-2] += self.padding[0] + self.padding[1]  # width padding
             if len(self.padding) == 4:
-                shape[-3] += self.padding[2] + self.padding[3]
+                shape[-3] += self.padding[2] + self.padding[3]  # height padding
         else:
-            shape[-1] += self.padding[0] + self.padding[1]
+            shape[-1] += self.padding[0] + self.padding[1]  # width padding
             if len(self.padding) == 4:
-                shape[-2] += self.padding[2] + self.padding[3]
+                shape[-2] += self.padding[2] + self.padding[3]  # height padding
         return tuple(shape), []
 
     def decompose(self, dc, inputs):
@@ -82,32 +81,34 @@ class Pad(PyTM):
 
         ###############################################################
         if self.mode == 0:  # 'constant' mode
-            result = activations
+            # mlir only supports padding on the last 2 dimensions, so we need to transpose the tensor
+            if self.channel_last:
+                result = activations
 
-            left_pad, right_pad, top_pad, bot_pad = None, None, None, None
-            height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
+                left_pad, right_pad, top_pad, bot_pad = None, None, None, None
+                height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
 
-            width_shape = [1] * len(result.shape)
-            if left > 0:
-                width_shape[width_dim] = left
-                left_pad = create_pad(dc, width_shape, self.value, result.data_format)
-            if right > 0:
-                width_shape[width_dim] = right
-                right_pad = create_pad(dc, width_shape, self.value, result.data_format)
+                width_shape = [1] * len(result.shape)
+                if left > 0:
+                    width_shape[width_dim] = left
+                    left_pad = create_pad(dc, width_shape, self.value, result.data_format)
+                if right > 0:
+                    width_shape[width_dim] = right
+                    right_pad = create_pad(dc, width_shape, self.value, result.data_format)
 
-            result = concat_patches(dc, left_pad, result, right_pad, width_dim)
+                result = concat_patches(dc, left_pad, result, right_pad, width_dim)
 
-            height_shape = [1] * len(result.shape)
-            if top > 0:
-                height_shape[height_dim] = top
-                top_pad = create_pad(dc, height_shape, self.value, result.data_format)
-            if bottom > 0:
-                height_shape[height_dim] = bottom
-                bot_pad = create_pad(dc, height_shape, self.value, result.data_format)
+                height_shape = [1] * len(result.shape)
+                if top > 0:
+                    height_shape[height_dim] = top
+                    top_pad = create_pad(dc, height_shape, self.value, result.data_format)
+                if bottom > 0:
+                    height_shape[height_dim] = bottom
+                    bot_pad = create_pad(dc, height_shape, self.value, result.data_format)
 
-            result = concat_patches(dc, top_pad, result, bot_pad, height_dim)
+                result = concat_patches(dc, top_pad, result, bot_pad, height_dim)
 
-            dc.fuse(result)
+                dc.fuse(result)
             return
 
         ###############################################################

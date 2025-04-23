@@ -189,7 +189,7 @@ class FuseConvAndPoolPadding(DFPatternCallback):
         # Fuse Pad Only if the mode is constant
         # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
         if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
-            pad_mode == "edge" or pad_mode == "reflect"
+            pad_mode == "replicate" or pad_mode == "reflect"
         ):
             act = tvm.relay.op.nn.pad(act, pad_width, pad_mode=pad_mode)
 
@@ -197,14 +197,21 @@ class FuseConvAndPoolPadding(DFPatternCallback):
         else:
             padding = [top_pad, left_pad, bottom_pad, right_pad]
 
-        op_attrs = {**conv_pool.attrs}
-        op_attrs["padding"] = padding
+        # update conv padding by adding the padding from the pad op
+        new_padding = [
+            padding[0] + conv_pool.attrs.padding[0],
+            padding[1] + conv_pool.attrs.padding[1],
+            padding[2] + conv_pool.attrs.padding[2],
+            padding[3] + conv_pool.attrs.padding[3],
+        ]
+
+        conv_pool.attrs.padding = new_padding
 
         if conv_pool.op.name == "nn.conv2d":
             weight = node_map[self.weight][0]
-            return tvm.relay.op.nn.conv2d(act, weight, **op_attrs)
+            return tvm.relay.op.nn.conv2d(act, weight, **conv_pool.attrs)
         else:
-            return tvm.relay.op.nn.max_pool2d(act, **op_attrs)
+            return tvm.relay.op.nn.max_pool2d(act, **conv_pool.attrs)
 
 
 class DecomposeRoll(DFPatternCallback):
@@ -4816,7 +4823,7 @@ def run_forge_compile_passes(
             RemoveRedundantReshape(),
             LowerCopyToNOP(),
             TransposePad(),
-            DecomposeNonZeroPadtoConcat(),
+            # DecomposeNonZeroPadtoConcat(),
             DecomposeMultiRangeTake(),
             LowerTakeToStridedSlice(),
             ConvertAddToBiasAddAfterConv2d(),

@@ -241,14 +241,9 @@ def Pad(
     name: str,
     operandA: Tensor,
     pad: Tuple[int, ...],
-    pad_len: int,
     mode: str = "constant",
-<<<<<<< HEAD
-    value: int = 0,
-=======
-    channel_last: bool = False,
     value: float = 0.0,
->>>>>>> fc326306 (wip for constant mode)
+    channel_last: bool = False,
 ) -> Tensor:
     """
     TM
@@ -263,23 +258,23 @@ def Pad(
 
     pad: Tuple[int, ...]
         A tuple of padding values. The tuple should correspond to padding values for the tensor, such as
-        [top, bottom, left, right] depending on the `pad_len`.
-
-    pad_len: int
-        Number of dimensions that the padding applies to. This should correspond to the dimensions
-        of the tensor that will be padded.
+        [left, right, top, bottom].
 
     mode: str, optional
         The padding mode. Default is "constant". Other modes can be supported depending on the
-        implementation (e.g., "reflect", "edge").
+        implementation (e.g., "reflect", "replicate").
 
-    value: int, optional
+    value: float, optional
         The value to use for padding when the mode is "constant". Default is 0.
+
+    channel_last: bool, optional
+        Whether the channel dimension is the last dimension of the tensor. Default is False.
+
 
     Returns
     -------
     Tensor
-        Forge tensor
+        A tensor with the specified padding applied to the input tensor.
     """
     assert (
         len(pad) == 2 or len(pad) == 4
@@ -299,11 +294,11 @@ def Pad(
     named_attrs = {
         "padding": list(pad),
         "mode": mode_index[mode],
-        "channel_last": channel_last,
         "value": value,
+        "channel_last": channel_last,
     }
 
-    attrs = list(pad) + [mode_index[mode], channel_last, value]
+    attrs = list(pad) + [mode_index[mode], value, channel_last]
     return op(
         "pad",
         name,
