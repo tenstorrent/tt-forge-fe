@@ -183,7 +183,7 @@ jobs:
           updateComment: false
           detailed_summary: true
           group_suite: true
-      
+
       - name: Upload test results to Codecov
         if: success() || failure()
         uses: codecov/test-results-action@v1
