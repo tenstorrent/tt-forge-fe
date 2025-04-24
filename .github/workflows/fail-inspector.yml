@@ -62,14 +62,15 @@ jobs:
                 grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
             done <machines.log
             # Filter out machines with empty test logs
+            cp machines.log filtered_machines.log
             while read -r machine; do
-            if [ ! -s tests-"$machine".log ]; then
-                echo "No failed tests for machine $machine, removing from list."
-                sed -i "/^$machine$/d" machines.log
-                rm -f tests-"$machine".log
-            fi
+                if [ ! -s tests-"$machine".log ]; then
+                    echo "No failed tests for machine $machine, removing from list."
+                    sed -i "/^$machine$/d" filtered_machines.log
+                    rm -f tests-"$machine".log
+                fi
             done <machines.log
-            if [ ! -s machines.log ]; then
+            if [ ! -s filtered_machines.log ]; then
                 echo "No new failed tests found."
                 echo "should-build=false" >>$GITHUB_OUTPUT
                 echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
@@ -81,6 +82,7 @@ jobs:
             rm -f a-*.log
             rm -f b-*.log
             rm -f machines-*.log
+            mv filtered_machines.log machines.log
             # prepare build-test matrix
             echo "matrix=[" >>$GITHUB_OUTPUT
             c=1
