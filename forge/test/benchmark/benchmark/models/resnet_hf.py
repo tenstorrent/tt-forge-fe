@@ -18,9 +18,9 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
-from forge.verify.value_checkers import AutomaticValueChecker
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge._C import DataFormat
 from forge.config import CompilerConfig
@@ -82,6 +82,7 @@ def test_resnet_hf(
     # dataset = load_dataset("zh-plus/tiny-imagenet")
     # images = random.sample(dataset["valid"]["image"], 10)
 
+    torch.manual_seed(1)
     # Random data
     input_sample = [torch.rand(batch_size, channel_size, *input_size)]
     if data_format == "bfloat16":
@@ -110,8 +111,12 @@ def test_resnet_hf(
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    verify(input_sample, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)))
-    co_out = compiled_model(*input_sample)
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+    )
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
