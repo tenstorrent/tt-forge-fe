@@ -9,23 +9,39 @@ jobs:
     outputs:
       should-build: ${{ steps.success-failed.outputs.should-build }}
       matrix: ${{ steps.success-failed.outputs.matrix }}
+      docker-tag: ${{ steps.get-docker-tag.outputs.docker-tag }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
       - name: Get success-failed workflow
         id: success-failed
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-            # get json of the last 2 workflow runs
-            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 2 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
+            # get json of the last 10 workflow runs
+            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 10 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
+            # Filter runs.json to include only entries where "conclusion" is "failure" or "success"
+            jq '[.[] | select(.conclusion == "failure" or .conclusion == "success")]' runs.json >filtered_runs.json
+            mv filtered_runs.json runs.json
             echo "Extracted runs: $(cat runs.json)"
             DATABASE_ID_1=$(jq -r '.[0].databaseId' runs.json)
             HEAD_SHA_1=$(jq -r '.[0].headSha' runs.json)
             DATABASE_ID_2=$(jq -r '.[1].databaseId' runs.json)
             HEAD_SHA_2=$(jq -r '.[1].headSha' runs.json)
             # get list of commits between last 2 workflow runs
+            echo "Get list of commits between last $DATABASE_ID_2 and $DATABASE_ID_1 workflow runs"
+            git fetch --all
+            git switch main
             git checkout $HEAD_SHA_2
-            git rev-list --reverse HEAD..main >commits.txt
+            if git show-ref --verify --quiet refs/remotes/origin/main; then
+              git rev-list --reverse HEAD..origin/main >commits.txt
+            else
+              echo "ERROR: The main branch is not available in the repository."
+              exit 1
+            fi
             # Remove all lines after $HEAD_SHA_1 in commits.txt
             if ! grep -q "$HEAD_SHA_1" commits.txt; then
                 echo "WARNING: $HEAD_SHA_1 not found in commits"
@@ -60,6 +76,7 @@ jobs:
                 done
                 # get only the lines that are in b.log but not in a.log
                 grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
+                sed -i 's/^/"/; s/$/"/' tests-"$machine".log
             done <machines.log
             # Filter out machines with empty test logs
             cp machines.log filtered_machines.log
@@ -84,17 +101,31 @@ jobs:
             rm -f machines-*.log
             mv filtered_machines.log machines.log
             # prepare build-test matrix
-            echo "matrix=[" >>$GITHUB_OUTPUT
+            rm -rf matrix.log
             c=1
             while read -r commit; do
                 while read -r machine; do
-                    echo "{ runs-on: \"$machine\", commit: \"$commit\", c: \"$c\" }," >>$GITHUB_OUTPUT
+                    echo "{\"runs-on\": \"$machine\", \"commit\": \"$commit\", \"c\": \"$c\"}," >>matrix.log
                 done <machines.log
                 c=$((c+1))
             done <commits.txt
-            echo "]" >>$GITHUB_OUTPUT
+            # Remove trailing comma on the last line of matrix.log
+            sed -i '$ s/,$//' matrix.log
+            # Combine all lines in matrix.log into a single line
+            tr -d '\n' <matrix.log >matrix_single_line.log
+            mv matrix_single_line.log matrix.log
+            echo "Extracted matrix: $(cat matrix.log)"
+            echo "matrix=[$(cat matrix.log)]" >>$GITHUB_OUTPUT
+            rm -f matrix.log
             # set should-build to true
             echo "should-build=true" >>$GITHUB_OUTPUT
+
+      - name: Get docker tag
+        id: get-docker-tag
+        run: |
+          dt=$(.github/get-docker-tag.sh)
+          echo "docker-tag=$dt" >> "$GITHUB_OUTPUT"
+          echo "Docker tag: $dt"
 
       - name: Upload tests.log as artifact
         uses: actions/upload-artifact@v4
@@ -106,33 +137,38 @@ jobs:
     needs: inspect
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.inspect.outputs.matrix) }}
-    name: "Test ${{ matrix.c }}-${{ matrix.commit }}"
+      matrix:
+        build: ${{ fromJSON(needs.inspect.outputs.matrix) }}
+    name: "Test ${{ matrix.build.c }}-${{ matrix.build.commit }}"
     container:
-        image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest
-        options: --device /dev/tenstorrent/0
-        volumes:
-          - /dev/hugepages:/dev/hugepages
-          - /dev/hugepages-1G:/dev/hugepages-1G
-          - /etc/udev/rules.d:/etc/udev/rules.d
-          - /lib/modules:/lib/modules
-          - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
-          - /mnt/dockercache:/mnt/dockercache
-    runs-on: ${{ matrix.runs-on }}
+      image: "ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:${{ needs.inspect.outputs.docker-tag }}"
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+    runs-on:
+      - ${{ matrix.build.runs-on }}
+      - in-service
+      - runner
 
     steps:
         - name: Checkout
           uses: actions/checkout@v4
           with:
             fetch-depth: 0
-            ref: ${{ matrix.commit }}
+            ref: ${{ matrix.build.commit }}
 
         - name: Download wheels
           uses: dawidd6/action-download-artifact@v9
           with:
             github_token: ${{secrets.GH_TOKEN}}
-            commit: ${{ matrix.commit }}
-            event: push
+            commit: ${{ matrix.build.commit }}
+            workflow_conclusion: completed
+            workflow: on-push.yml
             name: forge-wheel
             check_artifacts: true
 
@@ -141,8 +177,8 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            pip install third_party/tvm/python/dist/tvm*.whl --force-reinstall
-            pip install third_party/tvm/python/dist/forge*.whl --force-reinstall
+            pip install tvm*.whl --force-reinstall
+            pip install forge*.whl --force-reinstall
 
         - name: Download tests.log
           uses: actions/download-artifact@v4
@@ -159,11 +195,11 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            pytest $(cat tests-${{inputs.runs-on}}.log) 2>&1 | tee pytest.log
+            pytest --testlist tests-${{matrix.build.runs-on}}.log 2>&1 | tee pytest.log
 
         - name: Upload Test Log
           uses: actions/upload-artifact@v4
           if: failure()
           with:
-            name: test-log-${{ inputs.runs-on }}
+            name: test-log-${{ matrix.build.runs-on }}-${{ matrix.build.c }}-${{ matrix.build.commit }}
             path: pytest.log
