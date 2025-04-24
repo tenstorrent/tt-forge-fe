@@ -12,10 +12,11 @@ class YoloWrapper(torch.nn.Module):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.model.model[-1].end2end = False  # Disable internal post processing steps
 
     def forward(self, image: torch.Tensor):
-        result = self.model(image)[0]
-        return result[0]
+        y, x = self.model(image)
+        return (y, *x)
 
 
 def load_yolo_model_and_image(url):
