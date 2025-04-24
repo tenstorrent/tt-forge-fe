@@ -157,6 +157,7 @@ jobs:
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                 --log-memory-usage \
                  2>&1 | tee pytest.log
 
       - name: Upload Test Log
@@ -165,6 +166,13 @@ jobs:
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest.log
+
+      - name: Upload Memory Usage Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest-memory-usage.csv
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
