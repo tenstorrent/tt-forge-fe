@@ -109,11 +109,13 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and "\"bmm\" not implemented for 'Half'" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and "Input tensors must have the same data type, but got {} and {}" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Unsupported DataType!" in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Data mismatch"),
             lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Data mismatch"),
+            lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("PCC is nan, but tensors are not equal"),
         ],
         FailingReasons.DTYPE_MISMATCH: [
             lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Dtype mismatch"),
@@ -125,6 +127,10 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and "normalized_index >= 0 and normalized_index < rank" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and "Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)]" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Tensor a contains NaN/Inf values" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Tensor b contains NaN/Inf values" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "value cannot be converted to type at::BFloat16 without overflow" in f"{ex}",
         ],
         FailingReasons.NOT_IMPLEMENTED: [
             lambda ex: isinstance(ex, NotImplementedError)
