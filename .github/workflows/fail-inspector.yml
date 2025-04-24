@@ -17,7 +17,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
             # get json of the last 2 workflow runs
-            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 2 --json attempt,conclusion,databaseId,headSha >runs.json
+            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 2 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
             echo "Extracted runs: $(cat runs.json)"
             DATABASE_ID_1=$(jq -r '.[0].databaseId' runs.json)
             HEAD_SHA_1=$(jq -r '.[0].headSha' runs.json)
