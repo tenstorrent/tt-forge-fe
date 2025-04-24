@@ -7,11 +7,10 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import generate_no_cache, pad_inputs
 from test.models.pytorch.multimodal.deepseek_coder.utils.model_utils import (
     DeepSeekWrapper,
     download_model_and_tokenizer,
-    generate_no_cache,
-    pad_inputs,
 )
 
 

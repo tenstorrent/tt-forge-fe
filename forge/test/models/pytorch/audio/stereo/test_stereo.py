@@ -14,18 +14,25 @@ from .utils import load_inputs, load_model
 variants = [
     pytest.param(
         "facebook/musicgen-small",
-        marks=[pytest.mark.xfail],
+        marks=pytest.mark.xfail,
     ),
-    "facebook/musicgen-medium",
-    "facebook/musicgen-large",
+    pytest.param(
+        "facebook/musicgen-medium",
+        marks=pytest.mark.xfail,
+    ),
+    pytest.param(
+        "facebook/musicgen-large",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(forge_property_recorder, variant):
-    if variant != "facebook/musicgen-small":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

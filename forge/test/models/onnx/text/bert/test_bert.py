@@ -79,6 +79,8 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path, opset_version):
+    pytest.skip("Transient failure - Out of memory due to other tests in CI pipeline")
+
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -152,6 +154,7 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

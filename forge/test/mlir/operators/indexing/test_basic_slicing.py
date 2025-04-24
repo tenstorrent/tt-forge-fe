@@ -60,9 +60,6 @@ def test_slicing(forge_property_recorder, input_tensor_slice):
         pytest.param(
             (torch.arange(27, dtype=torch.float32).reshape(3, 3, 3), (0, 0, [0, 2])),
             id="specific_rows_columns",
-            marks=pytest.mark.xfail(
-                reason="ValueError: Shape mismatch: framework_model.shape=torch.Size([2]), compiled_model.shape=torch.Size([3])"
-            ),
         ),
         pytest.param(
             (torch.arange(27, dtype=torch.float32).reshape(3, 3, 3), (slice(None), slice(1, 3), slice(None))),

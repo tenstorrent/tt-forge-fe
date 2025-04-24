@@ -31,6 +31,7 @@ def test_ministral(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")

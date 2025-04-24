@@ -18,16 +18,15 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: "n150", name: "mnist_linear",      dir: "MNISTLinear", bs: 32, lp: 32 },
-          { runs-on: "n150", name: "resnet50_hf",       dir: "ResNetForImageClassification", bs: 3, lp: 32 },
-          { runs-on: "n150", name: "llama",             dir: "LlamaModel", bs: 1, lp: 32, allow-fail: true }, # TTRT does not support llama model yet, so allow it to fail
-          { runs-on: "n150", name: "mobilenetv2_basic", dir: "MobileNetv2Basic", bs: 1, lp: 32 },
-          { runs-on: "n150", name: "efficientnet_timm", dir: "EfficientNetTimmB0", bs: 1, lp: 32 }
+          { runs-on: "n150", name: "mnist_linear",      dir: "MNISTLinear", bs: 32, lp: 32, df: 'float32' },
+          { runs-on: "n150", name: "resnet50_hf",       dir: "ResNetForImageClassification", bs: 8, lp: 32, df: 'bfloat16' },
+          { runs-on: "n150", name: "llama",             dir: "LlamaModel", bs: 1, lp: 32, df: 'float32' },
+          { runs-on: "n150", name: "mobilenetv2_basic", dir: "MobileNetv2Basic", bs: 1, lp: 32, df: 'float32' },
+          { runs-on: "n150", name: "efficientnet_timm", dir: "EfficientNetTimmB0", bs: 1, lp: 32, df: 'float32' }
         ]
     runs-on:
-      - ${{ matrix.build.runs-on }}
+      - ${{ matrix.build.runs-on }}-perf
       - in-service
-      - performance
 
     container:
       image: ${{ inputs.docker-image }}
@@ -148,7 +147,7 @@ jobs:
       run: |
         source env/activate
         mkdir -p ${{ steps.strings.outputs.perf_report_path }}
-        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
+        python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -df ${{ matrix.build.df }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
         python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT

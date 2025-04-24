@@ -445,6 +445,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     [
         ((56), 0),
         ((1, 128), 1),
+        ((1, 32), -1),
         pytest.param(
             (1, 64, 76),
             2,
@@ -595,9 +596,6 @@ def test_log(forge_property_recorder, shape):
         ((1, 16, 32, 32), (1,)),
         ((1, 32, 32, 32), (1,)),
     ],
-)
-@pytest.mark.xfail(
-    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
 )
 @pytest.mark.push
 def test_maximum(forge_property_recorder, shape_x, shape_y):
@@ -801,7 +799,6 @@ def test_floor(forge_property_recorder, input_data):
             (1, 64, 76),
             2,
             False,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
         ),
         ((1, 64, 76), 2, True),
         pytest.param(

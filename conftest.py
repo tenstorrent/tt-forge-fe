@@ -22,18 +22,57 @@ def record_test_timestamp(record_property):
 
 
 @pytest.fixture(scope="function")
-def forge_property_recorder(record_property):
+def forge_property_recorder(request, record_property):
+    """
+    Pytest fixture to initialize and manage a ForgePropertyHandler instance for recording test properties.
+
+    The fixture sets up a property store along with a handler configured with default parameters:
+      - Execution depth is set to 'CI_FAILURE'
+      - Execution stage is set to 'FAILED_BEFORE_FORGE_COMPILATION_INITIATION'
+
+    After the test runs, the fixture extracts any refined error message and failure category attached to the test item
+    (if available) and records these details. Finally, the properties are stored using the provided record_property
+    function regardless of the test outcome.
+
+    Yields:
+        An instance of ForgePropertyHandler.
+    """
+
+    # Create a property store that will hold all the properties recorded during test execution.
     forge_property_store = ForgePropertyStore()
 
+    # Create a handler that uses the property store; the handler is responsible for recording and managing property details.
     forge_property_handler = ForgePropertyHandler(forge_property_store)
 
     # Set CI_FAILURE as default execution depth and FAILED_BEFORE_FORGE_COMPILATION_INITIATION as default execution stage
     forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
     forge_property_handler.record_execution_stage(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
 
+    # Provide the handler instance to the test function so it can record properties during test execution.
     yield forge_property_handler
 
-    forge_property_handler.store_property(record_property)
+    try:
+        # Retrieve any refined error message that might have been set during the test execution
+        refined_error_message = getattr(request.node, "refined_error_message", None)
+
+        # Check if:
+        # 1. The refined error message exists.
+        # 2. The handler is configured to record single operation details (record_single_op_details flag is True).
+        # If either of these checks fail, exit without further recording.
+        if refined_error_message is None or not forge_property_handler.record_single_op_details:
+            return
+
+        # Record the refined error message in the handler's property store.
+        forge_property_handler.record_refined_error_message(refined_error_message)
+
+        # Retrieve and record failure category if failure category exists
+        failure_category = getattr(request.node, "failure_category", None)
+        if failure_category is not None:
+            forge_property_handler.record_failure_category(failure_category)
+
+    finally:
+        # Store the recorded properties using the 'record_property' function from pytest.
+        forge_property_handler.store_property(record_property)
 
 
 @pytest.fixture(autouse=True)

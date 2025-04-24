@@ -98,7 +98,8 @@ class FailingReasonsValidation:
     XFAIL_REASON_CHECKS = {
         FailingReasons.UNSUPPORTED_DATA_FORMAT: [
             # lambda ex: FailingReasonsValidation.validate_exception_message(ex, RuntimeError, "Unsupported data type"),
-            lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Unsupported data type" in f"{ex}",  # TODO: Check if this change is correct
             # lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:466: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
@@ -106,6 +107,8 @@ class FailingReasonsValidation:
             lambda ex: isinstance(ex, RuntimeError) and '"softmax_lastdim_kernel_impl" not implemented' in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "Unsupported data format" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "\"bmm\" not implemented for 'Half'" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Input tensors must have the same data type, but got {} and {}" in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -114,6 +117,7 @@ class FailingReasonsValidation:
         ],
         FailingReasons.DTYPE_MISMATCH: [
             lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Dtype mismatch"),
+            lambda ex: isinstance(ex, RuntimeError) and "data type mismatch" in f"{ex}",
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",

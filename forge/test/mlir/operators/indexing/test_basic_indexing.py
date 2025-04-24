@@ -49,12 +49,7 @@ def test_python_indexing(forge_property_recorder, index_shape: Literal[0] | Lite
 @pytest.mark.parametrize(
     "index_shape",
     [
-        pytest.param(
-            ([0, 2, 4], (10,)),  # vector
-            marks=pytest.mark.xfail(
-                reason="ValueError: Shape mismatch: framework_model.shape=torch.Size([3]), compiled_model.shape=torch.Size([10])"
-            ),
-        ),
+        ([0, 2, 4], (10,)),  # vector
         pytest.param(
             ([[0, 1], [2, 3]], (5, 5)),  # 2D matrix indexing
             marks=pytest.mark.xfail(
@@ -93,12 +88,7 @@ def test_python_indexing_with_lists(forge_property_recorder, index_shape: list[i
 @pytest.mark.parametrize(
     "index_shape",
     [
-        pytest.param(
-            ([0, 2, 4], (10,)),  # vector
-            marks=pytest.mark.xfail(
-                reason="ValueError: Shape mismatch: framework_model.shape=torch.Size([3]), compiled_model.shape=torch.Size([10])"
-            ),
-        ),
+        ([0, 2, 4], (10,)),  # vector
         pytest.param(
             ([[0, 1], [2, 3]], (5, 5)),  # 2D matrix indexing
             marks=pytest.mark.xfail(

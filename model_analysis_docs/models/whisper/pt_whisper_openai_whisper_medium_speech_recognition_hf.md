@@ -509,11 +509,11 @@
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1), dtype=int64)</td>
       <td>shape : (1, 1)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>46</th>

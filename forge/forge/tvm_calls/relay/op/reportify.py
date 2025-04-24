@@ -108,7 +108,7 @@ class CreateJson(ExprVisitor):
     def visit_constant(self, const):
         name = f"constant_{self.node_idx}"
         op = self.get_default_op(name)
-        op["cahce"] = {"shape": [int(dim) for dim in const.checked_type.shape]}
+        op["cache"] = {"shape": [int(dim) for dim in const.checked_type.shape]}
         op["opcode"] = "Input"
         op["class"] = "Input::"
         op["type"] = "Input::constant"
@@ -130,10 +130,9 @@ class CreateJson(ExprVisitor):
             name = f"{op_type}_{self.node_idx}"
             op = self.get_default_op(name)
             if hasattr(t.checked_type, "shape"):
-                assert not any(
-                    isinstance(dim, tvm.tir.expr.Any) for dim in t.checked_type.shape
-                ), "Dynamic shapes not supported"
-                op["cache"] = {"shape": [int(dim) for dim in t.checked_type.shape]}
+                op["cache"] = {
+                    "shape": [int(dim) if not isinstance(dim, tvm.tir.expr.Any) else -1 for dim in t.checked_type.shape]
+                }
             else:
                 op["cache"] = {"shape": []}
             op["class"] = op_type
