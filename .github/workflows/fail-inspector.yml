@@ -107,7 +107,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.inspect.outputs.matrix) }}
-    name: "Build and Test ${{ matrix.c }}-${{ matrix.commit }}"
+    name: "Test ${{ matrix.c }}-${{ matrix.commit }}"
     container:
         image: ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:latest
         options: --device /dev/tenstorrent/0
@@ -121,23 +121,16 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
 
     steps:
-        - name: Set strings
-          id: strings
-          run: |
-            echo "work-dir=$(pwd)" >> "$GITHUB_OUTPUT"
-            echo "build-output-dir=$(pwd)/build" >> "$GITHUB_OUTPUT"
-            git config --system --add safe.directory .
-            chown -R root:root .
-
         - name: Checkout
           uses: actions/checkout@v4
           with:
             fetch-depth: 0
+            ref: ${{ matrix.commit }}
 
         - name: Download wheels
           uses: dawidd6/action-download-artifact@v9
           with:
-            github_token: ${{secrets.GITHUB_TOKEN}}
+            github_token: ${{secrets.GH_TOKEN}}
             commit: ${{ matrix.commit }}
             event: push
             name: forge-wheel
