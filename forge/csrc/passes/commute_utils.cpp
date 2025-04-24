@@ -207,7 +207,7 @@ bool are_compatible_ops(
 
     // Inverse tms have to be the same op, except for unsqueeze/squeeze case
     bool are_compatible_tms =
-        is_tm(a->op_type()).cast<bool>() and
+        is_tm(std::ref(a->op_type())).cast<bool>() and
         ((a->op_name() == b->op_name()) or ((a->op_name() == "unsqueeze" and b->op_name() == "squeeze") or
                                             (a->op_name() == "squeeze" and b->op_name() == "unsqueeze")));
 
@@ -877,7 +877,7 @@ bool is_elementwise(graphlib::OpNode *op)
 {
     py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function is_eltwise = eval_module.attr("is_eltwise");
-    return is_eltwise(op->op_type()).cast<bool>();
+    return is_eltwise(std::ref(op->op_type())).cast<bool>();
 }
 
 bool is_quantization_ops(graphlib::OpNode *op)

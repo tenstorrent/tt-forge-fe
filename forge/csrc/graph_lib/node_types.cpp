@@ -285,7 +285,7 @@ bool OpNode::is_tm() const
     std::string path = node_type() == NodeType::kPyOp ? "forge.op.eval.forge" : "forge.op.eval.lforge";
     py::object eval_module = py::module_::import(path.c_str());
     py::function is_tm = eval_module.attr("is_tm");
-    return is_tm(op_type()).cast<bool>();
+    return is_tm(std::ref(op_type())).cast<bool>();
 }
 
 // Figure out output dafa format based on the input formats.

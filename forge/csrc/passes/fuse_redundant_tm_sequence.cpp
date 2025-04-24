@@ -234,7 +234,7 @@ bool fuse_tm_sequences(tt::graphlib::Graph* graph, TMPatternPairs& pattern_map)
                 if (op->as<graphlib::TaggedNode>()->has_tag("dont_erase"))
                     continue;
 
-                if (not is_tm(op->op_type()).cast<bool>())
+                if (!is_tm(std::ref(op->op_type())).cast<bool>())
                 {
                     // Clear and try find another viable candidate
                     current_pattern.clear();

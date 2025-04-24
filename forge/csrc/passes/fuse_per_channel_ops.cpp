@@ -17,7 +17,7 @@ static bool is_elementwise_binary(graphlib::OpNode *op, graphlib::Graph *graph)
 {
     py::object eval_module = py::module_::import("forge.op.eval.forge");
     py::function is_eltwise = eval_module.attr("is_eltwise");
-    bool is_eltwise_op = is_eltwise(op->op_type()).cast<bool>();
+    bool is_eltwise_op = is_eltwise(std::ref(op->op_type())).cast<bool>();
     bool is_binary = graph->data_operands(op).size() == 2;
     return is_eltwise_op and is_binary;
 }

@@ -31,7 +31,7 @@ bool is_eltwise(const OpNode *op)
     py::function is_eltwise = eval_module.attr("is_eltwise");
     // TODO: better determination of non elementwise ops
     bool is_concatenate = op->op_name() == "concatenate";
-    return is_eltwise(op->op_type()).cast<bool>() and not is_concatenate;
+    return is_eltwise(std::ref(op->op_type())).cast<bool>() and not is_concatenate;
 }
 
 bool is_eltwise_nary(const OpNode *op)
@@ -39,7 +39,7 @@ bool is_eltwise_nary(const OpNode *op)
     bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
     py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_nary = eval_module.attr("is_eltwise_nary");
-    return is_eltwise_nary(op->op_type()).cast<bool>();
+    return is_eltwise_nary(std::ref(op->op_type())).cast<bool>();
 }
 
 bool is_eltwise_unary(const OpNode *op)
@@ -47,7 +47,7 @@ bool is_eltwise_unary(const OpNode *op)
     bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
     py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_unary = eval_module.attr("is_eltwise_unary");
-    return is_eltwise_unary(op->op_type()).cast<bool>();
+    return is_eltwise_unary(std::ref(op->op_type())).cast<bool>();
 }
 
 bool is_eltwise_binary(const OpNode *op)
@@ -55,7 +55,7 @@ bool is_eltwise_binary(const OpNode *op)
     bool is_forge = dynamic_cast<const ForgeOpNode *>(op) != nullptr;
     py::object eval_module = py::module_::import(is_forge ? "forge.op.eval.lforge" : "forge.op.eval.forge");
     py::function is_eltwise_binary = eval_module.attr("is_eltwise_binary");
-    return is_eltwise_binary(op->op_type()).cast<bool>();
+    return is_eltwise_binary(std::ref(op->op_type())).cast<bool>();
 }
 
 bool is_reduce_z(OpNode const *op)
