@@ -10,7 +10,8 @@ from forge.verify.verify import verify
 from test.models.pytorch.text.deepcogito.utils.model import get_input_model
 
 
-@pytest.mark.skip("Skipping due to Out of Memory issue")
+@pytest.mark.push
+# @pytest.mark.skip("Skipping due to Out of Memory issue")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
 def test_cogito_generation(forge_property_recorder, variant):

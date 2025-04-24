@@ -29,7 +29,7 @@ def get_input_model(variant):
     text = model.tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
     )
-    model_inputs = model.tokenizer([text], return_tensors="pt", max_length=2, truncation=True)
+    model_inputs = model.tokenizer([text], return_tensors="pt", truncation=True)
     input_tensor_list = [model_inputs["input_ids"]]
 
     return input_tensor_list, model
