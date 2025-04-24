@@ -10,8 +10,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.text.deepcogito.utils.model import get_input_model
 
 
-@pytest.mark.push
-# @pytest.mark.skip("Skipping due to Out of Memory issue")
+@pytest.mark.skip("Skipping due to Out of Memory issue")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
 def test_cogito_generation(forge_property_recorder, variant):
@@ -27,15 +26,15 @@ def test_cogito_generation(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
-    input_tensor_list, model = get_input_model(variant)
+    input_tensor_list, framework_model = get_input_model(variant)
 
     # Compile with Forge
     compiled_model = forge.compile(
-        model,
+        framework_model,
         input_tensor_list,
         module_name,
         forge_property_handler=forge_property_recorder,
     )
 
     # Run verification
-    verify(input_tensor_list, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(input_tensor_list, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
