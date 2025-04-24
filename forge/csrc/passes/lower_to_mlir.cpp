@@ -166,8 +166,14 @@ class MLIRGenerator
     mlir::ModuleOp emit_mlir(tt::ForgeGraphModule &module)
     {
         graphModule_ = mlir::ModuleOp::create(get_module_location(module), module.name());
+        std::string archStr = std::getenv("ARCH_NAME");
+        mlir::tt::Arch arch = mlir::tt::Arch::WormholeB0;
+        if (archStr == "blackhole")
+        {
+            arch = mlir::tt::Arch::Blackhole;
+        }
         graphModule_->setAttr(
-            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext()));
+            mlir::tt::SystemDescAttr::name, mlir::tt::SystemDescAttr::getDefault(builder_.getContext(), arch));
         builder_.setInsertionPointToStart(&graphModule_.getBodyRegion().front());
 
         // Collect all the supported TTIR operations
