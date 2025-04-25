@@ -416,6 +416,7 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
+            named_attributes.push_back(builder_.getNamedAttr("tt.argument_type", get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -643,6 +644,26 @@ class MLIRGenerator
         }
 
         return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
+    }
+
+    mlir::tt::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
+    {
+        auto input_node = node->as<graphlib::InputNode>();
+        switch (input_node->input_type())
+        {
+            case tt::graphlib::InputNodeType::Activation:
+            case tt::graphlib::InputNodeType::Loss:
+            case tt::graphlib::InputNodeType::Target:
+            case tt::graphlib::InputNodeType::Gradient:
+            case tt::graphlib::InputNodeType::Accumulator:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Input);
+            case tt::graphlib::InputNodeType::Parameter:
+            case tt::graphlib::InputNodeType::OptimizerParameter:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Parameter);
+            case tt::graphlib::InputNodeType::Constant:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Constant);
+            default: throw std::runtime_error("Unknown input node type - cannot map to MLIR argument type");
+        }
     }
 
     /// Get the location for a module.
