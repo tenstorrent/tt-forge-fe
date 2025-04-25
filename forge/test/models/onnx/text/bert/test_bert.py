@@ -140,6 +140,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
 def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, tmp_path):
 

@@ -26,6 +26,7 @@ opset_versions = [7, 17]
 
 
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)

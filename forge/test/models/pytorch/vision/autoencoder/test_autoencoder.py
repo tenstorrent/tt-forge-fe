@@ -62,6 +62,7 @@ def test_conv_ae_pytorch(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.nightly
 def test_linear_ae_pytorch(forge_property_recorder):
     # Record Forge Property

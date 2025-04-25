@@ -23,6 +23,7 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.push
+@pytest.mark.models
 def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -268,6 +269,7 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
 def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, variant):
 

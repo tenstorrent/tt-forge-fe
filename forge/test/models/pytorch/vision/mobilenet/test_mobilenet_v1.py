@@ -20,6 +20,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.models
 def test_mobilenetv1_basic(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

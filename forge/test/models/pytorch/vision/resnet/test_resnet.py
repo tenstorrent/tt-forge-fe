@@ -25,6 +25,7 @@ variants = [
 
 
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet_hf(variant, forge_property_recorder):

@@ -225,6 +225,7 @@ def test_albert_question_answering_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.parametrize("variant", ["textattack/albert-base-v2-imdb"])
 def test_albert_sequence_classification_pytorch(forge_property_recorder, variant):
 

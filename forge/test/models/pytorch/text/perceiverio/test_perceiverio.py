@@ -15,6 +15,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.push
+@pytest.mark.models
 @pytest.mark.parametrize("variant", ["deepmind/language-perceiver"])
 def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
