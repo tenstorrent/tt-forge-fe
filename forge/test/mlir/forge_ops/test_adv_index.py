@@ -46,6 +46,10 @@ class AdvIndexWrapper(ForgeModule):
         ((((1, 2, 4, 8, 16), torch.float32), ((2,), torch.int32)), 2),
         ((((1, 2, 4, 8, 16), torch.float32), ((2,), torch.int32)), 1),
         ((((1, 2, 4, 8, 16), torch.float32), ((2,), torch.int32)), 0),
+        # Negative indexing
+        ((((8, 16), torch.float32), ((2,), torch.int32)), -1),
+        ((((4, 8, 16), torch.float32), ((2,), torch.int32)), -2),
+        ((((2, 4, 8, 16), torch.float32), ((2,), torch.int32)), -3),
     ],
 )
 @pytest.mark.push

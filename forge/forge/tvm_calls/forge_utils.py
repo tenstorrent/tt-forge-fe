@@ -31,7 +31,7 @@ def extract_framework_model_outputs(
     inputs,
     verify_tvm_compile: bool = False,
     input_dict={},
-    onnx_path: Optional[str] = None,
+    onnx_session: Optional[ort.InferenceSession] = None,
 ):
     framework_outputs = []
 
@@ -118,16 +118,8 @@ def extract_framework_model_outputs(
         for out in model.graph.output:
             output_names.append(out.name)
 
-        so = ort.SessionOptions()
-        so.inter_op_num_threads = 2
-        so.intra_op_num_threads = 2
-
-        if onnx_path is not None:
-            onnx_model = onnx_path
-        else:
-            onnx_model = model.SerializeToString()
-        ort_sess = ort.InferenceSession(onnx_model, sess_options=so)
-        framework_outputs = ort_sess.run(output_names, input_dict)
+        assert onnx_session is not None
+        framework_outputs = onnx_session.run(output_names, input_dict)
 
     elif framework == "tflite":
         input_details = model.get_input_details()
@@ -368,14 +360,20 @@ def has_op(module, opname, attrs={}):
     return visitor.has_op
 
 
-def paddle_trace(paddlemod, input_spec):
+def paddle_trace(paddlemod, input_spec=None, inputs=None):
     """
     Converts paddle.nn.Layer to paddle.nn.TranslatedLayer needed for TVM compilation.
     """
+    assert input_spec is not None or inputs is not None, "Either input_spec or inputs must be provided."
+
+    if input_spec is None and inputs is not None:
+        # Convert inputs to paddle static input spec
+        input_spec = [paddle.static.InputSpec(shape=inp.shape, dtype=inp.dtype) for inp in inputs]
+
     traced_model = paddle.jit.to_static(paddlemod, input_spec=input_spec, full_graph=True)
 
     # Model must be saved and loaded in order to have TranslatedLayer type which is needed for the next step
-    model_save_path = "traced_model"
+    model_save_path = "traced_model_tmp"
     paddle.jit.save(traced_model, model_save_path)
     loaded_model = paddle.jit.load(model_save_path)
 

@@ -16,6 +16,7 @@ import torch
 
 # Forge modules
 import forge
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 
@@ -58,32 +59,32 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
 
     module_name = "EfficientNetTimmB0"
 
+    torch.manual_seed(1)
+    input_sample = [torch.randn(batch_size, channel_size, input_size[0], input_size[1])]
+
     # Load model
     framework_model = download_model(timm.create_model, "efficientnet_b0", pretrained=True)
     framework_model.eval()
-
-    torch.manual_seed(1)
-    input_sample = [torch.randn(batch_size, channel_size, input_size[0], input_size[1])]
+    fw_out = framework_model(*input_sample)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=input_sample, module_name=module_name)
 
-    # Model Verification
-    verify(input_sample, framework_model, compiled_model)
-
     # Enable program cache on all devices
-    # This feature introduces a bug in tt-metal, we enable it when we solve the issue
-    # settings = DeviceSettings()
-    # settings.enable_program_cache = True
-    # configure_devices(device_settings=settings)
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model.
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    compiled_model(*input_sample)
+    verify(input_sample, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
-        compiled_model(*input_sample)
+        co_out = compiled_model(*input_sample)
     end = time.time()
+
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -97,7 +98,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     num_layers = 82  # Number of layers in the model, in this case number of convolutional layers
 
     print("====================================================================")
-    print("| Efficient Net Benchmark Results:                                        |")
+    print("| Efficient Net Benchmark Results:                                 |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")

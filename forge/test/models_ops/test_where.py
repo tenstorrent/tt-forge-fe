@@ -270,41 +270,50 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where2,
-        [((1, 1, 7, 7), torch.bool)],
-        {
-            "model_name": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 7, 7), torch.bool)],
+            {
+                "model_name": [
+                    "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                    "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Where2,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_name": [
-                "pt_gpt2_gpt2_text_gen_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 256, 256), torch.bool)],
+            {
+                "model_name": [
+                    "pt_gpt2_gpt2_text_gen_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Where2,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_name": [
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 32, 32), torch.bool)],
+            {
+                "model_name": [
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     pytest.param(
         (

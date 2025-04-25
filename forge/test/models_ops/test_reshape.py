@@ -14863,21 +14863,18 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 512, 1, 1), torch.float32)],
         {"model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "op_params": {"shape": "(1, 512)"}},
     ),
-    pytest.param(
-        (
-            Reshape109,
-            [((8, 1), torch.int64)],
-            {
-                "model_name": [
-                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"shape": "(2, 4, 1)"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Reshape109,
+        [((8, 1), torch.int64)],
+        {
+            "model_name": [
+                "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"shape": "(2, 4, 1)"},
+        },
     ),
     (
         Reshape110,
@@ -30256,17 +30253,14 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 56, 56, 96)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape1412,
-            [((49, 49), torch.int64)],
-            {
-                "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {"shape": "(2401,)"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Reshape1412,
+        [((49, 49), torch.int64)],
+        {
+            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"shape": "(2401,)"},
+        },
     ),
     (
         Reshape1292,

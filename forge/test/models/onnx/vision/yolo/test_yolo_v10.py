@@ -18,13 +18,14 @@ from forge.forge_property_utils import Framework, Source, Task
 def test_yolov10(forge_property_recorder, tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="Yolov10",
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

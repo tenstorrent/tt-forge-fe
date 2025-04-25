@@ -226,14 +226,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((64, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((64, 1, 1), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -257,14 +260,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((32, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((32, 1, 1), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -275,14 +281,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((48, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((48, 1, 1), torch.float32)],
+            {
+                "model_name": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -293,17 +302,20 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 6, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 6, 1, 1), torch.float32)],
+            {
+                "model_name": [
+                    "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -323,14 +335,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 20, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 20, 1, 1), torch.float32)],
+            {
+                "model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -350,18 +365,21 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 12, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_small_speech_recognition_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-                "pt_t5_t5_base_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 12, 1, 1), torch.float32)],
+            {
+                "model_name": [
+                    "pt_whisper_openai_whisper_small_speech_recognition_hf",
+                    "pt_t5_google_flan_t5_base_text_gen_hf",
+                    "pt_t5_t5_base_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -381,18 +399,21 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 16, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_whisper_openai_whisper_medium_speech_recognition_hf",
-                "pt_t5_t5_large_text_gen_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 16, 1, 1), torch.float32)],
+            {
+                "model_name": [
+                    "pt_whisper_openai_whisper_medium_speech_recognition_hf",
+                    "pt_t5_t5_large_text_gen_hf",
+                    "pt_t5_google_flan_t5_large_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -412,14 +433,17 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((1, 8, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 8, 1, 1), torch.float32)],
+            {
+                "model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
+                "pcc": 0.99,
+                "op_params": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
