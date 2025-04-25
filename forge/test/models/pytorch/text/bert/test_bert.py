@@ -105,7 +105,7 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 
 variants = [
-    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push]),
+    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push, pytest.mark.models]),
     pytest.param("bert-large-cased-whole-word-masking-finetuned-squad"),
 ]
 

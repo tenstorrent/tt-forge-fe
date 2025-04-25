@@ -22,7 +22,7 @@ from test.models.pytorch.vision.mobilenet.utils.utils import (
 from test.utils import download_model
 
 variants = [
-    pytest.param("mobilenet_v3_large", marks=[pytest.mark.push]),
+    pytest.param("mobilenet_v3_large", marks=[pytest.mark.push, pytest.mark.models]),
     pytest.param("mobilenet_v3_small"),
 ]
 

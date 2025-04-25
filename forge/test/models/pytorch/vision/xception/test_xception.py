@@ -44,7 +44,7 @@ params = [
     pytest.param("xception41"),
     pytest.param("xception65"),
     pytest.param("xception71"),
-    pytest.param("xception71.tf_in1k", marks=[pytest.mark.push]),
+    pytest.param("xception71.tf_in1k", marks=[pytest.mark.push, pytest.mark.models]),
 ]
 
 

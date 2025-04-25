@@ -20,7 +20,7 @@ from test.models.pytorch.vision.wideresnet.utils.utils import (
 from test.utils import download_model
 
 variants = [
-    pytest.param("wide_resnet50_2", marks=[pytest.mark.push]),
+    pytest.param("wide_resnet50_2", marks=[pytest.mark.push, pytest.mark.models]),
     pytest.param("wide_resnet101_2"),
 ]
 
