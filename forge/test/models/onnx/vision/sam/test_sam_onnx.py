@@ -3,12 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
+import onnx
 
 import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.xfail()
@@ -21,11 +23,11 @@ from test.models.utils import Framework, Source, Task, build_module_name
     ],
 )
 @pytest.mark.nightly
-def test_sam_onnx(forge_property_recorder, variant):
+def test_sam_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="sam",
         variant=variant,
         task=Task.IMAGE_SEGMENTATION,
@@ -34,7 +36,7 @@ def test_sam_onnx(forge_property_recorder, variant):
 
     if variant == "facebook/sam-vit-base":
         forge_property_recorder.record_group("red")
-        forge_property_recordeer.record_priority("P2")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 
@@ -43,32 +45,35 @@ def test_sam_onnx(forge_property_recorder, variant):
     # Load  model and input
 
     framework_model, sample_inputs = get_model_inputs(variant)
-
     input_tensor = sample_inputs[0]
-    onnx_path_str = str(tmp_path / "sam.onnx")
 
-    # Export to ONNX
+    onnx_path = f"{tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(
-        model,
+        framework_model,
         input_tensor,
-        onnx_path_str,
+        onnx_path,
         input_names=["image"],
         output_names=["segmentation"],
         dynamic_axes={"image": {0: "batch_size"}},
-        opset_version=17,
     )
 
-    # Save model with external tensor data if necessary
-    onnx_model = onnx.load(onnx_path_str)
-    onnx.save_model(onnx_model, onnx_path_str, save_as_external_data=True)
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model)
 
-    # Forge ONNX inference
-    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path_str)
+    # Compile model
     compiled_model = forge.compile(
-        framework_model,
+        onnx_model,
         sample_inputs=[input_tensor],
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
     )
 
-    verify([input_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification
+    verify(
+        [input_tensor],
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
