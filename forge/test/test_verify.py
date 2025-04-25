@@ -14,6 +14,7 @@ import forge._C.verif as verif
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_pcc_estimation():
     fw_out = torch.rand(1, 5 * 1000000)
     co_out = fw_out.clone()
@@ -68,6 +69,7 @@ def test_pcc_estimation():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_pcc_kernel():
     fw_out = torch.rand(1, 5 * 1000000)
     co_out = fw_out.clone()
@@ -79,6 +81,7 @@ def test_pcc_kernel():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_atol_calculation():
     # For all of the cases where an entry in the tensor is expected to be NaN/+Inf/-Inf,
     # and it is not, the atol should be inf. (explanation being that we are infinitely wrong in any case)
