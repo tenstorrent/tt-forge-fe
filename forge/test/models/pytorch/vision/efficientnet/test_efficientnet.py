@@ -20,15 +20,10 @@ from torchvision.models import (
 from torchvision.models._api import WeightsEnum
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import (
-    Framework,
-    Source,
-    Task,
-    build_module_name,
-    print_cls_results,
-)
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
@@ -56,8 +51,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -68,9 +63,9 @@ def test_efficientnet_timm(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["efficientnet_b0"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -130,8 +125,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -141,7 +136,6 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model
     if variant == "efficientnet_b0":

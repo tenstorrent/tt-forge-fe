@@ -45,7 +45,7 @@ bool validate_handler_method(const std::optional<py::object>& handler, const std
 }
 
 void record_execution_depth(
-    const std::optional<py::object>& forge_property_handler, const ExecutionDepth execution_depth)
+    const ExecutionDepth execution_depth, const std::optional<py::object>& forge_property_handler)
 {
     // Validate the handler; exit early if it fails.
     if (!validate_handler_method(forge_property_handler, "record_execution_depth"))
@@ -58,7 +58,7 @@ void record_execution_depth(
 }
 
 void record_flatbuffer_details(
-    const std::optional<py::object>& forge_property_handler, const std::string& binary_json_str)
+    const std::string& binary_json_str, const std::optional<py::object>& forge_property_handler)
 {
     // Validate the handler; exit early if it fails.
     if (!validate_handler_method(forge_property_handler, "record_flatbuffer_details"))

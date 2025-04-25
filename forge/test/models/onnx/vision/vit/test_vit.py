@@ -8,21 +8,23 @@ import onnx
 import forge
 from transformers import ViTForImageClassification
 from forge.verify.verify import verify
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
 variants = [
     pytest.param("google/vit-base-patch16-224"),
-    pytest.param("google/vit-large-patch16-224"),
+    pytest.param(
+        "google/vit-large-patch16-224",
+        marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
+    ),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="vit_base",
         variant=variant,
@@ -33,9 +35,9 @@ def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the torch model
     torch_model = ViTForImageClassification.from_pretrained(variant)

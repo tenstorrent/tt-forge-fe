@@ -6,12 +6,13 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_v35,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class StableDiffusionWrapper(torch.nn.Module):
@@ -35,28 +36,19 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+    reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
 )
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "stable-diffusion-3.5-medium",
-            marks=pytest.mark.xfail,
-        ),
-        pytest.param(
-            "stable-diffusion-3.5-large",
-            marks=pytest.mark.xfail,
-        ),
-        pytest.param(
-            "stable-diffusion-3.5-large-turbo",
-            marks=pytest.mark.xfail,
-        ),
+        "stable-diffusion-3.5-medium",
+        "stable-diffusion-3.5-large",
+        "stable-diffusion-3.5-large-turbo",
     ],
 )
 def test_stable_diffusion_v35(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="stable_diffusion",
         variant=variant,
@@ -66,7 +58,6 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

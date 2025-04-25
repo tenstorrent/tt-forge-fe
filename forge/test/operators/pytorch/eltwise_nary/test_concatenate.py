@@ -10,16 +10,19 @@ import torch
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
-from test.operators.utils import VerifyUtils
-from test.operators.utils import InputSource
-from test.operators.utils import TestVector
-from test.operators.utils import TestPlan
-from test.operators.utils import FailingReasons
+from test.operators.utils import (
+    VerifyUtils,
+    InputSource,
+    TestVector,
+    TestPlan,
+    FailingReasons,
+    TestCollection,
+    TestCollectionCommon,
+    TestCollectionTorch,
+    ValueRanges,
+)
 from test.operators.utils.compat import TestDevice
-from test.operators.utils import TestCollection
-from test.operators.utils import TestCollectionCommon
-from test.operators.utils import TestCollectionTorch
-from test.operators.utils import ValueRanges
+from test.operators.utils.utils import PytorchUtils
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -105,7 +108,7 @@ class TestVerification:
     ):
         """Common verification function for all tests"""
 
-        operator = getattr(torch, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -184,11 +187,7 @@ TestParamsData.test_plan = TestPlan(
         # Test all shapes and input sources collection:
         TestCollection(
             operators=TestParamsData.operators,
-            input_sources=[  # TODO: use TestCollectionCommon.all.input_sources when becames available
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
+            input_sources=TestCollectionCommon.all.input_sources,
             input_shapes=TestParamsData.generate_input_shapes(),
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),

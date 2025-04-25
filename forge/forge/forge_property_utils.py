@@ -4,12 +4,94 @@
 
 from enum import Enum, auto
 import json
+import re
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
-from typing import Union, List, Optional, Any, get_origin, get_args, Dict
+from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
-from forge._C import ExecutionDepth
+from forge._C import ExecutionDepth, DataFormat
+from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
+from loguru import logger
+from forge.module import ForgeModule
+import forge
+
+
+class StrEnum(str, Enum):
+    def __str__(self):
+        return self.value
+
+
+class BaseEnum(Enum):
+    """Base Enum to handle short and full name attributes."""
+
+    def __init__(self, short: str, full: str):
+        self.short = short  # Short identifier (e.g., "hf" for Hugging Face)
+        self.full = full  # Full descriptive name (e.g., "Hugging Face")
+
+
+class Framework(BaseEnum):
+    PYTORCH = ("pt", "PyTorch")
+    TENSORFLOW = ("tf", "TensorFlow")
+    ONNX = ("onnx", "ONNX")
+    PADDLE = ("pd", "PaddlePaddle")
+    JAX = ("jax", "JAX")
+
+
+class Task(BaseEnum):
+    SPEECH_TRANSLATE = ("speech_translate", "Speech Translation")
+    MUSIC_GENERATION = ("music_generation", "Music Generation")
+    SPEECH_RECOGNITION = ("speech_recognition", "Speech Recognition")
+    QA = ("qa", "Question Answering")
+    MASKED_LM = ("mlm", "Masked Language Modeling")
+    CAUSAL_LM = ("clm", "Causal Language Modeling")
+    TOKEN_CLASSIFICATION = ("token_cls", "Token Classification")
+    SEQUENCE_CLASSIFICATION = ("seq_cls", "Sequence Classification")
+    IMAGE_CLASSIFICATION = ("img_cls", "Image Classification")
+    IMAGE_SEGMENTATION = ("img_seg", "Image Segmentation")
+    POSE_ESTIMATION = ("pose_estimation", "Pose Estimation")
+    DEPTH_PREDICTION = ("depth_prediction", "Depth Prediction")
+    TEXT_GENERATION = ("text_gen", "Text Generation")
+    OBJECT_DETECTION = ("obj_det", "Object Detection")
+    SEMANTIC_SEGMENTATION = ("sem_seg", "Semantic Segmentation")
+    MASKED_IMAGE_MODELING = ("masked_img", "Masked Image Modeling")
+    CONDITIONAL_GENERATION = ("cond_gen", "Conditional Generation")
+    IMAGE_ENCODING = ("img_enc", "Image Encoding")
+    VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
+    DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
+    SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
+    TEXT_TO_SPEECH = ("text_to_speech", "Text to Speech")
+    SENTENCE_EMBEDDING_GENERATION = ("sentence_embed_gen", "Sentence Embedding Generation")
+    MULTIMODAL_TEXT_GENERATION = ("multimodal_text_gen", "Multimodal Text Generation")
+    ATOMIC_ML = ("atomic_ml", "Atomic Machine Learning")
+
+
+class Source(BaseEnum):
+    HUGGINGFACE = ("hf", "Hugging Face")
+    TORCH_HUB = ("torchhub", "Torch Hub")
+    TIMM = ("timm", "TIMM")
+    OSMR = ("osmr", "OSMR")
+    TORCHVISION = ("torchvision", "Torchvision")
+    GITHUB = ("github", "GitHub")
+    PADDLE = ("paddlemodels", "Paddle Models")
+    PADDLENLP = ("padlenlp", "PaddleNLP")
+
+
+def build_module_name(
+    framework: Framework,
+    model: str,
+    task: Task,
+    source: Source,
+    variant: str = "base",
+    suffix: str | None = None,
+) -> str:
+    module_name = f"{framework}_{model}_{variant}_{task}_{source}"
+    if suffix is not None:
+        module_name += f"_{suffix}"
+    module_name = re.sub(r"[^a-zA-Z0-9_]", "_", module_name)
+    module_name = re.sub(r"_+", "_", module_name)
+    module_name = module_name.lower()
+    return module_name
 
 
 class ExecutionStage(Enum):
@@ -151,6 +233,24 @@ class FlatbufferDetailsExtractor:
 
 @dataclass_json
 @dataclass
+class Operand:
+    node_type: str = ""
+    shape: Optional[Tuple[int, ...]] = None
+    dataformat: str = ""
+    torch_dtype: str = ""
+
+
+@dataclass_json
+@dataclass
+class OpInfo:
+    forge_op_name: str = ""
+    args: Dict[str, Any] = field(default_factory=lambda: dict())
+    operands: Optional[List[Operand]] = None
+    model_names: Optional[List[str]] = None
+
+
+@dataclass_json
+@dataclass
 class Config:
     compiler: Dict[str, Any] = field(default_factory=lambda: dict())
     verify: Dict[str, Any] = field(default_factory=lambda: dict())
@@ -158,16 +258,29 @@ class Config:
 
 @dataclass_json
 @dataclass
+class ModelInfo:
+    framework: str = ""
+    model_arch: str = ""
+    variant_name: str = ""
+    task: str = ""
+    source: str = ""
+
+
+@dataclass_json
+@dataclass
 class Tags:
-    model_name: Optional[Union[List[str], str]] = None
+    model_name: str = ""
     bringup_status: str = ""
+    execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
-    execution_stage: str = ""
-    op_name: str = ""
-    op_params: Dict[str, Any] = field(default_factory=lambda: dict())
+    op_info: Optional[OpInfo] = None
     inputs: Optional[List[TensorDesc]] = None
     outputs: Optional[List[TensorDesc]] = None
+    model_info: Optional[ModelInfo] = None
+    failure_category: str = ""
+    refined_error_message: str = ""
+    group: str = ""
 
 
 @dataclass_json
@@ -175,6 +288,7 @@ class Tags:
 class ForgePropertyStore:
     owner: str = "tt-forge-fe"
     group: str = ""
+    priority: str = ""
     tags: Optional[Tags] = None
     config: Optional[Config] = None
 
@@ -190,10 +304,28 @@ class ForgePropertyHandler:
 
     Attributes:
         store (ForgePropertyStore): The underlying store containing the property data.
+        record_single_op_details (bool): Flag indicating whether single operation details
+        should be recorded.
     """
 
     def __init__(self, store: ForgePropertyStore):
         self.store = store
+        self.record_single_op_details = False
+
+    def enable_single_op_details_recording(self):
+        """
+        Enables recording for single operation details.
+
+        When enabled, additional details such as op name, op arguments, operands information,
+        model names, refined error messages, and failure categories will be recorded.
+        """
+        self.record_single_op_details = True
+
+    def disable_single_op_details_recording(self):
+        """
+        Disables recording for single operation details.
+        """
+        self.record_single_op_details = False
 
     def add(self, key: str, value: Any):
         """
@@ -303,24 +435,30 @@ class ForgePropertyHandler:
             group (str): The group value to be recorded.
         """
         self.add("group", group)
+        self.add("tags.group", group)
 
-    def record_model_name(self, model_name: Union[str, List[str]]):
+    def record_priority(self, priority: str):
+
+        """
+
+         Records the priority property in the tags.
+
+        Args:
+
+             priority (str): The priority value to be recorded.
+
+        """
+
+        self.add("priority", priority)
+
+    def record_model_name(self, model_name: str):
         """
         Records the model name in the tags.
 
         Args:
-            model_name (Union[str, List[str]]): The model name (or list of model names) to record.
+            model_name (str): The model name to record.
         """
         self.add("tags.model_name", model_name)
-
-    def record_op_name(self, op_name: str):
-        """
-        Records the operation name in the tags.
-
-        Args:
-            op_name (str): The operation name to be recorded.
-        """
-        self.add("tags.op_name", op_name)
 
     def record_pcc(self, pcc: float):
         """
@@ -431,6 +569,8 @@ class ForgePropertyHandler:
         Args:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
+        binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
+        binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
         binary_json = json.loads(binary_json_str)
 
         flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
@@ -446,6 +586,101 @@ class ForgePropertyHandler:
                 )
             self.record_flatbuffer_inputs(inputs["forward"])
             self.record_flatbuffer_outputs(outputs["forward"])
+
+    def record_forge_op_name(self, forge_op_name: str):
+        """
+        Records the Forge op name in the op information tags if single op details recording is enabled.
+
+        Args:
+            forge_op_name (str): The Forge operation name.
+        """
+        if self.record_single_op_details:
+            self.add("tags.op_info.forge_op_name", forge_op_name)
+
+    def record_forge_op_args(self, op_args: Dict[str, Any]):
+        """
+        Records the arguments for the Forge operation in the op information tags if single op details recording is enabled.
+
+        Args:
+            op_args (Dict[str, Any]): A dictionary of operation arguments.
+        """
+        if self.record_single_op_details:
+            self.add("tags.op_info.args", op_args)
+
+    def extract_node_type(self, operand):
+        if isinstance(operand, forge.Parameter):
+            return "Parameter"
+        elif operand.is_constant():
+            return "Constant"
+        else:
+            return "Activation"
+
+    def record_single_op_operands_info(self, forge_module: ForgeModule, inputs: List[Tensor]):
+        """
+        Records details about operation operands in the op information tags if single op details recording is enabled.
+
+        For each operand, the function records the node type, shape, dataformat,
+        and the corresponding PyTorch data type.
+
+        forge_module (List[str]): ForgeModule to extract the operands details
+        inputs (List[str]): List of forge tensor inputs for the module
+        """
+        if self.record_single_op_details:
+            assert isinstance(
+                forge_module, ForgeModule
+            ), f"Operands details can be extracted only from the ForgeModule but you have provided {forge_module}"
+            output = forge_module(*inputs)
+            assert isinstance(output, Tensor), "ForgeModule should have only one output tensor"
+            if output.src_op is not None:
+                assert all(
+                    True if isinstance(operand, forge.Parameter) or operand.src_op is None else False
+                    for operand in output.src_op.operands
+                ), "ForgeModule should contains single forge op"
+                operands_list = []
+                for operand in output.src_op.operands:
+                    node_type = self.extract_node_type(operand)
+                    shape = tuple(operand.shape.get_pytorch_shape())
+                    dataformat = DataFormat.to_json(operand.data_format)
+                    torch_dtype = str(operand.pt_data_format)
+                    operands_list.append(
+                        Operand(
+                            node_type=node_type,
+                            shape=shape,
+                            dataformat=dataformat,
+                            torch_dtype=str(torch_dtype),
+                        )
+                    )
+                self.add("tags.op_info.operands", operands_list)
+
+    def record_op_model_names(self, model_names: List[str]):
+        """
+        Records the model names associated with the operation in the op information tags if single op details recording is enabled.
+
+        Args:
+            model_names (List[str]): A list of model names.
+        """
+        if self.record_single_op_details:
+            self.add("tags.op_info.model_names", model_names)
+
+    def record_refined_error_message(self, refined_error_message: str):
+        """
+        Records the refined error message in the tags if single op details recording is enabled.
+
+        Args:
+            refined_error_message (str): The refined error message string.
+        """
+        if self.record_single_op_details:
+            self.add("tags.refined_error_message", refined_error_message)
+
+    def record_failure_category(self, failure_category: str):
+        """
+        Records the failure category in the tags if single op details recording is enabled.
+
+        Args:
+            failure_category (str): The failure category string.
+        """
+        if self.record_single_op_details:
+            self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """
@@ -520,3 +755,43 @@ class ForgePropertyHandler:
         cleaned_property_store = self.clean_store()
         for property_name, property_value in cleaned_property_store.items():
             record_property(property_name, property_value)
+
+    def record_model_properties(
+        self,
+        framework: Framework,
+        model: str,
+        task: Task,
+        source: Source,
+        variant: str = "base",
+        suffix: str | None = None,
+    ) -> str:
+        """
+        Records model properties and generates a module name and stores it.
+
+        Args:
+            framework: The framework used (e.g., pt,tf, etc.)
+            model: The model name (e.g., bert)
+            variant: The model variant (e.g., bert-base-uncased)
+            task: The task type (e.g., qa,mlm, etc.)
+            source: The model source (e.g., hf,torchhub etc.)
+            suffix: Optional suffix to append to the module name
+
+        Returns:
+            The generated module name
+        """
+
+        # Record individual properties
+        self.add("tags.model_info.framework", framework.full)
+        self.add("tags.model_info.model_arch", model)
+        self.add("tags.model_info.variant_name", variant)
+        self.add("tags.model_info.task", task.full)
+        self.add("tags.model_info.source", source.full)
+
+        # Build and return the module name
+        module_name = build_module_name(
+            framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+        )
+
+        # Record model_name
+        self.record_model_name(module_name)
+        return module_name

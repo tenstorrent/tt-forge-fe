@@ -9,9 +9,8 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # Variants for testing
 variants = [
@@ -19,33 +18,57 @@ variants = [
         "Qwen/Qwen2.5-0.5B",
         marks=[pytest.mark.xfail],
     ),
-    "Qwen/Qwen2.5-0.5B-Instruct",
-    "Qwen/Qwen2.5-1.5B",
-    "Qwen/Qwen2.5-1.5B-Instruct",
-    "Qwen/Qwen2.5-3B",
-    "Qwen/Qwen2.5-3B-Instruct",
-    "Qwen/Qwen2.5-7B",
-    "Qwen/Qwen2.5-7B-Instruct",
+    pytest.param(
+        "Qwen/Qwen2.5-0.5B-Instruct",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-1.5B",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-1.5B-Instruct",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-3B",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-3B-Instruct",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-7B",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-7B-Instruct",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_qwen_clm(forge_property_recorder, variant):
-    if variant != "Qwen/Qwen2.5-0.5B":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    if variant in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-1.5B", "Qwen/Qwen2.5-3B", "Qwen/Qwen2.5-7B"]:
+    if variant in [
+        "Qwen/Qwen2.5-0.5B-Instruct",
+        "Qwen/Qwen2.5-1.5B-Instruct",
+        "Qwen/Qwen2.5-3B-Instruct",
+        "Qwen/Qwen2.5-7B-Instruct",
+    ]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
@@ -77,8 +100,8 @@ def test_qwen_clm(forge_property_recorder, variant):
 def test_qwen2_token_classification(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="qwen_v2",
         variant=variant,
@@ -88,7 +111,6 @@ def test_qwen2_token_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = Qwen2ForTokenClassification.from_pretrained(variant)

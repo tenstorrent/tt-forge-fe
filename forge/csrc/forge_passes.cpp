@@ -80,6 +80,7 @@ run_post_initial_graph_passes(
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
     passes::print_graph(graph, "INITIAL");
+    passes::apply_user_data_format_override(graph, compiler_cfg_object);
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
@@ -211,12 +212,6 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     // Manually convert broadcast ops to tms, so insert tile broadcast ops can work generically
     // Note this is not lowering, these are still forge tms
     convert_broadcast_ops_to_tms(graph);
-
-    //
-    // Data formats
-    //
-    // Apply user overrides
-    passes::configure_output_data_formats(graph, default_df_override);
 
     passes::remove_nops(graph);
 

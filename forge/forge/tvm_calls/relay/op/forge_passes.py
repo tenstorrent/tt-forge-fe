@@ -186,12 +186,16 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         pad_mode = pad.attrs.pad_mode
 
-        if pad_mode == "constant":
-            padding = [top_pad, left_pad, bottom_pad, right_pad]
+        # Fuse Pad Only if the mode is constant
+        # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
+            pad_mode == "edge" or pad_mode == "reflect"
+        ):
+            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode=pad_mode)
 
-        if pad_mode == "reflect":
-            act = tvm.relay.op.nn.pad(act, pad_width, pad_mode="reflect")
             padding = [0, 0, 0, 0]
+        else:
+            padding = [top_pad, left_pad, bottom_pad, right_pad]
 
         op_attrs = {**conv_pool.attrs}
         op_attrs["padding"] = padding
@@ -2013,6 +2017,16 @@ class DecomposeEinsum(DFPatternCallback):
             )
 
             return result
+
+        elif match_einsum_pattern("nhwpqc->nchpwq", equation):
+            # Ensure the einsum pattern is matched, and there should be one input node
+            assert len(node_map[self.act][0]) == 1
+
+            src = node_map[self.act][0][0]  # (n, h, w, p, q, c)
+            result = tvm.relay.transpose(src, axes=[0, 5, 1, 3, 2, 4])  # (n, c, h, p, w, q)
+
+            return result
+
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
@@ -4766,7 +4780,6 @@ def run_forge_compile_passes(
             DecomposeVariance(),
             ArgmaxAndMaxReconstruct(),
             ConvertArgmaxTakeToReduceMax(),
-            AddSqueezeForArgmax(),
             DecompEinsumWithWTranspose(),
             DecompWTranspose(),
             DecomposeEinsum(),

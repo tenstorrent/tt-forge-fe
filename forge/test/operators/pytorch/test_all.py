@@ -2,35 +2,145 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-# Tests for testing all pytorch operators
-
-
-# Examples
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_plan
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_custom
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_query
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_unique
-# pytest -svv forge/test/operators/pytorch/test_all.py::test_single
+# TestSuite and query configuration for all pytorch operators
 
 
 import os
-import pytest
 import forge
 import textwrap
+import json
 
 from loguru import logger
 from tabulate import tabulate
-from typing import List
+from typing import List, Tuple, Optional, Generator, Callable
+from dataclasses import dataclass
 
 from test.operators.utils import DeviceUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
+from test.operators.utils import TestQuery
 from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+
+
+@dataclass
+class RunQueryParams:
+    """Run query parameters"""
+
+    test_id: Optional[str]
+    id_files: Optional[List[str]]
+    id_files_ignore: Optional[List[str]]
+    operators: Optional[List[str]]
+    exclude_operators: bool
+    filters: Optional[List[str]]
+    input_sources: Optional[List[InputSource]]
+    input_shapes: Optional[List[Tuple[int, ...]]]
+    dev_data_formats: Optional[List[forge.DataFormat]]
+    math_fidelities: Optional[List[forge.MathFidelity]]
+    kwargs: Optional[List[dict]]
+    failing_reasons: Optional[List[FailingReasons]]
+    skip_reasons: Optional[List[FailingReasons]]
+    random_seed: int
+    sample: Optional[float]
+    range: Optional[tuple[int, int]]
+
+    def get_operators(self) -> Optional[List[str]]:
+        """Get operators list if exclude_operators is False, otherwise return None"""
+        return self.operators if not self.exclude_operators else None
+
+    def get_exclude_operators(self) -> Optional[List[str]]:
+        """Get exclude_operators list if exclude_operators is True, otherwise return None"""
+        return self.operators if self.exclude_operators else None
+
+    @classmethod
+    def _get_env_list(cls, name: str, default: str = "") -> Optional[List[str]]:
+        values = os.getenv(name, default).strip().split(",")
+        values = [value for value in values if value]
+        if len(values) == 0:
+            values = None
+        return values
+
+    @classmethod
+    def from_env(cls):
+        test_id = os.getenv("TEST_ID", None)
+        id_files = cls._get_env_list("ID_FILES")
+        id_files_ignore = cls._get_env_list("ID_FILES_IGNORE", "ids/blacklist.txt")
+        operators = cls._get_env_list("OPERATORS")
+        if operators and operators[0].startswith("-"):
+            exclude_operators = True
+            # Remove exclude - mark from the first operator
+            operators[0] = operators[0][1:]
+        else:
+            exclude_operators = False
+        filters = cls._get_env_list("FILTERS")
+        input_sources = cls._get_env_list("INPUT_SOURCES")
+        if input_sources:
+            input_sources = [getattr(InputSource, input_source) for input_source in input_sources]
+        input_shapes = os.getenv("INPUT_SHAPES", None)
+        if input_shapes:
+            input_shapes = eval(input_shapes)
+        dev_data_formats = cls._get_env_list("DEV_DATA_FORMATS")
+        if dev_data_formats:
+            dev_data_formats = [
+                TestPlanUtils.dev_data_format_from_str(dev_data_format) for dev_data_format in dev_data_formats
+            ]
+        math_fidelities = cls._get_env_list("MATH_FIDELITIES")
+        if math_fidelities:
+            math_fidelities = [getattr(forge.MathFidelity, math_fidelity) for math_fidelity in math_fidelities]
+        kwargs = os.getenv("KWARGS", None)
+        if kwargs:
+            kwargs = eval(kwargs)
+        failing_reasons = cls._get_env_list("FAILING_REASONS")
+        if failing_reasons:
+            failing_reasons = [getattr(FailingReasons, failing_reason) for failing_reason in failing_reasons]
+        skip_reasons = cls._get_env_list("SKIP_REASONS")
+        if skip_reasons:
+            skip_reasons = [getattr(FailingReasons, skip_reason) for skip_reason in skip_reasons]
+        random_seed = int(os.getenv("RANDOM_SEED", 0))
+        sample = os.getenv("SAMPLE", None)
+        sample = float(sample) if sample else None
+        range = cls._get_env_list("RANGE")
+        if range:
+            range = [int(i) for i in range]
+            if len(range) == 1:
+                range = 0, range[0]
+            else:
+                range = range[0], range[1]
+
+        # Construct query parameters
+        query_params = cls(
+            test_id=test_id,
+            id_files=id_files,
+            id_files_ignore=id_files_ignore,
+            operators=operators,
+            exclude_operators=exclude_operators,
+            filters=filters,
+            input_sources=input_sources,
+            input_shapes=input_shapes,
+            dev_data_formats=dev_data_formats,
+            math_fidelities=math_fidelities,
+            kwargs=kwargs,
+            failing_reasons=failing_reasons,
+            skip_reasons=skip_reasons,
+            random_seed=random_seed,
+            sample=sample,
+            range=range,
+        )
+
+        logger.info(f"Query parameters: {query_params}")
+
+        if query_params.test_id and query_params.id_files:
+            raise ValueError("TEST_ID and ID_FILES cannot be used together")
+
+        return query_params
+
+
+query_params = RunQueryParams.from_env()
 
 
 class TestVerification:
@@ -55,158 +165,7 @@ class TestParamsData:
 
     __test__ = False  # Avoid collecting TestParamsData as a pytest test
 
-    @classmethod
-    def get_single_list(cls) -> list[str]:
-        """Provide a list of test ids to run for test_single method"""
-        test_id_single = os.getenv("TEST_ID", None)
-        return [test_id_single] if test_id_single else []
-
-    @classmethod
-    def get_ids_from_file(cls) -> list[str]:
-        """Provide a list of test ids from a file to run for test_ids method"""
-        id_file = os.getenv("ID_FILE", None)
-        if id_file is not None:
-            test_ids = TestPlanUtils.load_test_ids_from_file(id_file)
-        else:
-            test_ids = []
-        return test_ids
-
-    @classmethod
-    def build_filtered_collection(cls) -> TestCollection:
-        """
-        Builds a filtering test collection based on environment variables
-        Query criterias are defined by the following environment variables:
-        - OPERATORS: List of operators to filter
-        - INPUT_SOURCES: List of input sources to filter
-        - INPUT_SHAPES: List of input shapes to filter
-        - DEV_DATA_FORMATS: List of data formats to filter
-        - MATH_FIDELITIES: List of math fidelities to filter
-        - KWARGS: List of kwargs dictionaries to filter
-        """
-        operators = os.getenv("OPERATORS", None)
-        if operators:
-            operators = operators.split(",")
-        else:
-            operators = None
-
-        input_sources = os.getenv("INPUT_SOURCES", None)
-        if input_sources:
-            input_sources = input_sources.split(",")
-            input_sources = [getattr(InputSource, input_source) for input_source in input_sources]
-
-        input_shapes = os.getenv("INPUT_SHAPES", None)
-        if input_shapes:
-            input_shapes = eval(input_shapes)
-
-        dev_data_formats = os.getenv("DEV_DATA_FORMATS", None)
-        if dev_data_formats:
-            dev_data_formats = dev_data_formats.split(",")
-            dev_data_formats = [
-                TestPlanUtils.dev_data_format_from_str(dev_data_format) for dev_data_format in dev_data_formats
-            ]
-
-        math_fidelities = os.getenv("MATH_FIDELITIES", None)
-        if math_fidelities:
-            math_fidelities = math_fidelities.split(",")
-            math_fidelities = [getattr(forge.MathFidelity, math_fidelity) for math_fidelity in math_fidelities]
-
-        kwargs = os.getenv("KWARGS", None)
-        if kwargs:
-            kwargs = eval(kwargs)
-
-        filtered_collection = TestCollection(
-            operators=operators,
-            input_sources=input_sources,
-            input_shapes=input_shapes,
-            dev_data_formats=dev_data_formats,
-            math_fidelities=math_fidelities,
-            kwargs=kwargs,
-        )
-
-        return filtered_collection
-
-    def build_filter_lambdas():
-        """
-        Builds a list of lambdas for filtering test vectors based on environment variables.
-        The lambdas are built based on the following environment variables:
-        - FILTERS: List of lambdas defined in VectorLambdas to filter
-        - FAILING_REASONS: List of failing reasons to filter
-        - SKIP_REASONS: List of skip reasons to filter
-        """
-        lambdas = []
-
-        # Include selected filters from VectorLambdas
-        filters = os.getenv("FILTERS", None)
-        if filters:
-            filters = filters.split(",")
-            filters = [getattr(VectorLambdas, filter) for filter in filters]
-            lambdas = lambdas + filters
-
-        # TODO: Extend TestCollection with list of failing reasons and skip reasons and move this logic to build_filtered_collection
-        failing_reasons = os.getenv("FAILING_REASONS", None)
-        if failing_reasons:
-            failing_reasons = failing_reasons.split(",")
-            failing_reasons = [getattr(FailingReasons, failing_reason) for failing_reason in failing_reasons]
-
-        skip_reasons = os.getenv("SKIP_REASONS", None)
-        if skip_reasons:
-            skip_reasons = skip_reasons.split(",")
-            skip_reasons = [getattr(FailingReasons, skip_reason) for skip_reason in skip_reasons]
-
-        if failing_reasons:
-            lambdas.append(
-                lambda test_vector: test_vector.failing_result is not None
-                and test_vector.failing_result.failing_reason in failing_reasons
-            )
-
-        if skip_reasons:
-            lambdas.append(
-                lambda test_vector: test_vector.failing_result is not None
-                and test_vector.failing_result.skip_reason in skip_reasons
-            )
-
-        return lambdas
-
-    @classmethod
-    def get_random_seed(cls) -> int:
-        """Provide a random seed based on environment variables"""
-        random_seed = os.getenv("RANDOM_SEED", None)
-        return int(random_seed) if random_seed else 0
-
-    @classmethod
-    def get_filter_sample(cls) -> float:
-        """Provide a sample of test vectors to run based on environment variables"""
-
-        sample = os.getenv("SAMPLE", None)
-
-        return float(sample) if sample else 100
-
-    @classmethod
-    def get_filter_range(cls) -> tuple[int, int]:
-        """Provide a range of test vectors to run based on environment variables"""
-
-        range = os.getenv("RANGE", None)
-        if range:
-            range = range.split(",")
-            if len(range) == 1:
-                return 0, int(range[0])
-            else:
-                return int(range[0]), int(range[1])
-
-        return 0, 100000
-
-    @classmethod
-    def filter_suite_by_operators(cls, test_suite: TestSuite, operators: List[str]) -> TestSuite:
-        """Filter test plans based on operator list to speed up test filtering"""
-        if operators is None:
-            return test_suite
-        else:
-            test_plans = [
-                test_plan
-                for test_plan in test_suite.test_plans
-                if len(list(set(test_plan.operators) & set(operators))) > 0
-            ]
-            return TestSuite(test_plans)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 class TestCollectionData:
@@ -215,7 +174,18 @@ class TestCollectionData:
     __test__ = False  # Avoid collecting TestCollectionData as a pytest test
 
     # Test collections for query criterias from environment variables
-    filtered = TestParamsData.build_filtered_collection()
+    filtered = TestCollection(
+        operators=query_params.get_operators(),
+        input_sources=query_params.input_sources,
+        input_shapes=query_params.input_shapes,
+        dev_data_formats=query_params.dev_data_formats,
+        math_fidelities=query_params.math_fidelities,
+        kwargs=query_params.kwargs,
+    )
+
+    excluded = TestCollection(
+        operators=query_params.get_exclude_operators(),
+    )
 
     # All available test vectors
     all = TestCollection(
@@ -242,23 +212,102 @@ class TestCollectionData:
     )
 
 
+class TestIdsData:
+
+    __test__ = False  # Avoid collecting TestIdsData as a pytest test
+
+    @staticmethod
+    def _load_test_ids_from_files(id_files: List[str]) -> Generator[str, None, None]:
+        return TestPlanUtils.load_test_ids_from_files(TestParamsData.base_dir, id_files) if id_files else None
+
+    test_ids_list = _load_test_ids_from_files(query_params.id_files)
+
+    single_ids_list = [query_params.test_id] if query_params.test_id else None
+
+    ignore_list = (
+        list(_load_test_ids_from_files(query_params.id_files_ignore)) if query_params.id_files_ignore else None
+    )
+
+
 class TestSuiteData:
 
     __test__ = False  # Avoid collecting TestSuiteData as a pytest test
 
-    all = TestPlanScanner.build_test_suite(scan_file=__file__, scan_package=__package__)
+    # Explicitly ignore test plans
+    ignore_test_plan_paths = [
+        # "test.operators.pytorch.test_",
+    ]
 
-    filtered = TestParamsData.filter_suite_by_operators(all, TestCollectionData.all.operators)
+    @staticmethod
+    def _filter_by_operators(test_suite: TestSuite, operators: List[str]) -> TestSuite:
+        """Filter test plans based on operator list to speed up test filtering"""
+        if operators is None:
+            return test_suite
+        else:
+            test_plans = [
+                test_plan
+                for test_plan in test_suite.test_plans
+                if len(list(set(test_plan.operators) & set(operators))) > 0
+            ]
+            return TestSuite(test_plans)
+
+    all = TestPlanScanner.build_test_suite(
+        scan_file=__file__, scan_package=__package__, ignore_test_plan_paths=ignore_test_plan_paths
+    )
+
+    filtered = _filter_by_operators(all, TestCollectionData.all.operators)
+
+
+class QueryMethods:
+    @classmethod
+    def _remove_failing_result(cls, query: TestQuery) -> Generator[TestVector, None, None]:
+        for test_vector in query.test_vectors:
+            test_vector.failing_result = None
+            yield test_vector
+
+    @classmethod
+    def _remove_xfail_reason(cls, query: TestQuery) -> Generator[TestVector, None, None]:
+        for test_vector in query.test_vectors:
+            if test_vector.failing_result is not None:
+                test_vector.failing_result.failing_reason = None
+            yield test_vector
+
+    @classmethod
+    def remove_failing_result(cls, query: TestQuery) -> TestQuery:
+        return TestQuery(cls._remove_failing_result(query))
+
+    @classmethod
+    def remove_xfail_reason(cls, query: TestQuery) -> TestQuery:
+        return TestQuery(cls._remove_xfail_reason(query))
+
+
+class QueryLambdas:
+
+    SAMPLE = lambda query: query.sample(query_params.sample, query_params.random_seed)
+
+    RANGE = lambda query: query.range(*query_params.range)
+
+    UNIQUE_KWARGS = lambda query: query.group_limit(["operator", "kwargs"], 1)
+
+    CALCULATE_FAILING_RESULT = lambda query: query.calculate_failing_result()
+    REMOVE_FAILING_RESULT = lambda query: QueryMethods.remove_failing_result(query)
+    REMOVE_XFAIL_REASON = lambda query: QueryMethods.remove_xfail_reason(query)
+
+    LOG = lambda query: query.log()
+
+    SAMPLE5 = lambda query: query.sample(5, query_params.random_seed)
+    SAMPLE10 = lambda query: query.sample(10, query_params.random_seed)
+    SAMPLE20 = lambda query: query.sample(20, query_params.random_seed)
 
 
 class VectorLambdas:
     """Helper lambdas for filtering test vectors"""
 
-    ALL_OPERATORS = lambda test_vector: test_vector in TestCollectionData.all
-    NONE = lambda test_vector: False
-
     QUICK = lambda test_vector: test_vector in TestCollectionData.quick
     FILTERED = lambda test_vector: test_vector in TestCollectionData.filtered
+    EXCLUDED = lambda test_vector: test_vector not in TestCollectionData.excluded
+
+    SKIP_IGNORE_LIST = lambda test_vector: test_vector.get_id() not in TestIdsData.ignore_list
 
     SINGLE_SHAPE = lambda test_vector: test_vector.input_shape in TestCollectionCommon.single.input_shapes
 
@@ -304,113 +353,127 @@ class VectorLambdas:
         and test_vector.failing_result.failing_reason == FailingReasons.UNSUPPORTED_DATA_FORMAT
     )
 
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestSuiteData.filtered.query_all().filter(
-        VectorLambdas.ALL_OPERATORS,
-        VectorLambdas.QUICK,
-        # VectorLambdas.FILTERED,
-        # VectorLambdas.SINGLE_SHAPE,
-        # VectorLambdas.HAS_DATA_FORMAT,
-        # VectorLambdas.NO_DATA_FORMAT,
+    FAILING_REASONS = (
+        lambda test_vector: test_vector.failing_result is not None
+        and test_vector.failing_result.failing_reason in query_params.failing_reasons
     )
-    # .filter(lambda test_vector: test_vector in TestCollection(
-    #     operators=["add", ],
-    #     input_shapes=[
-    #         (1, 1)
-    #     ],
-    #     failing_reason=FailingReasons.DATA_MISMATCH,
-    # ))
-    # .log()
-    # .filter(lambda test_vector: test_vector.dev_data_format in [forge.DataFormat.Bfp2])
-    # .log()
-    # .skip(lambda test_vector: test_vector.kwargs is not None and "rounding_mode" in test_vector.kwargs and test_vector.kwargs["rounding_mode"] in ["trunc", "floor"])
-    # .log()
-    # .range(0, 10)
-    # .log()
-    # .range_skip(2, 5)
-    # .log()
-    # .index(3, 5)
-    # .log()
-    # .range(0, 10)
-    # .log()
-    # .filter(VectorLambdas.NONE)
-    .to_params(),
-)
-def test_custom(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestSuiteData.filtered.query_all()
-    .filter(VectorLambdas.FILTERED)
-    .filter(*TestParamsData.build_filter_lambdas())
-    .sample(TestParamsData.get_filter_sample(), TestParamsData.get_random_seed())
-    .range(*TestParamsData.get_filter_range())
-    .to_params(),
-)
-def test_query(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
-
-
-@pytest.mark.parametrize(
-    "test_vector",
-    TestSuiteData.filtered.query_all()
-    .filter(VectorLambdas.ALL_OPERATORS, VectorLambdas.SINGLE_SHAPE)
-    .filter(
-        lambda test_vector: test_vector.input_source in [InputSource.FROM_HOST]
-        if (TestCollectionData.all.operators is None or len(TestCollectionData.all.operators) > 5)
-        else True
+    SKIP_REASONS = (
+        lambda test_vector: test_vector.failing_result is not None
+        and test_vector.failing_result.skip_reason in query_params.skip_reasons
     )
-    .group_limit(["operator", "input_source", "kwargs"], 1)
-    .to_params(),
-)
-def test_unique(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
 
 
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_single_list()).to_params()
-)
-def test_single(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
+class TestQueries:
 
+    __test__ = False  # Avoid collecting TestQueries as a pytest test
 
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.all.query_from_id_list(TestParamsData.get_ids_from_file()).to_params()
-)
-def test_ids(test_vector: TestVector, test_device):
-    test_vector.verify(test_device)
+    @classmethod
+    def _filter_tests_ids_by_operators(cls, test_ids: List[str]) -> List[str]:
+        """Keep only test ids that contain any of the operators from filtered collection"""
+        operators = TestCollectionData.filtered.operators
+        if operators is None:
+            return test_ids
+        operators = [f"{operator}-" for operator in operators]
+        test_ids = [test_id for test_id in test_ids if any([operator in test_id for operator in operators])]
+        return test_ids
 
+    @classmethod
+    def _build_filter_lambdas(cls, filters: List[str]) -> Generator[Callable[[TestQuery], TestQuery], None, None]:
+        """
+        Builds a list of lambdas for filtering test vectors based on environment variables.
+        The lambdas are built based on the following environment variables:
+        - FILTERS: List of lambdas defined in VectorLambdas to filter
+        - FAILING_REASONS: List of failing reasons to filter
+        - SKIP_REASONS: List of skip reasons to filter
+        """
+        for filter in filters:
+            if hasattr(VectorLambdas, filter):
+                vector_filter = getattr(VectorLambdas, filter)
+                yield lambda test_query: test_query.filter(vector_filter)
+            elif hasattr(QueryLambdas, filter):
+                query_filter = getattr(QueryLambdas, filter)
+                yield lambda test_query: query_filter(test_query)
+            else:
+                raise ValueError(f"Filter {filter} not found in VectorLambdas or QueryLambdas")
 
-@pytest.mark.nightly_sweeps
-@pytest.mark.parametrize(
-    "test_vector", TestSuiteData.filtered.query_all().filter(VectorLambdas.ALL_OPERATORS).to_params()
-)
-def test_plan(test_vector: TestVector, test_device):
-    TestVerification.verify(test_vector, test_device)
+    @classmethod
+    def is_empty_collection(cls, collection: TestCollection) -> bool:
+        """Check if the collection is empty"""
+        logger.trace(f"Checking if collection is empty: {collection}")
+        if collection.operators:
+            return False
+        if collection.input_sources:
+            return False
+        if collection.input_shapes:
+            return False
+        if collection.dev_data_formats:
+            return False
+        if collection.math_fidelities:
+            return False
+        if collection.kwargs:
+            return False
+        return True
 
+    @classmethod
+    def _get_filters_names(cls) -> Generator[str, None, None]:
+        if not cls.is_empty_collection(TestCollectionData.filtered):
+            yield "FILTERED"
 
-# 1480 passed, 20 xfailed, 2 warnings in 529.46s (0:08:49)
-# 4 failed, 1352 passed, 212 xfailed, 115 xpassed, 2 warnings in 590.56s (0:09:50)
-# 1 failed, 4041 passed, 20 skipped, 321 xfailed, 2 warnings in 1510.10s (0:25:10)
-# 3894 passed, 108 skipped, 444 xfailed, 252 xpassed, 2 warnings in 1719.04s (0:28:39)
-# 3834 passed, 60 skipped, 372 xfailed, 252 xpassed, 2 warnings in 1511.94s (0:25:11)
-# 10 failed, 3442 passed, 59 skipped, 1030 xfailed, 1 xpassed, 2 warnings in 1787.61s (0:29:47)
-# 12 failed, 3443 passed, 59 skipped, 1028 xfailed, 2 warnings in 1716.62s (0:28:36
-# 10 failed, 3443 passed, 59 skipped, 1027 xfailed, 2 warnings in 1819.59s (0:30:19)
-# 5 failed, 3443 passed, 59 skipped, 1032 xfailed, 2 warnings in 1715.26s (0:28:35)
-# 3443 passed, 59 skipped, 1037 xfailed, 2 warnings in 1726.30s (0:28:46)
-# 8 failed, 3432 passed, 59 skipped, 1028 xfailed, 8 xpassed in 1591.84s (0:26:31)
-# 3440 passed, 59 skipped, 1035 xfailed in 1587.97s (0:26:27)
-# 3500 passed, 1056 xfailed in 1668.66s (0:27:48)
-# 4401 passed, 1423 xfailed in 2185.56s (0:36:25)
-# 4395 passed, 1429 xfailed in 2577.15s (0:42:57)
+        if not cls.is_empty_collection(TestCollectionData.excluded):
+            yield "EXCLUDED"
 
+        yield "CALCULATE_FAILING_RESULT"
 
-# Below are examples of custom test functions that utilize filtering lambdas to run specific tests
+        if query_params.failing_reasons:
+            yield "FAILING_REASONS"
+
+        if query_params.skip_reasons:
+            yield "SKIP_REASONS"
+
+        # Include selected filters from VectorLambdas and QueryLambdas
+        if query_params.filters:
+            yield from query_params.filters
+
+        if query_params.sample is not None:
+            yield "SAMPLE"
+
+        if query_params.id_files_ignore is not None:
+            yield "SKIP_IGNORE_LIST"
+
+        if query_params.range is not None:
+            yield "RANGE"
+
+    @classmethod
+    def query_source(cls) -> TestQuery:
+        if query_params.test_id and query_params.id_files:
+            raise ValueError("TEST_ID and ID_FILES cannot be used together")
+
+        test_suite = TestSuiteData.filtered
+
+        if TestIdsData.test_ids_list:
+            logger.info("Using test ids from file")
+            test_ids = cls._filter_tests_ids_by_operators(TestIdsData.test_ids_list)
+            test_vectors = test_suite.load_test_vectors_from_id_list(test_ids)
+        elif TestIdsData.single_ids_list:
+            logger.info("Using single test id")
+            test_ids = cls._filter_tests_ids_by_operators(TestIdsData.single_ids_list)
+            test_vectors = test_suite.load_test_vectors_from_id_list(test_ids)
+        else:
+            logger.info("Using all test vectors")
+            test_vectors = test_suite.generate()
+
+        query = TestQuery(test_vectors)
+
+        return query
+
+    @classmethod
+    def query_filter(cls, query: TestQuery) -> TestQuery:
+        filters = list(cls._get_filters_names())
+        logger.info(f"Filters: {filters}")
+        for filter_lambda in cls._build_filter_lambdas(filters):
+            query = filter_lambda(query)
+
+        return query
 
 
 class InfoUtils:
@@ -426,14 +489,44 @@ class InfoUtils:
         cls.print_configuration_examples(max_width)
 
     @classmethod
+    def export(cls, file_name: str):
+        test_vectors = TestQueries.query_filter(TestQueries.query_source()).test_vectors
+        logger.info(f"Exporting test vectors to {file_name}")
+
+        test_vectors = [
+            {
+                "id": test_vector.get_id(),
+                "operator": test_vector.operator,
+                "input_source": test_vector.input_source.name if test_vector.input_source is not None else None,
+                "input_shape": f"{test_vector.input_shape}",
+                "dev_data_format": TestPlanUtils.dev_data_format_to_str(test_vector.dev_data_format),
+                "math_fidelity": test_vector.math_fidelity.name if test_vector.math_fidelity is not None else None,
+                "kwargs": f"{test_vector.kwargs}",
+                "failing_reason": test_vector.failing_result.failing_reason if test_vector.failing_result else None,
+                "skip_reason": test_vector.failing_result.skip_reason if test_vector.failing_result else None,
+                "status": "skipped"
+                if test_vector.failing_result and test_vector.failing_result.skip_reason
+                else "xfailed"
+                if test_vector.failing_result and test_vector.failing_result.failing_reason
+                else "passed",
+            }
+            for test_vector in test_vectors
+        ]
+
+        with open(file_name, "w") as file:
+            json.dump(test_vectors, file, indent=4)
+
+    @classmethod
     def print_query_values(cls, max_width=80):
 
         operators = [key for key in TestSuiteData.all.indices]
         operators = sorted(operators)
         operators = ", ".join(operators)
 
-        filters = [key for key, value in VectorLambdas.__dict__.items() if not key.startswith("__")]
-        filters = [filter for filter in filters if filter not in ["ALL_OPERATORS", "NONE", "FILTERED"]]
+        filters = []
+        filters += [key for key, value in VectorLambdas.__dict__.items() if not key.startswith("__")]
+        filters += [key for key, value in QueryLambdas.__dict__.items() if not key.startswith("__")]
+        filters = [filter for filter in filters if filter]
         filters = ", ".join(filters)
 
         input_sources = [f"{input_source.name}" for input_source in TestCollectionCommon.all.input_sources]
@@ -442,7 +535,12 @@ class InfoUtils:
         input_shapes = [f"{input_shape}" for input_shape in TestCollectionCommon.all.input_shapes]
         input_shapes = ", ".join(input_shapes)
 
-        dev_data_formats = [f"{dev_data_format.name}" for dev_data_format in TestCollectionCommon.all.dev_data_formats]
+        all_dev_data_formats = []
+        all_dev_data_formats += TestCollectionCommon.all.dev_data_formats
+        all_dev_data_formats += TestCollectionTorch.all.dev_data_formats
+        dev_data_formats = [
+            f"{TestPlanUtils.dev_data_format_to_str(dev_data_format)}" for dev_data_format in all_dev_data_formats
+        ]
         dev_data_formats = ", ".join(dev_data_formats)
 
         math_fidelities = [f"{math_fidelity.name}" for math_fidelity in TestCollectionCommon.all.math_fidelities]
@@ -465,7 +563,7 @@ class InfoUtils:
             {"name": "MATH_FIDELITIES", "description": f"List of math fidelities. Supported values: {math_fidelities}"},
             {
                 "name": "KWARGS",
-                "description": "List of kwargs dictionaries. Kwarg is a mandatory or optional attribute of an operator. See operator documentation for each operator or use `test_unique` to find examples.",
+                "description": "List of kwargs dictionaries. Kwarg is a mandatory or optional attribute of an operator. See operator documentation for each operator or use filter `UNIQUE_KWARGS` to find examples.",
             },
             {"name": "FAILING_REASONS", "description": f"List of failing reasons. Supported values: {failing_reasons}"},
             {"name": "SKIP_REASONS", "description": "Same as FAILING_REASONS"},
@@ -473,7 +571,8 @@ class InfoUtils:
             {"name": "SAMPLE", "description": "Percentage of results to sample"},
             {"name": "RANGE", "description": "Limit number of results"},
             {"name": "TEST_ID", "description": "Id of a test containing test parameters"},
-            {"name": "ID_FILE", "description": "Path to a file containing test ids"},
+            {"name": "ID_FILES", "description": "Paths to files containing test ids instead of tests from test plan"},
+            {"name": "ID_FILES_IGNORE", "description": "Paths to files containing test ids to be ignored"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Supported values"])
@@ -501,7 +600,8 @@ class InfoUtils:
             {"name": "SAMPLE", "description": "export SAMPLE=20"},
             {"name": "RANGE", "description": "export RANGE=10,20"},
             {"name": "TEST_ID", "description": "export TEST_ID='ge-FROM_HOST-None-(1, 2, 3, 4)-Float16_b-HiFi4'"},
-            {"name": "ID_FILE", "description": "export ID_FILE='/path/to/test_ids.log'"},
+            {"name": "ID_FILES", "description": "export ID_FILES='/path/to/test_ids.log'"},
+            {"name": "ID_FILES_IGNORE", "description": "export ID_FILES_IGNORE='ids/blacklist.txt,ids/ignore.txt'"},
         ]
 
         cls.print_formatted_parameters(parameters, max_width, headers=["Parameter", "Examples"])

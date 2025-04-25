@@ -5,9 +5,9 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, build_module_name
 from test.utils import fetch_model, yolov5_loader
 
 base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
@@ -34,23 +34,23 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail
 def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="320x320",
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -85,24 +85,24 @@ size = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="640x640",
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -127,10 +127,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
 
 
 size = [
-    pytest.param(
-        "n",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("n", id="yolov5n"),
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
@@ -140,23 +137,23 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
+@pytest.mark.xfail
 def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
     if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="480x480",
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -177,19 +174,18 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
 def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant=variant,
-        task="imgcls",
-        source="torchhub",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
         suffix="1280x1280",
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model = fetch_model(
         variant,

@@ -445,6 +445,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     [
         ((56), 0),
         ((1, 128), 1),
+        ((1, 32), -1),
         pytest.param(
             (1, 64, 76),
             2,
@@ -595,9 +596,6 @@ def test_log(forge_property_recorder, shape):
         ((1, 16, 32, 32), (1,)),
         ((1, 32, 32, 32), (1,)),
     ],
-)
-@pytest.mark.xfail(
-    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
 )
 @pytest.mark.push
 def test_maximum(forge_property_recorder, shape_x, shape_y):
@@ -780,3 +778,100 @@ def test_floor(forge_property_recorder, input_data):
     )
 
     verify([input_data], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape, dim, keepdim",
+    [
+        # Core test cases for dimension-specific argmax
+        pytest.param(
+            (56,),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), 0, True),
+        ((1, 128), 1, False),
+        ((1, 128), 1, True),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            False,
+        ),
+        ((1, 64, 76), 2, True),
+        pytest.param(
+            (1, 64, 76), 1, True, marks=pytest.mark.xfail(reason="TTNN: Only argmax on last dim is supported!")
+        ),
+        #################################################
+        # Core test cases for global argmax (dim=None)
+        pytest.param(
+            (56,),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), None, True),
+        pytest.param(
+            (1, 128),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((1, 128), None, True),
+    ],
+)
+@pytest.mark.push
+def test_argmax(forge_property_recorder, shape, dim, keepdim):
+    class ArgMax(nn.Module):
+        def __init__(self, dim, keepdim):
+            super().__init__()
+            self.dim = dim
+            self.keepdim = keepdim
+
+        def forward(self, x):
+            return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = ArgMax(dim, keepdim)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "pattern, input_shape",
+    [
+        ("nhwpqc->nchpwq", (2, 64, 64, 2, 2, 16)),
+        ("nhwpqc->nchpwq", (1, 32, 32, 4, 4, 8)),
+        ("nhwpqc->nchpwq", (4, 16, 16, 2, 2, 32)),
+        ("nhwpqc->nchpwq", (3, 8, 8, 1, 1, 64)),
+    ],
+)
+@pytest.mark.push
+def test_einsum(forge_property_recorder, pattern, input_shape):
+    class EinsumModel(torch.nn.Module):
+        def __init__(self, pattern):
+            super().__init__()
+            self.pattern = pattern
+
+        def forward(self, x):
+            return torch.einsum(self.pattern, x)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = EinsumModel(pattern)
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

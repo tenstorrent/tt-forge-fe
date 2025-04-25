@@ -30736,30 +30736,23 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Conv2D0,
-            [((1, 3, 427, 640), torch.float32)],
-            {
-                "model_name": [
-                    "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
-                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D0,
+        [((1, 3, 427, 640), torch.float32)],
+        {
+            "model_name": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 69874560 B L1 buffer across 63 banks, where each bank needs to store 1109120 B"
-            )
-        ],
+        },
     ),
     (
         Conv2D1,
@@ -45985,55 +45978,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D485,
-            [((1, 3, 480, 640), torch.float32)],
-            {
-                "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[4, 4]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D485,
+        [((1, 3, 480, 640), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[4, 4]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 54551040 B L1 buffer across 60 banks, where each bank needs to store 909184 B"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Conv2D0,
-            [((1, 3, 480, 640), torch.float32)],
-            {
-                "model_name": [
-                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                    "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
-                    "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
-                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D0,
+        [((1, 3, 480, 640), torch.float32)],
+        {
+            "model_name": [
+                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn18fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn34fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73080832 B L1 buffer across 64 banks, where each bank needs to store 1141888 B"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -55003,31 +54982,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D0,
-            [((1, 3, 320, 1024), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D0,
+        [((1, 3, 320, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 88612864 B L1 buffer across 64 banks, where each bank needs to store 1384576 B"
-            )
-        ],
+        },
     ),
     (
         Conv2D2,
@@ -55418,57 +55390,43 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D769,
-            [((1, 16, 322, 1026), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[1, 1]",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D769,
+        [((1, 16, 322, 1026), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 58834944 B L1 buffer across 64 banks, where each bank needs to store 919296 B"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Conv2D770,
-            [((1, 16, 322, 1026), torch.float32)],
-            {
-                "model_name": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[1, 1]",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D770,
+        [((1, 16, 322, 1026), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 58834944 B L1 buffer across 64 banks, where each bank needs to store 919296 B"
-            )
-        ],
+        },
     ),
     (
         Conv2D30,
@@ -55620,27 +55578,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D148,
-            [((1, 3, 227, 227), torch.float32)],
-            {
-                "model_name": ["pt_rcnn_base_obj_det_torchvision_rect_0"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[4, 4]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D148,
+        [((1, 3, 227, 227), torch.float32)],
+        {
+            "model_name": ["pt_rcnn_base_obj_det_torchvision_rect_0"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[4, 4]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 4791 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 1031040 and static circular buffer region ends at 1178656"
-            )
-        ],
+        },
     ),
     (
         Conv2D777,
@@ -56449,27 +56400,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D819,
-            [((1, 2904, 48, 48), torch.float32)],
-            {
-                "model_name": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "11",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D819,
+        [((1, 2904, 48, 48), torch.float32)],
+        {
+            "model_name": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "11",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 5163 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=4)]. L1 buffer allocated at 249600 and static circular buffer region ends at 687328"
-            )
-        ],
+        },
     ),
     (
         Conv2D820,
@@ -62534,37 +62478,30 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D485,
-            [((1, 3, 512, 512), torch.float32)],
-            {
-                "model_name": [
-                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                    "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                    "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                    "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                    "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                    "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[4, 4]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D485,
+        [((1, 3, 512, 512), torch.float32)],
+        {
+            "model_name": [
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[4, 4]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 5875 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 213120 and static circular buffer region ends at 621664"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -62903,30 +62840,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1145,
-            [((1, 3, 512, 512), torch.float32)],
-            {
-                "model_name": [
-                    "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[4, 4]",
-                    "padding": "[3, 3, 3, 3]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1145,
+        [((1, 3, 512, 512), torch.float32)],
+        {
+            "model_name": [
+                "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[4, 4]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 6170 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 213120 and static circular buffer region ends at 621664"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -66178,27 +66108,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1219,
-            [((1, 3, 480, 480), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1219,
+        [((1, 3, 480, 480), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 6681 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 568416"
-            )
-        ],
+        },
     ),
     (
         Conv2D1220,
@@ -67667,27 +67590,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1272,
-            [((1, 3, 480, 480), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1272,
+        [((1, 3, 480, 480), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7034 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 568416"
-            )
-        ],
+        },
     ),
     (
         Conv2D1225,
@@ -68004,49 +67920,35 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1280,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1280,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Conv2D1281,
-            [((1, 48, 320, 320), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1281,
+        [((1, 48, 320, 320), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7048 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 413440 and static circular buffer region ends at 523488"
-            )
-        ],
+        },
     ),
     (
         Conv2D1282,
@@ -68483,52 +68385,38 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1272,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1272,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        },
     ),
-    pytest.param(
-        (
-            Conv2D1225,
-            [((1, 64, 320, 320), torch.float32)],
-            {
-                "model_name": [
-                    "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                    "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                ],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1225,
+        [((1, 64, 320, 320), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+            ],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7149 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 413440 and static circular buffer region ends at 523488"
-            )
-        ],
+        },
     ),
     (
         Conv2D1226,
@@ -69052,27 +68940,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1246,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1246,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -69441,27 +69322,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1219,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1219,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        },
     ),
     (
         Conv2D1220,
@@ -69722,27 +69596,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1306,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1306,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 73859072 B L1 buffer across 64 banks, where each bank needs to store 1154048 B"
-            )
-        ],
+        },
     ),
     (
         Conv2D1307,
@@ -69834,27 +69701,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1246,
-            [((1, 3, 480, 480), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1246,
+        [((1, 3, 480, 480), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7266 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 568416"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -70924,27 +70784,20 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    pytest.param(
-        (
-            Conv2D1280,
-            [((1, 3, 480, 480), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1280,
+        [((1, 3, 480, 480), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7512 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 568416"
-            )
-        ],
+        },
     ),
     (
         Conv2D1281,
@@ -71696,27 +71549,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1306,
-            [((1, 3, 480, 480), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[2, 2, 2, 2]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1306,
+        [((1, 3, 480, 480), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7614 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 197632 and static circular buffer region ends at 568416"
-            )
-        ],
+        },
     ),
     (
         Conv2D1307,
@@ -72033,27 +71879,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1313,
-            [((1, 3, 448, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1313,
+        [((1, 3, 448, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7765 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 194432 and static circular buffer region ends at 670816"
-            )
-        ],
+        },
     ),
     (
         Conv2D1314,
@@ -72610,27 +72449,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1342,
-            [((1, 3, 448, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1342,
+        [((1, 3, 448, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7763 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 194432 and static circular buffer region ends at 670816"
-            )
-        ],
+        },
     ),
     (
         Conv2D1343,
@@ -73458,27 +73290,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1379,
-            [((1, 3, 448, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1379,
+        [((1, 3, 448, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 7899 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 194432 and static circular buffer region ends at 670816"
-            )
-        ],
+        },
     ),
     (
         Conv2D1320,
@@ -73933,27 +73758,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1395,
-            [((1, 3, 448, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1395,
+        [((1, 3, 448, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 8005 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 194432 and static circular buffer region ends at 670816"
-            )
-        ],
+        },
     ),
     (
         Conv2D1317,
@@ -74165,27 +73983,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D1163,
-            [((1, 3, 640, 640), torch.float32)],
-            {
-                "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[1, 1]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D1163,
+        [((1, 3, 640, 640), torch.float32)],
+        {
+            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 63111168 B L1 buffer across 64 banks, where each bank needs to store 986112 B"
-            )
-        ],
+        },
     ),
     pytest.param(
         (
@@ -74254,27 +74065,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D140,
-            [((1, 64, 320, 320), torch.float32)],
-            {
-                "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D140,
+        [((1, 64, 320, 320), torch.float32)],
+        {
+            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 8134 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 413440 and static circular buffer region ends at 523488"
-            )
-        ],
+        },
     ),
     (
         Conv2D242,
@@ -76516,27 +76320,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D551,
-            [((1, 48, 320, 320), torch.float32)],
-            {
-                "model_name": ["pt_yolox_yolox_m_obj_det_torchhub"],
-                "pcc": 0.99,
-                "op_params": {
-                    "stride": "[2, 2]",
-                    "padding": "[1, 1, 1, 1]",
-                    "dilation": "1",
-                    "groups": "1",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D551,
+        [((1, 48, 320, 320), torch.float32)],
+        {
+            "model_name": ["pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:980: tt::exception info: Statically allocated circular buffers in program 8492 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 413440 and static circular buffer region ends at 523488"
-            )
-        ],
+        },
     ),
     (
         Conv2D550,
@@ -77552,14 +77349,21 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Conv2d")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Conv2d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -77581,6 +77385,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

@@ -34,13 +34,13 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 12, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
+			<td><ul><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100, dtype=float32)</td>
 			<td></td>
 		</tr>
