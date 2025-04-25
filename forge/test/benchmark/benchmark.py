@@ -50,6 +50,13 @@ def read_args():
     parser.add_argument(
         "-bs", "--batch_size", type=int, default=1, help="Batch size, number of samples to process at once."
     )
+    parser.add_argument(
+        "-df",
+        "--data-format",
+        type=str,
+        default=None,
+        help="Data format, format of the input data. If the model gives opportunity to change data format.",
+    )
     parser.add_argument("-lp", "--loop_count", type=int, default=1, help="Number of times to run the benchmark.")
     parser.add_argument(
         "-isz",
@@ -98,6 +105,7 @@ def read_args():
     else:
         parsed_args["batch_size"] = args.batch_size
 
+    parsed_args["data_format"] = args.data_format
     parsed_args["input_size"] = args.input_size
     parsed_args["hidden_size"] = args.hidden_size
     parsed_args["output"] = args.output

@@ -2017,6 +2017,16 @@ class DecomposeEinsum(DFPatternCallback):
             )
 
             return result
+
+        elif match_einsum_pattern("nhwpqc->nchpwq", equation):
+            # Ensure the einsum pattern is matched, and there should be one input node
+            assert len(node_map[self.act][0]) == 1
+
+            src = node_map[self.act][0][0]  # (n, h, w, p, q, c)
+            result = tvm.relay.transpose(src, axes=[0, 5, 1, 3, 2, 4])  # (n, c, h, p, w, q)
+
+            return result
+
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 

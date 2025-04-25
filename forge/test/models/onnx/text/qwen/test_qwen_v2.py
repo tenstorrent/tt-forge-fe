@@ -32,7 +32,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-0.5B-Instruct",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B-Instruct",

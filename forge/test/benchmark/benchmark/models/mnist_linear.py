@@ -17,6 +17,7 @@ from torch import nn
 
 # Forge modules
 import forge
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
@@ -111,15 +112,16 @@ def test_mnist_linear(
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model.
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    co_out = compiled_model(*inputs)
+    verify(inputs, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*inputs)
     end = time.time()
 
-    verify(inputs, framework_model, compiled_model)
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
