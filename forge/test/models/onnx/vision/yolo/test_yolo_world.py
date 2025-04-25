@@ -17,7 +17,6 @@ from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
 )
 
 
-@pytest.mark.push
 @pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
@@ -26,7 +25,7 @@ def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="yolo_world",
         variant="default",
         task=Task.OBJECT_DETECTION,
@@ -36,6 +35,7 @@ def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
     # Record Forge property
 
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load framework_model and input
 
@@ -43,14 +43,13 @@ def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
     inputs = get_test_input()
 
     # Export model to ONNX
-    onnx_path = tmp_path / "yolov10.onnx"
+    onnx_path = tmp_path / "yolo-world.onnx"
     torch.onnx.export(
         torch_model,
         inputs,
         onnx_path,
         input_names=["image"],
         output_names=["output"],
-        opset_version=17,
         dynamic_axes={"image": {0: "batch_size"}},
     )
 
