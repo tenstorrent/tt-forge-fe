@@ -24,6 +24,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_python_indexing(forge_property_recorder, index_shape: Literal[0] | Literal[2] | Literal[-1]):
 
     index, shape = index_shape
@@ -65,6 +66,7 @@ def test_python_indexing(forge_property_recorder, index_shape: Literal[0] | Lite
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_python_indexing_with_lists(forge_property_recorder, index_shape: list[int] | list[list[int]]):
     indices, shape = index_shape
 
@@ -104,6 +106,7 @@ def test_python_indexing_with_lists(forge_property_recorder, index_shape: list[i
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_python_indexing_with_tensors(forge_property_recorder, index_shape):
     indices, shape = index_shape
 

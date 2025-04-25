@@ -24,6 +24,7 @@ class MatmulParam(nn.Module):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_torch_training(forge_property_recorder):
     model = MatmulParam()
     shape = (1, 1024)
@@ -68,6 +69,7 @@ def test_torch_training(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.parametrize("optimizer", [forge.optimizers.SGD, forge.optimizers.Adam, forge.optimizers.AdamW])
 def test_compile_optimizers(forge_property_recorder, optimizer):
     model = MatmulParam()

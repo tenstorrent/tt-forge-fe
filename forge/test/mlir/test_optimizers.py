@@ -68,6 +68,7 @@ def train_and_compare_optimizers(
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_sgd(forge_property_recorder, shape):
     torch.manual_seed(0)
     num_epochs = 10
@@ -129,6 +130,7 @@ def test_sgd(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_adam(forge_property_recorder, shape, betas, weight_decay):
     torch.manual_seed(0)
     num_epochs = 10

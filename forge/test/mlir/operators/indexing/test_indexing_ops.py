@@ -50,6 +50,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diagonal']")
 def test_diagonal(forge_property_recorder, input_tensor, offset, dim1, dim2):
     class DiagonalModule(nn.Module):
@@ -103,6 +104,7 @@ def test_diagonal(forge_property_recorder, input_tensor, offset, dim1, dim2):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diag']")
 def test_diag(forge_property_recorder, input_tensor, diagonal):
     class DiagModule(nn.Module):
@@ -162,6 +164,7 @@ def test_diag(forge_property_recorder, input_tensor, diagonal):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::diag_embed']")
 def test_diag_embed(forge_property_recorder, input_tensor, offset, dim1, dim2):
     class DiagEmbedModule(nn.Module):
@@ -213,6 +216,7 @@ def test_diag_embed(forge_property_recorder, input_tensor, offset, dim1, dim2):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
 def test_triu(forge_property_recorder, input_tensor, diagonal):
     class TriuModule(nn.Module):
@@ -264,6 +268,7 @@ def test_triu(forge_property_recorder, input_tensor, diagonal):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_tril(forge_property_recorder, input_tensor, diagonal):
     class TrilModule(nn.Module):
         def __init__(self, diagonal):
@@ -320,6 +325,7 @@ def test_tril(forge_property_recorder, input_tensor, diagonal):
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::take_along_dim']")
 @pytest.mark.push
+@pytest.mark.functional
 def test_take_along_dim(forge_property_recorder, input_tensor, indices, dim):
     class TakeAlongDimModule(nn.Module):
         def __init__(self, dim):
@@ -387,6 +393,7 @@ def test_take_along_dim(forge_property_recorder, input_tensor, indices, dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_gather(forge_property_recorder, input_tensor, index, dim, sparse_grad):
     class GatherModule(nn.Module):
         def __init__(self, dim, sparse_grad, index):
@@ -438,6 +445,7 @@ def test_gather(forge_property_recorder, input_tensor, index, dim, sparse_grad):
 )
 @pytest.mark.xfail(reason="Not supported in our version of pytorch")
 @pytest.mark.push
+@pytest.mark.functional
 def test_unravel_index(forge_property_recorder, indices, shape):
     class UnravelIndexModule(nn.Module):
         def __init__(self, shape):
@@ -486,6 +494,7 @@ def test_unravel_index(forge_property_recorder, indices, shape):
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::put']")
 @pytest.mark.push
+@pytest.mark.functional
 def test_put(forge_property_recorder, input_tensor, indices, values):
     class PutModule(nn.Module):
         def __init__(self, indices, values):
@@ -550,6 +559,7 @@ def test_put(forge_property_recorder, input_tensor, indices, values):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_unique(forge_property_recorder, input_tensor, sorted, return_inverse, return_counts, dim):
     class UniqueModule(nn.Module):
         def __init__(self, sorted, return_inverse, return_counts, dim):
@@ -613,6 +623,7 @@ def test_unique(forge_property_recorder, input_tensor, sorted, return_inverse, r
     reason="NotImplementedError: The following operators are not implemented: ['aten::unique_consecutive']"
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_unique_consecutive(forge_property_recorder, input_tensor, return_inverse, return_counts, dim):
     class UniqueConsecutiveModule(nn.Module):
         def __init__(self, return_inverse, return_counts, dim):
@@ -656,6 +667,7 @@ def test_unique_consecutive(forge_property_recorder, input_tensor, return_invers
 )
 @pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")
 @pytest.mark.push
+@pytest.mark.functional
 def test_where(forge_property_recorder, input_tensor1, input_tensor2):
     class WhereModule(nn.Module):
         def __init__(self, input2):
@@ -692,6 +704,7 @@ def test_where(forge_property_recorder, input_tensor1, input_tensor2):
 )
 @pytest.mark.xfail(reason="NotImplementedError: The following operators are not implemented: ['aten::argwhere']")
 @pytest.mark.push
+@pytest.mark.functional
 def test_argwhere(forge_property_recorder, input_tensor):
     class ArgwhereModule(nn.Module):
         def forward(self, x):

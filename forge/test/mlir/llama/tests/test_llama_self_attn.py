@@ -18,6 +18,7 @@ from forge.verify.config import VerifyConfig
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_llama_self_attn(forge_property_recorder, model_path):
     # Define wrapper function
     class SelfAttention(torch.nn.Module):

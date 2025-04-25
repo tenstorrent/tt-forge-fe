@@ -53,6 +53,7 @@ class AdvIndexWrapper(ForgeModule):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_adv_indexing(operand_shapes_dtypes, dim):
 
     # Make sure we don't go out of bounds for the dimension we're indexing

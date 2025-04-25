@@ -13,6 +13,7 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiple_inputs(forge_property_recorder):
     class MultipleInputs(nn.Module):
         def __init__(self):
@@ -38,6 +39,7 @@ def test_multiple_inputs(forge_property_recorder):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_input_order(forge_property_recorder, a_shape, b_shape, c_shape):
     class InputOrderWithConstants(nn.Module):
         def __init__(self):
@@ -67,6 +69,7 @@ def test_input_order(forge_property_recorder, a_shape, b_shape, c_shape):
 @pytest.mark.parametrize("batch_size", [1, 4, 16, 32, 64])
 @pytest.mark.parametrize("linear_features", [(784, 10)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul_bias(forge_property_recorder, batch_size, linear_features):
     input_features, output_dim = linear_features
 
@@ -92,6 +95,7 @@ def test_matmul_bias(forge_property_recorder, batch_size, linear_features):
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 @pytest.mark.push
+@pytest.mark.functional
 def test_batch_size_inference(forge_property_recorder, batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):
@@ -118,6 +122,7 @@ def test_batch_size_inference(forge_property_recorder, batch_size, in_features, 
 @pytest.mark.parametrize("in_features", [784])
 @pytest.mark.parametrize("out_features", [10])
 @pytest.mark.push
+@pytest.mark.functional
 def test_batch_size_training(forge_property_recorder, batch_size, in_features, out_features):
     class SimpleModel(nn.Module):
         def __init__(self):

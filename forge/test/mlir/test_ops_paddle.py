@@ -22,6 +22,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_equal_pp(forge_property_recorder, shape):
     class Equal_pp(paddle.nn.Layer):
         def __init__(self):
@@ -40,6 +41,7 @@ def test_equal_pp(forge_property_recorder, shape):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_add_pp(forge_property_recorder):
     class Add_pp(paddle.nn.Layer):
         def __init__(self):
@@ -62,6 +64,7 @@ def test_add_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_arithmetic_pp(forge_property_recorder):
     class Arithmetic_pp(paddle.nn.Layer):
         def __init__(self):
@@ -81,6 +84,7 @@ def test_arithmetic_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul_pp(forge_property_recorder):
     class Matmul_pp(paddle.nn.Layer):
         def __init__(self):
@@ -100,6 +104,7 @@ def test_matmul_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_squeeze_pp(forge_property_recorder):
     class Squeeze_pp(paddle.nn.Layer):
         def __init__(self):
@@ -121,6 +126,7 @@ def test_squeeze_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_flatten_pp(forge_property_recorder):
     class Flatten_pp(paddle.nn.Layer):
         def __init__(self):
@@ -142,6 +148,7 @@ def test_flatten_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_linear_layer_pp(forge_property_recorder):
     input_features, output_dim = (784, 10)
 
@@ -164,6 +171,7 @@ def test_linear_layer_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiple_layers_pp(forge_property_recorder):
     class CNNClassifier_pp(paddle.nn.Layer):
         def __init__(self, num_classes=10):
@@ -193,6 +201,7 @@ def test_multiple_layers_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_mnist_linear_pp(forge_property_recorder):
     class PaddleMNISTLinear(paddle.nn.Layer):
         def __init__(self, input_size=784, output_size=10, hidden_size=512, bias=True):
@@ -220,6 +229,7 @@ def test_mnist_linear_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_loaded_model(forge_property_recorder):
     input_features, output_dim = (784, 10)
 
@@ -243,6 +253,7 @@ def test_loaded_model(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_batchnorm_pp(forge_property_recorder):
     class BatchNorm_pp(paddle.nn.Layer):
         def __init__(self, num_features):
@@ -263,6 +274,7 @@ def test_batchnorm_pp(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_convbn_pp(forge_property_recorder):
     class ConvBNLayer(paddle.nn.Layer):
         def __init__(self, in_c, out_c, filter_size, stride, padding, num_groups=1, if_act=True, act=None):
@@ -308,6 +320,7 @@ def test_convbn_pp(forge_property_recorder):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
+@pytest.mark.functional
 def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_dim):
     class Embedding(paddle.nn.Layer):
         def __init__(self):

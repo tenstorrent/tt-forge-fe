@@ -33,6 +33,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_masked_select(forge_property_recorder, input_tensor, mask):
     class MaskedSelectModule(torch.nn.Module):
         def __init__(self, mask):
@@ -78,6 +79,7 @@ def test_masked_select(forge_property_recorder, input_tensor, mask):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_masked_fill(forge_property_recorder, input_tensor, mask, value):
     class MaskedFillModule(torch.nn.Module):
         def __init__(self, mask, value):

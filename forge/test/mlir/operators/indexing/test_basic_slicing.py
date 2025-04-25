@@ -23,6 +23,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_slicing(forge_property_recorder, input_tensor_slice):
     input_tensor, slicing = input_tensor_slice
 
@@ -86,6 +87,7 @@ def test_slicing(forge_property_recorder, input_tensor_slice):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_multidimensional_slicing(forge_property_recorder, input_tensor_slicing):
     input_tensor, slicing = input_tensor_slicing
 

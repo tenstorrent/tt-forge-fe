@@ -21,6 +21,7 @@ from forge._C import DataFormat
 # PyTorch test remains the same
 @pytest.mark.parametrize("shape", [(1, 3, 8, 8)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
     class TinyBNNet(nn.Module):
         def __init__(self):
@@ -69,6 +70,7 @@ def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_convtranspose2d_bfloat16_pytorch(
     forge_property_recorder,
     in_channels,
@@ -112,6 +114,7 @@ def test_convtranspose2d_bfloat16_pytorch(
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):

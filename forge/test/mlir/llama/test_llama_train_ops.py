@@ -113,6 +113,7 @@ from forge.tensor import to_forge_tensors
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_mean_bwd(forge_property_recorder, input_shape, dim):
     class MeanBwd(nn.Module):
         def __init__(self, dim: int):
@@ -156,6 +157,7 @@ def test_mean_bwd(forge_property_recorder, input_shape, dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul_dims(forge_property_recorder, in_features, out_features):
     class MatMulDimsCheck(nn.Module):
         def __init__(self, in_features, out_features, bias=True, dtype=torch.float32):

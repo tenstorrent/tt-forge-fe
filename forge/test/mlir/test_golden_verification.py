@@ -19,6 +19,7 @@ from forge.verify.verify import verify, DepricatedVerifyConfig
 @pytest.mark.parametrize("outer_dim_y", [7])
 @pytest.mark.parametrize("inner_dim", [64])
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul_and_add(batch_size, outer_dim_x, outer_dim_y, inner_dim):
     class MatmulAdd(nn.Module):
         def __init__(self):
@@ -54,6 +55,7 @@ def test_matmul_and_add(batch_size, outer_dim_x, outer_dim_y, inner_dim):
 @pytest.mark.parametrize("lhs", [7])
 @pytest.mark.parametrize("rhs", [7])
 @pytest.mark.push
+@pytest.mark.functional
 def test_constant_add(batch_size, lhs, rhs):
     class ConstAdd(nn.Module):
         def __init__(self):

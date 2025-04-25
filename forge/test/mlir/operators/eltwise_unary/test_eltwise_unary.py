@@ -43,6 +43,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
     class PixelShuffleModel(nn.Module):
         def __init__(self, scale_factor):
@@ -113,6 +114,7 @@ def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_nan_to_num(forge_property_recorder, shape, dtype):
     class nan_to_num(nn.Module):
         def __init__(self):
@@ -207,6 +209,7 @@ def test_nan_to_num(forge_property_recorder, shape, dtype):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_isnan(forge_property_recorder, shape, dtype):
     class isnan(nn.Module):
         def __init__(self):
@@ -234,6 +237,7 @@ def test_isnan(forge_property_recorder, shape, dtype):
     [(888), (1, 7, 256), (3, 128, 128), (1, 10), (2, 2, 2), (5, 5), (1, 3, 224, 224), (8, 16, 32), (1, 3, 2, 544, 544)],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_atan(forge_property_recorder, shape):
     class Atan(nn.Module):
         def __init__(self):
@@ -268,6 +272,7 @@ def test_atan(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_power(forge_property_recorder, shape):
     class power(nn.Module):
         def __init__(self):
@@ -293,6 +298,7 @@ def test_power(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_sin(forge_property_recorder, shape):
     class Sin(nn.Module):
         def __init__(self):
@@ -318,6 +324,7 @@ def test_sin(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_cosine(forge_property_recorder, shape):
     class Cosine(nn.Module):
         def __init__(self):
@@ -344,6 +351,7 @@ def test_cosine(forge_property_recorder, shape):
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
+@pytest.mark.functional
 def test_tanh(forge_property_recorder, shape):
     class Tanh(nn.Module):
         def __init__(self):
@@ -370,6 +378,7 @@ def test_tanh(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_leakyrelu(forge_property_recorder, shape):
 
     inputs = [torch.rand(shape)]
@@ -390,6 +399,7 @@ def test_leakyrelu(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_gelu(forge_property_recorder, shape):
 
     inputs = [torch.rand(shape)]
@@ -420,6 +430,7 @@ def test_gelu(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_clip(forge_property_recorder, shape, min_val, max_val):
     class Clip(nn.Module):
         def __init__(self, min_val, max_val):
@@ -466,6 +477,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_cumsum(forge_property_recorder, shape, dim):
     class CumSum(nn.Module):
         def __init__(self, dim):
@@ -489,6 +501,7 @@ def test_cumsum(forge_property_recorder, shape, dim):
     "shape", [(1, 1, 256, 256), (1, 1, 1, 128), (1, 1, 1, 384), (1, 1, 32, 32), (1, 1, 6, 6), (1, 1, 29, 29)]
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_abs(forge_property_recorder, shape):
     class Abs(nn.Module):
         def __init__(self):
@@ -520,6 +533,7 @@ def test_abs(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_exp(forge_property_recorder, shape):
     class Exp(nn.Module):
         def __init__(self):
@@ -568,6 +582,7 @@ def test_exp(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_log(forge_property_recorder, shape):
     class Log(nn.Module):
         def __init__(self):
@@ -598,6 +613,7 @@ def test_log(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_maximum(forge_property_recorder, shape_x, shape_y):
     class Maximum(nn.Module):
         def __init__(self):
@@ -620,6 +636,7 @@ def test_maximum(forge_property_recorder, shape_x, shape_y):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_relu(forge_property_recorder):
     class ReLU(nn.Module):
         def __init__(self):
@@ -642,6 +659,7 @@ def test_relu(forge_property_recorder):
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.push
+@pytest.mark.functional
 def test_sqrt(forge_property_recorder, x_shape, y_shape):
     class Sqrt(nn.Module):
         def __init__(self):
@@ -676,6 +694,7 @@ def test_sqrt(forge_property_recorder, x_shape, y_shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reciprocal(forge_property_recorder, shape):
     class Reciprocal(nn.Module):
         def __init__(self):
@@ -710,6 +729,7 @@ def test_reciprocal(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_sigmoid(forge_property_recorder, shape):
     class Sigmoid(nn.Module):
         def __init__(self):
@@ -736,6 +756,7 @@ def test_sigmoid(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_tanh(forge_property_recorder, input_shape):
     class Tanh(nn.Module):
         def __init__(self):
@@ -827,6 +848,7 @@ def test_floor(forge_property_recorder, input_data):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_argmax(forge_property_recorder, shape, dim, keepdim):
     class ArgMax(nn.Module):
         def __init__(self, dim, keepdim):
@@ -857,6 +879,7 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_einsum(forge_property_recorder, pattern, input_shape):
     class EinsumModel(torch.nn.Module):
         def __init__(self, pattern):

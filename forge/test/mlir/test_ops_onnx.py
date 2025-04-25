@@ -15,6 +15,7 @@ opset_imports = [helper.make_operatorsetid("", ONNX_OPSET_VERSION)]
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_add(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [2, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [2, 32, 32])
@@ -47,6 +48,7 @@ def test_add(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_arithmetic(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [2, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [2, 32, 32])
@@ -89,6 +91,7 @@ def test_arithmetic(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [32, 64])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [64, 32])
@@ -121,6 +124,7 @@ def test_matmul(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_squeeze(forge_property_recorder):
     input_A = helper.make_tensor_value_info("input_A", TensorProto.FLOAT, [1, 32, 32])
     input_B = helper.make_tensor_value_info("input_B", TensorProto.FLOAT, [1, 32, 32])
@@ -163,6 +167,7 @@ def test_squeeze(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_flatten(forge_property_recorder):
     input = helper.make_tensor_value_info("input", TensorProto.FLOAT, [2, 32, 32])
     output = helper.make_tensor_value_info("output", TensorProto.FLOAT, [2, 1024])
@@ -194,6 +199,7 @@ def test_flatten(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_linear_layer(forge_property_recorder):
     input_features, output_dim = (784, 10)
 
@@ -232,6 +238,7 @@ def test_linear_layer(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiple_layers(forge_property_recorder):
     num_classes = 10
 
@@ -300,6 +307,7 @@ def test_multiple_layers(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_mnist_linear(forge_property_recorder):
     input_size = 784
     hidden_size = 512
@@ -358,6 +366,7 @@ def test_mnist_linear(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_batchnorm(forge_property_recorder):
     num_features = 32
     input_shape = [1, 32, 56, 56]
@@ -404,6 +413,7 @@ def test_batchnorm(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_convbn(forge_property_recorder):
     in_c = 3
     out_c = 64

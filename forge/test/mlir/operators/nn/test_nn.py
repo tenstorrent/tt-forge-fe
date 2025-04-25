@@ -62,6 +62,7 @@ def test_conv2d_reflect_padding_mode(
     reason="permute(sparse_coo): number of dimensions in the tensor input does not match the length of the desired ordering of dimensions i.e. input.dim() = 5 is not equal to len(dims) = 4. Tracking Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1422"
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
     class AvgPool3D(nn.Module):
         def __init__(self):
@@ -167,6 +168,7 @@ def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_maxpool2d(forge_property_recorder, input_shape, kernel_size, stride_size, padding, ceil_mode):
     class maxpool2d(nn.Module):
         def __init__(self):
@@ -201,6 +203,7 @@ def test_maxpool2d(forge_property_recorder, input_shape, kernel_size, stride_siz
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_interpolate(forge_property_recorder, shape, mode):
     class Interpolate(nn.Module):
         def __init__(self):
@@ -235,6 +238,7 @@ def test_interpolate(forge_property_recorder, shape, mode):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_batchnorm2d(forge_property_recorder, batch_size, num_channels, height, width):
 
     if batch_size != 1:
@@ -252,6 +256,7 @@ def test_batchnorm2d(forge_property_recorder, batch_size, num_channels, height, 
 
 @pytest.mark.skip(reason="This is not ready yet")
 @pytest.mark.push
+@pytest.mark.functional
 def test_linear(forge_property_recorder):
     class Linear(nn.Module):
         def __init__(self):
@@ -272,6 +277,7 @@ def test_linear(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_softmax(forge_property_recorder):
     class Softmax(nn.Module):
         def __init__(self):
@@ -292,6 +298,7 @@ def test_softmax(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.parametrize(
     "input_shape, dim",
     [
@@ -328,6 +335,7 @@ def test_log_softmax(forge_property_recorder, input_shape, dim):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
+@pytest.mark.functional
 def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim):
     compiler_cfg = forge.config.CompilerConfig()
     compiler_cfg.enable_tvm_cpu_fallback = False
@@ -608,6 +616,7 @@ def test_convtranspose2d(
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_avg_pool2d(forge_property_recorder):
     class AvgPool2d(nn.Module):
         def __init__(self):
@@ -632,6 +641,7 @@ def test_avg_pool2d(forge_property_recorder):
 @pytest.mark.parametrize("padding", [0, 1])
 @pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
 @pytest.mark.push
+@pytest.mark.functional
 def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     class AvgPool2d(nn.Module):
         def __init__(self, padding):
@@ -668,6 +678,7 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_conv2d_with_padding(forge_property_recorder, shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):

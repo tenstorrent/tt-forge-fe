@@ -18,6 +18,7 @@ from test.mlir.utils import *
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_mnist_training(forge_property_recorder):
     # Model and data type.
     # For bfloat16, the following line should be added to the test_forge_vs_torch function:
@@ -103,6 +104,7 @@ def test_mnist_training(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_mnist_training_with_grad_accumulation(forge_property_recorder):
     # Config
     num_epochs = 3
@@ -189,6 +191,7 @@ def test_mnist_training_with_grad_accumulation(forge_property_recorder):
 
 @pytest.mark.parametrize("freeze_layer", [None, 0, 2, 4])
 @pytest.mark.push
+@pytest.mark.functional
 def test_forge_vs_torch_gradients(forge_property_recorder, freeze_layer):
     logger.disable("")
     batch_size = 64
@@ -251,6 +254,7 @@ def test_forge_vs_torch_gradients(forge_property_recorder, freeze_layer):
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
 @pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
 @pytest.mark.push
+@pytest.mark.functional
 def test_forge_vs_torch(forge_property_recorder):
     batch_size = 64
     learning_rate = 1e-2
@@ -353,6 +357,7 @@ def test_forge_vs_torch(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_loss_device(forge_property_recorder):
     # Config
     num_epochs = 3
@@ -450,6 +455,7 @@ def test_loss_device(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_lora(forge_property_recorder):
     # Config
     num_epochs = 3
@@ -536,6 +542,7 @@ def test_lora(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_optimizer_device(forge_property_recorder):
     # Config
     num_epochs = 32
@@ -609,6 +616,7 @@ def test_optimizer_device(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_e2e_device(forge_property_recorder):
     # Config
     num_epochs = 5

@@ -61,6 +61,7 @@ def test_multi_indexing(forge_property_recorder, input_shape, sequence_lengths):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_index(forge_property_recorder, shape, dim, index):
     class Index(nn.Module):
         def __init__(self, index):
@@ -107,6 +108,7 @@ def test_index(forge_property_recorder, shape, dim, index):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_flatten(forge_property_recorder, shape):
     class Flatten(nn.Module):
         def __init__(self):
@@ -127,6 +129,7 @@ def test_flatten(forge_property_recorder, shape):
 
 @pytest.mark.parametrize("operand_and_cast_dtype", [(torch.float32, torch.int32), (torch.int32, torch.float32)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_cast(forge_property_recorder, operand_and_cast_dtype):
 
     operand_dtype = operand_and_cast_dtype[0]
@@ -172,6 +175,7 @@ def test_cast(forge_property_recorder, operand_and_cast_dtype):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_layernorm(forge_property_recorder, input_shape, elementwise_affine, eps):
     class LayerNorm(nn.Module):
         def __init__(self):
@@ -213,6 +217,7 @@ for param in params:
 
 @pytest.mark.parametrize("params, data_format", param_list)
 @pytest.mark.push
+@pytest.mark.functional
 def test_transpose(forge_property_recorder, params, data_format):
     class Transpose(nn.Module):
         def __init__(self, dims):
@@ -262,6 +267,7 @@ def test_transpose(forge_property_recorder, params, data_format):
     ids=[str(i) for i in range(1, 23)],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reshape(forge_property_recorder, source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
 
@@ -300,6 +306,7 @@ def test_reshape(forge_property_recorder, source_and_target_shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_squeeze(forge_property_recorder, input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -324,6 +331,7 @@ def test_squeeze(forge_property_recorder, input_shape_and_dim):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.parametrize(
     "attn_weights_shape, attention_mask_shape, module_name",
     [
@@ -390,6 +398,7 @@ def test_operand_commute_clone(forge_property_recorder, attn_weights_shape, atte
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -419,6 +428,7 @@ def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
 @pytest.mark.parametrize("stride", [1, 2, 4, 8], ids=["1", "2", "4", "8"])
 @pytest.mark.parametrize("shape", [(1, 32, 64, 64), (32, 64, 64), (64, 64)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
     if len(shape) == 2 and dim == -3:
         pytest.skip("Skipping since indexing on dim=-3, 2D tensor doesn't make sense")
@@ -461,6 +471,7 @@ def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_adv_index_embedding_decompostion(forge_property_recorder, indices_shape, input_tensor_shape):
     class ForgeAdvIndex(forge.ForgeModule):
         def __init__(self, name):
@@ -484,6 +495,7 @@ def test_adv_index_embedding_decompostion(forge_property_recorder, indices_shape
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_reshape_pytorch(forge_property_recorder):
     class ReshapeTest(torch.nn.Module):
         def __init__(self):
@@ -507,6 +519,7 @@ def test_reshape_pytorch(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_broadcast_pytorch(forge_property_recorder):
     class BroadcastTest(torch.nn.Module):
         def __init__(self):
@@ -618,6 +631,7 @@ def test_stack(forge_property_recorder, input_shapes, dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_repeat(forge_property_recorder, input_shape, repeats):
     class Repeat(nn.Module):
         def __init__(self, repeats):
@@ -638,6 +652,7 @@ def test_repeat(forge_property_recorder, input_shape, repeats):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_expand(forge_property_recorder):
     class Expand(nn.Module):
         def __init__(self, expand_shape):
@@ -684,6 +699,7 @@ def test_expand(forge_property_recorder):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_repeat_interleave(forge_property_recorder, shape, dim, repeats):
     class RepeatInterleave(nn.Module):
         def __init__(self, dim, repeats):

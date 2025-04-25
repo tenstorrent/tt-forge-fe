@@ -21,6 +21,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_select(forge_property_recorder, input_dim_index):
     input_tensor, dim, index = input_dim_index
 
@@ -62,6 +63,7 @@ def test_select(forge_property_recorder, input_dim_index):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_split(forge_property_recorder, input_tensor_sizes_dim):
     input_tensor, sizes_or_parts, dim = input_tensor_sizes_dim
 
@@ -100,6 +102,7 @@ def test_split(forge_property_recorder, input_tensor_sizes_dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_chunk(forge_property_recorder, input_tensor_chunks_dim):
     input_tensor, chunks, dim = input_tensor_chunks_dim
 
@@ -181,6 +184,7 @@ def test_chunk(forge_property_recorder, input_tensor_chunks_dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_take(forge_property_recorder, input_tensor_indices):
     input_tensor, indices = input_tensor_indices
 
@@ -244,6 +248,7 @@ def test_take(forge_property_recorder, input_tensor_indices):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_nonzero(forge_property_recorder, input_tensor_as_tuple):
     input_tensor, as_tuple = input_tensor_as_tuple
 
@@ -312,6 +317,7 @@ def test_nonzero(forge_property_recorder, input_tensor_as_tuple):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_narrow(forge_property_recorder, input_dim_start_length):
     input_tensor, dim, start, length = input_dim_start_length
 

@@ -17,6 +17,7 @@ from test.mlir.utils import *
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_nerf_training():
     dtype = torch.float32
 

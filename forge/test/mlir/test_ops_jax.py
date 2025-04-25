@@ -13,6 +13,7 @@ from test.mlir.utils import prepare_jax_test
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_add(forge_property_recorder):
     class Add(nn.Module):
         @nn.compact
@@ -31,6 +32,7 @@ def test_add(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_arithmetic(forge_property_recorder):
     class Arithmetic(nn.Module):
         @nn.compact
@@ -50,6 +52,7 @@ def test_arithmetic(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul(forge_property_recorder):
     class Matmul(nn.Module):
         @nn.compact
@@ -69,6 +72,7 @@ def test_matmul(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_squeeze(forge_property_recorder):
     class Squeeze(nn.Module):
         @nn.compact
@@ -90,6 +94,7 @@ def test_squeeze(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_flatten(forge_property_recorder):
     class Flatten(nn.Module):
         @nn.compact
@@ -107,6 +112,7 @@ def test_flatten(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_linear_layer(forge_property_recorder):
     class Linear(nn.Module):
         @nn.compact
@@ -125,6 +131,7 @@ def test_linear_layer(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiple_layers(forge_property_recorder):
     class CNNClassifier(nn.Module):
         @nn.compact
@@ -158,6 +165,7 @@ def test_multiple_layers(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 @pytest.mark.skip(reason="Conversion for ttnn::relu is missing and the maximum operation is incorrect")
 def test_mnist_linear(forge_property_recorder):
     class MNISTLinear(nn.Module):
@@ -181,6 +189,7 @@ def test_mnist_linear(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_batchnorm(forge_property_recorder):
     class BatchNorm(nn.Module):
         @nn.compact
@@ -199,6 +208,7 @@ def test_batchnorm(forge_property_recorder):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_convbn(forge_property_recorder):
     class ConvBNLayer(nn.Module):
         @nn.compact

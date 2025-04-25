@@ -13,6 +13,7 @@ from forge.verify.config import VerifyConfig
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.push
+@pytest.mark.functional
 def test_llama_rotary_emb(forge_property_recorder, model_path):
     class Llama_Rotary_Embedding(torch.nn.Module):
         def __init__(self, model):

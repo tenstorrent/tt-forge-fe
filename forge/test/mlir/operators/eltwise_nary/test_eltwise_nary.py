@@ -23,6 +23,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_meshgrid(forge_property_recorder, shapes):
     class Meshgrid(nn.Module):
         def __init__(self):
@@ -53,6 +54,7 @@ def test_meshgrid(forge_property_recorder, shapes):
 )
 @pytest.mark.xfail(reason="Unsupported data format during lowering from TTForge to TTIR: Bfp2_b")
 @pytest.mark.push
+@pytest.mark.functional
 def test_where(forge_property_recorder, condition, input, other):
     class Where(nn.Module):
         def __init__(self):
@@ -90,6 +92,7 @@ def test_where(forge_property_recorder, condition, input, other):
     ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_concat(forge_property_recorder, inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 

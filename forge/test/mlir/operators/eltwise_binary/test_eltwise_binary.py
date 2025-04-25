@@ -45,6 +45,7 @@ from forge.verify.config import VerifyConfig
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_stack_and_view(forge_property_recorder, shape, dim):
     class stack_and_view(nn.Module):
         def __init__(self, dim):
@@ -88,6 +89,7 @@ def test_stack_and_view(forge_property_recorder, shape, dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_einsum(forge_property_recorder, einsum_pattern, shape_1, shape_2):
     class EinsumModel(torch.nn.Module):
         def __init__(self, pattern):
@@ -128,6 +130,7 @@ def test_einsum(forge_property_recorder, einsum_pattern, shape_1, shape_2):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_atan2(forge_property_recorder, shape):
     class Atan2(nn.Module):
         def __init__(self):
@@ -159,6 +162,7 @@ def test_atan2(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_less(forge_property_recorder, shape_x, shape_y):
     class Less(nn.Module):
         def __init__(self):
@@ -200,6 +204,7 @@ def test_less(forge_property_recorder, shape_x, shape_y):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_greater(forge_property_recorder, shape_x, shape_y):
     class Greater(nn.Module):
         def __init__(self):
@@ -241,6 +246,7 @@ def test_greater(forge_property_recorder, shape_x, shape_y):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_not_equal(forge_property_recorder, shape_x, shape_y):
     class NotEqual(nn.Module):
         def __init__(self):
@@ -298,6 +304,7 @@ def test_not_equal(forge_property_recorder, shape_x, shape_y):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_equal(forge_property_recorder, shape):
     class Equal(nn.Module):
         def __init__(self):
@@ -333,6 +340,7 @@ def test_equal(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_add(forge_property_recorder, shape_dtype):
     shape, dtype = shape_dtype
 
@@ -359,6 +367,7 @@ def test_add(forge_property_recorder, shape_dtype):
 
 @pytest.mark.parametrize("dims", [(1, 32, 64), (6, 33), (4, 16, 17)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_greater_equal(forge_property_recorder, dims):
     class GreaterEqual(nn.Module):
         def __init__(self):
@@ -384,6 +393,7 @@ def test_greater_equal(forge_property_recorder, dims):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_subtract(forge_property_recorder):
     class Subtract(nn.Module):
         def __init__(self):
@@ -416,6 +426,7 @@ def test_subtract(forge_property_recorder):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiply(forge_property_recorder, shape):
     class Multiply(nn.Module):
         def __init__(self):
@@ -435,6 +446,7 @@ def test_multiply(forge_property_recorder, shape):
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_remainder(forge_property_recorder):
     class Remainder(nn.Module):
         def __init__(self):

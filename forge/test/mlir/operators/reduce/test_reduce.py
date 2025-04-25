@@ -70,6 +70,7 @@ import forge
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reduce_sum(forge_property_recorder, input_shape, dim, keepdim):
     class ReduceSum(nn.Module):
         def __init__(self):
@@ -149,6 +150,7 @@ def test_reduce_sum(forge_property_recorder, input_shape, dim, keepdim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reduce_mean(forge_property_recorder, input_shape, dim, keepdim):
     class ReduceMean(nn.Module):
         def __init__(self):
@@ -172,6 +174,7 @@ def test_reduce_mean(forge_property_recorder, input_shape, dim, keepdim):
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.parametrize("dim", [1, 2])
 @pytest.mark.push
+@pytest.mark.functional
 def test_mean(forge_property_recorder, x_shape, y_shape, dim):
     class Mean(nn.Module):
         def __init__(self):
@@ -241,6 +244,7 @@ def test_mean(forge_property_recorder, x_shape, y_shape, dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reduce_max(forge_property_recorder, input_shape, dim, keepdim):
     input = (input_shape, dim, keepdim)
     if input in [((64,), 0, False), ((64,), -1, False)]:

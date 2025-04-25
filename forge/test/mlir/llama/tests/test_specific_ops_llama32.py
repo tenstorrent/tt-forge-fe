@@ -23,6 +23,7 @@ from forge.verify.verify import verify, verify_backward
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_add(forge_property_recorder, shapes):
     class Add(nn.Module):
         def __init__(self):
@@ -50,6 +51,7 @@ def test_add(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_concat(forge_property_recorder, inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 
@@ -72,6 +74,7 @@ def test_concat(forge_property_recorder, inputs_and_dim):
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_cosine(forge_property_recorder, shapes):
     class Cosine(nn.Module):
         def __init__(self):
@@ -92,6 +95,7 @@ def test_cosine(forge_property_recorder, shapes):
 
 @pytest.mark.parametrize("shapes", [(1, 11, 64)])
 @pytest.mark.push
+@pytest.mark.functional
 def test_sine(forge_property_recorder, shapes):
     class Sine(nn.Module):
         def __init__(self):
@@ -117,6 +121,7 @@ def test_sine(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_embedding(forge_property_recorder, shapes):
     input_size, vocab_size, embedding_dim = shapes
 
@@ -154,6 +159,7 @@ def test_embedding(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_matmul(forge_property_recorder, shapes, train):
     shape1, shape2 = shapes
 
@@ -206,6 +212,7 @@ def test_matmul(forge_property_recorder, shapes, train):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_repeat_interleave(forge_property_recorder, shape, dim, repeats, train):
     class RepeatInterleave(nn.Module):
         def __init__(self, dim, repeats):
@@ -250,6 +257,7 @@ def test_repeat_interleave(forge_property_recorder, shape, dim, repeats, train):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_multiply(forge_property_recorder, shapes):
     shape1, shape2 = shapes
 
@@ -280,6 +288,7 @@ def test_multiply(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reduce_avg(forge_property_recorder, shapes):
     class ReduceAvg(nn.Module):
         def __init__(self):
@@ -311,6 +320,7 @@ def test_reduce_avg(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_sigmoid(forge_property_recorder, shapes):
     class Sigmoid(nn.Module):
         def __init__(self):
@@ -336,6 +346,7 @@ def test_sigmoid(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reciprocal(forge_property_recorder, shapes):
     class Reciprocal(nn.Module):
         def __init__(self):
@@ -373,6 +384,7 @@ def test_reciprocal(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_reshape(forge_property_recorder, source_and_target_shape):
     source_shape, target_shape = source_and_target_shape
 
@@ -401,6 +413,7 @@ def test_reshape(forge_property_recorder, source_and_target_shape):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_softmax(forge_property_recorder, shapes):
     shape, dim = shapes
 
@@ -429,6 +442,7 @@ def test_softmax(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_sqrt(forge_property_recorder, shapes):
     class Sqrt(nn.Module):
         def __init__(self):
@@ -454,6 +468,7 @@ def test_sqrt(forge_property_recorder, shapes):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
     input_shape, dim = input_shape_and_dim
 
@@ -497,6 +512,7 @@ def test_unsqueeze(forge_property_recorder, input_shape_and_dim):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_transpose(forge_property_recorder, params):
     shapes, dims = params
 

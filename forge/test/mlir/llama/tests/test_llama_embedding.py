@@ -11,6 +11,7 @@ from forge.verify.verify import verify
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.push
+@pytest.mark.functional
 def test_llama_embedding(forge_property_recorder, model_path):
     # Load Llama model and tokenizer
     framework_model, _ = load_model(model_path)

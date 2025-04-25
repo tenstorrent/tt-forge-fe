@@ -45,6 +45,7 @@ from forge._C import DataFormat
 )
 @pytest.mark.parametrize("has_bias", [False, True], ids=["no_bias", "with_bias"])
 @pytest.mark.push
+@pytest.mark.functional
 def test_conv2d(
     forge_property_recorder,
     batch_size,
@@ -99,6 +100,7 @@ def test_conv2d(
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_dual_conv2d(forge_property_recorder):
 
     tf.random.set_seed(0)
@@ -159,6 +161,7 @@ def test_dual_conv2d(forge_property_recorder):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_maxpool2d(
     forge_property_recorder,
     act_shape,

@@ -25,6 +25,7 @@ import forge
 )
 @pytest.mark.parametrize("reduction", ["mean", "sum"])
 @pytest.mark.push
+@pytest.mark.functional
 def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
     forge_loss = forge.op.loss.L1Loss("l1_loss", reduction=reduction)
     torch_loss = torch.nn.L1Loss(reduction=reduction)
@@ -56,6 +57,7 @@ def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
     ],
 )
 @pytest.mark.push
+@pytest.mark.functional
 def test_cross_entropy_loss(forge_property_recorder, prediction_shape):
     forge_loss = forge.op.loss.CrossEntropyLoss("cross_entropy_loss")
     torch_loss = torch.nn.CrossEntropyLoss()

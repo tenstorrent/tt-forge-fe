@@ -13,6 +13,7 @@ from test.mlir.llama.utils.utils import load_model
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
 @pytest.mark.push
+@pytest.mark.functional
 def test_llama_inference_no_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model without using a past-cache (KV cache).
@@ -48,6 +49,7 @@ def test_llama_inference_no_cache_cpu(model_path):
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.skip(reason="No need to run in CI, this is PoC that should be mapped to work on device.")
 @pytest.mark.push
+@pytest.mark.functional
 def test_llama_inference_cache_cpu(model_path):
     """
     This function tests the inference of the Llama 3B model using a past-cache (KV cache).
