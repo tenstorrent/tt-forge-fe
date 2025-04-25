@@ -238,7 +238,6 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_unet_carvana(forge_property_recorder):
 
     # Record Forge Property
