@@ -39,14 +39,26 @@ jobs:
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-  test:
+  test-functional:
     needs:
       - docker-build
       - build
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      test_mark: 'push'
+      test_mark: 'push and functional'
+      test_group_cnt: 1
+      test_group_ids: '[1]'
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}
+  test-models:
+    needs:
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'push and models'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
