@@ -76,7 +76,7 @@ jobs:
                 done
                 # get only the lines that are in b.log but not in a.log
                 grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
-                sed -i 's/^/"/; s/$/"/' tests-"$machine".log
+                # sed -i 's/^/"/; s/$/"/' tests-"$machine".log
             done <machines.log
             # Filter out machines with empty test logs
             cp machines.log filtered_machines.log
@@ -195,7 +195,10 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            pytest --testlist tests-${{matrix.build.runs-on}}.log 2>&1 | tee pytest.log
+            rm -f pytest.log
+            while read -r test; do
+              pytest "$test" 2>&1 | tee -a pytest.log
+            done < "tests-${{matrix.build.runs-on}}.log"
 
         - name: Upload Test Log
           uses: actions/upload-artifact@v4
