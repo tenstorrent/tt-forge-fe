@@ -1396,44 +1396,14 @@ def populate_pad_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     pad_width = [int(x) for x in node["attrs"]["pad_width"][0]]
     shape = node["attrs"]["shape"][0][0]
-    channel_last = False
 
     mode = node["attrs"]["pad_mode"][0][0]
-    assert mode in ["constant", "edge", "reflect"], "Forge pad only support constant/replicate/reflect padding for now"
-    if len(shape) > 2:
-        # Forge Pad only supports padding on last 2 dims
-        assert len(pad_width) == len(shape) * 2
-        assert all([x == 0 for x in pad_width[0:-6]]), "Forge Pad does not support padding on W dim"
-        assert all([x == 0 for x in pad_width[-6:-4]]) or all(
-            [x == 0 for x in pad_width[-2:]]
-        ), "Forge only support Z dim padding for channel-last inputs"
-        if any([x != 0 for x in pad_width[-6:-4]]):
-            pad_width = pad_width[-6:-2]
-            channel_last = True
-        else:
-            pad_width = pad_width[-4:]
-
-    # TVM nn.pad axis start from the last axis, need to swap
-    pad_width_by_axis = [pad_width[x : x + 2] for x in range(0, len(pad_width), 2)]
-    pad_width_by_axis.reverse()
-    pad_width_final = [item for axis in pad_width_by_axis for item in axis]
-
-    if len(pad_width_final) == 2:
-        args.append(
-            (
-                "pad",
-                f"({pad_width_final[0]}, {pad_width_final[1]})",
-            )
+    args.append(
+        (
+            "pad",
+            f"({pad_width})",
         )
-    elif len(pad_width_final) == 4:
-        args.append(
-            (
-                "pad",
-                f"({pad_width_final[0]}, {pad_width_final[1]}, {pad_width_final[2]}, {pad_width_final[3]})",
-            )
-        )
-    else:
-        assert False
+    )
 
     tvm_pad_mode_to_forge_mode = {
         "constant": "constant",
@@ -1449,8 +1419,8 @@ def populate_pad_args(graph, nid, compiler_cfg):
     )
     args.append(
         (
-            "channel_last",
-            f"{channel_last}",
+            "pad_len",
+            f"{len(pad_width)}",
         )
     )
 
@@ -2126,7 +2096,7 @@ def compile_tvm_to_python(
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
     framework = get_framework(framework_mod)
-    if framework == "pytorch":
+    if framework in ["pytorch", "paddle"]:
         if is_training:
             framework_mod.module.train()
             verify_cfg.verify_tvm_compile = False

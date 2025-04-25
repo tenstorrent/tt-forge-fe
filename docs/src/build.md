@@ -75,19 +75,24 @@ cmake --build env/build
 source env/activate
 
 # Build Forge
-cmake -G Ninja -B build
+cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
 cmake --build build
 ```
 
+> **NOTE:** our official compiler is `clang-17`, i.e. building with other compilers is at the moment not tested.
+>
+> If you want to try other compilers, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
+
 You can pass additional options to the `cmake` command to customize the build. For example, to build everything in debug mode, you can run:
 ```sh
-cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug
+cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
 cmake --build build
 ```
 
 > List of commonly used options:
-> - `-DCMAKE_BUILD_TYPE=Debug|Release`  - Build type (Debug, Release)
-> - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`     - Build runtime debug tools (more logging, debug environment flags)
+> - `-DCMAKE_BUILD_TYPE=Debug|Release`      - Build type (Debug, Release)
+> - `-DCMAKE_CXX_COMPILER_LAUNCHER=ccache`  - Use [`ccache`](https://ccache.dev/) to speed up re-builds
+> - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`         - Build runtime debug tools (more logging, debug environment flags)
 
 ### Incremental build
 If you have made changes to the C++ sources (of the `tt-forge-fe` compiler, `tt-mlir` or `tt-metal`), you might want to do an incremental build to save time. This can be done by running the following command:

@@ -156,7 +156,7 @@ class Filter
     using Reference = typename IterT::reference;
     using Value = typename IterT::value_type;
 
-    class Iterator : public std::iterator<std::input_iterator_tag, Value>
+    class Iterator
     {
        public:
         Iterator(IterT iter, IterT end, Predicate<Value, ViewT> const& p) : iter(iter), end(end), p(&p)

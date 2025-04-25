@@ -45,7 +45,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model, task=Task.QA)
+    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
@@ -56,7 +56,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property

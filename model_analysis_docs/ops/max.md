@@ -22,14 +22,14 @@
 			<td rowspan="7">[TT_METAL][ttnn elementwise binary] RuntimeError tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/binary_device_operation.cpp ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast</td>
 			<td rowspan="7">11</td>
 			<td>2</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
+			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 16, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 16, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
+			<td><ul><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -40,20 +40,20 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li><li>pt_xglm_facebook_xglm_564m_clm_hf</li></ul></td>
+			<td><ul><li>pt_xglm_facebook_xglm_564m_clm_hf</li><li>pt_xglm_facebook_xglm_1_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_100, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_opt_facebook_opt_350m_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_110, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>

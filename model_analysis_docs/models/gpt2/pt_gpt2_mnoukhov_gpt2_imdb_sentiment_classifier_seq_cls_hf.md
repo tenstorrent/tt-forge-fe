@@ -101,12 +101,12 @@
       <th>8</th>
       <td>Argmax</td>
       <td>Operand(type=Activation, shape=(1, 7), dtype=int32)</td>
-      <td>dim : -1</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
-      <td>&#x274C;</td>
+      <td>dim : -1<br>keep_dim : False</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
+      <td></td>
     </tr>
     <tr>
       <th>9</th>
@@ -410,22 +410,22 @@
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 1, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>37</th>
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 1, 1, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>38</th>
@@ -605,17 +605,6 @@
     </tr>
     <tr>
       <th>54</th>
-      <td>Squeeze</td>
-      <td>Operand(type=Activation, shape=(1, 1), dtype=int32)</td>
-      <td>dim : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>55</th>
       <td>Subtract</td>
       <td>Operand(type=Constant, name=const_50, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 7), dtype=float32)</td>
       <td></td>
@@ -626,7 +615,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>56</th>
+      <th>55</th>
       <td>Subtract</td>
       <td>Operand(type=Activation, shape=(1,), dtype=int32)<br><div align='center'>X</div>Operand(type=Constant, name=const_520, dtype=int32)</td>
       <td></td>
@@ -637,7 +626,7 @@
       <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
-      <th>57</th>
+      <th>56</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(2, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -648,7 +637,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>58</th>
+      <th>57</th>
       <td>Transpose</td>
       <td>Operand(type=Parameter, shape=(768, 2304), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -659,7 +648,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>59</th>
+      <th>58</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(768, 768), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -670,7 +659,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>60</th>
+      <th>59</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 7, 12, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
@@ -681,9 +670,20 @@
       <td></td>
     </tr>
     <tr>
-      <th>61</th>
+      <th>60</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(12, 7, 64), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>Transpose</td>
+      <td>Operand(type=Activation, shape=(1, 12, 7, 64), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -695,17 +695,6 @@
       <th>62</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(1, 12, 7, 64), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>63</th>
-      <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 12, 7, 64), dtype=float32)</td>
       <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -714,7 +703,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>64</th>
+      <th>63</th>
       <td>Transpose</td>
       <td>Operand(type=Activation, shape=(12, 64, 7), dtype=float32)</td>
       <td>dim0 : -2<br>dim1 : -1</td>
@@ -725,7 +714,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>65</th>
+      <th>64</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(1, 7), dtype=int64)</td>
       <td>dim : 1</td>
@@ -736,7 +725,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>66</th>
+      <th>65</th>
       <td>Unsqueeze</td>
       <td>Operand(type=Activation, shape=(1, 1, 7), dtype=int64)</td>
       <td>dim : 2</td>
@@ -747,7 +736,7 @@
       <td></td>
     </tr>
     <tr>
-      <th>67</th>
+      <th>66</th>
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 1, 7, 7), dtype=uint1)<br><div align='center'>X</div>Operand(type=Constant, name=const_20, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
       <td></td>

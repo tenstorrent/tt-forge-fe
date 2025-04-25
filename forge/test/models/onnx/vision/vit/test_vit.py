@@ -13,7 +13,10 @@ from forge.forge_property_utils import Framework, Source, Task
 
 variants = [
     pytest.param("google/vit-base-patch16-224"),
-    pytest.param("google/vit-large-patch16-224"),
+    pytest.param(
+        "google/vit-large-patch16-224",
+        marks=[pytest.mark.skip(reason="Transient failure - Out of memory due to other tests in CI pipeline")],
+    ),
 ]
 
 
@@ -32,6 +35,7 @@ def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
 

@@ -11,7 +11,6 @@ from test.models.pytorch.vision.mnist.utils.utils import load_input, load_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_mnist(forge_property_recorder):
 
     # Record Forge Property

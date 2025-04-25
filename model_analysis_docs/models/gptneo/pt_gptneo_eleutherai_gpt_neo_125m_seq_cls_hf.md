@@ -47,11 +47,11 @@
       <td>Add</td>
       <td>Operand(type=Activation, shape=(1, 12, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>4</th>
@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Embedding</td>
-      <td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(50257, 768), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_00, dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048, 768), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Embedding</td>
-      <td>Operand(type=Constant, name=const_00, dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2048, 768), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Parameter, shape=(50257, 768), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,8 +166,8 @@
     <tr>
       <th>14</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
-      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
+      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,8 +177,8 @@
     <tr>
       <th>15</th>
       <td>Index</td>
-      <td>Operand(type=Constant, name=model.transformer.h.1.attn.attention.bias, dtype=uint1)</td>
-      <td>dim : -2<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>Operand(type=Activation, shape=(1, 1, 32, 2048), dtype=uint1)</td>
+      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -278,11 +278,11 @@
       <td>Multiply</td>
       <td>Operand(type=Activation, shape=(1, 1, 32, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_30, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>25</th>

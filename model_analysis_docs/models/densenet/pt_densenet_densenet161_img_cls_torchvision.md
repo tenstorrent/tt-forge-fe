@@ -45,7 +45,7 @@
     <tr>
       <th>3</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -56,7 +56,7 @@
     <tr>
       <th>4</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -67,7 +67,7 @@
     <tr>
       <th>5</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.norm0.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.norm0.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_11605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -78,7 +78,7 @@
     <tr>
       <th>6</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -89,7 +89,7 @@
     <tr>
       <th>7</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -100,7 +100,7 @@
     <tr>
       <th>8</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_41285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -111,7 +111,7 @@
     <tr>
       <th>9</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 96, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -122,7 +122,7 @@
     <tr>
       <th>10</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_71285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -133,7 +133,7 @@
     <tr>
       <th>11</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -144,7 +144,7 @@
     <tr>
       <th>12</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -155,7 +155,7 @@
     <tr>
       <th>13</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_101285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_191605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -166,7 +166,7 @@
     <tr>
       <th>14</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_221605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -177,7 +177,7 @@
     <tr>
       <th>15</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_251605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -188,7 +188,7 @@
     <tr>
       <th>16</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_131285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_281605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -199,7 +199,7 @@
     <tr>
       <th>17</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_161285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -210,7 +210,7 @@
     <tr>
       <th>18</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_191285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -221,7 +221,7 @@
     <tr>
       <th>19</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_221285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_311605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -232,7 +232,7 @@
     <tr>
       <th>20</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_341605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -243,7 +243,7 @@
     <tr>
       <th>21</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_371605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -254,7 +254,7 @@
     <tr>
       <th>22</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_251285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition1.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_401605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -265,7 +265,7 @@
     <tr>
       <th>23</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_281285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_431605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -276,7 +276,7 @@
     <tr>
       <th>24</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_461605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -287,7 +287,7 @@
     <tr>
       <th>25</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_491605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -298,7 +298,7 @@
     <tr>
       <th>26</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_311285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_521605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -309,7 +309,7 @@
     <tr>
       <th>27</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_341285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_551605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -320,7 +320,7 @@
     <tr>
       <th>28</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -331,7 +331,7 @@
     <tr>
       <th>29</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_581605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -342,7 +342,7 @@
     <tr>
       <th>30</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_371285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_611605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -353,7 +353,7 @@
     <tr>
       <th>31</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.transition1.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_401285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_641605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -364,7 +364,7 @@
     <tr>
       <th>32</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_671605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -375,7 +375,7 @@
     <tr>
       <th>33</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_701605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -386,7 +386,7 @@
     <tr>
       <th>34</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_431285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_731605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -397,7 +397,7 @@
     <tr>
       <th>35</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -408,7 +408,7 @@
     <tr>
       <th>36</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_461285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -419,7 +419,7 @@
     <tr>
       <th>37</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_491285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_761605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -430,7 +430,7 @@
     <tr>
       <th>38</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_791605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -441,7 +441,7 @@
     <tr>
       <th>39</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_521285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_821605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -452,7 +452,7 @@
     <tr>
       <th>40</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_551285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_851605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -463,7 +463,7 @@
     <tr>
       <th>41</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_881605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -474,7 +474,7 @@
     <tr>
       <th>42</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_581285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_911605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -485,7 +485,7 @@
     <tr>
       <th>43</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_611285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -496,7 +496,7 @@
     <tr>
       <th>44</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -507,7 +507,7 @@
     <tr>
       <th>45</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_641285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_941605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -518,7 +518,7 @@
     <tr>
       <th>46</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_671285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_971605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -529,7 +529,7 @@
     <tr>
       <th>47</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1001605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -540,7 +540,7 @@
     <tr>
       <th>48</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_701285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1031605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_731285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1061605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1091605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_761285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -595,7 +595,7 @@
     <tr>
       <th>53</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_791285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1121605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -606,7 +606,7 @@
     <tr>
       <th>54</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition2.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1151605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -617,7 +617,7 @@
     <tr>
       <th>55</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1181605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -628,7 +628,7 @@
     <tr>
       <th>56</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_821285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1211605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -639,7 +639,7 @@
     <tr>
       <th>57</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_851285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1241605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -650,7 +650,7 @@
     <tr>
       <th>58</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1271605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -661,7 +661,7 @@
     <tr>
       <th>59</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1301605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -672,7 +672,7 @@
     <tr>
       <th>60</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_881285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1331605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -683,7 +683,7 @@
     <tr>
       <th>61</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_911285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1361605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,7 +694,7 @@
     <tr>
       <th>62</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1391605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -705,7 +705,7 @@
     <tr>
       <th>63</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1421605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -716,7 +716,7 @@
     <tr>
       <th>64</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_941285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1451605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -727,7 +727,7 @@
     <tr>
       <th>65</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_971285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1481605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -738,7 +738,7 @@
     <tr>
       <th>66</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1511605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -749,7 +749,7 @@
     <tr>
       <th>67</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1541605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -760,7 +760,7 @@
     <tr>
       <th>68</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1001285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1571605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -771,7 +771,7 @@
     <tr>
       <th>69</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1031285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1601605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -782,7 +782,7 @@
     <tr>
       <th>70</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -793,7 +793,7 @@
     <tr>
       <th>71</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1631605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -804,7 +804,7 @@
     <tr>
       <th>72</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1061285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1661605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -815,7 +815,7 @@
     <tr>
       <th>73</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1091285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1691605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -826,7 +826,7 @@
     <tr>
       <th>74</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1721605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -837,7 +837,7 @@
     <tr>
       <th>75</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1751605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -848,7 +848,7 @@
     <tr>
       <th>76</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1121285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1781605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -859,7 +859,7 @@
     <tr>
       <th>77</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.transition2.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1151285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -870,7 +870,7 @@
     <tr>
       <th>78</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -881,7 +881,7 @@
     <tr>
       <th>79</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1811605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -892,7 +892,7 @@
     <tr>
       <th>80</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1181285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1841605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -903,7 +903,7 @@
     <tr>
       <th>81</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1211285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1871605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -914,7 +914,7 @@
     <tr>
       <th>82</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1241285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1901605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -925,7 +925,7 @@
     <tr>
       <th>83</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1931605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -936,7 +936,7 @@
     <tr>
       <th>84</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1271285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1961605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -947,7 +947,7 @@
     <tr>
       <th>85</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1301285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -958,7 +958,7 @@
     <tr>
       <th>86</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -969,7 +969,7 @@
     <tr>
       <th>87</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1331285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1991605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -980,7 +980,7 @@
     <tr>
       <th>88</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1361285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2021605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -991,7 +991,7 @@
     <tr>
       <th>89</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2051605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1002,7 +1002,7 @@
     <tr>
       <th>90</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1391285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2081605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1013,7 +1013,7 @@
     <tr>
       <th>91</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1421285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2111605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1024,7 +1024,7 @@
     <tr>
       <th>92</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2141605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1035,7 +1035,7 @@
     <tr>
       <th>93</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1451285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1046,7 +1046,7 @@
     <tr>
       <th>94</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1481285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2171605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1057,7 +1057,7 @@
     <tr>
       <th>95</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2201605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1068,7 +1068,7 @@
     <tr>
       <th>96</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1511285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2231605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1079,7 +1079,7 @@
     <tr>
       <th>97</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1541285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2261605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1090,7 +1090,7 @@
     <tr>
       <th>98</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2291605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1101,7 +1101,7 @@
     <tr>
       <th>99</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1571285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2321605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1112,7 +1112,7 @@
     <tr>
       <th>100</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1601285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1123,7 +1123,7 @@
     <tr>
       <th>101</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1134,7 +1134,7 @@
     <tr>
       <th>102</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1631285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2351605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1145,7 +1145,7 @@
     <tr>
       <th>103</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1661285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2381605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1156,7 +1156,7 @@
     <tr>
       <th>104</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1691285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2411605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1167,7 +1167,7 @@
     <tr>
       <th>105</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1721285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2441605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1178,7 +1178,7 @@
     <tr>
       <th>106</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2471605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1189,7 +1189,7 @@
     <tr>
       <th>107</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2501605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1200,7 +1200,7 @@
     <tr>
       <th>108</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1751285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1211,7 +1211,7 @@
     <tr>
       <th>109</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1781285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1222,7 +1222,7 @@
     <tr>
       <th>110</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2531605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1233,7 +1233,7 @@
     <tr>
       <th>111</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2561605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1244,7 +1244,7 @@
     <tr>
       <th>112</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1811285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2591605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1255,7 +1255,7 @@
     <tr>
       <th>113</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1841285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2621605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1266,7 +1266,7 @@
     <tr>
       <th>114</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2651605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1277,7 +1277,7 @@
     <tr>
       <th>115</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2681605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1288,7 +1288,7 @@
     <tr>
       <th>116</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1871285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1299,7 +1299,7 @@
     <tr>
       <th>117</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1901285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1310,7 +1310,7 @@
     <tr>
       <th>118</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2711605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1321,7 +1321,7 @@
     <tr>
       <th>119</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2741605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1332,7 +1332,7 @@
     <tr>
       <th>120</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1931285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2771605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1343,7 +1343,7 @@
     <tr>
       <th>121</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1961285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2801605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1354,7 +1354,7 @@
     <tr>
       <th>122</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2831605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1365,7 +1365,7 @@
     <tr>
       <th>123</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2861605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1376,7 +1376,7 @@
     <tr>
       <th>124</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1991285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1387,7 +1387,7 @@
     <tr>
       <th>125</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2021285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1398,7 +1398,7 @@
     <tr>
       <th>126</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2891605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1409,7 +1409,7 @@
     <tr>
       <th>127</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2921605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1420,7 +1420,7 @@
     <tr>
       <th>128</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2051285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2951605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1431,7 +1431,7 @@
     <tr>
       <th>129</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2081285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2981605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1442,7 +1442,7 @@
     <tr>
       <th>130</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3011605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1453,7 +1453,7 @@
     <tr>
       <th>131</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3041605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1464,7 +1464,7 @@
     <tr>
       <th>132</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2111285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1475,7 +1475,7 @@
     <tr>
       <th>133</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2141285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1486,7 +1486,7 @@
     <tr>
       <th>134</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3071605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1497,7 +1497,7 @@
     <tr>
       <th>135</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3101605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1508,7 +1508,7 @@
     <tr>
       <th>136</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2171285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3131605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1519,7 +1519,7 @@
     <tr>
       <th>137</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2201285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3161605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1530,7 +1530,7 @@
     <tr>
       <th>138</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3191605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1541,7 +1541,7 @@
     <tr>
       <th>139</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3221605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1552,7 +1552,7 @@
     <tr>
       <th>140</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2231285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1563,7 +1563,7 @@
     <tr>
       <th>141</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2261285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1574,7 +1574,7 @@
     <tr>
       <th>142</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3251605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1585,7 +1585,7 @@
     <tr>
       <th>143</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3281605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1596,7 +1596,7 @@
     <tr>
       <th>144</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2291285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3311605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1607,7 +1607,7 @@
     <tr>
       <th>145</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2321285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1618,7 +1618,7 @@
     <tr>
       <th>146</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1629,7 +1629,7 @@
     <tr>
       <th>147</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1640,7 +1640,7 @@
     <tr>
       <th>148</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2351285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1651,7 +1651,7 @@
     <tr>
       <th>149</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2381285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1662,7 +1662,7 @@
     <tr>
       <th>150</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1673,7 +1673,7 @@
     <tr>
       <th>151</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1684,7 +1684,7 @@
     <tr>
       <th>152</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2411285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1695,7 +1695,7 @@
     <tr>
       <th>153</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2441285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition3.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4061605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1706,7 +1706,7 @@
     <tr>
       <th>154</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4091605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1717,7 +1717,7 @@
     <tr>
       <th>155</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4121605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1728,7 +1728,7 @@
     <tr>
       <th>156</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2471285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4151605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1739,7 +1739,7 @@
     <tr>
       <th>157</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2501285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4181605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1750,7 +1750,7 @@
     <tr>
       <th>158</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4211605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1761,7 +1761,7 @@
     <tr>
       <th>159</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4241605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1772,7 +1772,7 @@
     <tr>
       <th>160</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2531285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4271605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1783,7 +1783,7 @@
     <tr>
       <th>161</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2561285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4301605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1794,7 +1794,7 @@
     <tr>
       <th>162</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4331605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1805,7 +1805,7 @@
     <tr>
       <th>163</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4361605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1816,7 +1816,7 @@
     <tr>
       <th>164</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2591285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4391605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1827,7 +1827,7 @@
     <tr>
       <th>165</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2621285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1838,7 +1838,7 @@
     <tr>
       <th>166</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4421605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1849,7 +1849,7 @@
     <tr>
       <th>167</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4451605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1860,7 +1860,7 @@
     <tr>
       <th>168</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2651285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4481605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1871,7 +1871,7 @@
     <tr>
       <th>169</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2681285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4511605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1882,7 +1882,7 @@
     <tr>
       <th>170</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4541605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1893,7 +1893,7 @@
     <tr>
       <th>171</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4571605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1904,7 +1904,7 @@
     <tr>
       <th>172</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2711285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1915,7 +1915,7 @@
     <tr>
       <th>173</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2741285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4601605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1926,7 +1926,7 @@
     <tr>
       <th>174</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4631605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1937,7 +1937,7 @@
     <tr>
       <th>175</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4661605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1948,7 +1948,7 @@
     <tr>
       <th>176</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2771285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4691605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1959,7 +1959,7 @@
     <tr>
       <th>177</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2801285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4721605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1970,7 +1970,7 @@
     <tr>
       <th>178</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4751605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1981,7 +1981,7 @@
     <tr>
       <th>179</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1992,7 +1992,7 @@
     <tr>
       <th>180</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2831285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4781605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2003,7 +2003,7 @@
     <tr>
       <th>181</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2861285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4811605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2014,7 +2014,7 @@
     <tr>
       <th>182</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4841605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2025,7 +2025,7 @@
     <tr>
       <th>183</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4871605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2036,7 +2036,7 @@
     <tr>
       <th>184</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2891285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4901605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2047,7 +2047,7 @@
     <tr>
       <th>185</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2921285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4931605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2058,7 +2058,7 @@
     <tr>
       <th>186</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2069,7 +2069,7 @@
     <tr>
       <th>187</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4961605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2080,7 +2080,7 @@
     <tr>
       <th>188</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2951285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4991605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2091,7 +2091,7 @@
     <tr>
       <th>189</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2981285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5021605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2102,7 +2102,7 @@
     <tr>
       <th>190</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5051605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2113,7 +2113,7 @@
     <tr>
       <th>191</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5081605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2124,7 +2124,7 @@
     <tr>
       <th>192</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3011285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5111605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2135,7 +2135,7 @@
     <tr>
       <th>193</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3041285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2146,7 +2146,7 @@
     <tr>
       <th>194</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5141605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2157,7 +2157,7 @@
     <tr>
       <th>195</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5171605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2168,7 +2168,7 @@
     <tr>
       <th>196</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3071285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5201605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2179,7 +2179,7 @@
     <tr>
       <th>197</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3101285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5231605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2190,7 +2190,7 @@
     <tr>
       <th>198</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5261605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2201,7 +2201,7 @@
     <tr>
       <th>199</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5291605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2212,7 +2212,7 @@
     <tr>
       <th>200</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3131285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2223,7 +2223,7 @@
     <tr>
       <th>201</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3161285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5321605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2234,7 +2234,7 @@
     <tr>
       <th>202</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1968,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5351605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2245,7 +2245,7 @@
     <tr>
       <th>203</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5381605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2256,7 +2256,7 @@
     <tr>
       <th>204</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3191285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5411605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2267,7 +2267,7 @@
     <tr>
       <th>205</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3221285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5441605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2278,7 +2278,7 @@
     <tr>
       <th>206</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2016,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5471605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2289,7 +2289,7 @@
     <tr>
       <th>207</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2300,7 +2300,7 @@
     <tr>
       <th>208</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3251285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5501605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2311,7 +2311,7 @@
     <tr>
       <th>209</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3281285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2322,7 +2322,7 @@
     <tr>
       <th>210</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2064,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2333,7 +2333,7 @@
     <tr>
       <th>211</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2344,7 +2344,7 @@
     <tr>
       <th>212</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3311285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.norm5.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6011605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2355,7 +2355,7 @@
     <tr>
       <th>213</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.transition3.norm.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3341285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2366,7 +2366,7 @@
     <tr>
       <th>214</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2112,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2377,7 +2377,7 @@
     <tr>
       <th>215</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2388,7 +2388,7 @@
     <tr>
       <th>216</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3371285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2399,7 +2399,7 @@
     <tr>
       <th>217</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2410,7 +2410,7 @@
     <tr>
       <th>218</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3401285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2421,7 +2421,7 @@
     <tr>
       <th>219</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2432,7 +2432,7 @@
     <tr>
       <th>220</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3431285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2443,7 +2443,7 @@
     <tr>
       <th>221</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2454,7 +2454,7 @@
     <tr>
       <th>222</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3461285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2465,7 +2465,7 @@
     <tr>
       <th>223</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3491285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2476,7 +2476,7 @@
     <tr>
       <th>224</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2487,7 +2487,7 @@
     <tr>
       <th>225</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3521285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2498,7 +2498,7 @@
     <tr>
       <th>226</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3551285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2509,7 +2509,7 @@
     <tr>
       <th>227</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2520,7 +2520,7 @@
     <tr>
       <th>228</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3581285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2531,7 +2531,7 @@
     <tr>
       <th>229</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3611285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2542,7 +2542,7 @@
     <tr>
       <th>230</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2553,7 +2553,7 @@
     <tr>
       <th>231</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3641285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2564,7 +2564,7 @@
     <tr>
       <th>232</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3671285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2575,7 +2575,7 @@
     <tr>
       <th>233</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2586,7 +2586,7 @@
     <tr>
       <th>234</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3701285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2597,7 +2597,7 @@
     <tr>
       <th>235</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3731285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2608,7 +2608,7 @@
     <tr>
       <th>236</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2619,7 +2619,7 @@
     <tr>
       <th>237</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3761285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2630,7 +2630,7 @@
     <tr>
       <th>238</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3791285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2641,7 +2641,7 @@
     <tr>
       <th>239</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2652,7 +2652,7 @@
     <tr>
       <th>240</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3821285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2663,7 +2663,7 @@
     <tr>
       <th>241</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3851285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2674,7 +2674,7 @@
     <tr>
       <th>242</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2685,7 +2685,7 @@
     <tr>
       <th>243</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3881285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2696,7 +2696,7 @@
     <tr>
       <th>244</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3911285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2707,7 +2707,7 @@
     <tr>
       <th>245</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2718,7 +2718,7 @@
     <tr>
       <th>246</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3941285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2729,7 +2729,7 @@
     <tr>
       <th>247</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3971285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2740,7 +2740,7 @@
     <tr>
       <th>248</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2751,7 +2751,7 @@
     <tr>
       <th>249</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4001285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2762,7 +2762,7 @@
     <tr>
       <th>250</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4031285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2773,7 +2773,7 @@
     <tr>
       <th>251</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2784,7 +2784,7 @@
     <tr>
       <th>252</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4061285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2795,7 +2795,7 @@
     <tr>
       <th>253</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4091285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2806,7 +2806,7 @@
     <tr>
       <th>254</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2817,7 +2817,7 @@
     <tr>
       <th>255</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4121285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2828,7 +2828,7 @@
     <tr>
       <th>256</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4151285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2839,7 +2839,7 @@
     <tr>
       <th>257</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2850,7 +2850,7 @@
     <tr>
       <th>258</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4181285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2861,7 +2861,7 @@
     <tr>
       <th>259</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4211285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2872,7 +2872,7 @@
     <tr>
       <th>260</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2883,7 +2883,7 @@
     <tr>
       <th>261</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4241285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2894,7 +2894,7 @@
     <tr>
       <th>262</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4271285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2905,7 +2905,7 @@
     <tr>
       <th>263</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2916,7 +2916,7 @@
     <tr>
       <th>264</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4301285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2927,7 +2927,7 @@
     <tr>
       <th>265</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4331285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2938,7 +2938,7 @@
     <tr>
       <th>266</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2949,7 +2949,7 @@
     <tr>
       <th>267</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4361285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1968,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2960,7 +2960,7 @@
     <tr>
       <th>268</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4391285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2971,7 +2971,7 @@
     <tr>
       <th>269</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2016,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2982,7 +2982,7 @@
     <tr>
       <th>270</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4421285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -2993,7 +2993,7 @@
     <tr>
       <th>271</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4451285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2064,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3004,7 +3004,7 @@
     <tr>
       <th>272</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3015,7 +3015,7 @@
     <tr>
       <th>273</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4481285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2112,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3026,7 +3026,7 @@
     <tr>
       <th>274</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4511285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3037,7 +3037,7 @@
     <tr>
       <th>275</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 1968, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3048,7 +3048,7 @@
     <tr>
       <th>276</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4541285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3059,7 +3059,7 @@
     <tr>
       <th>277</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4571285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3070,7 +3070,7 @@
     <tr>
       <th>278</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2016, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3081,7 +3081,7 @@
     <tr>
       <th>279</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4601285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3092,7 +3092,7 @@
     <tr>
       <th>280</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4631285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3103,7 +3103,7 @@
     <tr>
       <th>281</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2064, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3114,7 +3114,7 @@
     <tr>
       <th>282</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4661285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3125,7 +3125,7 @@
     <tr>
       <th>283</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4691285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3136,7 +3136,7 @@
     <tr>
       <th>284</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2112, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3147,7 +3147,7 @@
     <tr>
       <th>285</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4721285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1968, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3158,7 +3158,7 @@
     <tr>
       <th>286</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4751285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2016, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3169,7 +3169,7 @@
     <tr>
       <th>287</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2064, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3180,7 +3180,7 @@
     <tr>
       <th>288</th>
       <td>Add</td>
-      <td>Operand(type=Activation, shape=(1, 2160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2112, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3191,7 +3191,7 @@
     <tr>
       <th>289</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4781285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -3202,7 +3202,7 @@
     <tr>
       <th>290</th>
       <td>Add</td>
-      <td>Operand(type=Constant, name=features.norm5.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4811285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5149,7 +5149,7 @@
     <tr>
       <th>467</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_01285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.norm0.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5160,7 +5160,7 @@
     <tr>
       <th>468</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_51605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5171,7 +5171,7 @@
     <tr>
       <th>469</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5182,7 +5182,7 @@
     <tr>
       <th>470</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.norm0.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_21285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_91605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5193,7 +5193,7 @@
     <tr>
       <th>471</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5215,7 +5215,7 @@
     <tr>
       <th>473</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_51285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_111605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5226,7 +5226,7 @@
     <tr>
       <th>474</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_61285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5237,7 +5237,7 @@
     <tr>
       <th>475</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_141605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5248,7 +5248,7 @@
     <tr>
       <th>476</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_171605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5259,7 +5259,7 @@
     <tr>
       <th>477</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_201605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5270,7 +5270,7 @@
     <tr>
       <th>478</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_231605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5281,7 +5281,7 @@
     <tr>
       <th>479</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_91285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_261605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5292,7 +5292,7 @@
     <tr>
       <th>480</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_271605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5303,7 +5303,7 @@
     <tr>
       <th>481</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5314,7 +5314,7 @@
     <tr>
       <th>482</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_111285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5325,7 +5325,7 @@
     <tr>
       <th>483</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_291605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5336,7 +5336,7 @@
     <tr>
       <th>484</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_141285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5347,7 +5347,7 @@
     <tr>
       <th>485</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_171285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_321605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5358,7 +5358,7 @@
     <tr>
       <th>486</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_201285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_351605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5369,7 +5369,7 @@
     <tr>
       <th>487</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_211285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_381605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5380,7 +5380,7 @@
     <tr>
       <th>488</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition1.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_411605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5391,7 +5391,7 @@
     <tr>
       <th>489</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_441605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5402,7 +5402,7 @@
     <tr>
       <th>490</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_231285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_471605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5413,7 +5413,7 @@
     <tr>
       <th>491</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_501605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5424,7 +5424,7 @@
     <tr>
       <th>492</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_261285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_531605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5435,7 +5435,7 @@
     <tr>
       <th>493</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_271285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5446,7 +5446,7 @@
     <tr>
       <th>494</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_561605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5457,7 +5457,7 @@
     <tr>
       <th>495</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_591605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5468,7 +5468,7 @@
     <tr>
       <th>496</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_291285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_621605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5479,7 +5479,7 @@
     <tr>
       <th>497</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_651605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5490,7 +5490,7 @@
     <tr>
       <th>498</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_321285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_681605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5501,7 +5501,7 @@
     <tr>
       <th>499</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_331285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_711605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5512,7 +5512,7 @@
     <tr>
       <th>500</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_721605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5523,7 +5523,7 @@
     <tr>
       <th>501</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5534,7 +5534,7 @@
     <tr>
       <th>502</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_351285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5545,7 +5545,7 @@
     <tr>
       <th>503</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_741605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5556,7 +5556,7 @@
     <tr>
       <th>504</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock1.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_381285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5567,7 +5567,7 @@
     <tr>
       <th>505</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_391285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_771605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5578,7 +5578,7 @@
     <tr>
       <th>506</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_801605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5589,7 +5589,7 @@
     <tr>
       <th>507</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_831605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5600,7 +5600,7 @@
     <tr>
       <th>508</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.transition1.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_411285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_861605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5611,7 +5611,7 @@
     <tr>
       <th>509</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_891605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5622,7 +5622,7 @@
     <tr>
       <th>510</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_901605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5633,7 +5633,7 @@
     <tr>
       <th>511</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_441285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5644,7 +5644,7 @@
     <tr>
       <th>512</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_471285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5655,7 +5655,7 @@
     <tr>
       <th>513</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_921605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5666,7 +5666,7 @@
     <tr>
       <th>514</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_501285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5677,7 +5677,7 @@
     <tr>
       <th>515</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_531285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_951605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5688,7 +5688,7 @@
     <tr>
       <th>516</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_981605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5699,7 +5699,7 @@
     <tr>
       <th>517</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_561285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1011605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5710,7 +5710,7 @@
     <tr>
       <th>518</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_591285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1041605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5721,7 +5721,7 @@
     <tr>
       <th>519</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1071605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5732,7 +5732,7 @@
     <tr>
       <th>520</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_621285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1081605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5743,7 +5743,7 @@
     <tr>
       <th>521</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_651285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5754,7 +5754,7 @@
     <tr>
       <th>522</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5765,7 +5765,7 @@
     <tr>
       <th>523</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_681285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1101605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5776,7 +5776,7 @@
     <tr>
       <th>524</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_711285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5787,7 +5787,7 @@
     <tr>
       <th>525</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_721285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1131605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5798,7 +5798,7 @@
     <tr>
       <th>526</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition2.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1161605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5809,7 +5809,7 @@
     <tr>
       <th>527</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1191605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5820,7 +5820,7 @@
     <tr>
       <th>528</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_741285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1221605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5831,7 +5831,7 @@
     <tr>
       <th>529</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1251605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5842,7 +5842,7 @@
     <tr>
       <th>530</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_771285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1281605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5853,7 +5853,7 @@
     <tr>
       <th>531</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_781285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1311605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5864,7 +5864,7 @@
     <tr>
       <th>532</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1341605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5875,7 +5875,7 @@
     <tr>
       <th>533</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1371605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5886,7 +5886,7 @@
     <tr>
       <th>534</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_801285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1401605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5897,7 +5897,7 @@
     <tr>
       <th>535</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5908,7 +5908,7 @@
     <tr>
       <th>536</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_831285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1431605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5919,7 +5919,7 @@
     <tr>
       <th>537</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_841285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1461605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5930,7 +5930,7 @@
     <tr>
       <th>538</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1491605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5941,7 +5941,7 @@
     <tr>
       <th>539</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1521605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5952,7 +5952,7 @@
     <tr>
       <th>540</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_861285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1551605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5963,7 +5963,7 @@
     <tr>
       <th>541</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1581605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5974,7 +5974,7 @@
     <tr>
       <th>542</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_891285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5985,7 +5985,7 @@
     <tr>
       <th>543</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_901285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1611605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -5996,7 +5996,7 @@
     <tr>
       <th>544</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1641605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6007,7 +6007,7 @@
     <tr>
       <th>545</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1671605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6018,7 +6018,7 @@
     <tr>
       <th>546</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_921285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1701605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6029,7 +6029,7 @@
     <tr>
       <th>547</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1731605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6040,7 +6040,7 @@
     <tr>
       <th>548</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_951285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1761605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6051,7 +6051,7 @@
     <tr>
       <th>549</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_961285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1771605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6062,7 +6062,7 @@
     <tr>
       <th>550</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6073,7 +6073,7 @@
     <tr>
       <th>551</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6084,7 +6084,7 @@
     <tr>
       <th>552</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_981285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1791605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6095,7 +6095,7 @@
     <tr>
       <th>553</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6106,7 +6106,7 @@
     <tr>
       <th>554</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1011285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1821605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6117,7 +6117,7 @@
     <tr>
       <th>555</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1021285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1851605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6128,7 +6128,7 @@
     <tr>
       <th>556</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1881605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6139,7 +6139,7 @@
     <tr>
       <th>557</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1911605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6150,7 +6150,7 @@
     <tr>
       <th>558</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1041285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1941605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6161,7 +6161,7 @@
     <tr>
       <th>559</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1951605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6172,7 +6172,7 @@
     <tr>
       <th>560</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1071285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6183,7 +6183,7 @@
     <tr>
       <th>561</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1081285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6194,7 +6194,7 @@
     <tr>
       <th>562</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1971605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6205,7 +6205,7 @@
     <tr>
       <th>563</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6216,7 +6216,7 @@
     <tr>
       <th>564</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1101285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2001605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6227,7 +6227,7 @@
     <tr>
       <th>565</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2031605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6238,7 +6238,7 @@
     <tr>
       <th>566</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock2.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1131285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2061605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6249,7 +6249,7 @@
     <tr>
       <th>567</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1141285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2091605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6260,7 +6260,7 @@
     <tr>
       <th>568</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2121605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6271,7 +6271,7 @@
     <tr>
       <th>569</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2131605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6282,7 +6282,7 @@
     <tr>
       <th>570</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.transition2.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1161285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6293,7 +6293,7 @@
     <tr>
       <th>571</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6304,7 +6304,7 @@
     <tr>
       <th>572</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2151605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6315,7 +6315,7 @@
     <tr>
       <th>573</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1191285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6326,7 +6326,7 @@
     <tr>
       <th>574</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2181605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6337,7 +6337,7 @@
     <tr>
       <th>575</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1221285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2211605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6348,7 +6348,7 @@
     <tr>
       <th>576</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2241605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6359,7 +6359,7 @@
     <tr>
       <th>577</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1251285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2271605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6370,7 +6370,7 @@
     <tr>
       <th>578</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1281285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2301605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6381,7 +6381,7 @@
     <tr>
       <th>579</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(480, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2311605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6392,7 +6392,7 @@
     <tr>
       <th>580</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1311285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6403,7 +6403,7 @@
     <tr>
       <th>581</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1341285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6414,7 +6414,7 @@
     <tr>
       <th>582</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2331605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6425,7 +6425,7 @@
     <tr>
       <th>583</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1371285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6436,7 +6436,7 @@
     <tr>
       <th>584</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1401285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2361605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6447,7 +6447,7 @@
     <tr>
       <th>585</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2391605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6458,7 +6458,7 @@
     <tr>
       <th>586</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1431285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2421605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6469,7 +6469,7 @@
     <tr>
       <th>587</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1461285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2451605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6480,7 +6480,7 @@
     <tr>
       <th>588</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2481605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6491,7 +6491,7 @@
     <tr>
       <th>589</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1491285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2491605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6502,7 +6502,7 @@
     <tr>
       <th>590</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1521285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6513,7 +6513,7 @@
     <tr>
       <th>591</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6524,7 +6524,7 @@
     <tr>
       <th>592</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1551285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2511605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6535,7 +6535,7 @@
     <tr>
       <th>593</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1581285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6546,7 +6546,7 @@
     <tr>
       <th>594</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2541605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6557,7 +6557,7 @@
     <tr>
       <th>595</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1611285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2571605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6568,7 +6568,7 @@
     <tr>
       <th>596</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1641285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2601605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6579,7 +6579,7 @@
     <tr>
       <th>597</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2631605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6590,7 +6590,7 @@
     <tr>
       <th>598</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1671285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2661605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6601,7 +6601,7 @@
     <tr>
       <th>599</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1701285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2671605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6612,7 +6612,7 @@
     <tr>
       <th>600</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1711285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6623,7 +6623,7 @@
     <tr>
       <th>601</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6634,7 +6634,7 @@
     <tr>
       <th>602</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2691605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6645,7 +6645,7 @@
     <tr>
       <th>603</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1731285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6656,7 +6656,7 @@
     <tr>
       <th>604</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2721605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6667,7 +6667,7 @@
     <tr>
       <th>605</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1761285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2751605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6678,7 +6678,7 @@
     <tr>
       <th>606</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1771285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2781605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6689,7 +6689,7 @@
     <tr>
       <th>607</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2811605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6700,7 +6700,7 @@
     <tr>
       <th>608</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2841605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6711,7 +6711,7 @@
     <tr>
       <th>609</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1791285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2851605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6722,7 +6722,7 @@
     <tr>
       <th>610</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6733,7 +6733,7 @@
     <tr>
       <th>611</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1821285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6744,7 +6744,7 @@
     <tr>
       <th>612</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1831285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2871605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6755,7 +6755,7 @@
     <tr>
       <th>613</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6766,7 +6766,7 @@
     <tr>
       <th>614</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2901605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6777,7 +6777,7 @@
     <tr>
       <th>615</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1851285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2931605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6788,7 +6788,7 @@
     <tr>
       <th>616</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2961605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6799,7 +6799,7 @@
     <tr>
       <th>617</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1881285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2991605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6810,7 +6810,7 @@
     <tr>
       <th>618</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1891285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3021605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6821,7 +6821,7 @@
     <tr>
       <th>619</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3031605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6832,7 +6832,7 @@
     <tr>
       <th>620</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6843,7 +6843,7 @@
     <tr>
       <th>621</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1911285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6854,7 +6854,7 @@
     <tr>
       <th>622</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3051605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6865,7 +6865,7 @@
     <tr>
       <th>623</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer13.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1941285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6876,7 +6876,7 @@
     <tr>
       <th>624</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_1951285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3081605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6887,7 +6887,7 @@
     <tr>
       <th>625</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3111605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6898,7 +6898,7 @@
     <tr>
       <th>626</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3141605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6909,7 +6909,7 @@
     <tr>
       <th>627</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1971285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3171605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6920,7 +6920,7 @@
     <tr>
       <th>628</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3201605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6931,7 +6931,7 @@
     <tr>
       <th>629</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer14.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2001285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3211605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6942,7 +6942,7 @@
     <tr>
       <th>630</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2011285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6953,7 +6953,7 @@
     <tr>
       <th>631</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6964,7 +6964,7 @@
     <tr>
       <th>632</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3231605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6975,7 +6975,7 @@
     <tr>
       <th>633</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2031285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6986,7 +6986,7 @@
     <tr>
       <th>634</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3261605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -6997,7 +6997,7 @@
     <tr>
       <th>635</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer15.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2061285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3291605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7008,7 +7008,7 @@
     <tr>
       <th>636</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2071285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3321605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7019,7 +7019,7 @@
     <tr>
       <th>637</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3391605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7030,7 +7030,7 @@
     <tr>
       <th>638</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7041,7 +7041,7 @@
     <tr>
       <th>639</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2091285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7052,7 +7052,7 @@
     <tr>
       <th>640</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7063,7 +7063,7 @@
     <tr>
       <th>641</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer16.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2121285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3571605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7074,7 +7074,7 @@
     <tr>
       <th>642</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2131285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7085,7 +7085,7 @@
     <tr>
       <th>643</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7096,7 +7096,7 @@
     <tr>
       <th>644</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7107,7 +7107,7 @@
     <tr>
       <th>645</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2151285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3751605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7118,7 +7118,7 @@
     <tr>
       <th>646</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7129,7 +7129,7 @@
     <tr>
       <th>647</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer17.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2181285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7140,7 +7140,7 @@
     <tr>
       <th>648</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2191285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7151,7 +7151,7 @@
     <tr>
       <th>649</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3931605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7162,7 +7162,7 @@
     <tr>
       <th>650</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7173,7 +7173,7 @@
     <tr>
       <th>651</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2211285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7184,7 +7184,7 @@
     <tr>
       <th>652</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7195,7 +7195,7 @@
     <tr>
       <th>653</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer18.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2241285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.transition3.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4071605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7206,7 +7206,7 @@
     <tr>
       <th>654</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2251285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4101605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7217,7 +7217,7 @@
     <tr>
       <th>655</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4131605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7228,7 +7228,7 @@
     <tr>
       <th>656</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4161605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7239,7 +7239,7 @@
     <tr>
       <th>657</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2271285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4191605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7250,7 +7250,7 @@
     <tr>
       <th>658</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4221605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7261,7 +7261,7 @@
     <tr>
       <th>659</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer19.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2301285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4251605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7272,7 +7272,7 @@
     <tr>
       <th>660</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2311285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4281605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7283,7 +7283,7 @@
     <tr>
       <th>661</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4311605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7294,7 +7294,7 @@
     <tr>
       <th>662</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4341605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7305,7 +7305,7 @@
     <tr>
       <th>663</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2331285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4371605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7316,7 +7316,7 @@
     <tr>
       <th>664</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7327,7 +7327,7 @@
     <tr>
       <th>665</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer20.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2361285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4401605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7338,7 +7338,7 @@
     <tr>
       <th>666</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2371285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4431605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7349,7 +7349,7 @@
     <tr>
       <th>667</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4461605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7360,7 +7360,7 @@
     <tr>
       <th>668</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4491605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7371,7 +7371,7 @@
     <tr>
       <th>669</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2391285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4521605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7382,7 +7382,7 @@
     <tr>
       <th>670</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4551605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7393,7 +7393,7 @@
     <tr>
       <th>671</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer21.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2421285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7404,7 +7404,7 @@
     <tr>
       <th>672</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2431285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4581605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7415,7 +7415,7 @@
     <tr>
       <th>673</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4611605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7426,7 +7426,7 @@
     <tr>
       <th>674</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4641605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7437,7 +7437,7 @@
     <tr>
       <th>675</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2451285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4671605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7448,7 +7448,7 @@
     <tr>
       <th>676</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4701605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7459,7 +7459,7 @@
     <tr>
       <th>677</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer22.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2481285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4731605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7470,7 +7470,7 @@
     <tr>
       <th>678</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2491285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7481,7 +7481,7 @@
     <tr>
       <th>679</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4761605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7492,7 +7492,7 @@
     <tr>
       <th>680</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4791605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7503,7 +7503,7 @@
     <tr>
       <th>681</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2511285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4821605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7514,7 +7514,7 @@
     <tr>
       <th>682</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4851605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7525,7 +7525,7 @@
     <tr>
       <th>683</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer23.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2541285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4881605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7536,7 +7536,7 @@
     <tr>
       <th>684</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2551285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4911605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7547,7 +7547,7 @@
     <tr>
       <th>685</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7558,7 +7558,7 @@
     <tr>
       <th>686</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4941605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7569,7 +7569,7 @@
     <tr>
       <th>687</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2571285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4971605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7580,7 +7580,7 @@
     <tr>
       <th>688</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5001605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7591,7 +7591,7 @@
     <tr>
       <th>689</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer24.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2601285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5031605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7602,7 +7602,7 @@
     <tr>
       <th>690</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2611285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5061605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7613,7 +7613,7 @@
     <tr>
       <th>691</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5091605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7624,7 +7624,7 @@
     <tr>
       <th>692</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7635,7 +7635,7 @@
     <tr>
       <th>693</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2631285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5121605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7646,7 +7646,7 @@
     <tr>
       <th>694</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5151605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7657,7 +7657,7 @@
     <tr>
       <th>695</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer25.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2661285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5181605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7668,7 +7668,7 @@
     <tr>
       <th>696</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2671285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5211605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7679,7 +7679,7 @@
     <tr>
       <th>697</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5241605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7690,7 +7690,7 @@
     <tr>
       <th>698</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5271605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7701,7 +7701,7 @@
     <tr>
       <th>699</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2691285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7712,7 +7712,7 @@
     <tr>
       <th>700</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5301605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7723,7 +7723,7 @@
     <tr>
       <th>701</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer26.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2721285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5331605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7734,7 +7734,7 @@
     <tr>
       <th>702</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2731285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5361605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7745,7 +7745,7 @@
     <tr>
       <th>703</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5391605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7756,7 +7756,7 @@
     <tr>
       <th>704</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5421605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7767,7 +7767,7 @@
     <tr>
       <th>705</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2751285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5451605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7778,7 +7778,7 @@
     <tr>
       <th>706</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7789,7 +7789,7 @@
     <tr>
       <th>707</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer27.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2781285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5481605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7800,7 +7800,7 @@
     <tr>
       <th>708</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2791285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5511605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7811,7 +7811,7 @@
     <tr>
       <th>709</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7822,7 +7822,7 @@
     <tr>
       <th>710</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_5821605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7833,7 +7833,7 @@
     <tr>
       <th>711</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2811285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7844,7 +7844,7 @@
     <tr>
       <th>712</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7855,7 +7855,7 @@
     <tr>
       <th>713</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer28.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2841285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7866,7 +7866,7 @@
     <tr>
       <th>714</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2851285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_6001605, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7877,7 +7877,7 @@
     <tr>
       <th>715</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7888,7 +7888,7 @@
     <tr>
       <th>716</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7899,7 +7899,7 @@
     <tr>
       <th>717</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2871285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=features.norm5.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6021605, dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7910,7 +7910,7 @@
     <tr>
       <th>718</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7921,7 +7921,7 @@
     <tr>
       <th>719</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer29.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2901285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(96, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7932,7 +7932,7 @@
     <tr>
       <th>720</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2911285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_91285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7943,7 +7943,7 @@
     <tr>
       <th>721</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7954,7 +7954,7 @@
     <tr>
       <th>722</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7965,7 +7965,7 @@
     <tr>
       <th>723</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2931285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7976,7 +7976,7 @@
     <tr>
       <th>724</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_211285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7987,7 +7987,7 @@
     <tr>
       <th>725</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer30.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2961285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -7998,7 +7998,7 @@
     <tr>
       <th>726</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_2971285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8009,7 +8009,7 @@
     <tr>
       <th>727</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8020,7 +8020,7 @@
     <tr>
       <th>728</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(288, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8031,7 +8031,7 @@
     <tr>
       <th>729</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2991285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_331285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8042,7 +8042,7 @@
     <tr>
       <th>730</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8053,7 +8053,7 @@
     <tr>
       <th>731</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer31.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3021285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8064,7 +8064,7 @@
     <tr>
       <th>732</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3031285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8075,7 +8075,7 @@
     <tr>
       <th>733</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(384, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8086,7 +8086,7 @@
     <tr>
       <th>734</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(240, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8097,7 +8097,7 @@
     <tr>
       <th>735</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3051285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(336, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8108,7 +8108,7 @@
     <tr>
       <th>736</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_721285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8119,7 +8119,7 @@
     <tr>
       <th>737</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer32.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3081285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8130,7 +8130,7 @@
     <tr>
       <th>738</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3091285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8141,7 +8141,7 @@
     <tr>
       <th>739</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8152,7 +8152,7 @@
     <tr>
       <th>740</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_841285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8163,7 +8163,7 @@
     <tr>
       <th>741</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3111285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8174,7 +8174,7 @@
     <tr>
       <th>742</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8185,7 +8185,7 @@
     <tr>
       <th>743</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer33.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3141285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8196,7 +8196,7 @@
     <tr>
       <th>744</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3151285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(576, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8207,7 +8207,7 @@
     <tr>
       <th>745</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1968,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_961285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8218,7 +8218,7 @@
     <tr>
       <th>746</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8229,7 +8229,7 @@
     <tr>
       <th>747</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3171285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8240,7 +8240,7 @@
     <tr>
       <th>748</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8251,7 +8251,7 @@
     <tr>
       <th>749</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer34.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3201285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(672, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8262,7 +8262,7 @@
     <tr>
       <th>750</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3211285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1081285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8273,7 +8273,7 @@
     <tr>
       <th>751</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2016,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8284,7 +8284,7 @@
     <tr>
       <th>752</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8295,7 +8295,7 @@
     <tr>
       <th>753</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3231285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8306,7 +8306,7 @@
     <tr>
       <th>754</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(768, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8317,7 +8317,7 @@
     <tr>
       <th>755</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer35.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3261285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8328,7 +8328,7 @@
     <tr>
       <th>756</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3271285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(432, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8339,7 +8339,7 @@
     <tr>
       <th>757</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2064,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(528, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8350,7 +8350,7 @@
     <tr>
       <th>758</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(624, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8361,7 +8361,7 @@
     <tr>
       <th>759</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3291285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(720, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8372,7 +8372,7 @@
     <tr>
       <th>760</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1711285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8383,7 +8383,7 @@
     <tr>
       <th>761</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock3.denselayer36.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3321285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8394,7 +8394,7 @@
     <tr>
       <th>762</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_3331285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8405,7 +8405,7 @@
     <tr>
       <th>763</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2112,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8416,7 +8416,7 @@
     <tr>
       <th>764</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1831285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8427,7 +8427,7 @@
     <tr>
       <th>765</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.transition3.norm.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3351285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8438,7 +8438,7 @@
     <tr>
       <th>766</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8449,7 +8449,7 @@
     <tr>
       <th>767</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1056, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8460,7 +8460,7 @@
     <tr>
       <th>768</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3381285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_1951285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8471,7 +8471,7 @@
     <tr>
       <th>769</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8482,7 +8482,7 @@
     <tr>
       <th>770</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer1.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3411285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8493,7 +8493,7 @@
     <tr>
       <th>771</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8504,7 +8504,7 @@
     <tr>
       <th>772</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3441285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2071285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8515,7 +8515,7 @@
     <tr>
       <th>773</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer2.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3471285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8526,7 +8526,7 @@
     <tr>
       <th>774</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1152, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8537,7 +8537,7 @@
     <tr>
       <th>775</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3501285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8548,7 +8548,7 @@
     <tr>
       <th>776</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer3.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3531285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2191285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8559,7 +8559,7 @@
     <tr>
       <th>777</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8570,7 +8570,7 @@
     <tr>
       <th>778</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3561285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8581,7 +8581,7 @@
     <tr>
       <th>779</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer4.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3591285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8592,7 +8592,7 @@
     <tr>
       <th>780</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1248, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2311285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8603,7 +8603,7 @@
     <tr>
       <th>781</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3621285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8614,7 +8614,7 @@
     <tr>
       <th>782</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer5.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3651285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8625,7 +8625,7 @@
     <tr>
       <th>783</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8636,7 +8636,7 @@
     <tr>
       <th>784</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3681285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2431285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8647,7 +8647,7 @@
     <tr>
       <th>785</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer6.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3711285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8658,7 +8658,7 @@
     <tr>
       <th>786</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1344, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8669,7 +8669,7 @@
     <tr>
       <th>787</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3741285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8680,7 +8680,7 @@
     <tr>
       <th>788</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer7.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3771285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2551285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8691,7 +8691,7 @@
     <tr>
       <th>789</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8702,7 +8702,7 @@
     <tr>
       <th>790</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3801285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8713,7 +8713,7 @@
     <tr>
       <th>791</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer8.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3831285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8724,7 +8724,7 @@
     <tr>
       <th>792</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1440, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2671285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8735,7 +8735,7 @@
     <tr>
       <th>793</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3861285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8746,7 +8746,7 @@
     <tr>
       <th>794</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer9.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3891285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8757,7 +8757,7 @@
     <tr>
       <th>795</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8768,7 +8768,7 @@
     <tr>
       <th>796</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3921285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2791285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8779,7 +8779,7 @@
     <tr>
       <th>797</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer10.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3951285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8790,7 +8790,7 @@
     <tr>
       <th>798</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1536, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8801,7 +8801,7 @@
     <tr>
       <th>799</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3981285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8812,7 +8812,7 @@
     <tr>
       <th>800</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer11.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4011285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_2911285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8823,7 +8823,7 @@
     <tr>
       <th>801</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8834,7 +8834,7 @@
     <tr>
       <th>802</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4041285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8845,7 +8845,7 @@
     <tr>
       <th>803</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer12.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4071285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8856,7 +8856,7 @@
     <tr>
       <th>804</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1632, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8867,7 +8867,7 @@
     <tr>
       <th>805</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4101285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3031285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8878,7 +8878,7 @@
     <tr>
       <th>806</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer13.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4131285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8889,7 +8889,7 @@
     <tr>
       <th>807</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8900,7 +8900,7 @@
     <tr>
       <th>808</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4161285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8911,7 +8911,7 @@
     <tr>
       <th>809</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer14.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4191285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8922,7 +8922,7 @@
     <tr>
       <th>810</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1728, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3151285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8933,7 +8933,7 @@
     <tr>
       <th>811</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4221285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1968,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8944,7 +8944,7 @@
     <tr>
       <th>812</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer15.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4251285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8955,7 +8955,7 @@
     <tr>
       <th>813</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1968,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8966,7 +8966,7 @@
     <tr>
       <th>814</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4281285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3211285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8977,7 +8977,7 @@
     <tr>
       <th>815</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer16.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4311285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2016,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8988,7 +8988,7 @@
     <tr>
       <th>816</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1824, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -8999,7 +8999,7 @@
     <tr>
       <th>817</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4341285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2016,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9010,7 +9010,7 @@
     <tr>
       <th>818</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer17.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4371285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3271285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9021,7 +9021,7 @@
     <tr>
       <th>819</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2064,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9032,7 +9032,7 @@
     <tr>
       <th>820</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4401285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9043,7 +9043,7 @@
     <tr>
       <th>821</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer18.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4431285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2064,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9054,7 +9054,7 @@
     <tr>
       <th>822</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1920, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_3331285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9065,7 +9065,7 @@
     <tr>
       <th>823</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4461285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2112,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9076,7 +9076,7 @@
     <tr>
       <th>824</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer19.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4491285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9087,7 +9087,7 @@
     <tr>
       <th>825</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 1968, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2112,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9098,7 +9098,7 @@
     <tr>
       <th>826</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4521285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(192, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9109,7 +9109,7 @@
     <tr>
       <th>827</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer20.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4551285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1104, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9120,7 +9120,7 @@
     <tr>
       <th>828</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2016, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1200, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9131,7 +9131,7 @@
     <tr>
       <th>829</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4581285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1296, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9142,7 +9142,7 @@
     <tr>
       <th>830</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer21.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4611285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1392, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9153,7 +9153,7 @@
     <tr>
       <th>831</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2064, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1488, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9164,7 +9164,7 @@
     <tr>
       <th>832</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4641285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1584, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9175,7 +9175,7 @@
     <tr>
       <th>833</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer22.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4671285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1680, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9186,7 +9186,7 @@
     <tr>
       <th>834</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2112, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1776, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9197,7 +9197,7 @@
     <tr>
       <th>835</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4701285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1872, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9208,7 +9208,7 @@
     <tr>
       <th>836</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer23.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4731285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1968, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1968, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9219,7 +9219,7 @@
     <tr>
       <th>837</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_4741285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2016, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2016, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9230,7 +9230,7 @@
     <tr>
       <th>838</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2064, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2064, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9241,7 +9241,7 @@
     <tr>
       <th>839</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2112, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2112, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9252,7 +9252,7 @@
     <tr>
       <th>840</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm1.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4761285, dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_4741285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9263,7 +9263,7 @@
     <tr>
       <th>841</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9274,7 +9274,7 @@
     <tr>
       <th>842</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.denseblock4.denselayer24.norm2.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4791285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2160, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9285,7 +9285,7 @@
     <tr>
       <th>843</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=const_4801285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2208,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2160,), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2160,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9296,7 +9296,7 @@
     <tr>
       <th>844</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(2208,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2208,), dtype=float32)</td>
+      <td>Operand(type=Constant, name=const_4801285, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2208,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9307,7 +9307,7 @@
     <tr>
       <th>845</th>
       <td>Multiply</td>
-      <td>Operand(type=Activation, shape=(1, 2208, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2208, 1, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(2208,), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(2208,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9318,7 +9318,7 @@
     <tr>
       <th>846</th>
       <td>Multiply</td>
-      <td>Operand(type=Constant, name=features.norm5.running_mean, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4821285, dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2208, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(2208, 1, 1), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9362,7 +9362,7 @@
     <tr>
       <th>850</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9373,7 +9373,7 @@
     <tr>
       <th>851</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9384,7 +9384,7 @@
     <tr>
       <th>852</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9395,7 +9395,7 @@
     <tr>
       <th>853</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9406,7 +9406,7 @@
     <tr>
       <th>854</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9417,7 +9417,7 @@
     <tr>
       <th>855</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9428,7 +9428,7 @@
     <tr>
       <th>856</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9439,7 +9439,7 @@
     <tr>
       <th>857</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9450,7 +9450,7 @@
     <tr>
       <th>858</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9461,7 +9461,7 @@
     <tr>
       <th>859</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9472,7 +9472,7 @@
     <tr>
       <th>860</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9483,7 +9483,7 @@
     <tr>
       <th>861</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9494,7 +9494,7 @@
     <tr>
       <th>862</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9505,7 +9505,7 @@
     <tr>
       <th>863</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9516,7 +9516,7 @@
     <tr>
       <th>864</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9527,7 +9527,7 @@
     <tr>
       <th>865</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9538,7 +9538,7 @@
     <tr>
       <th>866</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9549,7 +9549,7 @@
     <tr>
       <th>867</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9560,7 +9560,7 @@
     <tr>
       <th>868</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9571,7 +9571,7 @@
     <tr>
       <th>869</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9582,7 +9582,7 @@
     <tr>
       <th>870</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9593,7 +9593,7 @@
     <tr>
       <th>871</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9604,7 +9604,7 @@
     <tr>
       <th>872</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9615,7 +9615,7 @@
     <tr>
       <th>873</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9626,7 +9626,7 @@
     <tr>
       <th>874</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9637,7 +9637,7 @@
     <tr>
       <th>875</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9648,7 +9648,7 @@
     <tr>
       <th>876</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9659,7 +9659,7 @@
     <tr>
       <th>877</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9670,7 +9670,7 @@
     <tr>
       <th>878</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9681,7 +9681,7 @@
     <tr>
       <th>879</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9692,7 +9692,7 @@
     <tr>
       <th>880</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9703,7 +9703,7 @@
     <tr>
       <th>881</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9714,7 +9714,7 @@
     <tr>
       <th>882</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9725,7 +9725,7 @@
     <tr>
       <th>883</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9736,7 +9736,7 @@
     <tr>
       <th>884</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9747,7 +9747,7 @@
     <tr>
       <th>885</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9758,7 +9758,7 @@
     <tr>
       <th>886</th>
       <td>Reciprocal</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9835,7 +9835,7 @@
     <tr>
       <th>893</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9846,7 +9846,7 @@
     <tr>
       <th>894</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 96, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9857,7 +9857,7 @@
     <tr>
       <th>895</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 192, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9868,7 +9868,7 @@
     <tr>
       <th>896</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9879,7 +9879,7 @@
     <tr>
       <th>897</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9890,7 +9890,7 @@
     <tr>
       <th>898</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9901,7 +9901,7 @@
     <tr>
       <th>899</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9912,7 +9912,7 @@
     <tr>
       <th>900</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9923,7 +9923,7 @@
     <tr>
       <th>901</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 192, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9934,7 +9934,7 @@
     <tr>
       <th>902</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9945,7 +9945,7 @@
     <tr>
       <th>903</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 288, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9956,7 +9956,7 @@
     <tr>
       <th>904</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9967,7 +9967,7 @@
     <tr>
       <th>905</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 384, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9978,7 +9978,7 @@
     <tr>
       <th>906</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -9989,7 +9989,7 @@
     <tr>
       <th>907</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 480, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10000,7 +10000,7 @@
     <tr>
       <th>908</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10011,7 +10011,7 @@
     <tr>
       <th>909</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10022,7 +10022,7 @@
     <tr>
       <th>910</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10033,7 +10033,7 @@
     <tr>
       <th>911</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10044,7 +10044,7 @@
     <tr>
       <th>912</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10055,7 +10055,7 @@
     <tr>
       <th>913</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10066,7 +10066,7 @@
     <tr>
       <th>914</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 384, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10077,7 +10077,7 @@
     <tr>
       <th>915</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10088,7 +10088,7 @@
     <tr>
       <th>916</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10099,7 +10099,7 @@
     <tr>
       <th>917</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 480, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10110,7 +10110,7 @@
     <tr>
       <th>918</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10121,7 +10121,7 @@
     <tr>
       <th>919</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 576, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10132,7 +10132,7 @@
     <tr>
       <th>920</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10143,7 +10143,7 @@
     <tr>
       <th>921</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 672, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10154,7 +10154,7 @@
     <tr>
       <th>922</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10165,7 +10165,7 @@
     <tr>
       <th>923</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 768, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10176,7 +10176,7 @@
     <tr>
       <th>924</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 96, 112, 112), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10187,7 +10187,7 @@
     <tr>
       <th>925</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 864, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 144, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10198,7 +10198,7 @@
     <tr>
       <th>926</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10209,7 +10209,7 @@
     <tr>
       <th>927</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 960, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 288, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10220,7 +10220,7 @@
     <tr>
       <th>928</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10231,7 +10231,7 @@
     <tr>
       <th>929</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 384, 56, 56), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10242,7 +10242,7 @@
     <tr>
       <th>930</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 240, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10253,7 +10253,7 @@
     <tr>
       <th>931</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 336, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10264,7 +10264,7 @@
     <tr>
       <th>932</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10275,7 +10275,7 @@
     <tr>
       <th>933</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10286,7 +10286,7 @@
     <tr>
       <th>934</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 576, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10297,7 +10297,7 @@
     <tr>
       <th>935</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10308,7 +10308,7 @@
     <tr>
       <th>936</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 672, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10319,7 +10319,7 @@
     <tr>
       <th>937</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10330,7 +10330,7 @@
     <tr>
       <th>938</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 768, 28, 28), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10341,7 +10341,7 @@
     <tr>
       <th>939</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10352,7 +10352,7 @@
     <tr>
       <th>940</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 432, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10363,7 +10363,7 @@
     <tr>
       <th>941</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 528, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10374,7 +10374,7 @@
     <tr>
       <th>942</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 624, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10385,7 +10385,7 @@
     <tr>
       <th>943</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 720, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10396,7 +10396,7 @@
     <tr>
       <th>944</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 816, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10407,7 +10407,7 @@
     <tr>
       <th>945</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 912, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10418,7 +10418,7 @@
     <tr>
       <th>946</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1008, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10429,7 +10429,7 @@
     <tr>
       <th>947</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10440,7 +10440,7 @@
     <tr>
       <th>948</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10451,7 +10451,7 @@
     <tr>
       <th>949</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10462,7 +10462,7 @@
     <tr>
       <th>950</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10473,7 +10473,7 @@
     <tr>
       <th>951</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10484,7 +10484,7 @@
     <tr>
       <th>952</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1056, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10495,7 +10495,7 @@
     <tr>
       <th>953</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10506,7 +10506,7 @@
     <tr>
       <th>954</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10517,7 +10517,7 @@
     <tr>
       <th>955</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1152, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1824, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10528,7 +10528,7 @@
     <tr>
       <th>956</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10539,7 +10539,7 @@
     <tr>
       <th>957</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1248, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1920, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10550,7 +10550,7 @@
     <tr>
       <th>958</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1968, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10561,7 +10561,7 @@
     <tr>
       <th>959</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1344, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2016, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10572,7 +10572,7 @@
     <tr>
       <th>960</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2064, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10583,7 +10583,7 @@
     <tr>
       <th>961</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1440, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 2112, 14, 14), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10594,7 +10594,7 @@
     <tr>
       <th>962</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 192, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10605,7 +10605,7 @@
     <tr>
       <th>963</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1536, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1104, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10616,7 +10616,7 @@
     <tr>
       <th>964</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1200, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10627,7 +10627,7 @@
     <tr>
       <th>965</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1632, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1296, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10638,7 +10638,7 @@
     <tr>
       <th>966</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1392, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10649,7 +10649,7 @@
     <tr>
       <th>967</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1728, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1488, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10660,7 +10660,7 @@
     <tr>
       <th>968</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1584, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10671,7 +10671,7 @@
     <tr>
       <th>969</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1824, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1680, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10682,7 +10682,7 @@
     <tr>
       <th>970</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1776, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10693,7 +10693,7 @@
     <tr>
       <th>971</th>
       <td>Relu</td>
-      <td>Operand(type=Activation, shape=(1, 1920, 7, 7), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1, 1872, 7, 7), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10803,7 +10803,7 @@
     <tr>
       <th>981</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10814,7 +10814,7 @@
     <tr>
       <th>982</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10825,7 +10825,7 @@
     <tr>
       <th>983</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10836,7 +10836,7 @@
     <tr>
       <th>984</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10847,7 +10847,7 @@
     <tr>
       <th>985</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10858,7 +10858,7 @@
     <tr>
       <th>986</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10869,7 +10869,7 @@
     <tr>
       <th>987</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10880,7 +10880,7 @@
     <tr>
       <th>988</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10891,7 +10891,7 @@
     <tr>
       <th>989</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10902,7 +10902,7 @@
     <tr>
       <th>990</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10913,7 +10913,7 @@
     <tr>
       <th>991</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10924,7 +10924,7 @@
     <tr>
       <th>992</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10935,7 +10935,7 @@
     <tr>
       <th>993</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10946,7 +10946,7 @@
     <tr>
       <th>994</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10957,7 +10957,7 @@
     <tr>
       <th>995</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10968,7 +10968,7 @@
     <tr>
       <th>996</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10979,7 +10979,7 @@
     <tr>
       <th>997</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -10990,7 +10990,7 @@
     <tr>
       <th>998</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11001,7 +11001,7 @@
     <tr>
       <th>999</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11012,7 +11012,7 @@
     <tr>
       <th>1000</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11023,7 +11023,7 @@
     <tr>
       <th>1001</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11034,7 +11034,7 @@
     <tr>
       <th>1002</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11045,7 +11045,7 @@
     <tr>
       <th>1003</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11056,7 +11056,7 @@
     <tr>
       <th>1004</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11067,7 +11067,7 @@
     <tr>
       <th>1005</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11078,7 +11078,7 @@
     <tr>
       <th>1006</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11089,7 +11089,7 @@
     <tr>
       <th>1007</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11100,7 +11100,7 @@
     <tr>
       <th>1008</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11111,7 +11111,7 @@
     <tr>
       <th>1009</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11122,7 +11122,7 @@
     <tr>
       <th>1010</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11133,7 +11133,7 @@
     <tr>
       <th>1011</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11144,7 +11144,7 @@
     <tr>
       <th>1012</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11155,7 +11155,7 @@
     <tr>
       <th>1013</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11166,7 +11166,7 @@
     <tr>
       <th>1014</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11177,7 +11177,7 @@
     <tr>
       <th>1015</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11188,7 +11188,7 @@
     <tr>
       <th>1016</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11199,7 +11199,7 @@
     <tr>
       <th>1017</th>
       <td>Sqrt</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11320,7 +11320,7 @@
     <tr>
       <th>1028</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11342,7 +11342,7 @@
     <tr>
       <th>1030</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(192, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11375,7 +11375,7 @@
     <tr>
       <th>1033</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11386,7 +11386,7 @@
     <tr>
       <th>1034</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(144, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(288, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11397,7 +11397,7 @@
     <tr>
       <th>1035</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11408,7 +11408,7 @@
     <tr>
       <th>1036</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(240, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11419,7 +11419,7 @@
     <tr>
       <th>1037</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(288,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(480, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11430,7 +11430,7 @@
     <tr>
       <th>1038</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(288, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11441,7 +11441,7 @@
     <tr>
       <th>1039</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(576, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11452,7 +11452,7 @@
     <tr>
       <th>1040</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(336, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11463,7 +11463,7 @@
     <tr>
       <th>1041</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(384,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(672, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11474,7 +11474,7 @@
     <tr>
       <th>1042</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11485,7 +11485,7 @@
     <tr>
       <th>1043</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(432, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11496,7 +11496,7 @@
     <tr>
       <th>1044</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(480,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(864, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11507,7 +11507,7 @@
     <tr>
       <th>1045</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(480, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11518,7 +11518,7 @@
     <tr>
       <th>1046</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(960, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11529,7 +11529,7 @@
     <tr>
       <th>1047</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(528, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11540,7 +11540,7 @@
     <tr>
       <th>1048</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(576,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1056, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11551,7 +11551,7 @@
     <tr>
       <th>1049</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(576, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11562,7 +11562,7 @@
     <tr>
       <th>1050</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1152, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11573,7 +11573,7 @@
     <tr>
       <th>1051</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(624, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11584,7 +11584,7 @@
     <tr>
       <th>1052</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(672,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1248, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11595,7 +11595,7 @@
     <tr>
       <th>1053</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(672, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11606,7 +11606,7 @@
     <tr>
       <th>1054</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1344, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11617,7 +11617,7 @@
     <tr>
       <th>1055</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(720, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11628,7 +11628,7 @@
     <tr>
       <th>1056</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(768,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1440, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11639,7 +11639,7 @@
     <tr>
       <th>1057</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11650,7 +11650,7 @@
     <tr>
       <th>1058</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(816, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1536, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11661,7 +11661,7 @@
     <tr>
       <th>1059</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(864,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11672,7 +11672,7 @@
     <tr>
       <th>1060</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(864, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1632, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11683,7 +11683,7 @@
     <tr>
       <th>1061</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11694,7 +11694,7 @@
     <tr>
       <th>1062</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(912, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1728, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11705,7 +11705,7 @@
     <tr>
       <th>1063</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(960,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11716,7 +11716,7 @@
     <tr>
       <th>1064</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(960, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1824, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11727,7 +11727,7 @@
     <tr>
       <th>1065</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11738,7 +11738,7 @@
     <tr>
       <th>1066</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1008, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1920, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11749,7 +11749,7 @@
     <tr>
       <th>1067</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1056,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11760,7 +11760,7 @@
     <tr>
       <th>1068</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1056, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(144, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11771,7 +11771,7 @@
     <tr>
       <th>1069</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11782,7 +11782,7 @@
     <tr>
       <th>1070</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1104, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(240, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11793,7 +11793,7 @@
     <tr>
       <th>1071</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1152,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11804,7 +11804,7 @@
     <tr>
       <th>1072</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1152, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(336, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11815,7 +11815,7 @@
     <tr>
       <th>1073</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11826,7 +11826,7 @@
     <tr>
       <th>1074</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1200, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(432, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11837,7 +11837,7 @@
     <tr>
       <th>1075</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1248,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11848,7 +11848,7 @@
     <tr>
       <th>1076</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1248, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(528, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11859,7 +11859,7 @@
     <tr>
       <th>1077</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11870,7 +11870,7 @@
     <tr>
       <th>1078</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1296, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(624, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11881,7 +11881,7 @@
     <tr>
       <th>1079</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1344,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11892,7 +11892,7 @@
     <tr>
       <th>1080</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1344, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(720, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11903,7 +11903,7 @@
     <tr>
       <th>1081</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11914,7 +11914,7 @@
     <tr>
       <th>1082</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1392, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(816, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11925,7 +11925,7 @@
     <tr>
       <th>1083</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1440,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11936,7 +11936,7 @@
     <tr>
       <th>1084</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1440, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(912, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11947,7 +11947,7 @@
     <tr>
       <th>1085</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11958,7 +11958,7 @@
     <tr>
       <th>1086</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1488, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1008, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11969,7 +11969,7 @@
     <tr>
       <th>1087</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1536,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11980,7 +11980,7 @@
     <tr>
       <th>1088</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1536, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1104, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -11991,7 +11991,7 @@
     <tr>
       <th>1089</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12002,7 +12002,7 @@
     <tr>
       <th>1090</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1584, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1200, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12013,7 +12013,7 @@
     <tr>
       <th>1091</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1632,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12024,7 +12024,7 @@
     <tr>
       <th>1092</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1632, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1296, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12035,7 +12035,7 @@
     <tr>
       <th>1093</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12046,7 +12046,7 @@
     <tr>
       <th>1094</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1680, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1392, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12057,7 +12057,7 @@
     <tr>
       <th>1095</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1728,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12068,7 +12068,7 @@
     <tr>
       <th>1096</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1728, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1488, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12079,7 +12079,7 @@
     <tr>
       <th>1097</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12090,7 +12090,7 @@
     <tr>
       <th>1098</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1776, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1584, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12101,7 +12101,7 @@
     <tr>
       <th>1099</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1824,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12112,7 +12112,7 @@
     <tr>
       <th>1100</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1824, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1680, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12123,7 +12123,7 @@
     <tr>
       <th>1101</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12134,7 +12134,7 @@
     <tr>
       <th>1102</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1872, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1776, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12145,7 +12145,7 @@
     <tr>
       <th>1103</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1920,), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -12156,7 +12156,7 @@
     <tr>
       <th>1104</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(1920, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(1872, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

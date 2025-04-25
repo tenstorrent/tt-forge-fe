@@ -52,14 +52,14 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 64, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 256, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_126293, dtype=float32)</td>
 			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
+			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 128, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168293, dtype=float32)</td>
 			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>
@@ -76,18 +76,6 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 256, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_125293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_126293, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_yolo_v6_yolov6l_obj_det_torchhub</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 128, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_167293, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168293, dtype=float32)</td>
-			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
-		</tr>
-		<tr>
-			<td>1</td>
 			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
 			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
@@ -96,6 +84,18 @@
 			<td>1</td>
 			<td><ul><li>pt_yolo_v6_yolov6s_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 64, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 14, 20), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_55132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_56132, dtype=float32)</td>
+			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_yolo_v6_yolov6n_obj_det_torchhub</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 28, 40), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75132, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_76132, dtype=float32)</td>
 			<td>stride : 2<br>padding : 0<br>dilation : 1<br>groups : 1<br>channel_last : 0<br>output_padding : [0, 0]</td>
 		</tr>
 		<tr>

@@ -1695,8 +1695,8 @@
     <tr>
       <th>153</th>
       <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 64, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 64, 1, 1), dtype=float32)</td>
-      <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32, 32, 3, 3), dtype=float32)</td>
+      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -1706,8 +1706,8 @@
     <tr>
       <th>154</th>
       <td>Conv2d</td>
-      <td>Operand(type=Activation, shape=(1, 32, 112, 112), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(32, 32, 3, 3), dtype=float32)</td>
-      <td>stride : [1, 1]<br>padding : [1, 1, 1, 1]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>Operand(type=Activation, shape=(1, 64, 56, 56), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 64, 1, 1), dtype=float32)</td>
+      <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

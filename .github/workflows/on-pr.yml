@@ -33,6 +33,12 @@ jobs:
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  build-docs:
+    needs: docker-build
+    uses: ./.github/workflows/build-docs.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
     needs:
       - docker-build
@@ -52,6 +58,7 @@ jobs:
       - pre-commit
       - spdx
       - docker-build
+      - build-docs
       - build
       - test
     runs-on: Ubuntu-latest

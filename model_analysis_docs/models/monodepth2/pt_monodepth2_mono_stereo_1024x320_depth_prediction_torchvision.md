@@ -542,11 +542,11 @@
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 3, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(64, 3, 7, 7), dtype=float32)</td>
       <td>stride : [2, 2]<br>padding : [3, 3, 3, 3]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>49</th>
@@ -762,22 +762,22 @@
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 16, 322, 1026), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(16, 16, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>69</th>
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 16, 322, 1026), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(1, 16, 3, 3), dtype=float32)</td>
       <td>stride : [1, 1]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>70</th>

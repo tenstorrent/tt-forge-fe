@@ -445,6 +445,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     [
         ((56), 0),
         ((1, 128), 1),
+        ((1, 32), -1),
         pytest.param(
             (1, 64, 76),
             2,
@@ -595,9 +596,6 @@ def test_log(forge_property_recorder, shape):
         ((1, 16, 32, 32), (1,)),
         ((1, 32, 32, 32), (1,)),
     ],
-)
-@pytest.mark.xfail(
-    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
 )
 @pytest.mark.push
 def test_maximum(forge_property_recorder, shape_x, shape_y):
@@ -801,7 +799,6 @@ def test_floor(forge_property_recorder, input_data):
             (1, 64, 76),
             2,
             False,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
         ),
         ((1, 64, 76), 2, True),
         pytest.param(
@@ -848,3 +845,33 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "pattern, input_shape",
+    [
+        ("nhwpqc->nchpwq", (2, 64, 64, 2, 2, 16)),
+        ("nhwpqc->nchpwq", (1, 32, 32, 4, 4, 8)),
+        ("nhwpqc->nchpwq", (4, 16, 16, 2, 2, 32)),
+        ("nhwpqc->nchpwq", (3, 8, 8, 1, 1, 64)),
+    ],
+)
+@pytest.mark.push
+def test_einsum(forge_property_recorder, pattern, input_shape):
+    class EinsumModel(torch.nn.Module):
+        def __init__(self, pattern):
+            super().__init__()
+            self.pattern = pattern
+
+        def forward(self, x):
+            return torch.einsum(self.pattern, x)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = EinsumModel(pattern)
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

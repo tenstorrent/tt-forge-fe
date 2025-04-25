@@ -102,11 +102,11 @@
       <td>Conv2d</td>
       <td>Operand(type=Activation, shape=(1, 3, 224, 224), dtype=float32)<br><div align='center'>X</div>Operand(type=Parameter, shape=(192, 3, 16, 16), dtype=float32)</td>
       <td>stride : [16, 16]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>9</th>

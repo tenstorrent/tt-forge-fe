@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from transformers import (
     BertForMaskedLM,
     BertForQuestionAnswering,
@@ -111,8 +112,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_bert_question_answering_pytorch(forge_property_recorder, variant):
-    if variant == "bert-large-cased-whole-word-masking-finetuned-squad":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -177,7 +176,6 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
 def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -225,13 +223,12 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    return model, [input_tokens["input_ids"]], {}
+    return model, sample_text, [input_tokens["input_ids"]], input_tokens
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
 def test_bert_token_classification_pytorch(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -245,7 +242,7 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
+    framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -253,12 +250,20 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
+
+    # post processing
+    predicted_token_class_ids = co_out[0].argmax(-1)
+    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
+    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+
+    print(f"Context: {sample_text}")
+    print(f"Answer: {predicted_tokens_classes}")
 
 
 @pytest.mark.nightly
@@ -277,6 +282,7 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

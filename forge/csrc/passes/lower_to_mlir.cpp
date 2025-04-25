@@ -59,6 +59,7 @@ enum class TargetType
     UI32Attr,
     I64Attr,
     I32Attr,
+    F32Attr,
     I32ArrayAttr,
     DenseI64ArrayAttr,
     DenseI32ArrayAttr,
@@ -145,6 +146,8 @@ class AttributeMapper
 
         // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
+        add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
+        add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
         // Add more default mappings here
     }
@@ -277,7 +280,7 @@ class MLIRGenerator
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
                 case TargetType::I32Attr: return builder_.getI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
                 case TargetType::I64Attr: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
-
+                case TargetType::F32Attr: return builder_.getF32FloatAttr(static_cast<float>(std::get<float>(value)));
                 case TargetType::DenseI64ArrayAttr:
                     return builder_.getDenseI64ArrayAttr(std::vector<int64_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
@@ -648,17 +651,30 @@ class MLIRGenerator
         return mlir::FileLineColLoc::get(builder_.getContext(), module.name(), 0, 0);
     }
 
-    /// Get the simple location for a node in a format "graph_name", (graph_id), (node_id)
+    /// Get the node location in format "source_location", (graph_id), (node_id)
     mlir::Location get_node_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::FileLineColLoc::get(builder_.getContext(), graph->name(), graph->id(), node->id());
+        TT_ASSERT(graph != nullptr);
+        TT_ASSERT(node != nullptr);
+
+        const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+
+        // Get source location from layer tag if available, otherwise use node name
+        std::string source_location = node->name();
+        if (tagged_node && tagged_node->has_tag("layer"))
+        {
+            source_location = std::get<std::string>(tagged_node->tag_value("layer")) + "/" + node->name();
+        }
+
+        // Create and return FileLineColLoc with the collected information
+        return mlir::FileLineColLoc::get(builder_.getContext(), source_location, graph->id(), node->id());
     }
 
     /// Get the location for a TTForge operation. The location is a combination of the operation name and the node
     /// location.
     mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::NameLoc::get(builder_.getStringAttr(node->name()), get_node_location(graph, node));
+        return mlir::NameLoc::get(builder_.getStringAttr(graph->name()), get_node_location(graph, node));
     }
 
     /// Convert an MLIR value to a string.
@@ -723,6 +739,7 @@ class MLIRGenerator
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
+        lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
     }
 };
 

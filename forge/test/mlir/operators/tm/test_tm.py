@@ -163,24 +163,32 @@ def test_cast(forge_property_recorder, operand_and_cast_dtype):
 
 
 @pytest.mark.parametrize(
-    "batch_size, num_channels, height, width",
+    "input_shape,elementwise_affine, eps",
     [
-        (1, 32, 56, 56),
+        ((2, 128), False, 1e-6),
+        ((2, 4096, 1536), False, 1e-6),
+        ((1, 32, 56, 56), True, 1e-5),
+        ((1, 5, 3, 7, 9), True, 1e-3),
     ],
 )
 @pytest.mark.push
-def test_layernorm(forge_property_recorder, batch_size, num_channels, height, width):
+def test_layernorm(forge_property_recorder, input_shape, elementwise_affine, eps):
+    class LayerNorm(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.norm = nn.LayerNorm(input_shape[-1], elementwise_affine=elementwise_affine, eps=eps)
 
-    # framework_model = nn.LayerNorm((num_channels, height, width)) # Support only normalization over last one dimension
-    framework_model = nn.LayerNorm((width))
+        def forward(self, x):
+            return self.norm(x)
 
-    inputs = [torch.rand(batch_size, num_channels, height, width)]
+    model = LayerNorm()
+    model.eval()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    inputs = [torch.randn(*input_shape)]
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 params = [
@@ -315,9 +323,6 @@ def test_squeeze(forge_property_recorder, input_shape_and_dim):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
-@pytest.mark.xfail(
-    reason="ttnn::operations::binary::BinaryDeviceOperation: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
-)
 @pytest.mark.push
 @pytest.mark.parametrize(
     "attn_weights_shape, attention_mask_shape, module_name",

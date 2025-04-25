@@ -18,10 +18,7 @@ from test.models.pytorch.vision.yolo.utils.yolov6_utils import (
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
-    pytest.param(
-        "yolov6n",
-        marks=[pytest.mark.xfail],
-    ),
+    "yolov6n",
     "yolov6s",
     "yolov6m",
     "yolov6l",

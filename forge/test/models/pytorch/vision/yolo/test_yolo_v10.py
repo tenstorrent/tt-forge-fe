@@ -14,7 +14,7 @@ from test.models.pytorch.vision.yolo.utils.yolo_utils import (
 )
 
 
-@pytest.mark.xfail(reason="AssertionError: Encountered unsupported op types. Check error logs for more details")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolov10(forge_property_recorder):
     # Record Forge Property
@@ -26,6 +26,7 @@ def test_yolov10(forge_property_recorder):
         source=Source.GITHUB,
     )
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

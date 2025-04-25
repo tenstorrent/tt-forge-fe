@@ -456,9 +456,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>41</th>
@@ -520,11 +520,11 @@
       <td>Reshape</td>
       <td>Operand(type=Activation, shape=(1, 1), dtype=int64)</td>
       <td>shape : (1, 1)</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td>&#xFFFD;</td>
-      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>47</th>

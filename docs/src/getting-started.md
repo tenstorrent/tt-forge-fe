@@ -7,12 +7,29 @@ You choose between two ways to setup our project:
 
 ### Install using Wheel
 
+Before installing wheels, you should install required libraries:
+```bash
+sudo apt-get update && apt-get install -y \
+    python3-dev \
+    python3-venv \
+    python3-pip \
+    libhwloc-dev \
+    libtbb-dev \
+    libcapstone-dev \
+    graphviz \
+    libgl1 \
+    libglx-mesa0
+```
+
 Download the latest `tt-forge-fe` release, which includes both TVM and Forge wheels:
 - https://github.com/tenstorrent/tt-forge/releases
 
-Install both TVM and Forge wheels using following command:
+Install both TVM and Forge wheels using following commands:
 ```py
-pip install *.whl
+python -m venv forge-fe-venv
+source forge-fe-venv/bin/activate
+pip install tvm*.whl --force-reinstall
+pip install forge*.whl --force-reinstall
 ```
 
 > Note: Make sure to run the command from the directory where wheels are downloaded.

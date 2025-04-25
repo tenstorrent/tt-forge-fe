@@ -67,57 +67,47 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32), torch.int64)],
             {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    pytest.param(
-        (
-            Cumsum2,
-            [((1, 32), torch.int64)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_1_3b_qa_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_qa_hf",
-                    "pt_opt_facebook_opt_125m_qa_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cumsum2,
+        [((1, 32), torch.int64)],
+        {
+            "model_name": [
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "1"},
+        },
     ),
-    pytest.param(
-        (
-            Cumsum2,
-            [((1, 256), torch.int64)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_1_3b_clm_hf",
-                    "pt_opt_facebook_opt_350m_clm_hf",
-                    "pt_opt_facebook_opt_125m_clm_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cumsum2,
+        [((1, 256), torch.int64)],
+        {
+            "model_name": [
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "1"},
+        },
     ),
-    pytest.param(
-        (
-            Cumsum2,
-            [((1, 128), torch.int32)],
-            {
-                "model_name": [
-                    "pt_roberta_xlm_roberta_base_mlm_hf",
-                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Cumsum2,
+        [((1, 128), torch.int32)],
+        {
+            "model_name": [
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "1"},
+        },
     ),
 ]
 
@@ -125,14 +115,21 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "CumSum")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("CumSum")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -154,6 +151,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

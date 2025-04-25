@@ -32,9 +32,9 @@ std::string to_string(const ExecutionDepth depth);
 std::ostream& operator<<(std::ostream& os, const ExecutionDepth depth);
 
 void record_execution_depth(
-    const std::optional<py::object>& forge_property_handler, const ExecutionDepth execution_depth);
+    const ExecutionDepth execution_depth, const std::optional<py::object>& forge_property_handler);
 
 void record_flatbuffer_details(
-    const std::optional<py::object>& forge_property_handler, const std::string& binary_json_str);
+    const std::string& binary_json_str, const std::optional<py::object>& forge_property_handler);
 
 }  // namespace tt::property
