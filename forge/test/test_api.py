@@ -16,6 +16,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_torch():
     class Add(nn.Module):
         def __init__(self):
@@ -41,6 +42,7 @@ def test_torch():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_tf():
     class TFAdd(tf.keras.Model):
         def __init__(self):
@@ -68,6 +70,7 @@ def test_tf():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_forge():
     class ForgeAdd(forge.ForgeModule):
         def __init__(self):
@@ -95,6 +98,7 @@ def test_forge():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 def test_export_to_cpp():
     class Add(nn.Module):
         def __init__(self):
@@ -120,6 +124,7 @@ def test_export_to_cpp():
 
 
 @pytest.mark.push
+@pytest.mark.functional
 # Sanity test for consteval pass in mlir (this test doesn't actually belong in this file, but
 # at the moment it is the best fit)
 def test_consteval_mlir():
