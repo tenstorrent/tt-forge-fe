@@ -10,7 +10,6 @@
 #include <memory>
 #include <sstream>
 #include <string>
-namespace fs = std::filesystem;
 
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
@@ -47,6 +46,8 @@ namespace fs = std::filesystem;
 
 // Reportify headers
 #include "reportify/reportify.hpp"
+
+namespace fs = std::filesystem;
 
 namespace tt::passes
 {
@@ -140,72 +141,34 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         std::string cpp_source;
         llvm::raw_string_ostream rso(cpp_source);
 
-        {
-            std::cout << "PRINTING ENVS RMCG" << std::endl;
-            std::cout << "I'm in run_mlir_compiler_generic<MLIROutputKind::SharedObject>" << std::endl;
-            const char* var_value;
-
-            var_value = std::getenv("TT_METAL_HOME");
-            std::cout << "  TT_METAL_HOME"
-                      << " environment variable: " << (var_value != nullptr ? var_value : "not set") << std::endl;
-
-            var_value = std::getenv("CMAKE_INSTALL_PREFIX");
-            std::cout << "  CMAKE_INSTALL_PREFIX"
-                      << " environment variable: " << (var_value != nullptr ? var_value : "not set") << std::endl;
-
-            var_value = std::getenv("TT_MLIR_HOME");
-            std::cout << "  TT_MLIR_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
-                      << std::endl;
-
-            var_value = std::getenv("FORGE_HOME");
-            std::cout << "  FORGE_HOME" << " environment variable: " << (var_value != nullptr ? var_value : "not set")
-                      << std::endl;
-
-            std::cout << "  PRINTING FROM " << __FILE__ << std::endl;
-        }
-
         log_info(LogMLIRCompiler, "Generating a shared object from MLIR module.");
-        auto res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
+
+        mlir::LogicalResult res = mlir::emitc::translateToCpp(mlir_module.get(), rso);
         if (mlir::failed(res))
         {
             throw std::runtime_error("Failed to generate C++ code.");
         }
-
         rso.flush();
 
         tt::log_info(LogMLIRCompiler, "C++ code for SharedObject generated successfully.");
 
         const char* TT_METAL_HOME = std::getenv("TT_METAL_HOME");
-        tt::log_info(LogMLIRCompiler, "TT_METAL_HOME: {}", TT_METAL_HOME);
         const char* FORGE_HOME = std::getenv("FORGE_HOME");
-        tt::log_info(LogMLIRCompiler, "FORGE_HOME: {}", FORGE_HOME);
         if (TT_METAL_HOME == nullptr)
         {
-            tt::log_info(LogMLIRCompiler, "TT_METAL_HOME is not set.");
-            std::cout << "FAILED AT 1" << std::endl;
             throw std::runtime_error("TT_METAL_HOME environment variable is not set.");
         }
         if (FORGE_HOME == nullptr)
         {
-            tt::log_info(LogMLIRCompiler, "FORGE_HOME is not set.");
-            std::cout << "FAILED AT 2" << std::endl;
             throw std::runtime_error("FORGE_HOME environment variable is not set.");
         }
 
-        tt::log_info(LogMLIRCompiler, "before in_wheel_path");
         const fs::path in_wheel_path = fs::path(FORGE_HOME) / "forge/tt-metal";
-        tt::log_info(LogMLIRCompiler, "after in_wheel_path");
         const fs::path in_source_path =
             fs::path(FORGE_HOME).parent_path() / "third_party/tt-mlir/third_party/tt-metal/src/tt-metal";
-        tt::log_info(LogMLIRCompiler, "after in_source_path");
-
-        std::cout << "in_wheel_path: " << in_wheel_path << std::endl;
-        std::cout << "in_source_path: " << in_source_path << std::endl;
 
         if (!fs::exists(in_wheel_path) && !fs::exists(in_source_path))
         {
-            tt::log_info(LogMLIRCompiler, "Neither tt-metal wheel nor source path exists.");
-            std::cout << "FAILED AT 3" << std::endl;
             throw std::runtime_error("Neither tt-metal wheel nor source path exists.");
         }
 
@@ -214,33 +177,26 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
         fs::path standalone_dir;
         if (fs::exists(in_wheel_path))
         {
-            tt::log_info(LogMLIRCompiler, "in_wheel_path exists");
-            std::cout << "in_wheel_path exists" << std::endl;
-            std::cout << in_wheel_path << std::endl;
-            std::cout << std::string(TT_METAL_HOME) << std::endl;
             assert(in_wheel_path == std::string(TT_METAL_HOME));
-            std::cout << "Using in_wheel_path: " << in_wheel_path << std::endl;
+
             metal_src_dir = fs::path(std::string(TT_METAL_HOME));
             metal_lib_dir = fs::path(std::string(FORGE_HOME)) / "forge/lib";
             standalone_dir = fs::path(std::string(FORGE_HOME)) / "forge/tools/ttnn-standalone";
         }
         else if (fs::exists(in_source_path))
         {
-            tt::log_info(LogMLIRCompiler, "in_source_path exists");
-            std::cout << "in_source_path exists" << std::endl;
-            std::cout << in_source_path << std::endl;
-            std::cout << std::string(TT_METAL_HOME) << std::endl;
             assert(in_source_path == std::string(TT_METAL_HOME));
-            std::cout << "Using in_source_path: " << in_source_path << std::endl;
+
             metal_src_dir = fs::path(std::string(TT_METAL_HOME));
             metal_lib_dir = fs::path(std::string(TT_METAL_HOME)).parent_path() / "tt-metal-build/lib";
             standalone_dir =
                 fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
         }
 
-        tt::log_info(LogMLIRCompiler, "before compile_cpp_to_so");
         std::string soPathStr = compile_cpp_to_so(
             cpp_source, "/tmp/", metal_src_dir.string(), metal_lib_dir.string(), standalone_dir.string());
+
+        tt::log_info(LogMLIRCompiler, "SharedObject generated successfully at path: {}.", soPathStr);
 
         return soPathStr;
     }

@@ -43,7 +43,7 @@ def test_resnet_hf(variant, forge_property_recorder):
 
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
-    images = random.sample(dataset["valid"]["image"], 1)
+    images = random.sample(dataset["valid"]["image"], 10)
 
     # Load framework model
     framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)

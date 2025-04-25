@@ -448,7 +448,6 @@ def verify(
     fwd_func_name = "forward"
     fwd_func_name_len = len(fwd_func_name)
     fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
-    print(f"GOT FWD FUNC SYM: {fwd_func_sym}")
     is_success = compiled_model.runtime_model_state.test_so(
         "/tmp/emitted.so",
         fwd_func_sym,
@@ -457,7 +456,7 @@ def verify(
         all_outputs,
     )
 
-    print(f"TEST_SO: {is_success}")
+    logger.info("SharedObject test is success: {}", is_success)
     assert is_success
 
     # 2nd step: apply preprocessing:
@@ -466,8 +465,6 @@ def verify(
     # - push tensors to cpu, perform any reshape if necessary,
     fw_out = to_pt_tensors(fw_out)
     fw_out = tuple(convert_to_supported_pytorch_dtype(o) for o in fw_out)
-
-    # compiled_model.export_to_cpp("todo_unique_name.cpp")
 
     assert all(isinstance(co, torch.Tensor) for co in co_out), f"Compiled model output is not a list of torch.Tensor"
 

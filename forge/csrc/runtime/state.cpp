@@ -100,12 +100,8 @@ bool ModelState::test_so(
     std::vector<tt::Tensor>& consts_and_params,
     std::vector<tt::Tensor>& golden_outs)
 {
-    std::cout << "before open so" << std::endl;
     void* so_handle = tt::open_so(so_path);
-    std::cout << "after open so" << std::endl;
-
     std::vector<tt::runtime::Tensor> outs = tt::run_so_program(so_handle, func_name, act_inputs, consts_and_params);
-    std::cout << "after run so" << std::endl;
 
     std::vector<runtime::Tensor> host_outs;
     std::transform(
@@ -133,9 +129,6 @@ bool ModelState::test_so(
             assert(vec_host_t.size() == 1 && "We expect only one host tensor");
             return vec_host_t.front();
         });
-
-    // tt::runtime::Tensor lhs = outs[0];
-    // tt::runtime::Tensor rhs = rt_outs[0];
 
     return tt::compareOuts(host_outs, golden_host_outs);
 }
