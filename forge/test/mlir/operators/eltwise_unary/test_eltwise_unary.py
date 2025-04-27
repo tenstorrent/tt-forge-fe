@@ -910,3 +910,34 @@ def test_res_neg(shape):
 
     # Model Verification
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, dim, unflattened_size",
+    [
+        ([10], 0, (5, 2)),
+        ([12, 15], 1, (3, 5)),
+        ([197, 1, 2304], -1, (3, 768)),
+        ([11, 5, 8, 2], 2, (2, 2, 2)),
+        ([25, 75, 3, 24], 3, (4, 6)),
+        ([5, 5, 30, 2, 60], 4, (2, 2, 3, 5)),
+    ],
+)
+@pytest.mark.push
+def test_unflatten(forge_property_recorder, input_shape, dim, unflattened_size):
+    class UnflattenModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.unflatten(x, dim, unflattened_size)
+
+    input_tensor = torch.randn(*input_shape)
+    inputs = [input_tensor]
+
+    model = UnflattenModel()
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
