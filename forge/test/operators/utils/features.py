@@ -18,6 +18,9 @@ class TestSweepsFeaturesParams:
     capture_output: bool
     trace_xfail_validation: bool
     dry_run: bool
+    emulate_run: bool
+    status_tracker: bool
+    verification_timeout: int
     ignore_xfail_files: bool
     ignore_skip_files: bool
 
@@ -37,6 +40,9 @@ class TestSweepsFeaturesParams:
         capture_output = cls.get_env_property_bool("CAPTURE_OUTPUT", False)
         trace_xfail_validation = cls.get_env_property_bool("TRACE_XFAIL_VALIDATION", False)
         dry_run = cls.get_env_property_bool("DRY_RUN", False)
+        emulate_run = cls.get_env_property_bool("EMULATE_RUN", False)
+        status_tracker = cls.get_env_property_bool("STATUS_TRACKER", False)
+        verification_timeout = int(cls.get_env_property("VERIFICATION_TIMEOUT", "300"))
         ignore_xfail_files = cls.get_env_property_bool("IGNORE_XFAIL_FILES", False)
         ignore_skip_files = cls.get_env_property_bool("IGNORE_SKIP_FILES", False)
 
@@ -46,6 +52,9 @@ class TestSweepsFeaturesParams:
             capture_output=capture_output,
             trace_xfail_validation=trace_xfail_validation,
             dry_run=dry_run,
+            emulate_run=emulate_run,
+            status_tracker=status_tracker,
+            verification_timeout=verification_timeout,
             ignore_xfail_files=ignore_xfail_files,
             ignore_skip_files=ignore_skip_files,
         )
