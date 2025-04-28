@@ -15,12 +15,41 @@ from test.operators.utils import PyTestUtils
 from test.operators.utils import FailingReasonsValidation
 
 from ..utils import TestPlanUtils
+from ..utils import global_string_buffer
 
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runner.CallInfo):
-    outcome: pluggy.callers._Result = yield
+    if call.when == "setup":
+        if global_string_buffer.enabled:
+            global_string_buffer.flush()
+
+    try:
+
+        # if global_buffer.enabled:
+        #     print(f"Before yield {call.when}")
+
+        outcome: pluggy.callers._Result = yield
+
+        # if global_buffer.enabled:
+        #     print(f"After yield {call.when}")
+
+    finally:
+        pass
+
+    # This output will go both to the console and to memory
+    # print("This will appear on the screen and be saved.")
+
+    process_pytest_result(item, call, outcome)
+
+
+def process_pytest_result(
+    item: _pytest.python.Function, call: _pytest.runner.CallInfo, outcome: pluggy.callers._Result
+):
+
     report: _pytest.reports.TestReport = outcome.get_result()
+
+    # print(f"report.when: {report.when} call.when: {call.when}")
 
     if report.when == "call" or (report.when == "setup" and report.skipped):
         xfail_reason = PyTestUtils.get_xfail_reason(item)
@@ -72,6 +101,13 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             logger.error(f"Failed to log test vector properties: {e}")
             logger.exception(e)
 
+    if report.when == "call":
+        try:
+            log_capture_output(item=item)
+        except Exception as e:
+            logger.error(f"Failed to log capture output: {e}")
+            logger.exception(e)
+
 
 def log_test_vector_properties(
     item: _pytest.python.Function, report: _pytest.reports.TestReport, xfail_reason: str, exception: Exception
@@ -117,3 +153,12 @@ def log_test_vector_properties(
                 atol = None
             item.user_properties.append(("all_close_rtol", rtol))
             item.user_properties.append(("all_close_atol", atol))
+
+
+def log_capture_output(item: _pytest.python.Function):
+    if global_string_buffer.enabled:
+        captured_output = global_string_buffer.value
+        print(
+            f"\nCaptured output: \n-------------------------------------------- start ---------------------------------------------\n------------------------------------------------------------------------------------------------\n{captured_output}\n------------------------------------------------------------------------------------------------\n--------------------------------------------- end ----------------------------------------------\n \n\n"
+        )
+        item.user_properties.append(("captured_output", captured_output))

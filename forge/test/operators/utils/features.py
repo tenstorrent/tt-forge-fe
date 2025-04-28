@@ -15,6 +15,8 @@ class TestSweepsFeaturesParams:
     __test__ = False  # Disable pytest collection
 
     skip_forge_verification: bool
+    capture_output: bool
+    trace_xfail_validation: bool
     dry_run: bool
     status_tracker: bool
     ignore_xfail_files: bool
@@ -33,6 +35,8 @@ class TestSweepsFeaturesParams:
         """Create a TestSweepsFeaturesParams object from environment variables"""
 
         skip_forge_verification = cls.get_env_property_bool("SKIP_FORGE_VERIFICATION", False)
+        capture_output = cls.get_env_property_bool("CAPTURE_OUTPUT", False)
+        trace_xfail_validation = cls.get_env_property_bool("TRACE_XFAIL_VALIDATION", False)
         dry_run = cls.get_env_property_bool("DRY_RUN", False)
         status_tracker = cls.get_env_property_bool("STATUS_TRACKER", False)
         ignore_xfail_files = cls.get_env_property_bool("IGNORE_XFAIL_FILES", False)
@@ -41,6 +45,8 @@ class TestSweepsFeaturesParams:
         # Construct feature parameters
         feature_params = cls(
             skip_forge_verification=skip_forge_verification,
+            capture_output=capture_output,
+            trace_xfail_validation=trace_xfail_validation,
             dry_run=dry_run,
             status_tracker=status_tracker,
             ignore_xfail_files=ignore_xfail_files,
