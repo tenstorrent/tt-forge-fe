@@ -15,6 +15,7 @@ from loguru import logger
 from tabulate import tabulate
 from typing import List, Tuple, Optional, Generator, Callable
 from dataclasses import dataclass
+from datetime import datetime
 
 from test.operators.utils import DeviceUtils
 from test.operators.utils import InputSource
@@ -29,6 +30,10 @@ from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
 from test.operators.utils import TestSweepsFeatures
 from test.operators.utils import global_string_buffer
+from test.operators.utils.report import ReportCache
+
+from test.random.rgg.utils import timeout
+from test.random.rgg.utils import TimeoutException
 
 
 # @pytest.fixture(autouse=True)
@@ -157,14 +162,80 @@ class RunQueryParams:
 query_params = RunQueryParams.from_env()
 
 
+class StatusTracker:
+
+    counter = query_params.range[0] if query_params.range else 0
+    pid = os.getpid()
+
+    def __init__(self, test_vector: TestVector, enabled: bool = False):
+        self.test_vector = test_vector
+        self.enabled = enabled
+        self.status = {
+            "pid": self.pid,
+            "counter": StatusTracker.counter,
+            "operator": self.test_vector.operator,
+            "test_id": self.test_vector.get_id(),
+            "status": None,
+            "start_time": None,
+            "end_time": None,
+        }
+
+    def store_status(self):
+        file_name = f"test_status.json"
+        with open(file_name, "w") as file:
+            json.dump(self.status, file, indent=4)
+
+    def __enter__(self):
+        if not self.enabled:
+            return
+        self.status["status"] = "in progress"
+        self.status["start_time"] = datetime.now().isoformat()
+        self.store_status()
+        StatusTracker.counter += 1
+
+    def __exit__(self, exctype, excinst, exctb):
+        if not self.enabled:
+            return
+        self.status["status"] = "completed"
+        self.status["end_time"] = datetime.now().isoformat()
+        self.store_status()
+
+
 class TestVerification:
     """Helper class for performing test verification. It allows running tests in dry-run mode."""
 
+    staticmethod
+
+    def get_report_cache_files():
+        if not TestSweepsFeatures.params.emulate_run:
+            return []
+        else:
+            return [
+                # "pytorch_test_query_test_query__OPERATORS_Conv2d_2025-04-09_15-29-12_format.xml",
+            ]
+
+    report_cache = ReportCache(get_report_cache_files())
+
     @classmethod
     def verify(cls, test_vector: TestVector, test_device):
-        if TestSweepsFeatures.params.dry_run:
-            # pytest.skip("Dry run")
-            return
+        with StatusTracker(test_vector, TestSweepsFeatures.params.status_tracker):
+            if TestSweepsFeatures.params.dry_run:
+                # pytest.skip("Dry run")
+                return
+            elif TestSweepsFeatures.params.emulate_run:
+                cls.report_cache.emulate_run(test_vector.get_id())
+            else:
+                try:
+                    cls.verify_with_timeout(test_vector, test_device)
+                except TimeoutException as e:
+                    logger.error(f"Module verification takes too long {e}.")
+                    raise e
+
+    logger.info(f"Verification timeout: {TestSweepsFeatures.params.verification_timeout}")
+
+    @timeout(TestSweepsFeatures.params.verification_timeout)
+    @staticmethod
+    def verify_with_timeout(test_vector: TestVector, test_device):
         test_vector.verify(test_device)
 
 
