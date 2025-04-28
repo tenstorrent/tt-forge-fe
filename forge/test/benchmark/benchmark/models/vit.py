@@ -11,19 +11,13 @@ from datetime import datetime
 
 # Third-party modules
 import torch
-from torch import nn
-from transformers import ResNetForImageClassification
-from datasets import load_dataset
+from transformers import ViTForImageClassification
 
 # Forge modules
 import forge
-from forge.verify.config import VerifyConfig
-from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
-from forge._C import DataFormat
-from forge.config import CompilerConfig
-from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
 
@@ -32,11 +26,6 @@ from test.utils import download_model
 # Batch size configurations
 BATCH_SIZE = [
     1,
-]
-
-# Data format configurations
-DATA_FORMAT = [
-    "bfloat16",
 ]
 
 # Input size configurations
@@ -52,56 +41,52 @@ CHANNEL_SIZE = [
 # Loop count configurations
 LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
-variants = [
-    "microsoft/resnet-50",
+# Variants for image classification
+VARIANTS = [
+    "google/vit-large-patch16-224",
 ]
 
 
-@pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
-@pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
-def test_resnet_hf(
+@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
+@pytest.mark.parametrize("variant", VARIANTS, ids=[f"variant={item}" for item in VARIANTS])
+def test_vit_base(
     training,
     batch_size,
-    data_format,
     input_size,
     channel_size,
     loop_count,
     variant,
 ):
+    """
+    Test the ViT base benchmark function.
+    It is used for benchmarking purposes.
+    """
 
     if training:
         pytest.skip("Training is not supported")
 
-    # TODO: This we will need when when we run resnet with real data.
-    # Load tiny dataset
-    # dataset = load_dataset("zh-plus/tiny-imagenet")
-    # images = random.sample(dataset["valid"]["image"], 10)
+    module_name = "ViTBase"
 
-    torch.manual_seed(1)
-    # Random data
-    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
-    if data_format == "bfloat16":
-        input_sample = [input_sample[0].to(torch.bfloat16)]
-
-    # Load framework model
-    if data_format == "bfloat16":
-        framework_model = download_model(
-            ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16
+    # Create random inputs
+    input_sample = [
+        torch.randn(
+            batch_size,
+            channel_size,
+            input_size[0],
+            input_size[1],
         )
-        framework_model = framework_model.to(dtype=torch.bfloat16)
-    else:
-        framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    ]
+
+    # Load the model from Hugging Face
+    framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model.eval()
     fw_out = framework_model(*input_sample)
 
-    # Compile model
-    compiler_cfg = CompilerConfig()
-    if data_format == "bfloat16":
-        compiler_cfg.default_df_override = DataFormat.Float16_b
-    compiled_model = forge.compile(framework_model, *input_sample, compiler_cfg=compiler_cfg)
+    # Forge compile framework model
+    compiled_model = forge.compile(framework_model, sample_inputs=input_sample, module_name=module_name)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
@@ -110,19 +95,14 @@ def test_resnet_hf(
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    verify(
-        input_sample,
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    )
+    verify(input_sample, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out[0], co_out=co_out[0])
+    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -130,13 +110,13 @@ def test_resnet_hf(
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "Resnet 50 HF"
+    model_name = "ViT Base"
     model_type = "Classification, Random Input Data"
-    dataset_name = "Resnet, Random Data"
-    num_layers = 50  # Number of layers in the model, in this case 50 layers
+    dataset_name = "ViT, Random Data"
+    num_layers = 1  # Number of layers in the model, in this case number of convolutional layers
 
     print("====================================================================")
-    print("| Resnet Benchmark Results:                                        |")
+    print("| ViT Benchmark Results:                                           |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")
@@ -147,7 +127,6 @@ def test_resnet_hf(
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
-    print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
     print("====================================================================")
 
@@ -158,7 +137,7 @@ def test_resnet_hf(
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": data_format,
+        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
@@ -201,25 +180,23 @@ def test_resnet_hf(
     return result
 
 
-def resnet_hf_benchmark(config: dict):
+def vit_base_benchmark(config: dict):
     """
-    Run the resnet benchmark.
+    Run the vit benchmark.
     This function is a placeholder for the actual benchmark implementation.
     """
 
     training = config["training"]
     batch_size = config["batch_size"]
-    data_format = config["data_format"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
     loop_count = config["loop_count"]
-    variant = variants[0]
+    variant = VARIANTS[0]
 
-    result = test_resnet_hf(
+    result = test_vit_base(
         training=training,
         batch_size=batch_size,
-        data_format=data_format,
         input_size=input_size,
         channel_size=channel_size,
         loop_count=loop_count,
@@ -227,7 +204,7 @@ def resnet_hf_benchmark(config: dict):
     )
 
     if not output_file:
-        output_file = f"forge-benchmark-e2e-resnet50_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-vit_base_{result['run_type']}.json"
     result["output"] = output_file
 
     # Save the results to a file
