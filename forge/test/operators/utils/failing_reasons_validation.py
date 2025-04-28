@@ -5,7 +5,12 @@
 # Validations of failing reasons
 
 
+import traceback
+
 from loguru import logger
+
+from ..utils.features import TestSweepsFeatures
+from ..utils.dual_output import global_string_buffer
 
 from .failing_reasons import ExceptionData
 from .failing_reasons import FailingReasons
@@ -24,6 +29,23 @@ class FailingReasonsValidation:
         Returns:
             bool: True if exception message and type match the expected values, False otherwise, None if no check is defined
         """
+        with global_string_buffer.capture_output():
+            return cls.validate_exception_body(exception_value, exception_traceback, xfail_reason)
+
+    @classmethod
+    def validate_exception_body(cls, exception_value: Exception, exception_traceback: str, xfail_reason: str):
+        if TestSweepsFeatures.params.trace_xfail_validation:
+            logger.debug(
+                f"Validating xfail reason: '{xfail_reason}' for exception: {type(exception_value)} '{exception_value}'"
+            )
+
+            exception_stack = getattr(exception_value, "__traceback__", None)
+            if exception_stack:
+                formatted_stack = "".join(traceback.format_tb(exception_stack))
+                logger.debug(f"Exception stack:\n{formatted_stack}")
+            else:
+                logger.debug("No traceback available for the exception.")
+
         failing_reason = FailingReasons.find_by_description(xfail_reason)
         if failing_reason is None:
             logger.error(

@@ -35,6 +35,8 @@ from .failing_reasons import FailingReasons
 from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
+from .dual_output import global_string_buffer
+
 
 __all__ = [
     "OperatorParameterTypes",
@@ -71,4 +73,5 @@ __all__ = [
     "FailingReasonsValidation",
     "PyTestUtils",
     "PytestParamsUtils",
+    "global_string_buffer",
 ]
