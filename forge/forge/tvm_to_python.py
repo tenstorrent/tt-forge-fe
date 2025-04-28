@@ -1401,7 +1401,7 @@ def populate_pad_args(graph, nid, compiler_cfg):
     args.append(
         (
             "pad",
-            f"({pad_width})",
+            f"{tuple(pad_width)}",
         )
     )
 
