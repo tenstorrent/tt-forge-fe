@@ -6,6 +6,10 @@
 // Standard headers
 #include <stdexcept>
 
+// Forge headers
+#include "mlir_compiler.hpp"
+#include "utils/logger.hpp"
+
 // MLIR headers
 #include "mlir/IR/BuiltinOps.h"
 
@@ -13,7 +17,6 @@
 #include "ttmlir/Dialect/TTIR/Transforms/Passes.h"
 #include "ttmlir/Dialect/TTNN/Pipelines/TTNNPipelines.h"
 #include "ttmlir/Dialect/TTNN/Transforms/Passes.h"
-#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -37,8 +40,22 @@ void register_mlir_passes()
     (void)_;
 }
 
+std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_config)
+{
+    std::stringstream options{""};
+
+    // Convert the MLIRConfig to a string of pipeline options.
+    // If the config is not set, return an empty string.
+    if (mlir_config.has_value())
+    {
+        options << "enable-const-eval=" << mlir_config->enable_consteval;
+    }
+
+    return options.str();
+}
+
 template <MLIROutputKind output>
-void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
+void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config)
 {
     // Register the MLIR passes.
     register_mlir_passes();
@@ -62,7 +79,7 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
     };
 
     // Pipeline options are empty for now.
-    std::string options{""};
+    std::string options{config_to_pipeline_options(mlir_config)};
 
     auto result = pipelineInfo->addToPipeline(pm, options, err_handler);
     if (mlir::failed(result))
@@ -93,7 +110,9 @@ void run_mlir_passes(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module)
 }
 
 // Explicit templates instantiation.
-template void run_mlir_passes<MLIROutputKind::Flatbuffer>(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module);
-template void run_mlir_passes<MLIROutputKind::Cpp>(mlir::OwningOpRef<mlir::ModuleOp> &mlir_module);
+template void run_mlir_passes<MLIROutputKind::Flatbuffer>(
+    mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config);
+template void run_mlir_passes<MLIROutputKind::Cpp>(
+    mlir::OwningOpRef<mlir::ModuleOp> &mlir_module, const std::optional<MLIRConfig> &mlir_config);
 
 }  // namespace tt::passes

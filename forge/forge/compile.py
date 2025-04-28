@@ -1001,11 +1001,18 @@ def split_graph(context: CompileContext) -> CompileDepth:
 
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    assert context.forge_module is not None
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+    forge_module, compiler_cfg, forge_property_handler = (
+        context.forge_module,
+        context.compiler_cfg,
+        context.forge_property_handler,
+    )
+    assert forge_module is not None
+    assert compiler_cfg is not None
 
-    context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module, context.forge_property_handler)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+
+    context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config, forge_property_handler)
 
     return CompileDepth.FINISH_COMPILE
 

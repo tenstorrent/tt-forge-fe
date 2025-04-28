@@ -17264,21 +17264,14 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(1, 39, 11008)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape316,
-            [((1, 596, 4096), torch.float32)],
-            {
-                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-                "pcc": 0.99,
-                "op_params": {"shape": "(2441216,)"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 9895024 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Reshape316,
+        [((1, 596, 4096), torch.float32)],
+        {
+            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+            "pcc": 0.99,
+            "op_params": {"shape": "(2441216,)"},
+        },
     ),
     (
         Reshape317,
@@ -17352,21 +17345,14 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(577, 1024)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape324,
-            [((1, 576, 4096), torch.float32)],
-            {
-                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-                "pcc": 0.99,
-                "op_params": {"shape": "(2359296,)"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 9567344 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Reshape324,
+        [((1, 576, 4096), torch.float32)],
+        {
+            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+            "pcc": 0.99,
+            "op_params": {"shape": "(2359296,)"},
+        },
     ),
     (
         Reshape316,
@@ -17386,21 +17372,14 @@ forge_modules_and_shapes_dtypes_list = [
             "op_params": {"shape": "(2441216,)"},
         },
     ),
-    pytest.param(
-        (
-            Reshape325,
-            [((2441216,), torch.float32)],
-            {
-                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-                "pcc": 0.99,
-                "op_params": {"shape": "(1, 596, 4096)"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9976800 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Reshape325,
+        [((2441216,), torch.float32)],
+        {
+            "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+            "pcc": 0.99,
+            "op_params": {"shape": "(1, 596, 4096)"},
+        },
     ),
     (
         Reshape326,

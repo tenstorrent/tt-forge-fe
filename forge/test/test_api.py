@@ -10,10 +10,12 @@ import torch.nn as nn
 import tensorflow as tf
 
 import forge
-import forge.config
+from forge.config import CompilerConfig, MLIRConfig
 from forge.tensor import to_forge_tensors, to_pt_tensors
+from forge.verify.value_checkers import AutomaticValueChecker
 
 
+@pytest.mark.push
 def test_torch():
     class Add(nn.Module):
         def __init__(self):
@@ -38,6 +40,7 @@ def test_torch():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.push
 def test_tf():
     class TFAdd(tf.keras.Model):
         def __init__(self):
@@ -64,6 +67,7 @@ def test_tf():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.push
 def test_forge():
     class ForgeAdd(forge.ForgeModule):
         def __init__(self):
@@ -90,6 +94,7 @@ def test_forge():
         raise ValueError("Output does not match the golden output")
 
 
+@pytest.mark.push
 def test_export_to_cpp():
     class Add(nn.Module):
         def __init__(self):
@@ -112,3 +117,40 @@ def test_export_to_cpp():
         print(f.read())
 
     os.remove(file_path)
+
+
+@pytest.mark.push
+# Sanity test for consteval pass in mlir (this test doesn't actually belong in this file, but
+# at the moment it is the best fit)
+def test_consteval_mlir():
+    class ConstEvalParam(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.param = torch.nn.Parameter(torch.rand(32, 1024))
+            self.const = torch.rand(1, 1)
+
+        def forward(self, x):
+            # This operation should be consteval'ed, since its arguments are constant and parameter
+            w = torch.multiply(self.param, self.const)
+            return torch.multiply(x, w)
+
+    model = ConstEvalParam()
+    shape = (32, 1024)
+    inputs = [torch.rand(shape)]
+
+    golden = model(*inputs)
+
+    compiler_cfg = CompilerConfig()
+    compiler_cfg.enable_consteval = False
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True)
+
+    compiled_model = forge.compile(model, sample_inputs=[torch.rand(shape)], compiler_cfg=compiler_cfg)
+
+    output = compiled_model(*inputs)
+
+    print(f"golden: {golden}")
+    print(f"output: {output}")
+    AutomaticValueChecker().check(
+        output[0],
+        golden,
+    )

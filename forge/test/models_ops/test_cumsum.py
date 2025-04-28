@@ -61,12 +61,10 @@ forge_modules_and_shapes_dtypes_list = [
             )
         ],
     ),
-    pytest.param(
-        (
-            Cumsum1,
-            [((1, 32), torch.int64)],
-            {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
-        ),
+    (
+        Cumsum1,
+        [((1, 32), torch.int64)],
+        {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
     ),
     (
         Cumsum2,
