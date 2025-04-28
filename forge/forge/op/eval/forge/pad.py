@@ -13,16 +13,17 @@ class Pad(PyTM):
     @classmethod
     def create(cls, padding, mode, value, channel_last):
         self = cls("pad")
+        # padding is in format [left, right, top, bottom]
         self.padding = padding
         self.mode = mode
         self.channel_last = channel_last
         self.value = value
+
         return self
 
     def eval(self, tensors):
-        assert len(self.padding) == 2 or len(self.padding) == 4
-
         mode_options = ["constant", "replicate", "reflect"]
+
         return torch.nn.functional.pad(tensors[0], self.padding, mode=mode_options[self.mode], value=self.value)
 
     def shape(self, tensor_shapes):
@@ -66,49 +67,48 @@ class Pad(PyTM):
         if len(self.padding) == 2:
             total_padding_c = self.padding[0] + self.padding[1]
             total_padding_r = 0
-        elif len(self.padding) == 4:
+        else:
             total_padding_c = self.padding[0] + self.padding[1]
             total_padding_r = self.padding[2] + self.padding[3]
-        else:
-            raise RuntimeError("Forge only support Pad with either 2 or 4 padding tuple size")
 
         # Lower into concats
         left, right, top, bottom = 0, 0, 0, 0
         if len(self.padding) == 2:
-            left, right = self.padding
+            left, right = self.padding[0], self.padding[1]
         elif len(self.padding) == 4:
-            left, right, top, bottom = self.padding
+            left, right, top, bottom = self.padding[0], self.padding[1], self.padding[2], self.padding[3]
 
         ###############################################################
         if self.mode == 0:  # 'constant' mode
-            # mlir only supports padding on the last 2 dimensions, so we need to transpose the tensor
-            if self.channel_last:
-                result = activations
+            # TODO: MLIR has ttir::PadOp that works only for constant mode
+            # so we could potentialy map it directly to mlir's PadOp
+            result = activations
+            data_format = activations.output_df
 
-                left_pad, right_pad, top_pad, bot_pad = None, None, None, None
-                height_dim, width_dim = -2 - int(self.channel_last), -1 - int(self.channel_last)
+            left_pad, right_pad, top_pad, bot_pad = None, None, None, None
 
-                width_shape = [1] * len(result.shape)
-                if left > 0:
-                    width_shape[width_dim] = left
-                    left_pad = create_pad(dc, width_shape, self.value, result.data_format)
-                if right > 0:
-                    width_shape[width_dim] = right
-                    right_pad = create_pad(dc, width_shape, self.value, result.data_format)
+            width_shape = list(result.shape)
+            if left > 0:
+                width_shape[c_dim_axis] = left
+                left_pad = create_pad(dc, width_shape, self.value, data_format)
+            if right > 0:
+                width_shape[c_dim_axis] = right
+                right_pad = create_pad(dc, width_shape, self.value, data_format)
 
-                result = concat_patches(dc, left_pad, result, right_pad, width_dim)
+            result = concat_patches(dc, left_pad, result, right_pad, c_dim_axis)
 
-                height_shape = [1] * len(result.shape)
-                if top > 0:
-                    height_shape[height_dim] = top
-                    top_pad = create_pad(dc, height_shape, self.value, result.data_format)
-                if bottom > 0:
-                    height_shape[height_dim] = bottom
-                    bot_pad = create_pad(dc, height_shape, self.value, result.data_format)
+            height_shape = list(result.shape)
+            if top > 0:
+                height_shape[r_dim_axis] = top
+                top_pad = create_pad(dc, height_shape, self.value, data_format)
+            if bottom > 0:
+                height_shape[r_dim_axis] = bottom
+                bot_pad = create_pad(dc, height_shape, self.value, data_format)
 
-                result = concat_patches(dc, top_pad, result, bot_pad, height_dim)
+            result = concat_patches(dc, top_pad, result, bot_pad, r_dim_axis)
 
-                dc.fuse(result)
+            dc.fuse(result)
+
             return
 
         ###############################################################
@@ -248,7 +248,28 @@ def concat_patches(dc, first_patch, center, second_patch, dim_axis):
 
 def create_pad(dc, shape, value, data_format):
     torch_dtype = forge_dataformat_to_pytorch_dtype(data_format)
+    shape = list(shape)
     torch_tensor = torch.full(shape, value, dtype=torch_dtype)
 
     forge_tensor = dc.tensor(torch_tensor, data_format)
     return forge_tensor
+
+
+def reverse_dim_pairs(padding):
+    # Assuming padding is a flat list where each pair of values represents a dimension
+    # e.g., [d11, d12, d21, d22, d31, d32] represents 3 dimensions with their respective padding values
+
+    # First, group the values into pairs
+    pairs = []
+    for i in range(0, len(padding), 2):
+        pairs.append(padding[i : i + 2])
+
+    # Reverse the order of pairs
+    pairs.reverse()
+
+    # Flatten the pairs back into a single list
+    reversed_padding = []
+    for pair in pairs:
+        reversed_padding.extend(pair)
+
+    return reversed_padding

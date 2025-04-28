@@ -1448,16 +1448,6 @@ def populate_pad_args(graph, nid, compiler_cfg):
         )
     )
 
-    # # if mode is constant, add value
-    # if mode == "constant":
-    #     value = float(node["attrs"]["pad_value"][0][0])
-    #     args.append(
-    #         (
-    #             "value",
-    #             f"{value}",
-    #     )
-    # )
-
     args.append(
         (
             "channel_last",
@@ -2385,7 +2375,7 @@ def compile_tvm_to_python(
                 assert "num_inputs" in node["attrs"]
 
                 # TVM nn.pad has 2 inputs [Data, pad_value]
-                # We need to assert pad_value being zero, then remove the constant
+                # We remove the constant and move it to the arguments
                 if node["name"] == "nn.pad" and int(node["attrs"]["num_inputs"]) == 2:
                     pad_value_node = graph["nodes"][node["inputs"][1][0]]
                     pad_value_node_name = pad_value_node["name"]

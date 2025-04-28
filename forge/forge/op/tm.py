@@ -285,6 +285,10 @@ def Pad(
         "reflect",
     ], "Currently pad op only supports constant/replicate/reflect mode"
 
+    assert not (
+        mode in ["reflect", "replicate"] and len(operandA.shape) < 2
+    ), "Padding mode 'reflect' and 'replicate' require at least 2 dimensions"
+
     mode_index = {
         "constant": 0,
         "replicate": 1,
@@ -297,8 +301,7 @@ def Pad(
         "value": value,
         "channel_last": channel_last,
     }
-
-    attrs = list(pad) + [mode_index[mode], value, channel_last]
+    attrs = list(pad) + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
     return op(
         "pad",
         name,
