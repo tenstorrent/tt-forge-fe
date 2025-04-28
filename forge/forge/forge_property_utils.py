@@ -569,6 +569,12 @@ class ForgePropertyHandler:
         Args:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
+
+        if self.get("tags.model_name") is not None:
+            # For model tests, we don't want to record the flatbuffer details, since this
+            # results in a lot of data being recorded.
+            return
+
         binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
         binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
         binary_json = json.loads(binary_json_str)
