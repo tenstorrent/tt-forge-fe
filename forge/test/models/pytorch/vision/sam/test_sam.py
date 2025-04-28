@@ -5,10 +5,10 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
-from test.models.utils import Framework, Source, Task
 
 
 @pytest.mark.xfail()
@@ -34,7 +34,7 @@ def test_sam(forge_property_recorder, variant):
 
     if variant == "facebook/sam-vit-base":
         forge_property_recorder.record_group("red")
-        forge_property_recordeer.record_priority("P2")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
 

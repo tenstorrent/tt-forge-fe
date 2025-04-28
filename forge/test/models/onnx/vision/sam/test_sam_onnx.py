@@ -8,9 +8,9 @@ import onnx
 
 import forge
 from forge.verify.verify import verify
-
-from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
 from forge.forge_property_utils import Framework, Source, Task
+
+from test.models.pytorch.vision.sam.utils.model import get_model_inputs
 
 
 @pytest.mark.xfail()
