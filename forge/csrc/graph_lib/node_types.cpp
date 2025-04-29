@@ -282,10 +282,14 @@ void PyOpNode::copy_parent_op_attributes(PyOpNode *node)
 
 bool OpNode::is_tm() const
 {
-    std::string path = node_type() == NodeType::kPyOp ? "forge.op.eval.forge" : "forge.op.eval.lforge";
-    py::object eval_module = py::module_::import(path.c_str());
-    py::function is_tm = eval_module.attr("is_tm");
-    return is_tm(std::ref(op_type())).cast<bool>();
+    static py::function fn_is_tm = py::module_::import("forge.op.eval.forge").attr("is_tm");
+    return fn_is_tm(std::ref(op_type())).cast<bool>();
+}
+
+bool OpNode::is_eltwise() const
+{
+    static py::function fn_is_eltwise = py::module_::import("forge.op.eval.forge").attr("is_eltwise");
+    return fn_is_eltwise(std::ref(op_type())).cast<bool>();
 }
 
 // Figure out output dafa format based on the input formats.
