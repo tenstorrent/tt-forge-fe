@@ -130,6 +130,8 @@ bool ModelState::test_so(
             return vec_host_t.front();
         });
 
+    tt::close_so(so_handle);
+
     return tt::compareOuts(host_outs, golden_host_outs);
 }
 };  // namespace tt

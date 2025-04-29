@@ -459,7 +459,7 @@ class CompiledModel:
         """
 
         logger.info(f"Exporting model {self.framework_module.get_name()} to cpp file...")
-        cpp_code = run_mlir_compiler_to_cpp(self.forge_graph_module, None)
+        cpp_code = run_mlir_compiler_to_cpp(self.forge_graph_module)
 
         with open(export_path, "w") as f:
             f.write(cpp_code)
