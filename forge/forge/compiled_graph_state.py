@@ -550,3 +550,26 @@ class CompiledModel:
             with open(f"{path}/{dialect}.mlir", "w") as f:
                 f.write(mlir_dialects[dialect])
             print("----")
+
+    def dump_forward(self, tensor_dump_dir):
+        # Get names of the input tensors in the forward pass
+        input_names = list(self.fwd_compiled_graph_state.ordered_input_names)
+
+        input_names += self.fwd_compiled_graph_state.ordered_constant_node_names
+        input_names += self.fwd_compiled_graph_state.ordered_parameter_node_names
+
+        persisten_inptus = self.runtime_model_state.get_program_state(ProgramType.Forward).get_inputs()
+
+        import pdb
+
+        pdb.set_trace()
+
+        for id in range(len(input_names)):
+            if id >= len(self.fwd_compiled_graph_state.ordered_input_names):
+                input_tensor = persisten_inptus[id - len(self.fwd_compiled_graph_state.ordered_input_names)]
+            else:
+                input_tensor = self.inputs[id]
+
+            torch.save(input_tensor.to_torch(), f"{tensor_dump_dir}/{id}.pt")
+
+        return input_names

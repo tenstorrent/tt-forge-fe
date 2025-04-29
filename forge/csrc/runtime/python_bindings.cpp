@@ -43,7 +43,8 @@ void RuntimeModule(py::module &m_runtime)
         .export_values();
 
     py::class_<ProgramState>(m_runtime, "ProgramState")
-        .def(py::init<ProgramType, std::vector<Tensor>, std::vector<Tensor>>());
+        .def(py::init<ProgramType, std::vector<Tensor>, std::vector<Tensor>>())
+        .def("get_inputs", &ProgramState::get_inputs);
 
     py::class_<ModelState>(m_runtime, "ModelState")
         .def(py::init<runtime::Binary>())
@@ -62,7 +63,8 @@ void RuntimeModule(py::module &m_runtime)
                 std::optional<ProgramState> &opt_program_state = self.program_states[program_idx(program_type)];
                 TT_ASSERT(opt_program_state.has_value(), "Program state for {} not initialized", program_type);
                 return opt_program_state.value().outputs;
-            });
+            })
+        .def("get_program_state", &ModelState::get_program_state);
 
     m_runtime.def("create_program_state", &tt::create_program_state);
 

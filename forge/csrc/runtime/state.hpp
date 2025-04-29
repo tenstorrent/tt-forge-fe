@@ -6,6 +6,7 @@
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <vector>
 
 #include "runtime/runtime.hpp"
 #include "runtime/tensor.hpp"
@@ -38,6 +39,8 @@ struct ProgramState
     ProgramType program_type;
     std::vector<tt::Tensor> persistent_inputs;
     std::vector<tt::Tensor> outputs;
+
+    std::vector<tt::Tensor>& get_inputs() { return persistent_inputs; }
 };
 
 // Encapsulates execution context for a model.
@@ -75,6 +78,15 @@ struct ModelState
     }
 
     void run_program(ProgramType program_type, std::vector<tt::Tensor> act_inputs);
+
+    ProgramState& get_program_state(ProgramType program_type)
+    {
+        if (!program_states[program_idx(program_type)].has_value())
+        {
+            throw std::runtime_error("Program state for not initialized");
+        }
+        return program_states[program_idx(program_type)].value();
+    }
 };
 
 ProgramState create_program_state(

@@ -503,7 +503,7 @@ class MLIRGenerator
         }
 
         // Call the handler to lower the TTForge op to MLIR
-        mlir::Value opResult = (this->*(handler->second))(graph, op_node);
+        mlir::Value opResult = (thisx(handler->second))(graph, op_node);
 
         // This is the first time we are visiting this TTForge node during the traversal of the graph using topological
         // sort. Therefore, we need to declare the result of this operation so that we can refer to it later if needed.
