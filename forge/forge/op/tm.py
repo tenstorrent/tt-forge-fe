@@ -301,7 +301,7 @@ def Pad(
         "value": value,
         "channel_last": channel_last,
     }
-    attrs = list(pad) + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
+    attrs = named_attrs["padding"] + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
     return op(
         "pad",
         name,

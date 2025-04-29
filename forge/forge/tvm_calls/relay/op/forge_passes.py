@@ -4823,7 +4823,6 @@ def run_forge_compile_passes(
             RemoveRedundantReshape(),
             LowerCopyToNOP(),
             TransposePad(),
-            # DecomposeNonZeroPadtoConcat(),
             DecomposeMultiRangeTake(),
             LowerTakeToStridedSlice(),
             ConvertAddToBiasAddAfterConv2d(),

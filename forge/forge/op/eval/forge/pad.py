@@ -16,8 +16,8 @@ class Pad(PyTM):
         # padding is in format [left, right, top, bottom]
         self.padding = padding
         self.mode = mode
-        self.channel_last = channel_last
         self.value = value
+        self.channel_last = channel_last
 
         return self
 
@@ -57,7 +57,7 @@ class Pad(PyTM):
             return torch.nn.functional.pad(tensors[0], self.padding, mode=mode_options[self.mode], value=self.value)
 
     def shape(self, tensor_shapes):
-        assert len(tensor_shapes) == 1
+        assert len(tensor_shapes) == 1, f"Expected 1 input, got {len(tensor_shapes)}"
         shape = list(tensor_shapes[0])
 
         if self.channel_last:
