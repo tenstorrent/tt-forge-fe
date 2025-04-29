@@ -1,0 +1,4 @@
+# xfail_eq_DTYPE_MISMATCH ids
+
+eq-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+eq-FROM_HOST-None-(1, 2, 3, 4)-None-None

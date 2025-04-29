@@ -1,0 +1,5 @@
+# xfail_max_BUGGY_SHAPE ids
+
+max-FROM_ANOTHER_OP-{'dim': 2, 'keepdim': False}-(1, 10000, 1)-None-None
+max-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 10000, 1)-None-None
+max-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(1, 10000, 1)-None-None

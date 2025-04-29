@@ -1,0 +1,4 @@
+# xfail_atan2_NOT_IMPLEMENTED ids
+
+atan2-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+atan2-FROM_HOST-None-(1, 2, 3, 4)-None-None

@@ -1,0 +1,4 @@
+# xfail_floor_divide_NOT_IMPLEMENTED ids
+
+floor_divide-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+floor_divide-FROM_HOST-None-(1, 2, 3, 4)-None-None

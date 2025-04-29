@@ -1,0 +1,5 @@
+# xfail_bitwise_xor_UNSUPPORTED_DATA_FORMAT ids
+
+bitwise_xor-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+bitwise_xor-FROM_HOST-None-(1, 2, 3, 4)-None-None
+bitwise_xor-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None

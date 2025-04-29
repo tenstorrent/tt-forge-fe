@@ -1,0 +1,5 @@
+# xfail_bitwise_right_shift_UNSUPPORTED_DATA_FORMAT ids
+
+bitwise_right_shift-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+bitwise_right_shift-FROM_HOST-None-(1, 2, 3, 4)-None-None
+bitwise_right_shift-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None

@@ -14,8 +14,10 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingReasons
+from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingRulesConverter
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class TestIdsData:
@@ -76,209 +78,271 @@ class FailingRulesData:
     )
 
     add = [
-        # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_assertion_error,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Unsupported data type for tensor a: {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int8],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
+        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_assertion_error,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Unsupported data type for tensor a: {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int8],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["add"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+            ],
+        ),
     ]
 
     sub = [
-        # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_assertion_error,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Unsupported data type for tensor a: {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int8],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
+        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_assertion_error,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Unsupported data type for tensor a: {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int8],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["sub"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+            ],
+        ),
     ]
 
     mul = [
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Unsupported data type for tensor a: {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int8],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
-        # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                torch.int32,
-                torch.int64,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Unsupported data type for tensor a: {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int8],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
+        # # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         torch.int32,
+        #         torch.int64,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["mul"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+            ],
+        ),
     ]
 
     div = [
-        # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_assertion_error,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Tensor a contains NaN/Inf values
-        TestCollection(
-            input_sources=[InputSource.FROM_ANOTHER_OP],
-            input_shapes=[(7, 10, 1000, 100)],
-            failing_reason=FailingReasons.UNSUPPORTED_TYPE_FOR_VALIDATION,  # TODO: check if this is correct
-        ),
-        # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int64],
-            kwargs=[
-                {"rounding_mode": None},
-                {},
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Input tensors must have the same data type, but got {} and {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            kwargs=[
-                {"rounding_mode": "trunc"},
-                {"rounding_mode": "floor"},
-            ],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
+        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_assertion_error,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Tensor a contains NaN/Inf values
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_ANOTHER_OP],
+        #     input_shapes=[(7, 10, 1000, 100)],
+        #     failing_reason=FailingReasons.UNSUPPORTED_TYPE_FOR_VALIDATION,  # TODO: check if this is correct
+        # ),
+        # # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int64],
+        #     kwargs=[
+        #         {"rounding_mode": None},
+        #         {},
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Input tensors must have the same data type, but got {} and {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         torch.int8,
+        #         torch.int32,
+        #         torch.int64,
+        #     ],
+        #     kwargs=[
+        #         {"rounding_mode": "trunc"},
+        #         {"rounding_mode": "floor"},
+        #     ],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["div"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+                FailingReasonsDefs.DTYPE_MISMATCH,
+                FailingReasonsDefs.SPECIAL_VALUES,
+            ],
+        ),
     ]
 
     ge = [
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ge_failed_dtype_mismatch,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ge_failed_dtype_mismatch,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["ge"],
+            failing_reasons=[
+                FailingReasonsDefs.DTYPE_MISMATCH,
+            ],
+        ),
     ]
 
     ne = [
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ne_failed_dtype_mismatch,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ne_failed_dtype_mismatch,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["ne"],
+            failing_reasons=[
+                FailingReasonsDefs.DTYPE_MISMATCH,
+            ],
+        ),
     ]
 
     gt = [
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.gt_failed_dtype_mismatch,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.gt_failed_dtype_mismatch,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["gt"],
+            failing_reasons=[
+                FailingReasonsDefs.DTYPE_MISMATCH,
+            ],
+        ),
     ]
 
     lt = [
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.lt_failed_dtype_mismatch,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.lt_failed_dtype_mismatch,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["lt"],
+            failing_reasons=[
+                FailingReasonsDefs.DTYPE_MISMATCH,
+            ],
+        ),
     ]
 
     maximum = [
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Unsupported data type for tensor a: {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int8],
-            math_fidelities=[forge.MathFidelity.HiFi4],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
-        # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int64],
-            math_fidelities=[forge.MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Unsupported data type for tensor a: {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int8],
+        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
+        # # ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int64],
+        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["maximum"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+            ],
+        ),
     ]
 
     minimum = [
-        # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
-        # info:
-        # Unsupported data type for tensor a: {}
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[torch.int8],
-            math_fidelities=[forge.MathFidelity.HiFi4],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
-        # RuntimeError: Tensor 2 - data type mismatch:
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                torch.int32,
-                torch.int64,
-                torch.bfloat16,
-            ],
-            math_fidelities=[
-                forge.MathFidelity.LoFi,
-                forge.MathFidelity.HiFi2,
-                forge.MathFidelity.HiFi3,
-                forge.MathFidelity.HiFi4,
-            ],
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # info:
+        # # Unsupported data type for tensor a: {}
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[torch.int8],
+        #     math_fidelities=[forge.MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
+        # # RuntimeError: Tensor 2 - data type mismatch:
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         torch.int32,
+        #         torch.int64,
+        #         torch.bfloat16,
+        #     ],
+        #     math_fidelities=[
+        #         forge.MathFidelity.LoFi,
+        #         forge.MathFidelity.HiFi2,
+        #         forge.MathFidelity.HiFi3,
+        #         forge.MathFidelity.HiFi4,
+        #     ],
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         common,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["minimum"],
+            failing_reasons=[
+                FailingReasonsDefs.DATA_MISMATCH,
+            ],
+        ),
     ]

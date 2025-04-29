@@ -21,11 +21,13 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -157,32 +159,40 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        # Failed automatic value checker:
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            kwargs=[
-                {"repeats": 7, "dim": 3},
+        *TestIdsDataLoader.build_failing_rules(
+            operators=["repeat_interleave"],
+            failing_reasons=[
+                FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
+                FailingReasonsDefs.DATA_MISMATCH,
+                FailingReasonsDefs.INFERENCE_FAILED,
             ],
-            dev_data_formats=[
-                forge.DataFormat.Int8,
-                forge.DataFormat.Int32,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
         ),
-        # Unsupported special cases when dim = 0:
-        TestCollection(
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "dim" in test_vector.kwargs
-            and test_vector.kwargs["dim"] is None,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # To large repeats inference failed:
-        TestCollection(
-            kwargs=[
-                {"repeats": 58, "dim": 2},
-            ],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
+        # # Failed automatic value checker:
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     kwargs=[
+        #         {"repeats": 7, "dim": 3},
+        #     ],
+        #     dev_data_formats=[
+        #         forge.DataFormat.Int8,
+        #         forge.DataFormat.Int32,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # Unsupported special cases when dim = 0:
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.kwargs is not None
+        #     and "dim" in test_vector.kwargs
+        #     and test_vector.kwargs["dim"] is None,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # To large repeats inference failed:
+        # TestCollection(
+        #     kwargs=[
+        #         {"repeats": 58, "dim": 2},
+        #     ],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
     ],
 )
 

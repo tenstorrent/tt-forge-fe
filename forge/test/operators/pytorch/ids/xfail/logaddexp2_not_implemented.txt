@@ -1,0 +1,5 @@
+# xfail_logaddexp2_NOT_IMPLEMENTED ids
+
+logaddexp2-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+logaddexp2-FROM_HOST-None-(1, 2, 3, 4)-None-None
+logaddexp2-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None

@@ -1,0 +1,4 @@
+# xfail_arctan2_NOT_IMPLEMENTED ids
+
+arctan2-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+arctan2-FROM_HOST-None-(1, 2, 3, 4)-None-None

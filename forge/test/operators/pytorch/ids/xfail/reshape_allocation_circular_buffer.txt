@@ -1,0 +1,5 @@
+# xfail_reshape_ALLOCATION_CIRCULAR_BUFFER ids
+
+reshape-FROM_ANOTHER_OP-{'shape': (7000000,)}-(7, 10, 1000, 100)-None-None
+reshape-FROM_HOST-{'shape': (7000000,)}-(7, 10, 1000, 100)-None-None
+reshape-CONST_EVAL_PASS-{'shape': (7000000,)}-(7, 10, 1000, 100)-None-None

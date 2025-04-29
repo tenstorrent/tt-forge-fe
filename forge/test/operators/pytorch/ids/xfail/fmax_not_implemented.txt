@@ -1,0 +1,5 @@
+# xfail_fmax_NOT_IMPLEMENTED ids
+
+fmax-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+fmax-FROM_HOST-None-(1, 2, 3, 4)-None-None
+fmax-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None

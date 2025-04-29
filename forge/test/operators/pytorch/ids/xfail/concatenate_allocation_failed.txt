@@ -1,0 +1,7 @@
+# xfail_concatenate_ALLOCATION_FAILED ids
+
+concatenate-CONST_EVAL_PASS-{'dim': 0}-((12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96))-None-None
+concatenate-CONST_EVAL_PASS-{'dim': 1}-((12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96))-None-None
+concatenate-CONST_EVAL_PASS-{'dim': 2}-((12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96))-None-None
+concatenate-CONST_EVAL_PASS-{'dim': 3}-((12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96))-None-None
+concatenate-CONST_EVAL_PASS-{'dim': 0}-((12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96), (12, 64, 160, 96))-None-None

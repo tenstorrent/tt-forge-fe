@@ -1,0 +1,5 @@
+# xfail_fmin_NOT_IMPLEMENTED ids
+
+fmin-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+fmin-FROM_HOST-None-(1, 2, 3, 4)-None-None
+fmin-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None

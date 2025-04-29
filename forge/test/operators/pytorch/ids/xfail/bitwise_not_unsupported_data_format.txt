@@ -1,0 +1,3 @@
+# xfail_bitwise_not_UNSUPPORTED_DATA_FORMAT ids
+
+bitwise_not-FROM_HOST-None-(1, 2, 3, 4)-None-None

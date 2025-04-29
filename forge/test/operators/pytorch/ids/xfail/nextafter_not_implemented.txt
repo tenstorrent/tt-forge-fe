@@ -1,0 +1,5 @@
+# xfail_nextafter_NOT_IMPLEMENTED ids
+
+nextafter-FROM_ANOTHER_OP-None-(1, 2, 3, 4)-None-None
+nextafter-FROM_HOST-None-(1, 2, 3, 4)-None-None
+nextafter-CONST_EVAL_PASS-None-(1, 2, 3, 4)-None-None
