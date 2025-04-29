@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Built-in modules
-import os
 import time
 import socket
 import pytest
@@ -49,9 +48,8 @@ LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_count):
     """
-    This function creates a basic MobileNetV2 model using PyTorch and TorchScript.
-    It is used
-    for benchmarking purposes.
+    This function creates a basic MobileNetV2 model using PyTorch.
+    It is used for benchmarking purposes.
     """
 
     if training:
@@ -112,7 +110,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
@@ -170,6 +168,10 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
 
 def mobilenetv2_basic_benchmark(config: dict):
+    """
+    Run the mobilenet v2 basic benchmark.
+    This function is a placeholder for the actual benchmark implementation.
+    """
 
     training = config["training"]
     batch_size = config["batch_size"]
