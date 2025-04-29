@@ -198,7 +198,7 @@ auto run_mlir_compiler_generic(
                 fs::path(std::string(FORGE_HOME)).parent_path() / "third_party/tt-mlir/tools/ttnn-standalone";
         }
 
-        std::string soPathStr = compile_cpp_to_so(
+        std::string soPathStr = compileCppToSo(
             cpp_source, "/tmp/", metal_src_dir.string(), metal_lib_dir.string(), standalone_dir.string());
 
         tt::log_info(LogMLIRCompiler, "SharedObject generated successfully at path: {}.", soPathStr);
@@ -228,7 +228,7 @@ std::string run_mlir_compiler_to_shared_object(
     const std::optional<MLIRConfig>& mlir_config,
     const std::optional<py::object>& forge_property_handler)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, forge_property_handler);
+    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, mlir_config, forge_property_handler);
 }
 
 void to_json(::nlohmann::json& j, const MLIRConfig& p)

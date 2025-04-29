@@ -20,6 +20,7 @@ std::vector<tt::Tensor> run_program_from_file(
 std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, std::vector<tt::Tensor>& inputs);
 
 void* open_so(std::string path);
+void close_so(void* handle);
 std::vector<tt::runtime::Tensor> run_so_program(
     void* so_handle,
     std::string func_name,

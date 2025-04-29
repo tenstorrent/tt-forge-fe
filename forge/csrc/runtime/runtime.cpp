@@ -143,6 +143,7 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
 }
 
 void* open_so(std::string path) { return runtime::ttnn::test::openSo(path); }
+void close_so(void* handle) { return runtime::ttnn::test::closeSo(handle); }
 
 std::vector<tt::runtime::Tensor> run_so_program(
     void* so_handle, std::string func_name, std::vector<tt::Tensor>& inputs, std::vector<tt::Tensor>& consts_and_params)
