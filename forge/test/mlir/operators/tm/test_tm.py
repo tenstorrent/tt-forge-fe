@@ -445,22 +445,19 @@ def test_indexing(forge_property_recorder, dim, start, stop, stride, shape):
 @pytest.mark.parametrize(
     "indices_shape",
     [
-        # (12,),
-        # (32,),
-        # (1, 7),
-        # (1, 28),
-        (2,)
+        (12,),
+        (32,),
+        (1, 7),
+        (1, 28),
     ],
 )
 @pytest.mark.parametrize(
     "input_tensor_shape",
     [
-        # (12, 100),
-        # (3200, 512),
-        # (2048, 128),
-        # (4127, 256),
-        (1, 3, 2),
-        # (2,3,2)
+        (12, 100),
+        (3200, 512),
+        (2048, 128),
+        (4127, 256),
     ],
 )
 @pytest.mark.push
@@ -470,7 +467,7 @@ def test_adv_index_embedding_decompostion(forge_property_recorder, indices_shape
             super().__init__(name)
 
         def forward(self, input_tensor, indices):
-            return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices, dim=-1)
+            return forge.op.AdvIndex("adv_index_op_1", input_tensor, indices)
 
     framework_model = ForgeAdvIndex("ForgeAdvIndex")
 
