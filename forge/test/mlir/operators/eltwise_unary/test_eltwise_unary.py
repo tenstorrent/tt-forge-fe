@@ -446,16 +446,8 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
         ((56), 0),
         ((1, 128), 1),
         ((1, 32), -1),
-        pytest.param(
-            (1, 64, 76),
-            2,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
-        ),
-        pytest.param(
-            (1, 64, 76, 96),
-            3,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
-        ),
+        ((1, 64, 76), 2),
+        ((1, 64, 76, 96), 3),
         pytest.param(
             (1, 64, 86, 100, 120),
             4,
