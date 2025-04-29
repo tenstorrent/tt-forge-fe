@@ -22,7 +22,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
             # get json of the last 10 workflow runs
-            gh run list --workflow on-nightly.yml -R tenstorrent/tt-forge-fe -b main -L 10 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
+            repo="${{ github.repository }}"
+            wf_name="on-nightly.yml"
+            gh run list --workflow $wf_name -R $repo -b main -L 10 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
             # Filter runs.json to include only entries where "conclusion" is "failure" or "success"
             jq '[.[] | select(.conclusion == "failure" or .conclusion == "success")]' runs.json >filtered_runs.json
             mv filtered_runs.json runs.json
@@ -36,6 +38,7 @@ jobs:
             git fetch --all
             git switch main
             git checkout $HEAD_SHA_2
+            git submodule update --init --recursive
             if git show-ref --verify --quiet refs/remotes/origin/main; then
               git rev-list --reverse HEAD..origin/main >commits.txt
             else
@@ -61,8 +64,8 @@ jobs:
             rm -rf log-a
             rm -rf log-b
             # get list of failed tests from the last two workflow runs
-            gh run download $DATABASE_ID_2 --pattern "test-log*" -R tenstorrent/tt-forge-fe -D log-a
-            gh run download $DATABASE_ID_1 --pattern "test-log*" -R tenstorrent/tt-forge-fe -D log-b
+            gh run download $DATABASE_ID_2 --pattern "test-log*" -R $repo -D log-a
+            gh run download $DATABASE_ID_1 --pattern "test-log*" -R $repo -D log-b
             # get machine names
             find log-a -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-a.log
             find log-b -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-b.log
@@ -76,7 +79,6 @@ jobs:
                 done
                 # get only the lines that are in b.log but not in a.log
                 grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
-                # sed -i 's/^/"/; s/$/"/' tests-"$machine".log
             done <machines.log
             # Filter out machines with empty test logs
             cp machines.log filtered_machines.log
@@ -133,13 +135,13 @@ jobs:
           name: tests-to-run
           path: tests-*.log
 
-  build-test:
+  test:
     needs: inspect
     strategy:
       fail-fast: false
       matrix:
         build: ${{ fromJSON(needs.inspect.outputs.matrix) }}
-    name: "Test ${{ matrix.build.c }}-${{ matrix.build.commit }}"
+    name: "Test ${{matrix.build.runs-on}}-${{ matrix.build.c }}-${{ matrix.build.commit }}"
     container:
       image: "ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:${{ needs.inspect.outputs.docker-tag }}"
       options: --device /dev/tenstorrent/0
@@ -195,10 +197,13 @@ jobs:
           shell: bash
           run: |
             source env/activate
-            rm -f pytest.log
-            while read -r test; do
-              pytest "$test" 2>&1 | tee -a pytest.log
-            done < "tests-${{matrix.build.runs-on}}.log"
+            echo "import pytest" >runtest.py
+            echo "import sys" >>runtest.py
+            echo "if __name__ == \"__main__\":" >>runtest.py
+            echo "    with open(sys.argv[1], \"r\") as fd:" >>runtest.py
+            echo "        test_list = fd.readlines()" >>runtest.py
+            echo "    sys.exit(pytest.main(test_list))" >>runtest.py
+            python runtest.py tests-${{matrix.build.runs-on}}.log 2>&1 | tee pytest.log
 
         - name: Upload Test Log
           uses: actions/upload-artifact@v4
@@ -206,3 +211,84 @@ jobs:
           with:
             name: test-log-${{ matrix.build.runs-on }}-${{ matrix.build.c }}-${{ matrix.build.commit }}
             path: pytest.log
+
+  deduct:
+    needs: test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find all test runs
+        id: do-deduct
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          workflow_id="${{ github.run_id }}"
+          repo="${{ github.repository }}"
+          rm -f report.txt
+          rm -f short_report.txt
+          rm -f pytest.log
+          rm -rf mach
+          gh run download $workflow_id --name "tests-to-run" -R $repo -D mach
+          cat mach/* >pytest.log
+          rm -rf mach
+          gh run view -R $repo $workflow_id --json jobs -q '.jobs[] | select(.name | startswith("Test")) | .name' >test_jobs.txt
+          sed -i 's/^Test //' test_jobs.txt
+          echo "Extracted test jobs: $(cat test_jobs.txt)"
+          set +e
+          while read -r test; do
+            rm -f a.log
+            rm -rf log
+            touch a.log
+            echo "Processing test job $test"
+            gh run download $workflow_id --pattern "test-log-${test}*" -R $repo -D log
+            if [ $? -ne 0 ]; then
+              echo "Could not download log for test job $test."
+              continue
+            fi
+            for dir in log/test-log-*/; do
+                grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>a.log
+            done
+            # Remove all of tests that doesn't exist in initial list of tests (failed in previous jobs)
+            grep -Fx -f pytest.log a.log >f_a.log
+            mv f_a.log a.log
+            if [ ! -s a.log ]; then
+              echo "No failed tests found for test job $test."
+              continue
+            fi
+            echo "Failed tests for test job $test:"
+            cat a.log
+            # Remove all of failed tests from initial list of tests
+            grep -Fxv -f a.log pytest.log >filtered_pytest.log
+            mv filtered_pytest.log pytest.log
+
+            # Get commit
+            no_failed_tests=$(wc -l <a.log)
+            commit=$(echo "$test" | sed 's/.*-//')
+            echo "- In <https://github.com/$repo/commit/$commit|$commit> $no_failed_tests test(s) failed\n" >>short_report.txt
+            echo "- In <https://github.com/$repo/commit/$commit|$commit> $no_failed_tests test(s) failed:\n" >>report.txt
+            echo "```" >>report.txt
+            cat a.log >>report.txt
+            echo "```" >>report.txt
+
+          done <test_jobs.txt
+
+          if [ ! -s report.txt ]; then
+            echo "No failed tests to report."
+            echo "send_msg=" >>$GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Report: $(cat report.txt)"
+            echo "<https://github.com/$repo/actions/runs/$workflow_id|More details>" >>short_report.txt
+            echo "## Inspection report :rocket:" >> $GITHUB_STEP_SUMMARY
+            cat report.txt >> $GITHUB_STEP_SUMMARY
+            echo "send_msg=\"$(cat short_report.txt)\"" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Send Fail Notification
+        if: ${{ steps.do-deduct.outputs.send_msg }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            { "text": "${{ steps.do-deduct.outputs.send_msg }}" }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_INSPECT }}
