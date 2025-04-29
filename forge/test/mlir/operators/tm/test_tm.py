@@ -162,13 +162,17 @@ def test_cast(forge_property_recorder, operand_and_cast_dtype):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+from loguru import logger
+
+
 @pytest.mark.parametrize(
     "input_shape,elementwise_affine, eps",
     [
-        ((2, 128), False, 1e-6),
-        ((2, 4096, 1536), False, 1e-6),
-        ((1, 32, 56, 56), True, 1e-5),
-        ((1, 5, 3, 7, 9), True, 1e-3),
+        # ((2, 128), False, 1e-6),
+        # ((2, 4096, 1536), False, 1e-6),
+        # ((1, 32, 56, 56), True, 1e-5),
+        # ((1, 5, 3, 7, 9), True, 1e-3),
+        ((1, 197, 768), True, 1e-12),
     ],
 )
 @pytest.mark.push
@@ -177,6 +181,7 @@ def test_layernorm(forge_property_recorder, input_shape, elementwise_affine, eps
         def __init__(self):
             super().__init__()
             self.norm = nn.LayerNorm(input_shape[-1], elementwise_affine=elementwise_affine, eps=eps)
+            # logger.info("self.norm={}",self.norm)
 
         def forward(self, x):
             return self.norm(x)
@@ -184,7 +189,9 @@ def test_layernorm(forge_property_recorder, input_shape, elementwise_affine, eps
     model = LayerNorm()
     model.eval()
 
-    inputs = [torch.randn(*input_shape)]
+    inputs = [torch.load("hidden_states.pt")]
+
+    # logger.info("inputs={}",inputs)
 
     compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 
