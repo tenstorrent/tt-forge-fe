@@ -6,9 +6,7 @@
 import pytest
 import time
 import socket
-import subprocess
 import json
-import os
 from datetime import datetime
 
 # Third-party modules
@@ -142,7 +140,7 @@ def test_mnist_linear(
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
