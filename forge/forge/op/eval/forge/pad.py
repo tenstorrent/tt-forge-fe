@@ -145,44 +145,29 @@ class Pad(PyTM):
         if self.mode == 1:  # 'replicate' mode
             result = activations
 
-            if self.channel_last:
-                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
+            left_pad, right_pad, top_pad, bot_pad = None, None, None, None
 
-                orig_shape = result.shape
-                result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                spm = create_pad_replicate_sparse_picker(c, r, top, bottom, left, right)
-                spm = dc.tensor(spm)
-                result = dc.op("sparse_matmul", [spm, result])
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                result = dc.op(
-                    "reshape",
-                    [result],
-                    (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
-                )
+            if left > 0:
+                # extract vector
+                left_patch = extract(dc, result, c_dim_axis, 0, 1)
+                left_pad = repeat_vector(dc, left_patch, left, c_dim_axis)
+            if right > 0:
+                # extract vector
+                right_patch = extract(dc, result, c_dim_axis, c - 1, c)
+                right_pad = repeat_vector(dc, right_patch, right, c_dim_axis)
 
-                result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-            else:
-                orig_shape = result.shape
-                if len(orig_shape) == 2:
-                    result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
-                else:
-                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
-                spm = dc.tensor(spm)
-                result = dc.op("sparse_matmul", [spm, result])
-                result = dc.op(TransposeTM.create(-2, -1), [result])
-                if len(orig_shape) == 2:
-                    result = dc.op(
-                        "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                    )
-                else:
-                    result = dc.op(
-                        "reshape",
-                        [result],
-                        (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
-                    )
+            result = concat_patches(dc, left_pad, result, right_pad, c_dim_axis)
+
+            if top > 0:
+                # extract vector
+                top_patch = extract(dc, result, r_dim_axis, 0, 1)
+                top_pad = repeat_vector(dc, top_patch, top, r_dim_axis)
+            if bottom > 0:
+                # extract vector
+                bot_patch = extract(dc, result, r_dim_axis, r - 1, r)
+                bot_pad = repeat_vector(dc, bot_patch, bottom, r_dim_axis)
+
+            result = concat_patches(dc, top_pad, result, bot_pad, r_dim_axis)
 
             dc.fuse(result)
             return
@@ -248,12 +233,7 @@ class Pad(PyTM):
 
 def extract_and_mirror(dc, input, dim_axis, start, stop):
     # Extract patch
-    patch = dc.op_with_named_attrs(
-        "index",
-        [input],
-        {"dim": dim_axis, "start": start, "stop": stop, "stride": 1},
-        (dim_axis, start, stop, 1),
-    )
+    patch = extract(dc, input, dim_axis, start, stop)
 
     # Mirror patch
     indices = torch.arange(stop - start - 1, -1, -1)
@@ -261,6 +241,15 @@ def extract_and_mirror(dc, input, dim_axis, start, stop):
     patch_mirrored = dc.op("adv_index", [patch, indices_tensor], (dim_axis,))
 
     return patch_mirrored
+
+
+def extract(dc, input, dim_axis, start, stop):
+    return dc.op_with_named_attrs(
+        "index",
+        [input],
+        {"dim": dim_axis, "start": start, "stop": stop, "stride": 1},
+        (dim_axis, start, stop, 1),
+    )
 
 
 def concat_patches(dc, first_patch, center, second_patch, dim_axis):
@@ -285,21 +274,9 @@ def create_pad(dc, shape, value, data_format):
     return forge_tensor
 
 
-def reverse_dim_pairs(padding):
-    # Assuming padding is a flat list where each pair of values represents a dimension
-    # e.g., [d11, d12, d21, d22, d31, d32] represents 3 dimensions with their respective padding values
-
-    # First, group the values into pairs
-    pairs = []
-    for i in range(0, len(padding), 2):
-        pairs.append(padding[i : i + 2])
-
-    # Reverse the order of pairs
-    pairs.reverse()
-
-    # Flatten the pairs back into a single list
-    reversed_padding = []
-    for pair in pairs:
-        reversed_padding.extend(pair)
-
-    return reversed_padding
+def repeat_vector(dc, input, n_repeats, axis):
+    # all axis should have 1 repeat except the axis
+    repeats = [1] * len(input.shape)
+    repeats[axis] = n_repeats
+    repeats = tuple(repeats)
+    return dc.op_with_named_attrs("repeat", [input], {"repeats": repeats}, repeats)
