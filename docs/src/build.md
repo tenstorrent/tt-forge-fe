@@ -5,10 +5,9 @@ Following page describes how to build the project on your local machine.
 ## Prerequisites
 Main project dependencies are:
 1. Clang 17
-1. Ninja
-1. CMake 3.20 or higher
-1. Git LFS
-1. Python 3.10 or higher
+2. Ninja
+3. CMake 3.20 or higher
+4. Python 3.10 or higher
 
 On Ubuntu 22.04 systems, you can install these dependencies using the following commands:
 ```sh
@@ -26,9 +25,6 @@ sudo apt install ninja-build
 sudo apt remove cmake -y
 pip3 install cmake --upgrade
 cmake --version
-
-# Install Git LFS
-sudo apt install git-lfs
 
 # Check Python version
 python3 --version
