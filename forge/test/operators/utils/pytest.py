@@ -6,6 +6,7 @@
 
 import forge
 import pytest
+import re
 
 import _pytest
 import _pytest.reports
@@ -32,6 +33,23 @@ class PyTestUtils:
             return xfail_reason
 
         return None
+
+    @classmethod
+    def remove_colors(cls, text: str) -> str:
+        # Remove colors from text
+        text = re.sub(r"#x1B\[\d+m", "", text)
+        text = re.sub(r"#x1B\[\d+;\d+;\d+m", "", text)
+        text = re.sub(r"#x1B\[\d+;\d+;\d+;\d+;\d+m", "", text)
+
+        text = re.sub(r"\[\d+m", "", text)
+        text = re.sub(r"\[\d+;\d+;\d+m", "", text)
+        text = re.sub(r"\[\d+;\d+;\d+;\d+;\d+m", "", text)
+
+        text = re.sub(r"\[1A", "", text)
+        text = re.sub(r"\[1B", "", text)
+        text = re.sub(r"\[2K", "", text)
+
+        return text
 
 
 class PytestParamsUtils:

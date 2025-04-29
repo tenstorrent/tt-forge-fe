@@ -69,11 +69,14 @@ class FailingReasons:
 
     INFERENCE_FROZE = "Inference froze without error message"
 
+    ALLOCATION_CIRCULAR_BUFFER = "Allocation of circular buffer"
+
 
 # 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
 
 
-class FailingReasonsValidation:
+# TODO remove
+class FailingReasonsValidationObsolete:
     @classmethod
     def validate_exception_message(
         cls, exception_value: Exception, expected_message: str, exception_type: Optional[Type[Exception]]
