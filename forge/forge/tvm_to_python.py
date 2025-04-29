@@ -2382,7 +2382,6 @@ def compile_tvm_to_python(
                     pad_value = json_graph["params"][pad_value_node_name]
                     assert pad_value_node["nid"] in constants
                     args.append(("value", f"{float(pad_value.item())}"))
-                    # assert not pad_value.any(), "Padding contains non-zero values"
                     del constants[pad_value_node["nid"]]
                     node["attrs"]["num_inputs"] = "1"
 
