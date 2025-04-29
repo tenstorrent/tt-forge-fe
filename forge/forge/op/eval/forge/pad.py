@@ -24,7 +24,37 @@ class Pad(PyTM):
     def eval(self, tensors):
         mode_options = ["constant", "replicate", "reflect"]
 
-        return torch.nn.functional.pad(tensors[0], self.padding, mode=mode_options[self.mode], value=self.value)
+        # we need to do some permutation of the input tensor
+        # since pytorch pad works with channel_last=False
+        if self.channel_last:
+            # Get the input tensor and its number of dimensions
+            input_tensor = tensors[0]
+            ndim = len(input_tensor.shape)
+
+            # When channel_last=True, the input tensor is already in format (N, D1, D2, ..., Dn, C)
+            # We need to move the channel from the last position to position 1
+            # to get (N, C, D1, D2, ..., Dn) which is what PyTorch expects for padding
+
+            # Create permutation that moves channel from the last dim to position 1
+            # For a tensor (N, D1, D2, ..., Dn, C) -> (N, C, D1, D2, ..., Dn)
+            perm = list(range(ndim))
+            perm.insert(1, perm.pop(-1))  # Move last dim (C) to position 1
+
+            # Apply permutation
+            transposed = input_tensor.permute(*perm)
+
+            # Apply padding
+            padded = torch.nn.functional.pad(transposed, self.padding, mode=mode_options[self.mode], value=self.value)
+
+            # Create reverse permutation to move channel back to the end
+            # For a tensor (N, C, D1, D2, ..., Dn) -> (N, D1, D2, ..., Dn, C)
+            reverse_perm = list(range(ndim))
+            reverse_perm.append(reverse_perm.pop(1))  # Move dim 1 (C) to the end
+
+            # Apply reverse permutation
+            return padded.permute(*reverse_perm)
+        else:
+            return torch.nn.functional.pad(tensors[0], self.padding, mode=mode_options[self.mode], value=self.value)
 
     def shape(self, tensor_shapes):
         assert len(tensor_shapes) == 1
