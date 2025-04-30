@@ -440,6 +440,13 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
+
+    if "TT_METAL_HOME" in os.environ:
+        print(f"metal: {os.environ["TT_METAL_HOME"]}")
+    if "CPM_SOURCE_CACHE" in os.environ:
+        print(f"CPM: {os.environ["CPM_SOURCE_CACHE"]}")
+
+
     # Compile EmitC .so
     so_path = compiled_model.export_to_shared_object()
     # Run EmitC .so
