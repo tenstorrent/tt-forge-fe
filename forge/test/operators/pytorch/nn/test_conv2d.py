@@ -37,7 +37,6 @@ from test.operators.utils import (
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.utils import PytorchUtils
-from test.operators.utils import FailingReasonsDefs
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
@@ -773,22 +772,7 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_inference_froze,
             skip_reason=FailingReasons.INFERENCE_FROZE,
         ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=TestCollectionData.all.operators,
-            failing_reasons=[
-                FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
-                FailingReasonsDefs.ALLOCATION_FAILED,
-                # FailingReasonsDefs.COMPILATION_FAILED,
-                FailingReasonsDefs.CONV2D_VALIDATE_ARGS,
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.DTYPE_MISMATCH,
-                FailingReasonsDefs.NOT_IMPLEMENTED,
-                # FailingReasonsDefs.TVM_RUNTIME,
-                FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                FailingReasonsDefs.UNSUPPORTED_SPECIAL_CASE,
-                FailingReasonsDefs.WRONG_SCALAR_TYPE,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )
 

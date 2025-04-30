@@ -131,7 +131,6 @@ class FailingReasonsRegister:
         ("squeeze", FailingReasonsDefs.COMPILATION_FAILED),
         ("squeeze", FailingReasonsDefs.INTERNAL_TVM_ERROR),
         ("squeeze", FailingReasonsDefs.TVM_RUNTIME),
-        ("squeeze", FailingReasonsDefs.UNCLASSIFIED),
         ("sub", FailingReasonsDefs.DATA_MISMATCH),
         ("sum", FailingReasonsDefs.DATA_MISMATCH),
         ("tan", FailingReasonsDefs.NOT_IMPLEMENTED),

@@ -13,7 +13,6 @@ from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChec
 
 from test.operators.utils import VerifyUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import ValueRanges
 from test.operators.utils import InputSource
 from test.operators.utils import ShapeUtils
@@ -180,15 +179,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["matmul"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.INTERNAL_TVM_ERROR,
-                FailingReasonsDefs.TTNN_RUNTIME,
-                FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["matmul"]),
         # Memory issue (too large input shapes):
         TestCollection(
             operators=TestParamsData.operators,

@@ -16,7 +16,6 @@ from test.operators.utils import (
     TestVector,
     TestPlan,
     FailingReasons,
-    FailingReasonsDefs,
     TestCollection,
     TestCollectionCommon,
     TestCollectionTorch,
@@ -217,13 +216,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["concatenate"],
-            failing_reasons=[
-                FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
-                FailingReasonsDefs.ALLOCATION_FAILED,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["concatenate"]),
         # Unsupported ttnn::DataType... Fatal Python error: Aborted
         TestCollection(
             operators=TestParamsData.operators,

@@ -22,7 +22,6 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
@@ -151,16 +150,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["squeeze"],
-            failing_reasons=[
-                FailingReasonsDefs.COMPILATION_FAILED,
-                # FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.INTERNAL_TVM_ERROR,
-                FailingReasonsDefs.TVM_RUNTIME,
-                # FailingReasonsDefs.UNCLASSIFIED,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["squeeze"]),
         # TestCollection(
         #     criteria=lambda test_vector: test_vector.get_id()
         #     in TestPlanUtils.load_test_ids_from_file(

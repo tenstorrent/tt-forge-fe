@@ -16,7 +16,6 @@ from forge.verify.config import VerifyConfig
 
 from forge.verify.value_checkers import AllCloseValueChecker
 
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import FailingReasons
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
@@ -188,16 +187,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["max"],
-            failing_reasons=[
-                FailingReasonsDefs.BUGGY_SHAPE,
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.FORGE_RUNTIME,
-                # FailingReasonsDefs.TTNN_RUNTIME,
-                FailingReasonsDefs.SPECIAL_VALUES,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["max"]),
         TestCollection(
             operators=TestParamsData.operator,
             input_sources=TestCollectionCommon.all.input_sources,

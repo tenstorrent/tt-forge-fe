@@ -46,9 +46,19 @@ class TestIdsDataLoader:
     def build_failing_rules(
         cls, operators: List[str], failing_reasons: List[FailingReasonsDefs] = None
     ) -> List[TestCollection]:
-        if failing_reasons is None:
-            failing_reasons = list(cls._get_failing_reasons(operators[0]))
-        return [cls.build_failing_rule(operators, failing_reason) for failing_reason in failing_reasons]
+        return list(cls._build_failing_rules(operators, failing_reasons))
+
+    @classmethod
+    def _build_failing_rules(
+        cls, operators: List[str], failing_reasons: List[FailingReasonsDefs] = None
+    ) -> Generator[TestCollection, None, None]:
+        for operator in operators:
+            if failing_reasons is None:
+                op_failing_reasons = list(cls._get_failing_reasons(operator))
+            else:
+                op_failing_reasons = failing_reasons
+            for failing_reason in op_failing_reasons:
+                yield cls.build_failing_rule([operator], failing_reason)
 
     @classmethod
     def _get_failing_reasons(cls, operator: str) -> Generator[FailingReasonsDefs, None, None]:

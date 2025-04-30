@@ -29,7 +29,6 @@ from test.operators.utils import (
     TestVector,
     TestPlan,
     FailingReasons,
-    FailingReasonsDefs,
     TestCollection,
     TestCollectionCommon,
 )
@@ -263,13 +262,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["linear"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.MICROBATCHING_UNSUPPORTED,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["linear"]),
         # # E   RuntimeError: The expanded size of the tensor (x) must match the existing size (y) at non-singleton dimension 0.  Target sizes: [x].  Tensor sizes: [y]
         # TestCollection(
         #     input_sources=TestCollectionData.all.input_sources,

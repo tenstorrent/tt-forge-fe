@@ -14,7 +14,6 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import FailingRulesConverter
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
@@ -98,12 +97,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["add"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["add"]),
     ]
 
     sub = [
@@ -127,12 +121,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["sub"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["sub"]),
     ]
 
     mul = [
@@ -156,12 +145,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["mul"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["mul"]),
     ]
 
     div = [
@@ -212,14 +196,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["div"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.DTYPE_MISMATCH,
-                FailingReasonsDefs.SPECIAL_VALUES,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["div"]),
     ]
 
     ge = [
@@ -229,12 +206,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["ge"],
-            failing_reasons=[
-                FailingReasonsDefs.DTYPE_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["ge"]),
     ]
 
     ne = [
@@ -244,12 +216,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["ne"],
-            failing_reasons=[
-                FailingReasonsDefs.DTYPE_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["ne"]),
     ]
 
     gt = [
@@ -259,12 +226,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["gt"],
-            failing_reasons=[
-                FailingReasonsDefs.DTYPE_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["gt"]),
     ]
 
     lt = [
@@ -274,12 +236,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["lt"],
-            failing_reasons=[
-                FailingReasonsDefs.DTYPE_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["lt"]),
     ]
 
     maximum = [
@@ -302,12 +259,7 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["maximum"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["maximum"]),
     ]
 
     minimum = [
@@ -339,10 +291,5 @@ class FailingRulesData:
         #     failing_reason=FailingReasons.DTYPE_MISMATCH,
         # ),
         common,
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["minimum"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["minimum"]),
     ]

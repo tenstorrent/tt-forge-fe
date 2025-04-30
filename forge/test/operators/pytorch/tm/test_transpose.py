@@ -68,7 +68,6 @@ from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
@@ -299,13 +298,7 @@ TestParamsData.test_plan = TestPlan(
         #     math_fidelities=TestCollectionData.single.math_fidelities,
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["transpose"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.MLIR_RUNTIME,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["transpose"]),
     ],
 )
 

@@ -26,7 +26,6 @@ from test.operators.utils import (
     InputSource,
     TestVector,
     TestPlan,
-    FailingReasonsDefs,
     FailingReasons,
     TestCollection,
     TestCollectionCommon,
@@ -290,15 +289,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["embedding"],
-            failing_reasons=[
-                FailingReasonsDefs.ALLOCATION_FAILED,
-                FailingReasonsDefs.COMPILATION_FAILED,
-                FailingReasonsDefs.DATA_MISMATCH,
-                # FailingReasonsDefs.SPECIAL_VALUES,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["embedding"]),
         # # FLOAT32 ERRORS:
         # # RuntimeError: Fatal error
         # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4

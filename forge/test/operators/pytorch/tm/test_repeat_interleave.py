@@ -21,7 +21,6 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
@@ -159,14 +158,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["repeat_interleave"],
-            failing_reasons=[
-                # FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.INFERENCE_FAILED,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["repeat_interleave"]),
         # # Failed automatic value checker:
         # TestCollection(
         #     input_sources=[InputSource.FROM_HOST],

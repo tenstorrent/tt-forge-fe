@@ -61,7 +61,6 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
@@ -316,73 +315,18 @@ TestParamsData.test_plan_implemented = TestPlan(
     ],
     failing_rules=[
         *TestIdsDataLoader.build_failing_rules(
-            operators=["sqrt"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["reciprocal"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["cos"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["rsqrt"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["sin"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["square"],
-            failing_reasons=[
-                FailingReasonsDefs.ATTRIBUTE_ERROR,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["pow"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.SPECIAL_VALUES,
-                FailingReasonsDefs.UNSUPPORTED_SPECIAL_CASE,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["clamp"],
-            failing_reasons=[
-                FailingReasonsDefs.SPECIAL_VALUES,
-                FailingReasonsDefs.TTNN_RUNTIME,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["log"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["log1p"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["cumsum"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                # FailingReasonsDefs.TTNN_RUNTIME,
+            operators=[
+                "sqrt",
+                "reciprocal",
+                "cos",
+                "rsqrt",
+                "sin",
+                "square",
+                "pow",
+                "clamp",
+                "log",
+                "log1p",
+                "cumsum",
             ],
         ),
         # Skip 2D shapes as we don't test them:
@@ -831,15 +775,9 @@ TestParamsData.test_plan_implemented_float = TestPlan(
     ],
     failing_rules=[
         *TestIdsDataLoader.build_failing_rules(
-            operators=["gelu"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["leaky_relu"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
+            operators=[
+                "gelu",
+                "leaky_relu",
             ],
         ),
         TestCollection(

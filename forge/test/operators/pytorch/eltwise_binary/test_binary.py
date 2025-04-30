@@ -69,7 +69,6 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestPlan
 from test.operators.utils import TestSuite
 from test.operators.utils import TestResultFailing
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch
@@ -495,105 +494,24 @@ class TestPlansData:
                 failing_reason=None,
             ),
             *TestIdsDataLoader.build_failing_rules(
-                operators=["atan2"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["arctan2"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["bitwise_and"],
-                failing_reasons=[
-                    FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["bitwise_or"],
-                failing_reasons=[
-                    FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["bitwise_xor"],
-                failing_reasons=[
-                    FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["bitwise_left_shift"],
-                failing_reasons=[
-                    FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["bitwise_right_shift"],
-                failing_reasons=[
-                    FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["floor_divide"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["fmod"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["logaddexp"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["logaddexp2"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["nextafter"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            # *TestIdsDataLoader.build_failing_rules(
-            #     operators=["remainder"],
-            #     failing_reasons=[
-            #         FailingReasonsDefs.NOT_IMPLEMENTED,
-            #     ],
-            # ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["fmax"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["fmin"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["eq"],
-                failing_reasons=[
-                    FailingReasonsDefs.DTYPE_MISMATCH,
-                ],
-            ),
-            *TestIdsDataLoader.build_failing_rules(
-                operators=["le"],
-                failing_reasons=[
-                    FailingReasonsDefs.NOT_IMPLEMENTED,
+                operators=[
+                    "atan2",
+                    "arctan2",
+                    "bitwise_and",
+                    "bitwise_or",
+                    "bitwise_xor",
+                    "bitwise_left_shift",
+                    "bitwise_right_shift",
+                    "floor_divide",
+                    "fmod",
+                    "logaddexp",
+                    "logaddexp2",
+                    "nextafter",
+                    # "remainder",
+                    "fmax",
+                    "fmin",
+                    "eq",
+                    "le",
                 ],
             ),
         ],

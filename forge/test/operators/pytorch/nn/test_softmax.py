@@ -13,7 +13,6 @@ from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChec
 
 from test.operators.utils import VerifyUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils import ValueRanges
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
@@ -153,14 +152,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["softmax"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.UNSUPORTED_AXIS,
-                FailingReasonsDefs.UNSUPPORTED_DATA_FORMAT,
-            ],
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=["softmax"]),
         # All dim values are not supported except for the last one:
         TestCollection(
             operators=TestParamsData.operators,

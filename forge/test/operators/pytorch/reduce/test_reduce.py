@@ -71,7 +71,6 @@ from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import FailingReasons
-from test.operators.utils import FailingReasonsDefs
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestPlanUtils
@@ -340,16 +339,9 @@ TestParamsData.test_plan = TestPlan(
         #     failing_reason=FailingReasons.COMPILATION_FAILED,
         # ),
         *TestIdsDataLoader.build_failing_rules(
-            operators=["sum"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
-                # FailingReasonsDefs.TTNN_RUNTIME,
-            ],
-        ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=["mean"],
-            failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
+            operators=[
+                "sum",
+                "mean",
             ],
         ),
         # TestCollection(
