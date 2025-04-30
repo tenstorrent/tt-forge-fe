@@ -2818,37 +2818,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Multiply0,
-        [((1, 12, 768), torch.float32), ((1, 12, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 12, 768), torch.float32), ((1, 12, 1), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Multiply3,
-        [((1, 12, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Multiply1,
-        [((1, 12, 12, 64), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
-        [((1, 12, 12, 12), torch.float32), ((1, 12, 12, 1), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (Multiply1, [((1, 2, 12, 64), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
-    (
-        Multiply0,
-        [((1, 2, 12, 12), torch.float32), ((1, 2, 12, 1), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99},
-    ),
-    (
-        Multiply0,
         [((1, 11), torch.int64), ((1, 11), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99},
     ),

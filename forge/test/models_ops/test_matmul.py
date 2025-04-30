@@ -245,32 +245,6 @@ class Matmul17(ForgeModule):
         return matmul_output_1
 
 
-class Matmul18(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "matmul18.weight_1",
-            forge.Parameter(*(128, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul18.weight_1"))
-        return matmul_output_1
-
-
-class Matmul19(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "matmul19.weight_1",
-            forge.Parameter(*(4096, 32000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul19.weight_1"))
-        return matmul_output_1
-
-
 class Matmul20(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -969,9 +943,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
                 "pd_ernie_1_0_seq_cls_padlenlp",
-                "ErnieModel",
-                "Ernie",
-                "ErniePooler",
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
@@ -1278,44 +1249,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 9, 768), torch.float32), ((768, 18000), torch.float32)],
         {"model_names": ["pd_ernie_1_0_mlm_padlenlp"], "pcc": 0.99},
     ),
-    (
-        Matmul5,
-        [((12, 768), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((12, 12, 64), torch.float32), ((12, 64, 12), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((12, 12, 12), torch.float32), ((12, 12, 64), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Matmul6,
-        [((1, 12, 768), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Matmul7,
-        [((1, 12, 3072), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (Matmul18, [((1, 12, 128), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
-    (
-        Matmul2,
-        [((2, 12, 64), torch.float32), ((2, 64, 12), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99},
-    ),
-    (
-        Matmul2,
-        [((2, 12, 12), torch.float32), ((2, 12, 64), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99},
-    ),
-    (Matmul18, [((12, 128), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
-    (Matmul19, [((1, 1, 4096), torch.float32)], {"model_names": ["TranslatedLayer"], "pcc": 0.99}),
     (Matmul5, [((1, 11, 768), torch.float32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
     (
         Matmul2,

@@ -517,21 +517,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 10, 10), torch.float32), ((1, 12, 10, 1), torch.float32)],
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
     ),
-    (
-        Subtract0,
-        [((1, 12, 768), torch.float32), ((1, 12, 1), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Subtract0,
-        [((1, 12, 12, 12), torch.float32), ((1, 12, 12, 1), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Subtract0,
-        [((1, 2, 12, 12), torch.float32), ((1, 2, 12, 1), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99},
-    ),
     pytest.param(
         (Subtract3, [((1, 11), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
         marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],

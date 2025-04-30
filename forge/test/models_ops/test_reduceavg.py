@@ -139,15 +139,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reduceavg0,
-        [((1, 12, 768), torch.float32)],
-        {
-            "model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reduceavg0,
         [((2, 13, 768), torch.float32)],
         {
             "model_names": [

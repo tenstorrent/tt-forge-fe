@@ -1636,67 +1636,6 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_ernie_1_0_mlm_padlenlp"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
-        Transpose0,
-        [((1, 12, 12, 64), torch.float32)],
-        {
-            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
-    ),
-    (
-        Transpose1,
-        [((1, 12, 12, 64), torch.float32)],
-        {
-            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((12, 64, 12), torch.float32)],
-        {
-            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((12, 12, 64), torch.float32)],
-        {
-            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose0,
-        [((1, 12, 2, 64), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((1, 2, 12, 64), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose0,
-        [((1, 2, 12, 64), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
-    ),
-    (
-        Transpose1,
-        [((2, 64, 12), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
-        Transpose1,
-        [((2, 12, 64), torch.float32)],
-        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-    ),
-    (
         Transpose1,
         [((2048, 2048), torch.float32)],
         {

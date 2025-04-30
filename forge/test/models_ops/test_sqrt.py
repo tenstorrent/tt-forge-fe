@@ -88,11 +88,6 @@ forge_modules_and_shapes_dtypes_list = [
     (Sqrt0, [((1, 10, 1), torch.float32)], {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99}),
     (
         Sqrt0,
-        [((1, 12, 1), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Sqrt0,
         [((64,), torch.float32)],
         {
             "model_names": [

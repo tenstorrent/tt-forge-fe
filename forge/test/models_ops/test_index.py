@@ -2653,15 +2653,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index0,
-        [((1, 12, 768), torch.float32)],
-        {
-            "model_names": ["ErnieModel", "Ernie", "ErniePooler"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
         Index8,
         [((1, 176, 27, 27), torch.float32)],
         {

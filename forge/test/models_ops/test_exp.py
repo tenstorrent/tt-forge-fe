@@ -89,12 +89,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Exp0,
-        [((1, 12, 12, 12), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (Exp0, [((1, 2, 12, 12), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
-    (
-        Exp0,
         [((1, 256, 10, 32), torch.float32)],
         {
             "model_names": [

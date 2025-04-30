@@ -1366,24 +1366,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Embedding12,
-        [((1, 12), torch.int64)],
-        {"model_names": ["ErnieEmbeddings", "Ernie"], "pcc": 0.99, "max_int": 17999},
-    ),
-    (
-        Embedding1,
-        [((1, 12), torch.int64), ((513, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "Ernie"], "pcc": 0.99, "max_int": 512},
-    ),
-    (
-        Embedding1,
-        [((1, 12), torch.int64), ((2, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "Ernie"], "pcc": 0.99, "max_int": 1},
-    ),
-    (Embedding12, [((1, 12), torch.int32)], {"model_names": ["ErnieModel"], "pcc": 0.99, "max_int": 17999}),
-    (Embedding13, [((1, 12), torch.int32)], {"model_names": ["ErnieModel"], "pcc": 0.99, "max_int": 512}),
-    (Embedding3, [((1, 12), torch.int32)], {"model_names": ["ErnieModel"], "pcc": 0.99, "max_int": 1}),
-    (
         Embedding14,
         [((1, 11), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "max_int": 21127},

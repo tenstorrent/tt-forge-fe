@@ -152,17 +152,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reciprocal0,
-        [((1, 12, 1), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Reciprocal0,
-        [((1, 12, 12, 1), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (Reciprocal0, [((1, 2, 12, 1), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
-    (
-        Reciprocal0,
         [((64,), torch.float32)],
         {
             "model_names": [

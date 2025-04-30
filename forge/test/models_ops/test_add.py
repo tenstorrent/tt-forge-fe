@@ -2985,9 +2985,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
                 "pd_ernie_1_0_seq_cls_padlenlp",
-                "ErnieModel",
-                "Ernie",
-                "ErniePooler",
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
                 "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",
                 "pt_vilt_dandelin_vilt_b32_mlm_mlm_hf",
@@ -4726,32 +4723,6 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99},
     ),
     (Add25, [((1, 9, 18000), torch.float32)], {"model_names": ["pd_ernie_1_0_mlm_padlenlp"], "pcc": 0.99}),
-    (
-        Add1,
-        [((1, 12, 768), torch.float32), ((1, 12, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Add0,
-        [((1, 12, 1), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Add7,
-        [((1, 12, 768), torch.float32)],
-        {"model_names": ["ErnieEmbeddings", "ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Add1,
-        [((1, 12, 12, 12), torch.float32), ((1, 1, 1, 12), torch.float32)],
-        {"model_names": ["ErnieModel"], "pcc": 0.99},
-    ),
-    (
-        Add17,
-        [((1, 12, 3072), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (Add18, [((1, 12, 128), torch.float32)], {"model_names": ["MultiHeadAttention"], "pcc": 0.99}),
     (
         Add26,
         [((1, 4096), torch.float32)],

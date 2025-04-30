@@ -696,11 +696,6 @@ forge_modules_and_shapes_dtypes_list = [
     (Relu0, [((1, 9, 768), torch.float32)], {"model_names": ["pd_ernie_1_0_mlm_padlenlp"], "pcc": 0.99}),
     (
         Relu0,
-        [((1, 12, 3072), torch.float32)],
-        {"model_names": ["ErnieModel", "Ernie", "TransformerEncoder"], "pcc": 0.99},
-    ),
-    (
-        Relu0,
         [((1, 64, 55, 55), torch.float32)],
         {"model_names": ["pd_alexnet_base_img_cls_paddlemodels", "pt_alexnet_alexnet_img_cls_torchhub"], "pcc": 0.99},
     ),
