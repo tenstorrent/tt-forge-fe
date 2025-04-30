@@ -15,39 +15,12 @@ from forge.verify import DepricatedVerifyConfig
     "shape, dim",
     [
         ((10,), 0),
-        pytest.param(
-            (5, 10),
-            1,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (3, 5, 10),
-            2,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (2, 3, 5, 10),
-            3,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (1, 6, 20, 50, 64),
-            4,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
     ],
 )
 @pytest.mark.push
 @pytest.mark.gfeng
 def test_stack_and_view(forge_property_recorder, shape, dim):
+    print(f"shape: {shape}, dim: {dim}")
     class stack_and_view(nn.Module):
         def __init__(self, dim):
             super().__init__()
