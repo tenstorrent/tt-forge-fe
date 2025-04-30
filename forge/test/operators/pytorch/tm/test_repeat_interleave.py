@@ -162,7 +162,7 @@ TestParamsData.test_plan = TestPlan(
         *TestIdsDataLoader.build_failing_rules(
             operators=["repeat_interleave"],
             failing_reasons=[
-                FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
+                # FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
                 FailingReasonsDefs.DATA_MISMATCH,
                 FailingReasonsDefs.INFERENCE_FAILED,
             ],

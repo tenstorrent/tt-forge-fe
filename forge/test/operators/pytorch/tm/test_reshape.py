@@ -306,8 +306,8 @@ TestParamsData.test_plan = TestPlan(
         *TestIdsDataLoader.build_failing_rules(
             operators=["reshape"],
             failing_reasons=[
-                FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
-                FailingReasonsDefs.DATA_MISMATCH,
+                # FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER,
+                # FailingReasonsDefs.DATA_MISMATCH,
                 FailingReasonsDefs.INTERNAL_TVM_ERROR,
             ],
         ),

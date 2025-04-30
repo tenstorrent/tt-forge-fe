@@ -155,7 +155,7 @@ TestParamsData.test_plan = TestPlan(
             operators=["squeeze"],
             failing_reasons=[
                 FailingReasonsDefs.COMPILATION_FAILED,
-                FailingReasonsDefs.DATA_MISMATCH,
+                # FailingReasonsDefs.DATA_MISMATCH,
                 FailingReasonsDefs.INTERNAL_TVM_ERROR,
                 FailingReasonsDefs.TVM_RUNTIME,
                 # FailingReasonsDefs.UNCLASSIFIED,

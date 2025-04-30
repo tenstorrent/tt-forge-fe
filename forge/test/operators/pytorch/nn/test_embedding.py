@@ -293,8 +293,10 @@ TestParamsData.test_plan = TestPlan(
         *TestIdsDataLoader.build_failing_rules(
             operators=["embedding"],
             failing_reasons=[
+                FailingReasonsDefs.ALLOCATION_FAILED,
+                FailingReasonsDefs.COMPILATION_FAILED,
                 FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.SPECIAL_VALUES,
+                # FailingReasonsDefs.SPECIAL_VALUES,
             ],
         ),
         # # FLOAT32 ERRORS:

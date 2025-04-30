@@ -194,7 +194,8 @@ TestParamsData.test_plan = TestPlan(
                 FailingReasonsDefs.BUGGY_SHAPE,
                 FailingReasonsDefs.DATA_MISMATCH,
                 FailingReasonsDefs.FORGE_RUNTIME,
-                FailingReasonsDefs.TTNN_RUNTIME,
+                # FailingReasonsDefs.TTNN_RUNTIME,
+                FailingReasonsDefs.SPECIAL_VALUES,
             ],
         ),
         TestCollection(

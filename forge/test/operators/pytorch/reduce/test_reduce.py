@@ -343,7 +343,7 @@ TestParamsData.test_plan = TestPlan(
             operators=["sum"],
             failing_reasons=[
                 FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.TTNN_RUNTIME,
+                # FailingReasonsDefs.TTNN_RUNTIME,
             ],
         ),
         *TestIdsDataLoader.build_failing_rules(

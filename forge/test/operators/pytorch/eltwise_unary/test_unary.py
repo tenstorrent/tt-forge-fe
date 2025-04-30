@@ -355,13 +355,14 @@ TestParamsData.test_plan_implemented = TestPlan(
             operators=["pow"],
             failing_reasons=[
                 FailingReasonsDefs.DATA_MISMATCH,
+                FailingReasonsDefs.SPECIAL_VALUES,
                 FailingReasonsDefs.UNSUPPORTED_SPECIAL_CASE,
             ],
         ),
         *TestIdsDataLoader.build_failing_rules(
             operators=["clamp"],
             failing_reasons=[
-                FailingReasonsDefs.DATA_MISMATCH,
+                FailingReasonsDefs.SPECIAL_VALUES,
                 FailingReasonsDefs.TTNN_RUNTIME,
             ],
         ),
@@ -381,7 +382,7 @@ TestParamsData.test_plan_implemented = TestPlan(
             operators=["cumsum"],
             failing_reasons=[
                 FailingReasonsDefs.DATA_MISMATCH,
-                FailingReasonsDefs.TTNN_RUNTIME,
+                # FailingReasonsDefs.TTNN_RUNTIME,
             ],
         ),
         # Skip 2D shapes as we don't test them:
