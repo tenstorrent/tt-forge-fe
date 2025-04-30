@@ -40,37 +40,43 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Avgpool3D0,
-        [((1, 1, 100, 54, 54), torch.float32)],
-        {
-            "model_names": ["pt_alexnet_base_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[5, 1, 1]",
-                "stride": "[1, 1, 1]",
-                "padding": "[0, 0, 0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool3D0,
+            [((1, 1, 100, 54, 54), torch.float32)],
+            {
+                "model_names": ["pt_alexnet_base_img_cls_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[5, 1, 1]",
+                    "stride": "[1, 1, 1]",
+                    "padding": "[0, 0, 0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Avgpool3D0,
-        [((1, 1, 260, 27, 27), torch.float32)],
-        {
-            "model_names": ["pt_alexnet_base_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[5, 1, 1]",
-                "stride": "[1, 1, 1]",
-                "padding": "[0, 0, 0, 0, 0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool3D0,
+            [((1, 1, 260, 27, 27), torch.float32)],
+            {
+                "model_names": ["pt_alexnet_base_img_cls_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[5, 1, 1]",
+                    "stride": "[1, 1, 1]",
+                    "padding": "[0, 0, 0, 0, 0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
 ]
 

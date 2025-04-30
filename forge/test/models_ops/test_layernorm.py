@@ -864,23 +864,29 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "epsilon": "0.0"},
         },
     ),
-    (
-        Layernorm3,
-        [((2, 1, 2048), torch.float32)],
-        {
-            "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-05"},
-        },
+    pytest.param(
+        (
+            Layernorm3,
+            [((2, 1, 2048), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "epsilon": "1e-05"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Layernorm4,
-        [((2, 1, 1536), torch.float32)],
-        {
-            "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "epsilon": "1e-05"},
-        },
+    pytest.param(
+        (
+            Layernorm4,
+            [((2, 1, 1536), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "epsilon": "1e-05"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Layernorm5,

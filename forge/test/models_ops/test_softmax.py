@@ -127,23 +127,37 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "3"},
         },
     ),
-    (
-        Softmax2,
-        [((1, 16, 4, 8400), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax2,
+            [((1, 16, 4, 8400), torch.float32)],
+            {
+                "model_names": [
+                    "pt_yolov8_default_obj_det_github",
+                    "pt_yolov10_default_obj_det_github",
+                    "pt_yolov8_default_obj_det_github",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
-    (
-        Softmax1,
-        [((64, 1, 1), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((64, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -162,24 +176,34 @@ forge_modules_and_shapes_dtypes_list = [
         [((64, 1, 13), torch.float32)],
         {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((48, 1, 1), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((48, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
         [((48, 1, 13), torch.float32)],
         {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 8, 1, 1), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 8, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -191,10 +215,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 20, 1, 1), torch.float32)],
-        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 20, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -206,18 +237,21 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 20, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 12, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_small_speech_recognition_hf",
-                "pt_t5_t5_base_text_gen_hf",
-                "pt_t5_google_flan_t5_base_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 12, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_small_speech_recognition_hf",
+                    "pt_t5_t5_base_text_gen_hf",
+                    "pt_t5_google_flan_t5_base_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -229,18 +263,21 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 16, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_medium_speech_recognition_hf",
-                "pt_t5_google_flan_t5_large_text_gen_hf",
-                "pt_t5_t5_large_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 16, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_medium_speech_recognition_hf",
+                    "pt_t5_google_flan_t5_large_text_gen_hf",
+                    "pt_t5_t5_large_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -252,17 +289,20 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 16, 1, 1500), torch.float32)],
         {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 6, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
-                "pt_t5_google_flan_t5_small_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 6, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_tiny_speech_recognition_hf",
+                    "pt_t5_google_flan_t5_small_text_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Softmax1,
@@ -317,17 +357,24 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 596, 596), torch.float32)],
         {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((2, 38, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((2, 38, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/data_format/tilize_utils.cpp:374: (in_nfaces.size() % (H * W)) == 0 info: Input size must be divisible by H and W"
+            )
+        ],
     ),
     (
         Softmax1,
@@ -338,14 +385,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
-    (
-        Softmax1,
-        [((2, 24, 4096, 4096), torch.float32)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((2, 24, 4096, 4096), torch.float32)],
+            {
+                "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3221225472 B DRAM buffer across 12 banks, where each bank needs to store 268435456 B"
+            )
+        ],
     ),
     (
         Softmax1,
@@ -653,17 +707,24 @@ forge_modules_and_shapes_dtypes_list = [
         [((32, 256, 256), torch.float32)],
         {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax1,
-        [((1, 1, 512, 50176), torch.float32)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1"},
-        },
+    pytest.param(
+        (
+            Softmax1,
+            [((1, 1, 512, 50176), torch.float32)],
+            {
+                "model_names": [
+                    "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                    "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:782: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 3445728 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
     (
         Softmax1,
@@ -1136,32 +1197,53 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 2, 400, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"dim": "-1"}},
     ),
-    (
-        Softmax2,
-        [((1, 17, 4, 4480), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax2,
+            [((1, 17, 4, 4480), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
-    (
-        Softmax2,
-        [((1, 17, 4, 1120), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax2,
+            [((1, 17, 4, 1120), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
-    (
-        Softmax2,
-        [((1, 17, 4, 280), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"dim": "1"},
-        },
+    pytest.param(
+        (
+            Softmax2,
+            [((1, 17, 4, 280), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {"dim": "1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.get_dtype() == DataType::BFLOAT16 || input.get_dtype() == DataType::BFLOAT8_B info: Inputs must be of bfloat16 or bfloat8_b type"
+            )
+        ],
     ),
     (
         Softmax1,

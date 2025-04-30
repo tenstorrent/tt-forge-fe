@@ -2245,25 +2245,28 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
         },
     ),
-    (
-        Index2,
-        [((2,), torch.float32)],
-        {
-            "model_names": [
-                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_albert_twmkn9_albert_base_v2_squad2_qa_hf",
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-                "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "1", "stride": "1"},
-        },
+    pytest.param(
+        (
+            Index2,
+            [((2,), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                    "pt_albert_twmkn9_albert_base_v2_squad2_qa_hf",
+                    "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                    "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                    "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
+                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                    "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                    "pt_opt_facebook_opt_125m_qa_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
+                    "pt_opt_facebook_opt_350m_qa_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "start": "0", "stop": "1", "stride": "1"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Index3,

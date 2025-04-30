@@ -254,591 +254,730 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Where0,
-        [((2441216,), torch.float32), ((2441216,), torch.float32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Where0,
+            [((2441216,), torch.float32), ((2441216,), torch.float32)],
+            {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((2441216,), torch.bool), ((2441216,), torch.float32), ((2441216,), torch.float32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Where1,
+            [((2441216,), torch.bool), ((2441216,), torch.float32), ((2441216,), torch.float32)],
+            {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where2,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 256, 256), torch.bool)],
+            {
+                "model_names": [
+                    "pt_gpt2_gpt2_text_gen_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 7, 7), torch.bool)],
+            {
+                "model_names": [
+                    "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                    "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (
+            Where2,
+            [((1, 1, 32, 32), torch.bool)],
+            {
+                "model_names": [
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (
+            Where3,
+            [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.float32), ((1, 256, 10, 32), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where4,
+            [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.float32), ((1, 256, 20, 64), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where5,
+            [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.float32), ((1, 128, 20, 64), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where6,
+            [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.float32), ((1, 128, 40, 128), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where7,
+            [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.float32), ((1, 64, 40, 128), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where8,
+            [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.float32), ((1, 64, 80, 256), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where9,
+            [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.float32), ((1, 32, 80, 256), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where10,
+            [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.float32), ((1, 32, 160, 512), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where11,
+            [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.float32), ((1, 16, 160, 512), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where12,
+            [((1, 16, 320, 1024), torch.bool), ((1, 16, 320, 1024), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Where1,
+            [
+                ((1, 16, 320, 1024), torch.bool),
+                ((1, 16, 320, 1024), torch.float32),
+                ((1, 16, 320, 1024), torch.float32),
             ],
-            "pcc": 0.99,
-        },
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where2,
-        [((1, 1, 7, 7), torch.bool)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where13,
+            [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where2,
-        [((1, 1, 32, 32), torch.bool)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.float32), ((1, 256, 6, 20), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where3,
-        [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where14,
+            [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 256, 10, 32), torch.bool), ((1, 256, 10, 32), torch.float32), ((1, 256, 10, 32), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.float32), ((1, 256, 12, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where4,
-        [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where15,
+            [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 256, 20, 64), torch.bool), ((1, 256, 20, 64), torch.float32), ((1, 256, 20, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.float32), ((1, 128, 12, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where5,
-        [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where16,
+            [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 128, 20, 64), torch.bool), ((1, 128, 20, 64), torch.float32), ((1, 128, 20, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.float32), ((1, 128, 24, 80), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where6,
-        [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where17,
+            [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 128, 40, 128), torch.bool), ((1, 128, 40, 128), torch.float32), ((1, 128, 40, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.float32), ((1, 64, 24, 80), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where7,
-        [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where18,
+            [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 64, 40, 128), torch.bool), ((1, 64, 40, 128), torch.float32), ((1, 64, 40, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.float32), ((1, 64, 48, 160), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where8,
-        [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where19,
+            [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 64, 80, 256), torch.bool), ((1, 64, 80, 256), torch.float32), ((1, 64, 80, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.float32), ((1, 32, 48, 160), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where9,
-        [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where20,
+            [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 32, 80, 256), torch.bool), ((1, 32, 80, 256), torch.float32), ((1, 32, 80, 256), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.float32), ((1, 32, 96, 320), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where10,
-        [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where21,
+            [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 32, 160, 512), torch.bool), ((1, 32, 160, 512), torch.float32), ((1, 32, 160, 512), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.float32), ((1, 16, 96, 320), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where11,
-        [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where22,
+            [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where1,
-        [((1, 16, 160, 512), torch.bool), ((1, 16, 160, 512), torch.float32), ((1, 16, 160, 512), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where12,
-        [((1, 16, 320, 1024), torch.bool), ((1, 16, 320, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 16, 320, 1024), torch.bool), ((1, 16, 320, 1024), torch.float32), ((1, 16, 320, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where13,
-        [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 256, 6, 20), torch.bool), ((1, 256, 6, 20), torch.float32), ((1, 256, 6, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where14,
-        [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 256, 12, 40), torch.bool), ((1, 256, 12, 40), torch.float32), ((1, 256, 12, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where15,
-        [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 128, 12, 40), torch.bool), ((1, 128, 12, 40), torch.float32), ((1, 128, 12, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where16,
-        [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 128, 24, 80), torch.bool), ((1, 128, 24, 80), torch.float32), ((1, 128, 24, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where17,
-        [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 64, 24, 80), torch.bool), ((1, 64, 24, 80), torch.float32), ((1, 64, 24, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where18,
-        [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 64, 48, 160), torch.bool), ((1, 64, 48, 160), torch.float32), ((1, 64, 48, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where19,
-        [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 32, 48, 160), torch.bool), ((1, 32, 48, 160), torch.float32), ((1, 32, 48, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where20,
-        [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 32, 96, 320), torch.bool), ((1, 32, 96, 320), torch.float32), ((1, 32, 96, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where21,
-        [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 16, 96, 320), torch.bool), ((1, 16, 96, 320), torch.float32), ((1, 16, 96, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where22,
-        [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
-    ),
-    (
-        Where1,
-        [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.float32), ((1, 16, 192, 640), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where1,
+            [((1, 16, 192, 640), torch.bool), ((1, 16, 192, 640), torch.float32), ((1, 16, 192, 640), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

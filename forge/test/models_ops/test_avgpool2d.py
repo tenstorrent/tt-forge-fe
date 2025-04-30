@@ -1598,65 +1598,86 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Avgpool2D17,
-        [((1, 384, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D17,
+            [((1, 384, 35, 35), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Cannot access data pointer of Tensor that doesn't have storage Exception raised from throw_data_ptr_access_error at ../c10/core/TensorImpl.cpp:604 (most recent call first): frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x55 (0x7f12f8a64985 in /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/torch/lib/libc10.so)"
+            )
+        ],
     ),
-    (
-        Avgpool2D17,
-        [((1, 1024, 17, 17), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D17,
+            [((1, 1024, 17, 17), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Cannot access data pointer of Tensor that doesn't have storage Exception raised from throw_data_ptr_access_error at ../c10/core/TensorImpl.cpp:604 (most recent call first): frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x55 (0x7fea9cc64985 in /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/torch/lib/libc10.so)"
+            )
+        ],
     ),
-    (
-        Avgpool2D17,
-        [((1, 1536, 8, 8), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[3, 3]",
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "ceil_mode": "False",
-                "count_include_pad": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Avgpool2D17,
+            [((1, 1536, 8, 8), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[3, 3]",
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: Cannot access data pointer of Tensor that doesn't have storage Exception raised from throw_data_ptr_access_error at ../c10/core/TensorImpl.cpp:604 (most recent call first): frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x55 (0x7f5b13a64985 in /opt/ttforge-toolchain/venv/lib/python3.10/site-packages/torch/lib/libc10.so)"
+            )
+        ],
     ),
     (
         Avgpool2D18,

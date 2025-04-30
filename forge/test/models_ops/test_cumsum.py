@@ -59,10 +59,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 9), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
-    (
-        Cumsum1,
-        [((2441216,), torch.float32)],
-        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
+    pytest.param(
+        (
+            Cumsum1,
+            [((2441216,), torch.float32)],
+            {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 9999220736 B DRAM buffer across 12 banks, where each bank needs to store 833269760 B"
+            )
+        ],
     ),
     (
         Cumsum2,

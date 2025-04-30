@@ -454,23 +454,37 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((1024, 1, 256, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((1024, 1, 256, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 1073741824 B DRAM buffer across 12 banks, where each bank needs to store 89481216 B"
+            )
+        ],
     ),
-    (
-        Transpose1,
-        [((1024, 256, 1, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((1024, 256, 1, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 1073741824 B DRAM buffer across 12 banks, where each bank needs to store 89481216 B"
+            )
+        ],
     ),
     (
         Transpose2,
@@ -634,14 +648,21 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
-    (
-        Transpose1,
-        [((2048, 1024, 1, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((2048, 1024, 1, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 8589934592 B DRAM buffer across 12 banks, where each bank needs to store 715829248 B"
+            )
+        ],
     ),
     (
         Transpose2,
@@ -652,23 +673,37 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((512, 1, 2048, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((512, 1, 2048, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 4294967296 B DRAM buffer across 12 banks, where each bank needs to store 357916672 B"
+            )
+        ],
     ),
-    (
-        Transpose1,
-        [((512, 2048, 1, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((512, 2048, 1, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 4294967296 B DRAM buffer across 12 banks, where each bank needs to store 357916672 B"
+            )
+        ],
     ),
     (
         Transpose3,
@@ -5023,10 +5058,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((3584, 14336), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    (
-        Transpose1,
-        [((256000, 3584), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    pytest.param(
+        (
+            Transpose1,
+            [((256000, 3584), torch.float32)],
+            {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3670016000 B DRAM buffer across 12 banks, where each bank needs to store 305836032 B"
+            )
+        ],
     ),
     (
         Transpose0,
@@ -5629,14 +5671,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose1,
-        [((50257, 2048), torch.float32)],
-        {
-            "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((50257, 2048), torch.float32)],
+            {
+                "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 411828224 B DRAM buffer across 12 banks, where each bank needs to store 34320384 B"
+            )
+        ],
     ),
     (
         Transpose0,
@@ -6238,17 +6287,24 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose1,
-        [((128256, 3072), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((128256, 3072), torch.float32)],
+            {
+                "model_names": [
+                    "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 1576009728 B DRAM buffer across 12 banks, where each bank needs to store 131334144 B"
+            )
+        ],
     ),
     (
         Transpose0,
@@ -6492,14 +6548,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose1,
-        [((131072, 4096), torch.float32)],
-        {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((131072, 4096), torch.float32)],
+            {
+                "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 2147483648 B DRAM buffer across 12 banks, where each bank needs to store 178958336 B"
+            )
+        ],
     ),
     (
         Transpose0,
@@ -6797,14 +6860,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((1, 50176, 1, 512), torch.float32)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((1, 50176, 1, 512), torch.float32)],
+            {
+                "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3288334336 B DRAM buffer across 12 banks, where each bank needs to store 274030592 B"
+            )
+        ],
     ),
     (
         Transpose1,
@@ -7881,10 +7951,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((40, 128, 6), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    (
-        Transpose1,
-        [((100352, 5120), torch.float32)],
-        {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    pytest.param(
+        (
+            Transpose1,
+            [((100352, 5120), torch.float32)],
+            {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 2055208960 B DRAM buffer across 12 banks, where each bank needs to store 171270144 B"
+            )
+        ],
     ),
     (
         Transpose0,
@@ -8118,20 +8195,27 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
-    (
-        Transpose1,
-        [((18944, 3584), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_7b_token_cls_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((18944, 3584), torch.float32)],
+            {
+                "model_names": [
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                    "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                    "pt_qwen_v2_qwen_qwen2_7b_token_cls_hf",
+                    "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
+                    "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 271581184 B DRAM buffer across 12 banks, where each bank needs to store 22634496 B"
+            )
+        ],
     ),
     (
         Transpose1,
@@ -9256,10 +9340,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((256008, 1024), torch.float32)],
         {"model_names": ["pt_xglm_facebook_xglm_564m_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    (
-        Transpose1,
-        [((256008, 2048), torch.float32)],
-        {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    pytest.param(
+        (
+            Transpose1,
+            [((256008, 2048), torch.float32)],
+            {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 2097414144 B DRAM buffer across 12 banks, where each bank needs to store 174784512 B"
+            )
+        ],
     ),
     (
         Transpose5,

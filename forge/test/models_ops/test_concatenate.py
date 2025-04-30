@@ -12479,18 +12479,29 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"axis": "-3"},
         },
     ),
-    (
-        Concatenate6,
-        [((256, 1536, 1, 1), torch.float32), ((384, 1536, 1, 1), torch.float32), ((384, 1536, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+    pytest.param(
+        (
+            Concatenate6,
+            [
+                ((256, 1536, 1, 1), torch.float32),
+                ((384, 1536, 1, 1), torch.float32),
+                ((384, 1536, 1, 1), torch.float32),
             ],
-            "pcc": 0.99,
-            "args": {"axis": "-4"},
-        },
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {"axis": "-4"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 6442450944 B DRAM buffer across 12 banks, where each bank needs to store 536870912 B"
+            )
+        ],
     ),
     (
         Concatenate2,

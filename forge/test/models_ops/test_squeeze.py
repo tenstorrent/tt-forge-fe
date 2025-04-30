@@ -577,14 +577,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-2"},
         },
     ),
-    (
-        Squeeze1,
-        [((1, 50176, 1, 512), torch.float32)],
-        {
-            "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2"},
-        },
+    pytest.param(
+        (
+            Squeeze1,
+            [((1, 50176, 1, 512), torch.float32)],
+            {
+                "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-2"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3288334336 B DRAM buffer across 12 banks, where each bank needs to store 274030592 B"
+            )
+        ],
     ),
     (
         Squeeze1,

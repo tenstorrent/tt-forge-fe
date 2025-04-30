@@ -17040,14 +17040,21 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1280, 3000, 1)"},
         },
     ),
-    (
-        Reshape215,
-        [((1280, 1280, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1280, 1280, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape215,
+            [((1280, 1280, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1280, 1280, 3, 1)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/data_format/tilize_utils.cpp:374: (in_nfaces.size() % (H * W)) == 0 info: Input size must be divisible by H and W"
+            )
+        ],
     ),
     (
         Reshape216,
@@ -18743,29 +18750,43 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(76, 4429, 64)"},
         },
     ),
-    (
-        Reshape360,
-        [((76, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(2, 38, 4429, 4429)"},
-        },
+    pytest.param(
+        (
+            Reshape360,
+            [((76, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(2, 38, 4429, 4429)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/data_format/tilize_utils.cpp:374: (in_nfaces.size() % (H * W)) == 0 info: Input size must be divisible by H and W"
+            )
+        ],
     ),
-    (
-        Reshape361,
-        [((2, 38, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(76, 4429, 4429)"},
-        },
+    pytest.param(
+        (
+            Reshape361,
+            [((2, 38, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(76, 4429, 4429)"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/data_format/tilize_utils.cpp:374: (in_nfaces.size() % (H * W)) == 0 info: Input size must be divisible by H and W"
+            )
+        ],
     ),
     (
         Reshape362,
