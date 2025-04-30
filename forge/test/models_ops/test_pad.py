@@ -52,7 +52,7 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[
             pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /proj_sw/user_dev/pchandrasekaran/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:40: input_tensor.get_padded_shape()[2] + this->input_tensor_start[2] <= this->output_padded_shape[2] info: Output size cannot fit input with offset"
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:40: input_tensor.get_padded_shape()[2] + this->input_tensor_start[2] <= this->output_padded_shape[2] info: Output size cannot fit input with offset"
             )
         ],
     ),
@@ -68,7 +68,7 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[
             pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /proj_sw/user_dev/pchandrasekaran/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:40: input_tensor.get_padded_shape()[2] + this->input_tensor_start[2] <= this->output_padded_shape[2] info: Output size cannot fit input with offset"
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:40: input_tensor.get_padded_shape()[2] + this->input_tensor_start[2] <= this->output_padded_shape[2] info: Output size cannot fit input with offset"
             )
         ],
     ),
@@ -77,9 +77,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 512, 10, 32), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -90,9 +90,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 512, 20, 64), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -103,9 +103,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256, 20, 64), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -116,9 +116,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256, 40, 128), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -129,9 +129,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 40, 128), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -142,9 +142,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 128, 80, 256), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -155,9 +155,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 64, 80, 256), torch.float32)],
         {
             "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -169,9 +169,9 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 96, 160, 512), torch.float32)],
             {
                 "model_names": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 ],
                 "pcc": 0.99,
                 "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -185,9 +185,9 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 32, 160, 512), torch.float32)],
             {
                 "model_names": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 ],
                 "pcc": 0.99,
                 "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -201,19 +201,15 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 16, 320, 1024), torch.float32)],
             {
                 "model_names": [
-                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
                     "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
                 ],
                 "pcc": 0.99,
                 "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
             },
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: [enforce fail at alloc_cpu.cpp:91] err == 0. DefaultCPUAllocator: can't allocate memory: you tried to allocate 433025187840 bytes. Error code 12 (Cannot allocate memory)"
-            )
-        ],
+        marks=[pytest.mark.skip(reason="Killed while executing post_initial_graph_pass")],
     ),
     (
         Pad1,
@@ -222,10 +218,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -238,10 +234,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -254,10 +250,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -270,10 +266,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -286,10 +282,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -302,10 +298,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -318,10 +314,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -334,10 +330,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -350,10 +346,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                 "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
             ],
             "pcc": 0.99,
             "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
@@ -367,16 +363,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "model_names": [
                     "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
                     "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                     "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
                     "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
                 ],
                 "pcc": 0.99,
                 "args": {"pad": "(0, 0, 0, 0, 1, 1, 1, 1)", "mode": '"reflect"', "pad_len": "8"},
             },
         ),
-        marks=[pytest.mark.skip(reason="Killed while executing ttnn binary")],
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
 ]
 

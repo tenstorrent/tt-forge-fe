@@ -39,23 +39,20 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Avgpool1D0,
-            [((1, 768, 49), torch.float32)],
-            {
-                "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {
-                    "kernel_size": "[49]",
-                    "stride": "[49]",
-                    "padding": "[0, 0]",
-                    "ceil_mode": "False",
-                    "count_include_pad": "True",
-                },
+    (
+        Avgpool1D0,
+        [((1, 768, 49), torch.float32)],
+        {
+            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "kernel_size": "[49]",
+                "stride": "[49]",
+                "padding": "[0, 0]",
+                "ceil_mode": "False",
+                "count_include_pad": "True",
             },
-        ),
-        marks=[pytest.mark.skip(reason="Segmentation fault at Run mlir compile stage")],
+        },
     ),
 ]
 
@@ -72,12 +69,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

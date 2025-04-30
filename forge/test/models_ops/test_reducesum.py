@@ -20,7 +20,7 @@ class Reducesum0(ForgeModule):
         super().__init__(name)
 
     def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-2, keep_dim=True)
+        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-1, keep_dim=True)
         return reducesum_output_1
 
 
@@ -33,12 +33,88 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Reducesum0,
-        [((1, 100, 8, 32, 280), torch.float32)],
+        [((1, 12, 8, 8), torch.float32)],
         {
-            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "model_names": [
+                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+            ],
             "pcc": 0.99,
-            "op_params": {"dim": "-2", "keep_dim": "True"},
+            "args": {"dim": "-1", "keep_dim": "True"},
         },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 11, 11), torch.float32)],
+        {
+            "model_names": [
+                "pd_albert_chinese_tiny_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
+                "pd_roberta_rbt4_ch_clm_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_ernie_1_0_mlm_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 15, 15), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 14, 14), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 10, 10), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 12, 12, 12), torch.float32)],
+        {
+            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducesum0,
+        [((1, 2, 12, 12), torch.float32)],
+        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim": "-1", "keep_dim": "True"}},
     ),
 ]
 
@@ -55,12 +131,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

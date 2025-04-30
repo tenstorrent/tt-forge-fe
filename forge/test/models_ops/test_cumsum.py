@@ -20,7 +20,7 @@ class Cumsum0(ForgeModule):
         super().__init__(name)
 
     def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=0)
+        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=1)
         return cumsum_output_1
 
 
@@ -29,7 +29,7 @@ class Cumsum1(ForgeModule):
         super().__init__(name)
 
     def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=-1)
+        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=0)
         return cumsum_output_1
 
 
@@ -38,7 +38,7 @@ class Cumsum2(ForgeModule):
         super().__init__(name)
 
     def forward(self, cumsum_input_0):
-        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=1)
+        cumsum_output_1 = forge.op.CumSum("", cumsum_input_0, dim=-1)
         return cumsum_output_1
 
 
@@ -49,62 +49,65 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Cumsum0,
-            [((2441216,), torch.float32)],
-            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"dim": "0"}},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:971: tt::exception info: Statically allocated circular buffers on core range [(x=6,y=7) - (x=6,y=7)] grow to 9976800 B which is beyond max L1 size of 1499136 B"
-            )
-        ],
+    (
+        Cumsum0,
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Cumsum0,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
     (
         Cumsum1,
-        [((1, 32), torch.int64)],
-        {"model_name": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
+        [((2441216,), torch.float32)],
+        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
     ),
     (
         Cumsum2,
         [((1, 32), torch.int64)],
+        {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Cumsum0,
+        [((1, 32), torch.int64)],
         {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
+            "model_names": [
                 "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
                 "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"dim": "1"},
+            "args": {"dim": "1"},
         },
     ),
     (
-        Cumsum2,
+        Cumsum0,
         [((1, 256), torch.int64)],
         {
-            "model_name": [
-                "pt_opt_facebook_opt_1_3b_clm_hf",
+            "model_names": [
                 "pt_opt_facebook_opt_350m_clm_hf",
                 "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"dim": "1"},
+            "args": {"dim": "1"},
         },
     ),
     (
-        Cumsum2,
+        Cumsum0,
         [((1, 128), torch.int32)],
         {
-            "model_name": [
+            "model_names": [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"dim": "1"},
+            "args": {"dim": "1"},
         },
     ),
 ]
@@ -122,12 +125,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

@@ -15,13 +15,13 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Abs0(ForgeModule):
+class Reducemax0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, abs_input_0):
-        abs_output_1 = forge.op.Abs("", abs_input_0)
-        return abs_output_1
+    def forward(self, reducemax_input_0):
+        reducemax_output_1 = forge.op.ReduceMax("", reducemax_input_0, dim=-1, keep_dim=True)
+        return reducemax_output_1
 
 
 def ids_func(param):
@@ -32,81 +32,89 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Abs0,
-        [((2, 1, 1, 13), torch.float32)],
+        Reducemax0,
+        [((1, 12, 8, 8), torch.float32)],
         {
             "model_names": [
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
+                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Abs0,
-        [((2, 1, 7, 7), torch.float32)],
-        {"model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"], "pcc": 0.99},
-    ),
-    (
-        Abs0,
-        [((1, 1, 256, 256), torch.float32)],
+        Reducemax0,
+        [((1, 12, 11, 11), torch.float32)],
         {
             "model_names": [
-                "pt_bart_facebook_bart_large_mnli_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-                "pt_xglm_facebook_xglm_564m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "pd_albert_chinese_tiny_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_qa_padlenlp",
+                "pd_roberta_rbt4_ch_clm_padlenlp",
             ],
             "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Abs0,
-        [((1, 12, 128, 128), torch.float32)],
+        Reducemax0,
+        [((1, 12, 9, 9), torch.float32)],
         {
             "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_ernie_1_0_qa_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
+                "pd_ernie_1_0_mlm_padlenlp",
+                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
     (
-        Abs0,
-        [((1, 12, 384, 384), torch.float32)],
-        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99},
+        Reducemax0,
+        [((1, 12, 15, 15), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
     ),
     (
-        Abs0,
-        [((1, 1, 32, 32), torch.float32)],
+        Reducemax0,
+        [((1, 12, 14, 14), torch.float32)],
         {
-            "model_names": [
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-                "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_qa_hf",
-            ],
+            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
             "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
         },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 10, 10), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 12, 12), torch.float32)],
+        {
+            "model_names": ["ErnieModel", "Ernie", "TransformerEncoder"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 2, 12, 12), torch.float32)],
+        {"model_names": ["MultiHeadAttention"], "pcc": 0.99, "args": {"dim": "-1", "keep_dim": "True"}},
     ),
 ]
 
@@ -116,7 +124,7 @@ forge_modules_and_shapes_dtypes_list = [
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Abs")
+    forge_property_recorder.record_forge_op_name("ReduceMax")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
