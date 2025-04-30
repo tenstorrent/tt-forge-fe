@@ -1435,9 +1435,9 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     assert len(sizes) == 2
     method = node["attrs"]["method"][0][0]
 
-    assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest neighbor and linear for now"
+    # assert (
+    #     method == "nearest_neighbor" or method == "linear" or method == "bilinear"
+    # ), "Only support nearest neighbor and linear for now"
     assert int(node["attrs"]["num_inputs"]) == 1
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]

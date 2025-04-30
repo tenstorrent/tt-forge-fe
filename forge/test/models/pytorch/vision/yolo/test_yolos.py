@@ -15,8 +15,9 @@ from test.models.pytorch.vision.yolo.utils.yolos_utils import load_input, load_m
     "variant",
     [
         pytest.param(
-            "hustvl/yolos-tiny",
-            marks=[pytest.mark.xfail],
+            "hustvl/yolos-tiny"
+            # ,
+            # marks=[pytest.mark.xfail],
         ),
     ],
 )

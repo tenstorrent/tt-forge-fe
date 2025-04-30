@@ -11,11 +11,13 @@ RESIZE2d_METHOD_TO_INT = {
     "nearest_neighbor": 0,
     "linear": 1,
     "bilinear": 1,
+    "cubic": 2,
 }
 
 INT_TO_RESIZE2d_METHOD = {
     0: "nearest",
     1: "bilinear",
+    2: "cubic",
 }
 
 
@@ -49,9 +51,9 @@ def Resize2d(
 
     """
     assert len(sizes) == 2
-    assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest_neighbor and linear interpolation for now"
+    # assert (
+    #     method == "nearest_neighbor" or method == "linear" or method == "bilinear"
+    # ), "Only support nearest_neighbor and linear interpolation for now"
     result: Tensor = op(
         "resize2d",
         name,
