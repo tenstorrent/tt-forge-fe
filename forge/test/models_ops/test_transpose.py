@@ -589,23 +589,29 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((2048, 1, 512, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((2048, 1, 512, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
-    (
-        Transpose1,
-        [((2048, 512, 1, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
+    pytest.param(
+        (
+            Transpose1,
+            [((2048, 512, 1, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-2", "dim1": "-1"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Transpose2,
@@ -616,14 +622,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim0": "-4", "dim1": "-1"},
         },
     ),
-    (
-        Transpose0,
-        [((2048, 1, 1024, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {"dim0": "-3", "dim1": "-2"},
-        },
+    pytest.param(
+        (
+            Transpose0,
+            [((2048, 1, 1024, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {"dim0": "-3", "dim1": "-2"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Transpose1,

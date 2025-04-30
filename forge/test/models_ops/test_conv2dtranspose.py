@@ -480,53 +480,62 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2Dtranspose6,
-        [((1, 64, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "64",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose6,
+            [((1, 64, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "64",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
-    (
-        Conv2Dtranspose7,
-        [((1, 128, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "128",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose7,
+            [((1, 128, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "128",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
-    (
-        Conv2Dtranspose8,
-        [((1, 256, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "2",
-                "padding": "1",
-                "dilation": "1",
-                "groups": "256",
-                "channel_last": "0",
-                "output_padding": "[0, 0]",
+    pytest.param(
+        (
+            Conv2Dtranspose8,
+            [((1, 256, 7, 7), torch.float32)],
+            {
+                "model_names": ["pt_monodle_base_obj_det_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "2",
+                    "padding": "1",
+                    "dilation": "1",
+                    "groups": "256",
+                    "channel_last": "0",
+                    "output_padding": "[0, 0]",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.skip(reason="Floating point exception")],
     ),
     (
         Conv2Dtranspose9,

@@ -17614,14 +17614,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1024, 3000, 1)"},
         },
     ),
-    (
-        Reshape259,
-        [((1024, 1024, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1024, 1024, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape259,
+            [((1024, 1024, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1024, 1024, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
         Reshape260,

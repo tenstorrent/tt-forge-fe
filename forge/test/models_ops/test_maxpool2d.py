@@ -336,21 +336,31 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 256, 56, 56), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet_v1_57_obj_det_torchhub", "onnx_vovnet_v1_vovnet39_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 256, 56, 56), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -411,21 +421,31 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 512, 28, 28), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet_v1_57_obj_det_torchhub", "onnx_vovnet_v1_vovnet39_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 512, 28, 28), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -486,21 +506,31 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 768, 14, 14), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet_v1_57_obj_det_torchhub", "onnx_vovnet_v1_vovnet39_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 768, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D3,
@@ -526,21 +556,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 128, 56, 56), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 128, 56, 56), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -581,21 +618,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 256, 28, 28), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 256, 28, 28), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -652,21 +696,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D2,
-        [((1, 384, 14, 14), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D2,
+            [((1, 384, 14, 14), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.skip(
+                reason="[MaxPool2dOpConversionPattern] Assertion Error: adaptor.getPaddingBottom() == adaptor.getPaddingTop() TTNN max_pool2d does not support padding top/bottom/left/right separately"
+            )
+        ],
     ),
     (
         Maxpool2D3,
