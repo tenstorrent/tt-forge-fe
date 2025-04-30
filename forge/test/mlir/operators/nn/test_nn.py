@@ -662,9 +662,7 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
         pytest.param((1, 1, 2, 2)),
         pytest.param(
             (1, 2, 1, 2),
-            marks=pytest.mark.xfail(
-                reason="RuntimeError: ttnn.pad: on device tile padding does not support front padding"
-            ),
+            marks=pytest.mark.xfail(reason="error: failed to legalize operation 'ttir.conv2d'"),
         ),
     ],
 )

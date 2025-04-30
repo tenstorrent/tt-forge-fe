@@ -188,8 +188,9 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         # Fuse Pad Only if the mode is constant
         # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        # 'edge' == 'replicate' in forge
         if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
-            pad_mode == "replicate" or pad_mode == "reflect"
+            pad_mode == "edge" or pad_mode == "reflect"
         ):
             act = tvm.relay.op.nn.pad(act, pad_width, pad_mode=pad_mode)
 
@@ -205,13 +206,14 @@ class FuseConvAndPoolPadding(DFPatternCallback):
             padding[3] + conv_pool.attrs.padding[3],
         ]
 
-        conv_pool.attrs.padding = new_padding
+        op_attrs = {**conv_pool.attrs}
+        op_attrs["padding"] = new_padding
 
         if conv_pool.op.name == "nn.conv2d":
             weight = node_map[self.weight][0]
-            return tvm.relay.op.nn.conv2d(act, weight, **conv_pool.attrs)
+            return tvm.relay.op.nn.conv2d(act, weight, **op_attrs)
         else:
-            return tvm.relay.op.nn.max_pool2d(act, **conv_pool.attrs)
+            return tvm.relay.op.nn.max_pool2d(act, **op_attrs)
 
 
 class DecomposeRoll(DFPatternCallback):
