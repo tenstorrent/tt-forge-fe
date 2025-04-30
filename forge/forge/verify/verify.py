@@ -442,9 +442,9 @@ def verify(
 
 
     if "TT_METAL_HOME" in os.environ:
-        print(f"metal: {os.environ["TT_METAL_HOME"]}")
+        print(f"metal: {os.environ['TT_METAL_HOME']}")
     if "CPM_SOURCE_CACHE" in os.environ:
-        print(f"CPM: {os.environ["CPM_SOURCE_CACHE"]}")
+        print(f"CPM: {os.environ['CPM_SOURCE_CACHE']}")
 
 
     # Compile EmitC .so
