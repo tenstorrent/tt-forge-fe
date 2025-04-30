@@ -46,6 +46,7 @@ from forge.verify import DepricatedVerifyConfig
     ],
 )
 @pytest.mark.push
+@pytest.mark.gfeng
 def test_stack_and_view(forge_property_recorder, shape, dim):
     class stack_and_view(nn.Module):
         def __init__(self, dim):
