@@ -20,6 +20,7 @@ from forge.verify.verify import verify
         ((1, 256, 16, 16), 256, 128, 5, 2),
     ],
 )
+@pytest.mark.push
 def test_conv2d_reflect_padding_mode(
     forge_property_recorder, input_shape, in_channels, out_channels, kernel_size, padding_value
 ):
@@ -37,10 +38,10 @@ def test_conv2d_reflect_padding_mode(
     framework_model = Conv2dReflectPad(in_channels, out_channels, kernel_size, padding_value)
     framework_model.eval()
 
-    inputs = torch.rand(input_shape)
+    inputs = [torch.rand(input_shape)]
 
     compiled_model = forge.compile(
-        framework_model, sample_inputs=[inputs], forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
