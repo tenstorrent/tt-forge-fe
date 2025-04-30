@@ -867,3 +867,46 @@ def test_einsum(forge_property_recorder, pattern, input_shape):
     compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 
     verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("shape", [(8,), (4, 4), (3, 5, 7), (2, 6, 4, 8), (2, 3, 5, 7, 9)])
+@pytest.mark.push
+def test_res_conj(shape):
+    class res_conj(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            output = x.resolve_conj()
+            return output
+
+    model = res_conj()
+    model.eval()
+
+    inputs = [torch.randn(shape)]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize("shape", [(8,), (4, 4), (3, 5, 7), (2, 6, 4, 8), (2, 3, 5, 7, 9)])
+@pytest.mark.push
+def test_res_neg(shape):
+    class res_neg(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            output = x.resolve_neg()
+            return output
+
+    model = res_neg()
+    model.eval()
+
+    inputs = [torch.randn(shape)]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    # Model Verification
+    verify(inputs, model, compiled_model)
