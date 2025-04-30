@@ -7,7 +7,7 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     outputs:
-      should-build: ${{ steps.success-failed.outputs.should-build }}
+      should-test: ${{ steps.success-failed.outputs.should-test }}
       matrix: ${{ steps.success-failed.outputs.matrix }}
       docker-tag: ${{ steps.get-docker-tag.outputs.docker-tag }}
     steps:
@@ -21,10 +21,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-            # get json of the last 10 workflow runs
             repo="${{ github.repository }}"
-            wf_name="on-nightly.yml"
+            wf_name="nightly-tests.yml"
+
+            # get json of the last 10 workflow runs
             gh run list --workflow $wf_name -R $repo -b main -L 10 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
+            if [ "$(jq -r '.[0].conclusion' runs.json)" != "failure" ]; then
+              echo "The latest workflow run did not fail. Exiting."
+              exit 0
+            fi
             # Filter runs.json to include only entries where "conclusion" is "failure" or "success"
             jq '[.[] | select(.conclusion == "failure" or .conclusion == "success")]' runs.json >filtered_runs.json
             mv filtered_runs.json runs.json
@@ -53,10 +58,10 @@ jobs:
                 echo "$HEAD_SHA_1 found in commits, setting as last commit"
                 sed -n "/$HEAD_SHA_1/ {p;q;}; p" commits.txt >filtered_commits.txt
                 mv filtered_commits.txt commits.txt
+                echo "Commits: $(cat commits.txt)"
             fi
             if [ ! -s commits.txt ]; then
                 echo "No commits found between the last two workflow runs."
-                echo "should-build=false" >>$GITHUB_OUTPUT
                 echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
                 exit 0
             fi
@@ -64,21 +69,30 @@ jobs:
             rm -rf log-a
             rm -rf log-b
             # get list of failed tests from the last two workflow runs
-            gh run download $DATABASE_ID_2 --pattern "test-log*" -R $repo -D log-a
+            gh run download $DATABASE_ID_2 --pattern "test-log*" -R $repo -D log-a || true
             gh run download $DATABASE_ID_1 --pattern "test-log*" -R $repo -D log-b
             # get machine names
             find log-a -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-a.log
             find log-b -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-b.log
             cat machines-a.log machines-b.log | sort -u >machines.log
+            echo "Machines: $(cat machines.log)"
             while read -r machine; do
                 for dir in log-a/test-log-"$machine"-*/; do
-                    grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>a-"$machine".log
+                  grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //; s/\].*$/]/' >>a-"$machine".log
                 done
                 for dir in log-b/test-log-"$machine"-*/; do
-                    grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>b-"$machine".log
+                  grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //; s/\].*$/]/' >>b-"$machine".log
                 done
                 # get only the lines that are in b.log but not in a.log
-                grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
+                if [ ! -s a-"$machine".log ]; then
+                  cp a-"$machine".log tests-"$machine".log
+                fi
+                if [ ! -s b-"$machine".log ]; then
+                  echo "List of failed tests for machine '$machine' is empty, nothing to do."
+                else
+                  grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
+                  echo "Test for machine $machine: $(cat tests-"$machine".log)"
+                fi
             done <machines.log
             # Filter out machines with empty test logs
             cp machines.log filtered_machines.log
@@ -91,8 +105,6 @@ jobs:
             done <machines.log
             if [ ! -s filtered_machines.log ]; then
                 echo "No new failed tests found."
-                echo "should-build=false" >>$GITHUB_OUTPUT
-                echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
                 exit 0
             fi
             # cleanup
@@ -120,7 +132,7 @@ jobs:
             echo "matrix=[$(cat matrix.log)]" >>$GITHUB_OUTPUT
             rm -f matrix.log
             # set should-build to true
-            echo "should-build=true" >>$GITHUB_OUTPUT
+            echo "should-test=true" >>$GITHUB_OUTPUT
 
       - name: Get docker tag
         id: get-docker-tag
@@ -134,9 +146,11 @@ jobs:
         with:
           name: tests-to-run
           path: tests-*.log
+          if-no-files-found: ignore
 
   test:
     needs: inspect
+    if: ${{ needs.inspect.outputs.should-test }}
     strategy:
       fail-fast: false
       matrix:
