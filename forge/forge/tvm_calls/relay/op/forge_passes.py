@@ -1293,8 +1293,8 @@ class CastWhereConditionToBool(DFPatternCallback):
         self.pattern = is_op("where")(wildcard(), wildcard(), wildcard())
 
     def callback(self, pre, post, node_map):
-        cond = tvm.relay.cast(pre.args[0], "bool")
-        return tvm.relay.where(cond, pre.args[1], pre.args[2])
+        cond = tvm.relay.cast(post.args[0], "bool")
+        return tvm.relay.where(cond, post.args[1], post.args[2])
 
 
 class DecomposeNegative(DFPatternCallback):

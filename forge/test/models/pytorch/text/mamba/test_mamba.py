@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, MambaForCausalLM
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
+from forge.verify.verify import DepricatedVerifyConfig, verify
 
 from test.utils import download_model
 
@@ -26,10 +26,25 @@ class Wrapper(torch.nn.Module):
 
 
 variants = [
-    "state-spaces/mamba-790m-hf",
-    "state-spaces/mamba-2.8b-hf",
-    "state-spaces/mamba-1.4b-hf",
-    "state-spaces/mamba-370m-hf",
+    pytest.param("state-spaces/mamba-790m-hf"),
+    pytest.param(
+        "state-spaces/mamba-2.8b-hf",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "state-spaces/mamba-1.4b-hf",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "state-spaces/mamba-370m-hf",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
+        ),
+    ),
 ]
 
 
@@ -48,7 +63,7 @@ def test_mamba(forge_property_recorder, variant):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    model = download_model(MambaForCausalLM.from_pretrained, variant)
+    model = download_model(MambaForCausalLM.from_pretrained, variant, use_cache=False)
     model.eval()
     framework_model = Wrapper(model)
 
@@ -58,7 +73,11 @@ def test_mamba(forge_property_recorder, variant):
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
