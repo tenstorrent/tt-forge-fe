@@ -158,6 +158,7 @@ jobs:
                  -m "${{ inputs.test_mark }}" \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                  --log-memory-usage \
+                 -v \
                  2>&1 | tee pytest.log
 
       - name: Upload Test Log
