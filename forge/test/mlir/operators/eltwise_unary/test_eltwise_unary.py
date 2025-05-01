@@ -842,10 +842,14 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
 @pytest.mark.parametrize(
     "pattern, input_shape",
     [
-        ("nhwpqc->nchpwq", (2, 64, 64, 2, 2, 16)),
-        ("nhwpqc->nchpwq", (1, 32, 32, 4, 4, 8)),
-        ("nhwpqc->nchpwq", (4, 16, 16, 2, 2, 32)),
-        ("nhwpqc->nchpwq", (3, 8, 8, 1, 1, 64)),
+        ("nhwpqc->nchpwq", [(2, 64, 64, 2, 2, 16)]),
+        ("nhwpqc->nchpwq", [(1, 32, 32, 4, 4, 8)]),
+        ("nhwpqc->nchpwq", [(4, 16, 16, 2, 2, 32)]),
+        ("nhwpqc->nchpwq", [(3, 8, 8, 1, 1, 64)]),
+        ("...si,...id->...sd", [(2, 3, 4), (2, 4, 5)]),
+        ("...si,...id->...sd", [(5, 6, 7), (5, 7, 8)]),
+        ("...si,...id->...sd", [(1, 10, 20), (1, 20, 30)]),
+        ("...si,...id->...sd", [(4, 2, 3), (4, 3, 6)]),
     ],
 )
 @pytest.mark.push
@@ -855,11 +859,10 @@ def test_einsum(forge_property_recorder, pattern, input_shape):
             super().__init__()
             self.pattern = pattern
 
-        def forward(self, x):
-            return torch.einsum(self.pattern, x)
+        def forward(self, *inputs):
+            return torch.einsum(self.pattern, *inputs)
 
-    input_tensor = torch.randn(input_shape)
-    inputs = [input_tensor]
+    inputs = [torch.randn(shape) for shape in input_shape]
 
     model = EinsumModel(pattern)
     model.eval()
