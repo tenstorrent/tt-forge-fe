@@ -40,6 +40,7 @@ class FailingReasonsRegister:
         ("conj_physical", FailingReasonsDefs.NOT_IMPLEMENTED),
         ("conv2d", FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER),
         ("conv2d", FailingReasonsDefs.ALLOCATION_FAILED),
+        ("conv2d", FailingReasonsDefs.COMPILATION_FAILED),
         ("conv2d", FailingReasonsDefs.CONV2D_VALIDATE_ARGS),
         ("conv2d", FailingReasonsDefs.DATA_MISMATCH),
         ("conv2d", FailingReasonsDefs.DTYPE_MISMATCH),
