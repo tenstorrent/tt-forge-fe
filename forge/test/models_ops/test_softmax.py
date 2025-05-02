@@ -385,21 +385,14 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1"},
         },
     ),
-    pytest.param(
-        (
-            Softmax1,
-            [((2, 24, 4096, 4096), torch.float32)],
-            {
-                "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1"},
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3221225472 B DRAM buffer across 12 banks, where each bank needs to store 268435456 B"
-            )
-        ],
+    (
+        Softmax1,
+        [((2, 24, 4096, 4096), torch.float32)],
+        {
+            "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1"},
+        },
     ),
     (
         Softmax1,
