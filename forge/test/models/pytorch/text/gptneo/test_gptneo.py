@@ -8,13 +8,21 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForCausalLM,
     GPTNeoForSequenceClassification,
+    GPTNeoModel,
 )
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import (
+    _prepare_4d_causal_attention_mask_with_cache_position,
+)
 from test.utils import download_model
+
+GPTNeoModel._prepare_4d_causal_attention_mask_with_cache_position = (
+    _prepare_4d_causal_attention_mask_with_cache_position
+)
 
 variants = [
     pytest.param(
