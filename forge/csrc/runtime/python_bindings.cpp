@@ -17,7 +17,8 @@ void RuntimeModule(py::module &m_runtime)
     // Main runtime APIs
     py::class_<runtime::Binary>(m_runtime, "Binary")
         .def("get_program_inputs", &runtime::Binary::getProgramInputs)
-        .def("get_program_outputs", &runtime::Binary::getProgramOutputs);
+        .def("get_program_outputs", &runtime::Binary::getProgramOutputs)
+        .def("store", &runtime::Binary::store);
     m_runtime.def("run_program", &tt::run_program);
 
     py::class_<Tensor>(m_runtime, "Tensor")
