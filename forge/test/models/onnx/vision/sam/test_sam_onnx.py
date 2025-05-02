@@ -17,8 +17,8 @@ from test.models.pytorch.vision.sam.utils.model import get_model_inputs
 @pytest.mark.parametrize(
     "variant",
     [
-        "facebook/sam-vit-huge",
-        "facebook/sam-vit-large",
+        pytest.param("facebook/sam-vit-huge", marks=pytest.mark.skip(reason="Skipping due to CI/CD Limitations")),
+        pytest.param("facebook/sam-vit-large", marks=pytest.mark.skip(reason="Skipping due to CI/CD Limitations")),
         "facebook/sam-vit-base",
     ],
 )
@@ -46,6 +46,7 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
 
     framework_model, sample_inputs = get_model_inputs(variant)
     input_tensor = sample_inputs[0]
+    sample_inputs = [input_tensor]
 
     onnx_path = f"{tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(
@@ -65,14 +66,14 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
     # Compile model
     compiled_model = forge.compile(
         onnx_model,
-        sample_inputs=[input_tensor],
+        sample_inputs=sample_inputs,
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
     verify(
-        [input_tensor],
+        sample_inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
