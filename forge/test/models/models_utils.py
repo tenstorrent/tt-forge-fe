@@ -126,8 +126,10 @@ def generate_no_cache(max_new_tokens, model, inputs, seq_len, tokenizer):
         # Get only the logits corresponding to the last valid token
         if isinstance(logits, (list, tuple)):
             logits = logits[0]
+        elif isinstance(logits, torch.Tensor):
+            logits = logits
         else:
-            raise TypeError(f"Expected logits to be a list or tuple, but got {type(logits)}")
+            raise TypeError(f"Expected logits to be a list or tuple or torch.Tensor, but got {type(logits)}")
         next_token_logits = logits[:, current_pos - 1, :]
         next_token_id = torch.argmax(next_token_logits, dim=-1)
         # Stop if EOS token is encountered
