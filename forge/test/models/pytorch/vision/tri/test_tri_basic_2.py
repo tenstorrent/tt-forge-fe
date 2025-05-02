@@ -9,9 +9,8 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Task, build_module_name
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")
@@ -21,15 +20,14 @@ from test.models.utils import Framework, Task, build_module_name
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo and Hang observed at post_initial_graph_pass")
 @pytest.mark.nightly
-def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_tri_basic_2_sematic_segmentation_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="tri", variant="basic_2", task=Task.SEMANTIC_SEGMENTATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Sample Input
     image_w = 800
@@ -51,7 +49,9 @@ def test_tri_basic_2_sematic_segmentation_pytorch(record_forge_property):
     inputs = [image_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

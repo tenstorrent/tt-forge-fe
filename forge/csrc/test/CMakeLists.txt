@@ -15,7 +15,15 @@ function (add_unittest TEST_DIR)
         ${TTFORGE_CSRC_CFLAGS}
         ${CXXFLAGS}
     )
-    target_link_libraries(${TEST_NAME} PRIVATE GTest::GTest GTest::Main ttforge_csrc ${TTFORGE_PYTHON_VERSION})
+    target_link_libraries(
+        ${TEST_NAME}
+        PRIVATE
+            GTest::GTest
+            GTest::Main
+            ttforge_csrc
+            ${TORCH_LIBRARIES}
+            ${TTFORGE_PYTHON_VERSION}
+    )
 
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
@@ -26,6 +34,7 @@ endfunction()
 # Add the unit tests (directories)
 add_unittest("passes")
 add_unittest("graph_lib")
+add_unittest("verif")
 
 add_custom_target(build_unit_tests
     COMMENT "Building unit tests..."

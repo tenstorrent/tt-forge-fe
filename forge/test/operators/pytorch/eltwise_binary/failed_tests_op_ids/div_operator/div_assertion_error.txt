@@ -1,0 +1,14 @@
+# AssertionError: Data mismatch on output 0 between framework and Forge codegen
+
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 17)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 23)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 1)-None-None
+div-FROM_HOST-{'rounding_mode': 'floor'}-(1, 1)-None-None
+div-FROM_HOST-{'rounding_mode': None}-(1, 1)-None-None
+div-FROM_HOST-{}-(1, 1)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 1, 23)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(2, 3, 4)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 2, 3, 4)-None-None
+div-CONST_EVAL_PASS-{'rounding_mode': 'trunc'}-(1, 1)-None-None
+div-CONST_EVAL_PASS-{'rounding_mode': 'floor'}-(1, 1)-None-None
+div-FROM_HOST-{'rounding_mode': 'trunc'}-(1, 2, 3, 4)-torch.float32-HiFi4

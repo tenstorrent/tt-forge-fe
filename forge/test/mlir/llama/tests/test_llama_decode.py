@@ -160,7 +160,7 @@ def calculate_attention_mask_and_postion_ids(
         ),
     ],
 )
-def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device):
+def test_llama_prefill_on_cpu_decode_on_tt_no_cache(forge_property_recorder, model_path, run_on_tt_device):
 
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
@@ -209,6 +209,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
         compiled_model = forge.compile(
             framework_model,
             sample_inputs=[input_ids, attention_mask],
+            forge_property_handler=forge_property_recorder,
         )
 
     # Run decode stage on TT device and generate tokens by appending predicted token into sequence of input tokens
@@ -221,7 +222,9 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
             tt_inputs = [input_ids, attention_mask]
 
             # Run on TT device and validate TT result with Framework
-            framework_output, tt_output = verify(tt_inputs, framework_model, compiled_model)
+            framework_output, tt_output = verify(
+                tt_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder
+            )
 
             logits = tt_output[0]
 
@@ -266,7 +269,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_no_cache(model_path, run_on_tt_device
         ),
     ],
 )
-def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
+def test_llama_prefill_on_cpu_decode_on_tt_cache(forge_property_recorder, model_path, run_on_tt_device):
 
     use_fast = False if model_path == "openlm-research/open_llama_3b" else True
 
@@ -326,6 +329,7 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
         compiled_model = forge.compile(
             framework_model,
             sample_inputs=[model_inputs[0], attention_mask, position_ids, *model_inputs[1:]],
+            forge_property_handler=forge_property_recorder,
         )
 
     # Run decode stage on TT device and generate tokens by passing the last predicted token and the past key values.
@@ -343,7 +347,9 @@ def test_llama_prefill_on_cpu_decode_on_tt_cache(model_path, run_on_tt_device):
             tt_inputs = [model_inputs[0], attention_mask, position_ids, *model_inputs[1:]]
 
             # Run on TT device and validate TT result with Framework
-            framework_output, tt_output = verify(tt_inputs, framework_model, compiled_model)
+            framework_output, tt_output = verify(
+                tt_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder
+            )
 
             logits = tt_output[0]
             past_key_values = tt_output[1:]

@@ -3,24 +3,28 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import torch
 from gliner import GLiNER
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.pytorch.text.gliner.utils.model_utils import (
+    GlinerWrapper,
+    post_processing,
+    pre_processing,
+)
 
 variants = ["urchade/gliner_multi-v2.1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="IndexError: Dimension out of range (expected to be in range of [-2, 1], but got 2)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_gliner(variant, record_forge_property):
+def test_gliner(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="Gliner",
         variant=variant,
@@ -29,26 +33,30 @@ def test_gliner(variant, record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model
-    framework_model = GLiNER.from_pretrained(variant)
-    framework_model.eval()
+    model = GLiNER.from_pretrained(variant)
 
+    # prepare input
     text = """
     Cristiano Ronaldo dos Santos Aveiro was born 5 February 1985) is a Portuguese professional footballer.
     """
     labels = ["person", "award", "date", "competitions", "teams"]
+    inputs, raw_batch = pre_processing(model, [text], labels)
 
-    text_encoded = torch.tensor([ord(c) for c in text], dtype=torch.int64).unsqueeze(0)
-    label_tensor = torch.tensor(list(range(len(labels))), dtype=torch.int64)
-
-    # prepare input
-    inputs = [text_encoded, label_tensor]
-
-    # prepare input
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    # Forge compile framework model
+    framework_model = GlinerWrapper(model)
+    framework_model.eval()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Post processing
+    entities = post_processing(model, co_out, [text], raw_batch)
+    for entity in entities:
+        print(entity["text"], "=>", entity["label"])

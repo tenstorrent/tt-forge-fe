@@ -130,7 +130,6 @@ bool commute_through_eltwise(
 bool commute_through_quantization(
     graphlib::OpNode *op, graphlib::Shape *commute_shape = nullptr, graphlib::OpType *golden_transform = nullptr);
 
-bool is_elementwise(graphlib::OpNode *op);
 bool is_quantization_ops(graphlib::OpNode *op);
 
 bool can_commute_past_op(

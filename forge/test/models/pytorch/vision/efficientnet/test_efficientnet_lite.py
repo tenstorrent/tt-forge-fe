@@ -5,21 +5,21 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.efficientnet.utils import (
     src_efficientnet_lite as efflite,
 )
 from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_0_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_efficientnet_lite_0_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant="lite_0",
@@ -28,8 +28,7 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
@@ -52,9 +51,9 @@ def test_efficientnet_lite_0_pytorch(record_forge_property):
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_1_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_efficientnet_lite_1_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant="lite_1",
@@ -63,8 +62,7 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -87,9 +85,9 @@ def test_efficientnet_lite_1_pytorch(record_forge_property):
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_2_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_efficientnet_lite_2_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant="lite_2",
@@ -98,8 +96,7 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
@@ -122,9 +119,9 @@ def test_efficientnet_lite_2_pytorch(record_forge_property):
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_3_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_efficientnet_lite_3_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant="lite_3",
@@ -133,8 +130,7 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
@@ -157,9 +153,9 @@ def test_efficientnet_lite_3_pytorch(record_forge_property):
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_efficientnet_lite_4_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_efficientnet_lite_4_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant="lite_4",
@@ -168,8 +164,7 @@ def test_efficientnet_lite_4_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
@@ -199,10 +194,10 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_lite_timm(record_forge_property, variant):
+def test_efficientnet_lite_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet_lite",
         variant=variant,
@@ -211,8 +206,7 @@ def test_efficientnet_lite_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)

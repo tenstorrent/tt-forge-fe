@@ -21,10 +21,10 @@ from torchvision.transforms import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.unet.utils.model import UNET
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -38,27 +38,27 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
     return model, [img_tensor], {}
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: TT_THROW tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp Unsupported mode"
-)
+@pytest.mark.xfail
 @pytest.mark.nightly
-def test_unet_osmr_cityscape_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def get_imagenet_sample():
@@ -91,11 +91,11 @@ def get_imagenet_sample():
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="Model script not found")
 @pytest.mark.nightly
-def test_unet_holocron_pytorch(record_forge_property):
+def test_unet_holocron_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="holocron",
@@ -104,8 +104,7 @@ def test_unet_holocron_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -115,10 +114,12 @@ def test_unet_holocron_pytorch(record_forge_property):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_unet_imgseg_smp_pytorch(variant):
@@ -149,11 +150,11 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_unet_qubvel_pytorch(record_forge_property):
+def test_unet_qubvel_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="qubvel",
@@ -162,16 +163,17 @@ def test_unet_qubvel_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -210,36 +212,36 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 
 @pytest.mark.nightly
-def test_unet_torchhub_pytorch(record_forge_property):
+def test_unet_torchhub_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
-def test_unet_carvana(record_forge_property):
+def test_unet_carvana(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet_carvana",
         source=Source.GITHUB,
@@ -247,8 +249,7 @@ def test_unet_carvana(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = UNET(in_channels=3, out_channels=1)
@@ -256,7 +257,9 @@ def test_unet_carvana(record_forge_property):
     inputs = [torch.rand((1, 3, 224, 224))]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

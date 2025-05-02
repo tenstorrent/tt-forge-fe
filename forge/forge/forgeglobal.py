@@ -78,20 +78,6 @@ def get_tenstorrent_device():
     return None
 
 
-def forge_reset():
-    """
-    Clears global list of devices and modules. Only needed in special circumstances, like testing.
-    """
-    global devices
-    global modules
-    global optimizers
-
-    devices = []
-    modules = []
-
-    set_state_changed()
-
-
 def state_changed() -> bool:
     """
     Return false if no new modules or devices, or changes to any, have occured since the last run

@@ -6,9 +6,7 @@
 import pytest
 import time
 import socket
-import subprocess
 import json
-import os
 from datetime import datetime
 
 # Third-party modules
@@ -17,11 +15,12 @@ from torch import nn
 
 # Forge modules
 import forge
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
 
+
 # Common constants
-GIT_REPO_NAME = "tenstorrent/tt-forge-fe"
-REPORTS_DIR = "./benchmark_reports/"
 
 # Batch size configurations
 MNIST_BATCH_SIZE_EXP_RANGE = 7
@@ -105,17 +104,23 @@ def test_mnist_linear(
     fw_out = framework_model(*inputs)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
-    # Run for the first time to warm up the model.
+
+    # Enable program cache on all devices
+    settings = DeviceSettings()
+    settings.enable_program_cache = True
+    configure_devices(device_settings=settings)
+
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    co_out = compiled_model(*inputs)
+    verify(inputs, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*inputs)
     end = time.time()
 
-    verify(inputs, framework_model, compiled_model)
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
-    short_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
     total_time = end - start
@@ -135,7 +140,7 @@ def test_mnist_linear(
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
@@ -212,11 +217,9 @@ def mnist_linear_benchmark(config: dict):
         loop_count=loop_count,
     )
 
-    if not os.path.exists(REPORTS_DIR):
-        os.makedirs(REPORTS_DIR)
     if not output_file:
         output_file = f"forge-benchmark-e2e-mnist_{batch_size}_{input_size}_{hidden_size}.json"
-    result["output"] = REPORTS_DIR + output_file
+    result["output"] = output_file
 
     # Save the results to a file
     with open(result["output"], "w") as f:

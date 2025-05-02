@@ -13,6 +13,7 @@ pytest==6.2.4
 pytest-timeout==2.0.1
 pytest-xdist==2.5.0
 pytorchcv==0.0.67
+pytest-split
 sacrebleu==2.1.0
 sacremoses==0.0.53
 seaborn
@@ -30,7 +31,6 @@ torch @ https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.1.0%2Bcpu.cxx11.a
 torch @ https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.1.0%2Bcpu.cxx11.abi-cp310-cp310-linux_x86_64.whl ; python_version=='3.10'
 torch==2.3.1 ; python_version=='3.11'
 torchxrayvision==0.0.39
-paddlepaddle==2.6.2
 vgg_pytorch==0.3.0
 librosa==0.10.0.post2
 soundfile==0.12.1
@@ -40,3 +40,4 @@ deepdiff==6.7.1
 tabulate==0.9.0
 opencv-contrib-python==4.9.0.80
 yolov6detect==0.4.1
+peft==0.15.1

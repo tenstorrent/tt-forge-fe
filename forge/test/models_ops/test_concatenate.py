@@ -20,17 +20,21 @@ class Concatenate0(ForgeModule):
         super().__init__(name)
 
     def forward(self, concatenate_input_0, concatenate_input_1):
-        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-1)
+        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-3)
         return concatenate_output_1
 
 
 class Concatenate1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "concatenate1.weight_0",
+            forge.Parameter(*(1, 1, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, concatenate_input_0, concatenate_input_1, concatenate_input_2, concatenate_input_3):
+    def forward(self, concatenate_input_1):
         concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, concatenate_input_3, axis=-2
+            "", self.get_parameter("concatenate1.weight_0"), concatenate_input_1, axis=-2
         )
         return concatenate_output_1
 
@@ -38,9 +42,15 @@ class Concatenate1(ForgeModule):
 class Concatenate2(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_parameter(
+            "concatenate2.weight_0",
+            forge.Parameter(*(1, 1, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
-    def forward(self, concatenate_input_0, concatenate_input_1):
-        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-2)
+    def forward(self, concatenate_input_1):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", self.get_parameter("concatenate2.weight_0"), concatenate_input_1, axis=-2
+        )
         return concatenate_output_1
 
 
@@ -48,32 +58,14 @@ class Concatenate3(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, concatenate_input_0):
-        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, axis=-3)
-        return concatenate_output_1
-
-
-class Concatenate4(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, concatenate_input_0, concatenate_input_1):
-        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-3)
-        return concatenate_output_1
-
-
-class Concatenate5(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
     def forward(self, concatenate_input_0, concatenate_input_1, concatenate_input_2):
         concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, axis=-3
+            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, axis=-4
         )
         return concatenate_output_1
 
 
-class Concatenate6(ForgeModule):
+class Concatenate4(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -84,7 +76,80 @@ class Concatenate6(ForgeModule):
         return concatenate_output_1
 
 
+class Concatenate5(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, concatenate_input_0, concatenate_input_1):
+        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-1)
+        return concatenate_output_1
+
+
+class Concatenate6(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, concatenate_input_0, concatenate_input_1):
+        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, concatenate_input_1, axis=-2)
+        return concatenate_output_1
+
+
 class Concatenate7(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, concatenate_input_0, concatenate_input_1, concatenate_input_2, concatenate_input_3):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, concatenate_input_3, axis=-2
+        )
+        return concatenate_output_1
+
+
+class Concatenate8(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("concatenate8_const_1", shape=(1, 3025, 258), dtype=torch.float32)
+
+    def forward(self, concatenate_input_0):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", concatenate_input_0, self.get_constant("concatenate8_const_1"), axis=-1
+        )
+        return concatenate_output_1
+
+
+class Concatenate9(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("concatenate9_const_1", shape=(1, 50176, 258), dtype=torch.float32)
+
+    def forward(self, concatenate_input_0):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", concatenate_input_0, self.get_constant("concatenate9_const_1"), axis=-1
+        )
+        return concatenate_output_1
+
+
+class Concatenate10(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, concatenate_input_0):
+        concatenate_output_1 = forge.op.Concatenate("", concatenate_input_0, axis=-3)
+        return concatenate_output_1
+
+
+class Concatenate11(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, concatenate_input_0, concatenate_input_1, concatenate_input_2):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, axis=-3
+        )
+        return concatenate_output_1
+
+
+class Concatenate12(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -103,7 +168,7 @@ class Concatenate7(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate8(ForgeModule):
+class Concatenate13(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -129,7 +194,7 @@ class Concatenate8(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate9(ForgeModule):
+class Concatenate14(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -157,7 +222,7 @@ class Concatenate9(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate10(ForgeModule):
+class Concatenate15(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -187,7 +252,7 @@ class Concatenate10(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate11(ForgeModule):
+class Concatenate16(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -219,7 +284,7 @@ class Concatenate11(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate12(ForgeModule):
+class Concatenate17(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -253,7 +318,7 @@ class Concatenate12(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate13(ForgeModule):
+class Concatenate18(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -289,7 +354,7 @@ class Concatenate13(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate14(ForgeModule):
+class Concatenate19(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -327,7 +392,7 @@ class Concatenate14(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate15(ForgeModule):
+class Concatenate20(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -367,7 +432,7 @@ class Concatenate15(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate16(ForgeModule):
+class Concatenate21(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -409,7 +474,7 @@ class Concatenate16(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate17(ForgeModule):
+class Concatenate22(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -453,7 +518,7 @@ class Concatenate17(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate18(ForgeModule):
+class Concatenate23(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -499,7 +564,7 @@ class Concatenate18(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate19(ForgeModule):
+class Concatenate24(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -547,7 +612,7 @@ class Concatenate19(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate20(ForgeModule):
+class Concatenate25(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -597,7 +662,7 @@ class Concatenate20(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate21(ForgeModule):
+class Concatenate26(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -649,7 +714,7 @@ class Concatenate21(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate22(ForgeModule):
+class Concatenate27(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -703,7 +768,7 @@ class Concatenate22(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate23(ForgeModule):
+class Concatenate28(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -759,7 +824,7 @@ class Concatenate23(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate24(ForgeModule):
+class Concatenate29(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -817,7 +882,7 @@ class Concatenate24(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate25(ForgeModule):
+class Concatenate30(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -877,7 +942,7 @@ class Concatenate25(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate26(ForgeModule):
+class Concatenate31(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -939,7 +1004,7 @@ class Concatenate26(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate27(ForgeModule):
+class Concatenate32(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1003,7 +1068,7 @@ class Concatenate27(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate28(ForgeModule):
+class Concatenate33(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1069,7 +1134,7 @@ class Concatenate28(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate29(ForgeModule):
+class Concatenate34(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1137,7 +1202,7 @@ class Concatenate29(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate30(ForgeModule):
+class Concatenate35(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1207,7 +1272,7 @@ class Concatenate30(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate31(ForgeModule):
+class Concatenate36(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1279,7 +1344,7 @@ class Concatenate31(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate32(ForgeModule):
+class Concatenate37(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1353,7 +1418,7 @@ class Concatenate32(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate33(ForgeModule):
+class Concatenate38(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1429,7 +1494,7 @@ class Concatenate33(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate34(ForgeModule):
+class Concatenate39(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1507,7 +1572,7 @@ class Concatenate34(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate35(ForgeModule):
+class Concatenate40(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1587,7 +1652,7 @@ class Concatenate35(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate36(ForgeModule):
+class Concatenate41(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1669,7 +1734,7 @@ class Concatenate36(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate37(ForgeModule):
+class Concatenate42(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1753,7 +1818,7 @@ class Concatenate37(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate38(ForgeModule):
+class Concatenate43(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1839,7 +1904,7 @@ class Concatenate38(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate39(ForgeModule):
+class Concatenate44(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1927,7 +1992,7 @@ class Concatenate39(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate40(ForgeModule):
+class Concatenate45(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2017,7 +2082,7 @@ class Concatenate40(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate41(ForgeModule):
+class Concatenate46(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2109,7 +2174,7 @@ class Concatenate41(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate42(ForgeModule):
+class Concatenate47(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2203,7 +2268,7 @@ class Concatenate42(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate43(ForgeModule):
+class Concatenate48(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2299,7 +2364,7 @@ class Concatenate43(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate44(ForgeModule):
+class Concatenate49(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2397,7 +2462,7 @@ class Concatenate44(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate45(ForgeModule):
+class Concatenate50(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2497,7 +2562,7 @@ class Concatenate45(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate46(ForgeModule):
+class Concatenate51(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2599,7 +2664,7 @@ class Concatenate46(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate47(ForgeModule):
+class Concatenate52(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2703,7 +2768,7 @@ class Concatenate47(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate48(ForgeModule):
+class Concatenate53(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2809,7 +2874,7 @@ class Concatenate48(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate49(ForgeModule):
+class Concatenate54(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2917,7 +2982,7 @@ class Concatenate49(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate50(ForgeModule):
+class Concatenate55(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3027,7 +3092,7 @@ class Concatenate50(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate51(ForgeModule):
+class Concatenate56(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3139,18 +3204,7 @@ class Concatenate51(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate52(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, concatenate_input_0, concatenate_input_1, concatenate_input_2):
-        concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, concatenate_input_1, concatenate_input_2, axis=-4
-        )
-        return concatenate_output_1
-
-
-class Concatenate53(ForgeModule):
+class Concatenate57(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3178,31 +3232,7 @@ class Concatenate53(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate54(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("concatenate54_const_1", shape=(1, 3025, 258), dtype=torch.float32)
-
-    def forward(self, concatenate_input_0):
-        concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, self.get_constant("concatenate54_const_1"), axis=-1
-        )
-        return concatenate_output_1
-
-
-class Concatenate55(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_constant("concatenate55_const_1", shape=(1, 50176, 258), dtype=torch.float32)
-
-    def forward(self, concatenate_input_0):
-        concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, self.get_constant("concatenate55_const_1"), axis=-1
-        )
-        return concatenate_output_1
-
-
-class Concatenate56(ForgeModule):
+class Concatenate58(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3228,7 +3258,7 @@ class Concatenate56(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate57(ForgeModule):
+class Concatenate59(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3239,7 +3269,7 @@ class Concatenate57(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate58(ForgeModule):
+class Concatenate60(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3250,7 +3280,7 @@ class Concatenate58(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate59(ForgeModule):
+class Concatenate61(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3261,14 +3291,14 @@ class Concatenate59(ForgeModule):
         return concatenate_output_1
 
 
-class Concatenate60(ForgeModule):
+class Concatenate62(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("concatenate60_const_1", shape=(1, 5880, 1), dtype=torch.float32)
+        self.add_constant("concatenate62_const_1", shape=(1, 5880, 1), dtype=torch.float32)
 
     def forward(self, concatenate_input_0, concatenate_input_2):
         concatenate_output_1 = forge.op.Concatenate(
-            "", concatenate_input_0, self.get_constant("concatenate60_const_1"), concatenate_input_2, axis=-1
+            "", concatenate_input_0, self.get_constant("concatenate62_const_1"), concatenate_input_2, axis=-1
         )
         return concatenate_output_1
 
@@ -3282,30 +3312,956 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Concatenate0,
+        [((100, 256, 14, 20), torch.float32), ((100, 8, 14, 20), torch.float32)],
+        {
+            "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate1,
+        [((1, 196, 768), torch.float32)],
+        {
+            "model_name": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate2,
+        [((1, 196, 1024), torch.float32)],
+        {
+            "model_name": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 160, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 224, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 160, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 224, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 288, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 352, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 416, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 448, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 480, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 288, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 352, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 416, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 448, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 480, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 544, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 576, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 608, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 672, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 704, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 736, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 768, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 800, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 832, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 864, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 896, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 928, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 960, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 992, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 544, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 576, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 608, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 672, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 704, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 736, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 768, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 800, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 832, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 864, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 896, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 928, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 960, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 992, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pd_densenet_121_img_cls_paddlemodels",
+                "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((64, 192, 1, 1), torch.float32), ((96, 192, 1, 1), torch.float32), ((16, 192, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 64, 27, 27), torch.float32),
+            ((1, 128, 27, 27), torch.float32),
+            ((1, 32, 27, 27), torch.float32),
+            ((1, 32, 27, 27), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((128, 256, 1, 1), torch.float32), ((128, 256, 1, 1), torch.float32), ((32, 256, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 27, 27), torch.float32),
+            ((1, 192, 27, 27), torch.float32),
+            ((1, 96, 27, 27), torch.float32),
+            ((1, 64, 27, 27), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((192, 480, 1, 1), torch.float32), ((96, 480, 1, 1), torch.float32), ((16, 480, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 192, 13, 13), torch.float32),
+            ((1, 208, 13, 13), torch.float32),
+            ((1, 48, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((160, 512, 1, 1), torch.float32), ((112, 512, 1, 1), torch.float32), ((24, 512, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 160, 13, 13), torch.float32),
+            ((1, 224, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((128, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((24, 512, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 13, 13), torch.float32),
+            ((1, 256, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((112, 512, 1, 1), torch.float32), ((144, 512, 1, 1), torch.float32), ((32, 512, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 112, 13, 13), torch.float32),
+            ((1, 288, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+            ((1, 64, 13, 13), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((256, 528, 1, 1), torch.float32), ((160, 528, 1, 1), torch.float32), ((32, 528, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 13, 13), torch.float32),
+            ((1, 320, 13, 13), torch.float32),
+            ((1, 128, 13, 13), torch.float32),
+            ((1, 128, 13, 13), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((256, 832, 1, 1), torch.float32), ((160, 832, 1, 1), torch.float32), ((32, 832, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 6, 6), torch.float32),
+            ((1, 320, 6, 6), torch.float32),
+            ((1, 128, 6, 6), torch.float32),
+            ((1, 128, 6, 6), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate3,
+        [((384, 832, 1, 1), torch.float32), ((192, 832, 1, 1), torch.float32), ((48, 832, 1, 1), torch.float32)],
+        {
+            "model_name": ["pd_googlenet_base_img_cls_paddlemodels", "pt_googlenet_base_img_cls_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 384, 6, 6), torch.float32),
+            ((1, 384, 6, 6), torch.float32),
+            ((1, 128, 6, 6), torch.float32),
+            ((1, 128, 6, 6), torch.float32),
+        ],
+        {"model_name": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 588, 64), torch.float32), ((1, 588, 64), torch.float32)],
+        {"model_name": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 16, 588, 64), torch.float32), ((1, 16, 588, 64), torch.float32)],
+        {"model_name": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
         [((1, 39, 64), torch.float32), ((1, 39, 64), torch.float32)],
         {
             "model_name": [
                 "pt_deepseek_deepseek_math_7b_instruct_qa_hf",
-                "DeepSeekWrapper_decoder",
+                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 39, 64), torch.float32), ((1, 32, 39, 64), torch.float32)],
-        {
-            "model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf", "DeepSeekWrapper_decoder"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
+        {"model_name": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate1,
+        Concatenate6,
+        [((1, 1, 1024), torch.float32), ((1, 576, 1024), torch.float32)],
+        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 596, 64), torch.float32), ((1, 596, 64), torch.float32)],
+        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 596, 64), torch.float32), ((1, 32, 596, 64), torch.float32)],
+        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate7,
         [
             ((256, 1024), torch.float32),
             ((256, 1024), torch.float32),
@@ -3315,28 +4271,59 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 256, 16, 32), torch.float32), ((1, 256, 16, 32), torch.float32)],
         {
             "model_name": [
                 "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 10, 128), torch.float32), ((1, 10, 128), torch.float32)],
+        {
+            "model_name": [
+                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 8, 10, 128), torch.float32), ((1, 8, 10, 128), torch.float32)],
+        {"model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 10, 128), torch.float32), ((1, 4, 10, 128), torch.float32)],
+        {
+            "model_name": [
+                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
         [((1, 6, 32), torch.float32), ((1, 6, 32), torch.float32)],
         {
             "model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf", "pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
@@ -3345,30 +4332,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 71, 6, 32), torch.float32), ((1, 71, 6, 32), torch.float32)],
         {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 1, 6, 32), torch.float32), ((1, 1, 6, 32), torch.float32)],
         {"model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
-        [((1, 10, 128), torch.float32), ((1, 10, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
+        Concatenate5,
         [((1, 12, 10, 128), torch.float32), ((1, 12, 10, 128), torch.float32)],
         {
             "model_name": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
@@ -3377,91 +4351,131 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
-        [((1, 4, 10, 128), torch.float32), ((1, 4, 10, 128), torch.float32)],
-        {
-            "model_name": [
-                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 8, 10, 128), torch.float32), ((1, 8, 10, 128), torch.float32)],
-        {"model_name": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
+        Concatenate5,
         [((1, 334, 16), torch.float32), ((1, 334, 16), torch.float32)],
         {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 64, 334, 16), torch.float32), ((1, 64, 334, 16), torch.float32)],
         {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 64, 334, 32), torch.float32), ((1, 64, 334, 32), torch.float32)],
         {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 207, 128), torch.float32), ((1, 207, 128), torch.float32)],
+        {
+            "model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf", "pt_gemma_google_gemma_2_2b_it_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 16, 207, 128), torch.float32), ((1, 16, 207, 128), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 8, 207, 128), torch.float32), ((1, 8, 207, 128), torch.float32)],
+        {
+            "model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf", "pt_gemma_google_gemma_2_2b_it_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
         [((1, 7, 128), torch.float32), ((1, 7, 128), torch.float32)],
         {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 8, 7, 128), torch.float32), ((1, 8, 7, 128), torch.float32)],
         {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 1, 7, 128), torch.float32), ((1, 1, 7, 128), torch.float32)],
         {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
-        [((1, 4, 32), torch.float32), ((1, 4, 32), torch.float32)],
+        Concatenate5,
+        [((1, 4, 207, 128), torch.float32), ((1, 4, 207, 128), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 107, 128), torch.float32), ((1, 107, 128), torch.float32)],
+        {
+            "model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 8, 107, 128), torch.float32), ((1, 8, 107, 128), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 1, 107, 128), torch.float32), ((1, 1, 107, 128), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 16, 107, 128), torch.float32), ((1, 16, 107, 128), torch.float32)],
+        {"model_name": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 256, 64), torch.float32), ((1, 256, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
-        [((1, 32, 4, 32), torch.float32), ((1, 32, 4, 32), torch.float32)],
+        Concatenate5,
+        [((1, 32, 256, 64), torch.float32), ((1, 32, 256, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
-        [((1, 8, 4, 32), torch.float32), ((1, 8, 4, 32), torch.float32)],
+        Concatenate5,
+        [((1, 8, 256, 64), torch.float32), ((1, 8, 256, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 256, 32), torch.float32), ((1, 256, 32), torch.float32)],
         {
             "model_name": [
@@ -3473,7 +4487,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 256, 32), torch.float32), ((1, 32, 256, 32), torch.float32)],
         {
             "model_name": [
@@ -3485,7 +4499,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 8, 256, 32), torch.float32), ((1, 8, 256, 32), torch.float32)],
         {
             "model_name": [
@@ -3497,64 +4511,214 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 4, 64), torch.float32), ((1, 4, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 4, 64), torch.float32), ((1, 32, 4, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 8, 4, 64), torch.float32), ((1, 8, 4, 64), torch.float32)],
         {
             "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 24, 4, 64), torch.float32), ((1, 24, 4, 64), torch.float32)],
+        {"model_name": ["pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 32), torch.float32), ((1, 4, 32), torch.float32)],
+        {
+            "model_name": [
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 4, 32), torch.float32), ((1, 32, 4, 32), torch.float32)],
+        {
+            "model_name": [
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 8, 4, 32), torch.float32), ((1, 8, 4, 32), torch.float32)],
+        {
+            "model_name": [
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 64), torch.float32), ((1, 32, 64), torch.float32)],
+        {
+            "model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf", "pt_llama3_huggyllama_llama_7b_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 24, 32, 64), torch.float32), ((1, 24, 32, 64), torch.float32)],
+        {"model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 8, 32, 64), torch.float32), ((1, 8, 32, 64), torch.float32)],
+        {"model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 32, 64), torch.float32), ((1, 32, 32, 64), torch.float32)],
+        {"model_name": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
         [((1, 128, 64), torch.float32), ((1, 128, 64), torch.float32)],
         {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 128, 64), torch.float32), ((1, 32, 128, 64), torch.float32)],
         {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 8, 128, 64), torch.float32), ((1, 8, 128, 64), torch.float32)],
         {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 50176, 256), torch.float32), ((1, 50176, 256), torch.float32)],
+        {
+            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate8,
+        [((1, 3025, 64), torch.float32)],
+        {
+            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate9,
+        [((1, 50176, 3), torch.float32)],
+        {
+            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 256, 16), torch.float32), ((1, 256, 16), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_clm_hf", "pt_phi2_microsoft_phi_2_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 256, 16), torch.float32), ((1, 32, 256, 16), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_clm_hf", "pt_phi2_microsoft_phi_2_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 256, 32), torch.float32), ((1, 32, 256, 48), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_clm_hf", "pt_phi2_microsoft_phi_2_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 11, 16), torch.float32), ((1, 11, 16), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 11, 16), torch.float32), ((1, 32, 11, 16), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 11, 32), torch.float32), ((1, 32, 11, 48), torch.float32)],
+        {
+            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
         [((1, 12, 16), torch.float32), ((1, 12, 16), torch.float32)],
         {
             "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -3563,7 +4727,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 12, 16), torch.float32), ((1, 32, 12, 16), torch.float32)],
         {
             "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -3572,7 +4736,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 12, 32), torch.float32), ((1, 32, 12, 48), torch.float32)],
         {
             "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -3581,89 +4745,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
-        [((1, 256, 16), torch.float32), ((1, 256, 16), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 256, 16), torch.float32), ((1, 32, 256, 16), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 256, 32), torch.float32), ((1, 32, 256, 48), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 11, 16), torch.float32), ((1, 11, 16), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 11, 16), torch.float32), ((1, 32, 11, 16), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 11, 32), torch.float32), ((1, 32, 11, 48), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_seq_cls_hf", "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 256, 48), torch.float32), ((1, 256, 48), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 256, 48), torch.float32), ((1, 32, 256, 48), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 13, 48), torch.float32), ((1, 13, 48), torch.float32)],
-        {
-            "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 32, 13, 48), torch.float32), ((1, 32, 13, 48), torch.float32)],
-        {
-            "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
+        Concatenate5,
         [((1, 5, 48), torch.float32), ((1, 5, 48), torch.float32)],
         {
             "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -3672,7 +4754,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 32, 5, 48), torch.float32), ((1, 32, 5, 48), torch.float32)],
         {
             "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -3681,12 +4763,42 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
-        [((1, 16, 6, 32), torch.float32), ((1, 16, 6, 32), torch.float32)],
-        {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+        Concatenate5,
+        [((1, 13, 48), torch.float32), ((1, 13, 48), torch.float32)],
+        {
+            "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 32, 13, 48), torch.float32), ((1, 32, 13, 48), torch.float32)],
+        {
+            "model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 256, 48), torch.float32), ((1, 256, 48), torch.float32)],
+        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 32, 256, 48), torch.float32), ((1, 32, 256, 48), torch.float32)],
+        {
+            "model_name": [
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
         [((1, 29, 32), torch.float32), ((1, 29, 32), torch.float32)],
         {
             "model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
@@ -3695,18 +4807,23 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 16, 29, 32), torch.float32), ((1, 16, 29, 32), torch.float32)],
         {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 16, 6, 32), torch.float32), ((1, 16, 6, 32), torch.float32)],
+        {"model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
         [((1, 35, 64), torch.float32), ((1, 35, 64), torch.float32)],
         {
             "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
                 "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
@@ -3716,31 +4833,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
-        [((1, 28, 35, 64), torch.float32), ((1, 28, 35, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 4, 35, 64), torch.float32), ((1, 4, 35, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
+        Concatenate5,
         [((1, 12, 35, 64), torch.float32), ((1, 12, 35, 64), torch.float32)],
         {
             "model_name": [
@@ -3752,7 +4845,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 2, 35, 64), torch.float32), ((1, 2, 35, 64), torch.float32)],
         {
             "model_name": [
@@ -3766,7 +4859,46 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 28, 35, 64), torch.float32), ((1, 28, 35, 64), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 35, 64), torch.float32), ((1, 4, 35, 64), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 35, 32), torch.float32), ((1, 35, 32), torch.float32)],
+        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 14, 35, 32), torch.float32), ((1, 14, 35, 32), torch.float32)],
+        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 2, 35, 32), torch.float32), ((1, 2, 35, 32), torch.float32)],
+        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
         [((1, 16, 35, 64), torch.float32), ((1, 16, 35, 64), torch.float32)],
         {
             "model_name": [
@@ -3778,124 +4910,125 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate0,
-        [((1, 35, 32), torch.float32), ((1, 35, 32), torch.float32)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 14, 35, 32), torch.float32), ((1, 14, 35, 32), torch.float32)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 2, 35, 32), torch.float32), ((1, 2, 35, 32), torch.float32)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 29, 64), torch.float32), ((1, 29, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 12, 29, 64), torch.float32), ((1, 12, 29, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 2, 29, 64), torch.float32), ((1, 2, 29, 64), torch.float32)],
-        {
-            "model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 12, 39, 64), torch.float32), ((1, 12, 39, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 2, 39, 64), torch.float32), ((1, 2, 39, 64), torch.float32)],
-        {
-            "model_name": [
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 28, 39, 64), torch.float32), ((1, 28, 39, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 4, 39, 64), torch.float32), ((1, 4, 39, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 28, 29, 64), torch.float32), ((1, 28, 29, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 4, 29, 64), torch.float32), ((1, 4, 29, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
-        [((1, 16, 29, 64), torch.float32), ((1, 16, 29, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
-    ),
-    (
-        Concatenate0,
+        Concatenate5,
         [((1, 16, 39, 64), torch.float32), ((1, 16, 39, 64), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
-        [((1, 14, 29, 32), torch.float32), ((1, 14, 29, 32), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+        Concatenate5,
+        [((1, 2, 39, 64), torch.float32), ((1, 2, 39, 64), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
     ),
     (
-        Concatenate0,
-        [((1, 2, 29, 32), torch.float32), ((1, 2, 29, 32), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+        Concatenate5,
+        [((1, 29, 64), torch.float32), ((1, 29, 64), torch.float32)],
+        {
+            "model_name": [
+                "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
     ),
     (
-        Concatenate0,
+        Concatenate5,
+        [((1, 16, 29, 64), torch.float32), ((1, 16, 29, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 2, 29, 64), torch.float32), ((1, 2, 29, 64), torch.float32)],
+        {
+            "model_name": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 12, 29, 64), torch.float32), ((1, 12, 29, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 12, 39, 64), torch.float32), ((1, 12, 39, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
         [((1, 39, 32), torch.float32), ((1, 39, 32), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 14, 39, 32), torch.float32), ((1, 14, 39, 32), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate0,
+        Concatenate5,
         [((1, 2, 39, 32), torch.float32), ((1, 2, 39, 32), torch.float32)],
         {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate2,
+        Concatenate5,
+        [((1, 28, 39, 64), torch.float32), ((1, 28, 39, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 39, 64), torch.float32), ((1, 4, 39, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 14, 29, 32), torch.float32), ((1, 14, 29, 32), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 2, 29, 32), torch.float32), ((1, 2, 29, 32), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 13, 64), torch.float32), ((1, 13, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 28, 13, 64), torch.float32), ((1, 28, 13, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 13, 64), torch.float32), ((1, 4, 13, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 28, 29, 64), torch.float32), ((1, 28, 29, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 4, 29, 64), torch.float32), ((1, 4, 29, 64), torch.float32)],
+        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate6,
         [((1, 1, 768), torch.float32), ((1, 196, 768), torch.float32)],
         {
             "model_name": [
+                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
@@ -3905,12 +5038,37 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate2,
-        [((1, 1, 192), torch.float32), ((1, 196, 192), torch.float32)],
-        {"model_name": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+        Concatenate6,
+        [((729, 12), torch.float32), ((3, 12), torch.float32)],
+        {
+            "model_name": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
     ),
     (
-        Concatenate2,
+        Concatenate6,
+        [((1, 1, 1024), torch.float32), ((1, 196, 1024), torch.float32)],
+        {
+            "model_name": [
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate6,
+        [((729, 16), torch.float32), ((3, 16), torch.float32)],
+        {
+            "model_name": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate6,
         [((1, 1, 384), torch.float32), ((1, 196, 384), torch.float32)],
         {
             "model_name": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -3919,22 +5077,27 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate3,
+        Concatenate6,
+        [((1, 1, 192), torch.float32), ((1, 196, 192), torch.float32)],
+        {"model_name": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate10,
         [((1, 96, 56, 56), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 96, 56, 56), torch.float32), ((1, 48, 56, 56), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 96, 56, 56), torch.float32), ((1, 48, 56, 56), torch.float32), ((1, 48, 56, 56), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 96, 56, 56), torch.float32),
             ((1, 48, 56, 56), torch.float32),
@@ -3944,7 +5107,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate7,
+        Concatenate12,
         [
             ((1, 96, 56, 56), torch.float32),
             ((1, 48, 56, 56), torch.float32),
@@ -3955,7 +5118,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 96, 56, 56), torch.float32),
             ((1, 48, 56, 56), torch.float32),
@@ -3967,7 +5130,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate9,
+        Concatenate14,
         [
             ((1, 96, 56, 56), torch.float32),
             ((1, 48, 56, 56), torch.float32),
@@ -3980,89 +5143,24 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate10,
         [((1, 192, 28, 28), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 192, 28, 28), torch.float32), ((1, 48, 28, 28), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 192, 28, 28), torch.float32), ((1, 48, 28, 28), torch.float32), ((1, 48, 28, 28), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
@@ -4073,11 +5171,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate12,
         [
             ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
@@ -4094,11 +5187,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4106,11 +5194,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate14,
         [
             ((1, 192, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
-            ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
@@ -4131,6 +5214,16 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate16,
+        [
+            ((1, 192, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
             ((1, 48, 28, 28), torch.float32),
@@ -4140,89 +5233,94 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate17,
+        [
+            ((1, 192, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate18,
+        [
+            ((1, 192, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate19,
+        [
+            ((1, 192, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate20,
+        [
+            ((1, 192, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+            ((1, 48, 28, 28), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate10,
         [((1, 384, 14, 14), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 384, 14, 14), torch.float32), ((1, 48, 14, 14), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 384, 14, 14), torch.float32), ((1, 48, 14, 14), torch.float32), ((1, 48, 14, 14), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4233,11 +5331,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate12,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4254,11 +5347,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4266,11 +5354,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate14,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4291,11 +5374,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4303,11 +5381,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate16,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4332,11 +5405,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4344,11 +5412,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate18,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4377,11 +5440,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4389,11 +5447,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate20,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4426,11 +5479,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4438,11 +5486,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate22,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4479,11 +5522,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4491,11 +5529,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate24,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4536,11 +5569,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4548,11 +5576,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate26,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4597,11 +5620,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4609,11 +5627,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate28,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4662,11 +5675,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4674,11 +5682,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate30,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4731,11 +5734,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4743,11 +5741,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate32,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4804,11 +5797,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4816,11 +5804,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate34,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4881,11 +5864,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4893,11 +5871,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate36,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -4962,11 +5935,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -4974,11 +5942,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate38,
         [
             ((1, 384, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
-            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -5047,6 +6010,40 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate40,
+        [
+            ((1, 384, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
             ((1, 48, 14, 14), torch.float32),
@@ -5056,89 +6053,190 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate41,
+        [
+            ((1, 384, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate42,
+        [
+            ((1, 384, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate43,
+        [
+            ((1, 384, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate44,
+        [
+            ((1, 384, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+            ((1, 48, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate10,
         [((1, 1056, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 1056, 7, 7), torch.float32), ((1, 48, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 1056, 7, 7), torch.float32), ((1, 48, 7, 7), torch.float32), ((1, 48, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5149,11 +6247,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate12,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5170,11 +6263,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5182,11 +6270,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate14,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5207,11 +6290,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5219,11 +6297,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate16,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5248,11 +6321,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5260,11 +6328,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate18,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5293,11 +6356,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5305,11 +6363,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate20,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5342,11 +6395,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5354,11 +6402,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate22,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5395,11 +6438,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5407,11 +6445,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate24,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5452,11 +6485,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -5464,11 +6492,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate26,
         [
             ((1, 1056, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
-            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5513,6 +6536,28 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate28,
+        [
+            ((1, 1056, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
             ((1, 48, 7, 7), torch.float32),
@@ -5522,46 +6567,151 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate29,
+        [
+            ((1, 1056, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate30,
+        [
+            ((1, 1056, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate31,
+        [
+            ((1, 1056, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate32,
+        [
+            ((1, 1056, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+            ((1, 48, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet161_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate10,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
-        [((1, 64, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 64, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32), ((1, 32, 56, 56), torch.float32)],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 64, 56, 56), torch.float32),
             ((1, 32, 56, 56), torch.float32),
@@ -5571,15 +6721,15 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate7,
+        Concatenate12,
         [
             ((1, 64, 56, 56), torch.float32),
             ((1, 32, 56, 56), torch.float32),
@@ -5590,15 +6740,15 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 64, 56, 56), torch.float32),
             ((1, 32, 56, 56), torch.float32),
@@ -5610,15 +6760,15 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate9,
+        Concatenate14,
         [
             ((1, 64, 56, 56), torch.float32),
             ((1, 32, 56, 56), torch.float32),
@@ -5631,285 +6781,34 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate3,
+        Concatenate10,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
-        [((1, 128, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 128, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32), ((1, 32, 28, 28), torch.float32)],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate12,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate13,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate14,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate15,
-        [
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-            ((1, 32, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate3,
-        [((1, 256, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -5917,103 +6816,224 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate4,
-        [((1, 256, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((1, 256, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
-                "pt_densenet_densenet121_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
         [
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate7,
+        Concatenate12,
         [
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate9,
+        Concatenate14,
         [
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate15,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate16,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate18,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate19,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate20,
+        [
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+            ((1, 32, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6021,21 +7041,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate10,
-        [
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-        ],
+        [((1, 256, 14, 14), torch.float32)],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6043,13 +7054,21 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate11,
+        [((1, 256, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32), ((1, 32, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -6057,8 +7076,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6072,17 +7091,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6097,17 +7111,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6123,17 +7132,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6150,17 +7154,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6178,17 +7177,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6207,17 +7201,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6237,17 +7226,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6268,17 +7252,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6300,17 +7279,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6333,17 +7307,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6367,17 +7336,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6402,17 +7366,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6438,17 +7397,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6475,17 +7429,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6513,17 +7462,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6552,17 +7496,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
-                "pt_densenet_densenet169_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -6592,15 +7531,11 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
@@ -6632,15 +7567,11 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
@@ -6673,15 +7604,11 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
@@ -6715,15 +7642,11 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
@@ -6758,15 +7681,11 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
                 "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet121_img_cls_torchvision",
                 "pt_densenet_densenet169_img_cls_torchvision",
             ],
             "pcc": 0.99,
@@ -6777,11 +7696,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate33,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -6847,11 +7761,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {
             "model_name": [
@@ -6866,11 +7775,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate35,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -6940,13 +7844,15 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Concatenate37,
@@ -6981,13 +7887,15 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Concatenate38,
@@ -7023,13 +7931,15 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Concatenate39,
@@ -7066,13 +7976,15 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Concatenate40,
@@ -7110,23 +8022,20 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_densenet_densenet201_img_cls_torchvision",
+                "pt_densenet_densenet169_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
         Concatenate41,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7167,11 +8076,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate42,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7248,11 +8152,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -7260,11 +8159,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate44,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7345,11 +8239,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -7357,11 +8246,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate46,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7446,11 +8330,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -7458,11 +8337,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate48,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7551,11 +8425,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -7563,11 +8432,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate50,
         [
             ((1, 256, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
-            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7660,6 +8524,52 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate52,
+        [
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
             ((1, 32, 14, 14), torch.float32),
@@ -7669,887 +8579,266 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate53,
+        [
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate54,
+        [
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate55,
+        [
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate56,
+        [
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+            ((1, 32, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate10,
         [((1, 896, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 896, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 896, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate12,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate13,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate14,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate15,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate16,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate17,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate18,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate19,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate20,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate21,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate22,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate23,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate24,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate25,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate26,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate27,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate28,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate29,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate30,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate31,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate32,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate33,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate34,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate35,
-        [
-            ((1, 896, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate3,
-        [((1, 640, 7, 7), torch.float32)],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
         Concatenate4,
-        [((1, 640, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((1, 640, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
         [
-            ((1, 640, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate12,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate13,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate14,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8557,17 +8846,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate15,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8576,17 +8860,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate16,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8596,17 +8875,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate17,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8617,17 +8891,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate18,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8639,17 +8908,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate19,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8662,17 +8926,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate20,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8686,17 +8945,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate21,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8711,17 +8965,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate22,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8737,17 +8986,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate23,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8764,17 +9008,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate24,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8792,17 +9031,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate25,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8821,17 +9055,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate26,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8851,17 +9080,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate27,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8882,17 +9106,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate28,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8914,17 +9133,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate29,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8947,17 +9161,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate30,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -8981,17 +9190,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate31,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9016,17 +9220,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate32,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9052,17 +9251,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate33,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9089,17 +9283,12 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate34,
         [
-            ((1, 640, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9127,12 +9316,192 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate35,
         [
-            ((1, 640, 7, 7), torch.float32),
+            ((1, 896, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate36,
+        [
+            ((1, 896, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate37,
+        [
+            ((1, 896, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate38,
+        [
+            ((1, 896, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate39,
+        [
+            ((1, 896, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate40,
+        [
+            ((1, 896, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9166,92 +9535,22 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
         ],
-        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_densenet_densenet201_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate3,
+        Concatenate10,
         [((1, 512, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 512, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 512, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate10,
-        [
-            ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate11,
-        [
-            ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9262,11 +9561,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate12,
         [
             ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9283,11 +9577,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -9295,11 +9584,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate14,
         [
             ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9320,11 +9604,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -9332,11 +9611,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate16,
         [
             ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9361,11 +9635,6 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
         ],
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -9373,11 +9642,6 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate18,
         [
             ((1, 512, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
-            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9406,6 +9670,20 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate20,
+        [
+            ((1, 512, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
             ((1, 32, 7, 7), torch.float32),
@@ -9415,13 +9693,1057 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
+        Concatenate21,
+        [
+            ((1, 512, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate22,
+        [
+            ((1, 512, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate23,
+        [
+            ((1, 512, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate24,
+        [
+            ((1, 512, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet121_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate10,
+        [((1, 640, 7, 7), torch.float32)],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((1, 640, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32), ((1, 32, 7, 7), torch.float32)],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
         Concatenate4,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate12,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate13,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate14,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate15,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate16,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate17,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate18,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate19,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate20,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate21,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate22,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate23,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate24,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate25,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate26,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate27,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate28,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate29,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate30,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate31,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate32,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate33,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate34,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate35,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate36,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate37,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate38,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate39,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate40,
+        [
+            ((1, 640, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+            ((1, 32, 7, 7), torch.float32),
+        ],
+        {"model_name": ["pt_densenet_densenet169_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla60x_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla60_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32)],
+        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla60x_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla60_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate12,
+        [
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 256, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla60x_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla60_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla60x_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla60_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate12,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate14,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((1, 1024, 7, 7), torch.float32), ((1, 1024, 7, 7), torch.float32), ((1, 512, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla60x_visual_bb_torchvision",
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla60_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 128, 28, 28), torch.float32),
+            ((1, 256, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": ["pt_dla_dla60x_visual_bb_torchvision", "pt_dla_dla60_visual_bb_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate12,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+        ],
+        {
+            "model_name": ["pt_dla_dla60x_visual_bb_torchvision", "pt_dla_dla60_visual_bb_torchvision"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate13,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 256, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 512, 14, 14), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_dla_dla102_visual_bb_torchvision",
+                "pt_dla_dla102x_visual_bb_torchvision",
+                "pt_dla_dla102x2_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
         [((1, 64, 56, 56), torch.float32), ((1, 64, 56, 56), torch.float32)],
         {
             "model_name": [
-                "pt_dla_dla34_visual_bb_torchvision",
-                "pt_dla_dla46x_c_visual_bb_torchvision",
                 "pt_dla_dla60x_c_visual_bb_torchvision",
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_dla_dla46x_c_visual_bb_torchvision",
                 "pt_dla_dla46_c_visual_bb_torchvision",
                 "pt_monodle_base_obj_det_torchvision",
             ],
@@ -9430,16 +10752,93 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [((1, 128, 28, 28), torch.float32), ((1, 128, 28, 28), torch.float32)],
+        Concatenate0,
+        [((1, 64, 28, 28), torch.float32), ((1, 64, 28, 28), torch.float32)],
         {
-            "model_name": ["pt_dla_dla34_visual_bb_torchvision", "pt_monodle_base_obj_det_torchvision"],
+            "model_name": [
+                "pt_dla_dla60x_c_visual_bb_torchvision",
+                "pt_dla_dla46x_c_visual_bb_torchvision",
+                "pt_dla_dla46_c_visual_bb_torchvision",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
+        [
+            ((1, 64, 28, 28), torch.float32),
+            ((1, 64, 28, 28), torch.float32),
+            ((1, 64, 28, 28), torch.float32),
+            ((1, 64, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_dla_dla60x_c_visual_bb_torchvision",
+                "pt_dla_dla46x_c_visual_bb_torchvision",
+                "pt_dla_dla46_c_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla60x_c_visual_bb_torchvision",
+                "pt_dla_dla46x_c_visual_bb_torchvision",
+                "pt_dla_dla46_c_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32)],
+        {"model_name": ["pt_dla_dla60x_c_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate12,
+        [
+            ((1, 128, 14, 14), torch.float32),
+            ((1, 128, 14, 14), torch.float32),
+            ((1, 64, 14, 14), torch.float32),
+            ((1, 128, 14, 14), torch.float32),
+            ((1, 128, 14, 14), torch.float32),
+        ],
+        {"model_name": ["pt_dla_dla60x_c_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((1, 256, 7, 7), torch.float32), ((1, 256, 7, 7), torch.float32), ((1, 128, 7, 7), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla60x_c_visual_bb_torchvision",
+                "pt_dla_dla46x_c_visual_bb_torchvision",
+                "pt_dla_dla46_c_visual_bb_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 28, 28), torch.float32), ((1, 128, 28, 28), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_monodle_base_obj_det_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
         [
             ((1, 128, 28, 28), torch.float32),
             ((1, 128, 28, 28), torch.float32),
@@ -9447,22 +10846,30 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 128, 28, 28), torch.float32),
         ],
         {
-            "model_name": ["pt_dla_dla34_visual_bb_torchvision", "pt_monodle_base_obj_det_torchvision"],
+            "model_name": [
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_monodle_base_obj_det_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 14, 14), torch.float32), ((1, 256, 14, 14), torch.float32)],
+        {
+            "model_name": [
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_monodle_base_obj_det_torchvision",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
         Concatenate4,
-        [((1, 256, 14, 14), torch.float32), ((1, 256, 14, 14), torch.float32)],
-        {
-            "model_name": ["pt_dla_dla34_visual_bb_torchvision", "pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
         [
             ((1, 256, 14, 14), torch.float32),
             ((1, 256, 14, 14), torch.float32),
@@ -9470,31 +10877,23 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 256, 14, 14), torch.float32),
         ],
         {
-            "model_name": ["pt_dla_dla34_visual_bb_torchvision", "pt_monodle_base_obj_det_torchvision"],
+            "model_name": [
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_monodle_base_obj_det_torchvision",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 512, 7, 7), torch.float32), ((1, 512, 7, 7), torch.float32), ((1, 256, 7, 7), torch.float32)],
         {
-            "model_name": ["pt_dla_dla34_visual_bb_torchvision", "pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32)],
-        {
             "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
+                "pt_dla_dla34_visual_bb_torchvision",
+                "pt_dla_dla34_in1k_img_cls_timm",
+                "pt_monodle_base_obj_det_torchvision",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
@@ -9502,188 +10901,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate4,
-        [((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32), ((1, 256, 28, 28), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 256, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32), ((1, 512, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((1, 1024, 7, 7), torch.float32), ((1, 1024, 7, 7), torch.float32), ((1, 512, 7, 7), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla102_visual_bb_torchvision",
-                "pt_dla_dla102x_visual_bb_torchvision",
-                "pt_dla_dla102x2_visual_bb_torchvision",
-                "pt_dla_dla60x_visual_bb_torchvision",
-                "pt_dla_dla60_visual_bb_torchvision",
-                "pt_dla_dla169_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 28, 28), torch.float32), ((1, 64, 28, 28), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla46x_c_visual_bb_torchvision",
-                "pt_dla_dla60x_c_visual_bb_torchvision",
-                "pt_dla_dla46_c_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 64, 28, 28), torch.float32),
-            ((1, 64, 28, 28), torch.float32),
-            ((1, 64, 28, 28), torch.float32),
-            ((1, 64, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_dla_dla46x_c_visual_bb_torchvision",
-                "pt_dla_dla60x_c_visual_bb_torchvision",
-                "pt_dla_dla46_c_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32)],
-        {
-            "model_name": [
-                "pt_dla_dla46x_c_visual_bb_torchvision",
-                "pt_dla_dla60x_c_visual_bb_torchvision",
-                "pt_dla_dla46_c_visual_bb_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
         [
             ((1, 128, 14, 14), torch.float32),
             ((1, 128, 14, 14), torch.float32),
@@ -9697,184 +10914,239 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
-        [((1, 256, 7, 7), torch.float32), ((1, 256, 7, 7), torch.float32), ((1, 128, 7, 7), torch.float32)],
+        Concatenate0,
+        [((1, 8, 112, 112), torch.float32), ((1, 8, 112, 112), torch.float32)],
         {
             "model_name": [
-                "pt_dla_dla46x_c_visual_bb_torchvision",
-                "pt_dla_dla60x_c_visual_bb_torchvision",
-                "pt_dla_dla46_c_visual_bb_torchvision",
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
-        [((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32), ((1, 128, 14, 14), torch.float32)],
-        {"model_name": ["pt_dla_dla60x_c_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 128, 14, 14), torch.float32),
-            ((1, 128, 14, 14), torch.float32),
-            ((1, 64, 14, 14), torch.float32),
-            ((1, 128, 14, 14), torch.float32),
-            ((1, 128, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_dla_dla60x_c_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 128, 28, 28), torch.float32),
-            ((1, 256, 28, 28), torch.float32),
-        ],
-        {
-            "model_name": ["pt_dla_dla60x_visual_bb_torchvision", "pt_dla_dla60_visual_bb_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-        ],
-        {
-            "model_name": ["pt_dla_dla60x_visual_bb_torchvision", "pt_dla_dla60_visual_bb_torchvision"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32), ((1, 128, 56, 56), torch.float32)],
-        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate7,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate9,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 256, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 512, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_dla_dla169_visual_bb_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 8, 112, 112), torch.float32), ((1, 8, 112, 112), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
+        Concatenate0,
         [((1, 24, 112, 112), torch.float32), ((1, 24, 112, 112), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 12, 56, 56), torch.float32), ((1, 12, 56, 56), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 36, 56, 56), torch.float32), ((1, 36, 56, 56), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 20, 28, 28), torch.float32), ((1, 20, 28, 28), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 60, 28, 28), torch.float32), ((1, 60, 28, 28), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 120, 28, 28), torch.float32), ((1, 120, 28, 28), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 40, 14, 14), torch.float32), ((1, 40, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 100, 14, 14), torch.float32), ((1, 100, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 92, 14, 14), torch.float32), ((1, 92, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 240, 14, 14), torch.float32), ((1, 240, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 56, 14, 14), torch.float32), ((1, 56, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 336, 14, 14), torch.float32), ((1, 336, 14, 14), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 80, 7, 7), torch.float32), ((1, 80, 7, 7), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 480, 7, 7), torch.float32), ((1, 480, 7, 7), torch.float32)],
-        {"model_name": ["pt_ghostnet_ghostnet_100_img_cls_timm"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": [
+                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                "pt_ghostnet_ghostnet_100_img_cls_timm",
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate5,
+        Concatenate0,
+        [((1, 64, 30, 40), torch.float32), ((1, 64, 30, 40), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 60, 80), torch.float32), ((1, 64, 60, 80), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 120, 160), torch.float32), ((1, 64, 120, 160), torch.float32)],
+        {
+            "model_name": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
         [((1, 1, 224, 224), torch.float32), ((1, 1, 224, 224), torch.float32), ((1, 1, 224, 224), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((64, 192, 1, 1), torch.float32), ((96, 192, 1, 1), torch.float32), ((16, 192, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((64, 1, 1), torch.float32), ((96, 1, 1), torch.float32), ((16, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 64, 28, 28), torch.float32),
             ((1, 128, 28, 28), torch.float32),
@@ -9884,17 +11156,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((128, 256, 1, 1), torch.float32), ((128, 256, 1, 1), torch.float32), ((32, 256, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((128, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 128, 28, 28), torch.float32),
             ((1, 192, 28, 28), torch.float32),
@@ -9904,17 +11171,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((192, 480, 1, 1), torch.float32), ((96, 480, 1, 1), torch.float32), ((16, 480, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((192, 1, 1), torch.float32), ((96, 1, 1), torch.float32), ((16, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 192, 14, 14), torch.float32),
             ((1, 208, 14, 14), torch.float32),
@@ -9924,17 +11186,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((160, 512, 1, 1), torch.float32), ((112, 512, 1, 1), torch.float32), ((24, 512, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((160, 1, 1), torch.float32), ((112, 1, 1), torch.float32), ((24, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 160, 14, 14), torch.float32),
             ((1, 224, 14, 14), torch.float32),
@@ -9944,17 +11201,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((128, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((24, 512, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((128, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((24, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 128, 14, 14), torch.float32),
             ((1, 256, 14, 14), torch.float32),
@@ -9964,17 +11216,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((112, 512, 1, 1), torch.float32), ((144, 512, 1, 1), torch.float32), ((32, 512, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((112, 1, 1), torch.float32), ((144, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 112, 14, 14), torch.float32),
             ((1, 288, 14, 14), torch.float32),
@@ -9984,17 +11231,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((256, 528, 1, 1), torch.float32), ((160, 528, 1, 1), torch.float32), ((32, 528, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((256, 1, 1), torch.float32), ((160, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 256, 14, 14), torch.float32),
             ((1, 320, 14, 14), torch.float32),
@@ -10004,12 +11246,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((256, 832, 1, 1), torch.float32), ((160, 832, 1, 1), torch.float32), ((32, 832, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 256, 7, 7), torch.float32),
             ((1, 320, 7, 7), torch.float32),
@@ -10019,17 +11256,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
-        [((384, 832, 1, 1), torch.float32), ((192, 832, 1, 1), torch.float32), ((48, 832, 1, 1), torch.float32)],
-        {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((384, 1, 1), torch.float32), ((192, 1, 1), torch.float32), ((48, 1, 1), torch.float32)],
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 384, 7, 7), torch.float32),
             ((1, 384, 7, 7), torch.float32),
@@ -10039,7 +11271,79 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate52,
+        Concatenate3,
+        [((64, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((256, 512, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((256, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((128, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((64, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32), ((128, 64, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((256, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((64, 512, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((256, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
         [((18, 144, 1, 1), torch.float32), ((36, 144, 1, 1), torch.float32), ((72, 144, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10047,13 +11351,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((18, 1, 1), torch.float32), ((36, 1, 1), torch.float32), ((72, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10061,13 +11366,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((36, 18, 3, 3), torch.float32), ((18, 18, 3, 3), torch.float32), ((18, 18, 3, 3), torch.float32)],
         {
             "model_name": [
@@ -10075,13 +11381,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((36, 1, 1), torch.float32), ((18, 1, 1), torch.float32), ((18, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10089,13 +11396,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((18, 18, 3, 3), torch.float32), ((18, 18, 3, 3), torch.float32), ((36, 18, 3, 3), torch.float32)],
         {
             "model_name": [
@@ -10103,13 +11411,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((18, 1, 1), torch.float32), ((18, 1, 1), torch.float32), ((36, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10117,13 +11426,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((72, 144, 1, 1), torch.float32), ((36, 144, 1, 1), torch.float32), ((18, 144, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10131,13 +11441,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((72, 1, 1), torch.float32), ((36, 1, 1), torch.float32), ((18, 1, 1), torch.float32)],
         {
             "model_name": [
@@ -10145,349 +11456,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
                 "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate52,
-        [((44, 352, 1, 1), torch.float32), ((88, 352, 1, 1), torch.float32), ((176, 352, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((44, 1, 1), torch.float32), ((88, 1, 1), torch.float32), ((176, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((88, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((88, 1, 1), torch.float32), ((44, 1, 1), torch.float32), ((44, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((44, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32), ((88, 44, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((44, 1, 1), torch.float32), ((44, 1, 1), torch.float32), ((88, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((176, 352, 1, 1), torch.float32), ((88, 352, 1, 1), torch.float32), ((44, 352, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((176, 1, 1), torch.float32), ((88, 1, 1), torch.float32), ((44, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((30, 240, 1, 1), torch.float32), ((60, 240, 1, 1), torch.float32), ((120, 240, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((30, 1, 1), torch.float32), ((60, 1, 1), torch.float32), ((120, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((60, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((60, 1, 1), torch.float32), ((30, 1, 1), torch.float32), ((30, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((30, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32), ((60, 30, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((30, 1, 1), torch.float32), ((30, 1, 1), torch.float32), ((60, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((120, 240, 1, 1), torch.float32), ((60, 240, 1, 1), torch.float32), ((30, 240, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((120, 1, 1), torch.float32), ((60, 1, 1), torch.float32), ((30, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((32, 256, 1, 1), torch.float32), ((64, 256, 1, 1), torch.float32), ((128, 256, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((32, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((64, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((32, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32), ((64, 32, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((32, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((128, 256, 1, 1), torch.float32), ((64, 256, 1, 1), torch.float32), ((32, 256, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((16, 16, 3, 3), torch.float32), ((16, 16, 3, 3), torch.float32), ((32, 16, 3, 3), torch.float32)],
-        {
-            "model_name": [
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((16, 1, 1), torch.float32), ((16, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((64, 128, 1, 1), torch.float32), ((32, 128, 1, 1), torch.float32), ((16, 128, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((16, 1, 1), torch.float32)],
-        {
-            "model_name": [
-                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((64, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((256, 512, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((256, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((128, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((64, 64, 3, 3), torch.float32), ((64, 64, 3, 3), torch.float32), ((128, 64, 3, 3), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((256, 512, 1, 1), torch.float32), ((128, 512, 1, 1), torch.float32), ((64, 512, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-4"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((256, 1, 1), torch.float32), ((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_hrnet_hrnet_w64_pose_estimation_timm", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
+        Concatenate3,
         [((48, 384, 1, 1), torch.float32), ((96, 384, 1, 1), torch.float32), ((192, 384, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10496,7 +11472,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((48, 1, 1), torch.float32), ((96, 1, 1), torch.float32), ((192, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10505,7 +11481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((96, 48, 3, 3), torch.float32), ((48, 48, 3, 3), torch.float32), ((48, 48, 3, 3), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10514,7 +11490,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((96, 1, 1), torch.float32), ((48, 1, 1), torch.float32), ((48, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10523,7 +11499,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((48, 48, 3, 3), torch.float32), ((48, 48, 3, 3), torch.float32), ((96, 48, 3, 3), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10532,7 +11508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((48, 1, 1), torch.float32), ((48, 1, 1), torch.float32), ((96, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10541,7 +11517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((192, 384, 1, 1), torch.float32), ((96, 384, 1, 1), torch.float32), ((48, 384, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10550,7 +11526,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((192, 1, 1), torch.float32), ((96, 1, 1), torch.float32), ((48, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr", "pt_hrnet_hrnet_w48_pose_estimation_timm"],
@@ -10559,7 +11535,127 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
+        [((16, 16, 3, 3), torch.float32), ((16, 16, 3, 3), torch.float32), ((32, 16, 3, 3), torch.float32)],
+        {
+            "model_name": [
+                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((16, 1, 1), torch.float32), ((16, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((64, 128, 1, 1), torch.float32), ((32, 128, 1, 1), torch.float32), ((16, 128, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((16, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_hrnet_hrnet_w18_small_v1_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_small_pose_estimation_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((32, 256, 1, 1), torch.float32), ((64, 256, 1, 1), torch.float32), ((128, 256, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((32, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((128, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((64, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((32, 32, 3, 3), torch.float32), ((32, 32, 3, 3), torch.float32), ((64, 32, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((32, 1, 1), torch.float32), ((32, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((128, 256, 1, 1), torch.float32), ((64, 256, 1, 1), torch.float32), ((32, 256, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((128, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((32, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr", "pt_hrnet_hrnet_w32_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
         [((40, 320, 1, 1), torch.float32), ((80, 320, 1, 1), torch.float32), ((160, 320, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10568,7 +11664,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((40, 1, 1), torch.float32), ((80, 1, 1), torch.float32), ((160, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10577,7 +11673,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((80, 40, 3, 3), torch.float32), ((40, 40, 3, 3), torch.float32), ((40, 40, 3, 3), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10586,7 +11682,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((80, 1, 1), torch.float32), ((40, 1, 1), torch.float32), ((40, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10595,7 +11691,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((40, 40, 3, 3), torch.float32), ((40, 40, 3, 3), torch.float32), ((80, 40, 3, 3), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10604,7 +11700,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((40, 1, 1), torch.float32), ((40, 1, 1), torch.float32), ((80, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10613,7 +11709,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((160, 320, 1, 1), torch.float32), ((80, 320, 1, 1), torch.float32), ((40, 320, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10622,7 +11718,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((160, 1, 1), torch.float32), ((80, 1, 1), torch.float32), ((40, 1, 1), torch.float32)],
         {
             "model_name": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -10631,52 +11727,216 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [((1, 64, 73, 73), torch.float32), ((1, 96, 73, 73), torch.float32)],
+        Concatenate3,
+        [((44, 352, 1, 1), torch.float32), ((88, 352, 1, 1), torch.float32), ((176, 352, 1, 1), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 96, 71, 71), torch.float32), ((1, 96, 71, 71), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 192, 35, 35), torch.float32), ((1, 192, 35, 35), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate52,
-        [((96, 384, 1, 1), torch.float32), ((64, 384, 1, 1), torch.float32), ((64, 384, 1, 1), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
-        [((96, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
+        Concatenate11,
+        [((44, 1, 1), torch.float32), ((88, 1, 1), torch.float32), ((176, 1, 1), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate3,
+        [((88, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((88, 1, 1), torch.float32), ((44, 1, 1), torch.float32), ((44, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((44, 44, 3, 3), torch.float32), ((44, 44, 3, 3), torch.float32), ((88, 44, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((44, 1, 1), torch.float32), ((44, 1, 1), torch.float32), ((88, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((176, 352, 1, 1), torch.float32), ((88, 352, 1, 1), torch.float32), ((44, 352, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((176, 1, 1), torch.float32), ((88, 1, 1), torch.float32), ((44, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr", "pt_hrnet_hrnet_w44_pose_estimation_timm"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((30, 240, 1, 1), torch.float32), ((60, 240, 1, 1), torch.float32), ((120, 240, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((30, 1, 1), torch.float32), ((60, 1, 1), torch.float32), ((120, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((60, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((60, 1, 1), torch.float32), ((30, 1, 1), torch.float32), ((30, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((30, 30, 3, 3), torch.float32), ((30, 30, 3, 3), torch.float32), ((60, 30, 3, 3), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((30, 1, 1), torch.float32), ((30, 1, 1), torch.float32), ((60, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((120, 240, 1, 1), torch.float32), ((60, 240, 1, 1), torch.float32), ((30, 240, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((120, 1, 1), torch.float32), ((60, 1, 1), torch.float32), ((30, 1, 1), torch.float32)],
+        {
+            "model_name": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 73, 73), torch.float32), ((1, 96, 73, 73), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 71, 71), torch.float32), ((1, 96, 71, 71), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 35, 35), torch.float32), ((1, 192, 35, 35), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate3,
+        [((96, 384, 1, 1), torch.float32), ((64, 384, 1, 1), torch.float32), ((64, 384, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-4"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((96, 1, 1), torch.float32), ((64, 1, 1), torch.float32), ((64, 1, 1), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
         [
             ((1, 96, 35, 35), torch.float32),
             ((1, 96, 35, 35), torch.float32),
@@ -10684,40 +11944,56 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 96, 35, 35), torch.float32),
         ],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 384, 17, 17), torch.float32), ((1, 256, 17, 17), torch.float32), ((1, 384, 17, 17), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate52,
+        Concatenate3,
         [((384, 1024, 1, 1), torch.float32), ((192, 1024, 1, 1), torch.float32), ((192, 1024, 1, 1), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-4"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((384, 1, 1), torch.float32), ((192, 1, 1), torch.float32), ((192, 1, 1), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 384, 17, 17), torch.float32),
             ((1, 256, 17, 17), torch.float32),
@@ -10725,60 +12001,80 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 128, 17, 17), torch.float32),
         ],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 192, 8, 8), torch.float32), ((1, 320, 8, 8), torch.float32), ((1, 1024, 8, 8), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     pytest.param(
         (
-            Concatenate52,
+            Concatenate3,
             [
                 ((256, 1536, 1, 1), torch.float32),
                 ((384, 1536, 1, 1), torch.float32),
                 ((384, 1536, 1, 1), torch.float32),
             ],
             {
-                "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+                "model_name": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_img_cls_timm",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                ],
                 "pcc": 0.99,
                 "op_params": {"axis": "-4"},
             },
         ),
         marks=[
             pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:132: tt::exception info: Out of Memory: Not enough space to allocate 6442450944 B DRAM buffer across 12 banks, where each bank needs to store 536870912 B"
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 6442450944 B DRAM buffer across 12 banks, where each bank needs to store 536870912 B"
             )
         ],
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((256, 1, 1), torch.float32), ((384, 1, 1), torch.float32), ((384, 1, 1), torch.float32)],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 8, 8), torch.float32), ((1, 256, 8, 8), torch.float32)],
+        {
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
         Concatenate4,
-        [((1, 256, 8, 8), torch.float32), ((1, 256, 8, 8), torch.float32)],
-        {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
         [
             ((1, 256, 8, 8), torch.float32),
             ((1, 512, 8, 8), torch.float32),
@@ -10786,13 +12082,97 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 256, 8, 8), torch.float32),
         ],
         {
-            "model_name": ["pt_inception_v4_img_cls_timm", "pt_inception_v4_img_cls_osmr"],
+            "model_name": [
+                "pt_inception_v4_img_cls_osmr",
+                "pt_inception_inception_v4_img_cls_timm",
+                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
+        [((1, 256, 12, 40), torch.float32), ((1, 256, 12, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 24, 80), torch.float32), ((1, 128, 24, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 48, 160), torch.float32), ((1, 64, 48, 160), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 96, 320), torch.float32), ((1, 64, 96, 320), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate10,
+        [((1, 16, 192, 640), torch.float32)],
+        {
+            "model_name": [
+                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
         [((1, 256, 20, 64), torch.float32), ((1, 256, 20, 64), torch.float32)],
         {
             "model_name": [
@@ -10805,7 +12185,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 40, 128), torch.float32), ((1, 128, 40, 128), torch.float32)],
         {
             "model_name": [
@@ -10818,7 +12198,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 80, 256), torch.float32), ((1, 64, 80, 256), torch.float32)],
         {
             "model_name": [
@@ -10831,7 +12211,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 32, 160, 512), torch.float32), ((1, 64, 160, 512), torch.float32)],
         {
             "model_name": [
@@ -10844,7 +12224,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate3,
+        Concatenate10,
         [((1, 16, 320, 1024), torch.float32)],
         {
             "model_name": [
@@ -10857,87 +12237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [((1, 256, 12, 40), torch.float32), ((1, 256, 12, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 24, 80), torch.float32), ((1, 128, 24, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 48, 160), torch.float32), ((1, 64, 48, 160), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 32, 96, 320), torch.float32), ((1, 64, 96, 320), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate3,
-        [((1, 16, 192, 640), torch.float32)],
-        {
-            "model_name": [
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate53,
+        Concatenate57,
         [
             ((256, 64, 3, 3), torch.float32),
             ((256, 64, 3, 3), torch.float32),
@@ -10950,34 +12250,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_monodle_base_obj_det_torchvision"], "pcc": 0.99, "op_params": {"axis": "-4"}},
     ),
     (
-        Concatenate54,
-        [((1, 3025, 64), torch.float32)],
-        {
-            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate55,
-        [((1, 50176, 3), torch.float32)],
-        {
-            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate0,
-        [((1, 50176, 256), torch.float32), ((1, 50176, 256), torch.float32)],
-        {
-            "model_name": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 768, 128, 128), torch.float32),
             ((1, 768, 128, 128), torch.float32),
@@ -10986,16 +12259,16 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 256, 128, 128), torch.float32),
             ((1, 256, 128, 128), torch.float32),
@@ -11004,15 +12277,15 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate56,
+        Concatenate58,
         [
             ((1, 4, 5776), torch.float32),
             ((1, 4, 2166), torch.float32),
@@ -11024,7 +12297,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate56,
+        Concatenate58,
         [
             ((1, 81, 5776), torch.float32),
             ((1, 81, 2166), torch.float32),
@@ -11036,43 +12309,59 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "op_params": {"axis": "-1"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 53, 56, 96), torch.float32), ((1, 3, 56, 96), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 56, 53, 96), torch.float32), ((1, 56, 3, 96), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 3, 56, 96), torch.float32), ((1, 53, 56, 96), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 56, 3, 96), torch.float32), ((1, 56, 53, 96), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate57,
+        Concatenate59,
         [
             ((1, 28, 28, 96), torch.float32),
             ((1, 28, 28, 96), torch.float32),
@@ -11080,49 +12369,69 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 28, 28, 96), torch.float32),
         ],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 25, 28, 192), torch.float32), ((1, 3, 28, 192), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 28, 25, 192), torch.float32), ((1, 28, 3, 192), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 3, 28, 192), torch.float32), ((1, 25, 28, 192), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 28, 3, 192), torch.float32), ((1, 28, 25, 192), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate57,
+        Concatenate59,
         [
             ((1, 14, 14, 192), torch.float32),
             ((1, 14, 14, 192), torch.float32),
@@ -11130,49 +12439,69 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 14, 14, 192), torch.float32),
         ],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 11, 14, 384), torch.float32), ((1, 3, 14, 384), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 14, 11, 384), torch.float32), ((1, 14, 3, 384), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 3, 14, 384), torch.float32), ((1, 11, 14, 384), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate2,
+        Concatenate6,
         [((1, 14, 3, 384), torch.float32), ((1, 14, 11, 384), torch.float32)],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate57,
+        Concatenate59,
         [
             ((1, 7, 7, 384), torch.float32),
             ((1, 7, 7, 384), torch.float32),
@@ -11180,78 +12509,183 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 7, 7, 384), torch.float32),
         ],
         {
-            "model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_name": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
+        [((1, 53, 56, 128), torch.float32), ((1, 3, 56, 128), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 56, 53, 128), torch.float32), ((1, 56, 3, 128), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 3, 56, 128), torch.float32), ((1, 53, 56, 128), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 56, 3, 128), torch.float32), ((1, 56, 53, 128), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate59,
+        [
+            ((1, 28, 28, 128), torch.float32),
+            ((1, 28, 28, 128), torch.float32),
+            ((1, 28, 28, 128), torch.float32),
+            ((1, 28, 28, 128), torch.float32),
+        ],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 25, 28, 256), torch.float32), ((1, 3, 28, 256), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 28, 25, 256), torch.float32), ((1, 28, 3, 256), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 3, 28, 256), torch.float32), ((1, 25, 28, 256), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 28, 3, 256), torch.float32), ((1, 28, 25, 256), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate59,
+        [
+            ((1, 14, 14, 256), torch.float32),
+            ((1, 14, 14, 256), torch.float32),
+            ((1, 14, 14, 256), torch.float32),
+            ((1, 14, 14, 256), torch.float32),
+        ],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 11, 14, 512), torch.float32), ((1, 3, 14, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 14, 11, 512), torch.float32), ((1, 14, 3, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 3, 14, 512), torch.float32), ((1, 11, 14, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate6,
+        [((1, 14, 3, 512), torch.float32), ((1, 14, 11, 512), torch.float32)],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate59,
+        [
+            ((1, 7, 7, 512), torch.float32),
+            ((1, 7, 7, 512), torch.float32),
+            ((1, 7, 7, 512), torch.float32),
+            ((1, 7, 7, 512), torch.float32),
+        ],
+        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "op_params": {"axis": "-1"}},
+    ),
+    (
+        Concatenate0,
         [((1, 256, 32, 32), torch.float32), ((1, 256, 32, 32), torch.float32)],
         {"model_name": ["pt_unet_base_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 64, 64), torch.float32), ((1, 128, 64, 64), torch.float32)],
         {"model_name": ["pt_unet_base_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 128, 128), torch.float32), ((1, 64, 128, 128), torch.float32)],
         {"model_name": ["pt_unet_base_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 32, 256, 256), torch.float32), ((1, 32, 256, 256), torch.float32)],
         {"model_name": ["pt_unet_base_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 512, 28, 28), torch.float32), ((1, 512, 28, 28), torch.float32)],
-        {"model_name": ["pt_unet_cityscape_img_seg_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": ["pt_unet_cityscape_img_seg_osmr", "pt_unet_carvana_base_img_seg_github"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 56, 56), torch.float32), ((1, 256, 56, 56), torch.float32)],
-        {"model_name": ["pt_unet_cityscape_img_seg_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": ["pt_unet_cityscape_img_seg_osmr", "pt_unet_carvana_base_img_seg_github"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 112, 112), torch.float32), ((1, 128, 112, 112), torch.float32)],
-        {"model_name": ["pt_unet_cityscape_img_seg_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": ["pt_unet_cityscape_img_seg_osmr", "pt_unet_carvana_base_img_seg_github"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 224, 224), torch.float32), ((1, 64, 224, 224), torch.float32)],
-        {"model_name": ["pt_unet_cityscape_img_seg_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": ["pt_unet_cityscape_img_seg_osmr", "pt_unet_carvana_base_img_seg_github"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 2048, 14, 14), torch.float32), ((1, 1024, 14, 14), torch.float32)],
         {"model_name": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 28, 28), torch.float32), ((1, 512, 28, 28), torch.float32)],
         {"model_name": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 56, 56), torch.float32), ((1, 256, 56, 56), torch.float32)],
         {"model_name": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 112, 112), torch.float32), ((1, 64, 112, 112), torch.float32)],
         {"model_name": ["pt_unet_qubvel_img_seg_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate2,
-        [((1, 1, 1024), torch.float32), ((1, 196, 1024), torch.float32)],
-        {"model_name": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "op_params": {"axis": "-2"}},
-    ),
-    (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 128, 56, 56), torch.float32),
             ((1, 128, 56, 56), torch.float32),
@@ -11262,17 +12696,18 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 256, 28, 28), torch.float32),
             ((1, 160, 28, 28), torch.float32),
@@ -11283,17 +12718,18 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 512, 14, 14), torch.float32),
             ((1, 192, 14, 14), torch.float32),
@@ -11304,17 +12740,18 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 768, 14, 14), torch.float32),
             ((1, 192, 14, 14), torch.float32),
@@ -11325,17 +12762,18 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 768, 7, 7), torch.float32),
             ((1, 224, 7, 7), torch.float32),
@@ -11346,17 +12784,18 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 1024, 7, 7), torch.float32),
             ((1, 224, 7, 7), torch.float32),
@@ -11367,17 +12806,86 @@ forge_modules_and_shapes_dtypes_list = [
         ],
         {
             "model_name": [
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_obj_det_osmr",
                 "pt_vovnet_vovnet57_obj_det_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                "pt_vovnet_vovnet39_obj_det_osmr",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate8,
+        Concatenate4,
+        [
+            ((1, 64, 56, 56), torch.float32),
+            ((1, 128, 56, 56), torch.float32),
+            ((1, 128, 56, 56), torch.float32),
+            ((1, 128, 56, 56), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 28, 28), torch.float32),
+            ((1, 160, 28, 28), torch.float32),
+            ((1, 160, 28, 28), torch.float32),
+            ((1, 160, 28, 28), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 512, 14, 14), torch.float32),
+            ((1, 192, 14, 14), torch.float32),
+            ((1, 192, 14, 14), torch.float32),
+            ((1, 192, 14, 14), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 768, 7, 7), torch.float32),
+            ((1, 224, 7, 7), torch.float32),
+            ((1, 224, 7, 7), torch.float32),
+            ((1, 224, 7, 7), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate13,
         [
             ((1, 128, 56, 56), torch.float32),
             ((1, 64, 56, 56), torch.float32),
@@ -11389,7 +12897,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 128, 28, 28), torch.float32),
             ((1, 80, 28, 28), torch.float32),
@@ -11401,7 +12909,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 256, 14, 14), torch.float32),
             ((1, 96, 14, 14), torch.float32),
@@ -11413,7 +12921,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate8,
+        Concatenate13,
         [
             ((1, 384, 7, 7), torch.float32),
             ((1, 112, 7, 7), torch.float32),
@@ -11425,506 +12933,12 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_vovnet_vovnet27s_obj_det_osmr"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
-        [
-            ((1, 64, 56, 56), torch.float32),
-            ((1, 128, 56, 56), torch.float32),
-            ((1, 128, 56, 56), torch.float32),
-            ((1, 128, 56, 56), torch.float32),
-        ],
-        {"model_name": ["pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 256, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 512, 14, 14), torch.float32),
-            ((1, 192, 14, 14), torch.float32),
-            ((1, 192, 14, 14), torch.float32),
-            ((1, 192, 14, 14), torch.float32),
-        ],
-        {"model_name": ["pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 768, 7, 7), torch.float32),
-            ((1, 224, 7, 7), torch.float32),
-            ((1, 224, 7, 7), torch.float32),
-            ((1, 224, 7, 7), torch.float32),
-        ],
-        {"model_name": ["pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate8,
-        [
-            ((1, 512, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-            ((1, 160, 28, 28), torch.float32),
-        ],
-        {"model_name": ["pt_vovnet_ese_vovnet99b_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 32, 320, 320), torch.float32), ((1, 32, 320, 320), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 160, 160), torch.float32), ((1, 64, 160, 160), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 80, 80), torch.float32), ((1, 128, 80, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 256, 40, 40), torch.float32), ((1, 256, 40, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 256, 40, 40), torch.float32),
-            ((1, 256, 40, 40), torch.float32),
-            ((1, 256, 40, 40), torch.float32),
-            ((1, 256, 40, 40), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 256, 80, 80), torch.float32), ((1, 256, 80, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_l_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 160, 160), torch.float32), ((1, 128, 160, 160), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 160, 160), torch.float32), ((3, 2, 160, 160), torch.float32), ((3, 81, 160, 160), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 160, 160), torch.float32), ((3, 83, 160, 160), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 80, 80), torch.float32), ((3, 2, 80, 80), torch.float32), ((3, 81, 80, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 80, 80), torch.float32), ((3, 83, 80, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 40, 40), torch.float32), ((3, 2, 40, 40), torch.float32), ((3, 81, 40, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 40, 40), torch.float32), ((3, 83, 40, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate58,
-        [((1, 76800, 85), torch.float32), ((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-2"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 80, 160, 160), torch.float32), ((1, 80, 160, 160), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 160, 80, 80), torch.float32), ((1, 160, 80, 80), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 320, 40, 40), torch.float32), ((1, 320, 40, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 640, 20, 20), torch.float32), ((1, 640, 20, 20), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 640, 20, 20), torch.float32),
-            ((1, 640, 20, 20), torch.float32),
-            ((1, 640, 20, 20), torch.float32),
-            ((1, 640, 20, 20), torch.float32),
-        ],
-        {
-            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 640, 40, 40), torch.float32), ((1, 640, 40, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 320, 80, 80), torch.float32), ((1, 320, 80, 80), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 20, 20), torch.float32), ((3, 2, 20, 20), torch.float32), ((3, 81, 20, 20), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 20, 20), torch.float32), ((3, 83, 20, 20), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate58,
-        [((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-2"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 80, 120, 120), torch.float32), ((1, 80, 120, 120), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 160, 60, 60), torch.float32), ((1, 160, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 320, 30, 30), torch.float32), ((1, 320, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 640, 15, 15), torch.float32), ((1, 640, 15, 15), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 640, 15, 15), torch.float32),
-            ((1, 640, 15, 15), torch.float32),
-            ((1, 640, 15, 15), torch.float32),
-            ((1, 640, 15, 15), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 640, 30, 30), torch.float32), ((1, 640, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 320, 60, 60), torch.float32), ((1, 320, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 60, 60), torch.float32), ((3, 2, 60, 60), torch.float32), ((3, 81, 60, 60), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 60, 60), torch.float32), ((3, 83, 60, 60), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 30, 30), torch.float32), ((3, 2, 30, 30), torch.float32), ((3, 81, 30, 30), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 30, 30), torch.float32), ((3, 83, 30, 30), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
-        [((3, 2, 15, 15), torch.float32), ((3, 2, 15, 15), torch.float32), ((3, 81, 15, 15), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((3, 2, 15, 15), torch.float32), ((3, 83, 15, 15), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate58,
-        [((1, 10800, 85), torch.float32), ((1, 2700, 85), torch.float32), ((1, 675, 85), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-2"},
-        },
-    ),
-    (
-        Concatenate4,
+        Concatenate0,
         [((1, 32, 120, 120), torch.float32), ((1, 32, 120, 120), torch.float32)],
         {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 60, 60), torch.float32), ((1, 64, 60, 60), torch.float32)],
         {
             "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480", "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"],
@@ -11933,7 +12947,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 30, 30), torch.float32), ((1, 128, 30, 30), torch.float32)],
         {
             "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480", "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"],
@@ -11942,12 +12956,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 15, 15), torch.float32), ((1, 256, 15, 15), torch.float32)],
         {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 256, 15, 15), torch.float32),
             ((1, 256, 15, 15), torch.float32),
@@ -11957,7 +12971,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 30, 30), torch.float32), ((1, 256, 30, 30), torch.float32)],
         {
             "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480", "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"],
@@ -11966,7 +12980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 60, 60), torch.float32), ((1, 128, 60, 60), torch.float32)],
         {
             "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_480x480", "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"],
@@ -11975,232 +12989,351 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [((1, 48, 80, 80), torch.float32), ((1, 48, 80, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 96, 40, 40), torch.float32), ((1, 96, 40, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 192, 20, 20), torch.float32), ((1, 192, 20, 20), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 384, 10, 10), torch.float32), ((1, 384, 10, 10), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 384, 10, 10), torch.float32),
-            ((1, 384, 10, 10), torch.float32),
-            ((1, 384, 10, 10), torch.float32),
-            ((1, 384, 10, 10), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 384, 20, 20), torch.float32), ((1, 384, 20, 20), torch.float32)],
+        Concatenate11,
+        [((3, 2, 60, 60), torch.float32), ((3, 2, 60, 60), torch.float32), ((3, 81, 60, 60), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
-        [((1, 192, 40, 40), torch.float32), ((1, 192, 40, 40), torch.float32)],
+        Concatenate0,
+        [((3, 2, 60, 60), torch.float32), ((3, 83, 60, 60), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
-        [((3, 2, 10, 10), torch.float32), ((3, 2, 10, 10), torch.float32), ((3, 81, 10, 10), torch.float32)],
+        Concatenate11,
+        [((3, 2, 30, 30), torch.float32), ((3, 2, 30, 30), torch.float32), ((3, 81, 30, 30), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
-        [((3, 2, 10, 10), torch.float32), ((3, 83, 10, 10), torch.float32)],
+        Concatenate0,
+        [((3, 2, 30, 30), torch.float32), ((3, 83, 30, 30), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate58,
-        [((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32), ((1, 300, 85), torch.float32)],
+        Concatenate11,
+        [((3, 2, 15, 15), torch.float32), ((3, 2, 15, 15), torch.float32), ((3, 81, 15, 15), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 15, 15), torch.float32), ((3, 83, 15, 15), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate60,
+        [((1, 10800, 85), torch.float32), ((1, 2700, 85), torch.float32), ((1, 675, 85), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_480x480",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_480x480",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-2"},
         },
     ),
     (
-        Concatenate4,
-        [((1, 16, 80, 80), torch.float32), ((1, 16, 80, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 80, 80, 80), torch.float32), ((1, 80, 80, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 160, 40, 40), torch.float32), ((1, 160, 40, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 20, 20), torch.float32), ((1, 320, 20, 20), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 10, 10), torch.float32), ((1, 640, 10, 10), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate4,
-        [((1, 32, 40, 40), torch.float32), ((1, 32, 40, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 20, 20), torch.float32), ((1, 64, 20, 20), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 10, 10), torch.float32), ((1, 128, 10, 10), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
         [
-            ((1, 128, 10, 10), torch.float32),
-            ((1, 128, 10, 10), torch.float32),
-            ((1, 128, 10, 10), torch.float32),
-            ((1, 128, 10, 10), torch.float32),
+            ((1, 640, 10, 10), torch.float32),
+            ((1, 640, 10, 10), torch.float32),
+            ((1, 640, 10, 10), torch.float32),
+            ((1, 640, 10, 10), torch.float32),
         ],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 128, 20, 20), torch.float32), ((1, 128, 20, 20), torch.float32)],
+        Concatenate0,
+        [((1, 640, 20, 20), torch.float32), ((1, 640, 20, 20), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolox_yolox_x_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
+        [((1, 320, 40, 40), torch.float32), ((1, 320, 40, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolox_yolox_x_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((3, 2, 40, 40), torch.float32), ((3, 2, 40, 40), torch.float32), ((3, 81, 40, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 40, 40), torch.float32), ((3, 83, 40, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((3, 2, 20, 20), torch.float32), ((3, 2, 20, 20), torch.float32), ((3, 81, 20, 20), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 20, 20), torch.float32), ((3, 83, 20, 20), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((3, 2, 10, 10), torch.float32), ((3, 2, 10, 10), torch.float32), ((3, 81, 10, 10), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 10, 10), torch.float32), ((3, 83, 10, 10), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate60,
+        [((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32), ((1, 300, 85), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 80, 80), torch.float32), ((1, 32, 80, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_320x320", "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
         [((1, 64, 40, 40), torch.float32), ((1, 64, 40, 40), torch.float32)],
         {
             "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
-        [((1, 16, 160, 160), torch.float32), ((1, 16, 160, 160), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 32, 80, 80), torch.float32), ((1, 32, 80, 80), torch.float32)],
+        Concatenate0,
+        [((1, 128, 20, 20), torch.float32), ((1, 128, 20, 20), torch.float32)],
         {
-            "model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640", "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320"],
+            "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_320x320",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate0,
+        [((1, 256, 10, 10), torch.float32), ((1, 256, 10, 10), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
         [
-            ((1, 128, 20, 20), torch.float32),
-            ((1, 128, 20, 20), torch.float32),
-            ((1, 128, 20, 20), torch.float32),
-            ((1, 128, 20, 20), torch.float32),
+            ((1, 256, 10, 10), torch.float32),
+            ((1, 256, 10, 10), torch.float32),
+            ((1, 256, 10, 10), torch.float32),
+            ((1, 256, 10, 10), torch.float32),
         ],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 128, 40, 40), torch.float32), ((1, 128, 40, 40), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 80, 80), torch.float32), ((1, 64, 80, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
-                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 32, 160, 160), torch.float32), ((1, 32, 160, 160), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640", "pt_yolox_yolox_s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 20, 20), torch.float32), ((1, 256, 20, 20), torch.float32)],
         {
             "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
                 "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
-                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
                 "pt_yolox_yolox_s_obj_det_torchhub",
             ],
             "pcc": 0.99,
@@ -12208,61 +13341,219 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate6,
-        [
-            ((1, 256, 20, 20), torch.float32),
-            ((1, 256, 20, 20), torch.float32),
-            ((1, 256, 20, 20), torch.float32),
-            ((1, 256, 20, 20), torch.float32),
-        ],
+        Concatenate0,
+        [((1, 128, 40, 40), torch.float32), ((1, 128, 40, 40), torch.float32)],
         {
-            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640", "pt_yolox_yolox_s_obj_det_torchhub"],
+            "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 120, 120), torch.float32), ((1, 64, 120, 120), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 15, 15), torch.float32), ((1, 512, 15, 15), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 512, 15, 15), torch.float32),
+            ((1, 512, 15, 15), torch.float32),
+            ((1, 512, 15, 15), torch.float32),
+            ((1, 512, 15, 15), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 30, 30), torch.float32), ((1, 512, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 60, 60), torch.float32), ((1, 256, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 48, 160, 160), torch.float32), ((1, 48, 160, 160), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 80, 80), torch.float32), ((1, 96, 80, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 40, 40), torch.float32), ((1, 192, 40, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolox_yolox_m_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 20, 20), torch.float32), ((1, 384, 20, 20), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_320x320",
+                "pt_yolox_yolox_m_obj_det_torchhub",
+            ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
         Concatenate4,
-        [((1, 48, 120, 120), torch.float32), ((1, 48, 120, 120), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 96, 60, 60), torch.float32), ((1, 96, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 192, 30, 30), torch.float32), ((1, 192, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 384, 15, 15), torch.float32), ((1, 384, 15, 15), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
         [
-            ((1, 384, 15, 15), torch.float32),
-            ((1, 384, 15, 15), torch.float32),
-            ((1, 384, 15, 15), torch.float32),
-            ((1, 384, 15, 15), torch.float32),
+            ((1, 384, 20, 20), torch.float32),
+            ((1, 384, 20, 20), torch.float32),
+            ((1, 384, 20, 20), torch.float32),
+            ((1, 384, 20, 20), torch.float32),
         ],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
-        [((1, 384, 30, 30), torch.float32), ((1, 384, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 384, 40, 40), torch.float32), ((1, 384, 40, 40), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
-        [((1, 192, 60, 60), torch.float32), ((1, 192, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 192, 80, 80), torch.float32), ((1, 192, 80, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
+        Concatenate11,
+        [((3, 2, 80, 80), torch.float32), ((3, 2, 80, 80), torch.float32), ((3, 81, 80, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 80, 80), torch.float32), ((3, 83, 80, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate60,
+        [((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32), ((1, 1200, 85), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5m_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5x_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-2"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 160, 160), torch.float32), ((1, 64, 160, 160), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 80, 80), torch.float32), ((1, 128, 80, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 40, 40), torch.float32), ((1, 256, 40, 40), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
         [((1, 512, 20, 20), torch.float32), ((1, 512, 20, 20), torch.float32)],
         {
             "model_name": [
@@ -12275,7 +13566,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 512, 20, 20), torch.float32),
             ((1, 512, 20, 20), torch.float32),
@@ -12285,15 +13576,15 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_name": [
                 "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
-                "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 512, 40, 40), torch.float32), ((1, 512, 40, 40), torch.float32)],
         {
             "model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_640x640", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -12302,231 +13593,430 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
-        [((1, 512, 10, 10), torch.float32), ((1, 512, 10, 10), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 512, 10, 10), torch.float32),
-            ((1, 512, 10, 10), torch.float32),
-            ((1, 512, 10, 10), torch.float32),
-            ((1, 512, 10, 10), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 80, 80, 80), torch.float32), ((1, 80, 80, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 160, 40, 40), torch.float32), ((1, 160, 40, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 320, 20, 20), torch.float32), ((1, 320, 20, 20), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 640, 10, 10), torch.float32), ((1, 640, 10, 10), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 640, 10, 10), torch.float32),
-            ((1, 640, 10, 10), torch.float32),
-            ((1, 640, 10, 10), torch.float32),
-            ((1, 640, 10, 10), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 120, 120), torch.float32), ((1, 64, 120, 120), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 512, 15, 15), torch.float32), ((1, 512, 15, 15), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 512, 15, 15), torch.float32),
-            ((1, 512, 15, 15), torch.float32),
-            ((1, 512, 15, 15), torch.float32),
-            ((1, 512, 15, 15), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 512, 30, 30), torch.float32), ((1, 512, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 256, 60, 60), torch.float32), ((1, 256, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 16, 120, 120), torch.float32), ((1, 16, 120, 120), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 32, 60, 60), torch.float32), ((1, 32, 60, 60), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 30, 30), torch.float32), ((1, 64, 30, 30), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 15, 15), torch.float32), ((1, 128, 15, 15), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 128, 15, 15), torch.float32),
-            ((1, 128, 15, 15), torch.float32),
-            ((1, 128, 15, 15), torch.float32),
-            ((1, 128, 15, 15), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 256, 10, 10), torch.float32), ((1, 256, 10, 10), torch.float32)],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 256, 10, 10), torch.float32),
-            ((1, 256, 10, 10), torch.float32),
-            ((1, 256, 10, 10), torch.float32),
-            ((1, 256, 10, 10), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 48, 160, 160), torch.float32), ((1, 48, 160, 160), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 96, 80, 80), torch.float32), ((1, 96, 80, 80), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 384, 20, 20), torch.float32),
-            ((1, 384, 20, 20), torch.float32),
-            ((1, 384, 20, 20), torch.float32),
-            ((1, 384, 20, 20), torch.float32),
-        ],
-        {
-            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 384, 40, 40), torch.float32), ((1, 384, 40, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate4,
-        [((1, 192, 80, 80), torch.float32), ((1, 192, 80, 80), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_640x640", "pt_yolox_yolox_m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 256, 14, 20), torch.float32),
-            ((1, 256, 14, 20), torch.float32),
-            ((1, 256, 14, 20), torch.float32),
-            ((1, 256, 14, 20), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 256, 14, 20), torch.float32), ((1, 256, 14, 20), torch.float32)],
+        Concatenate0,
+        [((1, 256, 80, 80), torch.float32), ((1, 256, 80, 80), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
-        [((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 128, 14, 20), torch.float32), ((1, 128, 14, 20), torch.float32)],
+        Concatenate0,
+        [((1, 80, 160, 160), torch.float32), ((1, 80, 160, 160), torch.float32)],
         {
-            "model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub", "pt_yolo_v6_yolov6n_obj_det_torchhub"],
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate59,
+        Concatenate0,
+        [((1, 160, 80, 80), torch.float32), ((1, 160, 80, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 640, 20, 20), torch.float32),
+            ((1, 640, 20, 20), torch.float32),
+            ((1, 640, 20, 20), torch.float32),
+            ((1, 640, 20, 20), torch.float32),
+        ],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 40, 40), torch.float32), ((1, 640, 40, 40), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 80, 80), torch.float32), ((1, 320, 80, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_640x640", "pt_yolox_yolox_x_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 160, 160), torch.float32), ((1, 32, 160, 160), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640", "pt_yolox_yolox_s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 80, 80), torch.float32), ((1, 64, 80, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v5_yolov5s_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5n_imgcls_torchhub_640x640",
+                "pt_yolo_v5_yolov5l_imgcls_torchhub_320x320",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 20, 20), torch.float32),
+            ((1, 256, 20, 20), torch.float32),
+            ((1, 256, 20, 20), torch.float32),
+            ((1, 256, 20, 20), torch.float32),
+        ],
+        {
+            "model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_640x640", "pt_yolox_yolox_s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 16, 160, 160), torch.float32), ((1, 16, 160, 160), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 20, 20), torch.float32),
+            ((1, 128, 20, 20), torch.float32),
+            ((1, 128, 20, 20), torch.float32),
+            ((1, 128, 20, 20), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_640x640"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 80, 120, 120), torch.float32), ((1, 80, 120, 120), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 160, 60, 60), torch.float32), ((1, 160, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 30, 30), torch.float32), ((1, 320, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 15, 15), torch.float32), ((1, 640, 15, 15), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 640, 15, 15), torch.float32),
+            ((1, 640, 15, 15), torch.float32),
+            ((1, 640, 15, 15), torch.float32),
+            ((1, 640, 15, 15), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 640, 30, 30), torch.float32), ((1, 640, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 320, 60, 60), torch.float32), ((1, 320, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5x_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 48, 80, 80), torch.float32), ((1, 48, 80, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 40, 40), torch.float32), ((1, 96, 40, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 20, 20), torch.float32), ((1, 192, 20, 20), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 10, 10), torch.float32), ((1, 384, 10, 10), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 384, 10, 10), torch.float32),
+            ((1, 384, 10, 10), torch.float32),
+            ((1, 384, 10, 10), torch.float32),
+            ((1, 384, 10, 10), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 10, 10), torch.float32), ((1, 512, 10, 10), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 512, 10, 10), torch.float32),
+            ((1, 512, 10, 10), torch.float32),
+            ((1, 512, 10, 10), torch.float32),
+            ((1, 512, 10, 10), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5l_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 320, 320), torch.float32), ((1, 32, 320, 320), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 256, 40, 40), torch.float32),
+            ((1, 256, 40, 40), torch.float32),
+            ((1, 256, 40, 40), torch.float32),
+            ((1, 256, 40, 40), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 160, 160), torch.float32), ((1, 128, 160, 160), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((3, 2, 160, 160), torch.float32), ((3, 2, 160, 160), torch.float32), ((3, 81, 160, 160), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((3, 2, 160, 160), torch.float32), ((3, 83, 160, 160), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate60,
+        [((1, 76800, 85), torch.float32), ((1, 19200, 85), torch.float32), ((1, 4800, 85), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5s_imgcls_torchhub_1280x1280"], "pcc": 0.99, "op_params": {"axis": "-2"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 48, 120, 120), torch.float32), ((1, 48, 120, 120), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 60, 60), torch.float32), ((1, 96, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 30, 30), torch.float32), ((1, 192, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 15, 15), torch.float32), ((1, 384, 15, 15), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 384, 15, 15), torch.float32),
+            ((1, 384, 15, 15), torch.float32),
+            ((1, 384, 15, 15), torch.float32),
+            ((1, 384, 15, 15), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 384, 30, 30), torch.float32), ((1, 384, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 60, 60), torch.float32), ((1, 192, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5m_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 16, 80, 80), torch.float32), ((1, 16, 80, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 40, 40), torch.float32), ((1, 32, 40, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 20, 20), torch.float32), ((1, 64, 20, 20), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 10, 10), torch.float32), ((1, 128, 10, 10), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 10, 10), torch.float32),
+            ((1, 128, 10, 10), torch.float32),
+            ((1, 128, 10, 10), torch.float32),
+            ((1, 128, 10, 10), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_320x320"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 16, 120, 120), torch.float32), ((1, 16, 120, 120), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 60, 60), torch.float32), ((1, 32, 60, 60), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 30, 30), torch.float32), ((1, 64, 30, 30), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 15, 15), torch.float32), ((1, 128, 15, 15), torch.float32)],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 15, 15), torch.float32),
+            ((1, 128, 15, 15), torch.float32),
+            ((1, 128, 15, 15), torch.float32),
+            ((1, 128, 15, 15), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v5_yolov5n_imgcls_torchhub_480x480"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate4,
+        [
+            ((1, 128, 14, 20), torch.float32),
+            ((1, 128, 14, 20), torch.float32),
+            ((1, 128, 14, 20), torch.float32),
+            ((1, 128, 14, 20), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 14, 20), torch.float32), ((1, 128, 14, 20), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub", "pt_yolo_v6_yolov6s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate11,
+        [((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((1, 32, 56, 80), torch.float32), ((1, 32, 56, 80), torch.float32), ((1, 32, 56, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 32, 28, 40), torch.float32), ((1, 32, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 14, 20), torch.float32), ((1, 64, 14, 20), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate61,
         [((1, 4, 4480), torch.float32), ((1, 4, 1120), torch.float32), ((1, 4, 280), torch.float32)],
         {
             "model_name": [
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
                 "pt_yolo_v6_yolov6n_obj_det_torchhub",
                 "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate5,
+        [((1, 5880, 2), torch.float32), ((1, 5880, 2), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v6_yolov6n_obj_det_torchhub",
+                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate61,
+        [((1, 80, 4480), torch.float32), ((1, 80, 1120), torch.float32), ((1, 80, 280), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v6_yolov6n_obj_det_torchhub",
+                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-1"},
+        },
+    ),
+    (
+        Concatenate62,
+        [((1, 5880, 4), torch.float32), ((1, 5880, 80), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v6_yolov6n_obj_det_torchhub",
+                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
@@ -12534,84 +14024,103 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate0,
-        [((1, 5880, 2), torch.float32), ((1, 5880, 2), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
-                "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate59,
-        [((1, 80, 4480), torch.float32), ((1, 80, 1120), torch.float32), ((1, 80, 280), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
-                "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate60,
-        [((1, 5880, 4), torch.float32), ((1, 5880, 80), torch.float32)],
-        {
-            "model_name": [
-                "pt_yolo_v6_yolov6s_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
-                "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_yolo_v6_yolov6m_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-1"},
-        },
-    ),
-    (
-        Concatenate4,
         [((1, 64, 112, 160), torch.float32), ((1, 64, 112, 160), torch.float32)],
         {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 56, 80), torch.float32), ((1, 128, 56, 80), torch.float32)],
         {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 256, 28, 40), torch.float32), ((1, 256, 28, 40), torch.float32)],
         {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 512, 14, 20), torch.float32), ((1, 512, 14, 20), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
         Concatenate4,
-        [((1, 512, 14, 20), torch.float32), ((1, 512, 14, 20), torch.float32)],
+        [
+            ((1, 384, 14, 20), torch.float32),
+            ((1, 384, 14, 20), torch.float32),
+            ((1, 384, 14, 20), torch.float32),
+            ((1, 384, 14, 20), torch.float32),
+        ],
+        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate11,
+        [((1, 192, 28, 40), torch.float32), ((1, 192, 28, 40), torch.float32), ((1, 192, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32)],
         {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate11,
+        [((1, 96, 56, 80), torch.float32), ((1, 96, 56, 80), torch.float32), ((1, 96, 56, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32)],
+        {
+            "model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate0,
+        [((1, 96, 28, 40), torch.float32), ((1, 96, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 192, 14, 20), torch.float32), ((1, 192, 14, 20), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+    ),
+    (
+        Concatenate0,
+        [((1, 256, 14, 20), torch.float32), ((1, 256, 14, 20), torch.float32)],
+        {
+            "model_name": [
+                "pt_yolo_v6_yolov6m_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
+                "pt_yolo_v6_yolov6s_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
+    ),
+    (
+        Concatenate4,
         [
             ((1, 512, 14, 20), torch.float32),
             ((1, 512, 14, 20), torch.float32),
@@ -12621,174 +14130,112 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 256, 28, 40), torch.float32), ((1, 256, 28, 40), torch.float32), ((1, 256, 28, 40), torch.float32)],
         {"model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 128, 56, 80), torch.float32), ((1, 128, 56, 80), torch.float32), ((1, 128, 56, 80), torch.float32)],
         {"model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
         Concatenate4,
-        [((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32)],
-        {
-            "model_name": ["pt_yolo_v6_yolov6l_obj_det_torchhub", "pt_yolo_v6_yolov6m_obj_det_torchhub"],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate6,
         [
-            ((1, 128, 14, 20), torch.float32),
-            ((1, 128, 14, 20), torch.float32),
-            ((1, 128, 14, 20), torch.float32),
-            ((1, 128, 14, 20), torch.float32),
+            ((1, 256, 14, 20), torch.float32),
+            ((1, 256, 14, 20), torch.float32),
+            ((1, 256, 14, 20), torch.float32),
+            ((1, 256, 14, 20), torch.float32),
         ],
-        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
-        [((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate11,
+        [((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32), ((1, 128, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
-        [((1, 32, 56, 80), torch.float32), ((1, 32, 56, 80), torch.float32), ((1, 32, 56, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate11,
+        [((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32), ((1, 64, 56, 80), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 32, 28, 40), torch.float32), ((1, 32, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 64, 28, 40), torch.float32), ((1, 64, 28, 40), torch.float32)],
+        {"model_name": ["pt_yolo_v6_yolov6s_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
-        [((1, 64, 14, 20), torch.float32), ((1, 64, 14, 20), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6n_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 256, 40, 40), torch.float32), ((1, 512, 40, 40), torch.float32)],
+        {"model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
-        [
-            ((1, 384, 14, 20), torch.float32),
-            ((1, 384, 14, 20), torch.float32),
-            ((1, 384, 14, 20), torch.float32),
-            ((1, 384, 14, 20), torch.float32),
-        ],
-        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        Concatenate0,
+        [((1, 128, 80, 80), torch.float32), ((1, 256, 80, 80), torch.float32)],
+        {"model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
-        [((1, 192, 28, 40), torch.float32), ((1, 192, 28, 40), torch.float32), ((1, 192, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate5,
-        [((1, 96, 56, 80), torch.float32), ((1, 96, 56, 80), torch.float32), ((1, 96, 56, 80), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 96, 28, 40), torch.float32), ((1, 96, 28, 40), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
-        [((1, 192, 14, 20), torch.float32), ((1, 192, 14, 20), torch.float32)],
-        {"model_name": ["pt_yolo_v6_yolov6m_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate6,
-        [
-            ((1, 3, 320, 320), torch.float32),
-            ((1, 3, 320, 320), torch.float32),
-            ((1, 3, 320, 320), torch.float32),
-            ((1, 3, 320, 320), torch.float32),
-        ],
-        {
-            "model_name": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "op_params": {"axis": "-3"},
-        },
-    ),
-    (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 80, 80), torch.float32), ((1, 1, 80, 80), torch.float32), ((1, 80, 80, 80), torch.float32)],
         {
             "model_name": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 40, 40), torch.float32), ((1, 1, 40, 40), torch.float32), ((1, 80, 40, 40), torch.float32)],
         {
             "model_name": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 20, 20), torch.float32), ((1, 1, 20, 20), torch.float32), ((1, 80, 20, 20), torch.float32)],
         {
             "model_name": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-3"},
         },
     ),
     (
-        Concatenate59,
+        Concatenate61,
         [((1, 85, 6400), torch.float32), ((1, 85, 1600), torch.float32), ((1, 85, 400), torch.float32)],
         {
             "model_name": [
-                "pt_yolox_yolox_l_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_x_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "op_params": {"axis": "-1"},
         },
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 3, 208, 208), torch.float32),
             ((1, 3, 208, 208), torch.float32),
@@ -12802,22 +14249,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 24, 104, 104), torch.float32), ((1, 24, 104, 104), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 48, 52, 52), torch.float32), ((1, 48, 52, 52), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 96, 26, 26), torch.float32), ((1, 96, 26, 26), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 192, 13, 13), torch.float32),
             ((1, 192, 13, 13), torch.float32),
@@ -12827,22 +14274,22 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 192, 13, 13), torch.float32), ((1, 192, 13, 13), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 192, 26, 26), torch.float32), ((1, 192, 26, 26), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 96, 52, 52), torch.float32), ((1, 96, 52, 52), torch.float32)],
         {"model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 52, 52), torch.float32), ((1, 1, 52, 52), torch.float32), ((1, 80, 52, 52), torch.float32)],
         {
             "model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -12851,7 +14298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 26, 26), torch.float32), ((1, 1, 26, 26), torch.float32), ((1, 80, 26, 26), torch.float32)],
         {
             "model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -12860,7 +14307,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate5,
+        Concatenate11,
         [((1, 4, 13, 13), torch.float32), ((1, 1, 13, 13), torch.float32), ((1, 80, 13, 13), torch.float32)],
         {
             "model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -12869,7 +14316,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Concatenate59,
+        Concatenate61,
         [((1, 85, 2704), torch.float32), ((1, 85, 676), torch.float32), ((1, 85, 169), torch.float32)],
         {
             "model_name": ["pt_yolox_yolox_tiny_obj_det_torchhub", "pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -12879,31 +14326,40 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Concatenate4,
-        [((1, 256, 40, 40), torch.float32), ((1, 512, 40, 40), torch.float32)],
-        {"model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
+        [
+            ((1, 3, 320, 320), torch.float32),
+            ((1, 3, 320, 320), torch.float32),
+            ((1, 3, 320, 320), torch.float32),
+            ((1, 3, 320, 320), torch.float32),
+        ],
+        {
+            "model_name": [
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_l_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "op_params": {"axis": "-3"},
+        },
     ),
     (
-        Concatenate4,
-        [((1, 128, 80, 80), torch.float32), ((1, 256, 80, 80), torch.float32)],
-        {"model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
-    ),
-    (
-        Concatenate4,
+        Concatenate0,
         [((1, 16, 104, 104), torch.float32), ((1, 16, 104, 104), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 32, 52, 52), torch.float32), ((1, 32, 52, 52), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 26, 26), torch.float32), ((1, 64, 26, 26), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate6,
+        Concatenate4,
         [
             ((1, 128, 13, 13), torch.float32),
             ((1, 128, 13, 13), torch.float32),
@@ -12913,17 +14369,17 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 13, 13), torch.float32), ((1, 128, 13, 13), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 128, 26, 26), torch.float32), ((1, 128, 26, 26), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
     (
-        Concatenate4,
+        Concatenate0,
         [((1, 64, 52, 52), torch.float32), ((1, 64, 52, 52), torch.float32)],
         {"model_name": ["pt_yolox_yolox_nano_obj_det_torchhub"], "pcc": 0.99, "op_params": {"axis": "-3"}},
     ),
@@ -12932,15 +14388,22 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, record_forge_property):
-    record_forge_property("tags.op_name", "Concatenate")
+def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Concatenate")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        record_forge_property("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -12963,6 +14426,14 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        forge_property_handler=forge_property_recorder,
+    )

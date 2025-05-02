@@ -8,9 +8,8 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mediapipepytorch.blazebase import denormalize_detections, resize_pad
@@ -24,9 +23,9 @@ from test.models.utils import Framework, Source, Task, build_module_name
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_detector_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_blazepose_detector_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="blazepose",
         variant="detector",
@@ -35,8 +34,7 @@ def test_blazepose_detector_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load BlazePose Detector
     framework_model = BlazePose()
@@ -54,18 +52,20 @@ def test_blazepose_detector_pytorch(record_forge_property):
     inputs = [img2]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blazepose_regressor_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_blazepose_regressor_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="blazepose",
         variant="regressor",
@@ -74,8 +74,7 @@ def test_blazepose_regressor_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load BlazePose Landmark Regressor
     framework_model = BlazePoseLandmark()
@@ -84,24 +83,25 @@ def test_blazepose_regressor_pytorch(record_forge_property):
     inputs = [torch.rand(1, 3, 256, 256)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_palm_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_blaze_palm_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="blazepose", variant="palm", task=Task.OBJECT_DETECTION, source=Source.GITHUB
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load BlazePalm Detector
     framework_model = BlazePalm()
@@ -120,24 +120,25 @@ def test_blaze_palm_pytorch(record_forge_property):
     inputs = [img2]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_blaze_hand_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_blaze_hand_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="blazepose", variant="hand", task=Task.OBJECT_DETECTION, source=Source.GITHUB
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load BlazePalm Detector
     framework_model = BlazeHandLandmark()
@@ -146,7 +147,9 @@ def test_blaze_hand_pytorch(record_forge_property):
     inputs = [torch.rand(1, 3, 256, 256)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

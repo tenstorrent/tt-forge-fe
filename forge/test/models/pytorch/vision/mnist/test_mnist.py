@@ -4,18 +4,17 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mnist.utils.utils import load_input, load_model
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="ttir.softmax op requires attribute 'dimension'")
-def test_mnist(record_forge_property):
+def test_mnist(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mnist",
         source=Source.GITHUB,
@@ -23,15 +22,16 @@ def test_mnist(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = load_model()
     inputs = load_input()
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

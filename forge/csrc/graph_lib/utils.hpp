@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#pragma clang diagnostic pop
 
 #include <functional>
 #include <string_view>
@@ -46,7 +50,6 @@ bool default_node_filter(Node *);
 
 // Checks if given opnode is element-wise
 class OpNode;
-bool is_eltwise(const OpNode *op);
 bool is_eltwise_nary(const OpNode *op);
 bool is_eltwise_unary(const OpNode *op);
 bool is_eltwise_binary(const OpNode *op);

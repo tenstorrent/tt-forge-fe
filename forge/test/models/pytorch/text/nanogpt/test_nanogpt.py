@@ -7,9 +7,8 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 # Wrapper to get around attention mask
@@ -28,14 +27,14 @@ class Wrapper(torch.nn.Module):
     [
         pytest.param(
             "FinancialSupport/NanoGPT",
-            marks=pytest.mark.xfail(reason="RuntimeError: Tensor 6 - data type mismatch: expected Float32, got UInt8"),
+            marks=pytest.mark.xfail,
         ),
     ],
 )
-def test_nanogpt_text_generation(record_forge_property, variant):
+def test_nanogpt_text_generation(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="nanogpt",
         variant=variant,
@@ -44,8 +43,7 @@ def test_nanogpt_text_generation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load the model
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -74,7 +72,8 @@ def test_nanogpt_text_generation(record_forge_property, variant):
         framework_model,
         inputs,
         module_name=module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

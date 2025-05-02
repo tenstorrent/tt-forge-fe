@@ -706,19 +706,24 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
     channel_last = int(node["attrs"]["data_layout"][0][0] == "NHWC")
     args.append(("channel_last", f"{channel_last}"))
 
+    output_padding = [int(opad) for opad in node["attrs"]["output_padding"][0]]
+    args.append(("output_padding", f"{output_padding}"))
+
     return args
 
 
 def populate_argmax_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
+    args = []
 
-    dim = int(node["attrs"]["axis"][0][0])
-    if dim >= 0:
-        dim -= len(list(graph["nodes"][nid]["forge_shape"]))
+    # Handle the case where axis is not None (None is represented as empty string in TVM)
+    if node["attrs"]["axis"][0][0] != "":
+        dim = int(node["attrs"]["axis"][0][0])
+        args.append(("dim", f"{dim}"))
 
-    args = [
-        ("dim", f"{dim}"),
-    ]
+    keep_dim = bool(int(node["attrs"]["keepdims"][0][0]))
+    args.append(("keep_dim", f"{keep_dim}"))
+
     return args
 
 
@@ -1391,44 +1396,14 @@ def populate_pad_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     pad_width = [int(x) for x in node["attrs"]["pad_width"][0]]
     shape = node["attrs"]["shape"][0][0]
-    channel_last = False
 
     mode = node["attrs"]["pad_mode"][0][0]
-    assert mode in ["constant", "edge", "reflect"], "Forge pad only support constant/replicate/reflect padding for now"
-    if len(shape) > 2:
-        # Forge Pad only supports padding on last 2 dims
-        assert len(pad_width) == len(shape) * 2
-        assert all([x == 0 for x in pad_width[0:-6]]), "Forge Pad does not support padding on W dim"
-        assert all([x == 0 for x in pad_width[-6:-4]]) or all(
-            [x == 0 for x in pad_width[-2:]]
-        ), "Forge only support Z dim padding for channel-last inputs"
-        if any([x != 0 for x in pad_width[-6:-4]]):
-            pad_width = pad_width[-6:-2]
-            channel_last = True
-        else:
-            pad_width = pad_width[-4:]
-
-    # TVM nn.pad axis start from the last axis, need to swap
-    pad_width_by_axis = [pad_width[x : x + 2] for x in range(0, len(pad_width), 2)]
-    pad_width_by_axis.reverse()
-    pad_width_final = [item for axis in pad_width_by_axis for item in axis]
-
-    if len(pad_width_final) == 2:
-        args.append(
-            (
-                "pad",
-                f"({pad_width_final[0]}, {pad_width_final[1]})",
-            )
+    args.append(
+        (
+            "pad",
+            f"{tuple(pad_width)}",
         )
-    elif len(pad_width_final) == 4:
-        args.append(
-            (
-                "pad",
-                f"({pad_width_final[0]}, {pad_width_final[1]}, {pad_width_final[2]}, {pad_width_final[3]})",
-            )
-        )
-    else:
-        assert False
+    )
 
     tvm_pad_mode_to_forge_mode = {
         "constant": "constant",
@@ -1444,8 +1419,8 @@ def populate_pad_args(graph, nid, compiler_cfg):
     )
     args.append(
         (
-            "channel_last",
-            f"{channel_last}",
+            "pad_len",
+            f"{len(pad_width)}",
         )
     )
 
@@ -1941,7 +1916,7 @@ def verify_framework_vs_forge_codegen(frame_outputs, forge_outputs, verify_cfg):
     test_pass = True
     for i, (golden, output) in enumerate(zip(frame_outputs, forge_outputs)):
         test_pass &= compare_tensor_to_golden(
-            f"Framework vs. Forge codegen output {i}", golden, output.value(), is_forge=False, verify_cfg=verify_cfg
+            f"Framework vs. Forge codegen output {i}", golden, output.value(), verify_cfg=verify_cfg
         )
 
         assert test_pass, f"Data mismatch on output {i} between framework and Forge codegen"
@@ -2009,7 +1984,14 @@ def load_writers_metadata(module_name, inputs):
 
 
 def generate_forge_module(
-    framework_mod, inputs, compiler_cfg=None, graph_name=None, verify_cfg=None, clean_later=False, input_names=[]
+    framework_mod,
+    inputs,
+    compiler_cfg=None,
+    graph_name=None,
+    verify_cfg=None,
+    clean_later=False,
+    input_names=[],
+    forge_property_handler=None,
 ):
     global counter
 
@@ -2043,6 +2025,7 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
+            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2098,7 +2081,14 @@ def generate_forge_module(
 
 
 def compile_tvm_to_python(
-    framework_mod, graph_name, inputs, module_name=None, compiler_cfg=None, verify_cfg=None, input_names=[]
+    framework_mod,
+    graph_name,
+    inputs,
+    module_name=None,
+    compiler_cfg=None,
+    verify_cfg=None,
+    input_names=[],
+    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2106,7 +2096,7 @@ def compile_tvm_to_python(
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
     framework = get_framework(framework_mod)
-    if framework == "pytorch":
+    if framework in ["pytorch", "paddle"]:
         if is_training:
             framework_mod.module.train()
             verify_cfg.verify_tvm_compile = False
@@ -2116,7 +2106,9 @@ def compile_tvm_to_python(
 
     # Path is needed for TFLite model verification against TVM compile.
     path = None
-    if isinstance(framework_mod, TFLiteModule):
+    if isinstance(framework_mod, OnnxModule):
+        path = framework_mod.onnx_path
+    elif isinstance(framework_mod, TFLiteModule):
         path = framework_mod.tflite_path
 
     # Load here to avoid importing tvm unnecessarily when this file is loaded
@@ -2131,6 +2123,7 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
+        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):
@@ -2607,9 +2600,7 @@ def compile_tvm_to_python(
             current_module_name += f"_{json_graph['device']}_{graph_index}"
 
         if json_graph["device"] == "tt":
-            delete_inputs = not (
-                (verify_cfg is not None and verify_cfg.verify_all) or compiler_cfg.enable_op_level_comparision
-            )
+            delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
                     "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"
@@ -2715,48 +2706,51 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if framework == "pytorch":
+        if (framework in ["pytorch", "paddle", "onnx"] and compiler_cfg.extract_tvm_unique_ops_config) or (
+            framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
+        ):
 
-            # Generate unique op tests based on requested model. Currently only supported
-            # for PyTorch framework.
-            if compiler_cfg.extract_tvm_unique_ops_config or compiler_cfg.tvm_generate_unique_ops_tests:
-
-                # Commenting the below verification between framework outputs and generated forge module outputs
-                # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
-
-                # file_path = os.path.join(writer.module_directory, writer.filename)
-                # module = import_from_path(writer.module_name, file_path)
-
-                # TestClass = getattr(module, writer.class_name)
-                # forge_mod = TestClass(writer.module_name)
-                # forge_mod.process_framework_parameters(framework_mod.module)
-
-                # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
-                # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
-                # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
-
-                extract_and_generate_unique_ops_tests(
-                    framework_mod,
-                    ops,
-                    current_module_name,
-                    framework,
-                    contains_incompatible_np_floats,
-                    node_name_to_node_type,
-                    params,
-                    constants,
-                    param_names,
-                    param_file_name,
-                    compiler_cfg,
-                    writer.module_directory,
+            if compiler_cfg.extract_tvm_unique_ops_config and compiler_cfg.tvm_generate_unique_ops_tests:
+                raise ValueError(
+                    "Both extract_tvm_unique_ops_config and tvm_generate_unique_ops_tests should not be enabled at the same time."
                 )
 
-                # Exit python progrems without error
-                # - Two different exit methods depending on whether compile is run using
-                # pytest, or as a standalone python script
-                if "pytest" in sys.modules:
-                    pytest.exit("Exiting test without error", returncode=0)
-                else:
-                    sys.exit(0)
+            # Commenting the below verification between framework outputs and generated forge module outputs
+            # because most of the models are failing with the pcc issue which leads to skip the models in model analysis
+
+            # file_path = os.path.join(writer.module_directory, writer.filename)
+            # module = import_from_path(writer.module_name, file_path)
+
+            # TestClass = getattr(module, writer.class_name)
+            # forge_mod = TestClass(writer.module_name)
+            # forge_mod.process_framework_parameters(framework_mod.module)
+
+            # framework_outputs = framework_mod.cpu_eval_forward(*inputs)
+            # forge_outputs = get_forge_outputs([forge_mod], ["TTDevice"], forge_inputs)
+            # verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+
+            extract_and_generate_unique_ops_tests(
+                framework_mod,
+                ops,
+                current_module_name,
+                framework,
+                contains_incompatible_np_floats,
+                node_name_to_node_type,
+                params,
+                constants,
+                param_names,
+                param_file_name,
+                compiler_cfg,
+                writer.module_directory,
+            )
+
+            # Exit python progrems without error
+            # - Two different exit methods depending on whether compile is run using
+            # pytest, or as a standalone python script
+            if "pytest" in sys.modules:
+                pytest.exit("Exiting test without error", returncode=0)
+            else:
+                sys.exit(0)
 
     if compiler_cfg.retain_tvm_python_files:
         save_writers_metadata(modules, flattened_pytorch_inputs, forge_inputs, graph_name)

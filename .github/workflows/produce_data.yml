@@ -4,12 +4,11 @@ run-name: "Collect data for run_id ${{ github.event.workflow_run.id }} attempt $
 on:
   workflow_run:
     workflows: # List workflow that we want to collect data for
-      - "Build and Test"
       - "On PR"
       - "On push"
       - "On nightly"
-      - "On nightly_sweeps"
-      - "On Nightly Models Ops"
+      - "Test"
+      - "Performance benchmark"
     types:
       - completed
 

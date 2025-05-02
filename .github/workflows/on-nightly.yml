@@ -2,39 +2,156 @@ name: On nightly
 
 on:
   workflow_dispatch:
+    inputs:
+      rebuild:
+        description: 'Rebuild the Forge'
+        required: false
+        default: false
+        type: boolean
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: "2"
+        type: choice
+        options:
+          - "1"
+          - "2"
+          - "3"
+          - "4"
+          - "8"
+      run_ops_sweeps:
+        description: 'Run models ops and sweeps tests'
+        required: false
+        default: 'No'
+        type: choice
+        options:
+          - 'Yes'
+          - 'No'
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
+
   docker-build:
-      uses: ./.github/workflows/build-image.yml
-      secrets: inherit
+    uses: ./.github/workflows/build-image.yml
+    secrets: inherit
+
+  set-inputs:
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild: ${{ steps.set-inputs.outputs.rebuild }}
+      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
+      test_group_ids_os: ${{ steps.set-inputs.outputs.test_group_ids_os }}
+      run_ops_sweeps: ${{ steps.set-inputs.outputs.run_ops_sweeps }}
+    steps:
+      - name: Set Inputs
+        id: set-inputs
+        run: |
+          default_test_group_cnt=10
+          default_run_ops_sweeps=Yes
+
+          ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
+          if [ -z "${{ inputs.rebuild }}" ]; then
+            echo "rebuild=All" >> $GITHUB_OUTPUT
+          else
+            echo "rebuild=$(if [ ${{ inputs.rebuild }} == 'true' ]; then echo Release; else echo None; fi)" >> $GITHUB_OUTPUT
+          fi
+          tgc=$(if [ -z "${{ inputs.test_group_cnt }}" ]; then echo $default_test_group_cnt; else echo ${{ inputs.test_group_cnt }}; fi)
+          test_group_ids=$(seq -s ',' 1 $tgc)
+          echo "test_group_cnt=$tgc" >> $GITHUB_OUTPUT
+          echo "test_group_ids=[$test_group_ids]" >> $GITHUB_OUTPUT
+          echo "test_group_ids_os=[$test_group_ids]" >> $GITHUB_OUTPUT
+          #echo "test_group_ids_os=[$(if [ $ros_res == 'No' ]; then echo; else echo $test_group_ids; fi)]" >> $GITHUB_OUTPUT
+          echo "run_ops_sweeps=$(if [ $ros_res == 'No' ]; then echo; else echo true; fi)" >> $GITHUB_OUTPUT
+
   build:
-    needs: docker-build
+    needs:
+      - docker-build
+      - set-inputs
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      build: ${{ needs.set-inputs.outputs.rebuild }}
+
   test_full_model_passing:
+    if: success() || failure()
     needs:
+      - set-inputs
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'nightly and not xfail'
-      test_group_cnt: 4
-      test_group_ids: '[1,2,3,4]'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
+      run_id: ${{ needs.build.outputs.run_id }}
+
   perf-benchmark:
+    if: success() || failure()
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/perf-benchmark.yml
+      - set-inputs
+    uses: ./.github/workflows/perf-benchmark-sub.yml
     secrets: inherit
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+
+  test_full_model_xfailing:
+    if: success() || failure()
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "n150"}]'
+
+  test_models_ops:
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_models_ops'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      allow-fail: true
+
+  test_sweeps:
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_sweeps'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "n150"}]'
+      allow-fail: true
 
   fail-notify:
     if: always()
@@ -43,6 +160,9 @@ jobs:
       - build
       - test_full_model_passing
       - perf-benchmark
+      - test_full_model_xfailing
+      - test_models_ops
+      - test_sweeps
     runs-on: Ubuntu-latest
     outputs:
       is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
@@ -53,9 +173,11 @@ jobs:
         run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
       - name: Check if the needed jobs succeeded or failed
         id: check
-        uses: re-actors/alls-green@release/v1
+        uses: re-actors/alls-green@v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-failures: test_models_ops, test_sweeps
+          allowed-skips: test_models_ops, test_sweeps
 
   fail-send-msg:
     if: always()
@@ -69,7 +191,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>",
+              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
               "channel": "C08HFLL9L56"
             }
         env:

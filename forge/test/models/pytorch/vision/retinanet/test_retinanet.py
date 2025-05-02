@@ -9,12 +9,12 @@ import pytest
 import requests
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.utils.model import Model
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     "retinanet_rn18fpn",
@@ -27,11 +27,11 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_retinanet(record_forge_property, variant):
+def test_retinanet(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="retinanet",
         variant=variant,
@@ -40,8 +40,7 @@ def test_retinanet(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
@@ -71,10 +70,12 @@ def test_retinanet(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)
@@ -87,14 +88,12 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: Couldn't load custom C++ ops. This can happen if your PyTorch and torchvision versions are incompatible, or if you had errors while compiling torchvision from source"
-)
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_retinanet_torchvision(record_forge_property, variant):
+def test_retinanet_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="retinanet",
         variant=variant,
@@ -103,15 +102,16 @@ def test_retinanet_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

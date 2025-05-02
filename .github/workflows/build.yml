@@ -7,6 +7,16 @@ on:
         description: 'Git SHA of commit in tenstorrent/tt-mlir or branch name'
         required: false
         type: string
+      build:
+        description: 'Build type (Release or Debug)'
+        required: false
+        default: 'All'
+        type: choice
+        options:
+          - All      # Build both Release and Debug
+          - Release
+          - Debug
+          - None     # Build nothing
   workflow_call:
     inputs:
       mlir_override:
@@ -17,6 +27,15 @@ on:
         description: 'Docker image to use for build'
         required: true
         type: string
+      build:
+        description: 'Build type (Release, Debug, All)'
+        required: false
+        default: 'All'
+        type: string
+    outputs:
+      run_id:
+        description: 'Run id the workflow where to find installation (or undefined if build is not successful)'
+        value: ${{ jobs.build-conclusion.outputs.run_id }}
 
 permissions:
   packages: write
@@ -26,16 +45,16 @@ permissions:
 jobs:
 
   forge-build:
+    if: ${{ inputs.build == 'All' || inputs.build == 'Release' }}
 
     strategy:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Release },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Release },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -116,15 +135,16 @@ jobs:
 
 
   unit-test-build:
+    if: ${{ inputs.build == 'All' || inputs.build == 'Debug' }}
+
     strategy:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Debug },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Debug },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -167,11 +187,30 @@ jobs:
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
 
+      - name: Update submodule if mlir_override is set
+        if: ${{ inputs.mlir_override }}
+        run: |
+          cd third_party/tt-mlir
+          git fetch
+          git checkout ${{ inputs.mlir_override }}
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          commit_sha=$(git rev-parse HEAD)
+          commit_title=$(git log -1 --pretty=%s)
+          echo "Branch name: $branch_name"
+          echo "Commit SHA: $commit_sha"
+          echo "Commit title: $commit_title"
+          echo "::notice::Using tt-mlir branch: $branch_name, commit: $commit_sha, title: $commit_title"
+          cd ../..
+
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           create-symlink: true
+          max-size: 900M
           key: forge-build-${{ matrix.build.build-type }}
+        env:
+          CCACHE_NOHASHDIR: true
+          CCACHE_BASEDIR: ${{ steps.strings.outputs.work-dir }}
 
       - name: Debug Build
         shell: bash
@@ -208,10 +247,21 @@ jobs:
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Upload test results to Codecov
-        if: success() || failure()
-        uses: codecov/test-results-action@v1
-        with:
-          files: ${{ steps.strings.outputs.test_report_path }}
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+  build-conclusion:
+    needs: [forge-build, unit-test-build]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.conclusion.outputs.run_id }}
+    steps:
+      - name: Echo conclusion
+        id: conclusion
+        shell: bash
+        run: |
+          if [ "${{ needs.forge-build.result }}" == "success" ]; then
+            echo "Forge wheel is available"
+            echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
+          else
+            echo "Forge wheel is NOT available"
+            echo "run_id=" >> $GITHUB_OUTPUT
+          fi

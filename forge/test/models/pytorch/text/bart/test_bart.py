@@ -8,9 +8,9 @@ from transformers import BartForSequenceClassification, BartTokenizer
 from transformers.models.bart.modeling_bart import shift_tokens_right
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -30,17 +30,13 @@ class BartWrapper(torch.nn.Module):
     [
         pytest.param(
             "facebook/bart-large-mnli",
-            marks=[
-                pytest.mark.xfail(
-                    reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
-                )
-            ],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
-def test_pt_bart_classifier(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_pt_bart_classifier(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bart",
         variant=variant,
@@ -49,8 +45,7 @@ def test_pt_bart_classifier(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
@@ -76,7 +71,9 @@ def test_pt_bart_classifier(record_forge_property, variant):
     framework_model = BartWrapper(model.model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

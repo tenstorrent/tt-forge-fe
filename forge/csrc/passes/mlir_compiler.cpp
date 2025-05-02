@@ -11,15 +11,17 @@
 
 // Forge headers
 #include "graph_lib/graph.hpp"
+#include "nlohmann/json.hpp"
+#include "shared_utils/forge_property_utils.hpp"
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #include "graph_lib/node_types.hpp"
 #pragma clang diagnostic pop
+#include "utils/logger.hpp"
 
 // MLIR headers
 #include "mlir/Dialect/Func/Extensions/InlinerExtension.h"
 #include "mlir/IR/BuiltinOps.h"
-#include "utils/logger.hpp"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-local-typedef"
@@ -44,7 +46,10 @@ namespace tt::passes
 
 // Template function to run the MLIR compiler pipeline, depending on the desired output.
 template <MLIROutputKind output>
-auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
+auto run_mlir_compiler_generic(
+    tt::ForgeGraphModule& module,
+    const std::optional<MLIRConfig>& mlir_config,
+    const std::optional<py::object>& forge_property_handler)
 {
     // Register all the required dialects.
     mlir::DialectRegistry registry;
@@ -78,8 +83,11 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
     // Generate MLIR from the Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
+    tt::property::record_execution_depth(
+        tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION, forge_property_handler);
+
     // Run MLIR pipeline.
-    run_mlir_passes<output>(mlir_module);
+    run_mlir_passes<output>(mlir_module, mlir_config);
 
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
@@ -98,6 +106,11 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
         {
             throw std::runtime_error("Failed to generate flatbuffer binary.");
         }
+
+        tt::property::record_execution_depth(tt::property::ExecutionDepth::FAILED_RUNTIME, forge_property_handler);
+
+        std::string binary_json_str = runtime::Binary(binary).asJson();
+        tt::property::record_flatbuffer_details(binary_json_str, forge_property_handler);
 
         return binary;
     }
@@ -120,13 +133,23 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module)
     }
 }
 
-runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module)
+runtime::Binary run_mlir_compiler(
+    tt::ForgeGraphModule& module,
+    const std::optional<MLIRConfig>& mlir_config,
+    const std::optional<py::object>& forge_property_handler)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module);
+    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module, mlir_config, forge_property_handler);
 }
 
-std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module)
+std::string run_mlir_compiler_to_cpp(
+    tt::ForgeGraphModule& module,
+    const std::optional<MLIRConfig>& mlir_config,
+    const std::optional<py::object>& forge_property_handler)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module);
+    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, mlir_config, forge_property_handler);
 }
+
+void to_json(::nlohmann::json& j, const MLIRConfig& p) { j = nlohmann::json{{"enable_consteval", p.enable_consteval}}; }
+
+void from_json(const ::nlohmann::json& j, MLIRConfig& p) { j.at("enable_consteval").get_to(p.enable_consteval); }
 }  // namespace tt::passes

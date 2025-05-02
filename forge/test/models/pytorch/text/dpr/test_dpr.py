@@ -13,10 +13,10 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 params = [
@@ -27,12 +27,12 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
-def test_dpr_context_encoder_pytorch(record_forge_property, variant):
+def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
     if variant != "facebook/dpr-ctx_encoder-single-nq-base":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="dpr",
         variant=variant,
@@ -42,8 +42,7 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
@@ -66,10 +65,17 @@ def test_dpr_context_encoder_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     embeddings = compiled_model(*inputs)
@@ -83,11 +89,11 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_question_encoder_pytorch(record_forge_property, variant):
+def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="dpr",
         variant=variant,
@@ -97,8 +103,7 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
@@ -121,7 +126,9 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     verify_values = True
 
@@ -129,7 +136,13 @@ def test_dpr_question_encoder_pytorch(record_forge_property, variant):
         verify_values = False
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=verify_values))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(verify_values=verify_values),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     embeddings = compiled_model(*inputs)
@@ -143,11 +156,11 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_reader_pytorch(record_forge_property, variant):
+def test_dpr_reader_pytorch(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="dpr",
         variant=variant,
@@ -157,8 +170,7 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base
@@ -180,10 +192,17 @@ def test_dpr_reader_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     outputs = compiled_model(*inputs)

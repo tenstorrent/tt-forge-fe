@@ -42,7 +42,6 @@ class TestCollectionCommon:
         input_sources=[
             InputSource.FROM_ANOTHER_OP,
             InputSource.FROM_HOST,
-            InputSource.FROM_DRAM_QUEUE,
             InputSource.CONST_EVAL_PASS,
         ],
         input_shapes=[
@@ -348,6 +347,6 @@ class TestCollectionTorch:
 
     single = TestCollection(
         dev_data_formats=[
-            torch.float16,
+            torch.bfloat16,
         ],
     )

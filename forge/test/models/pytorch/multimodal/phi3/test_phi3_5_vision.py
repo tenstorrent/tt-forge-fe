@@ -7,10 +7,10 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.utils.utils import load_input
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -27,14 +27,12 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="NotImplementedError: The following operators are not implemented: ['aten::resolve_neg', 'aten::resolve_conj']"
-)
+@pytest.mark.skip("Test uses large amount of host memory (>30GB).")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_vision(record_forge_property, variant):
+def test_phi3_5_vision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3_5_vision",
         variant=variant,
@@ -43,8 +41,7 @@ def test_phi3_5_vision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
 
     # Load model and processor
     model = download_model(
@@ -63,7 +60,9 @@ def test_phi3_5_vision(record_forge_property, variant):
     inputs = load_input(processor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

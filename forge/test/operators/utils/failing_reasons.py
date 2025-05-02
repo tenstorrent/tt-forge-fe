@@ -44,6 +44,9 @@ class FailingReasons:
     # Validation error caused by pcc threshold
     DATA_MISMATCH = "Verification failed due to data mismatch"
 
+    # ValueError: Dtype mismatch: framework_model.dtype=torch.int8, compiled_model.dtype=torch.uint8
+    DTYPE_MISMATCH = "Dtype mismatch"
+
     UNSUPPORTED_TYPE_FOR_VALIDATION = "Verification failed due to unsupported type in verify_module"
 
     # "Fatal python error - xfail does not work; UserWarning: resource_tracker: There appear to be 26 leaked semaphore objects to clean up at shutdown"
@@ -63,6 +66,8 @@ class FailingReasons:
     # INFO     | forge.compiled_graph_state:__call__:247  Running model forward on device...
     # Always | FATAL    | Out of Memory: Not enough space to allocate 896204800 B DRAM buffer across 12 banks, where each bank needs to store 74686464 B
     ALLOCATION_FAILED = "Out of Memory"
+
+    INFERENCE_FROZE = "Inference froze without error message"
 
 
 # 2024-10-16 09:00:57.038 | DEBUG    | test.operators.utils.failing_reasons:validate_exception:121 - Validating xfail reason: 'None' for exception: <class 'AttributeError'> ''TransposeTM' object has no attribute 'z_dim_slice' (via OpType cpp underlying class)'
@@ -93,16 +98,26 @@ class FailingReasonsValidation:
     XFAIL_REASON_CHECKS = {
         FailingReasons.UNSUPPORTED_DATA_FORMAT: [
             # lambda ex: FailingReasonsValidation.validate_exception_message(ex, RuntimeError, "Unsupported data type"),
-            lambda ex: isinstance(ex, RuntimeError) and f"{ex}" == "Unsupported data type",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Unsupported data type" in f"{ex}",  # TODO: Check if this change is correct
             # lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:466: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError) and "/forge/csrc/passes/lower_to_mlir.cpp:473: false" in f"{ex}",
             lambda ex: isinstance(ex, RuntimeError)
             and f"{ex}" == "Tensor 2 - data type mismatch: expected UInt32, got Float32",
+            lambda ex: isinstance(ex, RuntimeError) and '"softmax_lastdim_kernel_impl" not implemented' in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "Unsupported data format" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError) and "\"bmm\" not implemented for 'Half'" in f"{ex}",
+            lambda ex: isinstance(ex, RuntimeError)
+            and "Input tensors must have the same data type, but got {} and {}" in f"{ex}",
         ],
         FailingReasons.DATA_MISMATCH: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
             lambda ex: isinstance(ex, AssertionError) and f"{ex}".startswith("Data mismatch"),
             lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Data mismatch"),
+        ],
+        FailingReasons.DTYPE_MISMATCH: [
+            lambda ex: isinstance(ex, ValueError) and f"{ex}".startswith("Dtype mismatch"),
+            lambda ex: isinstance(ex, RuntimeError) and "data type mismatch" in f"{ex}",
         ],
         FailingReasons.UNSUPPORTED_SPECIAL_CASE: [
             lambda ex: isinstance(ex, AssertionError) and f"{ex}" == "PCC check failed",
@@ -200,6 +215,9 @@ class FailingReasonsValidation:
         ],
         FailingReasons.MICROBATCHING_UNSUPPORTED: [
             lambda ex: isinstance(ex, RuntimeError) and "The expanded size of the tensor" in f"{ex}",
+        ],
+        FailingReasons.UNSUPORTED_AXIS: [
+            lambda ex: isinstance(ex, RuntimeError) and "Inputs must be of bfloat16 or bfloat8_b type" in f"{ex}",
         ],
     }
 

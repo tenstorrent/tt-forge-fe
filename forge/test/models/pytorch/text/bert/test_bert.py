@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from transformers import (
     BertForMaskedLM,
     BertForQuestionAnswering,
@@ -12,26 +13,24 @@ from transformers import (
 )
 
 import forge
-from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bert.utils.utils import mean_pooling
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.push
-def test_bert_masked_lm_pytorch(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
@@ -52,10 +51,17 @@ def test_bert_masked_lm_pytorch(record_forge_property, variant):
     inputs = [input_tokens["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     output = compiled_model(*inputs)
@@ -105,27 +111,31 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_bert_question_answering_pytorch(record_forge_property, variant):
-    if variant == "bert-large-cased-whole-word-masking-finetuned-squad":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_bert_question_answering_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
     framework_model.eval()
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Inference
     output = compiled_model(*inputs)
@@ -165,11 +175,10 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["textattack/bert-base-uncased-SST-2"])
-def test_bert_sequence_classification_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,
@@ -178,16 +187,17 @@ def test_bert_sequence_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     co_out = compiled_model(*inputs)
     predicted_value = co_out[0].argmax(-1).item()
@@ -213,16 +223,15 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    return model, [input_tokens["input_ids"]], {}
+    return model, sample_text, [input_tokens["input_ids"]], input_tokens
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["dbmdz/bert-large-cased-finetuned-conll03-english"])
-def test_bert_token_classification_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_bert_token_classification_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,
@@ -231,25 +240,39 @@ def test_bert_token_classification_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
-    framework_model, inputs, _ = generate_model_bert_tkcls_hf_pytorch(variant)
+    framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=VerifyConfig(verify_values=False))
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    # post processing
+    predicted_token_class_ids = co_out[0].argmax(-1)
+    predicted_token_class_ids = torch.masked_select(predicted_token_class_ids, (input_tokens["attention_mask"][0] == 1))
+    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+
+    print(f"Context: {sample_text}")
+    print(f"Answer: {predicted_tokens_classes}")
 
 
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
-def test_bert_sentence_embedding_generation_pytorch(record_forge_property, variant):
+def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,
@@ -258,8 +281,8 @@ def test_bert_sentence_embedding_generation_pytorch(record_forge_property, varia
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -272,10 +295,12 @@ def test_bert_sentence_embedding_generation_pytorch(record_forge_property, varia
     inputs = [encoded_input["input_ids"], encoded_input["attention_mask"], encoded_input["token_type_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
     sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])

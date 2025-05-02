@@ -13,13 +13,13 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.vilt.utils.model import (
     ViLtEmbeddingWrapper,
     ViltModelWrapper,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -45,7 +45,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model, task=Task.QA)
+    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
@@ -58,23 +58,24 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_question_answering_hf_pytorch(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -113,23 +114,24 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_maskedlm_hf_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

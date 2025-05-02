@@ -4,13 +4,13 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.mobilenet_v3_ssd_utils import (
     load_input,
     load_model,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants_with_weights = {
     "resnet18": "ResNet18_Weights",
@@ -23,10 +23,10 @@ variants_with_weights = {
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_mobilenetv3_ssd(record_forge_property, variant):
+def test_mobilenetv3_ssd(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv3_ssd",
         variant=variant,
@@ -35,8 +35,7 @@ def test_mobilenetv3_ssd(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
@@ -44,7 +43,9 @@ def test_mobilenetv3_ssd(record_forge_property, variant):
     inputs = load_input()
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

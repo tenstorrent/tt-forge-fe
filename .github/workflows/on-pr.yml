@@ -33,17 +33,24 @@ jobs:
     with:
       mlir_override: ${{ inputs.mlir_override }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+  build-docs:
+    needs: docker-build
+    uses: ./.github/workflows/build-docs.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
   test:
     needs:
       - docker-build
       - build
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
       test_mark: 'push'
       test_group_cnt: 2
       test_group_ids: '[1,2]'
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ github.run_id }}
 
   check-all-green:
     if: always()
@@ -51,6 +58,7 @@ jobs:
       - pre-commit
       - spdx
       - docker-build
+      - build-docs
       - build
       - test
     runs-on: Ubuntu-latest

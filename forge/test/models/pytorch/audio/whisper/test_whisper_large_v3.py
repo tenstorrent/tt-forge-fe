@@ -16,9 +16,8 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class Wrapper(torch.nn.Module):
@@ -38,12 +37,12 @@ class Wrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
-def test_whisper_large_v3_speech_translation(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="whisper",
         variant=variant,
@@ -52,8 +51,7 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
 
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)
@@ -72,7 +70,9 @@ def test_whisper_large_v3_speech_translation(record_forge_property, variant):
     inputs = [decoder_input_ids, encoder_outputs]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

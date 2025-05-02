@@ -24,8 +24,8 @@ jobs:
 
   model-analysis:
     needs: docker-build
-    runs-on: runner
-    timeout-minutes: 4320 # Set job execution time to 3 days(default: 6 hours)
+    runs-on: tt-beta-ubuntu-2204-n150-large-stable
+    timeout-minutes: 5760 # Set job execution time to 4 days(default: 6 hours)
 
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}

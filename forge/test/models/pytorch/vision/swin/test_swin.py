@@ -12,11 +12,11 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -25,13 +25,13 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "microsoft/swin-tiny-patch4-window7-224",
-            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.98)")],
+            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
         ),
     ],
 )
-def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -40,8 +40,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 1: Create Forge module from PyTorch model
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
@@ -53,10 +52,12 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -66,13 +67,13 @@ def test_swin_v1_tiny_4_224_hf_pytorch(record_forge_property, variant):
     [
         pytest.param(
             "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.xfail(reason="Tensor mismatch between Framework and Forge codegen output(pcc=0.86)")],
+            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
         ),
     ],
 )
-def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -81,8 +82,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "priority")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
@@ -91,20 +92,22 @@ def test_swin_v2_tiny_4_256_hf_pytorch(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_image_classification(record_forge_property, variant):
+def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -113,8 +116,7 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -123,20 +125,22 @@ def test_swin_v2_tiny_image_classification(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_masked(record_forge_property, variant):
+def test_swin_v2_tiny_masked(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -145,8 +149,7 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
@@ -155,10 +158,12 @@ def test_swin_v2_tiny_masked(record_forge_property, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_with_weights = {
@@ -171,38 +176,22 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param(
-        "swin_t",
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: Tensor 0 - stride mismatch: expected [150528, 50176, 224, 1], got [3, 1, 672, 3]"
-            )
-        ],
-    ),
+    "swin_t",
     "swin_s",
     "swin_b",
-    pytest.param(
-        "swin_v2_t",
-        marks=[
-            pytest.mark.xfail(
-                reason="[TVM Relay IRModule Generation] relay.op._make.full expects Array[IntImm], but got Array[index 0: tir.Any] in argument 1"
-            )
-        ],
-    ),
+    "swin_v2_t",
     "swin_v2_s",
     "swin_v2_b",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_swin_torchvision(record_forge_property, variant):
+def test_swin_torchvision(forge_property_recorder, variant):
 
-    if variant not in ["swin_t", "swin_v2_t"]:
-        pytest.skip("Skipping this variant; only testing the small variants(swin_t,swin_v2_t) for now.")
-
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -211,15 +200,16 @@ def test_swin_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

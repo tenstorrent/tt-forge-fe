@@ -6,9 +6,9 @@ from datasets import load_dataset
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -27,14 +27,7 @@ def generate_model_deit_imgcls_hf_pytorch(variant):
 
 
 variants = [
-    pytest.param(
-        "facebook/deit-base-patch16-224",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
-    ),
+    "facebook/deit-base-patch16-224",
     "facebook/deit-base-distilled-patch16-224",
     "facebook/deit-small-patch16-224",
     "facebook/deit-tiny-patch16-224",
@@ -42,13 +35,12 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
-    if variant != "facebook/deit-base-patch16-224":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="deit",
         variant=variant,
@@ -57,14 +49,15 @@ def test_deit_imgcls_hf_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

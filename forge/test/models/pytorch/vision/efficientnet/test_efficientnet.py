@@ -20,9 +20,10 @@ from torchvision.models import (
 from torchvision.models._api import WeightsEnum
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
@@ -48,12 +49,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_timm(record_forge_property, variant):
-    if variant != "efficientnet_b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_efficientnet_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -63,10 +62,10 @@ def test_efficientnet_timm(record_forge_property, variant):
 
     # Record Forge Property
     if variant in ["efficientnet_b0"]:
-        record_forge_property("group", "priority")
+        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
-        record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+        forge_property_recorder.record_group("generality")
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -92,10 +91,15 @@ def test_efficientnet_timm(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def get_state_dict(self, *args, **kwargs):
@@ -119,12 +123,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_torchvision(record_forge_property, variant):
-    if variant != "efficientnet_b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_efficientnet_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -133,8 +135,7 @@ def test_efficientnet_torchvision(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model
     if variant == "efficientnet_b0":
@@ -143,6 +144,7 @@ def test_efficientnet_torchvision(record_forge_property, variant):
         framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
 
     framework_model.eval()
+
     # Load and pre-process image
     try:
         url, filename = (
@@ -163,7 +165,12 @@ def test_efficientnet_torchvision(record_forge_property, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

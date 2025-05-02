@@ -6,13 +6,13 @@ import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.inception.utils.model_utils import (
     get_image,
     preprocess_timm_model,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -27,26 +27,25 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="AssertionError: Setting a tensor value of incorrect shape: (1, 64, 76, 70) vs torch.Size([1, 64, 73, 73])"
-)
-def test_inception_v4_osmr_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+@pytest.mark.xfail
+def test_inception_v4_osmr_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -59,19 +58,19 @@ variants = [
     "inception_v4",
     pytest.param(
         "inception_v4.tf_in1k",
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 47 - stride mismatch: expected [1225, 1], got [0, 0]")],
+        marks=[pytest.mark.xfail],
     ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_inception_v4_timm_pytorch(record_forge_property, variant):
+def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
     if variant != "inception_v4.tf_in1k":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="inception",
         variant=variant,
@@ -80,13 +79,14 @@ def test_inception_v4_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

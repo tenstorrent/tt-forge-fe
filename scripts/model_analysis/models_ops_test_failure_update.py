@@ -6,7 +6,7 @@ import ast
 import re
 from loguru import logger
 import argparse
-from utils import check_path, run_precommit
+from utils import check_path, run_precommit, extract_test_file_path_and_test_case_func
 from typing import Dict, Optional, List, Tuple
 from forge.utils import create_excel_file
 import pandas as pd
@@ -87,6 +87,32 @@ def read_file(file_path: str):
     return lines
 
 
+def remove_timestamp(lines: List[str]):
+    """
+    Remove the timestamp at the beginning of each line in a list of strings.
+
+    The function processes each line and removes a leading timestamp that matches the
+    pattern "YYYY-MM-DDTHH:MM:SS.ssssssZ " (with variations in the fractional seconds)
+    if it appears at the very beginning of the line. If the pattern is not found, the
+    line is returned unchanged.
+
+    Args:
+        lines (List[str]): A list of strings, each representing a line that may start with a timestamp.
+
+    Returns:
+        list of str: A new list of strings with the timestamp removed from the beginning of each line.
+    """
+    # Define the regex pattern to match the timestamp at the beginning of the line.
+    pattern = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z\s"
+
+    new_lines = []
+    for line in lines:
+        # Use re.sub to remove the pattern only if it matches at the beginning.
+        new_lines.append(re.sub(pattern, "", line, count=1))  # count=1 ensures only the first match is replaced
+
+    return new_lines
+
+
 def rename_marker(marker: str) -> str:
     """
     Standardizes the test marker name to either 'xfail' or 'skip'.
@@ -107,28 +133,6 @@ def rename_marker(marker: str) -> str:
         return "xpass"
     else:
         return marker_lower
-
-
-def extract_test_file_path_and_test_case_func(test_case: str):
-    """
-    Extracts the test file path and test case function name from a given test case string.
-
-    Args:
-        test_case (str): A test case string in the format 'file_path::test_function'.
-
-    Returns:
-        Tuple[Optional[str], Optional[str]]: A tuple containing:
-            - test_file_path (str or None): The extracted file path if present.
-            - test_case_func (str or None): The extracted test case function name if present.
-    """
-    test_file_path = None
-    test_case_func = None
-
-    # Check if test case contains '::' separator
-    if "::" in test_case:
-        test_file_path, test_case_func = test_case.split("::", 1)  # Splitting into two parts
-
-    return test_file_path, test_case_func
 
 
 def extract_unique_test_file_paths(test_cases: List[str]) -> set:
@@ -328,6 +332,10 @@ def extract_test_cases_and_status(
         if check_path(log_file):
             # Read all lines from the file using the read_file function.
             lines = read_file(log_file)
+
+            # Remove the timestamps which is present at the beginning of the line
+            lines = remove_timestamp(lines)
+
             for line in lines:
                 # Attempt to match the line with the regex pattern.
                 match = pattern.match(line)
@@ -517,6 +525,9 @@ def extract_failed_and_xpass_tests_with_failure_reason(
         if check_path(log_file):
             # Read all lines from the log file.
             lines = read_file(log_file)
+
+            # Remove the timestamps which is present at the beginning of the line
+            lines = remove_timestamp(lines)
 
             # Flag indicating the start of the "short test summary info" section.
             collect_failed_tests = False

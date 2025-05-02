@@ -24,7 +24,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
+def test_python_indexing(forge_property_recorder, index_shape: Literal[0] | Literal[2] | Literal[-1]):
 
     index, shape = index_shape
 
@@ -41,20 +41,15 @@ def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
     inputs = [torch.randn(shape)]
 
     framework_model = IndexingModule(index)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
     "index_shape",
     [
-        pytest.param(
-            ([0, 2, 4], (10,)),  # vector
-            marks=pytest.mark.xfail(
-                reason="ValueError: Shape mismatch: framework_model.shape=torch.Size([3]), compiled_model.shape=torch.Size([10])"
-            ),
-        ),
+        ([0, 2, 4], (10,)),  # vector
         pytest.param(
             ([[0, 1], [2, 3]], (5, 5)),  # 2D matrix indexing
             marks=pytest.mark.xfail(
@@ -70,7 +65,7 @@ def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
     ],
 )
 @pytest.mark.push
-def test_python_indexing_with_lists(index_shape: list[int] | list[list[int]]):
+def test_python_indexing_with_lists(forge_property_recorder, index_shape: list[int] | list[list[int]]):
     indices, shape = index_shape
 
     class ListIndexingModule(nn.Module):
@@ -85,20 +80,15 @@ def test_python_indexing_with_lists(index_shape: list[int] | list[list[int]]):
     inputs = [torch.randn(shape)]
 
     framework_model = ListIndexingModule(indices)
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.parametrize(
     "index_shape",
     [
-        pytest.param(
-            ([0, 2, 4], (10,)),  # vector
-            marks=pytest.mark.xfail(
-                reason="ValueError: Shape mismatch: framework_model.shape=torch.Size([3]), compiled_model.shape=torch.Size([10])"
-            ),
-        ),
+        ([0, 2, 4], (10,)),  # vector
         pytest.param(
             ([[0, 1], [2, 3]], (5, 5)),  # 2D matrix indexing
             marks=pytest.mark.xfail(
@@ -114,7 +104,7 @@ def test_python_indexing_with_lists(index_shape: list[int] | list[list[int]]):
     ],
 )
 @pytest.mark.push
-def test_python_indexing_with_tensors(index_shape):
+def test_python_indexing_with_tensors(forge_property_recorder, index_shape):
     indices, shape = index_shape
 
     class TensorIndexingModule(nn.Module):
@@ -129,6 +119,6 @@ def test_python_indexing_with_tensors(index_shape):
     inputs = [torch.randn(shape)]
 
     framework_model = TensorIndexingModule(torch.tensor(indices))
-    compiled_model = forge.compile(framework_model, inputs)
+    compiled_model = forge.compile(framework_model, inputs, forge_property_handler=forge_property_recorder)
 
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -5,15 +5,14 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # Variants for testing
 variants = [
     pytest.param(
         "Qwen/Qwen2.5-Coder-0.5B",
-        marks=[pytest.mark.xfail(reason="RuntimeError: Input count mismatch: expected 533, got 534")],
+        marks=[pytest.mark.xfail],
     ),
     "Qwen/Qwen2.5-Coder-1.5B",
     "Qwen/Qwen2.5-Coder-1.5B-Instruct",
@@ -26,18 +25,17 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_qwen_clm(record_forge_property, variant):
+def test_qwen_clm(forge_property_recorder, variant):
     if variant != "Qwen/Qwen2.5-Coder-0.5B":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="qwen_coder", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
@@ -59,7 +57,9 @@ def test_qwen_clm(record_forge_property, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

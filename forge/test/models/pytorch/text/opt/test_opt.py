@@ -11,19 +11,15 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
     pytest.param(
         "facebook/opt-125m",
-        marks=[
-            pytest.mark.xfail(
-                reason="unique+common runtime args targeting kernel reader_concat_stick_layout_interleaved_start_id on (x=0,y=0) are too large. Max allowable is 256"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "facebook/opt-350m",
     "facebook/opt-1.3b",
@@ -32,18 +28,17 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_opt_causal_lm(record_forge_property, variant):
+def test_opt_causal_lm(forge_property_recorder, variant):
     if variant != "facebook/opt-125m":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -76,25 +71,25 @@ def test_opt_causal_lm(record_forge_property, variant):
         framework_model,
         inputs,
         module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_opt_qa(record_forge_property, variant):
+def test_opt_qa(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="opt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -123,19 +118,20 @@ def test_opt_qa(record_forge_property, variant):
         framework_model,
         inputs,
         module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_opt_sequence_classification(record_forge_property, variant):
+def test_opt_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="opt",
         variant=variant,
@@ -144,8 +140,7 @@ def test_opt_sequence_classification(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     # Variants: "facebook/opt-125m", "facebook/opt-350m", "facebook/opt-1.3b"
@@ -174,7 +169,8 @@ def test_opt_sequence_classification(record_forge_property, variant):
         framework_model,
         inputs,
         module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

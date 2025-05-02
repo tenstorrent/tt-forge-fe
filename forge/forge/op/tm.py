@@ -113,8 +113,8 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     Tensor
         Forge tensor
     """
-    if dim >= 0:
-        dim -= len(operandA.shape)
+    if dim < 0:
+        dim += len(operandA.shape)
 
     if stop is None:
         stop = start + 1
@@ -128,7 +128,9 @@ def Index(name: str, operandA: Tensor, dim: int, start: int, stop: int = None, s
     assert stop <= operandA.shape[dim]
     assert stride <= operandA.shape[dim]
 
-    return op("index", name, operandA, attrs=(dim, start, stop, stride)).get_tensor()
+    return op(
+        "index", name, operandA, attrs=(dim, start, stop, stride), dim=dim, start=start, stop=stop, stride=stride
+    ).get_tensor()
 
 
 def AdvIndex(
@@ -159,6 +161,9 @@ def AdvIndex(
     Tensor
         Forge tensor
     """
+    if dim < 0:
+        dim += len(operandA.shape)
+
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
@@ -235,9 +240,10 @@ def Select(
 def Pad(
     name: str,
     operandA: Tensor,
-    pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+    pad: Tuple[int, ...],
+    pad_len: int,
     mode: str = "constant",
-    channel_last: bool = False,
+    value: int = 0,
 ) -> Tensor:
     """
     TM
@@ -248,38 +254,29 @@ def Pad(
         Op name, unique to the module, or leave blank to autoset
 
     operandA: Tensor
-        Input operand A
+        Input operand A to which padding will be applied.
 
-    pad: tuple
-        Either (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom))
+    pad: Tuple[int, ...]
+        A tuple of padding values. The tuple should correspond to padding values for the tensor, such as
+        [top, bottom, left, right] depending on the `pad_len`.
+
+    pad_len: int
+        Number of dimensions that the padding applies to. This should correspond to the dimensions
+        of the tensor that will be padded.
+
+    mode: str, optional
+        The padding mode. Default is "constant". Other modes can be supported depending on the
+        implementation (e.g., "reflect", "edge").
+
+    value: int, optional
+        The value to use for padding when the mode is "constant". Default is 0.
 
     Returns
     -------
     Tensor
-        Forge tensor
+        A tensor with the specified padding applied to the input tensor.
     """
-    assert (
-        len(pad) == 2 or len(pad) == 4
-    ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
-    assert mode in [
-        "constant",
-        "replicate",
-        "reflect",
-    ], "Currently pad op only supports constant/replicate/reflect mode"
-
-    mode_index = {
-        "constant": 0,
-        "replicate": 1,
-        "reflect": 2,
-    }
-
-    attrs = list(pad) + [mode_index[mode], channel_last]
-    return op(
-        "pad",
-        name,
-        operandA,
-        attrs=attrs,
-    ).get_tensor()
+    return op("pad", name, operandA, padding=pad, mode=mode, value=float(value), pad_len=pad_len).get_tensor()
 
 
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:

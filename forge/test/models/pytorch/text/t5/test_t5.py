@@ -6,9 +6,9 @@ import torch
 from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -19,17 +19,17 @@ variants = [
     pytest.param(
         "t5-base",
         id="t5-base",
-        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "t5-large",
         id="t5-large",
-        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "google/flan-t5-small",
         id="google_flan_t5_small",
-        marks=[pytest.mark.xfail(reason="Data mismatch -> AutomaticValueChecker (compare_with_golden)")],
+        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "google/flan-t5-base",
@@ -41,18 +41,17 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(record_forge_property, variant):
+def test_t5_generation(forge_property_recorder, variant):
     if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
@@ -91,10 +90,12 @@ def test_t5_generation(record_forge_property, variant):
     framework_model = Wrapper(model)
 
     # Forge compile
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

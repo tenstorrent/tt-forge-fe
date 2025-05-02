@@ -12,13 +12,13 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -29,12 +29,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_mobilenetv3_basic(record_forge_property, variant):
-    if variant != "mobilenet_v3_large":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_mobilenetv3_basic(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv3",
         variant=variant,
@@ -43,17 +41,18 @@ def test_mobilenetv3_basic(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -94,12 +93,12 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mobilenetv3_timm(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_mobilenetv3_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnetv3",
         source=Source.TIMM,
@@ -108,15 +107,16 @@ def test_mobilenetv3_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

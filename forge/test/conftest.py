@@ -2,16 +2,19 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import os
-from typing import Any, List, Optional
+import random
+from typing import Any, List, Optional, Dict, Tuple
 from loguru import logger
 from dataclasses import dataclass
 import subprocess
 
+import numpy as np
 import pytest
 import _pytest.skipping
 import torch.multiprocessing as mp
 import torch
 import tensorflow as tf
+
 
 # This is a workaround to set RTLD_GLOBAL flag to load emulation ZeBu library.
 # Essentially symbol names have to be unique in global scope to work with ZeBu,
@@ -30,7 +33,9 @@ import forge
 from forge.config import CompilerConfig
 from forge.verify.config import TestKind
 from forge.torch_compile import reset_state
-from forge.execution_tracker import fetch_execution_phase_and_stage
+
+import test.utils
+from test.exception_utils import extract_refined_error_message, extract_failure_category
 
 collect_ignore = ["legacy_tests"]
 
@@ -70,165 +75,139 @@ def pytest_sessionstart(session):
         for key, value in tt_backend_specific_vars.items():
             print(f"{key}={value}")
 
-    if "PYTEST_REPORT_FILE_PATH" not in os.environ:
-        os.environ["PYTEST_REPORT_FILE_PATH"] = "test_report.json"
+
+@pytest.fixture(autouse=True)
+def reset_seeds_fixture():
+    test.utils.reset_seeds()
 
 
 @pytest.fixture(autouse=True)
-def set_environment_variable(request):
-
-    # Get the test file path (relative)
-    test_file_path = os.path.relpath(request.node.fspath)
-
-    # Get the test function
-    test_func = request.node.name
-
-    # Construct in pytest collect format
-    current_test = f"{test_file_path}::{test_func}"
-
-    os.environ["CURRENT_TEST"] = current_test
-
-
-class ForgePropertyStore:
-    """
-    A class to manage properties using dot notation for nested keys.
-
-    Attributes:
-        forge_properties (dict): A dictionary that stores properties.
-    """
-
-    def __init__(self):
-        self.forge_properties = {}
-
-    def __call__(self, key: str, value: Any):
-        return self.add(key, value)
-
-    def add(self, key: str, value: Any):
-        """
-        Adds a key-value pair to the store, supporting nested keys using dot notation.
-
-        If the key contains dots (e.g., "tags.execution_phase"), nested dictionaries
-        will be created as needed.
-
-        Args:
-            key (str): The key to add. Nested keys should be separated by dots.
-            value (Any): The value to store.
-        """
-        parts = key.split(".")
-
-        # If there is no dot, simply store the key-value pair.
-        if len(parts) == 1:
-            self.forge_properties[key] = value
-        else:
-            # Traverse (or create) the nested dictionaries for all parts except the last one.
-            d = self.forge_properties
-            for part in parts[:-1]:
-                if part not in d or not isinstance(d[part], dict):
-                    d[part] = {}
-                d = d[part]
-            # Set the value for the final key part.
-            d[parts[-1]] = value
-
-    def get(self, key: str) -> Any:
-        """
-        Retrieves the value associated with the given key, using dot notation for nested keys.
-
-        Args:
-            key (str): The key to retrieve. Nested keys should be separated by dots.
-
-        Returns:
-            Any: The value stored under the key, or None if the key is not found.
-        """
-        parts = key.split(".")
-
-        # Single-level key lookup.
-        if len(parts) == 1:
-            if key in self.forge_properties:
-                return self.forge_properties[key]
-            else:
-                logger.warning(f"There is no '{key}' in ForgePropertyStore")
-                return None
-
-        # Multi-level (nested) key lookup.
-        d = self.forge_properties
-        for part in parts:
-            if isinstance(d, dict) and part in d:
-                d = d[part]
-            else:
-                logger.warning(f"Key '{key}' not found in ForgePropertyStore")
-                return None
-
-        return d
-
-    def items(self):
-        """
-        Returns an iterable view of the top-level key-value pairs in the store.
-        """
-        return self.forge_properties.items()
-
-
-@pytest.fixture(scope="function", autouse=True)
-def record_forge_property(record_property):
-    """
-    Pytest fixture that manages a ForgePropertyStore during tests.
-
-    This fixture:
-      1. Instantiates a ForgePropertyStore.
-      2. Adds a default property ("owner": "tt-forge-fe").
-      3. Yields the store for use in tests.
-      4. After the test, fetches execution phase and stage, updates the store,
-         and then records each top-level property using the provided record_property function.
-    """
-    # Instantiate the property store.
-    forge_property_store = ForgePropertyStore()
-
-    # Add a default property.
-    forge_property_store.add("owner", "tt-forge-fe")
-
-    # Provide the store to the test function.
-    yield forge_property_store
-
-    # Fetch execution phase and stage.
-    execution_phase, execution_stage = fetch_execution_phase_and_stage()
-
-    # Update the property store if execution phase/stage information is available.
-    if execution_phase is not None:
-        forge_property_store.add("tags.execution_phase", execution_phase)
-    if execution_stage is not None:
-        forge_property_store.add("tags.execution_stage", execution_stage)
-
-    # After the test, record each top-level property.
-    for key, value in forge_property_store.items():
-        record_property(key, value)
-
-
-@pytest.fixture(autouse=True)
-def clear_forge():
+def reset_device():
     if "FORGE_RESET_DEV_BEFORE_TEST" in os.environ:
         # Reset device between tests
         # For this to work, pytest must be called with --forked
         subprocess.check_call(["device/bin/silicon/reset.sh"], cwd=os.environ["FORGE_HOME"])
 
-    import random
 
-    random.seed(0)
+def run_command(cmd: List[str]) -> str:
+    """
+    Executes a shell command using subprocess.run and returns the command's output.
 
-    import numpy as np
+    Args:
+        cmd (List[str]): The command to execute as a list of arguments.
 
-    np.random.seed(0)
+    Returns:
+        str: The standard output from the command execution.
+    """
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        logger.debug(f"Command '{' '.join(cmd)}' executed successfully.")
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        cmd_str = " ".join(cmd)
+        logger.error(f"Error executing '{cmd_str}': {e}")
+        return ""
 
-    torch.manual_seed(0)
 
-    import tensorflow as tf
+def parse_pip_freeze(freeze_output: str) -> Dict[str, str]:
+    """
+    Parses the output of 'pip freeze' and returns a dictionary of package names and versions.
 
-    tf.random.set_seed(0)
+    Args:
+        freeze_output (str): The output string from 'pip freeze'.
+
+    Returns:
+        Dict[str, str]: A dictionary where keys are package names and values are their versions.
+    """
+    packages = {}
+    for line in freeze_output.splitlines():
+        if "==" in line:
+            pkg, version = line.split("==", maxsplit=1)
+            packages[pkg.strip()] = version.strip()
+    return packages
+
+
+@pytest.fixture(scope="function")
+def restore_package_versions():
+    """
+    A pytest fixture that ensures package versions remain consistent during tests.
+
+    This fixture captures the installed packages before the test runs, and after the test,
+    compares the versions. If any package version has changed, it logs the difference and attempts
+    to revert the package back to its original version.
+    """
+    # Capture the state of installed packages before test execution.
+    logger.info("Capturing the initial state of installed packages using 'pip freeze'.")
+    before_freeze = run_command(["pip", "freeze"])
+    before_packages = parse_pip_freeze(before_freeze)
 
     yield
 
-    # clean up after each test
-    forge.forge_reset()
-    torch._dynamo.reset()
-    reset_state()
+    # Capture the state after test execution.
+    logger.info("Capturing the final state of installed packages using 'pip freeze'.")
+    after_freeze = run_command(["pip", "freeze"])
+    after_packages = parse_pip_freeze(after_freeze)
+
+    # Determine which packages have changed versions.
+    diff_packages: Dict[str, Tuple[str, str]] = {}
+    for pkg, orig_version in before_packages.items():
+        if pkg in after_packages:
+            new_version = after_packages[pkg]
+            if new_version != orig_version:
+                diff_packages[pkg] = (orig_version, new_version)
+
+    # If differences are detected, log and revert the changed packages.
+    if diff_packages:
+        logger.info("Detected changes in package versions during the test:")
+        for pkg, (orig_version, new_version) in diff_packages.items():
+            logger.info(f"Package '{pkg}': current version {new_version}; reverting to {orig_version}")
+            cmd_output = run_command(["pip", "install", f"{pkg}=={orig_version}"])
+            logger.info(cmd_output)
+    else:
+        logger.info("No package version changes detected after the test.")
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    This hook is intended to be executed during the 'call' phase.
+    It performs the following actions:
+      - If the test is either a genuine failure or an expected failure marked as xfail,
+        it extracts the test's error message.
+      - It uses helper functions to refine the error message and to determine an appropriate failure category.
+      - These details are attached to the test item as attributes, which can later be accessed by forge_property_recorder fixture for additional property recording.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    # Only process reports that are generated during the execution phase of the test ("call")
+    if not report or report.when != "call":
+        return
+
+    # Determine if the test is expected to fail (xfail) or actually failed.
+    xfail = hasattr(report, "wasxfail")
+    is_xfailed = report.skipped and xfail
+    is_failed = report.failed and not xfail
+    if not (is_xfailed or is_failed):
+        return
+
+    # Extract the error message from the test report; exit if no message is found.
+    error_message = getattr(report, "longreprtext", None)
+    if not error_message:
+        return
+
+    # Refine the error message using a helper function to remove unnecessary details and extract relevant info.
+    refined_error_message = extract_refined_error_message(error_message)
+    if refined_error_message is None:
+        return
+
+    # Attach the refined error message to the test item so that other hooks or fixtures can access it.
+    setattr(item, "refined_error_message", refined_error_message)
+
+    # Extract a failure category from the refined error message and attach it to the test item. if one is determined.
+    failure_category = extract_failure_category(refined_error_message)
+    if failure_category is not None:
+        setattr(item, "failure_category", failure_category)
 
 
 def pytest_addoption(parser):

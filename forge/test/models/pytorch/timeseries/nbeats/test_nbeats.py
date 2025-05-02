@@ -4,6 +4,7 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.timeseries.nbeats.utils.dataset import (
@@ -14,28 +15,19 @@ from test.models.pytorch.timeseries.nbeats.utils.model import (
     NBeatsWithSeasonalityBasis,
     NBeatsWithTrendBasis,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "seasionality_basis",
-            marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 4 - stride mismatch: expected [24, 1], got [1, 12]")],
-        ),
-    ],
-)
-def test_nbeats_with_seasonality_basis(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", ["seasionality_basis"])
+def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -52,25 +44,26 @@ def test_nbeats_with_seasonality_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["generic_basis"])
-def test_nbeats_with_generic_basis(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -80,25 +73,26 @@ def test_nbeats_with_generic_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["trend_basis"])
-def test_nbeats_with_trend_basis(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_nbeats_with_trend_basis(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     x, x_mask = get_electricity_dataset_input()
 
@@ -115,7 +109,9 @@ def test_nbeats_with_trend_basis(record_forge_property, variant):
     inputs = [x, x_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

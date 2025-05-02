@@ -20,7 +20,7 @@ class Broadcast0(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=12)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=4096)
         return broadcast_output_1
 
 
@@ -29,7 +29,7 @@ class Broadcast1(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-4, shape=1)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=12)
         return broadcast_output_1
 
 
@@ -38,7 +38,7 @@ class Broadcast2(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=128)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-4, shape=1)
         return broadcast_output_1
 
 
@@ -48,6 +48,15 @@ class Broadcast3(ForgeModule):
 
     def forward(self, broadcast_input_0):
         broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=384)
+        return broadcast_output_1
+
+
+class Broadcast4(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, broadcast_input_0):
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=128)
         return broadcast_output_1
 
 
@@ -61,65 +70,11 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast0,
-            [((1, 1, 1, 128), torch.bool)],
+            [((1, 596, 1), torch.bool)],
             {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                ],
+                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-3", "shape": "12"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Broadcast1,
-            [((1, 1, 1, 128), torch.bool)],
-            {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "-4", "shape": "1"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
-    ),
-    pytest.param(
-        (
-            Broadcast2,
-            [((1, 12, 1, 128), torch.bool)],
-            {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "-2", "shape": "128"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
-    ),
-    pytest.param(
-        (
-            Broadcast0,
-            [((1, 1, 1, 384), torch.bool)],
-            {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-3", "shape": "12"},
+                "op_params": {"dim": "-1", "shape": "4096"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
@@ -131,10 +86,19 @@ forge_modules_and_shapes_dtypes_list = [
             {
                 "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-4", "shape": "1"},
+                "op_params": {"dim": "-3", "shape": "12"},
             },
         ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: Tensor 0 - data type mismatch: expected UInt8, got Float32")],
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    (
+        Broadcast2,
+        [((1, 1, 1, 384), torch.bool)],
+        {
+            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+            "pcc": 0.99,
+            "op_params": {"dim": "-4", "shape": "1"},
+        },
     ),
     pytest.param(
         (
@@ -148,20 +112,78 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
+    pytest.param(
+        (
+            Broadcast1,
+            [((1, 1, 1, 128), torch.bool)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-3", "shape": "12"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    (
+        Broadcast2,
+        [((1, 1, 1, 128), torch.bool)],
+        {
+            "model_name": [
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "op_params": {"dim": "-4", "shape": "1"},
+        },
+    ),
+    pytest.param(
+        (
+            Broadcast4,
+            [((1, 12, 1, 128), torch.bool)],
+            {
+                "model_name": [
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "op_params": {"dim": "-2", "shape": "128"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, record_forge_property):
-    record_forge_property("tags.op_name", "Broadcast")
+def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Broadcast")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        record_forge_property("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_name":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "op_params":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning("no utility function in forge property handler")
 
     max_int = 1000
     inputs = [
@@ -184,6 +206,14 @@ def test_module(forge_module_and_shapes_dtypes, record_forge_property):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs)
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
-    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
+    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        forge_property_handler=forge_property_recorder,
+    )

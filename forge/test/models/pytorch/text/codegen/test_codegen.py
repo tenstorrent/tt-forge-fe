@@ -8,37 +8,30 @@ import torch
 from transformers import AutoTokenizer, CodeGenForCausalLM
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
-    pytest.param(
-        "Salesforce/codegen-350M-mono",
-        marks=[
-            pytest.mark.xfail(reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen")
-        ],
-    ),
+    "Salesforce/codegen-350M-mono",
     "Salesforce/codegen-350M-multi",
     "Salesforce/codegen-350M-nl",
 ]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_codegen(record_forge_property, variant):
-    if variant != "Salesforce/codegen-350M-mono":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_codegen(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -76,7 +69,9 @@ def test_codegen(record_forge_property, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

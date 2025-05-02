@@ -3,16 +3,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from typing import Union
+from multiprocessing.pool import ThreadPool
+import math
 import os
+from typing import Union
 
 import torch
 import tensorflow as tf
 import numpy as np
 from loguru import logger
 from scipy.spatial import distance
+from typing import Union, Tuple, List, Optional
 
-from forge.tensor import narrow_forge_tensor_to_pytorch
+from forge._C import verif
 
 # Compares golden and calculated tensors. Using allclose for scalar values, rogerstanimoto for bool tensors, pcc otherwise
 def compare_with_golden(
@@ -21,119 +24,137 @@ def compare_with_golden(
     pcc: float = 0.99,
     rtol: float = 1e-05,
     atol: float = 1e-08,
-    dissimilarity_threshold: float = 1e-03,
+    dissimilarity_threshold: float = 1e-03,  # threshold picked empirically. We will update it as TTNN evolves
 ):
     if golden.dtype == torch.bool:
-        result = compare_with_golden_bool(golden, calculated, dissimilarity_threshold)
-    if golden.flatten().size() != (1,):  # PCC for single values doesn't work
-        result = compare_with_golden_pcc(golden, calculated, pcc)
+        calculated_dissimilarity = calculate_dissimilarity(golden, calculated)
+        result = compare_dissimilarity(calculated_dissimilarity, dissimilarity_threshold)
+    elif golden.flatten().size() != (1,):  # PCC for single values doesn't work
+        calculated_pcc = calculate_pcc(golden, calculated)
+        result = compare_pcc(calculated_pcc, pcc)
     else:
         # For scalar values, we can't calculate PCC, but we can compare golden and calculated values using relative and absolute tolerances
         golden = golden.flatten()[0]
         calculated = calculated.flatten()[0]
 
-        all_close = torch.allclose(golden, calculated, rtol=rtol, atol=atol)
+        all_close = verif.all_close(golden, calculated, rtol=rtol, atol=atol)
         if not all_close:
             req_atol, req_rtol = compute_required_tolerances(golden, calculated)
             logger.error("Tensor mismatch. Required rtol={}, atol={}", rtol, atol)
             logger.error("Observed maximum relative diff: {}, maximum absolute diff: {}", req_rtol, req_atol)
-            logger.error("Golden: (shape = {}", golden.shape)
-            logger.error(golden)
-            logger.error("Calculated: (shape = {}", calculated.shape)
-            logger.error(calculated)
 
         result = all_close
+
+    if not result:
+        logger.error("Golden: (shape = {}", golden.shape)
+        logger.error(golden)
+        logger.error("Calculated: (shape = {}", calculated.shape)
+        logger.error(calculated)
 
     return result
 
 
-# Calculates pcc between golden and calculated tensors. If calculated pcc is >= than pcc threshold, returns True
-def compare_with_golden_pcc(
-    golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
-    calculated: torch.Tensor,
-    pcc: float = 0.99,
-):
-    assert pcc >= 0, "PCC threshold must be >= 0"
-    assert golden.flatten().size() != (1,), "PCC for single values doesn't work"
-
-    pcc_value = calculate_pcc(golden, calculated)
-    if pcc_value >= pcc:
-        logger.trace("PCC is correct")
-        logger.trace("Golden: (shape = {}", golden.shape)
-        logger.trace(golden)
-        logger.trace("Calculated: (shape = {}", calculated.shape)
-        logger.trace(calculated)
-        return True
-    else:
-        logger.error("Tensor mismatch. PCC = {}, but required = {}", pcc_value, pcc)
-        logger.trace("Golden: (shape = {}", golden.shape)
-        logger.trace(golden)
-        logger.trace("Calculated: (shape = {}", calculated.shape)
-        logger.trace(calculated)
-        return False
-
-
-def compare_with_golden_bool(
-    golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
-    calculated: torch.Tensor,
-    dissimilarity_threshold: float = 1e-03,  # threshold picked empirically. We will update it as TTNN evolves
-):
+def calculate_dissimilarity(golden: torch.Tensor, calculated: torch.Tensor):
     if calculated.dtype != torch.bool:
         calculated = calculated.to(torch.bool)
 
-    golden_squeezed = golden.view(-1).detach().numpy()
-    calculated_squeezed = calculated.view(-1).detach().numpy()
+    golden_squeezed = golden.reshape(-1).detach().numpy()
+    calculated_squeezed = calculated.reshape(-1).detach().numpy()
     dissimilarity = distance.rogerstanimoto(golden_squeezed, calculated_squeezed)
+    return dissimilarity
 
-    if dissimilarity <= dissimilarity_threshold:
-        logger.trace("Bool vectors are not dissimilar. Dissimiliarity = {}", dissimilarity)
-        logger.trace("Golden: (shape = {}", golden.shape)
-        logger.trace(golden)
-        logger.trace("Calculated: (shape = {}", calculated.shape)
-        logger.trace(calculated)
+
+def compare_dissimilarity(calculated_dissimilarity: float, dissimilarity_threshold: float = 1e-03):
+    if calculated_dissimilarity <= dissimilarity_threshold:
+        logger.trace("Bool vectors are not dissimilar. Dissimiliarity = {}", calculated_dissimilarity)
         return True
     else:
-        logger.error("Tensor mismatch. Dissimiliarity = {}", dissimilarity)
+        logger.error(
+            "Tensor mismatch calculated dissimiliarity = {} dissimilarity_threshold = {}",
+            calculated_dissimilarity,
+            dissimilarity_threshold,
+        )
         return False
 
 
-def calculate_pcc(a, b):
-    if torch.all(torch.isnan(a)) and torch.all(torch.isnan(b)):
-        logger.warning("Both tensors are 'nan'")
-        return 1.0
+# Helper function to calculate PCC over a chunk of rows
+def calc_chunk_pcc(a, b, chunk_size, chunk_start):
+    a_chunk = a[chunk_start : chunk_start + chunk_size]
+    b_chunk = b[chunk_start : chunk_start + chunk_size]
 
-    if torch.all(torch.isnan(a)) or torch.all(torch.isnan(b)):
-        logger.error("One tensor is all nan, the other is not.")
-        return 0.0
+    chunk_pcc = np.min(np.ma.corrcoef(a_chunk, b_chunk))
 
-    # Test if either is completely zero
-    if torch.any(a.bool()) != torch.any(b.bool()):
-        return 0.0
+    return chunk_pcc
 
-    # if torch.any(torch.isinf(a)) or torch.any(torch.isinf(b)):
-    #    raise RuntimeError(f"Tensor overflow to infinity: \n{a}\n{b}")
 
-    # if torch.any(torch.isneginf(a)) or torch.any(torch.isneginf(b)):
-    #    raise RuntimeError(f"Tensor overflow to negative infinity: \n{a}\n{b}")
+def calculate_or_estimate_pcc(
+    a: torch.Tensor, b: torch.Tensor, tensor_size_threshold: int, chunk_size: int
+) -> np.float64:
 
-    # For now, mask all infs and nans so that we check the rest... TODO
-    a = a.clone()
-    a[torch.logical_or(torch.isnan(a), torch.logical_or(torch.isinf(a), torch.isneginf(a)))] = 0
-    b = b.clone()
-    b[torch.logical_or(torch.isnan(b), torch.logical_or(torch.isinf(b), torch.isneginf(b)))] = 0
+    """
+    Calculate (estimate) Pearson Correlation Coefficient (PCC) between two tensors.
 
-    if torch.equal(a, b):
-        return 1.0
+    There are two different implementations of PCC calculation (estimation):
 
-    if a.dtype == torch.bfloat16:
+    - For "small" tensors, the PCC is calculated on the whole (flattened) tensors.
+
+    - For large tensors, we split the tensors into smaller chunks and calculate PCC over each chunk.
+      This is done to avoid large memory usage when calculating PCC on large tensors. Unfortunately,
+      this isn't the same mathematical operation, but it provides a good estimation of the original approach,
+      and is quite simple.
+
+      The calculations over chunks are done in parallel using ThreadPool, to lower the execution time.
+
+      NOTES: original implementation is flattening both tensors and then calculating the PCC, this means
+      that the whole tensor is treated as a single random variable with N samples (N = number of elements in the tensor).
+      With the estimation procedure we are treating the tensor as a collection of random variables, each chunk is treated
+      like a single random variable (so N_chunks in total) with M samples (M = number of elements in the chunk). The final
+      PCC is the average of all the PCCs calculated over the chunks.
+
+    """
+    # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+    if a.dtype == torch.bfloat16 or b.dtype == torch.bfloat16:
         a = a.type(torch.float32)
         b = b.type(torch.float32)
-    pcc = np.min(
-        np.ma.corrcoef(
-            np.ma.masked_invalid(torch.squeeze(a).detach().numpy()).flatten(),
-            np.ma.masked_invalid(torch.squeeze(b).detach().numpy()).flatten(),
+
+    a_np = a.detach().numpy().flatten()
+    b_np = b.detach().numpy().flatten()
+    masked_a = np.ma.masked_invalid(a_np, copy=False)
+    masked_b = np.ma.masked_invalid(b_np, copy=False)
+
+    number_of_invalid_elements = np.sum(masked_a.mask)
+
+    # We expect the number of invalid elements to be the same in both tensors
+    if number_of_invalid_elements != np.sum(masked_b.mask):
+        return 0.0
+
+    # Verify that all invalid elements (nans/infs) are the same in both tensors
+    if not np.array_equal(a_np[masked_a.mask], b_np[masked_b.mask], equal_nan=True) or not np.array_equal(
+        masked_a.mask, masked_b.mask
+    ):
+        return 0.0
+
+    # For large tensors, split the tensor into smaller chunks to estimate PCC.
+    if a.numel() > tensor_size_threshold:
+        pool = ThreadPool()
+        results = []
+
+        for i in range(0, masked_a.shape[0], chunk_size):
+            work = pool.apply_async(calc_chunk_pcc, args=(masked_a, masked_b, chunk_size, i))
+            results.append(work)
+
+        pcc = 0
+        n_chunks = len(results)
+        for work in results:
+            chunk_pcc = work.get()
+            pcc += chunk_pcc / n_chunks
+    else:
+        pcc = np.min(
+            np.ma.corrcoef(
+                masked_a,
+                masked_b,
+            )
         )
-    )
 
     if isinstance(pcc, np.ma.core.MaskedConstant):
         return 1.0
@@ -141,12 +162,68 @@ def calculate_pcc(a, b):
     return pcc
 
 
+def can_use_custom_kernel(a: torch.Tensor, b: torch.Tensor) -> bool:
+    """
+    Check if we can use the custom torch kernel for PCC calculation.
+    This is true if:
+        - a and b are of the same type
+        - a and b are not bool, int8 or uint8
+        - a and b do not contain special values (NaN, Inf)
+    """
+    return (
+        a.dtype == b.dtype
+        and a.dtype not in (torch.bool, torch.int8, torch.uint8)
+        and not verif.has_special_values(a)
+        and not verif.has_special_values(b)
+    )
+
+
+def calculate_pcc(a: torch.Tensor, b: torch.Tensor) -> np.float64:
+    """
+    Calculates the Pearson Correlation Coefficient (PCC) between two tensors using one of the following methods:
+
+        1. custom torch cpu kernel for pcc calculation - fastest, no memory overhead
+        2. numpy pcc calculation - slower, lots of memory overhead
+        3. numpy pcc estimation - slower, less memory overhead
+
+    Whenever possible (on floating point tensors, without nans/infs) uses the torch kernel, otherwise uses numpy pcc calculation / estimation.
+    """
+
+    # Check if we can use the custom torch kernel for PCC calculation.
+    if can_use_custom_kernel(a, b):
+        pcc = verif.calculate_tensor_pcc(a, b)
+        if math.isnan(pcc):
+            # If pcc is nan, than it can happen that the tensors are equal, but the variances are 0,
+            # causing division by 0.
+            # Verify that the tensors are equal, and return 1.0
+            if verif.all_close(a, b):
+                return 1.0
+
+            assert False, "PCC is nan, but tensors are not equal"
+        return pcc
+
+    # We'll need to fallback to the numpy pcc calculation / estimation.
+    TENSOR_SIZE_THRESHOLD = int(1e8)
+    CHUNK_SIZE = int(1e6)
+
+    return calculate_or_estimate_pcc(a, b, TENSOR_SIZE_THRESHOLD, CHUNK_SIZE)
+
+
+def compare_pcc(calculated_pcc: float, pcc: float = 0.99):
+    assert pcc >= 0, "PCC threshold must be >= 0"
+    if calculated_pcc >= pcc:
+        logger.trace("PCC is correct")
+        return True
+    else:
+        logger.error("Tensor mismatch. PCC = {}, but required = {}", calculated_pcc, pcc)
+        return False
+
+
 # Deprecated: avoid using it, instead use compare_with_golden
 def compare_tensor_to_golden(
     name: str,
     golden: Union[torch.Tensor, tf.Tensor, tf.Variable],
     calculated: torch.Tensor,
-    is_forge=False,
     rtol=None,
     atol=None,
     pcc=None,
@@ -163,9 +240,6 @@ def compare_tensor_to_golden(
 
     if golden.dtype == torch.bool and calculated.dtype == torch.bool:
         return bool(torch.all(golden == calculated))
-
-    if is_forge:
-        calculated = narrow_forge_tensor_to_pytorch(calculated, golden.shape)
 
     if rtol is None or (isinstance(rtol, dict) and (golden.dtype not in rtol or rtol[golden.dtype] is None)):
         if verify_cfg is not None and golden.dtype in verify_cfg.rtol and verify_cfg.rtol[golden.dtype] is not None:
@@ -207,10 +281,11 @@ def compare_tensor_to_golden(
         logger.debug("Calculated: (shape = {}", calculated.shape)
         return False
 
+    # Issue(1701): types mismatch between golden and calculated.
     if golden.dtype != calculated.dtype:
         calculated = calculated.type(golden.dtype)
 
-    ok = torch.allclose(golden, calculated, rtol=rtol, atol=atol, equal_nan=True)
+    ok = verif.all_close(golden, calculated, rtol=rtol, atol=atol)
     callback_ok = (
         True
         if verify_cfg is None or verify_cfg.golden_compare_callback is None
@@ -227,10 +302,7 @@ def compare_tensor_to_golden(
             logger.trace("Calculated: (shape = {}", calculated.shape)
             logger.trace(calculated)
             logger.warning(
-                "Max ATOL Delta: "
-                + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
-                + ", atol="
-                + "{}".format(atol)
+                "Max ATOL Delta: " + "{:.3e}".format(calculate_atol(golden, calculated)) + ", atol=" + "{}".format(atol)
             )
             logger.warning(
                 "Max RTOL Delta: "
@@ -250,10 +322,7 @@ def compare_tensor_to_golden(
         logger.trace("Calculated: (shape = {}", calculated.shape)
         logger.trace(calculated)
         logger.info(
-            "Max ATOL Delta: "
-            + "{:.3e}".format(torch.max(torch.abs(golden - calculated)).item())
-            + ", atol="
-            + "{}".format(atol)
+            "Max ATOL Delta: " + "{:.3e}".format(calculate_atol(calculated, golden)) + ", atol=" + "{}".format(atol)
         )
         logger.info(
             "Max RTOL Delta: "
@@ -283,19 +352,104 @@ def compare_tensor_to_golden(
     return True
 
 
-def compute_required_tolerances(a, b):
-    if a.shape != b.shape:
-        raise ValueError("Tensors must have the same shape")
+def calculate_atol(golden, calculated):
+    if torch.equal(golden, calculated):
+        return 0.0
 
-    diff = torch.abs(a - b)
-    abs_b = torch.abs(b)
+    if golden.dtype == torch.bool:
+        # For bool tensors, return 1.0, since they are not equal (previous check).
+        return 1.0
 
-    # Compute the required atol (assuming rtol=0)
-    required_atol = torch.max(diff)
+    if golden.dtype == torch.bfloat16:
+        # Convert bfloat16 to float32 for PCC calculation - numpy doesn't support bfloat16
+        golden = golden.type(torch.float32)
+        calculated = calculated.type(torch.float32)
+
+    if can_use_custom_kernel(golden, calculated):
+        return verif.max_abs_diff(golden, calculated)
+
+    golden = golden.detach().numpy()
+    calculated = calculated.detach().numpy()
+
+    masked_golden = np.ma.masked_invalid(golden, copy=False)
+    masked_calculated = np.ma.masked_invalid(calculated, copy=False)
+
+    # Assert that all nans/infs are matching. If not, return inf.
+    if not np.array_equal(
+        golden[masked_golden.mask], calculated[masked_calculated.mask], equal_nan=True
+    ) or not np.array_equal(masked_golden.mask, masked_calculated.mask):
+        return torch.inf
+
+    np_max_abs_diff = np.nanmax(np.abs(golden - calculated))
+    return torch.tensor(np_max_abs_diff).item()
+
+
+def calculate_rtol(golden, calculated):
+    diff = torch.abs(golden - calculated)
+    abs_calculated = torch.abs(calculated)
 
     # Compute the required rtol (assuming atol=0)
     # Avoid division by zero by setting a high rtol for zero values in b
-    safe_abs_b = torch.where(abs_b == 0, torch.tensor(float("inf")), abs_b)
-    required_rtol = torch.max(diff / safe_abs_b)
+    safe_abs_calculated = torch.where(abs_calculated == 0, torch.tensor(float("inf")), abs_calculated)
 
-    return required_atol.item(), required_rtol.item()
+    return torch.max(diff / safe_abs_calculated).item()
+
+
+def compute_required_tolerances(golden, calculated):
+    if golden.shape != calculated.shape:
+        raise ValueError("Tensors must have the same shape")
+
+    required_atol = calculate_atol(golden, calculated)
+    required_rtol = calculate_rtol(golden, calculated)
+
+    return required_atol, required_rtol
+
+
+def determine_consistency_limits(
+    framework_outputs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]], compiled_outputs: List[torch.Tensor]
+) -> Tuple[Optional[float], Optional[float]]:
+    """
+    Determine the consistency limits between golden (framework) and compiled outputs by computing:
+      - The minimum Pearson correlation coefficient (PCC) among non-scalar tensors (lower consistency limit).
+      - The maximum absolute tolerance (ATOL) across all outputs (upper deviation limit).
+
+    Parameters:
+        framework_outputs: Tuple or list of torch.Tensor representing the expected (golden) outputs.
+        compiled_outputs: List of torch.Tensor representing the computed outputs.
+
+    Returns:
+        A tuple (min_pcc, max_atol) where:
+          - min_pcc is the minimum PCC computed over non-scalar tensors (the lower consistency limit).
+            If only scalar outputs are present, this is set to None.
+          - max_atol is the maximum absolute tolerance computed over all outputs (the upper deviation limit).
+        If the number of framework and compiled outputs do not match, returns (None, None).
+    """
+    if len(framework_outputs) != len(compiled_outputs):
+        logger.error(
+            f"Input count mismatch: framework_outputs={len(framework_outputs)}, compiled_outputs={len(compiled_outputs)}"
+        )
+        return None, None
+
+    pcc_values = []
+    atol_values = []
+
+    for idx, (fw_out, co_out) in enumerate(zip(framework_outputs, compiled_outputs), start=1):
+        # For non-scalar tensors, ensure the shapes match
+        if fw_out.numel() != 1 and fw_out.shape != co_out.shape:
+            logger.error(f"Tensor {idx} - Shape mismatch: fw_out shape={fw_out.shape}, co_out shape={co_out.shape}")
+            continue
+
+        # If the output is a scalar, compute only ATOL
+        if fw_out.numel() == 1:
+            atol = calculate_atol(fw_out, co_out)
+            atol_values.append(atol)
+        else:
+            pcc = calculate_pcc(fw_out, co_out)
+            pcc_values.append(pcc)
+            atol = calculate_atol(fw_out, co_out)
+            atol_values.append(atol)
+
+    min_pcc = min(pcc_values) if pcc_values else None
+    max_atol = max(atol_values) if atol_values else None
+
+    return min_pcc, max_atol

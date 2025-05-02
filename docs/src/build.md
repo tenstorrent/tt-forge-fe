@@ -35,9 +35,9 @@ python3 --version
 ```
 
 ## Build environment
-This is one off step to build the toolchain and create virtual environment for tt-forge. Generally you need to run this step only once, unless you want to update the toolchain (LLVM).
+This is one off step to build the toolchain and create virtual environment for `tt-forge-fe`.Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
 
-First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see build environment section below).
+First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see [Useful build environment variables](#useful-build-environment-flags) section below).
 ```sh
 # FFE related toolchain (dafault path)
 sudo mkdir -p /opt/ttforge-toolchain
@@ -61,25 +61,38 @@ cmake -B env/build env
 cmake --build env/build
 ```
 
+> **Expert tip:** If you already have the `tt-mlir` toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the `tt-mlir` environment (toolchain) to save time.
+> ```sh
+> cmake -B env/build env -DTTFORGE_SKIP_BUILD_TTMLIR_ENV=ON
+> cmake --build env/build
+> ```
+>
+> **NOTE:** special care should be taken to ensure that the already built `tt-mlir` environment (toolchain) version is compatible with the one `tt-forge-fe` is using.
+
 ## Build Forge
 ```sh
 # Activate virtual environment
 source env/activate
 
 # Build Forge
-cmake -G Ninja -B build
+cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
 cmake --build build
 ```
 
+> **NOTE:** our official compiler is `clang-17`, i.e. building with other compilers is at the moment not tested.
+>
+> If you want to try other compilers, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
+
 You can pass additional options to the `cmake` command to customize the build. For example, to build everything in debug mode, you can run:
 ```sh
-cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug
+cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
 cmake --build build
 ```
 
 > List of commonly used options:
-> - `-DCMAKE_BUILD_TYPE=Debug|Release`  - Build type (Debug, Release)
-> - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`     - Build runtime debug tools (more logging, debug environment flags)
+> - `-DCMAKE_BUILD_TYPE=Debug|Release`      - Build type (Debug, Release)
+> - `-DCMAKE_CXX_COMPILER_LAUNCHER=ccache`  - Use [`ccache`](https://ccache.dev/) to speed up re-builds
+> - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`         - Build runtime debug tools (more logging, debug environment flags)
 
 ### Incremental build
 If you have made changes to the C++ sources (of the `tt-forge-fe` compiler, `tt-mlir` or `tt-metal`), you might want to do an incremental build to save time. This can be done by running the following command:

@@ -6,25 +6,23 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mgp_str_base.utils.utils import load_input, load_model
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail(reason="RuntimeError: Couldn't lower all tuples")]
-        ),
+        pytest.param("alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail]),
     ],
 )
-def test_mgp_scene_text_recognition(record_forge_property, variant):
+def test_mgp_scene_text_recognition(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mgp",
         variant=variant,
@@ -33,15 +31,16 @@ def test_mgp_scene_text_recognition(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = load_model(variant)
     inputs = load_input(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

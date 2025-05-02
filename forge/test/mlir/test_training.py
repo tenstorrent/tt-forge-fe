@@ -24,7 +24,7 @@ class MatmulParam(nn.Module):
 
 
 @pytest.mark.push
-def test_torch_training():
+def test_torch_training(forge_property_recorder):
     model = MatmulParam()
     shape = (1, 1024)
     inputs = torch.rand(shape)
@@ -34,13 +34,20 @@ def test_torch_training():
     loss_fn = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
-    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)
+    tt_model = forge.compile(
+        model, sample_inputs=[torch.rand(shape)], optimizer=optimizer, forge_property_handler=forge_property_recorder
+    )
 
     num_epochs = 20
 
     model.train()
     for epoch in range(num_epochs):
-        fw_out, tt_out = verify(inputs=[inputs], framework_model=model, compiled_model=tt_model)
+        fw_out, tt_out = verify(
+            inputs=[inputs],
+            framework_model=model,
+            compiled_model=tt_model,
+            forge_property_handler=forge_property_recorder,
+        )
         fw_out, tt_out = fw_out[0], tt_out[0]
 
         optimizer.zero_grad()
@@ -55,21 +62,18 @@ def test_torch_training():
 
         loss_grad = tt_out.grad
         assert loss_grad is not None
-        grad = tt_model.backward()
-
-        # HACK to run the optimizer step
-        # i'm not sure what's the right way to tie the torch optimizer to our params,
-        # but this can be done automatically after backward() (hidden from user)
-        model.p.grad = grad[0]
+        tt_model.backward()
 
         optimizer.step()
 
 
 @pytest.mark.push
 @pytest.mark.parametrize("optimizer", [forge.optimizers.SGD, forge.optimizers.Adam, forge.optimizers.AdamW])
-def test_compile_optimizers(optimizer):
+def test_compile_optimizers(forge_property_recorder, optimizer):
     model = MatmulParam()
     shape = (1, 1024)
 
     optimizer = optimizer(learning_rate=0.1)
-    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)
+    tt_model = forge.compile(
+        model, sample_inputs=[torch.rand(shape)], optimizer=optimizer, forge_property_handler=forge_property_recorder
+    )

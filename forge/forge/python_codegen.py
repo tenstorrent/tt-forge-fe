@@ -778,9 +778,9 @@ class ForgeWriter(PythonWriter):
             self.wl(f"elif isinstance(model, flax.linen.Module):")
             self.indent += 1
             self.wl("model_params = {}")
-            self.wl("if hasattr(model, 'params'):")
+            self.wl("if hasattr(model, 'variables') and 'params' in model.variables:")
             self.indent += 1
-            self.wl(f"model_params = model.variables['params']._dict")
+            self.wl(f"model_params = model.variables['params']")
             self.indent -= 1
             self.indent -= 1
             if param_file_name is not None:
@@ -939,7 +939,7 @@ class ForgeWriter(PythonWriter):
             pytest_metadata_list (Optional[List[Dict[str, Any]]]): A list of dictionaries containing metadata for each pytest parameter.
             use_ids_function(bool): If set, the forge module name and shapes and dtyes will used as id for the pytest parameter.
             include_random_parameter_constant_gen(bool): If set, it will include the code for generating and assigning of random tensor for forge module parameters and constants
-            exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in record_forge_property fixtures(i.e pcc)
+            exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in forge_property_recorder fixtures(i.e pcc)
         """
         self.wl("")
         self.wl("")
@@ -979,31 +979,40 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        if module_metadata is not None or not is_pytest_metadata_list_empty:
-            self.wl("def test_module(forge_module_and_shapes_dtypes, record_forge_property):")
-        else:
-            self.wl("def test_module(forge_module_and_shapes_dtypes):")
+        self.wl("def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
-                if isinstance(metadata_value, str):
-                    self.wl(f'record_forge_property("tags.{metadata_name}", "{metadata_value}")')
-                else:
-                    self.wl(f'record_forge_property("tags.{metadata_name}", {metadata_value})')
+                if metadata_name == "forge_op_name":
+                    self.wl("")
+                    self.wl("forge_property_recorder.enable_single_op_details_recording()")
+                    self.wl(f'forge_property_recorder.record_forge_op_name("{metadata_value}")')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
         else:
             self.wl("forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes")
-            if exclude_record_property is not None or len(exclude_record_property) != 0:
+            if exclude_record_property is not None and len(exclude_record_property) != 0:
                 self.wl("")
                 for exclude_metadata in exclude_record_property:
                     self.wl(f'{exclude_metadata} = metadata.pop("{exclude_metadata}")')
             self.wl("")
             self.wl("for metadata_name, metadata_value in metadata.items():")
             self.indent += 1
-            self.wl(f'record_forge_property("tags." + str(metadata_name), metadata_value)')
+            self.wl('if metadata_name == "model_names":')
+            self.indent += 1
+            self.wl("forge_property_recorder.record_op_model_names(metadata_value)")
             self.indent -= 1
+            self.wl('elif metadata_name == "args":')
+            self.indent += 1
+            self.wl("forge_property_recorder.record_forge_op_args(metadata_value)")
+            self.indent -= 1
+            self.wl("else:")
+            self.indent += 1
+            self.wl(
+                'logger.warning("No utility function available in forge property handler to record %s property", metadata_name)'
+            )
+            self.indent -= 2
         self.wl("")
         if is_pytest_metadata_list_empty or (
             exclude_record_property is not None
@@ -1053,10 +1062,15 @@ class ForgeWriter(PythonWriter):
             self.wl("framework_model.set_constant(name, constant_tensor)")
             self.indent -= 1
         self.wl("")
-        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
+        if module_metadata is not None and len(module_metadata) != 0:
+            self.wl("forge_property_recorder.record_single_op_operands_info(framework_model, inputs)")
+            self.wl("")
+        self.wl(
+            "compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)"
+        )
         self.wl("")
         self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
+            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)), forge_property_handler=forge_property_recorder)"
         )
         self.wl("")
         self.wl("")
@@ -1433,7 +1447,7 @@ class PyTorchWriter(PythonWriter):
             self.wl("model_params = {}")
             self.wl("if hasattr(model, 'params'):")
             self.indent += 1
-            self.wl(f"model_params = model.variables['params']._dict")
+            self.wl(f"model_params = model.variables['params']")
             self.indent -= 1
             self.indent -= 1
             self.wl("named_parameters = {}")

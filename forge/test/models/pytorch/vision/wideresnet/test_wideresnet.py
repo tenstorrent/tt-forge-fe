@@ -10,13 +10,13 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.wideresnet.utils.utils import (
     generate_model_wideresnet_imgcls_pytorch,
     post_processing,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -27,12 +27,12 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_wideresnet_pytorch(record_forge_property, variant):
+def test_wideresnet_pytorch(forge_property_recorder, variant):
     if variant != "wide_resnet50_2":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="wideresnet",
         variant=variant,
@@ -41,17 +41,18 @@ def test_wideresnet_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load the model and prepare input data
     (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -82,11 +83,11 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_wideresnet_timm(record_forge_property, variant):
+def test_wideresnet_timm(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="wideresnet",
         source=Source.TIMM,
@@ -95,13 +96,14 @@ def test_wideresnet_timm(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

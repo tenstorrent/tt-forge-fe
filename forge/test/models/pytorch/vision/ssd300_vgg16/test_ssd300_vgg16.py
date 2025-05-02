@@ -4,10 +4,10 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants_with_weights = {
     "ssd300_vgg16": "SSD300_VGG16_Weights",
@@ -15,14 +15,12 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: Couldn't load custom C++ ops. This can happen if your PyTorch and torchvision versions are incompatible, or if you had errors while compiling torchvision from source"
-)
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_ssd300_vgg16(record_forge_property, variant):
+def test_ssd300_vgg16(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="ssd300_vgg16",
         variant=variant,
@@ -31,15 +29,16 @@ def test_ssd300_vgg16(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

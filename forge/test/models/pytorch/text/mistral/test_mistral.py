@@ -6,26 +6,27 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.utils import download_model
 
 variants = ["mistralai/Mistral-7B-v0.1"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(record_forge_property, variant):
+def test_mistral(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -36,8 +37,6 @@ def test_mistral(record_forge_property, variant):
     tokenizer = AutoTokenizer.from_pretrained(variant)
 
     framework_model.eval()
-    for param in framework_model.parameters():
-        param.requires_grad = False
 
     # test should work for batch size 1 and seqlen <= 128
     # for larger seqlen, a DRAM allocation problem might occur (this model is already near maximum model size for single chip)
@@ -50,7 +49,54 @@ def test_mistral(record_forge_property, variant):
         framework_model,
         inputs,
         module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
+
+
+@pytest.mark.nightly
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 60 GB)")
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_v0_3(forge_property_recorder, variant):
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH,
+        model="mistral",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
+
+    # Load tokenizer and model
+    tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
+    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model.eval()
+
+    # prepare input
+    conversation = [{"role": "user", "content": "What's the weather like in Paris?"}]
+    input = tokenizer.apply_chat_template(
+        conversation,
+        tools=[get_current_weather],
+        add_generation_prompt=True,
+        return_dict=True,
+        return_tensors="pt",
+    )
+    inputs = [input["input_ids"]]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

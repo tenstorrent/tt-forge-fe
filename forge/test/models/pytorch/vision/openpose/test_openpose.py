@@ -6,6 +6,7 @@ import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.openpose.utils.model import (
@@ -14,7 +15,6 @@ from test.models.pytorch.vision.openpose.utils.model import (
     get_image_tensor,
     transfer,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -47,12 +47,12 @@ def generate_model_openpose_posdet_custom_pytorch(variant):
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_openpose_basic(record_forge_property, variant):
+def test_openpose_basic(forge_property_recorder, variant):
     if variant != "body_basic":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="openpose",
         variant=variant,
@@ -61,18 +61,19 @@ def test_openpose_basic(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(variant):
@@ -96,21 +97,22 @@ variants = [
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_openpose_osmr(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_openpose_osmr(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,
     )
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

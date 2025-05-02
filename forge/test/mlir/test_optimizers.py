@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 
 import forge
+from forge._C.runtime import Tensor as CTensor
 from test.mlir.utils import get_param_grads, copy_params
 from test.mlir.mnist.utils import MNISTLinear
 from forge.verify.compare import compare_with_golden
@@ -35,10 +36,13 @@ def train_and_compare_optimizers(
         grad_list = []
         for name in ordered_param_names:
             grad_list.append(grads[name])
-        tt_model.gradient_outputs = grad_list[::-1]
+        gradient_outputs = grad_list[::-1]
+        tt_model.gradient_outputs = [CTensor(grad) for grad in gradient_outputs]
 
         # Step
         tt_optimizer.step()
+        tt_model.update_host_weights()
+
         golden_optimizer.step()
 
         # Compare all the parameters
@@ -64,7 +68,7 @@ def train_and_compare_optimizers(
     ],
 )
 @pytest.mark.push
-def test_sgd(shape):
+def test_sgd(forge_property_recorder, shape):
     torch.manual_seed(0)
     num_epochs = 10
     # Large learning rate to propagate possible errors faster
@@ -80,7 +84,11 @@ def test_sgd(shape):
     golden_optimizer = torch.optim.SGD(golden_model.parameters(), lr=learning_rate)
 
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.randn(batch_size, shape[0])], optimizer=tt_optimizer, training=True
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = nn.MSELoss()
@@ -121,7 +129,7 @@ def test_sgd(shape):
     ],
 )
 @pytest.mark.push
-def test_adam(shape, betas, weight_decay):
+def test_adam(forge_property_recorder, shape, betas, weight_decay):
     torch.manual_seed(0)
     num_epochs = 10
     # Large learning rate to propagate possible errors faster
@@ -147,7 +155,11 @@ def test_adam(shape, betas, weight_decay):
     )
 
     tt_model = forge.compile(
-        framework_model, sample_inputs=[torch.randn(batch_size, shape[0])], optimizer=tt_optimizer, training=True
+        framework_model,
+        sample_inputs=[torch.randn(batch_size, shape[0])],
+        optimizer=tt_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = nn.MSELoss()

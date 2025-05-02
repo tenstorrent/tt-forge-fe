@@ -34,10 +34,12 @@ namespace py = pybind11;
 #include "python_bindings_common.hpp"
 #include "reportify/reportify.hpp"
 #include "runtime/python_bindings.hpp"
+#include "shared_utils/forge_property_utils.hpp"
 #include "shared_utils/sparse_matmul_utils.hpp"
 #include "tt_torch_device/python_bindings.hpp"
 #include "utils/ordered_associative_containers/ordered_map.hpp"
 #include "utils/signal_handlers.hpp"
+#include "verif/python_bindings.hpp"
 
 namespace tt
 {
@@ -142,6 +144,9 @@ PYBIND11_MODULE(_C, m)
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
 
+    py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification functions");
+    VerifModule(m_verif);
+
     py::enum_<tt::MathFidelity>(m, "MathFidelity")
         .value("LoFi", tt::MathFidelity::LoFi)
         .value("HiFi2", tt::MathFidelity::HiFi2)
@@ -171,7 +176,54 @@ PYBIND11_MODULE(_C, m)
                 return decode.at(encoded);
             });
 
+    py::enum_<tt::property::ExecutionDepth>(m, "ExecutionDepth")
+        .value("CI_FAILURE", tt::property::ExecutionDepth::CI_FAILURE)
+        .value("FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION)
+        .value("FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION)
+        .value("FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME)
+        .value("INCORRECT_RESULT", tt::property::ExecutionDepth::INCORRECT_RESULT)
+        .value("PASSED", tt::property::ExecutionDepth::PASSED)
+        .export_values()
+        .def(
+            "to_str",
+            [](tt::property::ExecutionDepth execution_depth)
+            {
+                std::stringstream ss;
+                ss << execution_depth;
+                return ss.str();
+            })
+        .def(
+            "from_str",
+            [](std::string const &encoded)
+            {
+                static std::unordered_map<std::string, tt::property::ExecutionDepth> decode = {
+                    {"CI_FAILURE", tt::property::ExecutionDepth::CI_FAILURE},
+                    {"FAILED_FE_COMPILATION", tt::property::ExecutionDepth::FAILED_FE_COMPILATION},
+                    {"FAILED_TTMLIR_COMPILATION", tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION},
+                    {"FAILED_RUNTIME", tt::property::ExecutionDepth::FAILED_RUNTIME},
+                    {"INCORRECT_RESULT", tt::property::ExecutionDepth::INCORRECT_RESULT},
+                    {"PASSED", tt::property::ExecutionDepth::PASSED},
+                };
+                return decode.at(encoded);
+            });
+
     py::register_exception<UnsupportedHWOpsError>(m, "UnsupportedHWOpsError");
+
+    py::class_<tt::passes::MLIRConfig>(m, "MLIRConfig")
+        .def(py::init<>())
+        .def_readwrite("enable_consteval", &tt::passes::MLIRConfig::enable_consteval)
+        .def(
+            "set_enable_consteval",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_consteval(enable); },
+            py::arg("enable"))
+        .def(
+            "to_json",
+            [](tt::passes::MLIRConfig const &mlir_config)
+            {
+                nlohmann::json j = mlir_config;
+                return j;
+            })
+        .def("from_json", [](nlohmann::json const &j) { return j.template get<tt::passes::MLIRConfig>(); });
 
     m.def("link_past_cache_ios", &passes::link_past_cache_ios);
     m.def("move_index_to_mm_weights", &passes::move_index_to_mm_weights);
@@ -185,8 +237,18 @@ PYBIND11_MODULE(_C, m)
         &run_pre_lowering_passes,
         py::arg("graph"),
         py::arg("default_df_override") = std::optional<DataFormat>{});
-    m.def("run_mlir_compiler", &passes::run_mlir_compiler);
-    m.def("run_mlir_compiler_to_cpp", &passes::run_mlir_compiler_to_cpp);
+    m.def(
+        "run_mlir_compiler",
+        &passes::run_mlir_compiler,
+        py::arg("module"),
+        py::arg("mlir_config") = std::nullopt,
+        py::arg("forge_property_handler") = std::nullopt);
+    m.def(
+        "run_mlir_compiler_to_cpp",
+        &passes::run_mlir_compiler_to_cpp,
+        py::arg("module"),
+        py::arg("mlir_config") = std::nullopt,
+        py::arg("forge_property_handler") = std::nullopt);
     m.def("split_graph", &passes::split_graph);
 
     m.def(

@@ -9,26 +9,21 @@ import torchvision
 import torchvision.transforms as transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="Statically allocated circular buffers in program 13 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=6)]. L1 buffer allocated at 1031040 and static circular buffer region ends at 1191648"
-)
-def test_rcnn_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_rcnn_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Alexnet Model
     framework_model = torchvision.models.alexnet(pretrained=True)
@@ -45,10 +40,6 @@ def test_rcnn_pytorch(record_forge_property):
     framework_model.classifier[6] = svm_layer
 
     framework_model.eval()
-
-    # Cancel gradient tracking
-    for param in framework_model.parameters():
-        param.requires_grad = False
 
     # Image
     img = cv2.imread("forge/test/models/files/samples/images/car.jpg")
@@ -84,8 +75,8 @@ def test_rcnn_pytorch(record_forge_property):
 
         inputs = [rect_transform.unsqueeze(0)]
 
-        # Build Module Name
-        module_name = build_module_name(
+        # Record Forge Property
+        module_name = forge_property_recorder.record_model_properties(
             framework=Framework.PYTORCH,
             model="rcnn",
             suffix=f"rect_{idx}",
@@ -94,8 +85,13 @@ def test_rcnn_pytorch(record_forge_property):
         )
 
         # Forge compile framework model
-        compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+        compiled_model = forge.compile(
+            framework_model,
+            sample_inputs=inputs,
+            module_name=module_name,
+            forge_property_handler=forge_property_recorder,
+        )
 
-        verify(inputs, framework_model, compiled_model)
+        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.

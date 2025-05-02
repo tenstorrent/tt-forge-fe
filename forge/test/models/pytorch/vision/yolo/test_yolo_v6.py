@@ -8,24 +8,17 @@ import requests
 from yolov6 import YOLOV6
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolov6_utils import (
     check_img_size,
     process_image,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
-    pytest.param(
-        "yolov6n",
-        marks=[
-            pytest.mark.xfail(
-                reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable"
-            )
-        ],
-    ),
+    "yolov6n",
     "yolov6s",
     "yolov6m",
     "yolov6l",
@@ -34,12 +27,12 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_yolo_v6_pytorch(record_forge_property, variant):
+def test_yolo_v6_pytorch(forge_property_recorder, variant):
     if variant != "yolov6n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v6",
         variant=variant,
@@ -48,8 +41,7 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
@@ -78,10 +70,12 @@ def test_yolo_v6_pytorch(record_forge_property, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # STEP 5 : remove downloaded weights
     os.remove(weights)

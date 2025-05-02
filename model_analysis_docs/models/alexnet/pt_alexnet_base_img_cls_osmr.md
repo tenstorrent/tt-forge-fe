@@ -113,22 +113,22 @@
       <td>AvgPool3d</td>
       <td>Operand(type=Activation, shape=(1, 1, 100, 54, 54), dtype=float32)</td>
       <td>kernel_size : [5, 1, 1]<br>stride : [1, 1, 1]<br>padding : [0, 0, 0, 0, 0, 0]<br>ceil_mode : False<br>count_include_pad : True<br>channel_last : 0</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:461: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
+      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
     </tr>
     <tr>
       <th>10</th>
       <td>AvgPool3d</td>
       <td>Operand(type=Activation, shape=(1, 1, 260, 27, 27), dtype=float32)</td>
       <td>kernel_size : [5, 1, 1]<br>stride : [1, 1, 1]<br>padding : [0, 0, 0, 0, 0, 0]<br>ceil_mode : False<br>count_include_pad : True<br>channel_last : 0</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td>&#x274C;</td>
       <td></td>
-      <td>[MLIR][mlir::AffineMap collapsedLinearAffineMap] python: /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/lib/Dialect/TT/IR/TTOpsTypes.cpp:461: mlir::AffineMap collapsedLinearAffineMap(::mlir::MLIRContext *, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<int64_t>, ::llvm::ArrayRef<std::pair<std::int64_t, std::int64_t>>): Assertion `found && "Dim does not participate in AffineMap RHS"' failed.</td>
+      <td>[FORGE][mlir generation failure] RuntimeError Generated MLIR module failed verification</td>
     </tr>
     <tr>
       <th>11</th>
@@ -137,9 +137,9 @@
       <td>stride : [4, 4]<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>groups : 1<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttmetal allocations] RuntimeError Statically allocated circular buffers</td>
+      <td></td>
     </tr>
     <tr>
       <th>12</th>
@@ -236,9 +236,9 @@
       <td>kernel_size : 3<br>stride : 2<br>padding : [0, 0, 0, 0]<br>dilation : 1<br>ceil_mode : True<br>channel_last : 0</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][ttnn.reshape] RuntimeError tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp new_volume == old_volume Invalid arguments to reshape</td>
+      <td></td>
     </tr>
     <tr>
       <th>21</th>
@@ -280,9 +280,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>25</th>
@@ -302,9 +302,9 @@
       <td></td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x274C;</td>
+      <td>&#x2705;</td>
       <td></td>
-      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
+      <td></td>
     </tr>
     <tr>
       <th>27</th>
@@ -551,7 +551,7 @@
     <tr>
       <th>49</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -562,7 +562,7 @@
     <tr>
       <th>50</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(256, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -573,7 +573,7 @@
     <tr>
       <th>51</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Parameter, shape=(256,), dtype=float32)</td>
+      <td>Operand(type=Parameter, shape=(96,), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -584,7 +584,7 @@
     <tr>
       <th>52</th>
       <td>Unsqueeze</td>
-      <td>Operand(type=Activation, shape=(256, 1), dtype=float32)</td>
+      <td>Operand(type=Activation, shape=(96, 1), dtype=float32)</td>
       <td>dim : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

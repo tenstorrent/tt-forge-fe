@@ -4,10 +4,12 @@
 #include "lower_to_mlir.hpp"
 
 // Standard headers
+#include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <utils/assert.hpp>
+#include <variant>
 
 // TTForge headers
 #include "forge_graph_module.hpp"
@@ -57,6 +59,8 @@ enum class TargetType
     UI32Attr,
     I64Attr,
     I32Attr,
+    F32Attr,
+    I32ArrayAttr,
     DenseI64ArrayAttr,
     DenseI32ArrayAttr,
 };
@@ -107,14 +111,43 @@ class AttributeMapper
     void initialize_default_mappings()
     {
         // Sort the mappings in lexicographical order
+
+        // argmax
+        add_op_mapping("argmax", "dim", AttributeRemap("dim_arg", TargetType::I32ArrayAttr));
+
+        // conv2d_transpose
+        add_op_mapping("conv2d_transpose", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping(
+            "conv2d_transpose", "output_padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+        add_op_mapping("conv2d_transpose", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
+        // conv2d
         add_op_mapping("conv2d", "dilation", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d", "groups", AttributeRemap(std::nullopt, TargetType::I32Attr));
         add_op_mapping("conv2d", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
         add_op_mapping("conv2d", "stride", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
+
+        // cumsum
         add_op_mapping("cumsum", "dim", AttributeRemap(std::nullopt, TargetType::I64Attr));
+
+        // index
+        add_op_mapping("index", "dim", AttributeRemap(std::nullopt, TargetType::I32Attr));
+        add_op_mapping("index", "start", AttributeRemap("begin", TargetType::I32Attr));
+        add_op_mapping("index", "stop", AttributeRemap("end", TargetType::I32Attr));
+        add_op_mapping("index", "stride", AttributeRemap("step", TargetType::I32Attr));
+
+        // reduce_avg
         add_op_mapping("reduce_avg", "dim", AttributeRemap("dim_arg"));
+
+        // repeat_interleave
         add_op_mapping("repeat_interleave", "repeats", AttributeRemap(std::nullopt, TargetType::UI32Attr));
+
+        // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
+        add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
+        add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
         // Add more default mappings here
     }
@@ -247,13 +280,35 @@ class MLIRGenerator
                     return builder_.getUI32IntegerAttr(static_cast<uint32_t>(std::get<int>(value)));
                 case TargetType::I32Attr: return builder_.getI32IntegerAttr(static_cast<int32_t>(std::get<int>(value)));
                 case TargetType::I64Attr: return builder_.getI64IntegerAttr(static_cast<int64_t>(std::get<int>(value)));
-
+                case TargetType::F32Attr: return builder_.getF32FloatAttr(static_cast<float>(std::get<float>(value)));
                 case TargetType::DenseI64ArrayAttr:
                     return builder_.getDenseI64ArrayAttr(std::vector<int64_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
                 case TargetType::DenseI32ArrayAttr:
                     return builder_.getDenseI32ArrayAttr(std::vector<int32_t>(
                         std::get<std::vector<int>>(value).begin(), std::get<std::vector<int>>(value).end()));
+                case TargetType::I32ArrayAttr:
+                    return std::visit(
+                        [this](auto &&arg) -> mlir::Attribute
+                        {
+                            using T = std::decay_t<decltype(arg)>;
+                            // if we have a single int, convert it to an array of size 1
+                            if constexpr (std::is_same_v<T, int>)
+                            {
+                                return builder_.getI32ArrayAttr({arg});
+                            }
+                            // if we have a vector of ints, convert it to an array
+                            else if constexpr (std::is_same_v<T, std::vector<int>>)
+                            {
+                                return builder_.getI32ArrayAttr(llvm::SmallVector<int>(arg.begin(), arg.end()));
+                            }
+                            else
+                            {
+                                // If type not handled, throw an exception
+                                throw std::runtime_error("Unhandled attribute type");
+                            }
+                        },
+                        value);
                 default:
                     // If type not handled, throw an exception
                     throw std::runtime_error("Unhandled target type conversion");
@@ -361,6 +416,7 @@ class MLIRGenerator
             llvm::SmallVector<mlir::NamedAttribute, 1> named_attributes;
             named_attributes.push_back(
                 builder_.getNamedAttr("ttir.name", builder_.getStringAttr(argument_node->name())));
+            named_attributes.push_back(builder_.getNamedAttr("tt.argument_type", get_argument_type(argument_node)));
             func.setArgAttrs(i, named_attributes);
             log_trace(LogMLIRCompiler, "Set argument name {} for function argument {}.", argument_node->name(), i);
         }
@@ -533,7 +589,7 @@ class MLIRGenerator
             shape_vec.push_back((int64_t)dim);
         }
 
-        return builder_.create<mlir::tensor::EmptyOp>(
+        return builder_.create<mlir::tt::ttir::EmptyOp>(
             get_tt_forge_operation_location(graph, node), shape_vec, get_data_type(node));
     }
 
@@ -567,6 +623,7 @@ class MLIRGenerator
             case tt::DataFormat::Float16: return builder_.getF16Type();
             case tt::DataFormat::Int32: return builder_.getI32Type();
             case tt::DataFormat::Int8: return builder_.getI8Type();
+            case tt::DataFormat::RawUInt8: return builder_.getIntegerType(8, false);
             default:
                 log_error("Unsupported data format during lowering from TTForge to TTIR: {}", node->output_df());
                 TT_ASSERT(false);
@@ -589,23 +646,56 @@ class MLIRGenerator
         return mlir::RankedTensorType::get(shape_vec, get_data_type(node));
     }
 
+    mlir::tt::ArgumentTypeAttr get_argument_type(graphlib::Node *node)
+    {
+        auto input_node = node->as<graphlib::InputNode>();
+        switch (input_node->input_type())
+        {
+            case tt::graphlib::InputNodeType::Activation:
+            case tt::graphlib::InputNodeType::Loss:
+            case tt::graphlib::InputNodeType::Target:
+            case tt::graphlib::InputNodeType::Gradient:
+            case tt::graphlib::InputNodeType::Accumulator:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Input);
+            case tt::graphlib::InputNodeType::Parameter:
+            case tt::graphlib::InputNodeType::OptimizerParameter:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Parameter);
+            case tt::graphlib::InputNodeType::Constant:
+                return mlir::tt::ArgumentTypeAttr::get(builder_.getContext(), mlir::tt::ArgumentType::Constant);
+            default: throw std::runtime_error("Unknown input node type - cannot map to MLIR argument type");
+        }
+    }
+
     /// Get the location for a module.
     mlir::Location get_module_location(tt::ForgeGraphModule &module)
     {
         return mlir::FileLineColLoc::get(builder_.getContext(), module.name(), 0, 0);
     }
 
-    /// Get the simple location for a node in a format "graph_name", (graph_id), (node_id)
+    /// Get the node location in format "source_location", (graph_id), (node_id)
     mlir::Location get_node_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::FileLineColLoc::get(builder_.getContext(), graph->name(), graph->id(), node->id());
+        TT_ASSERT(graph != nullptr);
+        TT_ASSERT(node != nullptr);
+
+        const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+
+        // Get source location from layer tag if available, otherwise use node name
+        std::string source_location = node->name();
+        if (tagged_node && tagged_node->has_tag("layer"))
+        {
+            source_location = std::get<std::string>(tagged_node->tag_value("layer")) + "/" + node->name();
+        }
+
+        // Create and return FileLineColLoc with the collected information
+        return mlir::FileLineColLoc::get(builder_.getContext(), source_location, graph->id(), node->id());
     }
 
     /// Get the location for a TTForge operation. The location is a combination of the operation name and the node
     /// location.
     mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
-        return mlir::NameLoc::get(builder_.getStringAttr(node->name()), get_node_location(graph, node));
+        return mlir::NameLoc::get(builder_.getStringAttr(graph->name()), get_node_location(graph, node));
     }
 
     /// Convert an MLIR value to a string.
@@ -623,8 +713,9 @@ class MLIRGenerator
     {
         lowering_handler_map["abs"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AbsOp>;
         lowering_handler_map["add"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::AddOp>;
+        lowering_handler_map["argmax"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ArgMaxOp>;
         lowering_handler_map["cast"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TypecastOp>;
-        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampOp>;
+        lowering_handler_map["clip"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ClampScalarOp>;
         lowering_handler_map["concatenate"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConcatOp>;
         lowering_handler_map["conv2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Conv2dOp>;
         lowering_handler_map["cosine"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::CosOp>;
@@ -637,6 +728,7 @@ class MLIRGenerator
         lowering_handler_map["gelu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GeluOp>;
         lowering_handler_map["greater_equal"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterEqualOp>;
         lowering_handler_map["greater"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::GreaterThanOp>;
+        lowering_handler_map["index"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::IndexOp>;
         lowering_handler_map["leaky_relu"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LeakyReluOp>;
         lowering_handler_map["less"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LessEqualOp>;
         lowering_handler_map["log"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::LogOp>;
@@ -654,6 +746,8 @@ class MLIRGenerator
         lowering_handler_map["repeat_interleave"] =
             &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatInterleaveOp>;
         lowering_handler_map["repeat"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::RepeatOp>;
+        lowering_handler_map["conv2d_transpose"] =
+            &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ConvTranspose2dOp>;
         lowering_handler_map["reshape"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::ReshapeOp>;
         lowering_handler_map["select"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SelectOp>;
         lowering_handler_map["sigmoid"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::SigmoidOp>;
@@ -666,6 +760,7 @@ class MLIRGenerator
         lowering_handler_map["transpose"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::TransposeOp>;
         lowering_handler_map["unsqueeze"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::UnsqueezeOp>;
         lowering_handler_map["upsample2d"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::Upsample2dOp>;
+        lowering_handler_map["pad"] = &MLIRGenerator::emit_mlir_ttforge_op<mlir::tt::ttir::PadOp>;
     }
 };
 

@@ -8,25 +8,21 @@ from PIL import Image
 from torchvision import models, transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="RuntimeError: tt-metal/ttnn/cpp/ttnn/tensor/tensor_utils.cpp:50: new_volume == old_volume Invalid arguments to reshape"
-)
-def test_googlenet_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
-        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
-    )
+@pytest.mark.xfail
+def test_googlenet_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+    )
 
     # Create Forge module from PyTorch model
     # Two ways to load the same model
@@ -57,7 +53,9 @@ def test_googlenet_pytorch(record_forge_property):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

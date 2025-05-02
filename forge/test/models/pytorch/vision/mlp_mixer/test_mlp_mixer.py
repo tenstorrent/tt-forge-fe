@@ -12,19 +12,15 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 varaints = [
     pytest.param(
         "mixer_b16_224",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
     "mixer_b16_224_in21k",
     "mixer_b16_224_miil",
@@ -37,23 +33,19 @@ varaints = [
     "mixer_s32_224",
     pytest.param(
         "mixer_b16_224.goog_in21k",
-        marks=[
-            pytest.mark.xfail(
-                reason="Out of Memory: Not enough space to allocate 12500992 B L1 buffer across 7 banks, where each bank needs to store 1785856 B"
-            )
-        ],
+        marks=[pytest.mark.xfail],
     ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
-def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
+def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         variant=variant,
@@ -62,8 +54,7 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     framework_model = download_model(timm.create_model, variant, pretrained=True)
     config = resolve_data_config({}, model=framework_model)
@@ -82,20 +73,20 @@ def test_mlp_mixer_timm_pytorch(record_forge_property, variant):
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(
-    reason="[Optimzation Graph Passes][Shape Calculation] AssertionError: Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast: [1, 512, 1, 1024] vs [1, 1024, 512, 1]"
-)
-def test_mlp_mixer_pytorch(record_forge_property):
+@pytest.mark.xfail
+def test_mlp_mixer_pytorch(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         source=Source.GITHUB,
@@ -103,8 +94,7 @@ def test_mlp_mixer_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = MLPMixer(
@@ -120,7 +110,9 @@ def test_mlp_mixer_pytorch(record_forge_property):
     inputs = [torch.randn(1, 3, 256, 256)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

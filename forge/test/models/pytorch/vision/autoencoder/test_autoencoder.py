@@ -10,24 +10,23 @@ import torchvision.transforms as transforms
 from datasets import load_dataset
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="[Conv2dTranspose][Shape Calculation] TypeError: 'int' object is not subscriptable")
-def test_conv_ae_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+@pytest.mark.xfail
+def test_conv_ae_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -50,10 +49,12 @@ def test_conv_ae_pytorch(record_forge_property):
     inputs = [sample_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 # pretrained weights are not provided in https://github.com/udacity/deep-learning-v2-pytorch,
@@ -62,9 +63,9 @@ def test_conv_ae_pytorch(record_forge_property):
 
 @pytest.mark.push
 @pytest.mark.nightly
-def test_linear_ae_pytorch(record_forge_property):
-    # Build Module Name
-    module_name = build_module_name(
+def test_linear_ae_pytorch(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="autoencoder",
         variant="linear",
@@ -73,8 +74,7 @@ def test_linear_ae_pytorch(record_forge_property):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
@@ -98,10 +98,12 @@ def test_linear_ae_pytorch(record_forge_property):
     inputs = [sample_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(sample_tensor)

@@ -10,9 +10,9 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -20,20 +20,17 @@ from test.utils import download_model
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "xlm-roberta-base", marks=[pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath")]
-        ),
+        pytest.param("xlm-roberta-base", marks=[pytest.mark.xfail]),
     ],
 )
-def test_roberta_masked_lm(record_forge_property, variant):
-    # Build Module Name
-    module_name = build_module_name(
+def test_roberta_masked_lm(forge_property_recorder, variant):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -54,19 +51,21 @@ def test_roberta_masked_lm(record_forge_property, variant):
     inputs = [input_tokens, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
-def test_roberta_sentiment_pytorch(record_forge_property, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_roberta_sentiment_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="roberta",
         variant=variant,
@@ -75,8 +74,7 @@ def test_roberta_sentiment_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -96,7 +94,9 @@ def test_roberta_sentiment_pytorch(record_forge_property, variant):
     inputs = [input_tokens]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

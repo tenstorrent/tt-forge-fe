@@ -4,10 +4,10 @@
 import pytest
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolos_utils import load_input, load_model
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 @pytest.mark.nightly
@@ -16,14 +16,14 @@ from test.models.utils import Framework, Source, Task, build_module_name
     [
         pytest.param(
             "hustvl/yolos-tiny",
-            marks=[pytest.mark.xfail(reason="AssertionError: Only support nearest neighbor and linear for now")],
+            marks=[pytest.mark.xfail],
         ),
     ],
 )
-def test_yolos(record_forge_property, variant):
+def test_yolos(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolos",
         variant=variant,
@@ -32,15 +32,16 @@ def test_yolos(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = load_model(variant)
     inputs = load_input(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

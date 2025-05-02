@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Tuple, Dict, List, Optional, Union, Set
 from collections.abc import Iterable
 from dataclasses import dataclass, field
-from forge._C import DataFormat, MathFidelity, AMPNodeProperties
+from forge._C import DataFormat, MathFidelity, AMPNodeProperties, MLIRConfig
 import forge.query as query
 from dataclasses_json import dataclass_json, config
 
@@ -81,9 +81,6 @@ class CompilerConfig:
     enable_tvm_dropout: bool = False
     # Create "unsupported" forge ops in python file, allowing user to modify later
     enable_tvm_unsupported_ops: bool = False
-
-    # Should we need to compare every op with framework output at each compilation stage.
-    enable_op_level_comparision: bool = False
     # Should we constant prop in tvm
     enable_tvm_constant_prop: bool = False
     # Convert framework params to relay params
@@ -147,6 +144,8 @@ class CompilerConfig:
     amp_properties: List[AMPNodeProperties] = field(
         default_factory=lambda: list(), metadata=list_as_json(AMPNodeProperties)
     )
+
+    mlir_config: Optional[MLIRConfig] = field(default=None, metadata=optional_as_json(MLIRConfig))
 
     # TODO: add reportify dir
 

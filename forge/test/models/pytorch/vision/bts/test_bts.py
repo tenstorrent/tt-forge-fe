@@ -8,9 +8,8 @@ from PIL import Image
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # import sys
 
@@ -26,12 +25,12 @@ variants = ["densenet161_bts", "densenet121_bts"]
 @pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.nightly
-def test_bts_pytorch(record_forge_property, variant):
+def test_bts_pytorch(forge_property_recorder, variant):
     if variant != "densenet161_bts":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bts",
         variant=variant,
@@ -40,8 +39,7 @@ def test_bts_pytorch(record_forge_property, variant):
     )
 
     # Record Forge Property
-    record_forge_property("group", "generality")
-    record_forge_property("tags.model_name", module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
@@ -79,7 +77,9 @@ def test_bts_pytorch(record_forge_property, variant):
     inputs = [image]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

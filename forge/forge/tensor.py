@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Union, Tuple, List, Optional, Dict, TypeAlias
-from forge.tvm_utils import map_tf_dtype_to_pt
+from forge.tvm_utils import map_pt_dtype_to_pd, map_tf_dtype_to_pt, map_pd_dtype_to_pt
 
 import paddle
 import torch
@@ -12,7 +12,7 @@ import numpy as np
 import math
 from loguru import logger
 import copy
-import jaxlib
+import jax
 import jax.numpy as jnp
 import json
 
@@ -286,13 +286,17 @@ class Tensor(TensorBase):
 
         if dtype in [torch.float16, torch.bfloat16, torch.float32, torch.float64]:
             torch_tensor = torch.rand(shape, dtype=dtype)
-        elif dtype in [torch.int8, torch.int16, torch.int32, torch.int64]:
+        elif dtype in [torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64]:
             if min_int == max_int:
                 torch_tensor = torch.full(size=shape, fill_value=max_int, dtype=dtype)
             else:
                 torch_tensor = torch.randint(low=min_int, high=max_int, size=shape, dtype=dtype)
-        else:
+        elif dtype == torch.bool:
+            torch_tensor = torch.randint(low=0, high=2, size=shape, dtype=dtype)  # this will create boolean tensor
+        elif dtype is None:
             torch_tensor = torch.rand(shape, dtype=torch.float32)
+        else:
+            raise RuntimeError(f"[create_torch_tensor] - Unsupported dtype {dtype}")
 
         return torch_tensor
 
@@ -517,7 +521,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor | jax.Array
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -664,21 +668,26 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
             return fp32_fallback
         return DataFormat.Float32
 
+    if dtype == torch.uint8:
+        return DataFormat.RawUInt8
+
     if dtype == torch.int8:
-        return DataFormat.Int8
+        logger.warning("Parameter is int8. Setting to Int32, since int8 is not supported.")
+        return DataFormat.Int32
 
     # These are kind of arbitrary..
     # if dtype == torch.uint8 or dtype == torch.int:
     #     return DataFormat.UInt16
 
     if dtype == torch.bool:
-        return DataFormat.Int8
+        logger.warning("Parameter is bool. Setting to uint8, since bool is not supported.")
+        return DataFormat.RawUInt8
 
     if dtype == torch.int32:
         return DataFormat.Int32
 
     if dtype == torch.int64:
-        logger.warning("Parameter is int64. Setting to int32, since int64 is not supported .")
+        logger.warning("Parameter is int64. Setting to int32, since int64 is not supported.")
         return DataFormat.Int32
 
     raise RuntimeError("Unsupported torch dtype " + str(dtype))
@@ -702,8 +711,8 @@ def forge_dataformat_to_pytorch_dtype(data_format: DataFormat) -> torch.dtype:
     if data_format in [DataFormat.Bfp8, DataFormat.Bfp4, DataFormat.Bfp2]:
         return torch.float16
 
-    if data_format == DataFormat.Int8:
-        return torch.int8
+    if data_format == DataFormat.RawUInt8:
+        return torch.uint8
 
     if data_format == DataFormat.RawUInt32:
         return torch.int
@@ -1194,35 +1203,38 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
         assert t.has_value(), "Expected Forge tensor to have a value"
         return t.value()
     elif isinstance(t, paddle.Tensor):
-        pt = torch.Tensor(t.numpy())
+        pt = torch.Tensor(t.numpy()).type(map_pd_dtype_to_pt(t.dtype))
         pt.requires_grad = t.stop_gradient == False
         return pt
     elif isinstance(t, np.ndarray):
         return torch.from_numpy(t)
+    elif isinstance(t, jax.Array):
+        return torch.from_numpy(np.array(t))
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
 
-def pt_to_paddle_tensor(pt: torch.Tensor):
-    if isinstance(pt, paddle.Tensor):
-        return pt
-    elif isinstance(pt, torch.Tensor):
-        return paddle.to_tensor(pt.detach().numpy())
-
-    else:
-        raise RuntimeError(f"Unknown type of tensor: {type(pt)}")
-
-
-def pt_to_paddle_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]):
+def to_pd_tensors(tensors: Union[AnyTensor, Tuple[AnyTensor, ...], List[AnyTensor]]) -> Tuple[paddle.Tensor, ...]:
     paddle_tensors = []
 
     if not isinstance(tensors, (list, tuple)):
         tensors = (tensors,)
 
     for t in tensors:
-        paddle_tensors.append(pt_to_paddle_tensor(t))
+        paddle_tensors.append(to_pd_tensor(t))
 
     return tuple(paddle_tensors)
+
+
+def to_pd_tensor(pt: torch.Tensor) -> paddle.Tensor:
+    if isinstance(pt, paddle.Tensor):
+        return pt
+    elif isinstance(pt, torch.Tensor):
+        pd = paddle.to_tensor(pt.detach().numpy(), dtype=map_pt_dtype_to_pd(pt.dtype))
+        pd.stop_gradient = not pt.requires_grad
+        return pd
+    else:
+        raise RuntimeError(f"Unsupported type of tensor: {type(pt)}")
 
 
 def to_jax_tensors(
@@ -1266,7 +1278,7 @@ def to_jax_tensors(
 
         elif isinstance(t, np.ndarray):
             jax_tensors.append(jnp.asarray(t))
-        elif isinstance(t, jaxlib.xla_extension.DeviceArray):
+        elif isinstance(t, jax.Array):
             jax_tensors.append(t)
         else:
             raise RuntimeError(f"Unknown type of tensor: {type(t)}")
