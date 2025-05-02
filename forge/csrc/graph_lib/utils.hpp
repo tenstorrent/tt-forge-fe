@@ -50,7 +50,6 @@ bool default_node_filter(Node *);
 
 // Checks if given opnode is element-wise
 class OpNode;
-bool is_eltwise(const OpNode *op);
 bool is_eltwise_nary(const OpNode *op);
 bool is_eltwise_unary(const OpNode *op);
 bool is_eltwise_binary(const OpNode *op);

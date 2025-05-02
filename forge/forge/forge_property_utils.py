@@ -269,7 +269,7 @@ class ModelInfo:
 @dataclass_json
 @dataclass
 class Tags:
-    model_name: str = ""
+    model_name: Optional[str] = None
     bringup_status: str = ""
     execution_stage: str = ""
     pcc: Optional[float] = None
@@ -280,15 +280,15 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
-    group: str = ""
+    group: Optional[str] = None
 
 
 @dataclass_json
 @dataclass
 class ForgePropertyStore:
     owner: str = "tt-forge-fe"
-    group: str = ""
-    priority: str = ""
+    group: Optional[str] = None
+    priority: Optional[str] = None
     tags: Optional[Tags] = None
     config: Optional[Config] = None
 
@@ -570,7 +570,7 @@ class ForgePropertyHandler:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
 
-        if self.get("tags.model_name") is not None:
+        if self.get("tags.model_name"):
             # For model tests, we don't want to record the flatbuffer details, since this
             # results in a lot of data being recorded.
             return
