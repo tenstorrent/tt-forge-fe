@@ -1,22 +1,17 @@
 setuptools>=61
-# This is needed to avoid issue https://yyz-gitlab.local.tenstorrent.com/devops/devops/-/issues/95
-# jax requires any version of optax which requires any version of chex which in turn
-# requires jax>=0.4.6 which conflicts with our jax == 0.3.16
-# TODO: Remove when jax library is upgraded
-chex==0.1.6
 dataclasses-json==0.5.7
 datasets==2.14.6
 decorator==5.1.1
-flatbuffers==23.5.26
+flatbuffers==24.3.25
 # This is needed to prevent AttributeError: module 'ml_dtypes' has no attribute 'float8_e4m3b11'
-ml-dtypes==0.2.0
-flax==0.9.0
-jax==0.4.30
-jaxlib==0.4.30
+ml-dtypes==0.5.1
+flax==0.10.4
+jax==0.5.0
+jaxlib==0.5.0
 loguru==0.5.3
 matplotlib==3.5.1
 networkx==2.8.5
-numpy==1.23.1
+numpy==2.0.0
 onnx>=1.15.0
 onnxruntime>=1.16.3
 opencv-python-headless==4.10.0.84
@@ -27,8 +22,8 @@ protobuf==3.20.3
 pybind11==2.6.2
 pyinstrument>=4.1.1
 scipy>=1.8.0
-tensorflow==2.13
-tensorboard==2.13
+tensorflow==2.18.1
+tensorboard==2.18
 tf2onnx==1.15.1
 transformers==4.47.0
 # To avoid warning during the import
