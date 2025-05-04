@@ -297,9 +297,9 @@ class FailingReasonsDefs(Enum):
         checks=[
             # div	RuntimeError: TT_ASSERT @ tt-forge-fe/forge/csrc/verif/verif_ops.cpp:361: !has_special_values(a)
             # >       if not verif.all_close(fw_out, co_out, rtol=self.rtol, atol=self.atol):
-            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:361: !has_special_values(a)
+            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:362: !has_special_values(b)
             # E       info:
-            # E       Tensor a contains NaN/Inf values
+            # E       Tensor b contains NaN/Inf values
             # E       backtrace:
             # E        --- tt::all_close(at::Tensor const&, at::Tensor const&, double, double)
             # forge/forge/verify/value_checkers.py:54: RuntimeError
@@ -307,9 +307,15 @@ class FailingReasonsDefs(Enum):
                 class_name="RuntimeError",
                 component=ComponentChecker.FORGE.value,
                 message=[
-                    M.contains("Tensor a contains NaN/Inf values"),
+                    M.any(
+                        M.contains("Tensor a contains NaN/Inf values"),
+                        M.contains("Tensor b contains NaN/Inf values"),
+                    ),
                     M.contains("verif_ops.cpp"),
-                    M.contains("!has_special_values(a)"),
+                    M.any(
+                        M.contains("!has_special_values(a)"),
+                        M.contains("!has_special_values(b)"),
+                    ),
                 ],
                 error_log=[
                     M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:54")),

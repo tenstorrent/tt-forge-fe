@@ -36,7 +36,7 @@ class FailingReasonsRegister:
         ("clamp", FailingReasonsDefs.SPECIAL_VALUES),
         ("clamp", FailingReasonsDefs.TTNN_RUNTIME),
         ("concatenate", FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER),
-        ("concatenate", FailingReasonsDefs.ALLOCATION_FAILED),
+        # ("concatenate", FailingReasonsDefs.ALLOCATION_FAILED),
         ("conj_physical", FailingReasonsDefs.NOT_IMPLEMENTED),
         ("conv2d", FailingReasonsDefs.ALLOCATION_CIRCULAR_BUFFER),
         ("conv2d", FailingReasonsDefs.ALLOCATION_FAILED),
