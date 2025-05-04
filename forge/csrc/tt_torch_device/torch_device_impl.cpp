@@ -113,6 +113,8 @@ struct Mallocator final : public c10::Allocator
         return c10::DataPtr(ptr, nullptr, std::free, c10::Device(TT, 0));
     }
 
+    virtual void copy_data(void* dest, const void* src, std::size_t count) override { std::memcpy(dest, src, count); }
+
     static c10::Allocator* get()
     {
         static std::unique_ptr<Mallocator> mallocator = std::make_unique<Mallocator>();
