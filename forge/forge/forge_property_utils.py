@@ -678,8 +678,8 @@ class ForgePropertyHandler:
         Args:
             refined_error_message (str): The refined error message string.
         """
-        if self.record_single_op_details:
-            self.add("tags.refined_error_message", refined_error_message)
+        # if self.record_single_op_details:
+        self.add("tags.refined_error_message", refined_error_message)
 
     def record_failure_category(self, failure_category: str):
         """
@@ -688,8 +688,8 @@ class ForgePropertyHandler:
         Args:
             failure_category (str): The failure category string.
         """
-        if self.record_single_op_details:
-            self.add("tags.failure_category", failure_category)
+        # if self.record_single_op_details:
+        self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """

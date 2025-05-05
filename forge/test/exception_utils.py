@@ -45,6 +45,14 @@ class MatchingExceptionRule:
 
 compiler_exception_rules = [
     MatchingExceptionRule(
+        "Framework vs Generated Forge Codegen Output mismatch",
+        [
+            "AssertionError",
+            "Data mismatch on output",
+            "between framework and Forge codegen",
+        ],
+    ),
+    MatchingExceptionRule(
         "Framework vs Compiled Model Output Data mismatch",
         [
             "ValueError",

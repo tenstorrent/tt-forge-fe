@@ -68,7 +68,7 @@ def forge_property_recorder(request, record_property):
         # 1. The refined error message exists.
         # 2. The handler is configured to record single operation details (record_single_op_details flag is True).
         # If either of these checks fail, exit without further recording.
-        if refined_error_message is None or not forge_property_handler.record_single_op_details:
+        if refined_error_message is None:
             return
 
         # Record the refined error message in the handler's property store.
