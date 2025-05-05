@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utils/assert.hpp>
 #include <variant>
 
@@ -498,7 +499,7 @@ class MLIRGenerator
         return opResult;
     }
 
-    /// Emit an MLIR operation for a ttforge elementwise operation.
+    /// Emit an MLIR operation for a ttforge operation.
     template <typename TTIROp>
     mlir::Value emit_mlir_ttforge_op(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
     {
@@ -516,21 +517,6 @@ class MLIRGenerator
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
-        }
-
-        // Handle operation segment sizes if needed
-        ::llvm::ArrayRef<::llvm::StringRef> operation_attributes = TTIROp::getAttributeNames();
-        for (auto attribute_name : operation_attributes)
-        {
-            if (attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
-            {
-                // Create operation segment sizes attributes
-                mlir::NamedAttribute operand_segment_sizes_attribute = builder_.getNamedAttr(
-                    mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr(),
-                    builder_.getDenseI32ArrayAttr(
-                        {static_cast<int32_t>(graph->operands(op_node).size()), static_cast<int32_t>(1)}));
-                mlir_attributes.push_back(operand_segment_sizes_attribute);
-            }
         }
 
         auto op = builder_.create<TTIROp>(
@@ -672,30 +658,55 @@ class MLIRGenerator
         return mlir::FileLineColLoc::get(builder_.getContext(), module.name(), 0, 0);
     }
 
-    /// Get the node location in format "source_location", (graph_id), (node_id)
-    mlir::Location get_node_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
+    /// Recursively parses the layer tag by separing on '/', creating a NameLoc for each part and chaining them
+    /// together.
+    ///
+    /// Example desired behaviour (layer -> NameLoc):
+    /// - "module_name/layer_1/layer_2" -> NameLoc("layer_2", NameLoc("layer_1", NameLoc("module_name")))
+    ///
+    mlir::Location parse_layer_tag(std::string_view layer_tag)
+    {
+        auto pos = layer_tag.rfind('/');
+        if (pos != std::string_view::npos)
+        {
+            std::string_view name = layer_tag.substr(pos + 1);
+
+            mlir::StringAttr name_attr = builder_.getStringAttr(name);
+            return mlir::NameLoc::get(name_attr, parse_layer_tag(layer_tag.substr(0, pos)));
+        }
+        else
+        {
+            mlir::StringAttr name_attr = builder_.getStringAttr(layer_tag);
+            return mlir::NameLoc::get(name_attr);
+        }
+    }
+
+    /// Construct hierarchical `Location` for tt-forge operation.
+    ///
+    /// If the node has a `<layer>` tag, then the `Location` is constructed from the tag value and the node name (tag
+    /// value is used to generate the hierarchy of locations). Otherwise, the `Location` is constructed from the node
+    /// name only.
+    mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
     {
         TT_ASSERT(graph != nullptr);
         TT_ASSERT(node != nullptr);
 
-        const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+        std::string_view source_location = node->name();
+        mlir::NameLoc name_loc = mlir::NameLoc::get(builder_.getStringAttr(source_location));
 
-        // Get source location from layer tag if available, otherwise use node name
-        std::string source_location = node->name();
-        if (tagged_node && tagged_node->has_tag("layer"))
+        const graphlib::TaggedNode *tagged_node = node->as<graphlib::TaggedNode>();
+        constexpr auto tag_name = "layer";
+
+        if (tagged_node && tagged_node->has_tag(tag_name))
         {
-            source_location = std::get<std::string>(tagged_node->tag_value("layer")) + "/" + node->name();
+            // We have a layer tag - create a NameLoc chain describing the layers.
+            auto layer_loc = parse_layer_tag(std::get<std::string>(tagged_node->tag_value(tag_name)));
+
+            // Merge the layer locations with the node name location.
+            name_loc = mlir::NameLoc::get(name_loc.getName(), layer_loc);
         }
 
-        // Create and return FileLineColLoc with the collected information
-        return mlir::FileLineColLoc::get(builder_.getContext(), source_location, graph->id(), node->id());
-    }
-
-    /// Get the location for a TTForge operation. The location is a combination of the operation name and the node
-    /// location.
-    mlir::Location get_tt_forge_operation_location(tt::graphlib::Graph *graph, tt::graphlib::Node *node)
-    {
-        return mlir::NameLoc::get(builder_.getStringAttr(graph->name()), get_node_location(graph, node));
+        return name_loc;
     }
 
     /// Convert an MLIR value to a string.
