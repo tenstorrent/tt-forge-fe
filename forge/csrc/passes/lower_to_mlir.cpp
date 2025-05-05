@@ -498,7 +498,7 @@ class MLIRGenerator
         return opResult;
     }
 
-    /// Emit an MLIR operation for a ttforge elementwise operation.
+    /// Emit an MLIR operation for a ttforge operation.
     template <typename TTIROp>
     mlir::Value emit_mlir_ttforge_op(tt::graphlib::Graph *graph, tt::graphlib::OpNode *op_node)
     {
@@ -516,21 +516,6 @@ class MLIRGenerator
 
             mlir_attributes.push_back(
                 builder_.getNamedAttr(mapped_name, convert_to_mlir_attribute(value, target_type)));
-        }
-
-        // Handle operation segment sizes if needed
-        ::llvm::ArrayRef<::llvm::StringRef> operation_attributes = TTIROp::getAttributeNames();
-        for (auto attribute_name : operation_attributes)
-        {
-            if (attribute_name == mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr())
-            {
-                // Create operation segment sizes attributes
-                mlir::NamedAttribute operand_segment_sizes_attribute = builder_.getNamedAttr(
-                    mlir::OpTrait::AttrSizedOperandSegments<void>::getOperandSegmentSizeAttr(),
-                    builder_.getDenseI32ArrayAttr(
-                        {static_cast<int32_t>(graph->operands(op_node).size()), static_cast<int32_t>(1)}));
-                mlir_attributes.push_back(operand_segment_sizes_attribute);
-            }
         }
 
         auto op = builder_.create<TTIROp>(
