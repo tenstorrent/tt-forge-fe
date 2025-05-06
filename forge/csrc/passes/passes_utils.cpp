@@ -160,7 +160,6 @@ std::vector<int> get_factors(int num)
 bool check_unsupported_hw_ops(Graph *graph, bool should_throw)
 {
     bool unsupported_hw_ops = false;
-    py::object eval_module = py::module_::import("forge.op.eval.lforge");
     std::string message;
 
     for (Node *node : graph->nodes())

@@ -7,7 +7,6 @@ import pytest
 import time
 import socket
 import json
-import os
 from datetime import datetime
 
 # Third-party modules
@@ -23,7 +22,7 @@ from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge._C import DataFormat
-from forge.config import CompilerConfig
+from forge.config import CompilerConfig, MLIRConfig
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
@@ -102,7 +101,11 @@ def test_resnet_hf(
     compiler_cfg = CompilerConfig()
     if data_format == "bfloat16":
         compiler_cfg.default_df_override = DataFormat.Float16_b
-    compiled_model = forge.compile(framework_model, *input_sample, compiler_cfg=compiler_cfg)
+
+    # Turn on MLIR optimizations.
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=input_sample, compiler_cfg=compiler_cfg)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
@@ -144,7 +147,7 @@ def test_resnet_hf(
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
@@ -203,6 +206,10 @@ def test_resnet_hf(
 
 
 def resnet_hf_benchmark(config: dict):
+    """
+    Run the resnet benchmark.
+    This function is a placeholder for the actual benchmark implementation.
+    """
 
     training = config["training"]
     batch_size = config["batch_size"]

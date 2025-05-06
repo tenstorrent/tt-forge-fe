@@ -135,7 +135,7 @@ graphlib::Node *detect_inputs_to_convert(graphlib::Graph *graph, graphlib::Node 
 {
     graphlib::Node *input_node = nullptr;
     graphlib::OpNode *output_producer = producer->as<graphlib::OpNode>();
-    if (not output_producer or not(is_eltwise(output_producer) or is_eltwise_nary(output_producer)))
+    if (not output_producer or not(output_producer->is_eltwise() or is_eltwise_nary(output_producer)))
         return input_node;
 
     auto is_input = [](graphlib::Node *n)

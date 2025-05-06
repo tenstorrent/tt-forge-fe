@@ -24,9 +24,6 @@ def test_deepseek_inference_no_cache(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="deepseek", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder("model_name", module_name)
-
     # Load Model and Tokenizer
     model_name = f"deepseek-ai/{variant}"
     model, tokenizer, inputs = download_model_and_tokenizer(model_name)
@@ -52,6 +49,7 @@ def test_deepseek_inference_no_cache(forge_property_recorder, variant):
     print(generated_text)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["deepseek-coder-1.3b-instruct"])
 def test_deepseek_inference_no_cache_cpu(variant):
     model_name = f"deepseek-ai/{variant}"

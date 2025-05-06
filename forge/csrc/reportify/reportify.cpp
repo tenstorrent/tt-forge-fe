@@ -416,8 +416,12 @@ json create_json_for_mlir(const std::string& module_name, mlir::Operation* opera
     std::string outputString;
     llvm::raw_string_ostream outStream(outputString);
 
+    // Print the MLIR module
+    mlir::OpPrintingFlags printFlags;
+    printFlags.enableDebugInfo();
+
     // Put data into string
-    operation->print(outStream);
+    operation->print(outStream, printFlags);
     outStream.flush();
     this_json["content"] = outputString;
 

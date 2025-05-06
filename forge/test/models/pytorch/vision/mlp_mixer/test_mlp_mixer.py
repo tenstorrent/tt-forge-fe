@@ -56,7 +56,11 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    load_pretrained_weights = True
+    if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
+        load_pretrained_weights = False
+
+    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights)
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 

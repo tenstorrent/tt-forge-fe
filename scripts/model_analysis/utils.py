@@ -10,6 +10,7 @@ import shutil
 from git import Repo
 
 import torch
+from forge.tvm_unique_op_generation import UniqueOperations
 
 
 class CompilerComponent(IntEnum):
@@ -364,3 +365,41 @@ def extract_test_file_path_and_test_case_func(test_case: str):
         test_file_path, test_case_func = test_case.split("::", 1)  # Splitting into two parts
 
     return test_file_path, test_case_func
+
+
+def filter_unique_operations(unique_operations: UniqueOperations, ops_to_filter: Optional[List[str]] = None):
+    """
+    Select and return only the unique operations whose forge operation names match those specified in `ops_to_filter`.
+    """
+    if not unique_operations or ops_to_filter is None or not ops_to_filter:
+        return unique_operations
+
+    if not any(
+        [
+            True if forge_op_function_name.split(".")[-1] in ops_to_filter else False
+            for forge_op_function_name in unique_operations.keys()
+        ]
+    ):
+        raise ValueError(f"Provided op names {filter_ops} are not found in unique ops extracted across all models")
+
+    return {
+        forge_op_function_name: unique_operands_and_opargs_opmetadata
+        for forge_op_function_name, unique_operands_and_opargs_opmetadata in unique_operations.items()
+        if forge_op_function_name.split(".")[-1] in ops_to_filter
+    }
+
+
+def filter_tests(tests: List[str], tests_to_filter: Optional[List[str]] = None) -> List[str]:
+    """
+    Return a list of tests that match any of the filter tests list.
+    """
+    if not tests or tests_to_filter is None or not tests_to_filter:
+        return tests
+
+    filtered_tests = [test for test in tests if any(filter_test in test for filter_test in tests_to_filter)]
+    if not filtered_tests:
+        raise ValueError("None of the specified tests match the collected model analysis tests.")
+
+    filtered_tests.sort()
+
+    return filtered_tests

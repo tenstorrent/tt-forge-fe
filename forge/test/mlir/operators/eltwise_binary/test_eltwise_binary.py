@@ -8,6 +8,7 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify import DepricatedVerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -450,4 +451,36 @@ def test_remainder(forge_property_recorder):
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@torch.jit.script
+def make_log_bucket_position(relative_pos, bucket_size: int):
+    mid = bucket_size // 2
+    abs_pos = relative_pos * mid
+    return abs_pos
+
+
+@pytest.mark.push
+@pytest.mark.parametrize("bucket_size", [5, 16, 127, 256, 513])
+def test_floordiv(bucket_size, forge_property_recorder):
+    class floordiv(nn.Module):
+        def __init__(self, bucket_size):
+            super().__init__()
+            self.bucket_size = bucket_size
+
+        def forward(self, x):
+            op = make_log_bucket_position(x, self.bucket_size)
+            return op
+
+    x = torch.randn(41, 41)
+    inputs = [x]
+
+    framework_model = floordiv(bucket_size)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        forge_property_handler=forge_property_recorder,
+    )
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

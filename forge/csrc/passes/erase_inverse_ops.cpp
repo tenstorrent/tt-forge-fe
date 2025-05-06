@@ -241,7 +241,7 @@ void commute_and_bypass(graphlib::Graph *graph, std::vector<graphlib::Node *> co
                     &operand_dims,
                     &golden_transform);
             }
-            else if (is_elementwise(op))
+            else if (op->is_eltwise())
             {
                 commute_through_eltwise(op, &commute_shape, &golden_transform);
             }

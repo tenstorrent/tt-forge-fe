@@ -14,6 +14,7 @@ from forge.forge_property_utils import Framework, Source, Task, build_module_nam
 variants = ["facebook/llama-7b"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_llama_decoder(variant, forge_property_recorder):
@@ -37,6 +38,7 @@ def test_llama_decoder(variant, forge_property_recorder):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_llama_rms_norm(variant, forge_property_recorder):
@@ -60,6 +62,7 @@ def test_llama_rms_norm(variant, forge_property_recorder):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants)
 def test_llama_lm_head(variant, forge_property_recorder):
     full_model = LlamaForCausalLM.from_pretrained(variant)

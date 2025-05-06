@@ -3,22 +3,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Built-in modules
+import pytest
 import time
 import socket
-import pytest
 import json
 from datetime import datetime
 
 # Third-party modules
 import torch
+from transformers import SegformerConfig
+from transformers import SegformerForImageClassification
 
 # Forge modules
 import forge
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
-
-from test.utils import download_model
 
 
 # Common constants
@@ -30,7 +30,7 @@ BATCH_SIZE = [
 
 # Input size configurations
 INPUT_SIZE = [
-    (224, 224),
+    (512, 512),
 ]
 
 # Channel size configurations
@@ -41,23 +41,35 @@ CHANNEL_SIZE = [
 # Loop count configurations
 LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
+# Variants for image classification
+VARIANTS = [
+    "nvidia/mit-b0",
+]
 
-@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
+
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
-def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_count):
+@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
+@pytest.mark.parametrize("variant", VARIANTS, ids=[f"variant={item}" for item in VARIANTS])
+def test_segformer_classification(
+    training,
+    batch_size,
+    input_size,
+    channel_size,
+    loop_count,
+    variant,
+):
     """
-    This function creates a basic MobileNetV2 model using PyTorch.
+    This function creates a basic Segformer model for image classification task using PyTorch.
     It is used for benchmarking purposes.
     """
 
     if training:
         pytest.skip("Training is not supported")
 
-    module_name = "MobileNetv2Basic"
+    module_name = "SegformerClassification"
 
-    torch.manual_seed(1)
     # Create random inputs
     input_sample = [
         torch.randn(
@@ -68,7 +80,14 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
         )
     ]
 
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
+    # Set model configurations
+    config = SegformerConfig.from_pretrained(variant)
+    config_dict = config.to_dict()
+    config_dict["return_dict"] = False
+    config = SegformerConfig(**config_dict)
+
+    # Load the model from HuggingFace
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
     framework_model.eval()
     fw_out = framework_model(*input_sample)
 
@@ -89,7 +108,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
+    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -97,13 +116,13 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "MobileNet V2 Basic"
+    model_name = "Segformer"
     model_type = "Classification, Random Input Data"
-    dataset_name = "Mobilenet V2, Random Data"
+    dataset_name = "Segformer, Random Data"
     num_layers = 54  # Number of layers in the model, in this case number of convolutional layers
 
     print("====================================================================")
-    print("| MobileNet V2 Benchmark Results:                                  |")
+    print("| Segformer Benchmark Results:                                     |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")
@@ -167,9 +186,9 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     return result
 
 
-def mobilenetv2_basic_benchmark(config: dict):
+def segformer_classification_benchmark(config: dict):
     """
-    Run the mobilenet v2 basic benchmark.
+    Run the segformer benchmark.
     This function is a placeholder for the actual benchmark implementation.
     """
 
@@ -179,17 +198,19 @@ def mobilenetv2_basic_benchmark(config: dict):
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
     loop_count = config["loop_count"]
+    variant = VARIANTS[0]
 
-    result = test_mobilenetv2_basic(
+    result = test_segformer_classification(
         training=training,
         batch_size=batch_size,
         input_size=input_size,
         channel_size=channel_size,
         loop_count=loop_count,
+        variant=variant,
     )
 
     if not output_file:
-        output_file = f"forge-benchmark-e2e-mobilenetv2_basic_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-segformer_classification_{result['run_type']}.json"
     result["output"] = output_file
 
     # Save the results to a file

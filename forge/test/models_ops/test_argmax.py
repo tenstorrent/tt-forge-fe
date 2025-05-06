@@ -31,49 +31,36 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 7), torch.int32)],
-            {
-                "model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1", "keep_dim": "false"},
-            },
-        ),
+    (
+        Argmax0,
+        [((1, 7), torch.int32)],
+        {
+            "model_names": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
     ),
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 4), torch.int32)],
-            {
-                "model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1", "keep_dim": "false"},
-            },
-        ),
+    (
+        Argmax0,
+        [((1, 4), torch.int32)],
+        {
+            "model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
     ),
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 32), torch.int32)],
-            {
-                "model_name": [
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-                "op_params": {"dim": "-1", "keep_dim": "false"},
-            },
-        ),
-    ),
-    pytest.param(
-        (
-            Argmax0,
-            [((1, 4), torch.int32)],
-            {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "op_params": {"dim": "-1"}},
-        ),
+    (
+        Argmax0,
+        [((1, 32), torch.int32)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "False"},
+        },
     ),
 ]
 
@@ -90,12 +77,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

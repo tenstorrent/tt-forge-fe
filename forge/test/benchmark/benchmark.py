@@ -2,11 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 import sys
 import os
-
 import argparse
-import torch
 
 # Get the absolute path of the project root and add it to the path
 # When we run the tests from benchmark directory it can't find test.utils module,
@@ -14,6 +13,7 @@ import torch
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, project_root)
 
+# Forge modules
 from benchmark import models
 from test.utils import reset_seeds
 
@@ -23,6 +23,9 @@ MODELS = {
     "llama": models.llama.llama_prefill_benchmark,
     "mobilenetv2_basic": models.mobilenetv2_basic.mobilenetv2_basic_benchmark,
     "efficientnet_timm": models.efficientnet_timm.efficientnet_timm_benchmark,
+    "segformer_classification": models.segformer.segformer_classification_benchmark,
+    "vit_base": models.vit.vit_base_benchmark,
+    "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
 }
 
 

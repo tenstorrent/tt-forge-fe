@@ -35,117 +35,117 @@ forge_modules_and_shapes_dtypes_list = [
         Leakyrelu0,
         [((1, 32, 640, 640), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 64, 320, 320), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 32, 320, 320), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 128, 160, 160), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 64, 160, 160), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 256, 80, 80), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 128, 80, 80), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 512, 40, 40), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 256, 40, 40), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 1024, 20, 20), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 512, 20, 20), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 256, 20, 20), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
     (
         Leakyrelu0,
         [((1, 128, 40, 40), torch.float32)],
         {
-            "model_name": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
             "pcc": 0.99,
-            "op_params": {"alpha": "0.10000000000000001"},
+            "args": {"alpha": "0.10000000000000001"},
         },
     ),
 ]
@@ -163,12 +163,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [
