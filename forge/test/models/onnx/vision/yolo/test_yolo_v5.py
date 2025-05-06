@@ -10,133 +10,140 @@ import cv2
 import numpy as np
 import onnx
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge.verify.backend import verify_module
-# from forge import DepricatedVerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+from test.models.pytorch.vision.yolo.test_yolo_v5 import generate_model_yoloV5I320_imgcls_torchhub_pytorch
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
 
 
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_yolo_v5_320x320_onnx(test_device, variant):
+def test_yolo_v5_320x320_onnx(forge_property_recorder, variant):
 
-    # forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolo_v5",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+        suffix="320x320",
+    )
 
-    input_size = 320
-
-    # Load the ONNX model
-    onnx_model_path = f"./third_party/confidential_customer_models/generated/files/{variant}_{input_size}.onnx"
-    onnx_model = onnx.load(onnx_model_path)
-    model_name = f"{variant}_{input_size}_onnx"
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Load data sample
     url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
 
-    # Data preprocessing on Host
-    pixel_values = data_preprocessing(image, size=(input_size, input_size))
+    input_size = 320
+    _, pixel_values, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
+        "ultralytics/yolov5",
+        size=input_size,
+    )
+    inputs = [pixel_values]
 
-    # Run inference on Tenstorrent device
-    verify_module(
-        forge.OnnxModule(model_name, onnx_model),
-        input_shapes=([pixel_values.shape]),
-        inputs=([pixel_values]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Load onnx model
+    onnx_model_path = f"./third_party/confidential_customer_models/generated/files/{variant}_{input_size}.onnx"
+    model_name = f"{variant}_{input_size}_onnx"
+    onnx_model = onnx.load(onnx_model_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-
-variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_yolo_v5_480x480_onnx(test_device, variant):
+def test_yolo_v5_480x480_onnx(forge_property_recorder, variant):
 
-    # forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
-    compiler_cfg.enable_tm_cpu_fallback = True
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolo_v5",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+        suffix="480x480",
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     input_size = 480
 
+    _, pixel_values, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
+        "ultralytics/yolov5",
+        size=input_size,
+    )
+    inputs = [pixel_values]
+
     # Load the ONNX model
     onnx_model_path = f"./third_party/confidential_customer_models/generated/files/{variant}_{input_size}.onnx"
-    onnx_model = onnx.load(onnx_model_path)
     model_name = f"{variant}_{input_size}_onnx"
+    onnx_model = onnx.load(onnx_model_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    # Load data sample
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
-
-    # Data preprocessing on Host
-    pixel_values = data_preprocessing(image, size=(input_size, input_size))
-
-    # Run inference on Tenstorrent device
-    verify_module(
-        forge.OnnxModule(model_name, onnx_model),
-        input_shapes=([pixel_values.shape]),
-        inputs=([pixel_values]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-
-variants = ["yolov5n", "yolov5s", "yolov5m", "yolov5l", "yolov5x"]
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_yolo_v5_640x640_onnx(test_device, variant):
+def test_yolo_v5_640x640_onnx(forge_property_recorder, variant):
 
-    # forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolo_v5",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+        suffix="640x640",
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     input_size = 640
+    _, pixel_values, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
+        "ultralytics/yolov5",
+        size=input_size,
+    )
+    inputs = [pixel_values]
 
     # Load the ONNX model
     onnx_model_path = f"./third_party/confidential_customer_models/generated/files/{variant}_{input_size}.onnx"
-    onnx_model = onnx.load(onnx_model_path)
     model_name = f"{variant}_{input_size}_onnx"
+    onnx_model = onnx.load(onnx_model_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    # Load data sample
-    url = "http://images.cocodataset.org/val2017/000000397133.jpg"
-    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
-
-    # Data preprocessing on Host
-    pixel_values = data_preprocessing(image, size=(input_size, input_size))
-
-    # Run inference on Tenstorrent device
-    verify_module(
-        forge.OnnxModule(model_name, onnx_model),
-        input_shapes=([pixel_values.shape]),
-        inputs=([pixel_values]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

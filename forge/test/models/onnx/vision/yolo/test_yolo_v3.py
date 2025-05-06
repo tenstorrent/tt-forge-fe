@@ -10,12 +10,9 @@ import numpy as np
 import onnx
 import torch
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge.verify.backend import verify_module
-# from forge import DepricatedVerifyConfig
-# from forge._C.backend_api import BackendType, BackendDevice
-# from forge.verify.config import TestKind
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 ########
@@ -48,13 +45,20 @@ def preprocess(img):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.nightly
-def test_yolov3_tiny_onnx(test_device):
-    # STEP 1: Create Forge module from PyTorch model
-    load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/tiny-yolov3-11.onnx"
-    model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model)
+def test_yolov3_tiny_onnx(forge_property_recorder):
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolov_3",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Image preprocessing
     pil_img = Image.open("third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/carvana.jpg")
@@ -63,28 +67,39 @@ def test_yolov3_tiny_onnx(test_device):
     image_size = np.array([pil_img.size[1], pil_img.size[0]], dtype=np.int32).reshape(1, 2)
     image_data = torch.from_numpy(image_data).type(torch.float)
     image_size = torch.from_numpy(image_size).type(torch.float)
+    inputs = [image_data, image_size]
 
-    verify_module(
-        tt_model,
-        input_shapes=[image_data.shape, image_size.shape],
-        inputs=[(image_data, image_size)],
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Load onnx model
+    load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/tiny-yolov3-11.onnx"
+    model_name = f"yolov3_tiny_onnx"
+    onnx_model = onnx.load(load_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.nightly
-def test_yolov3_onnx(test_device):
-    # STEP 1: Create Forge module from PyTorch model
-    load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/yolov3-10.onnx"
-    model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_yolov3_tiny", model)
+def test_yolov3_onnx(forge_property_recorder):
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolov_3",
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Image preprocessing
     pil_img = Image.open("third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/carvana.jpg")
@@ -93,15 +108,19 @@ def test_yolov3_onnx(test_device):
     image_size = np.array([pil_img.size[1], pil_img.size[0]], dtype=np.int32).reshape(1, 2)
     image_data = torch.from_numpy(image_data).type(torch.float)
     image_size = torch.from_numpy(image_size).type(torch.float)
+    inputs = [image_data, image_size]
 
-    verify_module(
-        tt_model,
-        input_shapes=[image_data.shape, image_size.shape],
-        inputs=[(image_data, image_size)],
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Load onnx model
+    load_path = "third_party/confidential_customer_models/model_2/onnx/saved/yolo_v3/yolov3-10.onnx"
+    model_name = f"yolov3_onnx"
+    onnx_model = onnx.load(load_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

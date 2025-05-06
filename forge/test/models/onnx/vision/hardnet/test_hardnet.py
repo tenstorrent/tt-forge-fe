@@ -8,24 +8,30 @@ from PIL import Image
 from torchvision import transforms
 import urllib
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge import DepricatedVerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 variants = ["hardnet68", "hardnet85", "hardnet68ds", "hardnet39ds"]
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_hardnet_onnx(variant, test_device):
+@pytest.mark.skip(reason="Dependent on CCM Repo")
+def test_hardnet_onnx(forge_property_recorder, variant):
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="hardnet",
+        variant=variant,
+        source=Source.TORCHVISION,
+        task=Task.IMAGE_CLASSIFICATION,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Download an example image
     url, filename = (
@@ -49,24 +55,19 @@ def test_hardnet_onnx(variant, test_device):
     )
     input_tensor = preprocess(input_image)
     img_tensor = input_tensor.unsqueeze(0)
+    inputs = [img_tensor]
 
+    # Load ONNX model
     load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
-    model_name = f"{variant}_onnx"
+    model_name = f"hardnet_{variant}_onnx"
+    onnx_model = onnx.load(load_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    # Create Forge module from onnx weights
-    model = onnx.load(load_path)
-    tt_model = forge.OnnxModule(model_name, model)
-
-    # Run inference on Tenstorrent device
-    verify_module(
-        tt_model,
-        input_shapes=([img_tensor.shape]),
-        inputs=([img_tensor]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.98,
-        ),
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

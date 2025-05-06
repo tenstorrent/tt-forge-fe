@@ -9,12 +9,9 @@ import numpy as np
 import onnx
 import requests
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge.verify.backend import verify_module
-# from forge import DepricatedVerifyConfig
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 def preprocess(img, input_size, swap=(2, 0, 1)):
@@ -41,14 +38,22 @@ variants = ["yolox_nano", "yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_yolox_onnx(variant, test_device):
+def test_yolox_onnx(forge_property_recorder, variant):
 
-    # forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="yolox",
+        variant=variant,
+        task=Task.IMAGE_CLASSIFICATION,
+        source=Source.TORCH_HUB,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # prepare input
     if variant in ["yolox_nano", "yolox_tiny"]:
@@ -63,42 +68,19 @@ def test_yolox_onnx(variant, test_device):
     img = cv2.imread("input.jpg")
     img_tensor = preprocess(img, input_shape)
     img_tensor = img_tensor.unsqueeze(0)
+    inputs = [img_tensor]
 
     # Load and validate the ONNX model
     onnx_model_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
+    model_name = f"{variant}_onnx"
     onnx_model = onnx.load(onnx_model_path)
     onnx.checker.check_model(onnx_model)
-    model_name = f"onnx_{variant}"
-    tt_model = forge.OnnxModule(model_name, onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    # PCC
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        if variant == "yolox_nano":
-            pcc = 0.93
-        else:
-            pcc = 0.99
-    elif test_device.arch == BackendDevice.Grayskull:
-        if variant == "yolox_nano":
-            pcc = 0.91
-        elif variant in ["yolox_m", "yolox_darknet"]:
-            pcc = 0.92
-        elif variant in ["yolox_s", "yolox_l"]:
-            pcc = 0.93
-        elif variant == "yolox_x":
-            pcc = 0.94
-        else:
-            pcc = 0.99
-
-    # Inference
-    verify_module(
-        tt_model,
-        input_shapes=([img_tensor.shape]),
-        inputs=([img_tensor]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-        ),
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

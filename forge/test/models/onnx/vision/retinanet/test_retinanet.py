@@ -16,12 +16,9 @@ import numpy as np
 import requests
 from torchvision import transforms
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge.verify.backend import verify_module
-# from forge import DepricatedVerifyConfig, PyTorchModule
-# from forge._C.backend_api import BackendType, BackendDevice
-# from forge.verify.config import TestKind
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 ## https://github.com/onnx/models/tree/main/vision/object_detection_segmentation/retinanet
@@ -52,35 +49,38 @@ def img_preprocess(scal_val=1):
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.nightly
-def test_retinanet_r101_640x480_onnx(test_device):
-    # STEP 1: Set Forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+def test_retinanet_r101_640x480_onnx(forge_property_recorder):
 
-    # STEP 2: Create Forge module from PyTorch model
-    load_path = "third_party/confidential_customer_models/model_2/onnx/retinanet/retinanet-9.onnx"
-    model = onnx.load(load_path)
-    tt_model = forge.OnnxModule("onnx_retinanet", model)
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="retinanet",
+        source=Source.HUGGINGFACE,
+        task=Task.OBJECT_DETECTION,
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Image preprocessing
     img_tensor = img_preprocess()
+    inputs = [img_tensor]
 
-    # STEP 3: Run inference on Tenstorrent device
-    pcc = 0.97 if test_device.arch == BackendDevice.Grayskull and test_device.devtype == BackendType.Silicon else 0.99
-    verify_module(
-        tt_model,
-        input_shapes=([img_tensor.shape]),
-        inputs=([img_tensor]),
-        verify_cfg=DepricatedVerifyConfig(
-            test_kind=TestKind.INFERENCE,
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            pcc=pcc,
-        ),
+    # Load onnx model
+    load_path = "third_party/confidential_customer_models/model_2/onnx/retinanet/retinanet-9.onnx"
+    model_name = f"retinanet_r101_640x480_onnx"
+    onnx_model = onnx.load(load_path)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 def img_preprocessing():
@@ -109,33 +109,38 @@ variants = [
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_retinanet_onnx(variant, test_device):
+def test_retinanet_onnx(forge_property_recorder, variant):
 
-    # Set Forge configuration parameters
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge.DataFormat.Float16_b
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
+        model="retinanet",
+        source=Source.HUGGINGFACE,
+        variant=variant,
+        task=Task.OBJECT_DETECTION,
+    )
 
-    # Prepare model
-    load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
-    model_name = f"onnx_{variant}"
-    model = onnx.load(load_path)
-    tt_model = forge.OnnxModule(model_name, model)
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Prepare input
     input_batch = img_preprocessing()
+    inputs = [input_batch]
 
-    # Inference
-    verify_module(
-        tt_model,
-        input_shapes=([input_batch.shape]),
-        inputs=([input_batch]),
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-        ),
+    # Load onnx model
+    load_path = f"third_party/confidential_customer_models/generated/files/{variant}.onnx"
+    model_name = f"retinanet_{variant}_onnx"
+    onnx_model = onnx.load(load_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
