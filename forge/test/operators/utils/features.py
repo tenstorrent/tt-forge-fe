@@ -16,6 +16,7 @@ class TestSweepsFeaturesParams:
 
     skip_forge_verification: bool
     dry_run: bool
+    ignore_xfail_files: bool
 
     @staticmethod
     def get_env_property(env_var: str, default_value: str):
@@ -31,11 +32,13 @@ class TestSweepsFeaturesParams:
 
         skip_forge_verification = cls.get_env_property_bool("SKIP_FORGE_VERIFICATION", False)
         dry_run = cls.get_env_property_bool("DRY_RUN", False)
+        ignore_xfail_files = cls.get_env_property_bool("IGNORE_XFAIL_FILES", False)
 
         # Construct feature parameters
         feature_params = cls(
             skip_forge_verification=skip_forge_verification,
             dry_run=dry_run,
+            ignore_xfail_files=ignore_xfail_files,
         )
 
         logger.info(f"Features parameters: {feature_params}")
