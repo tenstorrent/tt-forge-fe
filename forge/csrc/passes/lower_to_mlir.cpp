@@ -147,6 +147,8 @@ class AttributeMapper
 
         // repeat
         add_op_mapping("repeat", "repeats", AttributeRemap("repeat_dimensions", TargetType::DenseI64ArrayAttr));
+
+        // pad
         add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
         add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 

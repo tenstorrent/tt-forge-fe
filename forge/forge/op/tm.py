@@ -241,9 +241,9 @@ def Pad(
     name: str,
     operandA: Tensor,
     pad: Tuple[int, ...],
-    pad_len: int,
     mode: str = "constant",
-    value: int = 0,
+    value: float = 0.0,
+    channel_last: bool = False,
 ) -> Tensor:
     """
     TM
@@ -258,25 +258,57 @@ def Pad(
 
     pad: Tuple[int, ...]
         A tuple of padding values. The tuple should correspond to padding values for the tensor, such as
-        [top, bottom, left, right] depending on the `pad_len`.
-
-    pad_len: int
-        Number of dimensions that the padding applies to. This should correspond to the dimensions
-        of the tensor that will be padded.
+        [left, right, top, bottom].
 
     mode: str, optional
         The padding mode. Default is "constant". Other modes can be supported depending on the
-        implementation (e.g., "reflect", "edge").
+        implementation (e.g., "reflect", "replicate").
 
-    value: int, optional
+    value: float, optional
         The value to use for padding when the mode is "constant". Default is 0.
+
+    channel_last: bool, optional
+        Whether the channel dimension is the last dimension of the tensor. Default is False.
+
 
     Returns
     -------
     Tensor
         A tensor with the specified padding applied to the input tensor.
     """
-    return op("pad", name, operandA, padding=pad, mode=mode, value=float(value), pad_len=pad_len).get_tensor()
+    assert (
+        len(pad) == 2 or len(pad) == 4
+    ), "Expect (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom)"
+    assert mode in [
+        "constant",
+        "replicate",
+        "reflect",
+    ], "Currently pad op only supports constant/replicate/reflect mode"
+
+    assert not (
+        mode in ["reflect", "replicate"] and len(operandA.shape) < 2
+    ), "Padding mode 'reflect' and 'replicate' require at least 2 dimensions"
+
+    mode_index = {
+        "constant": 0,
+        "replicate": 1,
+        "reflect": 2,
+    }
+
+    named_attrs = {
+        "padding": list(pad),
+        "mode": mode_index[mode],
+        "value": value,
+        "channel_last": channel_last,
+    }
+    attrs = named_attrs["padding"] + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
+    return op(
+        "pad",
+        name,
+        operandA,
+        attrs=attrs,
+        **named_attrs,
+    ).get_tensor()
 
 
 def PadTile(name: str, operandA: Tensor, dim: int, original_length: int) -> Tensor:
