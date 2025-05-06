@@ -33,6 +33,7 @@ from .datatypes import FrameworkDataFormat
 from .pytest import PytestParamsUtils
 from .compat import TestDevice
 from .utils import RateLimiter
+from .failing_reasons import FailingReasons, FailingReason
 
 
 class InputSource(Enum):
@@ -54,15 +55,27 @@ class TestResultFailing:
 
     __test__ = False  # Avoid collecting TestResultFailing as a pytest test
 
-    failing_reason: Optional[str] = None
-    skip_reason: Optional[str] = None
+    failing_reason: Optional[FailingReasons] = None
+    skip_reason: Optional[FailingReasons] = None
+
+    def __post_init__(self):
+        if self.failing_reason is not None:
+            if isinstance(self.failing_reason, str) or isinstance(self.failing_reason, FailingReason):
+                raise ValueError(
+                    f"Invalid failing reason: {self.failing_reason} {type(self.failing_reason)}. Use FailingReasons."
+                )
+        if self.skip_reason is not None:
+            if isinstance(self.skip_reason, str) or isinstance(self.skip_reason, FailingReason):
+                raise ValueError(
+                    f"Invalid skip reason: {self.skip_reason} {type(self.skip_reason)}. Use FailingReasons."
+                )
 
     def get_marks(self) -> List[Mark]:
         marks = []
         if self.failing_reason is not None:
-            marks.append(pytest.mark.xfail(reason=self.failing_reason))
+            marks.append(pytest.mark.xfail(reason=self.failing_reason.value.description))
         if self.skip_reason is not None:
-            marks.append(pytest.mark.skip(reason=self.skip_reason))
+            marks.append(pytest.mark.skip(reason=self.skip_reason.value.description))
         return marks
 
 
@@ -152,8 +165,8 @@ class TestCollection:
     pcc: Optional[float] = None
     criteria: Optional[Callable[["TestVector"], bool]] = None
 
-    failing_reason: Optional[str] = None
-    skip_reason: Optional[str] = None
+    failing_reason: Optional[FailingReasons] = None
+    skip_reason: Optional[FailingReasons] = None
 
     subcollections: Optional[List["TestCollection"]] = None
 
@@ -170,6 +183,16 @@ class TestCollection:
             self.math_fidelities = PytestParamsUtils.strip_param_sets(self.math_fidelities)
         if self.kwargs is not None and not isinstance(self.kwargs, types.FunctionType):
             self.kwargs = PytestParamsUtils.strip_param_sets(self.kwargs)
+        if self.failing_reason is not None:
+            if isinstance(self.failing_reason, str) or isinstance(self.failing_reason, FailingReason):
+                raise ValueError(
+                    f"Invalid failing reason: {self.failing_reason} {type(self.failing_reason)}. Use FailingReasons."
+                )
+        if self.skip_reason is not None:
+            if isinstance(self.skip_reason, str) or isinstance(self.skip_reason, FailingReason):
+                raise ValueError(
+                    f"Invalid skip reason: {self.skip_reason} {type(self.skip_reason)}. Use FailingReasons."
+                )
 
     def __contains__(self, item):
         if isinstance(item, TestVector):
