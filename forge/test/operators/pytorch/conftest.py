@@ -35,9 +35,13 @@ def pytest_runtest_makereport(item: _pytest.python.Function, call: _pytest.runne
             )
 
             exception_value = call.excinfo.value
+            long_repr = call.excinfo.getrepr(style="long")
+            exception_traceback = str(long_repr)
 
             if xfail_reason is not None:  # an xfail reason is defined for the test
-                valid_reason = FailingReasonsValidation.validate_exception(exception_value, xfail_reason)
+                valid_reason = FailingReasonsValidation.validate_exception(
+                    exception_value, exception_traceback, xfail_reason
+                )
 
                 # if reason is not valid, mark the test as failed and keep the original exception
                 if valid_reason == False:
