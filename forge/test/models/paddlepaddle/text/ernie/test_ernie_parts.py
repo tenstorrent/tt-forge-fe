@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+import pytest
 import paddle
 
 import forge
@@ -11,6 +12,7 @@ from forge.verify.verify import verify
 from paddlenlp.transformers import ErnieForSequenceClassification
 
 
+@pytest.mark.skip_model_analysis
 def test_multi_head_attention():
     model = paddle.nn.MultiHeadAttention(embed_dim=128, num_heads=2)
 
@@ -23,6 +25,7 @@ def test_multi_head_attention():
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 def test_transformer_encoder():
     encoder_layer = paddle.nn.TransformerEncoderLayer(
         d_model=128,
@@ -36,6 +39,7 @@ def test_transformer_encoder():
     verify(inputs, model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 def test_ernie_embedding():
     model_name = "ernie-1.0"
     model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)
@@ -48,6 +52,7 @@ def test_ernie_embedding():
     verify(inputs, embedding, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 def test_ernie_encoder():
     model_name = "ernie-1.0"
     model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)
@@ -61,6 +66,7 @@ def test_ernie_encoder():
     verify(inputs, encoder, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)))
 
 
+@pytest.mark.skip_model_analysis
 def test_ernie_pooler():
     model_name = "ernie-1.0"
     model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)
@@ -74,6 +80,7 @@ def test_ernie_pooler():
     verify(inputs, pooler, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 def test_ernie_parts():
     model_name = "ernie-1.0"
     input = paddle.randint(0, 100, (1, 12))
@@ -102,6 +109,7 @@ def test_ernie_parts():
     verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)))
 
 
+@pytest.mark.skip_model_analysis
 def test_ernie_model():
     model_name = "ernie-1.0"
     model = ErnieForSequenceClassification.from_pretrained(model_name, num_classes=2)

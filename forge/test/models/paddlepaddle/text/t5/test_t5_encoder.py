@@ -17,6 +17,7 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_t5_encoder(forge_property_recorder, variant):

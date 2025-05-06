@@ -8,6 +8,7 @@
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
+#include "shared_utils/json_extension.hpp"
 
 // Forge headers
 #include "graph_lib/graph.hpp"
@@ -149,7 +150,20 @@ std::string run_mlir_compiler_to_cpp(
     return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, mlir_config, forge_property_handler);
 }
 
-void to_json(::nlohmann::json& j, const MLIRConfig& p) { j = nlohmann::json{{"enable_consteval", p.enable_consteval}}; }
+void to_json(::nlohmann::json& j, const MLIRConfig& p)
+{
+    j = nlohmann::json{
+        {"enable_consteval", p.enable_consteval},
+        {"enable_optimizer", p.enable_optimizer},
+        {"enable_consteval", p.enable_consteval},
+        {"custom_config", p.custom_config}};
+}
 
-void from_json(const ::nlohmann::json& j, MLIRConfig& p) { j.at("enable_consteval").get_to(p.enable_consteval); }
+void from_json(const ::nlohmann::json& j, MLIRConfig& p)
+{
+    j.at("enable_consteval").get_to(p.enable_consteval);
+    j.at("enable_optimizer").get_to(p.enable_optimizer);
+    j.at("enable_consteval").get_to(p.enable_consteval);
+    j.at("custom_config").get_to(p.custom_config);
+}
 }  // namespace tt::passes

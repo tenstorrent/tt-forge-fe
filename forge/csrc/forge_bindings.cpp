@@ -211,11 +211,22 @@ PYBIND11_MODULE(_C, m)
 
     py::class_<tt::passes::MLIRConfig>(m, "MLIRConfig")
         .def(py::init<>())
-        .def_readwrite("enable_consteval", &tt::passes::MLIRConfig::enable_consteval)
         .def(
             "set_enable_consteval",
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_consteval(enable); },
             py::arg("enable"))
+        .def(
+            "set_enable_optimizer",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_optimizer(enable); },
+            py::arg("enable"))
+        .def(
+            "set_enable_memory_layout_analysis",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_memory_layout_analysis(enable); },
+            py::arg("enable"))
+        .def(
+            "set_custom_config",
+            [](tt::passes::MLIRConfig &self, const std::string &config) { return self.set_custom_config(config); },
+            py::arg("config"))
         .def(
             "to_json",
             [](tt::passes::MLIRConfig const &mlir_config)
