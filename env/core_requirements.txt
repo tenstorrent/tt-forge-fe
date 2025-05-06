@@ -24,7 +24,7 @@ opencv-python-headless==4.10.0.84
 pandas==1.5.3
 prettytable==3.0.0
 protobuf==3.20.3
-pybind11==2.6.2
+pybind11==2.13.6
 pyinstrument>=4.1.1
 scipy>=1.8.0
 tensorflow==2.13
