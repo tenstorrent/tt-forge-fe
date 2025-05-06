@@ -11,13 +11,12 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
 
 
-@pytest.mark.xfail()
 @pytest.mark.parametrize(
     "variant",
     [
         pytest.param("facebook/sam-vit-huge", marks=pytest.mark.skip(reason="Skipping due to CI/CD Limitations")),
         pytest.param("facebook/sam-vit-large", marks=pytest.mark.skip(reason="Skipping due to CI/CD Limitations")),
-        "facebook/sam-vit-base",
+        pytest.param("facebook/sam-vit-base", marks=pytest.mark.xfail()),
     ],
 )
 @pytest.mark.nightly
