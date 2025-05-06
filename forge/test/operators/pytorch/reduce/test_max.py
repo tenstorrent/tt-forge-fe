@@ -192,7 +192,8 @@ TestParamsData.test_plan = TestPlan(
             input_shapes=TestCollectionCommon.all.input_shapes,
             criteria=lambda test_vector: test_vector.kwargs is None,
             failing_reason=FailingReasons.COMPILATION_FAILED,
-            skip_reason="This test is expected to fail because the max operator is not supported for 'torch.max(input)' way of usage",
+            # skip_reason="This test is expected to fail because the max operator is not supported for 'torch.max(input)' way of usage",
+            skip_reason=FailingReasons.COMPILATION_FAILED,
         )
     ],
 )
