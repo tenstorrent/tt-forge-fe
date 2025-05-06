@@ -1,6 +1,5 @@
-ARG FROM_TAG=latest
+FROM ghcr.io/tenstorrent/tt-mlir/tt-mlir-base-ubuntu-22-04:latest AS ci-build
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci-build
 SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
@@ -32,7 +31,7 @@ RUN source env/activate && \
     cmake -B env/build env && \
     cmake --build env/build
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
+FROM ghcr.io/tenstorrent/tt-mlir/tt-mlir-base-ubuntu-22-04:latest AS ci
 
 # Copy the TTMLIR_TOOLCHAIN_DIR from the previous stage
 
