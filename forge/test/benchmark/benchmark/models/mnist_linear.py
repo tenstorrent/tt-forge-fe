@@ -6,9 +6,7 @@
 import pytest
 import time
 import socket
-import subprocess
 import json
-import os
 from datetime import datetime
 
 # Third-party modules
@@ -17,8 +15,10 @@ from torch import nn
 
 # Forge modules
 import forge
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.verify.verify import verify
+from forge.config import CompilerConfig, MLIRConfig
 
 
 # Common constants
@@ -104,22 +104,26 @@ def test_mnist_linear(
     framework_model = MNISTLinear(input_size=input_size, hidden_size=hidden_size)
     fw_out = framework_model(*inputs)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiler_cfg = CompilerConfig()
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_memory_layout_analysis(True)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     # Enable program cache on all devices
-    settings = DeviceSettings()
-    settings.enable_program_cache = True
-    configure_devices(device_settings=settings)
+    # TODO: enable the program cache - when the optimizer is enabled, running with program cache is not working.
+    # settings = DeviceSettings()
+    # settings.enable_program_cache = True
+    # configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model.
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    co_out = compiled_model(*inputs)
+    verify(inputs, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*inputs)
     end = time.time()
 
-    verify(inputs, framework_model, compiled_model)
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -140,7 +144,7 @@ def test_mnist_linear(
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")

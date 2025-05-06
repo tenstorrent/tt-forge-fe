@@ -163,24 +163,32 @@ def test_cast(forge_property_recorder, operand_and_cast_dtype):
 
 
 @pytest.mark.parametrize(
-    "batch_size, num_channels, height, width",
+    "input_shape,elementwise_affine, eps",
     [
-        (1, 32, 56, 56),
+        ((2, 128), False, 1e-6),
+        ((2, 4096, 1536), False, 1e-6),
+        ((1, 32, 56, 56), True, 1e-5),
+        ((1, 5, 3, 7, 9), True, 1e-3),
     ],
 )
 @pytest.mark.push
-def test_layernorm(forge_property_recorder, batch_size, num_channels, height, width):
+def test_layernorm(forge_property_recorder, input_shape, elementwise_affine, eps):
+    class LayerNorm(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.norm = nn.LayerNorm(input_shape[-1], elementwise_affine=elementwise_affine, eps=eps)
 
-    # framework_model = nn.LayerNorm((num_channels, height, width)) # Support only normalization over last one dimension
-    framework_model = nn.LayerNorm((width))
+        def forward(self, x):
+            return self.norm(x)
 
-    inputs = [torch.rand(batch_size, num_channels, height, width)]
+    model = LayerNorm()
+    model.eval()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    inputs = [torch.randn(*input_shape)]
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 params = [
@@ -723,3 +731,62 @@ def test_select(forge_property_recorder, shape, dim, begin, length, stride):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    ["input_shape", "padding", "mode", "value"],
+    [
+        # 2D Input = 1D Padding
+        pytest.param((1, 8), (2, 2), "constant", 0.0),
+        pytest.param(
+            (1, 8),
+            (1, 3),
+            "replicate",
+            None,
+            marks=pytest.mark.xfail(
+                reason="PyTorch - NotImplementedError: Only 2D, 3D, 4D, 5D padding with non-constant padding are supported for now"
+            ),
+        ),
+        pytest.param(
+            (1, 8),
+            (1, 3),
+            "reflect",
+            None,
+            marks=pytest.mark.xfail(
+                reason="PyTorch - NotImplementedError: Only 2D, 3D, 4D, 5D padding with non-constant padding are supported for now"
+            ),
+        ),
+        # 2D Input = 2D Padding
+        pytest.param((1, 3, 8), (0, 0, 2, 2), "constant", 2.0),
+        pytest.param((1, 3, 8), (2, 1, 2, 3), "constant", 7.0),
+        pytest.param((1, 3, 8), (2, 2, 2, 2), "replicate", None),
+        pytest.param((1, 3, 8), (2, 3, 1, 4), "replicate", None),
+        pytest.param((1, 3, 8), (1, 2, 1, 2), "reflect", None),
+        pytest.param((4, 3, 4), (2, 1, 0, 2), "reflect", None),
+        pytest.param((4, 3, 4), (0, 0, 0, 0), "reflect", None),
+        # 4D Input = 2D Padding
+        pytest.param((2, 3, 4, 5), (1, 1, 2, 2), "constant", 42.0),
+        pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "replicate", None),
+        pytest.param((2, 3, 4, 5), (2, 1, 1, 2), "reflect", None),
+    ],
+)
+@pytest.mark.push
+def test_padding(forge_property_recorder, input_shape, padding, mode, value):
+    class Padding(nn.Module):
+        def __init__(self, padding, mode, value):
+            super().__init__()
+            self.padding = padding
+            self.mode = mode
+            self.value = value
+
+        def forward(self, x):
+            return torch.nn.functional.pad(x, self.padding, mode=self.mode, value=self.value)
+
+    inputs = [torch.rand(input_shape)]
+    framework_model = Padding(padding, mode, value)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    fw_out, c_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    print(fw_out, c_out)
