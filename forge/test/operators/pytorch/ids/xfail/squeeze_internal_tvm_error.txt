@@ -1,0 +1,5 @@
+# xfail_squeeze_INTERNAL_TVM_ERROR ids
+
+squeeze-FROM_ANOTHER_OP-{'dim': 0}-(2, 1, 2, 1, 2)-None-None
+squeeze-FROM_HOST-{'dim': 0}-(2, 1, 2, 1, 2)-None-None
+squeeze-CONST_EVAL_PASS-{'dim': 0}-(2, 1, 2, 1, 2)-None-None

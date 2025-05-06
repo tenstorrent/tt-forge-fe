@@ -31,6 +31,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -289,18 +290,19 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            input_shapes=[(1, 10000), (7, 10, 1000, 100)],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(0,)],
-            failing_reason=FailingReasons.UNSUPPORTED_DIMENSION,
-        ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     input_shapes=[(1, 10000), (7, 10, 1000, 100)],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     input_shapes=[(0,)],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DIMENSION,
+        # ),
+        *TestIdsDataLoader.build_failing_rules(operators=["reshape"]),
     ],
 )
 
