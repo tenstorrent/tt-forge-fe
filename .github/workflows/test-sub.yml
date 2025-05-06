@@ -97,17 +97,20 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
+            .github/
             env/
             forge/test
             pytest.ini
             conftest.py
             .test_durations
+          fetch-depth: 0
 
         # Clean everything from submodules (needed to avoid issues
         # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
         id: sumbmodules
         run: |
+          git submodule update --init --recursive
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
 
@@ -158,10 +161,12 @@ jobs:
       - name: Install wheel
         shell: bash
         run: |
+          mkdir -p third_party/tt-mlir
+          cd third_party/tt-mlir
           source env/activate
           #pip install tvm*.whl --force-reinstall
           #pip install forge*.whl --force-reinstall
-          pip install ttrt*.whl --force-reinstall
+          pip install ../../ttrt*.whl --force-reinstall
 
       - name: Run Test
         env:
@@ -174,5 +179,6 @@ jobs:
           FILTERS: ${{ inputs.filters }}
         shell: bash
         run: |
+          cd third_party/tt-mlir
           source env/activate
           ttrt query
