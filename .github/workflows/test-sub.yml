@@ -106,6 +106,7 @@ jobs:
         # Clean everything from submodules (needed to avoid issues
         # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
+        id: sumbmodules
         run: |
           git submodule foreach --recursive git clean -ffdx
           git submodule foreach --recursive git reset --hard
@@ -133,12 +134,34 @@ jobs:
           check_artifacts: true
           search_artifacts: true
 
+      - name: Download ttrt wheel
+        if: ${{ inputs.run_id }}
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ttrt-whl-tracy
+          # Prioritize input run ID, if not available use current run (for new builds)
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Find and download ttrt wheel
+        if: ${{ !inputs.run_id }}
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow_conclusion: success
+          workflow: on-push.yml
+          name: ttrt-whl-tracy
+          repo: tenstorrent/tt-mlir
+          check_artifacts: true
+
       - name: Install wheel
         shell: bash
         run: |
           source env/activate
           pip install tvm*.whl --force-reinstall
           pip install forge*.whl --force-reinstall
+          pip install ttrt*.whl --force-reinstall
 
       - name: Run Test
         env:
@@ -152,51 +175,4 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pytest --splits ${{ inputs.test_group_cnt }} \
-                 --group ${{ matrix.test_group_id }} \
-                 --splitting-algorithm least_duration \
-                 -m "${{ inputs.test_mark }}" \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 -v \
-                 2>&1 | tee pytest.log
-
-      - name: Upload Test Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest.log
-
-      - name: Upload Memory Usage Log
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: pytest-memory-usage.csv
-
-      - name: Upload Test Report
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
-          path: ${{ steps.strings.outputs.test_report_path }}
-
-      - name: Show Test Report
-        uses: mikepenz/action-junit-report@v5
-        if: success() || failure()
-        with:
-          report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
-          comment: false
-          updateComment: false
-          detailed_summary: true
-          group_suite: true
-
-      - name: Upload test results to Codecov
-        if: success() || failure()
-        uses: codecov/test-results-action@v1
-        with:
-          files: ${{ steps.strings.outputs.test_report_path }}
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+          ttrt query
