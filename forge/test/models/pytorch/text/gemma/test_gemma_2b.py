@@ -90,14 +90,14 @@ def test_gemma_2b(variant):
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=pytest.mark.xfail,
+            # marks=pytest.mark.xfail,
         ),
-        pytest.param(
-            "google/gemma-2-9b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
-            ),
-        ),
+        # pytest.param(
+        #     "google/gemma-2-9b-it",
+        #     marks=pytest.mark.skip(
+        #         reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
+        #     ),
+        # ),
     ],
 )
 def test_gemma_pytorch_v2(variant):
