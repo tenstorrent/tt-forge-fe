@@ -51,11 +51,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Release },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Release },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -142,11 +141,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Debug },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Debug },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -246,14 +244,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: coverage.info
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Upload test results to Codecov
-        if: success() || failure()
-        uses: codecov/test-results-action@v1
-        with:
-          files: ${{ steps.strings.outputs.test_report_path }}
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 

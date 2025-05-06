@@ -24,7 +24,7 @@ jobs:
 
   model-analysis:
     needs: docker-build
-    runs-on: performance
+    runs-on: tt-beta-ubuntu-2204-n150-large-stable
     timeout-minutes: 5760 # Set job execution time to 4 days(default: 6 hours)
 
     container:

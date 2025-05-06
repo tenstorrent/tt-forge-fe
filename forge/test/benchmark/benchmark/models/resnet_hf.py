@@ -7,7 +7,6 @@ import pytest
 import time
 import socket
 import json
-import os
 from datetime import datetime
 
 # Third-party modules
@@ -18,7 +17,12 @@ from datasets import load_dataset
 
 # Forge modules
 import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
+from forge._C import DataFormat
+from forge.config import CompilerConfig, MLIRConfig
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
 
@@ -28,6 +32,11 @@ from test.utils import download_model
 # Batch size configurations
 BATCH_SIZE = [
     1,
+]
+
+# Data format configurations
+DATA_FORMAT = [
+    "bfloat16",
 ]
 
 # Input size configurations
@@ -52,10 +61,12 @@ variants = [
 @pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
+@pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 def test_resnet_hf(
     training,
     batch_size,
+    data_format,
     input_size,
     channel_size,
     loop_count,
@@ -70,31 +81,52 @@ def test_resnet_hf(
     # dataset = load_dataset("zh-plus/tiny-imagenet")
     # images = random.sample(dataset["valid"]["image"], 10)
 
+    torch.manual_seed(1)
     # Random data
     input_sample = [torch.rand(batch_size, channel_size, *input_size)]
+    if data_format == "bfloat16":
+        input_sample = [input_sample[0].to(torch.bfloat16)]
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    if data_format == "bfloat16":
+        framework_model = download_model(
+            ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16
+        )
+        framework_model = framework_model.to(dtype=torch.bfloat16)
+    else:
+        framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
     fw_out = framework_model(*input_sample)
 
     # Compile model
-    compiled_model = forge.compile(framework_model, *input_sample)
+    compiler_cfg = CompilerConfig()
+    if data_format == "bfloat16":
+        compiler_cfg.default_df_override = DataFormat.Float16_b
+
+    # Turn on MLIR optimizations.
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=input_sample, compiler_cfg=compiler_cfg)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model.
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    co_out = compiled_model(*input_sample)
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+    )
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    assert [compare_with_golden(golden=fo, calculated=co, pcc=0.95) for fo, co in zip(fw_out, co_out)]
+    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -115,10 +147,11 @@ def test_resnet_hf(
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
+    print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
     print("====================================================================")
 
@@ -129,7 +162,7 @@ def test_resnet_hf(
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        "precision": data_format,
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
@@ -173,9 +206,14 @@ def test_resnet_hf(
 
 
 def resnet_hf_benchmark(config: dict):
+    """
+    Run the resnet benchmark.
+    This function is a placeholder for the actual benchmark implementation.
+    """
 
     training = config["training"]
     batch_size = config["batch_size"]
+    data_format = config["data_format"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
@@ -185,6 +223,7 @@ def resnet_hf_benchmark(config: dict):
     result = test_resnet_hf(
         training=training,
         batch_size=batch_size,
+        data_format=data_format,
         input_size=input_size,
         channel_size=channel_size,
         loop_count=loop_count,

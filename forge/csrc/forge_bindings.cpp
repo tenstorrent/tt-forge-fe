@@ -209,6 +209,33 @@ PYBIND11_MODULE(_C, m)
 
     py::register_exception<UnsupportedHWOpsError>(m, "UnsupportedHWOpsError");
 
+    py::class_<tt::passes::MLIRConfig>(m, "MLIRConfig")
+        .def(py::init<>())
+        .def(
+            "set_enable_consteval",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_consteval(enable); },
+            py::arg("enable"))
+        .def(
+            "set_enable_optimizer",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_optimizer(enable); },
+            py::arg("enable"))
+        .def(
+            "set_enable_memory_layout_analysis",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_memory_layout_analysis(enable); },
+            py::arg("enable"))
+        .def(
+            "set_custom_config",
+            [](tt::passes::MLIRConfig &self, const std::string &config) { return self.set_custom_config(config); },
+            py::arg("config"))
+        .def(
+            "to_json",
+            [](tt::passes::MLIRConfig const &mlir_config)
+            {
+                nlohmann::json j = mlir_config;
+                return j;
+            })
+        .def("from_json", [](nlohmann::json const &j) { return j.template get<tt::passes::MLIRConfig>(); });
+
     m.def("link_past_cache_ios", &passes::link_past_cache_ios);
     m.def("move_index_to_mm_weights", &passes::move_index_to_mm_weights);
     m.def("run_post_initial_graph_passes", &run_post_initial_graph_passes);
@@ -225,11 +252,13 @@ PYBIND11_MODULE(_C, m)
         "run_mlir_compiler",
         &passes::run_mlir_compiler,
         py::arg("module"),
+        py::arg("mlir_config") = std::nullopt,
         py::arg("forge_property_handler") = std::nullopt);
     m.def(
         "run_mlir_compiler_to_cpp",
         &passes::run_mlir_compiler_to_cpp,
         py::arg("module"),
+        py::arg("mlir_config") = std::nullopt,
         py::arg("forge_property_handler") = std::nullopt);
     m.def("split_graph", &passes::split_graph);
 

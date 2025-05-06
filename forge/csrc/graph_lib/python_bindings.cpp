@@ -720,7 +720,7 @@ py::object eval_op(
         case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
     }
 
-    py::function forge_eval = eval_module.attr("get_f_forge_eval")(type);
+    py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(type));
 
     log_trace(LogEval, "  eval_op: {}", type);
     bool has_requant =

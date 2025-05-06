@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Built-in modules
-import os
 import time
 import socket
 import pytest
@@ -15,6 +14,7 @@ import torch
 
 # Forge modules
 import forge
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 
@@ -48,17 +48,14 @@ LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_count):
     """
-    This function creates a basic MobileNetV2 model using PyTorch and TorchScript.
-    It is used
-    for benchmarking purposes.
+    This function creates a basic MobileNetV2 model using PyTorch.
+    It is used for benchmarking purposes.
     """
 
     if training:
         pytest.skip("Training is not supported")
 
     module_name = "MobileNetv2Basic"
-
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
 
     torch.manual_seed(1)
     # Create random inputs
@@ -71,24 +68,28 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
         )
     ]
 
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
+    framework_model.eval()
+    fw_out = framework_model(*input_sample)
+
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=input_sample, module_name=module_name)
-
-    # Model Verification
-    verify(input_sample, framework_model, compiled_model)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model.
+    # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    compiled_model(*input_sample)
+    verify(input_sample, framework_model, compiled_model)
     start = time.time()
     for _ in range(loop_count):
-        compiled_model(*input_sample)
+        co_out = compiled_model(*input_sample)
     end = time.time()
+
+    co_out = [co.to("cpu") for co in co_out]
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -102,14 +103,14 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     num_layers = 54  # Number of layers in the model, in this case number of convolutional layers
 
     print("====================================================================")
-    print("| MobileNet V2 Benchmark Results:                                        |")
+    print("| MobileNet V2 Benchmark Results:                                  |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")
     print(f"| Dataset name: {dataset_name}")
     print(f"| Date: {date}")
     print(f"| Machine name: {machine_name}")
-    print(f"| Total execution time: : {total_time}")
+    print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
@@ -167,6 +168,10 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
 
 def mobilenetv2_basic_benchmark(config: dict):
+    """
+    Run the mobilenet v2 basic benchmark.
+    This function is a placeholder for the actual benchmark implementation.
+    """
 
     training = config["training"]
     batch_size = config["batch_size"]

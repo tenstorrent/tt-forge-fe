@@ -11,7 +11,7 @@
 python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o forge-benchmark-e2e-mnist.json
 
 # Resnet HF
-python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 3 -lp 32 -o forge-benchmark-e2e-resnet50_hf.json
+python forge/test/benchmark/benchmark.py -m resnet50_hf -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-resnet50_hf.json
 
 # Llama
 python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o forge-benchmark-e2e-llama.json
@@ -21,3 +21,12 @@ python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -bs 1 -lp 32 -o fo
 
 # EfficientNet Timm
 python forge/test/benchmark/benchmark.py -m efficientnet_timm -bs 1 -lp 32 -o forge-benchmark-e2e-efficientnet_timm.json
+
+# Segformer Classification
+python forge/test/benchmark/benchmark.py -m segformer_classification -bs 1 -lp 32 -o forge-benchmark-e2e-segformer_classification.json
+
+# ViT Base
+python forge/test/benchmark/benchmark.py -m vit_base -bs 1 -lp 32 -o forge-benchmark-e2e-vit_base.json
+
+# Vovnet OSMR
+python forge/test/benchmark/benchmark.py -m vovnet_osmr -bs 1 -lp 32 -o forge-benchmark-e2e-vovnet_osmr.json

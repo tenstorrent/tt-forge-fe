@@ -12,6 +12,15 @@ from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore,
 from forge._C import ExecutionDepth
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--log-memory-usage",
+        action="store_true",
+        default=False,
+        help="log per-test memory usage into pytest-memory-usage.csv",
+    )
+
+
 @pytest.fixture(scope="function", autouse=True)
 def record_test_timestamp(record_property):
     start_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z")
@@ -76,7 +85,7 @@ def forge_property_recorder(request, record_property):
 
 
 @pytest.fixture(autouse=True)
-def memory_usage_tracker():
+def memory_usage_tracker(request):
     """
     A pytest fixture that tracks memory usage during the execution of a test.
 
@@ -135,9 +144,36 @@ def memory_usage_tracker():
     count += 1
     avg_mem = total_mem / count
 
+    by_test = max_mem - start_mem
+
     # Log memory usage statistics
     logger.info(f"Test memory usage:")
-    logger.info(f"    By test: {end_mem - start_mem:.2f} MB")
+    logger.info(f"    By test: {by_test:.2f} MB")
     logger.info(f"    Minimum: {min_mem:.2f} MB")
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
+
+    record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test)
+
+
+def record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test):
+    """
+    Record memory usage stats in a file (if enabled by pytest command line option `--log-memory-usage`).
+    """
+
+    # Get the current test name
+    test_name = request.node.name
+
+    # Create a CSV file to store memory usage stats
+    should_log = request.config.getoption("--log-memory-usage")
+    if not should_log:
+        return
+
+    file_name = "pytest-memory-usage.csv"
+
+    with open(file_name, "a") as f:
+        if f.tell() == 0:
+            # Write header if file is empty
+            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx)\n")
+        # NOTE: escape test_name in double quotes because some tests have commas in their parameter list...
+        f.write(f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f}\n')
