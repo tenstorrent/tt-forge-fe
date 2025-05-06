@@ -151,21 +151,21 @@ jobs:
         source env/activate
         mkdir -p ${{ steps.strings.outputs.perf_report_path }}
         python forge/test/benchmark/benchmark.py -m ${{ matrix.build.name }} -bs ${{ matrix.build.bs }} -df ${{ matrix.build.df }} -lp ${{ matrix.build.lp }} -o ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json
-        python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
+        # python forge/test/benchmark/device_perf.py -ct ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir.mlir
 
     - name: Install and run TTRT
       shell: bash
       run: |
-        cd third_party/tt-mlir
+        # cd third_party/tt-mlir
         source env/activate
-        cd ../..
+        # cd ../..
         pip install ttrt*.whl --force-reinstall
         echo "save artifacts"
         ttrt query --save-artifacts
         if [ -z "${{ matrix.build.allow-fail }}" ]; then
-          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}_ttnn.mlir
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttnn.mlir #${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}_ttnn.mlir
         else
-          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}_ttnn.mlir || true
+          ./.github/workflows/compile_and_run.sh ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttir_out.mlir ${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}.json ~/testify/ll-sw/${{ matrix.build.dir }}/mlir_reports/ttnn.mlir #${{ steps.strings.outputs.perf_report_path }}/benchmark_forge_e2e_${{ matrix.build.name }}_${{ matrix.build.bs }}_${{ matrix.build.lp }}_${{ steps.fetch-job-id.outputs.job_id }}_ttnn.mlir || true
         fi
 
     - name: Upload Perf Report
