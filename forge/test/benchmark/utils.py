@@ -17,6 +17,28 @@ from datasets import load_dataset
 def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size, loop_count):
     """
     Load the dataset for benchmarking.
+
+    Parameters:
+    ----------
+    task: str
+        The task to benchmark (e.g., "classification").
+    model_version: str
+        The version of the model to use.
+    dataset_name: str
+        The name of the dataset to load.
+    split: str
+        The split of the dataset to load (e.g., "train", "test").
+    batch_size: int
+        The batch size for the dataset.
+    loop_count: int
+        The number of times to loop through the dataset. Number of batches to process.
+
+    Returns:
+    -------
+    inputs: list
+        The input data for benchmarking.
+    labels: list
+        The labels for the input data.
     """
 
     if task == "classification":
@@ -34,6 +56,26 @@ def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size,
 def load_dataset_classification(model_version, dataset_name, split, batch_size, loop_count):
     """
     Load the classification dataset for benchmarking.
+
+    Parameters:
+    ----------
+    model_version: str
+        The version of the model to use.
+    dataset_name: str
+        The name of the dataset to load.
+    split: str
+        The split of the dataset to load (e.g., "train", "test").
+    batch_size: int
+        The batch size for the dataset.
+    loop_count: int
+        The number of times to loop through the dataset. Number of batches to process.
+
+    Returns:
+    -------
+    inputs: list
+        The input data for benchmarking.
+    labels: list
+        The labels for the input data.
     """
 
     model_version = "microsoft/resnet-50"
@@ -48,6 +90,22 @@ def load_dataset_classification(model_version, dataset_name, split, batch_size, 
 def create_batch_classification(dataset, image_processor, batch_size):
     """
     Create a batch of data for benchmarking.
+
+    Parameters:
+    ----------
+    dataset: iterable
+        The dataset to create the batch from.
+    image_processor: AutoImageProcessor, ...
+        The image processor to use for processing the images.
+    batch_size: int
+        The batch size for the dataset.
+
+    Returns:
+    -------
+    X: torch.Tensor
+        The input data for the batch.
+    y: torch.Tensor
+        The labels for the input data.
     """
     X, y = [], []
     # For each batch, we will get batch size number of samples
@@ -71,6 +129,24 @@ def create_batch_classification(dataset, image_processor, batch_size):
 def create_input_classification(dataset, image_processor, batch_size, loop_count):
     """
     Create input data for benchmarking. Input is made of the batches.
+
+    Parameters:
+    ----------
+    dataset: iterable
+        The dataset to create the batch from.
+    image_processor: AutoImageProcessor, ...
+        The image processor to use for processing the images.
+    batch_size: int
+        The batch size for the dataset.
+    loop_count: int
+        The number of times to loop through the dataset. Number of batches to process.
+
+    Returns:
+    -------
+    inputs: list
+        The input data for benchmarking.
+    labels: list
+        The labels for the input data.
     """
 
     inputs, labels = [], []
@@ -86,6 +162,18 @@ def create_input_classification(dataset, image_processor, batch_size, loop_count
 def evaluate_classification(predictions, labels):
     """
     Evaluate the classification model.
+
+    Parameters:
+    ----------
+    predictions: torch.Tensor
+        The predictions made by the model.
+    labels: torch.Tensor
+        The true labels for the input data.
+
+    Returns:
+    -------
+    target: float
+        The accuracy of the model.
     """
 
     predictions = predictions.softmax(-1).argmax(-1)
