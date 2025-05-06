@@ -1,0 +1,386 @@
+# xfail_pow_SPECIAL_VALUES ids
+
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16_b-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Lf8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int8-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.UInt16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16_b-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Lf8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int8-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.UInt16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-forge.Int32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp2_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp4_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Bfp8_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float16_b-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Lf8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.RawUInt32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int8-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.UInt16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-forge.Int32-HiFi4
