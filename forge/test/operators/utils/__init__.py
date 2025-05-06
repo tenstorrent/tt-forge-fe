@@ -16,7 +16,8 @@ from .utils import LoggerUtils
 from .utils import RateLimiter
 from .utils import FrameworkModelType
 from .utils import PytorchUtils
-from .features import TestFeaturesConfiguration
+from .features import TestSweepsFeaturesParams
+from .features import TestSweepsFeatures
 from .plan import InputSource
 from .plan import TestVector
 from .plan import TestCollection
@@ -48,7 +49,8 @@ __all__ = [
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",
-    "TestFeaturesConfiguration",
+    "TestSweepsFeaturesParams",
+    "TestSweepsFeatures",
     "FrameworkModelType",
     "PytorchUtils",
     "InputSource",
