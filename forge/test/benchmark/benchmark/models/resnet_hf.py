@@ -13,7 +13,9 @@ from datetime import datetime
 import torch
 from torch import nn
 from transformers import ResNetForImageClassification
+from transformers import AutoImageProcessor
 from datasets import load_dataset
+from tqdm import tqdm
 
 # Forge modules
 import forge
@@ -25,9 +27,15 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig, MLIRConfig
 from forge.verify.compare import compare_with_golden
 from test.utils import download_model
+from test.benchmark.utils import load_benchmark_dataset, evaluate_classification
 
 
 # Common constants
+
+# Machine learning task
+TASK = [
+    "classification",
+]
 
 # Batch size configurations
 BATCH_SIZE = [
@@ -63,29 +71,30 @@ variants = [
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
 @pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
-def test_resnet_hf(
-    training,
-    batch_size,
-    data_format,
-    input_size,
-    channel_size,
-    loop_count,
-    variant,
-):
+@pytest.mark.parametrize("task", TASK, ids=[f"task={item}" for item in TASK])
+def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, loop_count, variant, task):
 
     if training:
         pytest.skip("Training is not supported")
 
-    # TODO: This we will need when when we run resnet with real data.
-    # Load tiny dataset
-    # dataset = load_dataset("zh-plus/tiny-imagenet")
-    # images = random.sample(dataset["valid"]["image"], 10)
+    if task == "classification":
+        inputs, labels = load_benchmark_dataset(
+            task="classification",
+            model_version=variant,
+            dataset_name="imagenet-1k",
+            split="validation",
+            batch_size=batch_size,
+            loop_count=loop_count,
+        )
+    elif task == "na":
+        torch.manual_seed(1)
+        # Random data
+        inputs = [torch.rand(batch_size, channel_size, *input_size)]
+    else:
+        raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
 
-    torch.manual_seed(1)
-    # Random data
-    input_sample = [torch.rand(batch_size, channel_size, *input_size)]
     if data_format == "bfloat16":
-        input_sample = [input_sample[0].to(torch.bfloat16)]
+        inputs = [item.to(torch.bfloat16) for item in inputs]
 
     # Load framework model
     if data_format == "bfloat16":
@@ -95,7 +104,6 @@ def test_resnet_hf(
         framework_model = framework_model.to(dtype=torch.bfloat16)
     else:
         framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
-    fw_out = framework_model(*input_sample)
 
     # Compile model
     compiler_cfg = CompilerConfig()
@@ -105,7 +113,7 @@ def test_resnet_hf(
     # Turn on MLIR optimizations.
     compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
 
-    compiled_model = forge.compile(framework_model, sample_inputs=input_sample, compiler_cfg=compiler_cfg)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
 
     # Enable program cache on all devices
     settings = DeviceSettings()
@@ -115,18 +123,36 @@ def test_resnet_hf(
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
     verify(
-        input_sample,
+        # input_sample,
+        [
+            inputs[0],
+        ],
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
-    start = time.time()
-    for _ in range(loop_count):
-        co_out = compiled_model(*input_sample)
-    end = time.time()
 
-    co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out[0], co_out=co_out[0])
+    if task == "classification":
+        predictions = []
+        start = time.time()
+        for i in tqdm(range(loop_count)):
+            co_out = compiled_model(inputs[i])[0]
+            predictions.append(co_out)
+        end = time.time()
+        predictions = torch.cat(predictions)
+        labels = torch.cat(labels)
+        target = evaluate_classification(predictions, labels)
+    elif task == "na":
+        start = time.time()
+        for i in tqdm(range(loop_count)):
+            co_out = compiled_model(inputs[0])[0]
+        end = time.time()
+        target = 0.0
+    else:
+        raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
+
+    fw_out = framework_model(inputs[-1])[0]
+    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out.to("cpu"))
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -150,6 +176,7 @@ def test_resnet_hf(
     print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
+    print(f"| Target: {target}")
     print(f"| Batch size: {batch_size}")
     print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
@@ -178,7 +205,7 @@ def test_resnet_hf(
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "total_samples",
                 "value": total_samples,
-                "target": -1,  # This value is negative, because we don't have a target value.
+                "target": target,
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },
@@ -188,7 +215,7 @@ def test_resnet_hf(
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "total_time",
                 "value": total_time,
-                "target": -1,  # This value is negative, because we don't have a target value.
+                "target": target,
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },
@@ -219,6 +246,7 @@ def resnet_hf_benchmark(config: dict):
     output_file = config["output"]
     loop_count = config["loop_count"]
     variant = variants[0]
+    task = config["task"]
 
     result = test_resnet_hf(
         training=training,
@@ -228,6 +256,7 @@ def resnet_hf_benchmark(config: dict):
         channel_size=channel_size,
         loop_count=loop_count,
         variant=variant,
+        task=task,
     )
 
     if not output_file:
