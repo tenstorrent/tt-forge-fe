@@ -26,7 +26,10 @@ def get_test_input():
 class WorldModelWrapper(torch.nn.Module):
     def __init__(self, model_url: str):
         super().__init__()
-        ckpt = load_state_dict_from_url(model_url, map_location="cpu")
+        try:
+            ckpt = load_state_dict_from_url(model_url, map_location="cpu")
+        except Exception as e:
+            raise RuntimeError(f"Unexpected error while downloading model from URL: {e}")
         cfg_path = ckpt.get("cfg", "yolov8s-world.yaml")
         model = WorldModel(cfg=cfg_path)
 
@@ -41,4 +44,8 @@ class WorldModelWrapper(torch.nn.Module):
 
     @smart_inference_mode()
     def forward(self, x):
+        # The YOLO model returns a tuple, where the first element contains detection outputs.
+        # self.model(x)[0] gives a batch of predictions
+        # self.model(x)[0][0] extracts the predictions for the first image in the batch.
+        # The result is a tensor of shape [num_detections, num_classes + bbox_attrs]
         return self.model(x)[0][0]

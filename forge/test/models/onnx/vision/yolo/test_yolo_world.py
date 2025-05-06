@@ -11,35 +11,32 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
+from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import (
     WorldModelWrapper,
     get_test_input,
 )
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
+def test_yolo_world_inference_onnx(tmp_path):
 
-    model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
+    MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="yolo_world",
+        model=ModelArch.YOLOWORLD,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge property
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
 
     # Load framework_model and input
 
-    torch_model = WorldModelWrapper(model_url)
+    torch_model = WorldModelWrapper(MODEL_URL)
     inputs = get_test_input()
 
     # Export model to ONNX
@@ -63,8 +60,7 @@ def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
         onnx_model,
         sample_inputs=[inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([inputs], framework_model, compiled_model)

@@ -4,6 +4,7 @@
 
 
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -18,18 +19,17 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
+from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import (
     WorldModelWrapper,
     get_test_input,
 )
 
 
-@pytest.mark.push
-@pytest.mark.skip(reason="Long Eexcution Time")
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolo_world_inference():
 
-    model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
+    MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -42,11 +42,11 @@ def test_yolo_world_inference():
     )
 
     # Load framework_model and input
-    framework_model = YoloWorldWrapper(model_url).to(torch.bfloat16)
+    framework_model = WorldModelWrapper(model_url).to(torch.bfloat16)
     inputs = [get_test_input().to(torch.bfloat16)]
 
-    framework_model = WorldModelWrapper(model_url)
-    inputs = [get_test_input()]
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Compile with Forge
     compiled_model = forge.compile(
