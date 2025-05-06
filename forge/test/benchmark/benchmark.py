@@ -54,6 +54,13 @@ def read_args():
         "-bs", "--batch_size", type=int, default=1, help="Batch size, number of samples to process at once."
     )
     parser.add_argument(
+        "-ts",
+        "--task",
+        type=str,
+        default=None,
+        help="Machine learning task, type of the task to benchmark (i.e. classification, object detection, na).",
+    )
+    parser.add_argument(
         "-df",
         "--data-format",
         type=str,
@@ -98,6 +105,7 @@ def read_args():
         exit(1)
 
     parsed_args["model"] = args.model
+    parsed_args["task"] = args.task
     parsed_args["config"] = args.config
     parsed_args["training"] = args.training
     parsed_args["loop_count"] = args.loop_count
