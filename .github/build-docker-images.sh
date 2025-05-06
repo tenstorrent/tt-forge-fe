@@ -6,7 +6,6 @@
 set -e
 
 REPO=tenstorrent/tt-forge-fe
-BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
 CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
 BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ird-ubuntu-22-04
 IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ird-ubuntu-22-04
@@ -36,7 +35,6 @@ build_and_push() {
     fi
 }
 
-build_and_push $BASE_IMAGE_NAME .github/Dockerfile.base
 build_and_push $BASE_IRD_IMAGE_NAME .github/Dockerfile.ird base
 build_and_push $CI_IMAGE_NAME .github/Dockerfile.ci
 build_and_push $IRD_IMAGE_NAME .github/Dockerfile.ird ci
