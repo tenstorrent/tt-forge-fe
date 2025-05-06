@@ -464,6 +464,10 @@ def verify(
     )
 
     logger.info("SharedObject test is success: {}", is_success)
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_emitc_status(is_success)
+
     assert is_success
 
     # 2nd step: apply preprocessing:

@@ -553,6 +553,9 @@ class ForgePropertyHandler:
         verify_config["value_checker"] = verify_config["value_checker"].__dict__
         self.add("config.verify", verify_config)
 
+    def record_emitc_status(self, is_success: bool):
+        self.add("tags.emitc_status", is_success)
+
     def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
         """
         Records forward program inputs tensor description extracted from a flatbuffer binary.
