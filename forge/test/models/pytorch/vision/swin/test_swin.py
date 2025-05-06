@@ -186,7 +186,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(forge_property_recorder, variant):
 
