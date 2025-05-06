@@ -500,8 +500,12 @@ class InfoUtils:
                 "dev_data_format": TestPlanUtils.dev_data_format_to_str(test_vector.dev_data_format),
                 "math_fidelity": test_vector.math_fidelity.name if test_vector.math_fidelity is not None else None,
                 "kwargs": f"{test_vector.kwargs}",
-                "failing_reason": test_vector.failing_result.failing_reason if test_vector.failing_result else None,
-                "skip_reason": test_vector.failing_result.skip_reason if test_vector.failing_result else None,
+                "failing_reason": test_vector.failing_result.failing_reason.name
+                if test_vector.failing_result and test_vector.failing_result.failing_reason
+                else None,
+                "skip_reason": test_vector.failing_result.skip_reason.name
+                if test_vector.failing_result and test_vector.failing_result.skip_reason
+                else None,
                 "status": "skipped"
                 if test_vector.failing_result and test_vector.failing_result.skip_reason
                 else "xfailed"
@@ -544,9 +548,7 @@ class InfoUtils:
         math_fidelities = [f"{math_fidelity.name}" for math_fidelity in TestCollectionCommon.all.math_fidelities]
         math_fidelities = ", ".join(math_fidelities)
 
-        failing_reasons = [
-            key for key, value in FailingReasons.__dict__.items() if not callable(value) and not key.startswith("__")
-        ]
+        failing_reasons = [failing_reason.name for failing_reason in FailingReasons]
         failing_reasons = ", ".join(failing_reasons)
 
         parameters = [
