@@ -145,7 +145,7 @@ variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["swin_v2_t"])
 def test_swin_torchvision(forge_property_recorder, variant, tmp_path):
 
@@ -164,7 +164,7 @@ def test_swin_torchvision(forge_property_recorder, variant, tmp_path):
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/swin_v2_torchvision.onnx"
+    onnx_path = "swin_v2_torchvision.onnx"
     torch.onnx.export(
         framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
     )
