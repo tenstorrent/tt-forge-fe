@@ -174,6 +174,15 @@ class TestVerification:
         else:
             return [
                 # "pytorch_test_query_test_query__OPERATORS_Conv2d_2025-04-09_15-29-12_format.xml",
+                f"/proj_sw/user_dev/vbrkic/docker_tools/log/{xml_file}"
+                for xml_file in [
+                    "pytorch_test_query_test_query__OPERATORS_-concatenate_matmul_embedding_linear_conv2d_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_05-56-24.log",
+                    "pytorch_test_query_test_query__OPERATORS_concatenate_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_09-03-17.log",
+                    "pytorch_test_query_test_query__OPERATORS_matmul_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_09-45-21.log",
+                    "pytorch_test_query_test_query__OPERATORS_embedding_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_10-17-55.log",
+                    "pytorch_test_query_test_query__OPERATORS_linear_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_10-58-29.log",
+                    "pytorch_test_query_test_query__OPERATORS_conv2d_FILTERS_REMOVE_XFAIL_REASON_2025-05-04_11-36-02.log",
+                ]
             ]
 
     report_cache = ReportCache(get_report_cache_files())
