@@ -188,6 +188,7 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         # Fuse Pad Only if the mode is constant
         # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        # 'edge' == 'replicate' in forge
         if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
             pad_mode == "edge" or pad_mode == "reflect"
         ):
@@ -197,8 +198,16 @@ class FuseConvAndPoolPadding(DFPatternCallback):
         else:
             padding = [top_pad, left_pad, bottom_pad, right_pad]
 
+        # update conv padding by adding the padding from the pad op
+        new_padding = [
+            padding[0] + conv_pool.attrs.padding[0],
+            padding[1] + conv_pool.attrs.padding[1],
+            padding[2] + conv_pool.attrs.padding[2],
+            padding[3] + conv_pool.attrs.padding[3],
+        ]
+
         op_attrs = {**conv_pool.attrs}
-        op_attrs["padding"] = padding
+        op_attrs["padding"] = new_padding
 
         if conv_pool.op.name == "nn.conv2d":
             weight = node_map[self.weight][0]
@@ -4816,7 +4825,6 @@ def run_forge_compile_passes(
             RemoveRedundantReshape(),
             LowerCopyToNOP(),
             TransposePad(),
-            DecomposeNonZeroPadtoConcat(),
             DecomposeMultiRangeTake(),
             LowerTakeToStridedSlice(),
             ConvertAddToBiasAddAfterConv2d(),
