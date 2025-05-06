@@ -11725,23 +11725,20 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 128, 128), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Add112,
-            [((1, 32), torch.int64)],
-            {
-                "model_names": [
-                    "pt_opt_facebook_opt_125m_qa_hf",
-                    "pt_opt_facebook_opt_350m_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                    "pt_opt_facebook_opt_1_3b_qa_hf",
-                    "pt_opt_facebook_opt_125m_seq_cls_hf",
-                    "pt_opt_facebook_opt_350m_qa_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Add112,
+        [((1, 32), torch.int64)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_125m_qa_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_qa_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Add17,
@@ -11810,20 +11807,17 @@ forge_modules_and_shapes_dtypes_list = [
         [((32, 2048), torch.float32), ((32, 2048), torch.float32)],
         {"model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Add112,
-            [((1, 256), torch.int64)],
-            {
-                "model_names": [
-                    "pt_opt_facebook_opt_350m_clm_hf",
-                    "pt_opt_facebook_opt_125m_clm_hf",
-                    "pt_opt_facebook_opt_1_3b_clm_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Add112,
+        [((1, 256), torch.int64)],
+        {
+            "model_names": [
+                "pt_opt_facebook_opt_350m_clm_hf",
+                "pt_opt_facebook_opt_125m_clm_hf",
+                "pt_opt_facebook_opt_1_3b_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (Add26, [((256, 4096), torch.float32)], {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99}),
     (Add54, [((256, 1024), torch.float32)], {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99}),
@@ -12785,19 +12779,16 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 39, 3584), torch.float32), ((1, 39, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    pytest.param(
-        (
-            Add112,
-            [((1, 128), torch.int64)],
-            {
-                "model_names": [
-                    "pt_roberta_xlm_roberta_base_mlm_hf",
-                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Add112,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (Add127, [((1, 128, 250002), torch.float32)], {"model_names": ["pt_roberta_xlm_roberta_base_mlm_hf"], "pcc": 0.99}),
     (

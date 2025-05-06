@@ -5418,11 +5418,7 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Unsqueeze1,
         [((768, 768, 1), torch.float32)],
-        {
-            "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "2"},
-        },
+        {"model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"], "pcc": 0.99, "args": {"dim": "2"}},
     ),
     (
         Unsqueeze2,

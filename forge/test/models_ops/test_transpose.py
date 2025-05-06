@@ -4975,17 +4975,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((3584, 14336), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    pytest.param(
-        (
-            Transpose1,
-            [((256000, 3584), torch.float32)],
-            {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3670016000 B DRAM buffer across 12 banks, where each bank needs to store 305836032 B"
-            )
-        ],
+    (
+        Transpose1,
+        [((256000, 3584), torch.float32)],
+        {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
         Transpose0,
