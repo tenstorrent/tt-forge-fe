@@ -15,12 +15,11 @@ from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
 )
 
 
-@pytest.mark.push
-@pytest.mark.skip(reason="Long Eexcution Time")
+@pytest.mark.skip(reason="Long Execution Time")
 @pytest.mark.nightly
 def test_yolo_world_inference(forge_property_recorder):
 
-    model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
+    MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -31,13 +30,12 @@ def test_yolo_world_inference(forge_property_recorder):
         source=Source.GITHUB,
     )
 
-    # Record Forge property
-
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load framework_model and input
 
-    framework_model = WorldModelWrapper(model_url)
+    framework_model = WorldModelWrapper(MODEL_URL)
     inputs = [get_test_input()]
 
     # Compile with Forge

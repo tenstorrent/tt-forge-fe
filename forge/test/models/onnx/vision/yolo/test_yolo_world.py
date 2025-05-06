@@ -21,7 +21,7 @@ from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
 @pytest.mark.nightly
 def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
 
-    model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
+    MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -32,14 +32,12 @@ def test_yolo_world_inference_onnx(forge_property_recorder, tmp_path):
         source=Source.GITHUB,
     )
 
-    # Record Forge property
-
     forge_property_recorder.record_group("red")
     forge_property_recorder.record_priority("P2")
 
     # Load framework_model and input
 
-    torch_model = WorldModelWrapper(model_url)
+    torch_model = WorldModelWrapper(MODEL_URL)
     inputs = get_test_input()
 
     # Export model to ONNX
