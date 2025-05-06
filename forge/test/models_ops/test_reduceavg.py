@@ -2866,3 +2866,34 @@ def test_module(forge_module_and_shapes_dtypes):
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
+
+
+class TransposeCommute(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, input1, input2):
+        transposed_input2 = forge.op.Transpose("", input2, dim0=-2, dim1=-1)
+        matmul_output = forge.op.Matmul("", input1, transposed_input2)
+
+        reduce_avg_output = forge.op.ReduceAvg("", matmul_output, dim=-1, keep_dim=True)
+
+        return reduce_avg_output
+
+
+def test_commuting():
+    framework_model = TransposeCommute("TransposeCommute")
+
+    sampled_inputs = [
+        Tensor.create_from_shape((1, 207, 9216), torch.float32),
+        Tensor.create_from_shape((2304, 9216), torch.float32),
+    ]
+
+    compiled_model = compile(framework_model, sample_inputs=sampled_inputs)
+
+    verify(
+        sampled_inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
