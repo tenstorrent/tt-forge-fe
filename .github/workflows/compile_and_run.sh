@@ -33,6 +33,9 @@ fi
 echo "run device_perf.py creating $2"
 python ./forge/test/benchmark/device_perf.py -cdp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv $2
 csv_file="${2%.*}.csv"
+ls -lsa
+cd ttrt-artifacts/
+ls -lsa
 cp ttrt-artifacts/out.ttnn/perf/ops_perf_results.csv "$csv_file"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to copy ops_perf_results.csv to $csv_file."
