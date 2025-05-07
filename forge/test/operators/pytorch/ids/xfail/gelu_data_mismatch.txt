@@ -1,8 +1,0 @@
-# xfail_gelu_DATA_MISMATCH ids
-
-gelu-FROM_ANOTHER_OP-{'approximate': 'tanh'}-(1, 1)-None-None
-gelu-FROM_ANOTHER_OP-{}-(1, 1)-None-None
-gelu-FROM_HOST-{'approximate': 'tanh'}-(1, 1)-None-None
-gelu-FROM_HOST-{}-(1, 1)-None-None
-gelu-CONST_EVAL_PASS-{'approximate': 'tanh'}-(1, 1)-None-None
-gelu-CONST_EVAL_PASS-{}-(1, 1)-None-None
