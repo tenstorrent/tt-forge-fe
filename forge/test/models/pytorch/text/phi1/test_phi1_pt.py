@@ -26,7 +26,7 @@ variants = ["microsoft/phi-1"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_phi_causal_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
