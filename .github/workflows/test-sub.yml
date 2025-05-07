@@ -161,11 +161,8 @@ jobs:
       - name: Install wheel
         shell: bash
         run: |
-          mkdir -p third_party/tt-mlir
           cd third_party/tt-mlir
           source env/activate
-          #pip install tvm*.whl --force-reinstall
-          #pip install forge*.whl --force-reinstall
           pip install ../../ttrt*.whl --force-reinstall
 
       - name: Run Test
@@ -177,6 +174,7 @@ jobs:
           FORGE_DISABLE_REPORTIFY_DUMP: 1
           OPERATORS: ${{ inputs.operators }}
           FILTERS: ${{ inputs.filters }}
+          ARCH_NAME: blackhole
         shell: bash
         run: |
           cd third_party/tt-mlir
