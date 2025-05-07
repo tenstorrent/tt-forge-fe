@@ -2868,6 +2868,9 @@ def test_module(forge_module_and_shapes_dtypes):
     )
 
 
+import torch
+
+
 class TransposeCommute(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -2881,6 +2884,45 @@ class TransposeCommute(ForgeModule):
         return reduce_avg_output
 
 
+class ReduceCommuteTest(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        # Create a 3D tensor [1, 207, 2304]
+        # Reshape to [207, 2304] (2D)
+        y = x.reshape(207, 2304)
+
+        # Transpose to [2304, 207] (still 2D)
+        y = y.transpose(0, 1)
+
+        # Reshape back to [1, 2304, 207] (3D)
+        y = y.reshape(1, 2304, 207)
+
+        # Reduce along dimension 2 (the last dimension)
+        z = torch.mean(y, dim=2, keepdim=True)  # [1, 2304, 1]
+
+        return z
+
+
+def test_commuting_torch():
+    framework_model = ReduceCommuteTest()
+
+    # Create inputs
+    x = torch.randn(1, 207, 2304)
+
+    sampled_inputs = [x]
+
+    compiled_model = compile(framework_model, sample_inputs=sampled_inputs)
+
+    verify(
+        sampled_inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
+
+
 def test_commuting():
     framework_model = TransposeCommute("TransposeCommute")
 
@@ -2891,6 +2933,63 @@ def test_commuting():
 
     compiled_model = compile(framework_model, sample_inputs=sampled_inputs)
 
+    verify(
+        sampled_inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.99)),
+    )
+
+
+class DimensionMismatchTest(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        # Start with a 3D tensor [1, 207, 2304]
+
+        # Create a pattern that will force dimension mismatch when commuting
+        # First reshape to 2D, removing the batch dimension
+        y = x.reshape(207, 2304)
+
+        # Transpose the 2D tensor
+        y = y.transpose(0, 1)  # [2304, 207]
+
+        # Reshape back to 3D with a different arrangement
+        y = y.reshape(1, 2304, 207)
+
+        # Reduce along the last dimension (dim=2)
+        z = torch.mean(y, dim=2, keepdim=True)  # [1, 2304, 1]
+
+        # Add operations that might create inverse patterns
+        # This encourages the optimizer to try commutation
+        z = z.reshape(1, 2304)
+        z = z.reshape(1, 2304, 1)
+
+        return z
+
+
+def test_dimension_mismatch():
+    """
+    This test is designed to trigger the dimension mismatch issue in can_commute_through_reduce.
+    It creates a pattern of operations that would cause the optimizer to try commuting
+    through a reduce operation in a way that would cause an out-of-bounds access.
+    """
+    # Add debug prints to can_commute_through_reduce in commute_utils.cpp:
+    # std::cout << "TEST_DEBUG: Checking new_dim=" << new_dim
+    #           << " for commute_shape_size=" << commute_shape->size() << std::endl;
+
+    framework_model = DimensionMismatchTest()
+
+    # Create input with specific shape to trigger the issue
+    x = torch.randn(1, 207, 2304)
+
+    sampled_inputs = [x]
+
+    # This will trigger the optimizer to try commuting operations
+    compiled_model = compile(framework_model, sample_inputs=sampled_inputs)
+
+    # If the fix is working, this should complete without crashing
     verify(
         sampled_inputs,
         framework_model,

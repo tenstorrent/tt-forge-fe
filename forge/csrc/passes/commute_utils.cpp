@@ -858,13 +858,13 @@ bool can_commute_through_reduce(
     //     return false;
     // }
 
-    int reduce_dim = std::get<int>(op->op_attrs()[0]);
+    // int reduce_dim = std::get<int>(op->op_attrs()[0]);
 
     // Convert to positive indexing
-    if (reduce_dim < 0)
-    {
-        reduce_dim += op->shape().size();
-    }
+    // if (reduce_dim < 0)
+    // {
+    //     reduce_dim += op->shape().size();
+    // }
 
     // Check if reduce_dim is valid for the op shape
     // if (reduce_dim < 0 || reduce_dim >= (int)op->shape().size())
@@ -875,7 +875,7 @@ bool can_commute_through_reduce(
     // }
 
     // Get new dimension through commutation
-    auto [can_commute, new_dim] = can_commute_through_dim(initial_op, graph, reduce_dim, commute_up);
+    // auto [can_commute, new_dim] = can_commute_through_dim(initial_op, graph, reduce_dim, commute_up);
 
     // if (!can_commute || new_dim < 0)
     // {
@@ -885,19 +885,19 @@ bool can_commute_through_reduce(
     // }
 
     // Check if new_dim is valid for commute_shape
-    if (new_dim >= (int)commute_shape->size())
-    {
-        // Add debug prints to track the issue
-        std::cout << "can_commute_through_reduce: op=" << (op ? op->name() : "null")
-                  << ", initial_op=" << (initial_op ? initial_op->name() : "null")
-                  << ", producer=" << (producer ? producer->name() : "null") << std::endl;
-        std::cout << "can_commute_through_reduce: commute_shape_size=" << (commute_shape ? commute_shape->size() : 0)
-                  << ", clone_shape_size=" << (clone_shape ? clone_shape->size() : 0) << std::endl;
-        std::cout << "can_commute_through_reduce: can_commute=" << can_commute << ", new_dim=" << new_dim << std::endl;
-        std::cout << "can_commute_through_reduce: Invalid new_dim=" << new_dim
-                  << " for commute_shape_size=" << commute_shape->size() << std::endl;
-        //     return false;
-    }
+    // if (new_dim >= (int)commute_shape->size())
+    // {
+    //     // Add debug prints to track the issue
+    //     std::cout << "can_commute_through_reduce: op=" << (op ? op->name() : "null")
+    //               << ", initial_op=" << (initial_op ? initial_op->name() : "null")
+    //               << ", producer=" << (producer ? producer->name() : "null") << std::endl;
+    //     std::cout << "can_commute_through_reduce: commute_shape_size=" << (commute_shape ? commute_shape->size() : 0)
+    //               << ", clone_shape_size=" << (clone_shape ? clone_shape->size() : 0) << std::endl;
+    //     std::cout << "can_commute_through_reduce: can_commute=" << can_commute << ", new_dim=" << new_dim <<
+    //     std::endl; std::cout << "can_commute_through_reduce: Invalid new_dim=" << new_dim
+    //               << " for commute_shape_size=" << commute_shape->size() << std::endl;
+    //     return false;
+    // }
 
     // Check if reduce_dim is valid for clone_shape
     // if (reduce_dim >= (int)clone_shape->size())
