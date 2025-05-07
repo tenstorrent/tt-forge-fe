@@ -20,6 +20,8 @@ from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.utils import download_model
 from forge.config import CompilerConfig, MLIRConfig
+from forge.verify.config import VerifyConfig
+from forge._C import DataFormat
 
 
 # Common constants
@@ -27,6 +29,11 @@ from forge.config import CompilerConfig, MLIRConfig
 # Batch size configurations
 BATCH_SIZE = [
     1,
+]
+
+# Data format configurations
+DATA_FORMAT = [
+    "bfloat16",
 ]
 
 # Input size configurations
@@ -55,6 +62,7 @@ def test_vovnet_osmr(
     channel_size,
     loop_count,
     variant,
+    data_format,
 ):
     """
     Test the Vovnet OSMR benchmark function.
@@ -76,13 +84,22 @@ def test_vovnet_osmr(
         )
     ]
 
+    if data_format == "bfloat16":
+        # Convert input to bfloat16
+        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    if data_format == "bfloat16":
+        # Convert model to bfloat16
+        framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
     fw_out = framework_model(*input_sample)
 
     # Compiler configuration
     compiler_config = CompilerConfig()
+    if data_format == "bfloat16":
+        compiler_config.default_df_override = DataFormat.Float16_b
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # # Turn on MLIR optimizations.
     # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
@@ -99,14 +116,25 @@ def test_vovnet_osmr(
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    verify(input_sample, framework_model, compiled_model)
+    pcc = 0.99
+    verify_cfg = VerifyConfig()
+    if data_format == "bfloat16":
+        # Set smaller pcc for bfloat16
+        pcc = 0.97
+    verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        verify_cfg=verify_cfg,
+    )
     start = time.time()
     for _ in range(loop_count):
         co_out = compiled_model(*input_sample)
     end = time.time()
 
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
+    AutomaticValueChecker(pcc=pcc).check(fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -131,6 +159,7 @@ def test_vovnet_osmr(
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
+    print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
     print("====================================================================")
 
@@ -141,7 +170,7 @@ def test_vovnet_osmr(
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        "precision": data_format,
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
@@ -192,6 +221,7 @@ def vovnet_osmr_benchmark(config: dict):
 
     training = config["training"]
     batch_size = config["batch_size"]
+    data_format = config["data_format"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
@@ -205,6 +235,7 @@ def vovnet_osmr_benchmark(config: dict):
         channel_size=channel_size,
         loop_count=loop_count,
         variant=variant,
+        data_format=data_format,
     )
 
     if not output_file:

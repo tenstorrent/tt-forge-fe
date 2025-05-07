@@ -18,6 +18,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.config import CompilerConfig, MLIRConfig
+from forge._C import DataFormat
 
 from test.utils import download_model
 
@@ -27,6 +28,11 @@ from test.utils import download_model
 # Batch size configurations
 BATCH_SIZE = [
     1,
+]
+
+# Data format configurations
+DATA_FORMAT = [
+    "bfloat16",
 ]
 
 # Input size configurations
@@ -47,7 +53,8 @@ LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
-def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_count):
+@pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
+def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_count, data_format):
     """
     This function creates a basic MobileNetV2 model using PyTorch.
     It is used for benchmarking purposes.
@@ -69,7 +76,14 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
         )
     ]
 
+    if data_format == "bfloat16":
+        # Convert input to bfloat16
+        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
+    if data_format == "bfloat16":
+        # Convert model to bfloat16
+        framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
     fw_out = framework_model(*input_sample)
 
@@ -77,6 +91,9 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
     compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    if data_format == "bfloat16":
+        # Convert model to bfloat16
+        compiler_config.default_df_override = DataFormat.Float16_b
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -122,6 +139,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
+    print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
     print("====================================================================")
 
@@ -132,7 +150,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        "precision": data_format,
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
@@ -183,6 +201,7 @@ def mobilenetv2_basic_benchmark(config: dict):
 
     training = config["training"]
     batch_size = config["batch_size"]
+    data_format = config["data_format"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
@@ -194,6 +213,7 @@ def mobilenetv2_basic_benchmark(config: dict):
         input_size=input_size,
         channel_size=channel_size,
         loop_count=loop_count,
+        data_format=data_format,
     )
 
     if not output_file:
