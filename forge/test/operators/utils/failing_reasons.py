@@ -152,6 +152,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.starts_with("forge/forge/op/eval/interface.py:112")),
                         M.last_line(M.starts_with("forge/forge/compile.py:756")),
                         M.last_line(M.starts_with("forge/forge/compile.py:1015: RuntimeError")),
+                        M.last_line(M.starts_with("forge/forge/op/eval/forge/clip.py:32")),
                     ),
                 ],
             ),
@@ -1177,6 +1178,21 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains("Cannot squeeze a non-zero dim"),
                     M.last_line(M.starts_with("forge/forge/compile.py:756")),
+                ],
+            ),
+            # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
+            # >       ret = torch.clip(tensors[0], min=self.min, max=self.max)
+            # E       RuntimeError: value cannot be converted to type at::BFloat16 without overflow
+            # forge/forge/op/eval/forge/clip.py:32: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    M.starts_with("value cannot be converted to type at::BFloat16 without overflow"),
+                ],
+                error_log=[
+                    M.contains(">       ret = torch.clip(tensors[0], min=self.min, max=self.max)"),
+                    M.last_line(M.starts_with("forge/forge/op/eval/forge/clip.py:32")),
                 ],
             ),
         ],
