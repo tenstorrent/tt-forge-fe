@@ -1,7 +1,6 @@
-ARG FROM_IMAGE=base
 ARG FROM_TAG=latest
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-${FROM_IMAGE}-ubuntu-22-04:${FROM_TAG}
+FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:${FROM_TAG}
 SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
