@@ -1,8 +1,5 @@
 # xfail_square_ATTRIBUTE_ERROR ids
 
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.RawUInt8-HiFi4
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.RawUInt16-HiFi4
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.Int8-HiFi4
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.UInt16-HiFi4
-square-FROM_HOST-None-(1, 2, 3, 4)-forge.Int32-HiFi4
+square-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
+square-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
+square-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
