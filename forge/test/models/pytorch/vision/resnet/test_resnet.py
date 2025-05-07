@@ -171,3 +171,49 @@ def test_resnet_torchvision(forge_property_recorder, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+import random
+
+import numpy as np
+import tensorflow as tf
+from datasets import load_dataset
+from tensorflow.keras.applications import ResNet50
+
+# For compatibility with your forge testing system
+import forge
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import verify
+
+
+def test_resnet_tf(forge_property_recorder):
+    random.seed(0)
+    np.random.seed(0)
+    tf.random.set_seed(0)
+
+    forge_property_recorder.record_group("generality")
+
+    # Load tiny dataset
+    dataset = load_dataset("zh-plus/tiny-imagenet")
+    images = random.sample(dataset["valid"]["image"], 10)
+
+    # Method 1: Load ResNet50 from Keras applications
+    framework_model = ResNet50(include_top=True, weights="imagenet", input_shape=(224, 224, 3), classes=1000)
+
+    # Convert input to the format TensorFlow expects
+    input_sample = [tf.random.normal((1, 224, 224, 3))]
+
+    # Compile model with forge
+    compiled_model = forge.compile(
+        framework_model, input_sample, module_name="resnet50_tensorflow", forge_property_handler=forge_property_recorder
+    )
+
+    # Verify data on sample input
+    verify(
+        input_sample,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        forge_property_handler=forge_property_recorder,
+    )
