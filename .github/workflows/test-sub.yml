@@ -156,6 +156,7 @@ jobs:
           workflow: on-push.yml
           name: ttrt-whl-tracy
           repo: tenstorrent/tt-mlir
+          branch: gfeng/blackhole-ci
           check_artifacts: true
 
       - name: Install wheel
