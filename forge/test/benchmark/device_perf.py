@@ -84,20 +84,13 @@ def create_ttir(ttir_path):
     # The second line is the definition of the module with attrubutes, we need to empty the attributes field
     attr_definition = "attributes {tt.system_desc = #system_desc}"
     attr_empty = "attributes {}"
-    content[1] = content[1].replace(attr_definition, attr_empty)
-    content = content[1:]  # Remove the first line
-
-    # At the beginning of the content, we need to add two commands
-    # The first command is to ttmlir-optimize the module
-    # The second command is to ttmlir-translate the module
-    ttmlir_optimize = (
-        '// RUN: ttmlir-opt --ttir-to-ttnn-backend-pipeline="system-desc-path=%system_desc_path%" -o out.mlir %s'
-    )
-    ttmlir_translate = "// RUN: ttmlir-translate --ttnn-to-flatbuffer out.mlir > %t.ttnn"
-    content.insert(0, ttmlir_translate)
-    content.insert(0, ttmlir_optimize)
+    content[2] = content[2].replace(attr_definition, attr_empty)
+    content.pop(1)
 
     ttir_path_out = ttir_path.replace(".mlir", "_out.mlir")
+
+    for item in content:
+        print(item)
 
     # Write the modified content to the TTIR file
     with open(ttir_path_out, "w") as file:
