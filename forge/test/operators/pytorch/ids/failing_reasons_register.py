@@ -63,6 +63,8 @@ class FailingReasonsRegister:
         ("pow", FailingReasons.SPECIAL_VALUES),
         ("pow", FailingReasons.UNSUPPORTED_SPECIAL_CASE),
         ("reciprocal", FailingReasons.DATA_MISMATCH),
+        ("remainder", FailingReasons.DATA_MISMATCH),
+        ("remainder", FailingReasons.SPECIAL_VALUES),
         ("repeat_interleave", FailingReasons.DATA_MISMATCH),
         ("repeat_interleave", FailingReasons.INFERENCE_FAILED),
         ("reshape", FailingReasons.INTERNAL_TVM_ERROR),

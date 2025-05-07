@@ -199,6 +199,11 @@ class FailingRulesData:
         *TestIdsDataLoader.build_failing_rules(operators=["div"]),
     ]
 
+    remainder = [
+        common,
+        *TestIdsDataLoader.build_failing_rules(operators=["remainder"]),
+    ]
+
     ge = [
         # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
         # TestCollection(
