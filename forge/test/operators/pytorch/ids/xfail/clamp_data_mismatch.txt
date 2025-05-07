@@ -1,4 +1,4 @@
-# xfail_clamp_SPECIAL_VALUES ids
+# xfail_clamp_DATA_MISMATCH ids
 
 clamp-CONST_EVAL_PASS-{'min': 0.5, 'max': 0.0}-(1, 3, 4)-None-None
 clamp-CONST_EVAL_PASS-{'min': 0.5, 'max': 0.0}-(1, 45, 17)-None-None
