@@ -22,6 +22,7 @@ from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.utils import download_model
 from forge.config import CompilerConfig, MLIRConfig
 from test.benchmark.utils import load_benchmark_dataset, evaluate_classification
+from forge._C import DataFormat
 
 
 # Common constants
@@ -34,6 +35,11 @@ TASK = [
 # Batch size configurations
 BATCH_SIZE = [
     1,
+]
+
+# Data format configurations
+DATA_FORMAT = [
+    "bfloat16",
 ]
 
 # Input size configurations
@@ -61,15 +67,8 @@ VARIANTS = [
 @pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
 @pytest.mark.parametrize("variant", VARIANTS, ids=[f"variant={item}" for item in VARIANTS])
 @pytest.mark.parametrize("task", TASK, ids=[f"task={item}" for item in TASK])
-def test_vit_base(
-    training,
-    batch_size,
-    input_size,
-    channel_size,
-    loop_count,
-    variant,
-    task,
-):
+@pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
+def test_vit_base(training, batch_size, input_size, channel_size, loop_count, variant, task, data_format):
     """
     Test the ViT base benchmark function.
     It is used for benchmarking purposes.
@@ -95,8 +94,15 @@ def test_vit_base(
     else:
         raise ValueError(f"Unsupported task: {task}")
 
+    if data_format == "bfloat16":
+        # Convert input to bfloat16
+        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+
     # Load the model from Hugging Face
     framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
+    if data_format == "bfloat16":
+        # Convert model to bfloat16
+        framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
 
     # Compiler configuration
@@ -104,6 +110,9 @@ def test_vit_base(
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # # Turn on MLIR optimizations.
     # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    if data_format == "bfloat16":
+        # Convert model to bfloat16
+        compiler_config.default_df_override = DataFormat.Float16_b
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -174,6 +183,7 @@ def test_vit_base(
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Evaluation score: {evaluation_score}")
     print(f"| Batch size: {batch_size}")
+    print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
     print(f"| Channel size: {channel_size}")
     print("====================================================================")
@@ -185,7 +195,7 @@ def test_vit_base(
         "config": {"model_size": "small"},
         "num_layers": num_layers,
         "batch_size": batch_size,
-        "precision": "f32",  # This is we call dataformat, it should be generic, too, but for this test we don't experiment with it
+        "precision": data_format,
         # "math_fidelity": math_fidelity, @TODO - For now, we are skipping these parameters, because we are not supporting them
         "dataset_name": dataset_name,
         "profile_name": "",
@@ -246,6 +256,7 @@ def vit_base_benchmark(config: dict):
 
     training = config["training"]
     batch_size = config["batch_size"]
+    data_format = config["data_format"]
     input_size = INPUT_SIZE[0]
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
@@ -261,6 +272,7 @@ def vit_base_benchmark(config: dict):
         loop_count=loop_count,
         variant=variant,
         task=task,
+        data_format=data_format,
     )
 
     if not output_file:
