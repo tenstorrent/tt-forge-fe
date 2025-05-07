@@ -7,7 +7,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.multimodal.oft.utils.oft_utils import get_inputs, get_models
-from test.models.utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.skip(reason="Segmentation Fault")
