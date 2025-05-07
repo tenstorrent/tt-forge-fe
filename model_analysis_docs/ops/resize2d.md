@@ -18,55 +18,103 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="13">1</td>
-			<td rowspan="13">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="13">25</td>
+			<td rowspan="21">1</td>
+			<td rowspan="21">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="21">33</td>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 16, 16), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 32, 32), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 64, 64), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 768, 128, 128), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 16, 16), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 32, 32), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 64, 64), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
+			<td><ul><li>pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf</li><li>pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256, 128, 128), dtype=float32)</td>
 			<td>sizes : [128, 128]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_beit_microsoft_beit_large_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 16, 27, 27), dtype=float32)</td>
+			<td>sizes : [27, 27]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_beit_microsoft_beit_base_patch16_224_img_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 12, 27, 27), dtype=float32)</td>
+			<td>sizes : [27, 27]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 960, 3, 3), dtype=float32)</td>
+			<td>sizes : [7, 7]<br>method : "nearest_neighbor"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 15, 20), dtype=float32)</td>
+			<td>sizes : [30, 40]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 30, 40), dtype=float32)</td>
+			<td>sizes : [60, 80]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 60, 80), dtype=float32)</td>
+			<td>sizes : [120, 160]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 120, 160), dtype=float32)</td>
+			<td>sizes : [240, 320]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 64, 240, 320), dtype=float32)</td>
+			<td>sizes : [480, 640]<br>method : "linear"<br>align_corners : False<br>channel_last : 0</td>
 		</tr>
 		<tr>
 			<td>1</td>

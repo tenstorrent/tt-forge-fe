@@ -6,29 +6,18 @@ from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 dataset = load_dataset("huggingface/cats-image")
 image_1 = dataset["test"]["image"][0]
 
 
-def generate_model_vit_imgcls_hf_pytorch(variant):
-    # STEP 2: Create Forge module from PyTorch model
-    image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
-    model = download_model(ViTForImageClassification.from_pretrained, variant)
-    # STEP 3: Run inference on Tenstorrent device
-    img_tensor = image_processor(image_1, return_tensors="pt").pixel_values
-    # output = model(img_tensor).logits
-
-    return model, [img_tensor], {}
-
-
 variants = [
-    pytest.param("google/vit-base-patch16-224", marks=[pytest.mark.xfail]),
+    pytest.param("google/vit-base-patch16-224", marks=pytest.mark.push),
     "google/vit-large-patch16-224",
 ]
 
@@ -39,8 +28,8 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     if variant != "google/vit-base-patch16-224":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
@@ -51,11 +40,16 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
         forge_property_recorder.record_group("red")
+        forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
-    framework_model, inputs, _ = generate_model_vit_imgcls_hf_pytorch(variant)
+    # Load processor and model
+    image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
+    framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
+
+    # prepare input
+    inputs = [image_processor(image_1, return_tensors="pt").pixel_values]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -63,7 +57,12 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # post processing
+    logits = co_out[0]
+    predicted_class_idx = logits.argmax(-1).item()
+    print("Predicted class:", framework_model.config.id2label[predicted_class_idx])
 
 
 variants_with_weights = {
@@ -90,8 +89,8 @@ def test_vit_torchvision(forge_property_recorder, variant):
     if variant != "vit_b_16":
         pytest.skip("Skipping this variant; only testing the small variant(vit_b_16) for now.")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
@@ -101,7 +100,6 @@ def test_vit_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

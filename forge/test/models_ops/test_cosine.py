@@ -34,13 +34,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Cosine0,
         [((1, 588, 128), torch.float32)],
-        {"model_name": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
+        {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
     ),
     (
         Cosine0,
         [((1, 39, 128), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
                 "pt_deepseek_deepseek_math_7b_instruct_qa_hf",
                 "pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
@@ -52,16 +52,28 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Cosine0,
         [((1, 596, 128), torch.float32)],
-        {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
+        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
     (
         Cosine0,
-        [((1, 10, 256), torch.float32)],
+        [((2, 128), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 522, 256), torch.float32)],
+        {
+            "model_names": [
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
                 "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
                 "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -70,43 +82,34 @@ forge_modules_and_shapes_dtypes_list = [
         Cosine0,
         [((1, 6, 64), torch.float32)],
         {
-            "model_name": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf", "pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
+            "model_names": [
+                "pt_falcon_tiiuae_falcon_7b_instruct_clm_hf",
+                "pt_phi4_microsoft_phi_4_clm_hf",
+                "pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf",
+            ],
             "pcc": 0.99,
         },
     ),
-    (Cosine0, [((1, 334, 32), torch.float32)], {"model_name": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
+    (Cosine0, [((1, 334, 32), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (
         Cosine0,
         [((1, 207, 256), torch.float32)],
-        {"model_name": ["pt_gemma_google_gemma_2_9b_it_qa_hf", "pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
+        {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
     ),
-    (Cosine0, [((1, 7, 256), torch.float32)], {"model_name": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
+    (Cosine0, [((1, 7, 256), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
     (
         Cosine0,
         [((1, 107, 256), torch.float32)],
-        {"model_name": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf", "pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 256, 128), torch.float32)],
         {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-            ],
+            "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf", "pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
             "pcc": 0.99,
         },
     ),
     (
         Cosine0,
-        [((1, 256, 64), torch.float32)],
+        [((1, 32, 128), torch.float32)],
         {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-            ],
+            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf", "pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
             "pcc": 0.99,
         },
     ),
@@ -114,13 +117,14 @@ forge_modules_and_shapes_dtypes_list = [
         Cosine0,
         [((1, 4, 128), torch.float32)],
         {
-            "model_name": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+            "model_names": [
                 "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -129,67 +133,114 @@ forge_modules_and_shapes_dtypes_list = [
         Cosine0,
         [((1, 4, 64), torch.float32)],
         {
-            "model_name": [
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+            "model_names": [
                 "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
             ],
             "pcc": 0.99,
         },
     ),
     (
         Cosine0,
-        [((1, 32, 128), torch.float32)],
+        [((1, 256, 128), torch.float32)],
         {
-            "model_name": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf", "pt_llama3_huggyllama_llama_7b_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+            ],
             "pcc": 0.99,
         },
+    ),
+    (
+        Cosine0,
+        [((1, 256, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Cosine0,
+        [((1, 8, 128), torch.float32)],
+        {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 135, 128), torch.float32)],
+        {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
     (
         Cosine0,
         [((1, 128, 128), torch.float32)],
-        {"model_name": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
+        {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
     ),
     (
         Cosine0,
         [((1, 256, 32), torch.float32)],
-        {"model_name": ["pt_phi2_microsoft_phi_2_pytdml_clm_hf", "pt_phi2_microsoft_phi_2_clm_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
+                "pt_phi2_microsoft_phi_2_clm_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Cosine0,
-        [((1, 11, 32), torch.float32)],
-        {
-            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
-            "pcc": 0.99,
-        },
+        [((1, 7, 32), torch.float32)],
+        {"model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"], "pcc": 0.99},
     ),
     (
         Cosine0,
         [((1, 12, 32), torch.float32)],
         {
-            "model_name": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
+            "model_names": [
+                "pt_phi1_5_microsoft_phi_1_5_token_cls_hf",
+                "pt_phi1_microsoft_phi_1_token_cls_hf",
+                "pt_phi2_microsoft_phi_2_pytdml_token_cls_hf",
+                "pt_phi2_microsoft_phi_2_token_cls_hf",
+            ],
             "pcc": 0.99,
         },
     ),
     (
         Cosine0,
-        [((1, 5, 96), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (
-        Cosine0,
-        [((1, 13, 96), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+        [((1, 11, 32), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
+            "pcc": 0.99,
+        },
     ),
     (
         Cosine0,
         [((1, 256, 96), torch.float32)],
-        {"model_name": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99},
+        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99},
     ),
+    (
+        Cosine0,
+        [((1, 5, 96), torch.float32)],
+        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Cosine0,
+        [((1, 13, 96), torch.float32)],
+        {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
+    ),
+    (Cosine0, [((1, 12, 64), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
     (
         Cosine0,
         [((1, 29, 64), torch.float32)],
         {
-            "model_name": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
             "pcc": 0.99,
         },
     ),
@@ -197,13 +248,13 @@ forge_modules_and_shapes_dtypes_list = [
         Cosine0,
         [((1, 35, 128), torch.float32)],
         {
-            "model_name": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+            "model_names": [
                 "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -211,16 +262,17 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Cosine0,
         [((1, 35, 64), torch.float32)],
-        {"model_name": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
+        {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
+    (Cosine0, [((1, 13, 128), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
     (
         Cosine0,
         [((1, 29, 128), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
                 "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf",
-                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_7b_clm_hf",
+                "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -228,23 +280,31 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Cosine0,
         [((1, 39, 64), torch.float32)],
-        {"model_name": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
+        {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
-    (Cosine0, [((1, 13, 128), torch.float32)], {"model_name": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Cosine")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Cosine")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_names":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "args":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [
@@ -266,6 +326,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

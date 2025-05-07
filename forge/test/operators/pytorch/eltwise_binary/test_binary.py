@@ -11,7 +11,7 @@
 # 2. Operand source(s):
 # (+)  2.1 From another op
 #       - Operator -> input
-# (+)  2.2 From DRAM queue
+# (+)  2.2 From DRAM queue - Removed from test plan
 #       - Operator is first node in network
 #       - Input_queue flag = false
 # (+)  2.3 Const Inputs (const eval pass)
@@ -58,6 +58,9 @@ from loguru import logger
 import forge
 import torch
 
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
+
 from test.operators.utils import ValueRanges
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
@@ -68,8 +71,10 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestResultFailing
 from test.operators.utils import FailingRulesConverter
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
 from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
+from test.operators.utils.utils import PytorchUtils
 
 from forge.op_repo import TensorShape
 
@@ -97,7 +102,6 @@ class TestVerification:
     MODEL_TYPES = {
         InputSource.FROM_ANOTHER_OP: ModelFromAnotherOp,
         InputSource.FROM_HOST: ModelDirect,
-        InputSource.FROM_DRAM_QUEUE: ModelDirect,
         InputSource.CONST_EVAL_PASS: ModelConstEvalPass,
     }
 
@@ -118,27 +122,23 @@ class TestVerification:
 
         warm_reset = False
 
-        input_source_flag: InputSourceFlags = None
-        if test_vector.input_source in (InputSource.FROM_DRAM_QUEUE,):
-            input_source_flag = InputSourceFlags.FROM_DRAM
-
-        dev_data_format = test_vector.dev_data_format
+        # dev_data_format = test_vector.dev_data_format
         # if test_vector.dev_data_format is not None:
         #     dev_data_format = test_vector.dev_data_format
         # else:
         #     dev_data_format = TestCollectionCommon.single.dev_data_formats[0]
 
-        if dev_data_format in TestCollectionCommon.int.dev_data_formats:
-            value_range = ValueRanges.LARGE
+        # if dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        #     value_range = ValueRanges.LARGE
 
-        if value_range is None:
-            value_range = ValueRanges.SMALL
+        # if value_range is None:
+        #     value_range = ValueRanges.SMALL
 
         # Old behavior when dev_data_format was not set
-        if dev_data_format is None:
-            value_range = ValueRanges.SMALL_POSITIVE
+        # if dev_data_format is None:
+        #     value_range = ValueRanges.SMALL_POSITIVE
 
-        operator = getattr(torch, test_vector.operator)
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
@@ -151,17 +151,25 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # Using AllCloseValueChecker in all cases except for integer data formats
+        # and logical operators ge, ne, gt, lt:
+        verify_config: VerifyConfig
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+        else:
+            verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
-            input_source_flag=input_source_flag,
-            dev_data_format=dev_data_format,
+            dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
-            value_range=value_range,
-            pcc=test_vector.pcc,
+            value_range=ValueRanges.LARGE,
             warm_reset=warm_reset,
+            deprecated_verification=False,
+            verify_config=verify_config,
         )
 
 
@@ -199,7 +207,7 @@ class TestParamsData:
 
     @classmethod
     def generate_kwargs_alpha(cls, test_vector: TestVector):
-        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
             return cls.kwargs_alpha_int
         else:
             return cls.kwargs_alpha_float
@@ -309,14 +317,14 @@ class TestCollectionData:
         operators=implemented.operators,
         input_sources=TestCollectionCommon.all.input_sources,
         input_shapes=TestCollectionCommon.all.input_shapes,
-        dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.all.dev_data_formats,
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
     single = TestCollection(
         input_sources=TestCollectionCommon.single.input_sources,
         input_shapes=TestCollectionCommon.single.input_shapes,
-        dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.single.dev_data_formats,
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
@@ -350,7 +358,11 @@ class BinaryTestPlanBuilder:
                 input_sources=TestCollectionData.single.input_sources,
                 input_shapes=TestCollectionData.single.input_shapes,
                 kwargs=generate_kwargs,
-                dev_data_formats=TestCollectionData.all.dev_data_formats,
+                dev_data_formats=[
+                    item
+                    for item in TestCollectionData.all.dev_data_formats
+                    if item not in TestCollectionData.single.dev_data_formats
+                ],
                 math_fidelities=TestCollectionData.single.math_fidelities,
             ),
             # Test plan:
@@ -374,7 +386,7 @@ class BinaryTestPlanBuilder:
                     input_sources=TestCollectionData.all.input_sources,
                     input_shapes=TestCollectionCommon.quick.input_shapes,
                     kwargs=generate_kwargs,
-                    dev_data_formats=TestCollectionCommon.quick.dev_data_formats,
+                    dev_data_formats=TestCollectionTorch.single.dev_data_formats,
                     math_fidelities=TestCollectionData.single.math_fidelities,
                 )
             )
@@ -443,15 +455,15 @@ class TestPlansData:
 
     ge: TestPlan = BinaryTestPlanBuilder.build_test_plan("ge", value_range=ValueRanges.SMALL, quick_mix=False)
 
-    ne: TestPlan = BinaryTestPlanBuilder.build_test_plan("ne", value_range=ValueRanges.SMALL, quick_mix=True)
+    ne: TestPlan = BinaryTestPlanBuilder.build_test_plan("ne", value_range=ValueRanges.SMALL, quick_mix=False)
 
-    gt: TestPlan = BinaryTestPlanBuilder.build_test_plan("gt", value_range=ValueRanges.SMALL, quick_mix=True)
+    gt: TestPlan = BinaryTestPlanBuilder.build_test_plan("gt", value_range=ValueRanges.SMALL, quick_mix=False)
 
-    lt: TestPlan = BinaryTestPlanBuilder.build_test_plan("lt", value_range=ValueRanges.SMALL, quick_mix=True)
+    lt: TestPlan = BinaryTestPlanBuilder.build_test_plan("lt", value_range=ValueRanges.SMALL, quick_mix=False)
 
-    maximum: TestPlan = BinaryTestPlanBuilder.build_test_plan("maximum", value_range=ValueRanges.SMALL, quick_mix=True)
+    maximum: TestPlan = BinaryTestPlanBuilder.build_test_plan("maximum", value_range=ValueRanges.SMALL, quick_mix=False)
 
-    minimum: TestPlan = BinaryTestPlanBuilder.build_test_plan("minimum", value_range=ValueRanges.SMALL, quick_mix=True)
+    minimum: TestPlan = BinaryTestPlanBuilder.build_test_plan("minimum", value_range=ValueRanges.SMALL, quick_mix=False)
 
     not_implemented: TestPlan = TestPlan(
         verify=lambda test_device, test_vector: TestVerification.verify(

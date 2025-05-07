@@ -714,14 +714,16 @@ def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
 
 def populate_argmax_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
+    args = []
 
-    dim = int(node["attrs"]["axis"][0][0])
-    if dim >= 0:
-        dim -= len(list(graph["nodes"][nid]["forge_shape"]))
+    # Handle the case where axis is not None (None is represented as empty string in TVM)
+    if node["attrs"]["axis"][0][0] != "":
+        dim = int(node["attrs"]["axis"][0][0])
+        args.append(("dim", f"{dim}"))
 
-    args = [
-        ("dim", f"{dim}"),
-    ]
+    keep_dim = bool(int(node["attrs"]["keepdims"][0][0]))
+    args.append(("keep_dim", f"{keep_dim}"))
+
     return args
 
 
@@ -1431,7 +1433,7 @@ def populate_pad_args(graph, nid, compiler_cfg):
             )
         )
     else:
-        assert False
+        raise ValueError("Pad only support 2D or 4D padding")
 
     tvm_pad_mode_to_forge_mode = {
         "constant": "constant",
@@ -1445,6 +1447,7 @@ def populate_pad_args(graph, nid, compiler_cfg):
             f'"{tvm_pad_mode_to_forge_mode[mode]}"',
         )
     )
+
     args.append(
         (
             "channel_last",
@@ -2124,7 +2127,7 @@ def compile_tvm_to_python(
     is_training = False if verify_cfg == None else verify_cfg.test_kind.is_training()
 
     framework = get_framework(framework_mod)
-    if framework == "pytorch":
+    if framework in ["pytorch", "paddle"]:
         if is_training:
             framework_mod.module.train()
             verify_cfg.verify_tvm_compile = False
@@ -2372,13 +2375,13 @@ def compile_tvm_to_python(
                 assert "num_inputs" in node["attrs"]
 
                 # TVM nn.pad has 2 inputs [Data, pad_value]
-                # We need to assert pad_value being zero, then remove the constant
+                # We remove the constant and move it to the arguments
                 if node["name"] == "nn.pad" and int(node["attrs"]["num_inputs"]) == 2:
                     pad_value_node = graph["nodes"][node["inputs"][1][0]]
                     pad_value_node_name = pad_value_node["name"]
                     pad_value = json_graph["params"][pad_value_node_name]
                     assert pad_value_node["nid"] in constants
-                    assert not pad_value.any(), "Padding contains non-zero values"
+                    args.append(("value", f"{float(pad_value.item())}"))
                     del constants[pad_value_node["nid"]]
                     node["attrs"]["num_inputs"] = "1"
 

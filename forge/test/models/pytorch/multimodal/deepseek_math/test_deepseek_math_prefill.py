@@ -43,6 +43,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
     return input_ids, output_logits
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
 @pytest.mark.xfail
 def test_deepseek_prefil_on_device_decode_on_cpu(variant):

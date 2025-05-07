@@ -11,8 +11,8 @@ on:
       test_group_cnt:
         description: 'Test group count'
         required: false
-        default: 2
-        type: number
+        default: "2"
+        type: string
       test_group_ids:
         description: 'Test group ids'
         required: false
@@ -31,6 +31,10 @@ on:
         description: 'Operators to test (comma separated)'
         required: false
         type: string
+      filters:
+        description: 'Filters for tests (comma separated)'
+        required: false
+        type: string
       run_id:
         description: 'Run id the workflow where to find installation (or else it will search)'
         required: false
@@ -40,7 +44,6 @@ on:
         required: false
         default: false
         type: boolean
-
 
 jobs:
   run-tests:
@@ -145,6 +148,7 @@ jobs:
           HF_HUB_DISABLE_PROGRESS_BARS: 1
           FORGE_DISABLE_REPORTIFY_DUMP: 1
           OPERATORS: ${{ inputs.operators }}
+          FILTERS: ${{ inputs.filters }}
         shell: bash
         run: |
           source env/activate
@@ -153,6 +157,7 @@ jobs:
                  --splitting-algorithm least_duration \
                  -m "${{ inputs.test_mark }}" \
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                 --log-memory-usage \
                  2>&1 | tee pytest.log
 
       - name: Upload Test Log
@@ -161,6 +166,13 @@ jobs:
         with:
           name: test-log-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: pytest.log
+
+      - name: Upload Memory Usage Log
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: memory-usage-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: pytest-memory-usage.csv
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
@@ -179,3 +191,11 @@ jobs:
           updateComment: false
           detailed_summary: true
           group_suite: true
+
+      - name: Upload test results to Codecov
+        if: success() || failure()
+        uses: codecov/test-results-action@v1
+        with:
+          files: ${{ steps.strings.outputs.test_report_path }}
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -41,8 +41,13 @@ on:
           - "2"
           - "3"
           - "4"
+          - "8"
       operators:
         description: 'Operators to test (comma separated)'
+        required: false
+        type: string
+      filters:
+        description: 'Filters for tests (comma separated)'
         required: false
         type: string
 
@@ -63,6 +68,7 @@ jobs:
       test_mark: ${{ steps.set-inputs.outputs.test_mark }}
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
       operators: ${{ steps.set-inputs.outputs.operators }}
+      filters: ${{ steps.set-inputs.outputs.filters }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
     steps:
       - name: Inputs Management
@@ -78,18 +84,19 @@ jobs:
           echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
           echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
           echo "operators=${{ inputs.operators }}" >> $GITHUB_OUTPUT
+          echo "filters=${{ inputs.filters }}" >> $GITHUB_OUTPUT
           case "${{ inputs.preset }}" in
             "Full Model Passing")
-              echo "test_mark='nightly and not xfail'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly and not xfail" >> $GITHUB_OUTPUT
               ;;
             "Full Model XFailing")
-              echo "test_mark='nightly and xfail'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly and xfail" >> $GITHUB_OUTPUT
               ;;
             "Models Ops")
-              echo "test_mark='nightly_models_ops'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly_models_ops" >> $GITHUB_OUTPUT
               ;;
             "Sweeps")
-              echo "test_mark='nightly_sweeps'" >> $GITHUB_OUTPUT
+              echo "test_mark=nightly_sweeps" >> $GITHUB_OUTPUT
               ;;
             "Custom")
               echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
@@ -126,4 +133,5 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       operators: ${{ needs.set-inputs.outputs.operators }}
+      filters: ${{ needs.set-inputs.outputs.filters }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}

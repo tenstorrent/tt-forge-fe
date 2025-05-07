@@ -51,11 +51,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Release },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Release },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -142,11 +141,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { runs-on: runner, build-type: Debug },
+          { runs-on: tt-beta-ubuntu-2204-large, build-type: Debug },
         ]
 
     runs-on:
-      - in-service
       - ${{ matrix.build.runs-on }}
 
     container:
@@ -188,6 +186,21 @@ jobs:
         run: |
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
+
+      - name: Update submodule if mlir_override is set
+        if: ${{ inputs.mlir_override }}
+        run: |
+          cd third_party/tt-mlir
+          git fetch
+          git checkout ${{ inputs.mlir_override }}
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          commit_sha=$(git rev-parse HEAD)
+          commit_title=$(git log -1 --pretty=%s)
+          echo "Branch name: $branch_name"
+          echo "Commit SHA: $commit_sha"
+          echo "Commit title: $commit_title"
+          echo "::notice::Using tt-mlir branch: $branch_name, commit: $commit_sha, title: $commit_title"
+          cd ../..
 
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -231,14 +244,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           files: coverage.info
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Upload test results to Codecov
-        if: success() || failure()
-        uses: codecov/test-results-action@v1
-        with:
-          files: ${{ steps.strings.outputs.test_report_path }}
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 

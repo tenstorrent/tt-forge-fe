@@ -8,13 +8,21 @@ from transformers import (
     GPTNeoConfig,
     GPTNeoForCausalLM,
     GPTNeoForSequenceClassification,
+    GPTNeoModel,
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import (
+    _prepare_4d_causal_attention_mask_with_cache_position,
+)
 from test.utils import download_model
+
+GPTNeoModel._prepare_4d_causal_attention_mask_with_cache_position = (
+    _prepare_4d_causal_attention_mask_with_cache_position
+)
 
 variants = [
     pytest.param(
@@ -32,14 +40,13 @@ def test_gptneo_causal_lm(forge_property_recorder, variant):
     if variant != "EleutherAI/gpt-neo-125M":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Set random seed for repeatability
     torch.manual_seed(42)
@@ -97,8 +104,8 @@ variants = [
 def test_gptneo_sequence_classification(forge_property_recorder, variant):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="gptneo",
         variant=variant,
@@ -108,7 +115,6 @@ def test_gptneo_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     # Variants: # EleutherAI/gpt-neo-125M, EleutherAI/gpt-neo-1.3B,

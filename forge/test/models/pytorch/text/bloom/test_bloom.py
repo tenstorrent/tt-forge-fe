@@ -3,13 +3,18 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BloomModel
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import (
+    _prepare_4d_causal_attention_mask_with_cache_position,
+)
 from test.utils import download_model
+
+BloomModel._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
 
 
 # Wrapper to get around past key values
@@ -35,8 +40,8 @@ class Wrapper(torch.nn.Module):
 )
 def test_bloom(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="bloom",
         variant=variant,
@@ -46,7 +51,6 @@ def test_bloom(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")

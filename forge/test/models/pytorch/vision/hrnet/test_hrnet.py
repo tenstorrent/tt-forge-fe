@@ -14,9 +14,10 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 
@@ -63,32 +64,44 @@ def generate_model_hrnet_imgcls_osmr_pytorch(variant):
 
 
 variants = [
-    "hrnet_w18_small_v1",
-    "hrnet_w18_small_v2",
-    "hrnetv2_w18",
-    "hrnetv2_w30",
-    "hrnetv2_w32",
-    "hrnetv2_w40",
-    "hrnetv2_w44",
-    "hrnetv2_w48",
-    "hrnetv2_w64",
+    pytest.param("hrnet_w18_small_v1", marks=pytest.mark.push),
+    pytest.param("hrnet_w18_small_v2"),
+    pytest.param("hrnetv2_w18"),
+    pytest.param("hrnetv2_w30"),
+    pytest.param(
+        "hrnetv2_w32",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 28 GB)")],
+    ),
+    pytest.param(
+        "hrnetv2_w40",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnetv2_w44",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnetv2_w48",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnetv2_w64",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_hrnet_osmr_pytorch(forge_property_recorder, variant):
-    if variant != "hrnet_w18_small_v1":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
@@ -99,7 +112,10 @@ def test_hrnet_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def generate_model_hrnet_imgcls_timm_pytorch(variant):
@@ -142,33 +158,48 @@ def generate_model_hrnet_imgcls_timm_pytorch(variant):
 
 
 variants = [
-    "hrnet_w18_small",
-    "hrnet_w18_small_v2",
-    "hrnet_w18",
-    "hrnet_w30",
-    "hrnet_w32",
-    "hrnet_w40",
-    "hrnet_w44",
-    "hrnet_w48",
-    "hrnet_w64",
-    "hrnet_w18.ms_aug_in1k",
+    pytest.param("hrnet_w18_small"),
+    pytest.param("hrnet_w18_small_v2"),
+    pytest.param("hrnet_w18"),
+    pytest.param("hrnet_w30"),
+    pytest.param(
+        "hrnet_w32",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
+    ),
+    pytest.param(
+        "hrnet_w40",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnet_w44",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnet_w48",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnet_w64",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
+    pytest.param(
+        "hrnet_w18.ms_aug_in1k",
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_hrnet_timm_pytorch(forge_property_recorder, variant):
-    if variant not in ["hrnet_w18_small", "hrnet_w18.ms_aug_in1k"]:
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
@@ -179,4 +210,7 @@ def test_hrnet_timm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

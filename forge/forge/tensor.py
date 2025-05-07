@@ -12,7 +12,7 @@ import numpy as np
 import math
 from loguru import logger
 import copy
-import jaxlib
+import jax
 import jax.numpy as jnp
 import json
 
@@ -521,7 +521,7 @@ class TensorFromTrace(Tensor):
         return super().to_framework(framework)
 
 
-FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor
+FrameworkTensor: TypeAlias = torch.Tensor | tf.Tensor | tf.Variable | paddle.Tensor | jax.Array
 AnyTensor: TypeAlias = FrameworkTensor | Tensor
 
 
@@ -1208,6 +1208,8 @@ def to_pt_tensor(t: AnyTensor) -> torch.Tensor:
         return pt
     elif isinstance(t, np.ndarray):
         return torch.from_numpy(t)
+    elif isinstance(t, jax.Array):
+        return torch.from_numpy(np.array(t))
     else:
         raise RuntimeError(f"Unknown type of tensor: {type(t)}")
 
@@ -1276,7 +1278,7 @@ def to_jax_tensors(
 
         elif isinstance(t, np.ndarray):
             jax_tensors.append(jnp.asarray(t))
-        elif isinstance(t, jaxlib.xla_extension.DeviceArray):
+        elif isinstance(t, jax.Array):
             jax_tensors.append(t)
         else:
             raise RuntimeError(f"Unknown type of tensor: {type(t)}")

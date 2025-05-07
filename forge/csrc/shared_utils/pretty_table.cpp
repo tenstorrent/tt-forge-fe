@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #include "pretty_table.hpp"
 
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>

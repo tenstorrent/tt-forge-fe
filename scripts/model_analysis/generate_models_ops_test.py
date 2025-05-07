@@ -4,7 +4,7 @@
 import os
 from loguru import logger
 import argparse
-from utils import create_python_package, run_precommit, remove_directory
+from utils import create_python_package, run_precommit, remove_directory, filter_unique_operations
 from unique_ops_utils import generate_and_export_unique_ops_tests, extract_unique_op_tests_from_models
 from forge.tvm_unique_op_generation import generate_models_ops_test
 
@@ -40,6 +40,28 @@ def main():
         required=False,
         help="Specify the python package name for saving generated models ops test",
     )
+    parser.add_argument(
+        "--tests_to_filter",
+        nargs="+",
+        type=str,
+        required=False,
+        help=(
+            "Only extract unique ops configurations and generate ops tests for the specified tests that match with collected model analysis tests "
+            "(e.g., `forge/test/models/pytorch/vision/fpn/test_fpn.py`, "
+            "`forge/test/models/pytorch/text/albert/test_albert.py`). "
+            "By default, all collected model analysis tests are processed."
+        ),
+    )
+    parser.add_argument(
+        "--ops_to_filter",
+        nargs="+",
+        type=str,
+        required=False,
+        help=(
+            "Only generate ops test for the list of provided forge ops names (e.g. `Conv2d`, `Add`)"
+            "By default, every operator extracted across all the models will have tests generated."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -47,6 +69,7 @@ def main():
         test_directory_or_file_path=args.test_directory_or_file_path,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         extract_tvm_unique_ops_config=True,
+        tests_to_filter=args.tests_to_filter,
     )
 
     unique_ops_config_across_all_models_ops_test_file_path = os.path.join(
@@ -56,6 +79,9 @@ def main():
         model_output_dir_paths=model_output_dir_paths,
         unique_ops_config_file_path=unique_ops_config_across_all_models_ops_test_file_path,
         use_constant_value=False,
+    )
+    unique_operations_across_all_models_ops_test = filter_unique_operations(
+        unique_operations=unique_operations_across_all_models_ops_test, ops_to_filter=args.ops_to_filter
     )
     remove_directory(
         directory_path=os.path.join(args.models_ops_test_output_directory_path, args.models_ops_test_package_name)

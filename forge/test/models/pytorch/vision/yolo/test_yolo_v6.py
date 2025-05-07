@@ -8,20 +8,17 @@ import requests
 from yolov6 import YOLOV6
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolov6_utils import (
     check_img_size,
     process_image,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
-    pytest.param(
-        "yolov6n",
-        marks=[pytest.mark.xfail],
-    ),
+    "yolov6n",
     "yolov6s",
     "yolov6m",
     "yolov6l",
@@ -34,8 +31,8 @@ def test_yolo_v6_pytorch(forge_property_recorder, variant):
     if variant != "yolov6n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v6",
         variant=variant,
@@ -45,7 +42,6 @@ def test_yolo_v6_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
