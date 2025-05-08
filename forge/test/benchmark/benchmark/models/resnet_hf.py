@@ -141,13 +141,13 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         end = time.time()
         predictions = torch.cat(predictions)
         labels = torch.cat(labels)
-        target = evaluate_classification(predictions, labels)
+        evaluation_score = evaluate_classification(predictions, labels)
     elif task == "na":
         start = time.time()
         for i in tqdm(range(loop_count)):
             co_out = compiled_model(inputs[0])[0]
         end = time.time()
-        target = 0.0
+        evaluation_score = 0.0
     else:
         raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
 
@@ -176,7 +176,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print(f"| Total execution time: {total_time}")
     print(f"| Total samples: {total_samples}")
     print(f"| Sample per second: {samples_per_sec}")
-    print(f"| Target: {target}")
+    print(f"| Evaluation score: {evaluation_score}")
     print(f"| Batch size: {batch_size}")
     print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
@@ -205,7 +205,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "total_samples",
                 "value": total_samples,
-                "target": target,
+                "target": -1,
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },
@@ -215,7 +215,17 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
                 "step_warm_up_num_iterations": 0,
                 "measurement_name": "total_time",
                 "value": total_time,
-                "target": target,
+                "target": -1,
+                "device_power": -1.0,  # This value is negative, because we don't have a device power value.
+                "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
+            },
+            {
+                "iteration": 1,  # This is the number of iterations, we are running only one iteration.
+                "step_name": model_name,
+                "step_warm_up_num_iterations": 0,
+                "measurement_name": "evaluation_score",
+                "value": evaluation_score,
+                "target": -1,
                 "device_power": -1.0,  # This value is negative, because we don't have a device power value.
                 "device_temperature": -1.0,  # This value is negative, because we don't have a device temperature value.
             },
