@@ -8,7 +8,7 @@
 
 #include "tensor.hpp"
 #include "tt/runtime/runtime.h"
-#include "tt/runtime/ttnn/test/dylib.h"
+#include "tt/runtime/detail/ttnn/test/dylib.h"
 #include "tt_device.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"

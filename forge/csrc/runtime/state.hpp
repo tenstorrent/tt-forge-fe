@@ -9,7 +9,6 @@
 
 #include "runtime/runtime.hpp"
 #include "runtime/tensor.hpp"
-#include "tt/runtime/ttnn/test/dylib.h"
 #include "tt/runtime/types.h"
 
 namespace tt

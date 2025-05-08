@@ -248,8 +248,4 @@ void from_json(const ::nlohmann::json& j, MLIRConfig& p)
     j.at("custom_config").get_to(p.custom_config);
 }
 
-void to_json(::nlohmann::json& j, const MLIRConfig& p) { j = nlohmann::json{{"enable_consteval", p.enable_consteval}}; }
-
-void from_json(const ::nlohmann::json& j, MLIRConfig& p) { j.at("enable_consteval").get_to(p.enable_consteval); }
-
 }  // namespace tt::passes
