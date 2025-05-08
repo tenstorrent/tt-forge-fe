@@ -136,6 +136,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
     samples_per_sec = total_samples / total_time
     model_name = "MobileNet V2 Basic"
+    model_type = "Classification"
     if task == "classification":
         model_type += ", ImageNet-1K"
         dataset_name = "ImageNet-1K"
