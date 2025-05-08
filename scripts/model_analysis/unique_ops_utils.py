@@ -12,12 +12,16 @@ import ast
 import torch
 
 from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
+from forge.python_codegen import forge_df_from_str, pytorch_df_from_str
+from forge._C import DataFormat
 from utils import (
     dump_logs,
     collect_all_model_analysis_test,
     extract_framework_from_test_file_path,
     extract_test_file_path_and_test_case_func,
     filter_tests,
+    extract_models_ops_test_params,
+    check_path,
 )
 
 
@@ -77,7 +81,7 @@ def generate_and_export_unique_ops_tests(
                 test_log_file_path = os.path.join(model_script_output_logs_dir_path, test_case_name + ".log")
                 try:
                     result = subprocess.run(
-                        ["pytest", test, "-vss", "--no-skips"],
+                        ["pytest", test, "-vss", "--no-skips", "--runxfail"],
                         capture_output=True,
                         text=True,
                         check=True,
@@ -127,7 +131,11 @@ def generate_and_export_unique_ops_tests(
 
 
 def extract_unique_op_tests_from_models(
-    model_output_dir_paths: List[str], unique_ops_config_file_path: str, use_constant_value: bool = True
+    model_output_dir_paths: List[str],
+    unique_ops_config_file_path: str,
+    use_constant_value: bool = True,
+    convert_param_and_const_to_activation: bool = False,
+    existing_unique_ops_config: Optional[UniqueOperations] = None,
 ):
     """
     Extract unique op configuration across all the models which will avoid running the redudant
@@ -240,10 +248,127 @@ def extract_unique_op_tests_from_models(
 
     # Extract unique operation configuration configuration across all the model variants
     unique_operations = UniqueOperations.create_unique_operations(
-        models_operations, models_constants, use_constant_value=use_constant_value
+        models_operations,
+        models_constants,
+        use_constant_value=use_constant_value,
+        convert_param_and_const_to_activation=convert_param_and_const_to_activation,
+        existing_unique_operations=existing_unique_ops_config,
     )
 
     # Dump the extracted unique op configuration across all the model varaiants into log file.
     dump_logs(unique_ops_config_file_path, str(unique_operations))
 
     return unique_operations
+
+
+def extract_existing_unique_ops_config(
+    models_ops_tests_directory_path: str,
+    existing_unique_ops_config_file_path: str,
+    ops_to_filter: Optional[List[str]] = None,
+):
+    """
+    Traverse a directory of generated models ops pytest files, extract each
+    unique operation configuration, optionally filter by operation names, and
+    consolidate into a UniqueOperations object.
+
+    Args:
+        models_ops_tests_directory_path (str): Path to the directory containing
+            generated models ops tests.
+        existing_unique_ops_config_file_path (str): File path where the resulting
+            unique operations configuration will be dumped as logs.
+        ops_to_filter (Optional[List[str]]): List of forge operation names
+            (as strings) to include. If provided, only test files matching these
+            names (without 'test_' prefix) will be processed.
+
+    Returns:
+        UniqueOperations: Consolidated unique operations configuration extracted from the generated models ops tests.
+    """
+    # Ensure the tests directory exists before proceeding
+    assert check_path(
+        models_ops_tests_directory_path
+    ), f"Provided models ops tests directory path {models_ops_tests_directory_path} doesn't exists!"
+
+    # Gather all Python pytest files starting with 'test_' in the given directory
+    models_ops_pytest_file_paths = [
+        os.path.join(models_ops_tests_directory_path, f)
+        for f in os.listdir(models_ops_tests_directory_path)
+        if f.endswith(".py") and f.startswith("test_")
+    ]
+
+    op_count = 0
+    models_operations = {}  # Mapping from op index to Operation objects
+
+    # Normalize filter list to lowercase for comparison, if provided
+    if ops_to_filter:
+        ops_to_filter = [op_name.lower() for op_name in ops_to_filter]
+
+    # Iterate over each pytest file to extract test parameters
+    for pytest_path in models_ops_pytest_file_paths:
+
+        # Derive operation name from filename: remove 'test_' prefix and '.py' suffix
+        existing_op_name = pytest_path.split("/")[-1].replace("test_", "").replace(".py", "")
+
+        # Skip files not matching filter list, if filtering is active
+        if ops_to_filter and existing_op_name not in ops_to_filter:
+            continue
+
+        if not check_path(pytest_path):
+            logger.warning(f"The models ops tests file (i.e. {pytest_path}) doesn't exist!")
+            continue
+
+        # Extract the raw test parameters for each module/op variant
+        unique_ops_configs = extract_models_ops_test_params(pytest_path)
+
+        # Process each extracted config dict into an Operation instance
+        for config in unique_ops_configs:
+            for model_variant in config["model_names"]:
+                op_count += 1
+
+                # Convert operand types to NodeType enums
+                operand_types = [NodeType.from_json(t) for t in config["operand_types"]]
+
+                # Reconstruct operand dtype values based on their source strings
+                new_operand_dtypes = []
+                for dtype_str in config["operand_dtypes"]:
+                    if dtype_str.startswith("forge.DataFormat."):
+                        forge_df = DataFormat.from_json(dtype_str.split(".")[-1])
+                        new_operand_dtypes.append(forge_df_from_str(forge_df, ""))
+                    elif dtype_str.startswith("torch."):
+                        torch_enum = getattr(torch, dtype_str.split(".")[-1])
+                        new_operand_dtypes.append(pytorch_df_from_str(torch_enum, ""))
+                    else:
+                        raise ValueError(f"Unhandled dataformat: {dtype_str}")
+
+                # Build metadata dictionary for the Operation
+                metadata = {
+                    "pcc": config.get("pcc"),
+                    "forge_module_name": config.get("module_name"),
+                }
+                # Include optional max_int and markers if present
+                if config.get("max_int") is not None:
+                    metadata["max_int"] = config["max_int"]
+                if config.get("markers"):
+                    metadata["markers"] = config["markers"]
+                # Record the specific model variant being tested
+                metadata["model_variant_info"] = {"variant_name": model_variant}
+
+                # Instantiate the Operation with all gathered info
+                models_operations[op_count] = Operation(
+                    function_name=config.get("forge_op_name"),
+                    input_names=config.get("operand_names"),
+                    args=config.get("op_args"),
+                    input_shapes=config.get("operand_shapes"),
+                    input_dtypes=new_operand_dtypes,
+                    input_node_types=operand_types,
+                    metadata=metadata,
+                )
+
+    # After processing all files, create a UniqueOperations object
+    existing_unique_operations = UniqueOperations.create_unique_operations(
+        models_operations, {}, use_constant_value=False
+    )
+
+    # Dump the serialized configuration to the specified file path
+    dump_logs(existing_unique_ops_config_file_path, str(existing_unique_operations))
+
+    return existing_unique_operations
