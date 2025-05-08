@@ -22,13 +22,13 @@ on:
 jobs:
 
   build-image:
-    runs-on: tt-beta-ubuntu-2204-large
+    runs-on: ubuntu-latest
     outputs:
       docker-image: ${{ steps.build.outputs.docker-image }}
     steps:
       - name: Fix permissions
         shell: bash
-        run: sudo chown ubuntu:ubuntu -R $(pwd)
+        run: sudo chown ubuntu:ubuntu -R $(pwd) || true
 
       - uses: actions/checkout@v4
         with:
