@@ -178,7 +178,7 @@ def evaluate_classification(predictions, labels):
 
     predictions = predictions.softmax(-1).argmax(-1)
     correct = (predictions == labels).sum()
-    target = 100.0 * correct / len(labels)
-    target = target.item()
+    accuracy = 100.0 * correct / len(labels)
+    accuracy = accuracy.item()
 
-    return target
+    return accuracy
