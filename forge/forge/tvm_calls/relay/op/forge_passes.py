@@ -2036,6 +2036,16 @@ class DecomposeEinsum(DFPatternCallback):
 
             return result
 
+        elif match_einsum_pattern("...si,...id->...sd", equation):
+            from tvm.relay.frontend.common import infer_shape
+
+            # Ensure the einsum pattern is matched, and there are two input nodes
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]
+            srcB = node_map[self.act][0][1]
+            assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
+            return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
+
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
