@@ -152,7 +152,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
-          workflow_conclusion: success
+          #workflow_conclusion: success
           workflow: on-push.yml
           name: ttrt-whl-tracy
           repo: tenstorrent/tt-mlir
