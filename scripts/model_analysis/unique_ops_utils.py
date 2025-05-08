@@ -6,18 +6,23 @@ import json
 from loguru import logger
 import subprocess
 import pandas as pd
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import ast
 
 import torch
 
 from forge.tvm_unique_op_generation import Operation, NodeType, UniqueOperations
+from forge.tensor import forge_dataformat_to_pytorch_dtype
+from forge.python_codegen import forge_df_from_str, pytorch_df_from_str
+from forge._C import DataFormat
 from utils import (
     dump_logs,
     collect_all_model_analysis_test,
     extract_framework_from_test_file_path,
     extract_test_file_path_and_test_case_func,
     filter_tests,
+    extract_models_ops_test_params,
+    check_path,
 )
 
 
@@ -77,7 +82,7 @@ def generate_and_export_unique_ops_tests(
                 test_log_file_path = os.path.join(model_script_output_logs_dir_path, test_case_name + ".log")
                 try:
                     result = subprocess.run(
-                        ["pytest", test, "-vss", "--no-skips"],
+                        ["pytest", test, "-vss", "--no-skips", "--runxfail"],
                         capture_output=True,
                         text=True,
                         check=True,
@@ -127,7 +132,11 @@ def generate_and_export_unique_ops_tests(
 
 
 def extract_unique_op_tests_from_models(
-    model_output_dir_paths: List[str], unique_ops_config_file_path: str, use_constant_value: bool = True
+    model_output_dir_paths: List[str],
+    unique_ops_config_file_path: str,
+    use_constant_value: bool = True,
+    convert_param_and_const_to_activation: bool = False,
+    existing_unique_ops_config: Optional[UniqueOperations] = None,
 ):
     """
     Extract unique op configuration across all the models which will avoid running the redudant
@@ -240,10 +249,95 @@ def extract_unique_op_tests_from_models(
 
     # Extract unique operation configuration configuration across all the model variants
     unique_operations = UniqueOperations.create_unique_operations(
-        models_operations, models_constants, use_constant_value=use_constant_value
+        models_operations,
+        models_constants,
+        use_constant_value=use_constant_value,
+        convert_param_and_const_to_activation=convert_param_and_const_to_activation,
+        existing_unique_operations=existing_unique_ops_config,
     )
 
     # Dump the extracted unique op configuration across all the model varaiants into log file.
     dump_logs(unique_ops_config_file_path, str(unique_operations))
 
     return unique_operations
+
+
+def extract_existing_unique_ops_config(
+    models_ops_tests_directory_path: str,
+    existing_unique_ops_config_file_path: str,
+    ops_to_filter: Optional[List[str]] = None,
+):
+
+    assert check_path(
+        models_ops_tests_directory_path
+    ), f"Provided models ops tests directory path {models_ops_tests_directory_path} doesn't exists!"
+
+    models_ops_pytest_file_paths = [
+        os.path.join(models_ops_tests_directory_path, f)
+        for f in os.listdir(models_ops_tests_directory_path)
+        if f.endswith(".py") and f.startswith("test_")
+    ]
+
+    op_count = 0
+    models_operations = {}
+
+    if ops_to_filter is not None and ops_to_filter:
+        ops_to_filter = list([op_name.lower() for op_name in ops_to_filter])
+
+    for models_ops_pytest_file_path in models_ops_pytest_file_paths:
+        existing_op_name = models_ops_pytest_file_path.split("/")[-1].replace("test_", "").replace(".py", "")
+        if ops_to_filter is not None and ops_to_filter and existing_op_name not in ops_to_filter:
+            continue
+        if not check_path(models_ops_pytest_file_path):
+            logger.warning(f"The models ops tests file(i.e {models_ops_pytest_file_path}) doesn't exist!")
+            continue
+        unique_ops_configs = extract_models_ops_test_params(models_ops_pytest_file_path)
+        for unique_ops_config in unique_ops_configs:
+            model_variants = unique_ops_config["model_names"]
+            for model_variant in model_variants:
+                op_count = op_count + 1
+                operand_types = unique_ops_config["operand_types"]
+                operand_types = [NodeType.from_json(operand_type) for operand_type in operand_types]
+                operand_dtypes = unique_ops_config["operand_dtypes"]
+                new_operand_dtypes = []
+                for operand_dtype in operand_dtypes:
+                    if operand_dtype.startswith("forge.DataFormat."):
+                        forge_df = DataFormat.from_json(operand_dtype.split(".")[-1])
+                        new_operand_dtypes.append(forge_df_from_str(forge_df, ""))
+                    elif operand_dtype.startswith("torch."):
+                        new_operand_dtypes.append(pytorch_df_from_str(getattr(torch, operand_dtype.split(".")[-1]), ""))
+                    else:
+                        raise ValueError("Unhandled dataformat!")
+
+                metadata = {}
+                metadata["pcc"] = unique_ops_config["pcc"]
+                metadata["forge_module_name"] = unique_ops_config["module_name"]
+
+                max_int = unique_ops_config["max_int"]
+                markers = unique_ops_config["markers"]
+
+                if max_int is not None:
+                    metadata["max_int"] = max_int
+                if markers:
+                    metadata["markers"] = markers
+
+                metadata["model_variant_info"] = {"variant_name": model_variant}
+
+                models_operations[op_count] = Operation(
+                    function_name=unique_ops_config["forge_op_name"],
+                    input_names=unique_ops_config["operand_names"],
+                    args=unique_ops_config["op_args"],
+                    input_shapes=unique_ops_config["operand_shapes"],
+                    input_dtypes=new_operand_dtypes,
+                    input_node_types=operand_types,
+                    metadata=metadata,
+                )
+
+    # Extract unique operation configuration configuration across all the model variants
+    existing_unique_operations = UniqueOperations.create_unique_operations(
+        models_operations, {}, use_constant_value=False
+    )
+
+    dump_logs(existing_unique_ops_config_file_path, str(existing_unique_operations))
+
+    return existing_unique_operations

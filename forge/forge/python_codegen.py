@@ -13,86 +13,79 @@ from forge.tensor import forge_dataformat_to_pytorch_dtype
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 
-def forge_df_from_str(df: str, name: str, return_as_str: bool = True):
-    df = df.lower()
+def forge_df_from_str(df: Union[str, forge.DataFormat], name: str, return_as_str: bool = True):
 
-    if df == "bfp2":
-        dev_data_format = forge.DataFormat.Bfp2
-    elif df == "bfp2_b":
-        dev_data_format = forge.DataFormat.Bfp2_b
-    elif df == "bfp4":
-        dev_data_format = forge.DataFormat.Bfp4
-    elif df == "bfp4_b":
-        dev_data_format = forge.DataFormat.Bfp4_b
-    elif df == "bfp8":
-        dev_data_format = forge.DataFormat.Bfp8
-    elif df == "bfp8_b":
-        dev_data_format = forge.DataFormat.Bfp8_b
-    elif df == "float16":
-        dev_data_format = forge.DataFormat.Float16
-    elif df in ["float16_b", "bfloat16"]:
-        dev_data_format = forge.DataFormat.Float16_b
-    elif df == "float32":
-        dev_data_format = forge.DataFormat.Float32
-    elif df == "int8":
-        dev_data_format = forge.DataFormat.Int8
-    elif df == "invalid":
-        dev_data_format = forge.DataFormat.Invalid
-    elif df == "lf8":
-        dev_data_format = forge.DataFormat.Lf8
-    elif df == "raw_uint16":
-        dev_data_format = forge.DataFormat.RawUInt16
-    elif df == "raw_uint32":
-        dev_data_format = forge.DataFormat.RawUInt32
-    elif df == "raw_uint8":
-        dev_data_format = forge.DataFormat.RawUInt8
-    elif df == "uint16":
-        dev_data_format = forge.DataFormat.UInt16
-    elif df == "uint8":
-        dev_data_format = forge.DataFormat.UInt8
-    elif df == "int8":
-        dev_data_format = forge.DataFormat.Int8
-    elif df == "int32":
-        dev_data_format = forge.DataFormat.Int32
-    else:
-        logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
-        dev_data_format = forge.DataFormat.Float32
+    tvm_dtype_str_to_forge_df = {
+        "bfp2": forge.DataFormat.Bfp2,
+        "bfp2_b": forge.DataFormat.Bfp2_b,
+        "bfp4": forge.DataFormat.Bfp4,
+        "bfp4_b": forge.DataFormat.Bfp4_b,
+        "bfp8": forge.DataFormat.Bfp8,
+        "bfp8_b": forge.DataFormat.Bfp8_b,
+        "float16": forge.DataFormat.Float16,
+        "float16_b": forge.DataFormat.Float16_b,  # preferred alias
+        "bfloat16": forge.DataFormat.Float16_b,  # secondary alias
+        "float32": forge.DataFormat.Float32,
+        "int8": forge.DataFormat.Int8,
+        "int32": forge.DataFormat.Int32,
+        "invalid": forge.DataFormat.Invalid,
+        "lf8": forge.DataFormat.Lf8,
+        "raw_uint16": forge.DataFormat.RawUInt16,
+        "raw_uint32": forge.DataFormat.RawUInt32,
+        "raw_uint8": forge.DataFormat.RawUInt8,
+        "uint16": forge.DataFormat.UInt16,
+    }
 
-    if return_as_str:
-        return "forge." + str(dev_data_format)
+    if isinstance(df, str):
+        df = df.lower()
+        dev_data_format = tvm_dtype_str_to_forge_df.get(df, forge.DataFormat.Float32)
+        if df not in tvm_dtype_str_to_forge_df:
+            logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
+        if return_as_str:
+            dev_data_format = "forge." + str(dev_data_format)
+
+    elif isinstance(df, forge.DataFormat):
+        forge_df_to_tvm_dtype_str = {}
+        for tvm_dtype_str, forge_df in tvm_dtype_str_to_forge_df.items():
+            forge_df_to_tvm_dtype_str.setdefault(forge_df, tvm_dtype_str)
+        dev_data_format = forge_df_to_tvm_dtype_str.get(df, "float32")
+        if df not in forge_df_to_tvm_dtype_str:
+            logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
 
     return dev_data_format
 
 
-def pytorch_df_from_str(df: str, name: str, return_as_str: bool = True):
-    df = df.lower()
+def pytorch_df_from_str(df: Union[str, torch.dtype], name: str, return_as_str: bool = True):
 
-    if df == "float16":
-        torch_dtype = torch.float16
-    elif df in ["float16_b", "bfloat16"]:
-        torch_dtype = torch.bfloat16
-    elif df == "float32":
-        torch_dtype = torch.float32
-    elif df == "float64":
-        torch_dtype = torch.float64
-    elif df == "uint8":
-        torch_dtype = torch.uint8
-    elif df == "int8":
-        torch_dtype = torch.int8
-    elif df == "int32":
-        torch_dtype = torch.int32
-    elif df == "int16":
-        torch_dtype = torch.int16
-    elif df == "int64":
-        torch_dtype = torch.int64
-    elif df == "uint1":
-        torch_dtype = torch.bool
-    else:
-        logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
-        torch_dtype = torch.float32
+    tvm_dtype_str_to_torch_dtype = {
+        "float16": torch.float16,
+        "float16_b": torch.bfloat16,  # preferred alias
+        "bfloat16": torch.bfloat16,  # secondary alias
+        "float32": torch.float32,
+        "float64": torch.float64,
+        "uint8": torch.uint8,
+        "int8": torch.int8,
+        "int32": torch.int32,
+        "int16": torch.int16,
+        "int64": torch.int64,
+        "uint1": torch.bool,
+    }
 
-    if return_as_str:
-        return str(torch_dtype)
+    if isinstance(df, str):
+        df = df.lower()
+        torch_dtype = tvm_dtype_str_to_torch_dtype.get(df, torch.float32)
+        if df not in tvm_dtype_str_to_torch_dtype:
+            logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
+        if return_as_str:
+            torch_dtype = str(torch_dtype)
+
+    elif isinstance(df, torch.dtype):
+        torch_dtype_to_tvm_dtype_str = {}
+        for tvm_dtype_str, torch_dtype in tvm_dtype_str_to_torch_dtype.items():
+            torch_dtype_to_tvm_dtype_str.setdefault(torch_dtype, tvm_dtype_str)
+        torch_dtype = torch_dtype_to_tvm_dtype_str.get(df, "float32")
+        if df not in torch_dtype_to_tvm_dtype_str:
+            logger.warning(f"Invalid data format: {df} for constant/parameter '{name}', defaulting to float32")
 
     return torch_dtype
 
@@ -917,6 +910,7 @@ class ForgeWriter(PythonWriter):
         use_ids_function: bool = False,
         include_random_parameter_constant_gen: bool = False,
         exclude_record_property: Optional[List[str]] = None,
+        pytest_markers_with_reasons: Optional[List[List[Dict[str, Any]]]] = None,
     ):
         """
         Generates a pytest function that tests modules with input shapes and data types.
@@ -940,6 +934,7 @@ class ForgeWriter(PythonWriter):
             use_ids_function(bool): If set, the forge module name and shapes and dtyes will used as id for the pytest parameter.
             include_random_parameter_constant_gen(bool): If set, it will include the code for generating and assigning of random tensor for forge module parameters and constants
             exclude_record_property(Optional[List[str]]): A list of pytest metadata property which will be excluded in forge_property_recorder fixtures(i.e pcc)
+            pytest_markers_with_reasons(Optional[List[List[Dict[str, Any]]]]): A list of pytest markers with reason to add in the tests parameter in the forge_modules_and_shapes_dtypes_list.
         """
         self.wl("")
         self.wl("")
@@ -957,17 +952,33 @@ class ForgeWriter(PythonWriter):
         if pytest_metadata_list is None or len(pytest_metadata_list) == 0:
             pytest_metadata_list = [None] * len(pytest_input_shapes_and_dtypes_list)
             is_pytest_metadata_list_empty = True
-        for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata in zip(
-            forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list
+        if pytest_markers_with_reasons is None:
+            pytest_markers_with_reasons = [None] * len(pytest_input_shapes_and_dtypes_list)
+        for forge_module_name, pytest_input_shapes_and_dtypes, pytest_metadata, markers_with_reasons in zip(
+            forge_module_names, pytest_input_shapes_and_dtypes_list, pytest_metadata_list, pytest_markers_with_reasons
         ):
             pytest_input_shapes_and_dtypes = [
                 (shape, pytorch_df_from_str(dtype, "", return_as_str=False))
                 for shape, dtype in pytest_input_shapes_and_dtypes
             ]
             if pytest_metadata is None:
-                self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}), ")
+                test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes})"
             else:
-                self.wl(f"({forge_module_name}, {pytest_input_shapes_and_dtypes}, {pytest_metadata}), ")
+                test_param = f"({forge_module_name}, {pytest_input_shapes_and_dtypes}, {pytest_metadata})"
+
+            if markers_with_reasons is not None:
+                marker_str_list = []
+                for marker_with_reason in markers_with_reasons:
+                    marker_str = f'pytest.mark.{marker_with_reason["maker_name"]}'
+                    marker_reason = marker_with_reason["reason"]
+                    if marker_reason is not None:
+                        marker_str += f'(reason="{marker_reason}")'
+                    marker_str_list.append(marker_str)
+                marker_str = ", ".join(marker_str_list)
+                self.wl(f"pytest.param({test_param}, marks=[{marker_str}]), ")
+            else:
+                self.wl(f"{test_param}, ")
+
         self.indent -= 1
         self.wl("]")
         if markers is not None:
