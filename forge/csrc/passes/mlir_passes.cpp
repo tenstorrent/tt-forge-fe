@@ -56,11 +56,14 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
         if (mlir_config->enable_optimizer.has_value())
         {
             options << " enable-optimizer=" << *mlir_config->enable_optimizer;
+            options << " override-conv2d-config=conv2d_0.dc.conv2d.2=input_channels_alignment#32:act_block_h_override#32";
         }
         if (mlir_config->enable_memory_layout_analysis.has_value())
         {
             options << " memory-layout-analysis-enabled=" << *mlir_config->enable_memory_layout_analysis;
         }
+
+        options << " enable-fusing-pass=true";
 
         // Add custom configuration options.
         options << " " << mlir_config->custom_config;
