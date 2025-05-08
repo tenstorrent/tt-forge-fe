@@ -16,7 +16,7 @@ This document walks you through how to set up to run models using tt-forge. The 
 > [build instructions for tt-forge-fe](https://github.com/tenstorrent/tt-forge-fe/
 > blob/main/docs/src/build.md).
 
-## Configuring Hardware 
+## Configuring Hardware
 
 Configure your Tenstorrent hardware before continuing. Use the [Starting Guide](https://docs.tenstorrent.com/getting-started/README.html).
 
@@ -79,7 +79,7 @@ python3 -m venv nameofenvironment-venv
 source nameofenvironment/bin/activate
 ```
 
-## Installing a Wheel 
+## Installing a Wheel
 This section walks you through downloading and installing a wheel. You can install the wheel wherever you would like if it's for running a model. If you want to do development work, you must clone the repo you want, navigate into it, and then set up the wheel.
 
 1. Make sure you are in an active virtual environment.
@@ -119,9 +119,9 @@ In a few seconds, you should get confirmation if this test passed successfully. 
 pytest forge/test/mlir/llama/tests/test_llama_prefil.py::test_llama_prefil_on_device_decode_on_cpu
 ```
 
-## Running Models 
+## Running Models
 
-You can try one of the models in the tt-forge repo. For a list of models that work with tt-forge-fe, navigate to the [Demos](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) folder in the tt-forge repo. Follow the [Getting Started](https://github.com/tenstorrent/tt-forge/blob/main/docs/src/getting-started.md) instructions there. 
+You can try one of the models in the tt-forge repo. For a list of models that work with tt-forge-fe, navigate to the [Demos](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) folder in the tt-forge repo. Follow the [Getting Started](https://github.com/tenstorrent/tt-forge/blob/main/docs/src/getting-started.md) instructions there.
 
 ## Where to Go Next
 
