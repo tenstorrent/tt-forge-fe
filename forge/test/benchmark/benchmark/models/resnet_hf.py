@@ -93,22 +93,14 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     else:
         raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
 
-    if data_format == "bfloat16":
-        inputs = [item.to(torch.bfloat16) for item in inputs]
-
     # Load framework model
-    if data_format == "bfloat16":
-        framework_model = download_model(
-            ResNetForImageClassification.from_pretrained, variant, return_dict=False, torch_dtype=torch.bfloat16
-        )
-        framework_model = framework_model.to(dtype=torch.bfloat16)
-    else:
-        framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
-
-    # Compile model
+    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    data_format_override = None
+    # Set compiler config
     compiler_cfg = CompilerConfig()
     if data_format == "bfloat16":
-        compiler_cfg.default_df_override = DataFormat.Float16_b
+        data_format_override = DataFormat.Float16_b
+        compiler_cfg.default_df_override = data_format_override
 
     # Turn on MLIR optimizations.
     compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
@@ -119,6 +111,9 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     settings = DeviceSettings()
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
+    verify_cfg = VerifyConfig(
+        value_checker=AutomaticValueChecker(pcc=0.95), expected_output_data_format=data_format_override
+    )
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
@@ -129,7 +124,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         ],
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        verify_cfg=verify_cfg,
     )
 
     if task == "classification":
