@@ -74,14 +74,11 @@ def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    logits = output[0]
+    logits = co_out[0]
     idx = logits.argmax(-1).item()
     print("Predicted answer:", model.config.id2label[idx])
 

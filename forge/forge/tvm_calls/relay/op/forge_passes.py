@@ -1293,8 +1293,8 @@ class CastWhereConditionToBool(DFPatternCallback):
         self.pattern = is_op("where")(wildcard(), wildcard(), wildcard())
 
     def callback(self, pre, post, node_map):
-        cond = tvm.relay.cast(pre.args[0], "bool")
-        return tvm.relay.where(cond, pre.args[1], pre.args[2])
+        cond = tvm.relay.cast(post.args[0], "bool")
+        return tvm.relay.where(cond, post.args[1], post.args[2])
 
 
 class DecomposeNegative(DFPatternCallback):
@@ -2035,6 +2035,16 @@ class DecomposeEinsum(DFPatternCallback):
             result = tvm.relay.transpose(src, axes=[0, 5, 1, 3, 2, 4])  # (n, c, h, p, w, q)
 
             return result
+
+        elif match_einsum_pattern("...si,...id->...sd", equation):
+            from tvm.relay.frontend.common import infer_shape
+
+            # Ensure the einsum pattern is matched, and there are two input nodes
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]
+            srcB = node_map[self.act][0][1]
+            assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
+            return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
 
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
