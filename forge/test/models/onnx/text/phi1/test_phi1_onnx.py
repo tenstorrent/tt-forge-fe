@@ -34,7 +34,7 @@ def test_phi_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
     )
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model from HuggingFace

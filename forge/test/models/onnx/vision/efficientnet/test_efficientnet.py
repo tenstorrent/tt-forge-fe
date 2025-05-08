@@ -47,7 +47,7 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
 
     # Record Forge Property
     if variant == "efficientnet_b0":
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
     else:
         forge_property_recorder.record_group("generality")
 
