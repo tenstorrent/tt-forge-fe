@@ -21,11 +21,11 @@ jobs:
           { runs-on: "n150", name: "mnist_linear",             dir: "MNISTLinear",                  ts: 'na',             bs: 32, lp: 32, df: 'float32'  },
           { runs-on: "n150", name: "resnet50_hf",              dir: "ResNetForImageClassification", ts: 'classification', bs: 8,  lp: 32, df: 'bfloat16' },
           { runs-on: "n150", name: "llama",                    dir: "LlamaModel",                   ts: 'na',             bs: 1,  lp: 32, df: 'float32'  },
-          { runs-on: "n150", name: "mobilenetv2_basic",        dir: "MobileNetv2Basic",             ts: 'na',             bs: 1,  lp: 32, df: 'float32'  },
-          { runs-on: "n150", name: "efficientnet_timm",        dir: "EfficientNetTimmB0",           ts: 'na',             bs: 1,  lp: 32, df: 'float32'  },
+          { runs-on: "n150", name: "mobilenetv2_basic",        dir: "MobileNetv2Basic",             ts: 'classification', bs: 1,  lp: 32, df: 'float32'  },
+          { runs-on: "n150", name: "efficientnet_timm",        dir: "EfficientNetTimmB0",           ts: 'classification', bs: 1,  lp: 32, df: 'float32'  },
           { runs-on: "n150", name: "segformer_classification", dir: "SegformerClassification",      ts: 'na',             bs: 1,  lp: 32, df: 'float32'  },
-          { runs-on: "n150", name: "vit_base",                 dir: "ViTBase",                      ts: 'na',             bs: 1,  lp: 32, df: 'float32'  },
-          { runs-on: "n150", name: "vovnet_osmr",              dir: "VovnetOSMR",                   ts: 'na',             bs: 1,  lp: 32, df: 'float32'  }
+          { runs-on: "n150", name: "vit_base",                 dir: "ViTBase",                      ts: 'classification', bs: 1,  lp: 32, df: 'float32'  },
+          { runs-on: "n150", name: "vovnet_osmr",              dir: "VovnetOSMR",                   ts: 'classification', bs: 1,  lp: 32, df: 'float32'  }
         ]
     runs-on:
       - ${{ matrix.build.runs-on }}-perf

@@ -142,6 +142,7 @@ def test_segformer_classification(
     print(f"| Sample per second: {samples_per_sec}")
     print(f"| Batch size: {batch_size}")
     print(f"| Input size: {input_size}")
+    print(f"| Channel size: {channel_size}")
     print("====================================================================")
 
     result = {
@@ -157,7 +158,7 @@ def test_segformer_classification(
         "profile_name": "",
         "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
         "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "image_dimension": f"{input_size[0]}x{input_size[1]}",
+        "image_dimension": f"{channel_size}x{input_size[0]}x{input_size[1]}",
         "perf_analysis": False,
         "training": training,
         "measurements": [
