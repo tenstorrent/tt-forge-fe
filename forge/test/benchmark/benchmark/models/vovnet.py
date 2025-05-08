@@ -55,6 +55,11 @@ VARIANTS = [
 ]
 
 
+@pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
+@pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
+@pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
+@pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
+@pytest.mark.parametrize("task", TASK, ids=[f"task={item}" for item in TASK])
 def test_vovnet_osmr(training, batch_size, input_size, channel_size, loop_count, variant, task):
     """
     Test the Vovnet OSMR benchmark function.
