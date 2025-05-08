@@ -54,7 +54,7 @@ static std::vector<graphlib::Node *> find_path_to_requant(graphlib::Graph *graph
         if (graph->data_users(op).size() > 1)
             break;
 
-        if (not(is_elementwise(op) or op == initial_op))
+        if (not(op->is_eltwise() or op == initial_op))
             break;
 
         // Only commute through elementwise ops
@@ -111,7 +111,7 @@ void commute_through_requant(graphlib::Graph *graph, std::vector<graphlib::Node 
                 set_bcast_dims(graph, commute_bcasts, between_edge);
             }
 
-            if (is_elementwise(op))
+            if (op->is_eltwise())
             {
                 commute_through_eltwise(op, &commute_shape, &golden_transform);
             }

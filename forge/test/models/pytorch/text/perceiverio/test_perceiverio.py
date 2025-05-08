@@ -48,13 +48,10 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # post processing
-    logits = output[0]
+    logits = co_out[0]
     masked_tokens_predictions = logits[0, 51:61].argmax(dim=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(masked_tokens_predictions))

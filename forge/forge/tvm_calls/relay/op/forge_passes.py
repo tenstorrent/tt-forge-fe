@@ -188,6 +188,7 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         # Fuse Pad Only if the mode is constant
         # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        # 'edge' == 'replicate' in forge
         if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
             pad_mode == "edge" or pad_mode == "reflect"
         ):
@@ -197,8 +198,16 @@ class FuseConvAndPoolPadding(DFPatternCallback):
         else:
             padding = [top_pad, left_pad, bottom_pad, right_pad]
 
+        # update conv padding by adding the padding from the pad op
+        new_padding = [
+            padding[0] + conv_pool.attrs.padding[0],
+            padding[1] + conv_pool.attrs.padding[1],
+            padding[2] + conv_pool.attrs.padding[2],
+            padding[3] + conv_pool.attrs.padding[3],
+        ]
+
         op_attrs = {**conv_pool.attrs}
-        op_attrs["padding"] = padding
+        op_attrs["padding"] = new_padding
 
         if conv_pool.op.name == "nn.conv2d":
             weight = node_map[self.weight][0]
@@ -1284,8 +1293,8 @@ class CastWhereConditionToBool(DFPatternCallback):
         self.pattern = is_op("where")(wildcard(), wildcard(), wildcard())
 
     def callback(self, pre, post, node_map):
-        cond = tvm.relay.cast(pre.args[0], "bool")
-        return tvm.relay.where(cond, pre.args[1], pre.args[2])
+        cond = tvm.relay.cast(post.args[0], "bool")
+        return tvm.relay.where(cond, post.args[1], post.args[2])
 
 
 class DecomposeNegative(DFPatternCallback):
@@ -2026,6 +2035,16 @@ class DecomposeEinsum(DFPatternCallback):
             result = tvm.relay.transpose(src, axes=[0, 5, 1, 3, 2, 4])  # (n, c, h, p, w, q)
 
             return result
+
+        elif match_einsum_pattern("...si,...id->...sd", equation):
+            from tvm.relay.frontend.common import infer_shape
+
+            # Ensure the einsum pattern is matched, and there are two input nodes
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]
+            srcB = node_map[self.act][0][1]
+            assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
+            return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
 
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
@@ -4816,7 +4835,6 @@ def run_forge_compile_passes(
             RemoveRedundantReshape(),
             LowerCopyToNOP(),
             TransposePad(),
-            DecomposeNonZeroPadtoConcat(),
             DecomposeMultiRangeTake(),
             LowerTakeToStridedSlice(),
             ConvertAddToBiasAddAfterConv2d(),

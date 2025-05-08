@@ -166,7 +166,7 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,

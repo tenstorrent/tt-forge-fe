@@ -38,7 +38,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
 
     # Record Forge Property
     if variant == "nvidia/mit-b0":
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
         forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
@@ -64,13 +64,18 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
         onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
+
+    # Post processing
+    logits = co_out[0]
+    predicted_label = logits.argmax(-1).item()
+    print("Predicted class: ", torch_model.config.id2label[predicted_label])
 
 
 variants_semseg = [

@@ -13,6 +13,10 @@ from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
 import onnx
+from transformers.models.gemma2.modeling_gemma2 import Gemma2DecoderLayer
+from test.models.models_utils import Gemma2DecoderLayer_patched_forward
+
+Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
 
 
 @pytest.mark.nightly
@@ -37,7 +41,7 @@ def test_gemma_v2_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model

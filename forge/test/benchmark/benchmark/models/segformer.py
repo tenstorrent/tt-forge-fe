@@ -19,6 +19,7 @@ import forge
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
+from forge.config import CompilerConfig, MLIRConfig
 
 
 # Common constants
@@ -91,8 +92,15 @@ def test_segformer_classification(
     framework_model.eval()
     fw_out = framework_model(*input_sample)
 
+    # Compiler configuration
+    compiler_config = CompilerConfig()
+    # Turn on MLIR optimizations.
+    compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=input_sample, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=input_sample, module_name=module_name, compiler_cfg=compiler_config
+    )
 
     # Enable program cache on all devices
     settings = DeviceSettings()
