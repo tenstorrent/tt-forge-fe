@@ -37404,23 +37404,20 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    pytest.param(
-        (
-            Conv2D193,
-            [((1, 3072, 1, 128), torch.float32), ((768, 768, 1, 1), torch.float32)],
-            {
-                "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
-                "pcc": 0.99,
-                "args": {
-                    "stride": "[1, 1]",
-                    "padding": "[0, 0, 0, 0]",
-                    "dilation": "1",
-                    "groups": "4",
-                    "channel_last": "0",
-                },
+    (
+        Conv2D193,
+        [((1, 3072, 1, 128), torch.float32), ((768, 768, 1, 1), torch.float32)],
+        {
+            "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "4",
+                "channel_last": "0",
             },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+        },
     ),
     pytest.param(
         (
