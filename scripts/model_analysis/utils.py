@@ -8,6 +8,7 @@ from enum import IntEnum
 from typing import Union, Dict, List, Tuple, Optional, Callable
 import shutil
 from git import Repo
+import ast
 
 import torch
 from forge.tvm_unique_op_generation import UniqueOperations
@@ -403,3 +404,212 @@ def filter_tests(tests: List[str], tests_to_filter: Optional[List[str]] = None) 
     filtered_tests.sort()
 
     return filtered_tests
+
+
+def extract_models_ops_test_params(pytest_file_path: str):
+    """
+    Parse the given pytest file and extract, for each entry in
+    'forge_modules_and_shapes_dtypes_list':
+      - module_class_name: Name of the ForgeModule subclass
+      - forge_op_name: The fully-qualified forge.op.* call
+      - operand_shapes: List of tuple shapes passed to the op
+      - operand_types: "Activation", "Constant", or "Parameter"
+      - operand_dtypes: Corresponding dtype strings
+      - op_kwargs: Keyword arguments passed to the opname
+      - test_metadata: Dictionary of model_names, pcc, max_int, and custom args
+      - markers: pytest.mark annotations with names and reasons
+
+    Args:
+        pytest_file_path (str): Path to the pytest file (.py)
+
+    Returns:
+        List[dict]: Each dict contains all extracted fields for one test param.
+    """
+    # Read file content and build AST
+    with open(pytest_file_path, "r") as f:
+        file_content = f.read()
+    ast_tree = ast.parse(file_content)
+
+    # Map each class name to its AST ClassDef node
+    class_defs = {node.name: node for node in ast_tree.body if isinstance(node, ast.ClassDef)}
+
+    # Pre-extract constants and parameters from each class's __init__
+    init_data = {}
+    for class_name, class_node in class_defs.items():
+        constants_map = {}
+        parameters_map = {}
+
+        # Find __init__ method
+        for stmt in class_node.body:
+            if not (isinstance(stmt, ast.FunctionDef) and stmt.name == "__init__"):
+                continue
+            # Process each call inside __init__
+            for init_call in stmt.body:
+                if not (isinstance(init_call, ast.Expr) and isinstance(init_call.value, ast.Call)):
+                    continue
+                call_node = init_call.value
+
+                # add_constant(name, shape=..., dtype=...)
+                if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "add_constant":
+                    const_name = ast.literal_eval(call_node.args[0])
+                    const_shape = next(
+                        (ast.literal_eval(kw.value) for kw in call_node.keywords if kw.arg == "shape"), None
+                    )
+                    const_dtype = next((ast.unparse(kw.value) for kw in call_node.keywords if kw.arg == "dtype"), None)
+                    constants_map[const_name] = (const_shape, const_dtype)
+
+                # add_parameter(name, forge.Parameter(*shape, ...))
+                elif isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "add_parameter":
+                    param_name = ast.literal_eval(call_node.args[0])
+                    parameter_ctor = call_node.args[1]
+                    param_shape = next(
+                        (ast.literal_eval(arg.value) for arg in parameter_ctor.args if isinstance(arg, ast.Starred)),
+                        None,
+                    )
+                    param_dtype = next(
+                        (ast.unparse(kw.value) for kw in parameter_ctor.keywords if kw.arg == "dev_data_format"), None
+                    )
+                    parameters_map[param_name] = (param_shape, param_dtype)
+
+        init_data[class_name] = {
+            "constants": constants_map,
+            "parameters": parameters_map,
+        }
+
+    # List to collect extracted parameter info
+    results = []
+
+    # Locate the pytest parameter list assignment
+    for node in ast_tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        for target in node.targets:
+            if not (isinstance(target, ast.Name) and target.id == "forge_modules_and_shapes_dtypes_list"):
+                continue
+
+            # Iterate each element in the list
+            for list_element in node.value.elts:
+                # Initialize marker list
+                marker_list = []
+
+                # Handle pytest.param(..., marks=[...]) wrapper
+                if (
+                    isinstance(list_element, ast.Call)
+                    and isinstance(list_element.func, ast.Attribute)
+                    and list_element.func.attr == "param"
+                ):
+                    param_call = list_element
+                    # Extract markers if present
+                    for kw in param_call.keywords:
+                        if kw.arg == "marks":
+                            mark_nodes = kw.value.elts if isinstance(kw.value, (ast.List, ast.Tuple)) else [kw.value]
+                            for mark_node in mark_nodes:
+                                if isinstance(mark_node, ast.Call) and isinstance(mark_node.func, ast.Attribute):
+                                    mark_name = mark_node.func.attr
+                                    mark_reason = None
+                                    # Check for reason=...
+                                    for mk_kw in mark_node.keywords:
+                                        if mk_kw.arg == "reason":
+                                            mark_reason = ast.literal_eval(mk_kw.value)
+                                    marker_list.append(
+                                        {
+                                            "maker_name": mark_name,
+                                            "reason": mark_reason,
+                                        }
+                                    )
+                                elif isinstance(mark_node, ast.Attribute):
+                                    mark_name = mark_node.attr
+                                    marker_list.append({"maker_name": mark_name, "reason": None})
+
+                    # The real tuple is the first positional arg
+                    param_tuple = param_call.args[0]
+                elif isinstance(list_element, ast.Tuple):
+                    param_tuple = list_element
+                else:
+                    # Skip unexpected elements
+                    continue
+
+                # Unpack the tuple: (ModuleClass, [ (shape,dtype)... ], metadata_dict)
+                module_class_name = ast.unparse(param_tuple.elts[0])
+                shapes_and_dtypes = [
+                    (ast.literal_eval(s.elts[0]), ast.unparse(s.elts[1])) for s in param_tuple.elts[1].elts
+                ]
+                metadata = ast.literal_eval(param_tuple.elts[2])
+
+                # Extract common metadata fields
+                model_names = metadata.get("model_names", [])
+                pcc_value = metadata.get("pcc", None)
+                max_int_value = metadata.get("max_int", None)
+                op_args = metadata.get("args", {})
+
+                # Find the op call inside the forward method of this class
+                class_node = class_defs.get(module_class_name)
+                op_call_node = None
+                for fn in class_node.body:
+                    if isinstance(fn, ast.FunctionDef) and fn.name == "forward":
+                        for stmt in ast.walk(fn):
+                            if (
+                                isinstance(stmt, ast.Call)
+                                and isinstance(stmt.func, ast.Attribute)
+                                and isinstance(stmt.func.value, ast.Attribute)
+                                and isinstance(stmt.func.value.value, ast.Name)
+                                and stmt.func.value.value.id == "forge"
+                                and stmt.func.value.attr == "op"
+                            ):
+                                op_call_node = stmt
+                                break
+                        break
+
+                # Iterate over positional args to collect operand info
+                shape_iter = iter(shapes_and_dtypes)
+                operand_shapes = []
+                operand_types = []
+                operand_dtypes = []
+                operand_names = []
+                const_map = init_data[module_class_name]["constants"]
+                param_map = init_data[module_class_name]["parameters"]
+
+                for operand in op_call_node.args[1:]:
+                    # Activation inputs are plain variables
+                    if isinstance(operand, ast.Name):
+                        operand_types.append("Activation")
+                        operand_names.append(operand.id)
+                        shape, dtype = next(shape_iter)
+                        operand_shapes.append(tuple(shape))
+                        operand_dtypes.append(dtype)
+
+                    # Constants or Parameters fetched via self.get_*()
+                    elif isinstance(operand, ast.Call) and isinstance(operand.func, ast.Attribute):
+                        if operand.func.attr == "get_constant":
+                            operand_types.append("Constant")
+                            const_key = ast.literal_eval(operand.args[0])
+                            operand_names.append(const_key)
+                            shape, dtype = const_map.get(const_key, (None, None))
+                            operand_shapes.append(tuple(shape))
+                            operand_dtypes.append(dtype)
+                        elif operand.func.attr == "get_parameter":
+                            operand_types.append("Parameter")
+                            param_key = ast.literal_eval(operand.args[0])
+                            operand_names.append(param_key)
+                            shape, dtype = param_map.get(param_key, (None, None))
+                            operand_shapes.append(tuple(shape))
+                            operand_dtypes.append(dtype)
+
+                # Aggregate all extracted details
+                results.append(
+                    {
+                        "module_name": module_class_name,
+                        "forge_op_name": ast.unparse(op_call_node.func),
+                        "operand_types": operand_types,
+                        "operand_shapes": operand_shapes,
+                        "operand_dtypes": operand_dtypes,
+                        "operand_names": operand_names,
+                        "op_args": op_args,
+                        "model_names": model_names,
+                        "pcc": pcc_value,
+                        "max_int": max_int_value,
+                        "markers": marker_list,
+                    }
+                )
+
+    return results
