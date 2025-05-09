@@ -158,7 +158,6 @@ def test_multiple_layers(forge_property_recorder):
 
 
 @pytest.mark.push
-@pytest.mark.skip(reason="Conversion for ttnn::relu is missing and the maximum operation is incorrect")
 def test_mnist_linear(forge_property_recorder):
     class MNISTLinear(nn.Module):
         @nn.compact
