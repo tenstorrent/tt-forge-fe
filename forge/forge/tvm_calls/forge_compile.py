@@ -1297,6 +1297,7 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
         }
 
     elif framework == "tensorflow":
+        trainable_weight_names = [t_weight.name for t_weight in module.trainable_weights]
         weights = {
             weight.name: (
                 torch.Tensor(
@@ -1304,7 +1305,7 @@ def format_tvm_graph_weights(inputs, module, compiler_cfg, framework=None):
                         tf.cast(weight.value(), tf.float32) if weight.value().dtype.is_floating else weight.value()
                     ).numpy()
                 ),
-                True,
+                weight.name in trainable_weight_names,
             )
             for weight in module.weights
         }

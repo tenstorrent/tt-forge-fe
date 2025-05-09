@@ -13,8 +13,6 @@ from datetime import datetime
 import torch
 from torch import nn
 from transformers import ResNetForImageClassification
-from transformers import AutoImageProcessor
-from datasets import load_dataset
 from tqdm import tqdm
 
 # Forge modules
@@ -79,7 +77,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     if task == "classification":
         inputs, labels = load_benchmark_dataset(
-            task="classification",
+            task=task,
             model_version=variant,
             dataset_name="imagenet-1k",
             split="validation",
@@ -91,7 +89,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         # Random data
         inputs = [torch.rand(batch_size, channel_size, *input_size)]
     else:
-        raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
+        raise ValueError(f"Unsupported task: {task}.")
 
     if data_format == "bfloat16":
         inputs = [item.to(torch.bfloat16) for item in inputs]
@@ -123,7 +121,6 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
     verify(
-        # input_sample,
         [
             inputs[0],
         ],
@@ -149,7 +146,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         end = time.time()
         evaluation_score = 0.0
     else:
-        raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
+        raise ValueError(f"Unsupported task: {task}.")
 
     fw_out = framework_model(inputs[-1])[0]
     AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out.to("cpu"))
@@ -161,8 +158,15 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     samples_per_sec = total_samples / total_time
     model_name = "Resnet 50 HF"
-    model_type = "Classification, Random Input Data"
-    dataset_name = "Resnet, Random Data"
+    model_type = "Classification"
+    if task == "classification":
+        model_type += ", ImageNet-1K"
+        dataset_name = "ImageNet-1K"
+    elif task == "na":
+        model_type += ", Random Input Data"
+        dataset_name = model_name + ", Random Data"
+    else:
+        raise ValueError(f"Unsupported task: {task}.")
     num_layers = 50  # Number of layers in the model, in this case 50 layers
 
     print("====================================================================")
@@ -180,6 +184,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print(f"| Batch size: {batch_size}")
     print(f"| Data format: {data_format}")
     print(f"| Input size: {input_size}")
+    print(f"| Channel size: {channel_size}")
     print("====================================================================")
 
     result = {
@@ -195,7 +200,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         "profile_name": "",
         "input_sequence_length": -1,  # When this value is negative, it means it is not applicable
         "output_sequence_length": -1,  # When this value is negative, it means it is not applicable
-        "image_dimension": f"{input_size[0]}x{input_size[1]}",
+        "image_dimension": f"{channel_size}x{input_size[0]}x{input_size[1]}",
         "perf_analysis": False,
         "training": training,
         "measurements": [

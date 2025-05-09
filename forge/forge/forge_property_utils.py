@@ -78,6 +78,7 @@ class Source(BaseEnum):
     GITHUB = ("github", "GitHub")
     PADDLE = ("paddlemodels", "Paddle Models")
     PADDLENLP = ("padlenlp", "PaddleNLP")
+    KERAS = ("keras", "Keras")
 
 
 def build_module_name(

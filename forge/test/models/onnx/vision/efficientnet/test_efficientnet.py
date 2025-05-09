@@ -69,7 +69,9 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     pcc = 0.99
 

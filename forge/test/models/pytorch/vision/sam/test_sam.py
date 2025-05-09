@@ -37,8 +37,6 @@ def test_sam(forge_property_recorder, variant):
     else:
         forge_property_recorder.record_group("generality")
 
-    forge_property_recorder.record_model_name(module_name)
-
     # Load  model and input
 
     framework_model, sample_inputs = get_model_inputs(variant)

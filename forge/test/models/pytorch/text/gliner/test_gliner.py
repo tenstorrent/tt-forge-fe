@@ -50,7 +50,7 @@ def test_gliner(forge_property_recorder, variant):
     framework_model = GlinerWrapper(model)
     framework_model.eval()
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     # Model Verification
