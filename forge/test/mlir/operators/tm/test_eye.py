@@ -32,8 +32,8 @@ def test_eye(forge_property_recorder, n, m, dtype):
                 out = torch.eye(self.n, self.m, dtype=self.dtype)
             return out + x * 0
 
-    dummy_input = torch.randn(1)
-    inputs = [dummy_input]
+    input = torch.randn(1)
+    inputs = [input]
 
     model = EyeModel(n, m, dtype)
     model.eval()
