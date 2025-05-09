@@ -28,8 +28,6 @@ params = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
 def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
-    if variant != "facebook/dpr-ctx_encoder-single-nq-base":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -87,7 +85,6 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -152,9 +149,9 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_dpr_reader_pytorch(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
