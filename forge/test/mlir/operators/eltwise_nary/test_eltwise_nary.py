@@ -108,3 +108,31 @@ def test_concat(forge_property_recorder, inputs_and_dim):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "inputs",
+    [
+        [torch.randn(1, 78), torch.randn(52)],
+        [torch.randn(18), torch.randn(26), torch.randn(13)],
+        [torch.randn(1, 11), torch.randn(2, 2), torch.randn(31, 3), torch.randn(1, 5)],
+        [torch.randn(31), torch.randn(12, 3), torch.randn(66), torch.randn(13, 12), torch.randn(20)],
+        [torch.randn(2, 2), torch.randn(1, 3), torch.randn(11), torch.randn(62), torch.randn(11), torch.randn(31)],
+        [torch.randn(384, 384) for _ in range(7)],
+        [torch.randn(96, 96) for _ in range(8)],
+    ],
+)
+@pytest.mark.push
+def test_block_diag(inputs, forge_property_recorder):
+    class block_diag(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, *inputs):
+            return torch.block_diag(*inputs)
+
+    framework_model = block_diag()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
