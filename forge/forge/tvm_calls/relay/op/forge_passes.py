@@ -2046,6 +2046,68 @@ class DecomposeEinsum(DFPatternCallback):
             assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
             return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
 
+        elif match_einsum_pattern("bhwc,hkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+            assert srcA_shape[-1] == srcB_shape[-1]
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+            batch_dim = int(srcA_shape[0])
+            if batch_dim > 1:
+                a_split = tvm.relay.split(A, indices_or_sections=batch_dim, axis=0)
+                results = []
+                for batch_idx in range(batch_dim):
+                    a_batch = a_split[batch_idx]
+                    A_expanded = tvm.relay.expand_dims(a_batch, axis=3)
+                    B_expanded = tvm.relay.expand_dims(B, axis=0)
+                    B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+                    multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+                    result = tvm.relay.sum(multiplied, axis=[-1])
+                    results.append(result)
+
+                final_result = tvm.relay.concatenate(results, axis=0)
+
+            else:
+                A_expanded = tvm.relay.expand_dims(A, axis=3)
+                B_expanded = tvm.relay.expand_dims(B, axis=0)
+                B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+                multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+
+                final_result = tvm.relay.sum(multiplied, axis=[-1])
+
+            return final_result
+
+        elif match_einsum_pattern("bhwc,wkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+            assert srcA_shape[-1] == srcB_shape[-1]
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+            b, h, w, c = [int(dim) for dim in srcA_shape]
+            _, k, _ = [int(dim) for dim in srcB_shape]
+
+            results = []
+
+            for wi in range(w):
+                A_slice = tvm.relay.strided_slice(A, begin=[0, 0, wi, 0], end=[b, h, wi + 1, c])
+                A_slice = tvm.relay.squeeze(A_slice, axis=[2])
+
+                B_slice = tvm.relay.strided_slice(B, begin=[wi, 0, 0], end=[wi + 1, k, c])
+                B_slice = tvm.relay.squeeze(B_slice, axis=[0])
+
+                B_transposed = tvm.relay.transpose(B_slice, axes=[1, 0])
+                B_expanded = tvm.relay.expand_dims(B_transposed, axis=0)
+
+                out_slice = tvm.relay.nn.batch_matmul(A_slice, B_expanded, transpose_b=False)
+
+                out_slice = tvm.relay.expand_dims(out_slice, axis=2)
+                results.append(out_slice)
+
+            final_result = tvm.relay.concatenate(results, axis=2)
+
+            return final_result
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
