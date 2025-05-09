@@ -46,7 +46,7 @@ def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
 
     # Load Model and Tokenizer for LoRA training
     use_lora = True
-    framework_model, tokenizer = load_model(model_path, use_lora=use_lora, num_hidden_layers=1)
+    framework_model, tokenizer = load_model(model_path, use_lora=use_lora)
     framework_model.train()
 
     # Need input seq divisible by 32 due to metal constraints TILE_WIDTH=32
