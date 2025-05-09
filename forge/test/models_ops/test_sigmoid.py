@@ -44,7 +44,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -59,7 +58,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
             ],
             "pcc": 0.99,
@@ -74,7 +72,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -90,7 +87,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
             ],
             "pcc": 0.99,
@@ -106,7 +102,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -122,7 +117,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
             ],
             "pcc": 0.99,
@@ -138,7 +132,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -154,7 +147,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
             ],
@@ -171,7 +163,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
             ],
             "pcc": 0.99,
@@ -185,7 +176,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5x_img_cls_torchhub_320x320",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
@@ -202,7 +192,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
@@ -220,7 +209,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -232,7 +220,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
@@ -245,14 +232,7 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 80, 8400), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-        },
+        {"model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"], "pcc": 0.99},
     ),
     (
         Sigmoid0,
@@ -375,6 +355,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -500,6 +482,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -513,6 +496,13 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -524,6 +514,11 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -535,6 +530,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -546,6 +542,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -557,6 +554,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -568,6 +569,12 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -580,6 +587,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -593,6 +601,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -607,6 +623,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_regnet_y_800mf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -618,6 +642,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -629,6 +654,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -640,6 +666,11 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -651,6 +682,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -663,6 +697,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -674,6 +709,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -685,6 +721,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -696,6 +734,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -708,6 +748,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -721,6 +762,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -734,6 +778,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -746,6 +793,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -757,6 +805,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -772,6 +821,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
                 "pt_regnet_regnet_y_400mf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -783,6 +836,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -794,6 +849,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -807,6 +863,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_320x320",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -818,6 +875,12 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -825,7 +888,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 24, 160, 160), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -834,6 +903,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -841,12 +914,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 144, 160, 160), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 144, 80, 80), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -856,6 +941,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -868,6 +954,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -881,6 +970,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_320x320",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -888,7 +978,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 336, 40, 40), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -897,6 +993,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -909,6 +1006,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -916,17 +1014,35 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 336, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 672, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 960, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -935,6 +1051,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -946,6 +1065,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -953,12 +1073,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 960, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 1632, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -967,6 +1099,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -978,6 +1111,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -985,7 +1119,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 2688, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -994,6 +1134,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1005,6 +1146,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1012,7 +1154,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 1792, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1027,7 +1175,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 144, 112, 112), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1164,7 +1318,14 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 576, 1, 1), torch.float32)],
-        {"model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_regnet_regnet_y_3_2gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1174,12 +1335,25 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 528, 1, 1), torch.float32)],
-        {"model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_regnet_regnet_y_128gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
         [((1, 1056, 1, 1), torch.float32)],
-        {"model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_regnet_regnet_y_128gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1204,7 +1378,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 128, 1, 1), torch.float32)],
-        {"model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_regnet_facebook_regnet_y_040_img_cls_hf",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1229,7 +1409,14 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 1392, 1, 1), torch.float32)],
-        {"model_names": ["pt_regnet_regnet_y_32gf_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1608,6 +1795,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1615,7 +1803,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 16, 120, 120), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1913,7 +2107,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 96, 120, 120), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -1928,7 +2128,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Sigmoid0,
         [((1, 96, 60, 60), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Sigmoid0,
@@ -2397,6 +2603,616 @@ forge_modules_and_shapes_dtypes_list = [
         Sigmoid0,
         [((1, 96, 13, 13), torch.float32)],
         {"model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 40, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 192, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 288, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 34, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 816, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 816, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 58, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 2304, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 2304, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 1536, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 16, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 96, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 96, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 288, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 22, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 30, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 720, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 720, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 52, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 1248, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 2112, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 88, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 2112, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 1408, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 60, 60), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 30, 30), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 240, 30, 30), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 240, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 480, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 672, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 672, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1152, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1920, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 80, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1920, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1280, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 48, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 24, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 144, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 240, 112, 112), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 240, 56, 56), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 384, 56, 56), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 384, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 384, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 768, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 768, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1056, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 44, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1056, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1824, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 76, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 1824, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 3072, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 3072, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Sigmoid0,
+        [((1, 2048, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
     ),
 ]
 

@@ -375,26 +375,12 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Subtract2,
         [((1, 2, 8400), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-        },
+        {"model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"], "pcc": 0.99},
     ),
     (
         Subtract0,
         [((1, 2, 8400), torch.float32), ((1, 2, 8400), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-        },
+        {"model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"], "pcc": 0.99},
     ),
     (
         Subtract0,
@@ -620,6 +606,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
                 "pt_xglm_facebook_xglm_564m_clm_hf",
                 "pt_xglm_facebook_xglm_1_7b_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -650,6 +638,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                     "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                     "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
                 ],
                 "pcc": 0.99,
             },
@@ -665,6 +654,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },

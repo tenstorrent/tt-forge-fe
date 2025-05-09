@@ -1122,6 +1122,15 @@ class Reshape137(ForgeModule):
         return reshape_output_1
 
 
+class Reshape123(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280))
+        return reshape_output_1
+
+
 class Reshape138(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -1713,15 +1722,6 @@ class Reshape203(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 1500))
-        return reshape_output_1
-
-
-class Reshape204(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280))
         return reshape_output_1
 
 
@@ -3765,6 +3765,15 @@ class Reshape431(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 16384, 1))
+        return reshape_output_1
+
+
+class Reshape417(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 16384))
         return reshape_output_1
 
 
@@ -6312,6 +6321,15 @@ class Reshape714(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 16384, 1))
+        return reshape_output_1
+
+
+class Reshape701(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 16384))
         return reshape_output_1
 
 
@@ -9546,6 +9564,15 @@ class Reshape1073(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1061(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 196))
+        return reshape_output_1
+
+
 class Reshape1074(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -9570,6 +9597,15 @@ class Reshape1076(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 197, 1024))
+        return reshape_output_1
+
+
+class Reshape1065(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 1024))
         return reshape_output_1
 
 
@@ -9651,6 +9687,15 @@ class Reshape1085(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 196, 1))
+        return reshape_output_1
+
+
+class Reshape1075(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 196))
         return reshape_output_1
 
 
@@ -10164,6 +10209,15 @@ class Reshape1142(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1792, 1, 1))
+        return reshape_output_1
+
+
+class Reshape1133(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1792))
         return reshape_output_1
 
 
@@ -11598,12 +11652,30 @@ class Reshape1301(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1293(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 128, 16384))
+        return reshape_output_1
+
+
 class Reshape1302(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 4096, 1))
+        return reshape_output_1
+
+
+class Reshape1295(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 4096))
         return reshape_output_1
 
 
@@ -11757,6 +11829,15 @@ class Reshape1319(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 160, 1024, 1))
+        return reshape_output_1
+
+
+class Reshape1313(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 160, 1024))
         return reshape_output_1
 
 
@@ -11922,6 +12003,15 @@ class Reshape1337(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1332(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 640, 1024))
+        return reshape_output_1
+
+
 class Reshape1338(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -11967,6 +12057,15 @@ class Reshape1342(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1338(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 256))
+        return reshape_output_1
+
+
 class Reshape1343(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -12000,6 +12099,15 @@ class Reshape1346(ForgeModule):
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 16384, 1))
+        return reshape_output_1
+
+
+class Reshape1343(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 16384))
         return reshape_output_1
 
 
@@ -12111,12 +12219,30 @@ class Reshape1358(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1356(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 4096))
+        return reshape_output_1
+
+
 class Reshape1359(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 320, 1024, 1))
+        return reshape_output_1
+
+
+class Reshape1358(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 320, 1024))
         return reshape_output_1
 
 
@@ -12255,12 +12381,30 @@ class Reshape1374(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1374(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280, 1024))
+        return reshape_output_1
+
+
 class Reshape1375(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 256, 1))
+        return reshape_output_1
+
+
+class Reshape1376(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 256))
         return reshape_output_1
 
 
@@ -13758,6 +13902,15 @@ class Reshape1541(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1543(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 49, 1))
+        return reshape_output_1
+
+
 class Reshape1542(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
@@ -14289,6 +14442,339 @@ class Reshape1600(ForgeModule):
         return reshape_output_1
 
 
+class Reshape1603(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1408))
+        return reshape_output_1
+
+
+class Reshape1604(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 49, 1))
+        return reshape_output_1
+
+
+class Reshape1605(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 49))
+        return reshape_output_1
+
+
+class Reshape1606(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 49, 1))
+        return reshape_output_1
+
+
+class Reshape1607(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 49))
+        return reshape_output_1
+
+
+class Reshape1608(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 196, 1))
+        return reshape_output_1
+
+
+class Reshape1609(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 768))
+        return reshape_output_1
+
+
+class Reshape1610(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 2304))
+        return reshape_output_1
+
+
+class Reshape1611(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3, 768))
+        return reshape_output_1
+
+
+class Reshape1612(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 12, 64))
+        return reshape_output_1
+
+
+class Reshape1613(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1614(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1615(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1616(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1617(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 768))
+        return reshape_output_1
+
+
+class Reshape1618(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 3072))
+        return reshape_output_1
+
+
+class Reshape1619(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 3, 1024))
+        return reshape_output_1
+
+
+class Reshape1620(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 16, 64))
+        return reshape_output_1
+
+
+class Reshape1621(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1024))
+        return reshape_output_1
+
+
+class Reshape1622(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3072))
+        return reshape_output_1
+
+
+class Reshape1623(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3, 1024))
+        return reshape_output_1
+
+
+class Reshape1624(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 16, 64))
+        return reshape_output_1
+
+
+class Reshape1625(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1626(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1627(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1628(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1629(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 1024))
+        return reshape_output_1
+
+
+class Reshape1630(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280, 1369))
+        return reshape_output_1
+
+
+class Reshape1631(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1280))
+        return reshape_output_1
+
+
+class Reshape1632(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 3840))
+        return reshape_output_1
+
+
+class Reshape1633(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 3, 1280))
+        return reshape_output_1
+
+
+class Reshape1634(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 16, 80))
+        return reshape_output_1
+
+
+class Reshape1635(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 1370, 80))
+        return reshape_output_1
+
+
+class Reshape1636(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 1370, 80))
+        return reshape_output_1
+
+
+class Reshape1637(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 1370, 1370))
+        return reshape_output_1
+
+
+class Reshape1638(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 1370, 1370))
+        return reshape_output_1
+
+
+class Reshape1639(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 1280))
+        return reshape_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -14375,6 +14861,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnext_resnext101_64x4d_img_cls_osmr",
                 "pt_resnext_resnext26_32x4d_img_cls_osmr",
                 "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2048)"},
@@ -14689,6 +15177,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 768)"},
@@ -14727,6 +15217,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(128, 768)"},
@@ -14756,6 +15247,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 12, 64)"},
@@ -14785,6 +15277,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 768)"},
@@ -14815,6 +15308,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 128, 64)"},
@@ -14844,6 +15338,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 64, 128)"},
@@ -14883,6 +15378,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 128, 128)"},
@@ -14913,6 +15409,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 128, 128)"},
@@ -14943,6 +15440,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 128, 64)"},
@@ -14968,6 +15466,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(128, 768)"},
@@ -15158,11 +15657,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape58,
         [((1, 144, 80, 80), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 6400)"},
         },
@@ -15171,11 +15666,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape59,
         [((1, 144, 40, 40), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 1600)"},
         },
@@ -15184,11 +15675,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape60,
         [((1, 144, 20, 20), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 400)"},
         },
@@ -15197,11 +15684,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape61,
         [((1, 64, 8400), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"shape": "(1, 4, 16, 8400)"},
         },
@@ -15210,11 +15693,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reshape62,
         [((1, 1, 4, 8400), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"shape": "(1, 4, 8400)"},
         },
@@ -15913,6 +16392,22 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280, 1, 1)"},
+        },
+    ),
+    (
+        Reshape123,
+        [((1, 1280, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1280)"},
         },
     ),
     (
@@ -16692,10 +17187,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape204,
+        Reshape123,
         [((1, 1, 1280), torch.float32)],
         {
-            "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+            "model_names": [
+                "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                "pt_vit_vit_h_14_img_cls_torchvision",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280)"},
         },
@@ -16773,7 +17271,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape204,
+        Reshape123,
         [((1, 1, 20, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -17225,6 +17723,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_t5_large_text_gen_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+                "pt_vit_vit_l_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024)"},
@@ -18668,6 +19169,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 64)"},
@@ -19268,6 +19772,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 64, 64)"},
@@ -19359,6 +19866,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape417,
+        [((1, 64, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 64, 16384)"},
+        },
+    ),
+    (
         Reshape432,
         [((1, 64, 64, 128), torch.float32)],
         {
@@ -19407,6 +19927,19 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 4096, 1)"},
+        },
+    ),
+    (
+        Reshape426,
+        [((1, 128, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 128, 4096)"},
         },
     ),
     (
@@ -19742,6 +20275,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 1, 128)"},
@@ -20666,6 +21200,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 3072)"},
@@ -20701,6 +21237,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 32, 96)"},
@@ -21900,6 +22438,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 64, 64)"},
@@ -21965,6 +22504,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256, 256)"},
@@ -21988,6 +22529,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 256, 256)"},
@@ -22227,6 +22770,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 512)"},
@@ -22648,6 +23194,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 16384, 1)"},
         },
+    ),
+    (
+        Reshape701,
+        [((1, 32, 128, 128), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 16384)"}},
     ),
     (
         Reshape713,
@@ -23205,6 +23756,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2048, 16, 16)"},
@@ -23227,6 +23781,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 8, 32)"},
@@ -23239,6 +23794,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 256)"},
@@ -23268,7 +23824,11 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Reshape765,
         [((1, 256, 256), torch.float32)],
-        {"model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 256)"}},
+        {
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 256)"},
+        },
     ),
     (
         Reshape766,
@@ -23278,6 +23838,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 32)"},
@@ -23404,6 +23965,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 256)"},
@@ -23426,6 +23988,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 256)"},
@@ -23448,6 +24014,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 256)"},
@@ -23884,6 +24454,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 256, 96)"},
@@ -23896,6 +24468,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 96, 256)"},
@@ -23908,6 +24482,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256, 96)"},
@@ -23920,6 +24496,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 3072)"},
@@ -26212,12 +26790,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1061,
+        [((1, 1024, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1024, 196)"},
+        },
+    ),
+    (
         Reshape1074,
         [((1, 197, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 1024)"},
@@ -26230,6 +26821,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 16, 64)"},
@@ -26242,6 +26834,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 1024)"},
@@ -26257,12 +26850,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1065,
+        [((197, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 1024)"}},
+    ),
+    (
         Reshape1077,
         [((1, 16, 197, 64), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 197, 64)"},
@@ -26275,6 +26874,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16, 197, 197)"},
@@ -26314,6 +26915,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 197, 197)"},
@@ -26326,6 +26929,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 64, 197)"},
@@ -26338,10 +26942,17 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16, 197, 64)"},
         },
+    ),
+    (
+        Reshape1077,
+        [((16, 197, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 197, 64)"}},
     ),
     (
         Reshape1074,
@@ -26350,6 +26961,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 1024)"},
@@ -26375,6 +26987,15 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1075,
+        [((1, 768, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 768, 196)"},
+        },
+    ),
+    (
         Reshape1086,
         [((1, 197, 768), torch.float32)],
         {
@@ -26383,6 +27004,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 768)"},
@@ -26397,6 +27019,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 12, 64)"},
@@ -26411,6 +27034,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 768)"},
@@ -26434,6 +27058,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 197, 64)"},
@@ -26448,6 +27073,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 197, 197)"},
@@ -26489,6 +27115,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 197, 197)"},
@@ -26503,6 +27130,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 64, 197)"},
@@ -26517,6 +27145,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 197, 64)"},
@@ -26531,6 +27160,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 768)"},
@@ -27169,6 +27799,18 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1792, 1, 1)"},
+        },
+    ),
+    (
+        Reshape1133,
+        [((1, 1792, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1792)"},
         },
     ),
     (
@@ -28334,7 +28976,15 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Reshape166,
         [((1, 1536, 1, 1), torch.float32)],
-        {"model_names": ["pt_inception_v4_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 1536)"}},
+        {
+            "model_names": [
+                "pt_inception_v4_img_cls_osmr",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1536)"},
+        },
     ),
     (
         Reshape1254,
@@ -28374,6 +29024,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 512)"},
@@ -28393,6 +29046,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 8, 64)"},
@@ -28408,6 +29064,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 512)"},
@@ -28823,6 +29482,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 1, 32)"},
@@ -28835,6 +29495,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 32)"},
@@ -28847,6 +29508,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 128, 128)"},
@@ -28859,6 +29521,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256)"},
@@ -28871,6 +29534,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 32)"},
@@ -28883,6 +29547,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 1, 32)"},
@@ -28895,6 +29560,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 32)"},
@@ -28916,6 +29582,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 16384, 256)"},
@@ -28937,6 +29607,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 256)"},
@@ -28949,6 +29623,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256)"},
@@ -28961,6 +29636,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 128)"},
@@ -28979,6 +29655,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1293,
+        [((1, 128, 128, 128), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 128, 16384)"}},
+    ),
+    (
         Reshape1302,
         [((1, 64, 64, 64), torch.float32)],
         {
@@ -28991,12 +29672,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1295,
+        [((1, 64, 64, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 64, 4096)"}},
+    ),
+    (
         Reshape1303,
         [((1, 4096, 64), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 2, 32)"},
@@ -29009,6 +29696,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 64)"},
@@ -29021,6 +29709,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 32)"},
@@ -29033,6 +29722,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 64)"},
@@ -29054,6 +29744,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 256)"},
@@ -29075,6 +29769,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 64)"},
@@ -29087,6 +29785,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 2, 32)"},
@@ -29106,6 +29805,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 1, 64)"},
@@ -29127,6 +29829,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 64)"},
@@ -29139,6 +29845,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 256, 32)"},
@@ -29160,6 +29867,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 256)"},
@@ -29181,6 +29892,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 256)"},
@@ -29193,6 +29908,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 32, 256)"},
@@ -29205,6 +29921,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 32)"},
@@ -29217,6 +29934,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(4096, 64)"},
@@ -29229,6 +29947,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 64)"},
@@ -29247,6 +29966,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape458,
+        [((1, 256, 64, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 4096)"}},
+    ),
+    (
         Reshape1319,
         [((1, 160, 32, 32), torch.float32)],
         {
@@ -29259,12 +29983,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1313,
+        [((1, 160, 32, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 160, 1024)"}},
+    ),
+    (
         Reshape1320,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 5, 32)"},
@@ -29277,6 +30007,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 32, 160)"},
@@ -29289,6 +30020,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 32)"},
@@ -29301,6 +30033,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 160, 32, 32)"},
@@ -29313,6 +30046,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 160, 256)"},
@@ -29325,6 +30059,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 160)"},
@@ -29337,6 +30072,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 5, 32)"},
@@ -29349,6 +30085,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 160)"},
@@ -29361,6 +30098,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 256, 32)"},
@@ -29382,6 +30120,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 256)"},
@@ -29403,6 +30145,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 256)"},
@@ -29415,6 +30161,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 32, 256)"},
@@ -29427,6 +30174,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 32)"},
@@ -29439,6 +30187,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1024, 160)"},
@@ -29451,6 +30200,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 160)"},
@@ -29463,6 +30213,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 640, 32, 32)"},
@@ -29493,6 +30244,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1332,
+        [((1, 640, 32, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 640, 1024)"}},
+    ),
+    (
         Reshape1338,
         [((1, 256, 16, 16), torch.float32)],
         {
@@ -29505,12 +30261,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape765,
+        [((1, 256, 16, 16), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 256)"}},
+    ),
+    (
         Reshape1339,
         [((1, 8, 32, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 32, 256)"},
@@ -29523,6 +30285,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 32)"},
@@ -29535,6 +30298,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 256)"},
@@ -29547,6 +30311,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 16, 16)"},
@@ -29565,6 +30330,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1338,
+        [((1, 1024, 16, 16), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 1024, 256)"}},
+    ),
+    (
         Reshape1343,
         [((1, 256, 16384), torch.float32)],
         {
@@ -29579,6 +30349,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 128, 128)"},
@@ -29598,6 +30371,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 1, 64)"},
@@ -29617,6 +30393,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 64)"},
@@ -29636,6 +30415,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 128, 128)"},
@@ -29655,6 +30437,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 256)"},
@@ -29680,6 +30465,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1343,
+        [((1, 256, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 16384)"},
+        },
+    ),
+    (
         Reshape1347,
         [((1, 4096, 128), torch.float32)],
         {
@@ -29693,6 +30491,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 2, 64)"},
@@ -29712,6 +30513,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 128)"},
@@ -29731,6 +30535,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 64)"},
@@ -29750,6 +30557,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 256)"},
@@ -29769,6 +30579,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 128)"},
@@ -29788,6 +30601,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 2, 64)"},
@@ -29807,6 +30623,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 128)"},
@@ -29826,6 +30645,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 256, 64)"},
@@ -29845,6 +30667,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 64, 256)"},
@@ -29864,6 +30689,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(4096, 128)"},
@@ -29883,6 +30711,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 128)"},
@@ -29902,6 +30733,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 512, 64, 64)"},
@@ -29927,6 +30761,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1356,
+        [((1, 512, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 4096)"},
+        },
+    ),
+    (
         Reshape1359,
         [((1, 320, 32, 32), torch.float32)],
         {
@@ -29946,6 +30793,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1358,
+        [((1, 320, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 320, 1024)"},
+        },
+    ),
+    (
         Reshape1360,
         [((1, 1024, 320), torch.float32)],
         {
@@ -29959,6 +30819,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 5, 64)"},
@@ -29978,6 +30841,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 32, 320)"},
@@ -29997,6 +30863,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 64)"},
@@ -30016,6 +30885,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 320, 32, 32)"},
@@ -30035,6 +30907,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 320, 256)"},
@@ -30054,6 +30929,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 320)"},
@@ -30073,6 +30951,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 5, 64)"},
@@ -30092,6 +30973,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 320)"},
@@ -30111,6 +30995,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 256, 64)"},
@@ -30130,6 +31017,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 64, 256)"},
@@ -30149,6 +31039,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 64)"},
@@ -30168,6 +31061,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1024, 320)"},
@@ -30187,6 +31083,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 320)"},
@@ -30206,6 +31105,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280, 32, 32)"},
@@ -30231,6 +31133,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1374,
+        [((1, 1280, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1280, 1024)"},
+        },
+    ),
+    (
         Reshape1375,
         [((1, 512, 16, 16), torch.float32)],
         {
@@ -30251,6 +31166,19 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reshape1376,
+        [((1, 512, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 256)"},
+        },
+    ),
+    (
+        Reshape1376,
         [((1, 8, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -30263,6 +31191,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 64)"},
@@ -30282,6 +31213,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 64, 256)"},
@@ -30301,6 +31235,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 64)"},
@@ -30320,6 +31257,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 512)"},
@@ -30342,6 +31282,19 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2048, 256, 1)"},
+        },
+    ),
+    (
+        Reshape768,
+        [((1, 2048, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 2048, 256)"},
         },
     ),
     (
@@ -32157,6 +33110,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1543,
+        [((1, 512, 7, 7), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"shape": "(1, 512, 49, 1)"}},
+    ),
+    (
         Reshape1542,
         [((1, 4096, 1, 1), torch.float32)],
         {"model_names": ["pt_vgg_vgg19_bn_obj_det_timm"], "pcc": 0.99, "args": {"shape": "(1, 4096, 1, 1)"}},
@@ -32953,6 +33911,231 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"shape": "(1, 85, 169, 1)"},
         },
+    ),
+    (
+        Reshape1603,
+        [((1, 1408, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1408)"},
+        },
+    ),
+    (
+        Reshape1604,
+        [((1, 768, 7, 7), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99, "args": {"shape": "(1, 768, 49, 1)"}},
+    ),
+    (
+        Reshape1605,
+        [((1, 768, 7, 7), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 768, 49)"}},
+    ),
+    (
+        Reshape1606,
+        [((1, 1024, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1024, 49, 1)"},
+        },
+    ),
+    (
+        Reshape1607,
+        [((1, 1024, 7, 7), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 1024, 49)"}},
+    ),
+    (
+        Reshape1608,
+        [((1, 512, 14, 14), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 196, 1)"},
+        },
+    ),
+    (
+        Reshape1609,
+        [((50, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 768)"}},
+    ),
+    (
+        Reshape1610,
+        [((50, 2304), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 2304)"}},
+    ),
+    (
+        Reshape1611,
+        [((50, 1, 2304), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3, 768)"}},
+    ),
+    (
+        Reshape1612,
+        [((1, 50, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 12, 64)"}},
+    ),
+    (
+        Reshape1613,
+        [((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(12, 50, 64)"}},
+    ),
+    (
+        Reshape1614,
+        [((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 12, 50, 64)"}},
+    ),
+    (
+        Reshape1615,
+        [((12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 12, 50, 50)"}},
+    ),
+    (
+        Reshape1616,
+        [((1, 12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(12, 50, 50)"}},
+    ),
+    (
+        Reshape1609,
+        [((50, 1, 12, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 768)"}},
+    ),
+    (
+        Reshape1617,
+        [((50, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 768)"}},
+    ),
+    (
+        Reshape1074,
+        [((197, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1024)"}},
+    ),
+    (
+        Reshape1618,
+        [((197, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 3072)"}},
+    ),
+    (
+        Reshape1619,
+        [((197, 1, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 3, 1024)"}},
+    ),
+    (
+        Reshape1620,
+        [((1, 197, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 16, 64)"}},
+    ),
+    (
+        Reshape1074,
+        [((197, 1, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1024)"}},
+    ),
+    (
+        Reshape1621,
+        [((50, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1024)"}},
+    ),
+    (
+        Reshape1622,
+        [((50, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3072)"}},
+    ),
+    (
+        Reshape1623,
+        [((50, 1, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3, 1024)"}},
+    ),
+    (
+        Reshape1624,
+        [((1, 50, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 16, 64)"}},
+    ),
+    (
+        Reshape1625,
+        [((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 50, 64)"}},
+    ),
+    (
+        Reshape1626,
+        [((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 50, 64)"}},
+    ),
+    (
+        Reshape1627,
+        [((16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 50, 50)"}},
+    ),
+    (
+        Reshape1628,
+        [((1, 16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 50, 50)"}},
+    ),
+    (
+        Reshape1621,
+        [((50, 1, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1024)"}},
+    ),
+    (
+        Reshape1629,
+        [((50, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 1024)"}},
+    ),
+    (
+        Reshape1630,
+        [((1, 1280, 37, 37), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 1280, 1369)"}},
+    ),
+    (
+        Reshape1631,
+        [((1370, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1280)"}},
+    ),
+    (
+        Reshape1632,
+        [((1370, 3840), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 3840)"}},
+    ),
+    (
+        Reshape1633,
+        [((1370, 1, 3840), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 3, 1280)"}},
+    ),
+    (
+        Reshape1634,
+        [((1, 1370, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 16, 80)"}},
+    ),
+    (
+        Reshape1635,
+        [((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 1370, 80)"}},
+    ),
+    (
+        Reshape1636,
+        [((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 1370, 80)"}},
+    ),
+    (
+        Reshape1637,
+        [((16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 1370, 1370)"}},
+    ),
+    (
+        Reshape1638,
+        [((1, 16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 1370, 1370)"}},
+    ),
+    (
+        Reshape1631,
+        [((1370, 1, 16, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1280)"}},
+    ),
+    (
+        Reshape1639,
+        [((1370, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 1280)"}},
     ),
 ]
 

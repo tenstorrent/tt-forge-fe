@@ -258,6 +258,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
                 "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
                 "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+                "pt_vit_vit_l_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"repeats": "1", "dim": "0"},
@@ -1136,18 +1140,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Repeatinterleave3,
-        [((1, 1, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"repeats": "1", "dim": "0"},
-        },
-    ),
-    (
-        Repeatinterleave3,
         [((1, 1, 768), torch.float32)],
         {
             "model_names": [
@@ -1155,6 +1147,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"repeats": "1", "dim": "0"},
@@ -1177,6 +1170,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"repeats": "1", "dim": "0"},
         },
+    ),
+    (
+        Repeatinterleave3,
+        [((1, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"repeats": "1", "dim": "0"}},
     ),
 ]
 

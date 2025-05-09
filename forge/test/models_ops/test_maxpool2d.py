@@ -743,7 +743,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -878,6 +877,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {

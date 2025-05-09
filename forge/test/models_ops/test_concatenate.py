@@ -3273,6 +3273,36 @@ class Concatenate60(ForgeModule):
         return concatenate_output_1
 
 
+class Concatenate61(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "concatenate61.weight_0",
+            forge.Parameter(*(1, 1, 768), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, concatenate_input_1):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", self.get_parameter("concatenate61.weight_0"), concatenate_input_1, axis=-2
+        )
+        return concatenate_output_1
+
+
+class Concatenate62(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "concatenate62.weight_0",
+            forge.Parameter(*(1, 1, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, concatenate_input_1):
+        concatenate_output_1 = forge.op.Concatenate(
+            "", self.get_parameter("concatenate62.weight_0"), concatenate_input_1, axis=-2
+        )
+        return concatenate_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -3528,11 +3558,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate2,
         [((1, 16, 160, 160), torch.float32), ((1, 16, 160, 160), torch.float32), ((1, 16, 160, 160), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3546,11 +3572,7 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 32, 80, 80), torch.float32),
         ],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3564,11 +3586,7 @@ forge_modules_and_shapes_dtypes_list = [
             ((1, 64, 40, 40), torch.float32),
         ],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3577,11 +3595,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate2,
         [((1, 128, 20, 20), torch.float32), ((1, 128, 20, 20), torch.float32), ((1, 128, 20, 20), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3599,7 +3613,6 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"axis": "-3"},
@@ -3609,11 +3622,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 256, 40, 40), torch.float32), ((1, 128, 40, 40), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3622,11 +3631,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate2,
         [((1, 64, 40, 40), torch.float32), ((1, 64, 40, 40), torch.float32), ((1, 64, 40, 40), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3635,11 +3640,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 128, 80, 80), torch.float32), ((1, 64, 80, 80), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3648,11 +3649,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate2,
         [((1, 32, 80, 80), torch.float32), ((1, 32, 80, 80), torch.float32), ((1, 32, 80, 80), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3661,11 +3658,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 64, 80, 80), torch.float32), ((1, 80, 80, 80), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3674,11 +3667,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 64, 40, 40), torch.float32), ((1, 128, 40, 40), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3687,11 +3676,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 64, 40, 40), torch.float32), ((1, 80, 40, 40), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3700,11 +3685,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 128, 20, 20), torch.float32), ((1, 256, 20, 20), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3713,11 +3694,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 64, 20, 20), torch.float32), ((1, 80, 20, 20), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-3"},
         },
@@ -3726,11 +3703,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate4,
         [((1, 144, 6400), torch.float32), ((1, 144, 1600), torch.float32), ((1, 144, 400), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-1"},
         },
@@ -3739,11 +3712,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate5,
         [((1, 2, 8400), torch.float32), ((1, 2, 8400), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-2"},
         },
@@ -3752,11 +3721,7 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate5,
         [((1, 4, 8400), torch.float32), ((1, 80, 8400), torch.float32)],
         {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
+            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
             "pcc": 0.99,
             "args": {"axis": "-2"},
         },
@@ -5335,6 +5300,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"axis": "-1"},
@@ -5658,6 +5625,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"axis": "-2"},
@@ -14644,6 +14612,31 @@ forge_modules_and_shapes_dtypes_list = [
         Concatenate0,
         [((1, 96, 52, 52), torch.float32), ((1, 96, 52, 52), torch.float32)],
         {"model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"], "pcc": 0.99, "args": {"axis": "-3"}},
+    ),
+    (
+        Concatenate61,
+        [((1, 196, 768), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"axis": "-2"}},
+    ),
+    (
+        Concatenate62,
+        [((1, 196, 1024), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"axis": "-2"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 1, 768), torch.float32), ((1, 49, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 1, 1024), torch.float32), ((1, 49, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
+    ),
+    (
+        Concatenate5,
+        [((1, 1, 1280), torch.float32), ((1, 1369, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"axis": "-2"}},
     ),
 ]
 

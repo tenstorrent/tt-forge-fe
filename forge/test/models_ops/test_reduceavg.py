@@ -351,6 +351,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
@@ -654,7 +656,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 48, 160, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -663,7 +668,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 48, 1, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -672,7 +680,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 24, 160, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -681,7 +692,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 24, 1, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -690,7 +704,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 144, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -699,7 +716,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 144, 1, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -708,7 +728,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 192, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -717,7 +740,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 192, 1, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -726,7 +752,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 192, 40, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -735,7 +764,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 192, 1, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -744,7 +776,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 336, 40, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -753,7 +788,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 336, 1, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -762,7 +800,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 336, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -771,7 +812,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 336, 1, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -780,7 +824,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 672, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -789,7 +836,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 672, 1, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -798,7 +848,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 960, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -807,7 +860,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 960, 1, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -816,7 +872,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 960, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -825,7 +884,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 960, 1, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -834,7 +896,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 1632, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -843,7 +908,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 1632, 1, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -852,7 +920,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 2688, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -861,7 +932,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 2688, 1, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -870,7 +944,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 32, 112, 112), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -879,7 +956,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 32, 1, 112), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -888,7 +968,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 96, 56, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -897,7 +980,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 96, 1, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -906,7 +992,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 144, 56, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -915,7 +1004,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 144, 1, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -924,7 +1016,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 144, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -933,7 +1028,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 144, 1, 28), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -942,7 +1040,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 240, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -951,7 +1052,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 240, 1, 28), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -963,6 +1067,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
@@ -975,6 +1080,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
@@ -990,6 +1096,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
@@ -1005,6 +1112,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
@@ -1020,6 +1128,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
@@ -1035,6 +1144,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
@@ -1050,6 +1160,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
@@ -1065,6 +1176,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
@@ -1074,7 +1186,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 1152, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -1083,7 +1198,10 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg0,
         [((1, 1152, 1, 7), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -1295,6 +1413,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
@@ -1304,7 +1425,7 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 256, 256), torch.float32)],
         {
-            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"],
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-2", "keep_dim": "True"},
         },
@@ -1422,6 +1543,1050 @@ forge_modules_and_shapes_dtypes_list = [
         Reduceavg1,
         [((1, 1, 7, 2048), torch.float32)],
         {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-2", "keep_dim": "True"}},
+    ),
+    (
+        Reduceavg1,
+        [((1, 40, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 40, 1, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 24, 1, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 192, 1, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 192, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 192, 1, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 288, 1, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 288, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 288, 1, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 576, 1, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 816, 1, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 816, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 816, 1, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1392, 1, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 2304, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 2304, 1, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 32, 1, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 16, 1, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 96, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 96, 1, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 288, 1, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 288, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 288, 1, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 528, 1, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 720, 1, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 720, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 720, 1, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1248, 1, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 2112, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 2112, 1, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 32, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 32, 1, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 16, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 16, 1, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 96, 60, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 96, 1, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 60, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 30, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 240, 30, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 240, 1, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 240, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 240, 1, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 480, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 480, 1, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 672, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 672, 1, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 672, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 672, 1, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1152, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1152, 1, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1920, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1920, 1, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 48, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 48, 1, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 24, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 24, 1, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 144, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 144, 1, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 240, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 240, 1, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 240, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 240, 1, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 384, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 384, 1, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 384, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 384, 1, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 768, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 768, 1, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1056, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1056, 1, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1056, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1056, 1, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 1824, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 1824, 1, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 3072, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg0,
+        [((1, 3072, 1, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 49, 512), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 49, 768), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 49, 1024), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reduceavg1,
+        [((1, 196, 512), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "keep_dim": "True"},
+        },
     ),
 ]
 
