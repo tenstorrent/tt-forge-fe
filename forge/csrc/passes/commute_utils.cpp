@@ -255,6 +255,7 @@ bool validate_commutation(
     }
 
     // Check if op has attributes
+    // both concat and reduce have attributes
     if (op->op_attrs().size() < 1)
     {
         std::cout << caller_name << ": Op has no attributes" << std::endl;
@@ -1097,11 +1098,11 @@ bool can_commute_through_reduce(
     //     return false;
     // }
 
-    if (!validate_commutation(
-            "can_commute_through_reduce", graph, op, initial_op, producer, commute_shape, clone_shape, commute_up))
-    {
-        return false;
-    }
+    // if (!validate_commutation(
+    //         "can_commute_through_reduce", graph, op, initial_op, producer, commute_shape, clone_shape, commute_up))
+    // {
+    //     return false;
+    // }
 
     return commute_through_reduce(
         graph,
