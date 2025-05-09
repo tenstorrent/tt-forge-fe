@@ -152,9 +152,6 @@ class AttributeMapper
         add_op_mapping("pad", "padding", AttributeRemap("padding", TargetType::DenseI32ArrayAttr));
         add_op_mapping("pad", "value", AttributeRemap("value", TargetType::F32Attr));
 
-        // pad
-        add_op_mapping("pad", "padding", AttributeRemap(std::nullopt, TargetType::DenseI32ArrayAttr));
-
         // Add more default mappings here
     }
 };
