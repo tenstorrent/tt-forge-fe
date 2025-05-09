@@ -6,7 +6,10 @@ import torch
 from torch import nn
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, verify_backward, DepricatedVerifyConfig
+from forge.config import CompileDepth
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 
 
 @pytest.mark.parametrize(
@@ -74,3 +77,45 @@ def test_constant_add(batch_size, lhs, rhs):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, verify_cfg=verify_cfg)
 
     verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "shapes, train",
+    [
+        (((1, 11, 2048), (2048, 128256), (128256, 2048)), True),
+    ],
+)
+@pytest.mark.push
+def test_matmuls(forge_property_recorder, shapes, train):
+    shape1, shape2, shape3 = shapes
+
+    class Matmul(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.rhs_param = nn.Parameter(torch.rand(shape3), requires_grad=train)
+
+        def forward(self, x, y):
+            intermediate = torch.matmul(x, y)
+            return torch.matmul(intermediate, self.rhs_param)
+
+    inputs = [
+        torch.rand(shape1, requires_grad=train),
+        torch.rand(shape2, requires_grad=train),
+    ]
+
+    framework_model = Matmul()
+    framework_model.eval() if not train else framework_model.train()
+    verify_cfg = DepricatedVerifyConfig()
+    # Use verify_all to verify all stages of compilation.
+    # verify_cfg.verify_all = True
+    # Use this stages_for_intermediate_verification to specify stage in which you want to verify.
+    verify_cfg.stages_for_intermediate_verification = {CompileDepth.AUTOGRAD}
+    verify_cfg.enable_op_level_comparision = True
+
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        training=train,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=verify_cfg,
+    )
