@@ -1,4 +1,9 @@
 # Getting Started
+## pre-requisties
+tt-forge-fe expects the following environment:
+- Ubuntu 22.04
+- Python3.10
+- We also have a Docker image available here: https://github.com/orgs/tenstorrent/packages?repo_name=tt-forge-fe
 
 ## Setup
 You choose between two ways to setup our project:
