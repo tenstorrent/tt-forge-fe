@@ -2,14 +2,15 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import gc
 import time
 import pytest
 import psutil
-import threading
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
 from forge._C import ExecutionDepth
+from forge._C.verif import malloc_trim
 
 
 def pytest_addoption(parser):
@@ -150,27 +151,28 @@ def memory_usage_tracker(request):
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
 
-    record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test)
+    gc.collect()  # Force garbage collection
+    after_gc = process.memory_info().rss / (1024 * 1024)
+    logger.info(f"Memory usage after garbage collection: {after_gc:.2f} MB")
 
+    malloc_trim()
+    after_trim = process.memory_info().rss / (1024 * 1024)
+    logger.info(f"Memory usage after malloc_trim: {after_trim:.2f} MB")
 
-def record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test):
-    """
-    Record memory usage stats in a file (if enabled by pytest command line option `--log-memory-usage`).
-    """
-
-    # Get the current test name
-    test_name = request.node.name
-
-    # Create a CSV file to store memory usage stats
     should_log = request.config.getoption("--log-memory-usage")
     if not should_log:
         return
 
-    file_name = "pytest-memory-usage.csv"
+    # Get the current test name
+    test_name = request.node.name
 
+    # Store memory usage stats into a CSV file
+    file_name = "pytest-memory-usage.csv"
     with open(file_name, "a") as f:
         if f.tell() == 0:
             # Write header if file is empty
-            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx)\n")
+            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx), after_gc, after_trim\n")
         # NOTE: escape test_name in double quotes because some tests have commas in their parameter list...
-        f.write(f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f}\n')
+        f.write(
+            f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f},{after_gc:2f},{after_trim:2f}\n'
+        )
