@@ -30,7 +30,7 @@ from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge._C import ExecutionDepth
+from forge._C import ExecutionDepth, DataFormat
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
@@ -251,7 +251,7 @@ def verify_golden(
     assert False  # Run ttnn golden
 
 
-def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
+def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype, expected_output_data_format: DataFormat = None):
     """
     Verifies that two PyTorch data types are equivalent when considering Forge's supported data types.
 
@@ -278,7 +278,14 @@ def check_dtypes(fw_dtype: torch.dtype, co_dtype: torch.dtype):
 
     # Check if the compiled dtype matches the equivalent dtype
     if equivalent_pytorch_dtype != co_dtype:
-        raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
+        if expected_output_data_format:
+            expected_output_dtype = forge_dataformat_to_pytorch_dtype(expected_output_data_format)
+            if expected_output_dtype != co_dtype:
+                raise ValueError(
+                    f"Expected output dtype {expected_output_dtype} does not match compiled model dtype {co_dtype}"
+                )
+        else:
+            raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
 
 
 def verify_backward(
@@ -474,7 +481,9 @@ def verify(
 
     for fw, co in zip(fw_out, co_out):
         if verify_cfg.verify_dtype:
-            check_dtypes(fw_dtype=fw.dtype, co_dtype=co.dtype)
+            check_dtypes(
+                fw_dtype=fw.dtype, co_dtype=co.dtype, expected_output_data_format=verify_cfg.expected_output_data_format
+            )
 
         if verify_cfg.verify_shape:
             if fw.shape != co.shape:

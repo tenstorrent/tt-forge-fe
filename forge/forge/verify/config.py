@@ -256,6 +256,7 @@ class VerifyConfig:
     verify_shape: bool = True  # Check output shape
     verify_values: bool = True  # Check output values
     value_checker: ValueChecker = AutomaticValueChecker()
+    expected_output_data_format: DataFormat = None  # expected data format of the output tensor
 
     # --- Logging settings --- #
     dump_tensors: bool = False  # dump tensors to the bellow path

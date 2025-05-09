@@ -13,12 +13,89 @@ import onnx.helper
 import onnx.numpy_helper
 
 import forge
-from forge.verify.verify import verify
+from forge.verify.verify import verify, VerifyConfig
 from forge.config import CompilerConfig
 from forge._C import DataFormat
 
 
-# PyTorch test remains the same
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (2, 32, 32),
+    ],
+)
+@pytest.mark.push
+def test_add_bfloat16_pytorch(forge_property_recorder, shape):
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return a + b
+
+    # Generate random tensors of the appropriate shape and dtype
+    a = torch.rand(size=shape)
+    b = torch.rand(size=shape)
+    inputs = [a, b]
+
+    framework_model = Add()
+
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+    )
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(expected_output_data_format=data_format_override),
+    )
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (2, 32, 32),
+    ],
+)
+@pytest.mark.push
+def test_add_constant_bfloat16_pytorch(forge_property_recorder, shape):
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.constant_b = torch.rand(size=shape)
+
+        def forward(self, a):
+            return a + self.constant_b
+
+    # Generate random tensors of the appropriate shape and dtype
+    a = torch.rand(size=shape)
+    inputs = [
+        a,
+    ]
+
+    framework_model = Add()
+
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+    )
+
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(expected_output_data_format=data_format_override),
+    )
+
+
 @pytest.mark.parametrize("shape", [(1, 3, 8, 8)])
 @pytest.mark.push
 def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
@@ -35,19 +112,23 @@ def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
             x = self.relu(x)
             return x
 
-    inputs = [torch.rand(shape).to(torch.bfloat16)]
-    framework_model = TinyBNNet().to(torch.bfloat16)
+    inputs = [torch.rand(shape)]
+    framework_model = TinyBNNet()
 
-    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    data_format_override = DataFormat.Float16_b
 
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        forge_property_handler=forge_property_recorder,
-        compiler_cfg=compiler_cfg,
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
     )
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(expected_output_data_format=data_format_override),
+    )
 
 
 @pytest.mark.parametrize(
@@ -82,7 +163,7 @@ def test_convtranspose2d_bfloat16_pytorch(
     padding_mode,
     input_shape,
 ):
-    inputs = [torch.randn(*input_shape).to(torch.bfloat16)]
+    inputs = [torch.randn(*input_shape)]
 
     framework_model = torch.nn.ConvTranspose2d(
         in_channels=in_channels,
@@ -94,14 +175,22 @@ def test_convtranspose2d_bfloat16_pytorch(
         bias=bias,
         dilation=dilation,
         padding_mode=padding_mode,
-    ).to(torch.bfloat16)
+    )
 
-    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
     )
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(expected_output_data_format=data_format_override),
+    )
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
@@ -132,12 +221,21 @@ def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padd
             "must equal padding_bottom for the op to execute as expected."
         )
 
-    inputs = [torch.rand(shape).to(torch.bfloat16)]
+    inputs = [torch.rand(shape)]
 
-    framework_model = PaddingAndConv2d(padding=padding).to(torch.bfloat16)
-    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    framework_model = PaddingAndConv2d(padding=padding)
+
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
     )
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(expected_output_data_format=data_format_override),
+    )

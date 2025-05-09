@@ -235,8 +235,10 @@ void lower_fallback_data_formats(graphlib::Graph *graph, DataFormat fp32_fallbac
 // The cast node will convert outputs to the given DataFormat.
 static void insert_cast_on_input_nodes(graphlib::Graph *graph, DataFormat df_override)
 {
-    for (Node *node : graph->nodes())
+    size_t original_size = graph->nodes().size();
+    for (size_t i = 0; i < original_size; ++i)
     {
+        Node *node = graph->nodes()[i];
         if (node->node_type() != graphlib::NodeType::kInput)
             continue;
 
@@ -286,7 +288,9 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
     for (Node *node : graph->nodes())
     {
         bool disallow_default_override = is_integer_data_format(node->output_df());
-        if (default_df_override and not disallow_default_override)
+        bool node_not_input = node->node_type() != graphlib::NodeType::kInput;
+        // Inputs come from host as they are. We shouldn't override their data format.
+        if (default_df_override and not disallow_default_override and node_not_input)
         {
             node->set_output_df(preserve_lower_precision_cast(node->output_df(), *default_df_override));
         }
