@@ -74,6 +74,13 @@ std::tuple<bool, int> can_commute_through_dim(
     }
     else if (initial_op->op_name() == "transpose")
     {
+
+        // if reduce dim is out of bounds for transpose we can't reduce
+        if (dim >= (int)initial_op->shape().size())
+        {
+            return std::make_tuple(can_reduce, new_dim);
+        }
+
         can_reduce = true;
         int dim0 = initial_op->op_type().get_attr_as<int>("dim0");
         if (dim0 < 0)
@@ -229,81 +236,6 @@ bool are_compatible_ops(
     return false;
 }
 
-// // Comprehensive helper function to validate all aspects of commutation
-bool validate_commutation(
-    const char *caller_name,
-    graphlib::Graph *graph,
-    graphlib::OpNode *op,
-    graphlib::OpNode *initial_op,
-    graphlib::Node *producer,
-    graphlib::Shape *commute_shape,
-    graphlib::Shape *clone_shape,
-    bool commute_up)
-{
-    // Check for null pointers
-    if (!op || !initial_op || !commute_shape || !clone_shape)
-    {
-        std::cout << caller_name << ": Null pointer detected" << std::endl;
-        return false;
-    }
-
-    // Check if shapes are valid
-    if (commute_shape->size() == 0 || clone_shape->size() == 0)
-    {
-        std::cout << caller_name << ": Empty shape detected" << std::endl;
-        return false;
-    }
-
-    // Check if op has attributes
-    // both concat and reduce have attributes
-    if (op->op_attrs().size() < 1)
-    {
-        std::cout << caller_name << ": Op has no attributes" << std::endl;
-        return false;
-    }
-
-    // Get dimension from attributes
-    int dim = std::get<int>(op->op_attrs()[0]);
-
-    // Convert to positive indexing
-    if (dim < 0)
-    {
-        dim += op->shape().size();
-    }
-
-    // Check if dim is valid for the op shape
-    if (dim < 0 || dim >= (int)op->shape().size())
-    {
-        std::cout << caller_name << ": Invalid dim=" << dim << " for op_shape_size=" << op->shape().size() << std::endl;
-        return false;
-    }
-
-    // Get new dimension through commutation
-    auto [can_commute, new_dim] = can_commute_through_dim(initial_op, graph, dim, commute_up);
-
-    if (!can_commute || new_dim < 0)
-    {
-        std::cout << caller_name << ": cannot commute: can_commute= " << can_commute << ", new_dim= " << new_dim
-                  << std::endl;
-        return false;
-    }
-
-    // Check if new_dim is valid for commute_shape
-    if (new_dim >= (int)commute_shape->size())
-    {
-        std::cout << caller_name << ": op=" << (op ? op->name() : "null")
-                  << ", initial_op=" << (initial_op ? initial_op->name() : "null")
-                  << ", producer=" << (producer ? producer->name() : "null") << std::endl;
-        std::cout << caller_name << ": commute_shape_size=" << commute_shape->size()
-                  << ", clone_shape_size=" << clone_shape->size() << std::endl;
-        std::cout << caller_name << ": can_commute=" << can_commute << ", new_dim=" << new_dim << std::endl;
-        std::cout << caller_name << ": Invalid new_dim=" << new_dim
-                  << " for commute_shape_size=" << commute_shape->size() << std::endl;
-        return false;
-    }
-
-    return true;
-}
 
 bool commute_through_select(
     graphlib::Graph *graph,
@@ -636,121 +568,6 @@ bool can_commute_through_concat(
     graphlib::Shape *clone_shape,
     bool commute_up)
 {
-    // // Check for null pointers
-    // if (!op || !initial_op || !commute_shape || !clone_shape)
-    // {
-    //     std::cout << "can_commute_through_concat: Null pointer detected" << std::endl;
-    //     return false;
-    // }
-
-    // // Check if shapes are valid
-    // if (commute_shape->size() == 0 || clone_shape->size() == 0)
-    // {
-    //     std::cout << "can_commute_through_concat: Empty shape detected" << std::endl;
-    //     return false;
-    // }
-
-    // // Check if op has attributes
-    // if (op->op_attrs().size() < 1)
-    // {
-    //     std::cout << "can_commute_through_concat: Concat op has no attributes" << std::endl;
-    //     return false;
-    // }
-
-    // // Get concat dimension
-    // int concat_dim = std::get<int>(op->op_attrs()[0]);
-
-    // // Convert to positive indexing
-    // if (concat_dim < 0)
-    // {
-    //     concat_dim += op->shape().size();
-    // }
-
-    // // Check if concat_dim is valid for the op shape
-    // if (concat_dim < 0 || concat_dim >= (int)op->shape().size())
-    // {
-    //     std::cout << "can_commute_through_concat: Invalid concat_dim=" << concat_dim
-    //               << " for op_shape_size=" << op->shape().size() << std::endl;
-    //     return false;
-    // }
-
-    // // Get new dimension through commutation
-    // auto [can_commute, new_dim] = can_commute_through_dim(initial_op, graph, concat_dim, commute_up);
-
-    // if (!can_commute || new_dim < 0)
-    // {
-    //     std::cout << "can_commute_through_concat: cannot commute: can_commute= " << can_commute
-    //               << ", new_dim= " << new_dim << std::endl;
-    //     return false;
-    // }
-
-    // // Check if new_dim is valid for commute_shape
-    // if (new_dim >= (int)commute_shape->size())
-    // {
-    //     std::cout << "can_commute_through_concat: op=" << (op ? op->name() : "null")
-    //               << ", initial_op=" << (initial_op ? initial_op->name() : "null")
-    //               << ", producer=" << (producer ? producer->name() : "null") << std::endl;
-    //     std::cout << "can_commute_through_concat: commute_shape_size=" << commute_shape->size()
-    //               << ", clone_shape_size=" << clone_shape->size() << std::endl;
-    //     std::cout << "can_commute_through_concat: can_commute=" << can_commute << ", new_dim=" << new_dim <<
-    //     std::endl; std::cout << "can_commute_through_concat: Invalid new_dim=" << new_dim
-    //               << " for commute_shape_size=" << commute_shape->size() << std::endl;
-    //     return false;
-    // }
-
-    // // Check dimensions for the actual commutation
-    // int adjusted_concat_dim = concat_dim - op->shape().size();
-
-    // // Check if adjusted_concat_dim is valid for producer or op shape
-    // if (producer && commute_up)
-    // {
-    //     if (adjusted_concat_dim < 0 || adjusted_concat_dim >= (int)producer->shape().size())
-    //     {
-    //         std::cout << "can_commute_through_concat: Invalid adjusted_concat_dim=" << adjusted_concat_dim
-    //                   << " for producer_shape_size=" << producer->shape().size() << std::endl;
-    //         return false;
-    //     }
-    // }
-    // else
-    // {
-    //     if (adjusted_concat_dim < 0 || adjusted_concat_dim >= (int)op->shape().size())
-    //     {
-    //         std::cout << "can_commute_through_concat: Invalid adjusted_concat_dim=" << adjusted_concat_dim
-    //                   << " for op_shape_size=" << op->shape().size() << std::endl;
-    //         return false;
-    //     }
-    // }
-
-    // // Check if adjusted_concat_dim is valid for clone_shape
-    // if (adjusted_concat_dim < 0 || adjusted_concat_dim >= (int)clone_shape->size())
-    // {
-    //     std::cout << "can_commute_through_concat: Invalid adjusted_concat_dim=" << adjusted_concat_dim
-    //               << " for clone_shape_size=" << clone_shape->size() << std::endl;
-    //     return false;
-    // }
-
-    // // Check golden transform dimensions if this is a reshape operation
-    // if (op->get_golden_transforms().size() > 0)
-    // {
-    //     auto golden_transform = op->get_golden_transforms()[0];
-    //     if (golden_transform.op == "reshape")
-    //     {
-    //         int idx = adjusted_concat_dim >= 0 ? adjusted_concat_dim : adjusted_concat_dim +
-    //         golden_transform.attr.size(); if (idx < 0 || idx >= (int)golden_transform.attr.size())
-    //         {
-    //             std::cout << "can_commute_through_concat: Invalid idx=" << idx
-    //                       << " for golden_transform.attr.size()=" << golden_transform.attr.size() << std::endl;
-    //             return false;
-    //         }
-    //     }
-    // }
-
-    if (!validate_commutation(
-            "can_commute_through_concat", graph, op, initial_op, producer, commute_shape, clone_shape, commute_up))
-    {
-        return false;
-    }
-
     return commute_through_concat(
         graph, op, initial_op, producer, commute_shape, clone_shape, true, nullptr, nullptr, nullptr, commute_up);
 }
@@ -1028,82 +845,6 @@ bool can_commute_through_reduce(
     graphlib::Shape *clone_shape,
     bool commute_up)
 {
-    // // Check for null pointers
-    // if (!op || !initial_op || !commute_shape || !clone_shape)
-    // {
-    //     std::cout << "can_commute_through_reduce: Null pointer detected" << std::endl;
-    //     return false;
-    // }
-
-    // // Check if shapes are valid
-    // if (commute_shape->size() == 0 || clone_shape->size() == 0)
-    // {
-    //     std::cout << "can_commute_through_reduce: Empty shape detected" << std::endl;
-    //     return false;
-    // }
-
-    // // Get reduce dimension
-    // if (op->op_attrs().size() < 1)
-    // {
-    //     std::cout << "can_commute_through_reduce: Reduce op has no attributes" << std::endl;
-    //     return false;
-    // }
-
-    // int reduce_dim = std::get<int>(op->op_attrs()[0]);
-
-    // // Convert to positive indexing
-    // if (reduce_dim < 0)
-    // {
-    //     reduce_dim += op->shape().size();
-    // }
-
-    // // Check if reduce_dim is valid for the op shape
-    // if (reduce_dim < 0 || reduce_dim >= (int)op->shape().size())
-    // {
-    //     std::cout << "can_commute_through_reduce: Invalid reduce_dim=" << reduce_dim
-    //               << " for op_shape_size=" << op->shape().size() << std::endl;
-    //     return false;
-    // }
-
-    // // Get new dimension through commutation
-    // auto [can_commute, new_dim] = can_commute_through_dim(initial_op, graph, reduce_dim, commute_up);
-
-    // if (!can_commute || new_dim < 0)
-    // {
-    //     std::cout << "can_commute_through_reduce: cannot commute through reduce: can_commute= " << can_commute
-    //               << ", new_dim= " << new_dim << std::endl;
-    //     return false;
-    // }
-
-    // // Check if new_dim is valid for commute_shape
-    // if (new_dim >= (int)commute_shape->size())
-    // {
-    //     // Add debug prints to track the issue
-    //     std::cout << "can_commute_through_reduce: op=" << (op ? op->name() : "null")
-    //               << ", initial_op=" << (initial_op ? initial_op->name() : "null")
-    //               << ", producer=" << (producer ? producer->name() : "null") << std::endl;
-    //     std::cout << "can_commute_through_reduce: commute_shape_size=" << (commute_shape ? commute_shape->size() : 0)
-    //               << ", clone_shape_size=" << (clone_shape ? clone_shape->size() : 0) << std::endl;
-    //     std::cout << "can_commute_through_reduce: can_commute=" << can_commute << ", new_dim=" << new_dim <<
-    //     std::endl; std::cout << "can_commute_through_reduce: Invalid new_dim=" << new_dim
-    //               << " for commute_shape_size=" << commute_shape->size() << std::endl;
-    //     return false;
-    // }
-
-    // // Check if reduce_dim is valid for clone_shape
-    // if (reduce_dim >= (int)clone_shape->size())
-    // {
-    //     std::cout << "can_commute_through_reduce: Invalid reduce_dim=" << reduce_dim
-    //               << " for clone_shape_size=" << clone_shape->size() << std::endl;
-    //     return false;
-    // }
-
-    // if (!validate_commutation(
-    //         "can_commute_through_reduce", graph, op, initial_op, producer, commute_shape, clone_shape, commute_up))
-    // {
-    //     return false;
-    // }
-
     return commute_through_reduce(
         graph,
         op,
