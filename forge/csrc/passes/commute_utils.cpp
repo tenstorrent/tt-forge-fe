@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Tenstorrent AI ULC
+// SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/commute_utils.hpp"
@@ -236,7 +236,6 @@ bool are_compatible_ops(
     return false;
 }
 
-
 bool commute_through_select(
     graphlib::Graph *graph,
     graphlib::OpNode *op,
@@ -312,7 +311,7 @@ bool commute_through_select(
     bool can_commute = dim_unaffected_by_commute;
     // dim_involved_in_commute is whether the select dim is unchanged by the commute
     // i.e. Unaffected: reshape (1, 1, 128, 64) to (1, 128, 8, 8) -> select(1, 0, 32, 128) -> (1, 32, 8, 8)
-    // i.e. Affected:   reshape (1, 1, 64, 4096) to (1, 32, 2, 4096) ->select(-1, 0, 16, 32) -> (1, 32, 32, 16)
+    // i.e. Affected:   reshape (1, 1, 32, 1024) to (1, 32, 32, 32) ->select(-1, 0, 16, 32) -> (1, 32, 32, 16)
     //      In the Affected case, the commute shape should become (1, 1, 32, 512) after the select op.
     //      The clone shape should be just (1, 32, 32, 16). The op attrs do not need to change.
 
