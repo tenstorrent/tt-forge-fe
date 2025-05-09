@@ -284,6 +284,7 @@ class Tags:
     failure_category: str = ""
     refined_error_message: str = ""
     group: Optional[str] = None
+    emitc_status: Optional[bool] = None
 
 
 @dataclass_json
