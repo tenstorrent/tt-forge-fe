@@ -16,7 +16,8 @@ from .utils import LoggerUtils
 from .utils import RateLimiter
 from .utils import FrameworkModelType
 from .utils import PytorchUtils
-from .features import TestFeaturesConfiguration
+from .features import TestSweepsFeaturesParams
+from .features import TestSweepsFeatures
 from .plan import InputSource
 from .plan import TestVector
 from .plan import TestCollection
@@ -29,8 +30,9 @@ from .plan import FailingRulesConverter
 from .plan import TestPlanScanner
 from .test_data import TestCollectionCommon
 from .test_data import TestCollectionTorch
+from .failing_reasons import FailingReason
 from .failing_reasons import FailingReasons
-from .failing_reasons import FailingReasonsValidation
+from .failing_reasons_validation import FailingReasonsValidation
 from .pytest import PyTestUtils
 from .pytest import PytestParamsUtils
 
@@ -48,7 +50,8 @@ __all__ = [
     "VerifyUtils",
     "LoggerUtils",
     "RateLimiter",
-    "TestFeaturesConfiguration",
+    "TestSweepsFeaturesParams",
+    "TestSweepsFeatures",
     "FrameworkModelType",
     "PytorchUtils",
     "InputSource",
@@ -63,6 +66,7 @@ __all__ = [
     "TestPlanScanner",
     "TestCollectionCommon",
     "TestCollectionTorch",
+    "FailingReason",
     "FailingReasons",
     "FailingReasonsValidation",
     "PyTestUtils",
