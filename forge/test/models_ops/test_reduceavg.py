@@ -2881,7 +2881,10 @@ class TransposeCommute(ForgeModule):
 
         reduce_avg_output = forge.op.ReduceAvg("", matmul_output, dim=-1, keep_dim=True)
 
-        return reduce_avg_output
+        # Add 1
+        add_output = forge.op.Add("", reduce_avg_output, 1)
+
+        return add_output
 
 
 class ReduceCommuteTest(torch.nn.Module):
@@ -2901,6 +2904,9 @@ class ReduceCommuteTest(torch.nn.Module):
 
         # Reduce along dimension 2 (the last dimension)
         z = torch.mean(y, dim=2, keepdim=True)  # [1, 2304, 1]
+
+        # Add 1
+        z = z + 1
 
         return z
 
