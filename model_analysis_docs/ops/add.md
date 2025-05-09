@@ -22,145 +22,145 @@
 			<td rowspan="63">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
 			<td rowspan="63">146</td>
 			<td>7</td>
-			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 120, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_77680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>6</td>
-			<td><ul><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_1_3b_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_seq_cls_hf</li><li>pt_opt_facebook_opt_1_3b_qa_hf</li><li>pt_opt_facebook_opt_350m_qa_hf</li><li>pt_opt_facebook_opt_350m_seq_cls_hf</li><li>pt_opt_facebook_opt_125m_qa_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 32), dtype=int64)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=int64)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 72, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_57680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 480, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_148680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 672, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_168680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li></ul></td>
+			<td><ul><li>pt_ghostnet_ghostnet_100_in1k_img_cls_timm</li><li>pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub</li><li>pt_ghostnet_ghostnet_100_img_cls_timm</li><li>pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm</li><li>pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 960, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_217680, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.0.branches.2.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5412602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>5</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.0.fuse_layers.2.0.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6582602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.1.branches.1.0.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6342602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.1.fuse_layers.2.0.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8202602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>4</td>
-			<td><ul><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
+			<td><ul><li>pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub</li><li>pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm</li><li>pt_vovnet_ese_vovnet39b_obj_det_torchhub</li><li>pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1024, 1, 1), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_156358, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_opt_facebook_opt_125m_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_1_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_opt_facebook_opt_1_3b_clm_hf</li><li>pt_opt_facebook_opt_350m_clm_hf</li><li>pt_opt_facebook_opt_125m_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 256), dtype=int64)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=int64)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage3.0.branches.0.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1242602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage3.1.branches.0.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_2082602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage3.3.branches.0.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_3882602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage3.3.branches.2.1.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4482602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.0.branches.0.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_4872602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.0.branches.1.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5172602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.0.branches.2.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_5532602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.1.branches.0.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6102602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.1.branches.0.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6162602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.1.branches.2.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_6852602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.2.branches.1.3.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8112602, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>3</td>
-			<td><ul><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li></ul></td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
 			<td>Operand(type=Constant, name=stage4.2.fuse_layers.2.0.1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_9042602, dtype=float32)</td>
 			<td></td>
 		</tr>
@@ -184,7 +184,7 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li><li>pt_roberta_xlm_roberta_base_mlm_hf</li></ul></td>
+			<td><ul><li>pt_roberta_xlm_roberta_base_mlm_hf</li><li>pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 128), dtype=int64)<br><div align='center'>X</div>Operand(type=Constant, name=const_10, dtype=int64)</td>
 			<td></td>
 		</tr>
@@ -399,35 +399,71 @@
 			<td></td>
 		</tr>
 		<tr>
-			<td rowspan="47">2</td>
-			<td rowspan="47">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="47">71</td>
-			<td>7</td>
-			<td><ul><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 4, 4), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>7</td>
-			<td><ul><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li></ul></td>
+			<td rowspan="59">2</td>
+			<td rowspan="59">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="59">106</td>
+			<td>8</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_1_8b_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf</li><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</li></ul></td>
 			<td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
+			<td>7</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf</li><li>pt_llama3_huggyllama_llama_7b_seq_cls_hf</li><li>pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf</li><li>pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 4, 4), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_monodle_base_obj_det_torchvision</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Constant, name=model.1.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_7214, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_monodle_base_obj_det_torchvision</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Constant, name=model.2.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_13214, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td><ul><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_monodle_base_obj_det_torchvision</li><li>pt_unet_qubvel_img_seg_torchhub</li><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Constant, name=model.4.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_25214, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td><ul><li>pt_phi1_5_microsoft_phi_1_5_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li><li>pt_phi1_microsoft_phi_1_token_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td>3</td>
-			<td><ul><li>pt_codegen_salesforce_codegen_350m_mono_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_multi_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_nl_clm_hf</li></ul></td>
+			<td><ul><li>pt_codegen_salesforce_codegen_350m_multi_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_nl_clm_hf</li><li>pt_codegen_salesforce_codegen_350m_mono_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_60, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td>2</td>
-			<td><ul><li>pt_falcon3_tiiuae_falcon3_3b_base_clm_hf</li><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 12, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td>3</td>
+			<td><ul><li>pt_hrnet_hrnet_w18_pose_estimation_timm</li><li>pt_hrnet_hrnet_w30_pose_estimation_timm</li><li>pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm</li></ul></td>
+			<td>Operand(type=Constant, name=stage4.2.branches.1.2.bn2.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_8052602, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td><ul><li>pt_unet_cityscape_img_seg_osmr</li><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Constant, name=model.6.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_37214, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_llama3_huggyllama_llama_7b_clm_hf</li><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li></ul></td>
+			<td><ul><li>pt_falcon3_tiiuae_falcon3_7b_base_clm_hf</li><li>pt_falcon3_tiiuae_falcon3_3b_base_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 12, 522, 522), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_llama3_meta_llama_llama_3_2_3b_clm_hf</li><li>pt_llama3_huggyllama_llama_7b_clm_hf</li></ul></td>
 			<td>Operand(type=Constant, name=const_80, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 32), dtype=float32)</td>
 			<td></td>
 		</tr>
@@ -439,14 +475,20 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
-			<td>Operand(type=Constant, name=const_70, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)</td>
+			<td><ul><li>pt_phi1_5_microsoft_phi_1_5_clm_hf</li><li>pt_phi1_microsoft_phi_1_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 7, 7), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_phi2_microsoft_phi_2_token_cls_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_token_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td><ul><li>pt_phi1_5_microsoft_phi_1_5_seq_cls_hf</li><li>pt_phi1_microsoft_phi_1_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_phi2_microsoft_phi_2_clm_hf</li><li>pt_phi2_microsoft_phi_2_pytdml_clm_hf</li></ul></td>
+			<td>Operand(type=Constant, name=const_70, dtype=float32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 1, 256), dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -457,7 +499,7 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li><li>pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf</li></ul></td>
+			<td><ul><li>pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf</li><li>pt_qwen_v2_qwen_qwen2_5_3b_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 16, 29, 29), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
 			<td></td>
 		</tr>
@@ -475,8 +517,20 @@
 		</tr>
 		<tr>
 			<td>2</td>
-			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li></ul></td>
+			<td><ul><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf</li><li>pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 12, 35, 35), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_unet_qubvel_img_seg_torchhub</li></ul></td>
+			<td>Operand(type=Constant, name=model.0.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_1214, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td><ul><li>pt_mobilenet_v1_basic_img_cls_torchvision</li><li>pt_unet_carvana_base_img_seg_github</li></ul></td>
+			<td>Operand(type=Constant, name=model.12.model.3.model.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_73214, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -518,7 +572,7 @@
 		<tr>
 			<td>1</td>
 			<td><ul><li>pt_falcon3_tiiuae_falcon3_1b_base_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 8, 10, 10), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td>Operand(type=Activation, shape=(1, 8, 522, 522), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -613,14 +667,26 @@
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td><ul><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 32, 13, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
 			<td>1</td>
-			<td><ul><li>pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(1, 32, 13, 13), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td><ul><li>pt_phi4_microsoft_phi_4_clm_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 40, 6, 6), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_phi4_microsoft_phi_4_seq_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 40, 256, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_phi4_microsoft_phi_4_token_cls_hf</li></ul></td>
+			<td>Operand(type=Activation, shape=(1, 40, 12, 12), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_40, dtype=float32)</td>
 			<td></td>
 		</tr>
 		<tr>
@@ -681,6 +747,12 @@
 			<td>1</td>
 			<td><ul><li>pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 14, 39, 39), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_50, dtype=float32)</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_unet_qubvel_img_seg_torchhub</li></ul></td>
+			<td>Operand(type=Constant, name=decoder.blocks.4.conv1.1.running_var, dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_337910, dtype=float32)</td>
 			<td></td>
 		</tr>
 	</tbody>

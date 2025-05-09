@@ -4544,8 +4544,8 @@
     <tr>
       <th>412</th>
       <td>Squeeze</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 1, 1), dtype=float32)</td>
-      <td>dim : -2</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 1), dtype=float32)</td>
+      <td>dim : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -4555,8 +4555,8 @@
     <tr>
       <th>413</th>
       <td>Squeeze</td>
-      <td>Operand(type=Activation, shape=(1, 1024, 1), dtype=float32)</td>
-      <td>dim : -1</td>
+      <td>Operand(type=Activation, shape=(1, 1024, 1, 1), dtype=float32)</td>
+      <td>dim : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

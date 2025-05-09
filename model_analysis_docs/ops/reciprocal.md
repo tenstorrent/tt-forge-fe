@@ -22,7 +22,7 @@
 			<td rowspan="1">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
 			<td rowspan="1">6</td>
 			<td>6</td>
-			<td><ul><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li></ul></td>
+			<td><ul><li>pt_t5_google_flan_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_large_text_gen_hf</li><li>pt_t5_t5_large_text_gen_hf</li><li>pt_t5_t5_base_text_gen_hf</li><li>pt_t5_t5_small_text_gen_hf</li><li>pt_t5_google_flan_t5_base_text_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 1, 1), dtype=float32)</td>
 			<td></td>
 		</tr>

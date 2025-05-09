@@ -126,9 +126,9 @@
       <td>dtype : torch.float32</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
-      <td>&#x2705;</td>
+      <td>&#x274C;</td>
       <td></td>
-      <td></td>
+      <td>[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
     </tr>
     <tr>
       <th>11</th>
@@ -287,28 +287,6 @@
     <tr>
       <th>25</th>
       <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 80), dtype=float32)</td>
-      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>Index</td>
-      <td>Operand(type=Activation, shape=(1, 32, 256, 80), dtype=float32)</td>
-      <td>dim : -1<br>start : 32<br>stop : 80<br>stride : 1</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 32, 256, 32), dtype=float32)</td>
       <td>dim : -1<br>start : 16<br>stop : 32<br>stride : 1</td>
       <td>&#x2705;</td>
@@ -318,10 +296,32 @@
       <td></td>
     </tr>
     <tr>
-      <th>28</th>
+      <th>26</th>
       <td>Index</td>
       <td>Operand(type=Activation, shape=(1, 32, 256, 32), dtype=float32)</td>
       <td>dim : -1<br>start : 0<br>stop : 16<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Index</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 80), dtype=float32)</td>
+      <td>dim : -1<br>start : 0<br>stop : 32<br>stride : 1</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td>&#x2705;</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Index</td>
+      <td>Operand(type=Activation, shape=(1, 32, 256, 80), dtype=float32)</td>
+      <td>dim : -1<br>start : 32<br>stop : 80<br>stride : 1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -641,11 +641,11 @@
       <td>Subtract</td>
       <td>Operand(type=Constant, name=const_60, dtype=int32)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 1, 256, 256), dtype=int32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>58</th>
@@ -683,8 +683,8 @@
     <tr>
       <th>61</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 256, 32, 80), dtype=float32)</td>
-      <td>dim0 : -3<br>dim1 : -2</td>
+      <td>Operand(type=Activation, shape=(1, 16, 256), dtype=float32)</td>
+      <td>dim0 : -2<br>dim1 : -1</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
@@ -694,8 +694,8 @@
     <tr>
       <th>62</th>
       <td>Transpose</td>
-      <td>Operand(type=Activation, shape=(1, 16, 256), dtype=float32)</td>
-      <td>dim0 : -2<br>dim1 : -1</td>
+      <td>Operand(type=Activation, shape=(1, 256, 32, 80), dtype=float32)</td>
+      <td>dim0 : -3<br>dim1 : -2</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>
       <td>&#x2705;</td>

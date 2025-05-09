@@ -1070,11 +1070,11 @@
       <td>Less</td>
       <td>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>97</th>
@@ -2170,11 +2170,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 10, 32), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_63160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>197</th>
@@ -2192,11 +2192,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 256, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_66160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>199</th>
@@ -2214,11 +2214,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 20, 64), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_69160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>201</th>
@@ -2236,11 +2236,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 128, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_72160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>203</th>
@@ -2258,11 +2258,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 40, 128), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_75160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>205</th>
@@ -2280,11 +2280,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 64, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_78160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>207</th>
@@ -2302,11 +2302,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 80, 256), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_81160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>209</th>
@@ -2324,11 +2324,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 32, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_84160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>211</th>
@@ -2346,11 +2346,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 160, 512), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_87160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>213</th>
@@ -2368,11 +2368,11 @@
       <td>Where</td>
       <td>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=uint1)<br><div align='center'>X</div>Operand(type=Activation, shape=(1, 16, 320, 1024), dtype=float32)<br><div align='center'>X</div>Operand(type=Constant, name=const_90160, dtype=float32)</td>
       <td></td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
-      <td>&#x2705;</td>
       <td></td>
       <td></td>
+      <td></td>
+      <td>&#xFFFD;</td>
+      <td>[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
     </tr>
     <tr>
       <th>215</th>

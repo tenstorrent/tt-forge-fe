@@ -18,34 +18,19 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td rowspan="3">1</td>
-			<td rowspan="3">[TT_METAL][TT-Metal vs Forge Output Data mismatch] ValueError Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model , compiled_model</td>
-			<td rowspan="3">7</td>
-			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
-			<td>dim : 1</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td><ul><li>pt_stereo_facebook_musicgen_large_music_generation_hf</li><li>pt_stereo_facebook_musicgen_medium_music_generation_hf</li><li>pt_stereo_facebook_musicgen_small_music_generation_hf</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 13), dtype=int64)</td>
-			<td>dim : 2</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td><ul><li>pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text</li></ul></td>
-			<td>Operand(type=Activation, shape=(2, 7), dtype=int64)</td>
-			<td>dim : 1</td>
-		</tr>
-		<tr>
-			<td rowspan="1">2</td>
-			<td rowspan="1">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
-			<td rowspan="1">1</td>
+			<td rowspan="2">1</td>
+			<td rowspan="2">[UNKNOWN] The failure does not match any known compiler component exception rules. Please review the failure log to identify the component</td>
+			<td rowspan="2">2</td>
 			<td>1</td>
 			<td><ul><li>pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf</li></ul></td>
 			<td>Operand(type=Activation, shape=(1, 596), dtype=uint1)</td>
 			<td>dim : -1</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td><ul><li>pt_monodle_base_obj_det_torchvision</li></ul></td>
+			<td>Operand(type=Parameter, shape=(3,), dtype=float32)</td>
+			<td>dim : 1</td>
 		</tr>
 	</tbody>
 </table>
