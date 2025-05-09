@@ -340,6 +340,10 @@ def extract_framework_from_test_file_path(test_file_path: str):
         framework = "onnx"
     elif "forge/test/models/paddlepaddle" in test_file_path:
         framework = "paddlepaddle"
+    elif "forge/test/models/jax" in test_file_path:
+        framework = "jax"
+    elif "forge/test/models/tensorflow" in test_file_path:
+        framework = "tensorflow"
     else:
         framework = "unknown"
     return framework
