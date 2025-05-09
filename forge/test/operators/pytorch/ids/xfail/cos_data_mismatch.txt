@@ -1,0 +1,4 @@
+# xfail_cos_DATA_MISMATCH ids
+
+cos-FROM_HOST-None-(1, 2, 3, 4)-forge.Int8-HiFi4
+cos-FROM_HOST-None-(1, 2, 3, 4)-forge.Int32-HiFi4

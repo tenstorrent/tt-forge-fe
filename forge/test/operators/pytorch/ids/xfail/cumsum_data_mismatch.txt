@@ -1,0 +1,23 @@
+# xfail_cumsum_DATA_MISMATCH ids
+
+cumsum-FROM_ANOTHER_OP-{'dim': 1}-(1, 9920, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 1}-(1, 10000, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 1}-(10, 10000, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 2}-(1, 1, 9920, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 2}-(1, 10, 10000, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 2}-(9, 1, 9920, 1)-None-None
+cumsum-FROM_ANOTHER_OP-{'dim': 2}-(10, 10, 10000, 1)-None-None
+cumsum-FROM_HOST-{'dim': 1}-(1, 9920, 1)-None-None
+cumsum-FROM_HOST-{'dim': 1}-(1, 10000, 1)-None-None
+cumsum-FROM_HOST-{'dim': 1}-(10, 10000, 1)-None-None
+cumsum-FROM_HOST-{'dim': 2}-(1, 1, 9920, 1)-None-None
+cumsum-FROM_HOST-{'dim': 2}-(1, 10, 10000, 1)-None-None
+cumsum-FROM_HOST-{'dim': 2}-(9, 1, 9920, 1)-None-None
+cumsum-FROM_HOST-{'dim': 2}-(10, 10, 10000, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 1}-(1, 9920, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 1}-(1, 10000, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 1}-(10, 10000, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 2}-(1, 1, 9920, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 2}-(1, 10, 10000, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 2}-(9, 1, 9920, 1)-None-None
+cumsum-CONST_EVAL_PASS-{'dim': 2}-(10, 10, 10000, 1)-None-None

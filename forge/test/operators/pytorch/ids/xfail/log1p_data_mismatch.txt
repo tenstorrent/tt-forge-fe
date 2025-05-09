@@ -1,0 +1,4 @@
+# xfail_log1p_DATA_MISMATCH ids
+
+log1p-FROM_HOST-None-(1, 2, 3, 4)-forge.Int8-HiFi4
+log1p-FROM_HOST-None-(1, 2, 3, 4)-forge.Int32-HiFi4
