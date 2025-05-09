@@ -1,5 +1,4 @@
 -r core_requirements.txt
-torch @ https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp310-cp310-linux_x86_64.whl ; python_version=='3.10'
-torch==2.6.0 ; python_version=='3.11'
+torch @ https://download.pytorch.org/whl/cpu/torch-2.7.0%2Bcpu-cp310-cp310-manylinux_2_28_x86_64.whl#sha256=c98c4f48f42a2237e079f3de48e8549de2c8cf68cdcf2041564c7794bbce0b59  ; python_version=='3.10'
 # Custom torchversion with ABI
 torchvision==0.16.0+fbb4cc5
