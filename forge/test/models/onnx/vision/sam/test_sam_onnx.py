@@ -34,7 +34,7 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     if variant == "facebook/sam-vit-base":
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
         forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")

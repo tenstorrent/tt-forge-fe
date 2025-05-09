@@ -24,7 +24,7 @@ def test_yolov10(forge_property_recorder, tmp_path):
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P1")
 
     # Load  model and input

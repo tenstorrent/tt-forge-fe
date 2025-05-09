@@ -37,7 +37,7 @@ def test_gemma_v1_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

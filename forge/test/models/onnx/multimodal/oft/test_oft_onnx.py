@@ -21,7 +21,7 @@ def test_oft(forge_property_recorder, tmp_path, variant):
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P1")
     forge_property_recorder.record_model_name(module_name)
 
