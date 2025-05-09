@@ -21,10 +21,10 @@ from torchvision.transforms import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.unet.utils.model import UNET
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -41,14 +41,14 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.xfail
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_priority("P1")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
@@ -94,8 +94,8 @@ def get_imagenet_sample():
 def test_unet_holocron_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="holocron",
@@ -105,7 +105,6 @@ def test_unet_holocron_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -154,8 +153,8 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 def test_unet_qubvel_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="qubvel",
@@ -165,7 +164,6 @@ def test_unet_qubvel_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
@@ -217,14 +215,13 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 def test_unet_torchhub_pytorch(forge_property_recorder):
     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
@@ -241,11 +238,10 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_unet_carvana(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="unet_carvana",
         source=Source.GITHUB,
@@ -254,7 +250,6 @@ def test_unet_carvana(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     framework_model = UNET(in_channels=3, out_channels=1)

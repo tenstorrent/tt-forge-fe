@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 import forge
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 import subprocess
@@ -125,34 +125,34 @@ LlamaModel._update_causal_mask = _update_causal_mask
     [
         pytest.param(
             "meta-llama/Llama-3.1-8B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.xfail,
-        ),
-        pytest.param(
-            "meta-llama/Llama-3.2-3B",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
-        ),
-        pytest.param(
-            "meta-llama/Llama-3.1-8B-Instruct",
             marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
+            "meta-llama/Llama-3.2-3B",
+            marks=pytest.mark.skip(reason="Segmentation fault"),
+        ),
+        pytest.param(
+            "meta-llama/Llama-3.1-8B-Instruct",
+            marks=pytest.mark.skip(reason="Segmentation fault"),
+        ),
+        pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Segmentation fault"),
         ),
     ],
 )
 def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -162,10 +162,10 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
+        forge_property_recorder.record_priority("P2")
     else:
         forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
@@ -205,11 +205,11 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

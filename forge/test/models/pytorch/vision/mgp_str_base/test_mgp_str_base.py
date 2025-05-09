@@ -4,12 +4,22 @@
 
 # From: https://huggingface.co/alibaba-damo/mgp-str-base
 import pytest
+import torch
 
 import forge
-from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.verify import DepricatedVerifyConfig, verify
 
 from test.models.pytorch.vision.mgp_str_base.utils.utils import load_input, load_model
-from test.models.utils import Framework, Source, Task, build_module_name
+
+
+class Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, inputs):
+        return self.model(inputs).logits
 
 
 @pytest.mark.nightly
@@ -21,8 +31,8 @@ from test.models.utils import Framework, Source, Task, build_module_name
 )
 def test_mgp_scene_text_recognition(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mgp",
         variant=variant,
@@ -32,15 +42,19 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     framework_model = load_model(variant)
+    framework_model = Wrapper(framework_model)
     inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification

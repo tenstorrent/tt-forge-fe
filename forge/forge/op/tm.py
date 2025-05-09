@@ -161,6 +161,9 @@ def AdvIndex(
     Tensor
         Forge tensor
     """
+    if dim < 0:
+        dim += len(operandA.shape)
+
     return op("adv_index", name, operandA, operandB, attrs=(dim,)).get_tensor()
 
 
@@ -237,8 +240,9 @@ def Select(
 def Pad(
     name: str,
     operandA: Tensor,
-    pad: Union[Tuple[int, int, int, int], Tuple[int, int]],
+    pad: Tuple[int, ...],
     mode: str = "constant",
+    value: float = 0.0,
     channel_last: bool = False,
 ) -> Tensor:
     """
@@ -250,15 +254,27 @@ def Pad(
         Op name, unique to the module, or leave blank to autoset
 
     operandA: Tensor
-        Input operand A
+        Input operand A to which padding will be applied.
 
-    pad: tuple
-        Either (padding_left, padding_right) or (padding_left, padding_right, padding_top, padding_bottom))
+    pad: Tuple[int, ...]
+        A tuple of padding values. The tuple should correspond to padding values for the tensor, such as
+        [left, right, top, bottom].
+
+    mode: str, optional
+        The padding mode. Default is "constant". Other modes can be supported depending on the
+        implementation (e.g., "reflect", "replicate").
+
+    value: float, optional
+        The value to use for padding when the mode is "constant". Default is 0.
+
+    channel_last: bool, optional
+        Whether the channel dimension is the last dimension of the tensor. Default is False.
+
 
     Returns
     -------
     Tensor
-        Forge tensor
+        A tensor with the specified padding applied to the input tensor.
     """
     assert (
         len(pad) == 2 or len(pad) == 4
@@ -269,18 +285,29 @@ def Pad(
         "reflect",
     ], "Currently pad op only supports constant/replicate/reflect mode"
 
+    assert not (
+        mode in ["reflect", "replicate"] and len(operandA.shape) < 2
+    ), "Padding mode 'reflect' and 'replicate' require at least 2 dimensions"
+
     mode_index = {
         "constant": 0,
         "replicate": 1,
         "reflect": 2,
     }
 
-    attrs = list(pad) + [mode_index[mode], channel_last]
+    named_attrs = {
+        "padding": list(pad),
+        "mode": mode_index[mode],
+        "value": value,
+        "channel_last": channel_last,
+    }
+    attrs = named_attrs["padding"] + [named_attrs["mode"], named_attrs["value"], named_attrs["channel_last"]]
     return op(
         "pad",
         name,
         operandA,
         attrs=attrs,
+        **named_attrs,
     ).get_tensor()
 
 

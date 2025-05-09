@@ -20,6 +20,7 @@ from forge.verify.verify import verify
         ((1, 256, 16, 16), 256, 128, 5, 2),
     ],
 )
+@pytest.mark.push
 def test_conv2d_reflect_padding_mode(
     forge_property_recorder, input_shape, in_channels, out_channels, kernel_size, padding_value
 ):
@@ -37,10 +38,10 @@ def test_conv2d_reflect_padding_mode(
     framework_model = Conv2dReflectPad(in_channels, out_channels, kernel_size, padding_value)
     framework_model.eval()
 
-    inputs = torch.rand(input_shape)
+    inputs = [torch.rand(input_shape)]
 
     compiled_model = forge.compile(
-        framework_model, sample_inputs=[inputs], forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
@@ -284,6 +285,36 @@ def test_softmax(forge_property_recorder):
     inputs = [torch.rand(1, 128)]
 
     framework_model = Softmax()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.push
+@pytest.mark.parametrize(
+    "input_shape, dim",
+    [
+        ((1, 128), 1),
+        ((4, 32), 1),
+        ((2, 3, 5), 2),
+        ((2, 3, 5), -1),
+        ((10,), 0),
+    ],
+)
+def test_log_softmax(forge_property_recorder, input_shape, dim):
+    class LogSoftmax(nn.Module):
+        def __init__(self, dim):
+            super().__init__()
+            self.log_softmax = nn.LogSoftmax(dim=dim)
+
+        def forward(self, a):
+            return self.log_softmax(a)
+
+    inputs = [torch.rand(*input_shape)]
+
+    framework_model = LogSoftmax(dim)
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
@@ -631,10 +662,7 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
         pytest.param((1, 1, 2, 2)),
         pytest.param(
             (1, 2, 1, 2),
-            marks=pytest.mark.xfail(
-                reason="TTNN only supports padding height/width attributes. Thus, padding_top "
-                "must equal padding_bottom for the op to execute as expected."
-            ),
+            marks=pytest.mark.xfail(reason="error: failed to legalize operation 'ttir.conv2d'"),
         ),
     ],
 )
@@ -649,13 +677,6 @@ def test_conv2d_with_padding(forge_property_recorder, shape, padding):
         def forward(self, x):
             x = nn.functional.pad(x, self.padding, mode="constant", value=0)
             return self.conv(x)
-
-    pad_top, pad_bottom, pad_left, pad_right = padding
-    if pad_top != pad_bottom or pad_left != pad_right:
-        pytest.xfail(
-            "TTNN only supports padding height/width attributes. Thus, padding_top "
-            "must equal padding_bottom for the op to execute as expected."
-        )
 
     inputs = [torch.rand(shape)]
 

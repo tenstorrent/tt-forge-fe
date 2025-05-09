@@ -13,8 +13,7 @@ from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import (
 )
 
 import forge
-
-from test.models.utils import Framework, build_module_name
+from forge.forge_property_utils import Framework
 
 
 def load_pipe(variant, variant_type):
@@ -406,7 +405,9 @@ def denoising_loop(
             # noise_pred_0 = pipeline(latent_model_input.detach()[0:1],timestep_.detach()[0:1],prompt_embeds.detach()[0:1],)
 
             inputs = [latent_model_input.detach()[0:1], timestep_.detach()[0:1], prompt_embeds.detach()[0:1]]
-            module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"1_{i}")
+            module_name = forge_property_recorder.record_model_properties(
+                framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"1_{i}"
+            )
             compiled_model = forge.compile(
                 pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
             )
@@ -415,7 +416,9 @@ def denoising_loop(
             # sanity
             # noise_pred_1 = pipeline(latent_model_input.detach()[1:2],timestep_.detach()[1:2],prompt_embeds.detach()[1:2],)
             inputs = [latent_model_input.detach()[1:2], timestep_.detach()[1:2], prompt_embeds.detach()[1:2]]
-            module_name = build_module_name(framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"2_{i}")
+            module_name = forge_property_recorder.record_model_properties(
+                framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"2_{i}"
+            )
             compiled_model = forge.compile(
                 pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
             )

@@ -2,7 +2,10 @@
 * @nvukobratTT @pilkicTT @dgolubovicTT
 
 # CI/CD
-/.github/ nvukobratTT @pilkicTT @vmilosevic @nsumrakTT
+/.github/ @nvukobratTT @pilkicTT @vmilosevic @nsumrakTT
 
 # Models
 forge/test/models @nvukobratTT @pilkicTT @dgolubovicTT @vkovinicTT @mstojkovicTT
+
+# Benchmarks
+forge/test/benchmark @vcanicTT @odjuricicTT @pilkicTT @nvukobratTT @dgolubovicTT

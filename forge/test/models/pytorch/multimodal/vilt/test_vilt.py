@@ -13,13 +13,13 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.vilt.utils.model import (
     ViLtEmbeddingWrapper,
     ViltModelWrapper,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -45,7 +45,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     # Wrapper
     text_vision_embedding_model = ViLtEmbeddingWrapper(model)
-    vilt_model = ViltModelWrapper(model, task=Task.QA)
+    vilt_model = ViltModelWrapper(model, task=Task.QA.short)
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
@@ -59,14 +59,13 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
@@ -75,14 +74,11 @@ def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    logits = output[0]
+    logits = co_out[0]
     idx = logits.argmax(-1).item()
     print("Predicted answer:", model.config.id2label[idx])
 
@@ -119,14 +115,13 @@ variants = ["dandelin/vilt-b32-mlm"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 

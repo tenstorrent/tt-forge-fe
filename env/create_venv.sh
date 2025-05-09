@@ -36,4 +36,5 @@ unset LD_PRELOAD
 source $TTFORGE_VENV_DIR/bin/activate
 python -m pip install --upgrade pip
 pip3 install wheel==0.37.1
+pip3 install setuptools==78.1.0
 pip3 install -r $REQUIREMENTS_FILE -f https://download.pytorch.org/whl/cpu/torch_stable.html

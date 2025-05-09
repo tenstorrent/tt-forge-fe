@@ -12,7 +12,7 @@ import torch
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.models.models_utils import preprocess_input_data
 
 
@@ -20,8 +20,8 @@ from test.models.models_utils import preprocess_input_data
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="detr",
         variant=variant,
@@ -30,8 +30,8 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = download_model(DetrForObjectDetection.from_pretrained, variant, return_dict=False)
@@ -64,8 +64,8 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
         model="detr",
         variant=variant,
@@ -74,8 +74,7 @@ def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_group("generality")
 
     # Load the model
     framework_model = download_model(DetrForSegmentation.from_pretrained, variant, return_dict=False)

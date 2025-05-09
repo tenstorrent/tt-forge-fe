@@ -10,9 +10,13 @@ from transformers import (
 )
 import forge
 from forge.verify.verify import verify
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
 import onnx
+from transformers.models.gemma2.modeling_gemma2 import Gemma2DecoderLayer
+from test.models.models_utils import Gemma2DecoderLayer_patched_forward
+
+Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
 
 
 @pytest.mark.nightly
@@ -21,24 +25,24 @@ import onnx
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            marks=pytest.mark.skip(reason="The model exceeds the 2GB limit and cannot be serialized directly."),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
         pytest.param(
             "google/gemma-2-9b-it",
-            marks=pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
         ),
     ],
 )
 def test_gemma_v2_onnx(forge_property_recorder, variant, tmp_path):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="gemma", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -57,11 +61,11 @@ def test_gemma_v2_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

@@ -6,7 +6,6 @@ from typing import Optional, List, Dict, Any, Tuple, Union
 from dataclasses import dataclass, field
 
 import torch
-import tensorflow as tf
 from loguru import logger
 
 import forge
@@ -194,7 +193,7 @@ def compile_main(
     Parameters
     ----------
     module: AnyModule
-        Torch, TensorFlow, ONNX or Forge module to compile
+        Torch, TensorFlow, Paddle, ONNX, Jax(Flax) or Forge module to compile
 
     sample_inputs: List[torch.Tensor]
         List of sample inputs for the module (used to infer shapes)
@@ -219,8 +218,7 @@ def compile_main(
     CompiledModel - Callable object that can be used to run the compiled module on device.
 
     """
-
-    assert isinstance(module, AnyModule), "Only PyTorch, TensorFlow, ONNX, Paddle and Forge modules are supported."
+    assert isinstance(module, AnyModule), f"Forge only supports: {AnyModule}."
 
     if module_name is None:
         module_name = module.__class__.__name__
@@ -1003,11 +1001,18 @@ def split_graph(context: CompileContext) -> CompileDepth:
 
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    assert context.forge_module is not None
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+    forge_module, compiler_cfg, forge_property_handler = (
+        context.forge_module,
+        context.compiler_cfg,
+        context.forge_property_handler,
+    )
+    assert forge_module is not None
+    assert compiler_cfg is not None
 
-    context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module, context.forge_property_handler)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+
+    context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config, forge_property_handler)
 
     return CompileDepth.FINISH_COMPILE
 

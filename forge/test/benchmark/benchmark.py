@@ -2,11 +2,10 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+# Built-in modules
 import sys
 import os
-
 import argparse
-import torch
 
 # Get the absolute path of the project root and add it to the path
 # When we run the tests from benchmark directory it can't find test.utils module,
@@ -14,6 +13,7 @@ import torch
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, project_root)
 
+# Forge modules
 from benchmark import models
 from test.utils import reset_seeds
 
@@ -23,6 +23,9 @@ MODELS = {
     "llama": models.llama.llama_prefill_benchmark,
     "mobilenetv2_basic": models.mobilenetv2_basic.mobilenetv2_basic_benchmark,
     "efficientnet_timm": models.efficientnet_timm.efficientnet_timm_benchmark,
+    "segformer_classification": models.segformer.segformer_classification_benchmark,
+    "vit_base": models.vit.vit_base_benchmark,
+    "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
 }
 
 
@@ -49,6 +52,20 @@ def read_args():
     parser.add_argument("-t", "--training", action="store_true", default=False, help="Benchmark training.")
     parser.add_argument(
         "-bs", "--batch_size", type=int, default=1, help="Batch size, number of samples to process at once."
+    )
+    parser.add_argument(
+        "-ts",
+        "--task",
+        type=str,
+        default=None,
+        help="Machine learning task, type of the task to benchmark (i.e. classification, object detection, na).",
+    )
+    parser.add_argument(
+        "-df",
+        "--data-format",
+        type=str,
+        default=None,
+        help="Data format, format of the input data. If the model gives opportunity to change data format.",
     )
     parser.add_argument("-lp", "--loop_count", type=int, default=1, help="Number of times to run the benchmark.")
     parser.add_argument(
@@ -88,6 +105,7 @@ def read_args():
         exit(1)
 
     parsed_args["model"] = args.model
+    parsed_args["task"] = args.task
     parsed_args["config"] = args.config
     parsed_args["training"] = args.training
     parsed_args["loop_count"] = args.loop_count
@@ -98,6 +116,7 @@ def read_args():
     else:
         parsed_args["batch_size"] = args.batch_size
 
+    parsed_args["data_format"] = args.data_format
     parsed_args["input_size"] = args.input_size
     parsed_args["hidden_size"] = args.hidden_size
     parsed_args["output"] = args.output

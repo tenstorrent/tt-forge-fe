@@ -445,16 +445,9 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     [
         ((56), 0),
         ((1, 128), 1),
-        pytest.param(
-            (1, 64, 76),
-            2,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
-        ),
-        pytest.param(
-            (1, 64, 76, 96),
-            3,
-            marks=pytest.mark.xfail(reason="ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
-        ),
+        ((1, 32), -1),
+        ((1, 64, 76), 2),
+        ((1, 64, 76, 96), 3),
         pytest.param(
             (1, 64, 86, 100, 120),
             4,
@@ -595,9 +588,6 @@ def test_log(forge_property_recorder, shape):
         ((1, 16, 32, 32), (1,)),
         ((1, 32, 32, 32), (1,)),
     ],
-)
-@pytest.mark.xfail(
-    reason="TTNN maximum op: unsupported broadcast. Tracking on: https://github.com/tenstorrent/tt-metal/issues/16969"
 )
 @pytest.mark.push
 def test_maximum(forge_property_recorder, shape_x, shape_y):
@@ -780,3 +770,177 @@ def test_floor(forge_property_recorder, input_data):
     )
 
     verify([input_data], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape, dim, keepdim",
+    [
+        # Core test cases for dimension-specific argmax
+        pytest.param(
+            (56,),
+            0,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), 0, True),
+        ((1, 128), 1, False),
+        ((1, 128), 1, True),
+        pytest.param(
+            (1, 64, 76),
+            2,
+            False,
+        ),
+        ((1, 64, 76), 2, True),
+        pytest.param(
+            (1, 64, 76), 1, True, marks=pytest.mark.xfail(reason="TTNN: Only argmax on last dim is supported!")
+        ),
+        #################################################
+        # Core test cases for global argmax (dim=None)
+        pytest.param(
+            (56,),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((56,), None, True),
+        pytest.param(
+            (1, 128),
+            None,
+            False,
+            marks=pytest.mark.xfail(
+                reason="This argmax reduction should return a scalar, but that's not supported yet"
+            ),
+        ),
+        ((1, 128), None, True),
+    ],
+)
+@pytest.mark.push
+def test_argmax(forge_property_recorder, shape, dim, keepdim):
+    class ArgMax(nn.Module):
+        def __init__(self, dim, keepdim):
+            super().__init__()
+            self.dim = dim
+            self.keepdim = keepdim
+
+        def forward(self, x):
+            return torch.argmax(x, dim=self.dim, keepdim=self.keepdim)
+
+    inputs = [torch.rand(shape)]
+
+    framework_model = ArgMax(dim, keepdim)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "pattern, input_shape",
+    [
+        ("nhwpqc->nchpwq", [(2, 64, 64, 2, 2, 16)]),
+        ("nhwpqc->nchpwq", [(1, 32, 32, 4, 4, 8)]),
+        ("nhwpqc->nchpwq", [(4, 16, 16, 2, 2, 32)]),
+        ("nhwpqc->nchpwq", [(3, 8, 8, 1, 1, 64)]),
+        ("...si,...id->...sd", [(2, 3, 4), (2, 4, 5)]),
+        ("...si,...id->...sd", [(5, 6, 7), (5, 7, 8)]),
+        ("...si,...id->...sd", [(1, 10, 20), (1, 20, 30)]),
+        ("...si,...id->...sd", [(4, 2, 3), (4, 3, 6)]),
+    ],
+)
+@pytest.mark.push
+def test_einsum(forge_property_recorder, pattern, input_shape):
+    class EinsumModel(torch.nn.Module):
+        def __init__(self, pattern):
+            super().__init__()
+            self.pattern = pattern
+
+        def forward(self, *inputs):
+            return torch.einsum(self.pattern, *inputs)
+
+    inputs = [torch.randn(shape) for shape in input_shape]
+
+    model = EinsumModel(pattern)
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("shape", [(8,), (4, 4), (3, 5, 7), (2, 6, 4, 8), (2, 3, 5, 7, 9)])
+@pytest.mark.push
+def test_res_conj(shape):
+    class res_conj(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            output = x.resolve_conj()
+            return output
+
+    model = res_conj()
+    model.eval()
+
+    inputs = [torch.randn(shape)]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize("shape", [(8,), (4, 4), (3, 5, 7), (2, 6, 4, 8), (2, 3, 5, 7, 9)])
+@pytest.mark.push
+def test_res_neg(shape):
+    class res_neg(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            output = x.resolve_neg()
+            return output
+
+    model = res_neg()
+    model.eval()
+
+    inputs = [torch.randn(shape)]
+
+    # Forge compile framework model
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    # Model Verification
+    verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, dim, unflattened_size",
+    [
+        ([10], 0, (5, 2)),
+        ([12, 15], 1, (3, 5)),
+        ([197, 1, 2304], -1, (3, 768)),
+        ([11, 5, 8, 2], 2, (2, 2, 2)),
+        ([25, 75, 3, 24], 3, (4, 6)),
+        ([5, 5, 30, 2, 60], 4, (2, 2, 3, 5)),
+    ],
+)
+@pytest.mark.push
+def test_unflatten(forge_property_recorder, input_shape, dim, unflattened_size):
+    class UnflattenModel(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x):
+            return torch.unflatten(x, dim, unflattened_size)
+
+    input_tensor = torch.randn(*input_shape)
+    inputs = [input_tensor]
+
+    model = UnflattenModel()
+    model.eval()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

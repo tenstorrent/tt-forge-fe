@@ -50,13 +50,12 @@ forge_modules_and_shapes_dtypes_list = [
                 ((2, 1, 2048), torch.float32),
             ],
             {
-                "model_name": [
+                "model_names": [
                     "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
                     "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 ],
                 "pcc": 0.99,
-                "op_params": {"axis": "-3"},
+                "args": {"axis": "-3"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -65,13 +64,13 @@ forge_modules_and_shapes_dtypes_list = [
         Stack1,
         [((1, 256, 16, 16), torch.float32), ((1, 256, 16, 16), torch.float32)],
         {
-            "model_name": [
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+            "model_names": [
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"axis": "-1"},
+            "args": {"axis": "-1"},
         },
     ),
 ]
@@ -80,14 +79,23 @@ forge_modules_and_shapes_dtypes_list = [
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
-    forge_property_recorder("tags.op_name", "Stack")
+
+    forge_property_recorder.enable_single_op_details_recording()
+    forge_property_recorder.record_forge_op_name("Stack")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        forge_property_recorder("tags." + str(metadata_name), metadata_value)
+        if metadata_name == "model_names":
+            forge_property_recorder.record_op_model_names(metadata_value)
+        elif metadata_name == "args":
+            forge_property_recorder.record_forge_op_args(metadata_value)
+        else:
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [
@@ -109,6 +117,8 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
             shape=constant.shape.get_pytorch_shape(), dtype=constant.pt_data_format, max_int=max_int
         )
         framework_model.set_constant(name, constant_tensor)
+
+    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
 
     compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 

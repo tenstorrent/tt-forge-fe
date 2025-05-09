@@ -9,9 +9,8 @@ from PIL import Image
 from torchvision import transforms
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-
-from test.models.utils import Framework, Source, Task, build_module_name
 
 variants = [
     pytest.param("hardnet68", id="hardnet68"),
@@ -26,8 +25,8 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.skip(reason="dependent on CCM repo")
 def test_hardnet_pytorch(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="hardnet",
         variant=variant,
@@ -37,7 +36,6 @@ def test_hardnet_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # load only the model architecture without pre-trained weights.
     framework_model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)

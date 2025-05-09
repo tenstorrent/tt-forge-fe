@@ -18,28 +18,23 @@ from transformers import (
 )
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
-from test.models.utils import (
-    Framework,
-    Source,
-    Task,
-    build_module_name,
-    print_cls_results,
-)
 from test.utils import download_model
 
 
 @pytest.mark.nightly
 @pytest.mark.push
 def test_mobilenetv2_basic(forge_property_recorder):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant="basic",
@@ -49,7 +44,6 @@ def test_mobilenetv2_basic(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v2")
@@ -59,14 +53,11 @@ def test_mobilenetv2_basic(forge_property_recorder):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    post_processing(output)
+    post_processing(co_out)
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
@@ -87,8 +78,8 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 def test_mobilenetv2_96(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -98,7 +89,6 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
 
@@ -129,8 +119,8 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 def test_mobilenetv2_160(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -140,7 +130,6 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
 
@@ -173,8 +162,8 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 def test_mobilenetv2_224(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -184,7 +173,6 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
 
@@ -225,8 +213,8 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 @pytest.mark.parametrize("variant", ["mobilenetv2_100"])
 def test_mobilenetv2_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -236,7 +224,6 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
 
@@ -288,8 +275,8 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnetv2",
         variant=variant,
@@ -299,7 +286,6 @@ def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
 
@@ -322,8 +308,8 @@ variants_with_weights = {
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_mobilenetv2_torchvision(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -333,7 +319,6 @@ def test_mobilenetv2_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     weight_name = variants_with_weights[variant]

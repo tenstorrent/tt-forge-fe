@@ -12,13 +12,13 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 variants = [
@@ -31,8 +31,8 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_mobilenetv3_basic(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv3",
         variant=variant,
@@ -42,7 +42,6 @@ def test_mobilenetv3_basic(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model(variant)
@@ -52,14 +51,11 @@ def test_mobilenetv3_basic(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    post_processing(output)
+    post_processing(co_out)
 
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
@@ -98,8 +94,8 @@ variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnetv3",
         source=Source.TIMM,
@@ -109,7 +105,6 @@ def test_mobilenetv3_timm(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,

@@ -12,9 +12,9 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 varaints = [
@@ -44,8 +44,8 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         variant=variant,
@@ -55,9 +55,12 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    load_pretrained_weights = True
+    if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
+        load_pretrained_weights = False
+
+    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights)
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
@@ -86,8 +89,8 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
 @pytest.mark.xfail
 def test_mlp_mixer_pytorch(forge_property_recorder):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         source=Source.GITHUB,
@@ -96,7 +99,6 @@ def test_mlp_mixer_pytorch(forge_property_recorder):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and input
     framework_model = MLPMixer(

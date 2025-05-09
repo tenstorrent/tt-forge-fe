@@ -110,17 +110,15 @@ def eval(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(t_ops[1].shape) == 1 or len(t_ops[1].shape) == 2, "indices should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
+        indices = t_ops[1].type(torch.LongTensor)
+        if len(indices.shape) == 2:
+            # Indices are 2D, we need to reshape them to 1D
+            indices = indices.reshape(-1)
 
-        if len(t_ops[1].shape) > 1:
-            if len(t_ops[0].shape) > len(t_ops[1].shape) and t_ops[0].shape[0] == 1:
-                # Padded
-                ret = torch.unsqueeze(t_ops[0][0][t_ops[1].numpy()], 0)
-            else:
-                ret = torch.unsqueeze(t_ops[0][t_ops[1].numpy()], 0)
-        else:
-            ret = t_ops[0][t_ops[1].numpy()]
+        ret = torch.index_select(t_ops[0], dim, indices)
+
         return ret
 
     if type == "broadcast":
@@ -298,18 +296,6 @@ def eval(type, attr, ops):
         act = t_ops[0]
         return act.narrow(dim, start, length)
 
-    if type == "pad":
-        # Expect (padding_left, padding_right, mode, channel_last) or (padding_left, padding_right, padding_top, padding_bottom, mode, channel_last)
-        assert len(attr) == 4 or len(attr) == 6
-
-        mode_idx = attr[-2]
-        channel_last = attr[-1]
-        attr = attr[:-2]
-        if channel_last:
-            attr = [0, 0] + attr
-        mode_options = ["constant", "replicate", "reflect"]
-        return torch.nn.functional.pad(t_ops[0], tuple(attr), mode=mode_options[mode_idx])
-
     if type == "unsqueeze":
         assert len(attr) == 2
         dim = attr[0]
@@ -396,12 +382,10 @@ def shape(type, attr, ops):
 
     if type == "adv_index":
         assert len(attr) == 1, "AdvIndex should have 1 attributes"
+        assert len(ops[1]) == 1 or len(ops[1]) == 2, "indices should be 1D or 2D"
         dim = attr[0]
-        assert dim == 0, "Currently not supported"
         shape = list(ops[0])
         shape[dim] = ops[1][-1]
-        if len(ops[1]) > 1:
-            shape.insert(dim, 1)
         return shape, []
 
     if type == "select":
@@ -590,21 +574,6 @@ def shape(type, attr, ops):
         dim, start, length, original_length = attr
         shape = list(ops[0])
         shape[dim] = length
-        return tuple(shape), []
-
-    if type == "pad":
-        assert len(attr) == 4 or len(attr) == 6
-        shape = list(ops[0])
-        channel_last = attr[-1]
-
-        if channel_last:
-            shape[-2] += attr[0] + attr[1]
-            if len(attr) == 6:
-                shape[-3] += attr[2] + attr[3]
-        else:
-            shape[-1] += attr[0] + attr[1]
-            if len(attr) == 6:
-                shape[-2] += attr[2] + attr[3]
         return tuple(shape), []
 
     if type == "unsqueeze":
@@ -801,12 +770,6 @@ def lower(type, attr, lc, ops, outputs):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "pad":
-        assert (
-            (len(attr) == 4 and attr[0] == 0) or (len(attr) == 6 and attr[0] == 0 and attr[2] == 0) or (attr[-2] != 0)
-        ), "Nop does not support left/top padding for constant mode"
-        return lc.op(ForgeNop.create(), ops)
-
     elif type == "unsqueeze":
         assert len(attr) == 2
         input_ndim = attr[1]
@@ -934,19 +897,6 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         else:
             raise NotImplementedError("Unimplemented narrow in forge")
 
-    elif type == "pad":  # TODO: update it for replicate mode
-        assert len(attr) == 4 or len(attr) == 6, "Not supported padding type"
-        if len(attr) == 6:
-            pad_left, pad_right, pad_top, pad_bottom, _, _ = attr
-            original_heigth = grad.shape[-2]  # input heigth
-            original_width = grad.shape[-1]  # input width
-            grad = ac.op("narrow", (grad,), (-2, pad_top, original_heigth - pad_top - pad_bottom, original_heigth))
-            return ac.op("narrow", (grad,), (-1, pad_left, original_width - pad_left - pad_right, original_width))
-        elif len(attr) == 4:
-            pad_left, pad_right, _, _ = attr
-            original_width = grad.shape[-1]  # input width
-            return ac.op("narrow", (grad,), (-1, pad_left, original_width - pad_left - pad_right, original_width))
-
     elif type == "unsqueeze":
         assert len(attr) == 2
         if len(inputs[0].shape) == len(grad.shape):
@@ -1036,226 +986,76 @@ def squeeze_output_for_reshape_decomp(dc, output, orig_out_shape):
 def decompose(type, attr, dc, inputs):
     if type == "adv_index":
         dim = attr[0]
-        in0_shape = inputs[0].shape
-        in1_shape = inputs[1].shape
-        if len(in0_shape) == 1 or in0_shape[dim] == 1:
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
-            return
-        if dim == 0 and len(in1_shape) <= 2:
-            # Consider the case adv_index(X,Y) where
-            #    X: (A, B), Y: (1, C) or (C,) and A != 1
-            if len(in0_shape) == 2:
-                # embedding op expects indices tensor as first argument and weight/embedding_table as second argument
-                # but the adv_index provides the reference tensor as first argument and indices tensor as second argument
-                # so swaping the operands.
-                result = dc.op(
-                    "embedding",
-                    (inputs[1], inputs[0]),
-                )
-                dc.fuse(result)
-                return
+        in0_shape = inputs[0].shape.as_list()
+        indices_shape = inputs[1].shape.as_list()
 
-    if type == "pad":
-        if all([x == 0 for x in attr[0:-2]]):
-            # Pad size is 0
-            result = dc.op(Nop.create(), [inputs[0]])
-            dc.fuse(result)
+        assert len(indices_shape) == 2 or len(indices_shape) == 1, "indices tensor should be 1D or 2D"
 
-        activations = inputs[0]
-        mode_idx = attr[-2]
-        channel_last = attr[-1]
-        if channel_last:
-            r = activations.shape[-3]
-            c = activations.shape[-2]
+        # Idea is to reshape the input tensor to [in0_shape[dim], -1] and then apply the embedding operation
+        # The embedding operation will select the appropriate indices from the reshaped tensor
+        # and then we will reshape the output back to the original shape.
+        #
+        # For example:
+        # If the input tensor is of shape [N, C, H, W] and we want to index along dim = 2 with indices shape [X],
+        # we will first reshape it: [N, C, H, W] -> [N, H, C, W] and [N, H, C, W] -> [H, N, C, W] (permuted)
+        # and then reshape it to [H, N * C * W] (flattening the last 3 dimensions)
+        # and then apply the embedding operation to select the appropriate indices [H, N * C * W] -> [X, N * C * W].
+        # Next, we will reshape the output back to the 4D shape [X, N * C * W] -> [X, N, C, W]
+        # and finally, we will transpose the output back to the original order.
+        # [X, N, C, W] -> [N, X, C, W] and [N, X, C, W] -> [N, C, X, W]
+
+        # Step 1: Move the indexed dimension to the front using a sequence of transposes
+        if dim != 0:
+            current = inputs[0]
+            for i in range(dim, 0, -1):
+                current = dc.op(TransposeTM.create(i, i - 1), [current])
+            permuted = current
         else:
-            r = activations.shape[-2]
-            c = activations.shape[-1]
+            # No need to transpose if dim is already 0
+            permuted = inputs[0]
 
-        # Find out if padding exceeds tile boundary
-        # R, C are flipped because pytorch pad starts from last axis
-        if len(attr) == 4:
-            total_padding_c = attr[0] + attr[1]
-            total_padding_r = 0
-            all_around_padding = attr[:-2] + [0, 0]
-        elif len(attr) == 6:
-            total_padding_c = attr[0] + attr[1]
-            total_padding_r = attr[2] + attr[3]
-            all_around_padding = attr[:-2]
+        # Step 2: Reshape to [in0_shape[dim], -1]
+        # Calculate product of all dimensions except the first (after transposition)
+
+        if len(in0_shape) != 2:
+            # Calculate permuted shape, by popping the element at indexed dim and inserting it at the begging
+            permuted_shape = in0_shape.copy()  # copy is needed to avoid modifying the original shape
+            indexed_dim_shape = permuted_shape.pop(dim)
+            permuted_shape = [indexed_dim_shape, *permuted_shape]
+
+            rest_dims_product = math.prod(permuted_shape[1:])
+
+            reshape_dims = [in0_shape[dim], rest_dims_product]
+            reshaped = dc.op_with_named_attrs("reshape", [permuted], {"shape": reshape_dims}, reshape_dims)
         else:
-            raise RuntimeError("Forge only support Pad with either 2 or 4 attributes")
+            reshaped = permuted
 
-        if (
-            ((len(attr) == 4 and attr[0] == 0) or (len(attr) == 6 and attr[0] == 0 and attr[2] == 0))
-            and not channel_last
-            and math.ceil((total_padding_r + r) / TILE_DIM) == math.ceil(r / TILE_DIM)
-            and math.ceil((total_padding_c + c) / TILE_DIM) == math.ceil(c / TILE_DIM)
-            and mode_idx == 0  # 'constant' mode
-        ):
-            # Pad does not exceed tile boundary and only on the end of axis
-            # Will be lowered into NOP
-            return
+        # Step 3: Apply embedding operation
+        # embedding op expects indices tensor as first argument and embedding_table as second argument
+        selected = dc.op("embedding", (inputs[1], reshaped))
 
+        # Step 4: Reshape back to appropriate dimensions
+        # The new shape replaces the indexed dimension with the indices shape
+        if len(in0_shape) != 2:
+            output_shape = indices_shape + permuted_shape[1:]
+
+            reshaped_output = dc.op_with_named_attrs("reshape", [selected], {"shape": output_shape}, output_shape)
         else:
-            # Lower into concats
-            left, right, top, bottom = 0, 0, 0, 0
-            if len(attr) == 4:
-                left, right, _, _ = attr
+            reshaped_output = selected
 
-            elif len(attr) == 6:
-                left, right, top, bottom, _, _ = attr
-            else:
-                raise RuntimeError("Forge only support Pad with either 3 or 5 attributes")
+        # Step 5: Restore original dimension order if necessary using transposes
+        if dim != 0:
+            # Move dimension 0 to position 'dim' using transposes
+            current = reshaped_output
+            for i in range(0, dim):
+                current = dc.op(TransposeTM.create(i, i + 1), [current])
+            result = current
+        else:
+            # No need to transpose if dim is already 0
+            result = reshaped_output
 
-            if mode_idx == 1:  # 'replicate' mode
-                result = activations
-
-                if channel_last:
-                    result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-
-                    orig_shape = result.shape
-                    result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    spm = create_pad_replicate_sparse_picker(c, r, top, bottom, left, right)
-                    spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    result = dc.op(
-                        "reshape",
-                        [result],
-                        (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
-                    )
-
-                    result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-                else:
-                    orig_shape = result.shape
-                    if len(orig_shape) == 2:
-                        result = dc.op("reshape", [result], (1, orig_shape[-2] * orig_shape[-1]))
-                    else:
-                        result = dc.op("reshape", [result], (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]))
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    spm = create_pad_replicate_sparse_picker(r, c, left, right, top, bottom)
-                    spm = dc.tensor(spm)
-                    result = dc.op("sparse_matmul", [spm, result])
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    if len(orig_shape) == 2:
-                        result = dc.op(
-                            "reshape", [result], (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                        )
-                    else:
-                        result = dc.op(
-                            "reshape",
-                            [result],
-                            (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c),
-                        )
-
-                dc.fuse(result)
-                return
-
-            elif mode_idx == 0:  # 'constant' mode
-                c_dim_axis = -2 if channel_last else -1
-                r_dim_axis = -3 if channel_last else -2
-
-                # On right or bottom, we can concat all the way to TILE boundary
-                result = activations
-                if left > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[c_dim_axis] = left
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [c_dim_axis])
-
-                if right > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[c_dim_axis] = (
-                        TILE_DIM if pad_shape[c_dim_axis] % TILE_DIM == 0 and right < TILE_DIM else right
-                    )
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [c_dim_axis])
-
-                if top > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[r_dim_axis] = top
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [const_tensor, result], [r_dim_axis])
-
-                if bottom > 0:
-                    pad_shape = result.shape.as_list().copy()
-                    pad_shape[r_dim_axis] = (
-                        TILE_DIM if pad_shape[r_dim_axis] % TILE_DIM == 0 and bottom < TILE_DIM else bottom
-                    )
-                    tensor = torch.zeros(pad_shape)
-                    const_tensor = dc.tensor(tensor)
-                    result = dc.op("concatenate", [result, const_tensor], [r_dim_axis])
-
-                result = dc.op("narrow", [result], (c_dim_axis, 0, total_padding_c + c, result.shape[c_dim_axis]))
-                if channel_last:
-                    result = dc.op("select", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
-                else:
-                    result = dc.op("narrow", [result], (r_dim_axis, 0, total_padding_r + r, result.shape[r_dim_axis]))
-
-                dc.fuse(result)
-                return
-
-            elif mode_idx == 2:
-                # Reflect mode
-                result = activations
-
-                if channel_last:
-                    result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-
-                    orig_shape = result.shape
-                    result = dc.op_with_named_attrs(
-                        "reshape",
-                        [result],
-                        {"shape": (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])},
-                        (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1]),
-                    )
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    spm = create_pad_reflect_sparse_picker(c, r, top, bottom, left, right)
-                    spm = dc.tensor(spm.to_dense())
-                    result = dc.op("matmul", [spm, result])
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    result = dc.op_with_named_attrs(
-                        "reshape",
-                        [result],
-                        {
-                            "shape": (
-                                1,
-                                orig_shape[-3],
-                                orig_shape[-1] + total_padding_r,
-                                orig_shape[-2] + total_padding_c,
-                            )
-                        },
-                        (1, orig_shape[-3], orig_shape[-1] + total_padding_r, orig_shape[-2] + total_padding_c),
-                    )
-
-                    result = dc.op(TransposeTM.create(-3, -1, result.shape[-3]), [result])
-                else:
-                    orig_shape = result.shape
-                    if len(orig_shape) == 2:
-                        shape = (1, orig_shape[-2] * orig_shape[-1])
-                    else:
-                        shape = (1, 1, orig_shape[-3], orig_shape[-2] * orig_shape[-1])
-
-                    result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-                    spm = create_pad_reflect_sparse_picker(r, c, left, right, top, bottom)
-                    spm = dc.tensor(spm.to_dense())
-                    result = dc.op("matmul", [spm, result])
-                    result = dc.op(TransposeTM.create(-2, -1), [result])
-
-                    if len(orig_shape) == 2:
-                        shape = (orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-                    else:
-                        shape = (1, orig_shape[-3], orig_shape[-2] + total_padding_r, orig_shape[-1] + total_padding_c)
-
-                    result = dc.op_with_named_attrs("reshape", [result], {"shape": shape}, shape)
-
-                dc.fuse(result)
-                return
+        dc.fuse(result)
+        return
 
     if type == "broadcast":
         if attr[1] == 1:

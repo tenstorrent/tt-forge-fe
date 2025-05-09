@@ -5,13 +5,21 @@
 
 import pytest
 import torch
-from transformers import AutoTokenizer, CodeGenForCausalLM
+from transformers import AutoTokenizer, CodeGenForCausalLM, CodeGenModel
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
+from test.models.models_utils import (
+    _prepare_4d_causal_attention_mask_with_cache_position,
+)
 from test.utils import download_model
+
+CodeGenModel._prepare_4d_causal_attention_mask_with_cache_position = (
+    _prepare_4d_causal_attention_mask_with_cache_position
+)
+
 
 variants = [
     "Salesforce/codegen-350M-mono",
@@ -25,14 +33,13 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_codegen(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

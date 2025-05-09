@@ -337,13 +337,19 @@ class PytorchUtils:
     """Utility functions for PyTorch operators"""
 
     @staticmethod
-    def get_pytorch_module(module_name: str):
-        """Retrieving the module that contains a given operator, based on its full name.\n
-        For example, for "torch.nn.functional.gelu", the function returns module torch.nn.functional."""
-        repo_operator = pytorch_operator_repository.get_by_name(module_name).full_name
-        module_name = repo_operator.rsplit(".", 1)[0]
-        # module = importlib.import_module(module_name)  # bad performance
+    def get_op_class_by_name(op_name: str) -> Type:
+        """Get class name of the given operator"""
+        # Get the module that contains the operator
+        op_full_name = pytorch_operator_repository.get_by_name(op_name).full_name
+        module_name = op_full_name.rsplit(".", 1)[0]
+        ## module = importlib.import_module(module_name)  # bad performance
         module = torch
         if module_name == "torch.nn.functional":
             module = torch.nn.functional
-        return module
+        if module_name == "torch.nn":
+            module = torch.nn
+        # Get operator name from full name
+        name = op_full_name.rsplit(".", 1)[-1]
+        # Get the operator class from the module
+        op_class = getattr(module, name)
+        return op_class

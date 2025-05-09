@@ -22,39 +22,42 @@ from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch
-from test.operators.utils.utils import TestDevice
+from test.operators.utils.utils import PytorchUtils, TestDevice
 
 
 class ModelFromAnotherOp(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, operator):
         super().__init__()
         self.testname = "Matmul_operator_test_op_src_from_another_op"
+        self.operator = operator
 
     def forward(self, x, y):
         xx = torch.add(x, x)
         yy = torch.add(y, y)
-        return torch.matmul(xx, yy)
+        return self.operator(xx, yy)
 
 
 class ModelFromHost(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, operator):
         super().__init__()
         self.testname = "Matmul_operator_test_op_src_from_host"
+        self.operator = operator
 
     def forward(self, x, y):
-        return torch.matmul(x, y)
+        return self.operator(x, y)
 
 
 class ModelConstEvalPass(torch.nn.Module):
-    def __init__(self, shape_1, shape_2):
+    def __init__(self, operator, shape_1, shape_2):
         super().__init__()
         self.testname = "Matmul_operator_test_op_src_const_eval_pass"
+        self.operator = operator
         self.c1 = (torch.rand(shape_1, requires_grad=False) - 0.5).detach()
         self.c2 = (torch.rand(shape_2, requires_grad=False) - 0.5).detach()
 
     def forward(self, x, y):
-        mm1 = torch.matmul(self.c1, self.c2)
-        mm2 = torch.matmul(x, y)
+        mm1 = self.operator(self.c1, self.c2)
+        mm2 = self.operator(x, y)
         aa = torch.add(mm1, mm2)
         return aa
 
@@ -76,6 +79,7 @@ class TestVerification:
         warm_reset: bool = False,
     ):
         model_type = cls.MODEL_TYPES[test_vector.input_source]
+        operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
 
         if isinstance(test_vector.input_shape[0], int):
             # input_shape is tuple of ints e.g. (a, b)
@@ -85,9 +89,9 @@ class TestVerification:
             input_shapes = [test_vector.input_shape[0], test_vector.input_shape[1]]
 
         if test_vector.input_source == InputSource.CONST_EVAL_PASS:
-            pytorch_model = model_type(*input_shapes)
+            pytorch_model = model_type(operator, *input_shapes)
         else:
-            pytorch_model = model_type()
+            pytorch_model = model_type(operator)
 
         logger.trace(f"***input_shapes: {input_shapes}")
 

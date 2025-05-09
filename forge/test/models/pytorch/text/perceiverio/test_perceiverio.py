@@ -7,9 +7,9 @@ import pytest
 from transformers import PerceiverForMaskedLM, PerceiverTokenizer
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.utils import Framework, Source, Task, build_module_name
 from test.utils import download_model
 
 
@@ -18,8 +18,8 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["deepmind/language-perceiver"])
 def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="perceiverio",
         variant=variant,
@@ -29,7 +29,6 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and tokenizer
     tokenizer = download_model(PerceiverTokenizer.from_pretrained, variant)
@@ -49,13 +48,10 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # post processing
-    logits = output[0]
+    logits = co_out[0]
     masked_tokens_predictions = logits[0, 51:61].argmax(dim=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(masked_tokens_predictions))

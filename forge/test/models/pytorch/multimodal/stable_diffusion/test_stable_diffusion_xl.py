@@ -6,13 +6,13 @@ import pytest
 import torch
 
 import forge
+from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_xl,
 )
-from test.models.utils import Framework, Source, Task, build_module_name
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
@@ -46,8 +46,8 @@ class StableDiffusionXLWrapper(torch.nn.Module):
     ],
 )
 def test_stable_diffusion_generation(forge_property_recorder, variant):
-    # Build Module Name
-    module_name = build_module_name(
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="stable_diffusion",
         variant=variant,
@@ -57,7 +57,6 @@ def test_stable_diffusion_generation(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load the pipeline
     pipe = load_pipe(variant, variant_type="xl")

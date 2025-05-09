@@ -10,22 +10,22 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.vision.yolo.utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from test.models.utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task
 
 
-@pytest.mark.xfail()
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_yolov10(forge_property_recorder, tmp_path):
-    # Build Module Name
-    module_name = build_module_name(
-        framework=Framework.PYTORCH,
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX,
         model="Yolov10",
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_model_name(module_name)
+    forge_property_recorder.record_group("generality")
+    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
