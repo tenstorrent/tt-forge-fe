@@ -7,34 +7,36 @@ import os
 import onnx
 import tensorflow as tf
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge.verify.backend import verify_module
-# from forge import DepricatedVerifyConfig
-# from forge._C.backend_api import BackendType, BackendDevice
-# from forge.verify.config import TestKind
-
-from test.utils import download_model
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 @pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
+@pytest.mark.skip(reason="Dependent on CCM Repo")
 @pytest.mark.nightly
-def test_lstm_genom_onnx(test_device):
-    load_path = "third_party/confidential_customer_models/model_2/onnx/lstm_genom/lstm-genom-model.onnx"
-    model = onnx.load(load_path)
+def test_lstm_genom_onnx(forge_property_recorder):
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX, model="lstm_genom", source=Source.GITHUB, task=Task.SEQUENCE_MODELING
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Run inference on Tenstorrent device
-    inputs = tf.random.uniform(shape=[1, 10, 4])
-    verify_module(
-        forge.OnnxModule("onnx_lstm", model),
-        input_shapes=(inputs.shape,),
-        inputs=[(inputs,)],
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=0.95,
-        ),
+    inputs = [tf.random.uniform(shape=[1, 10, 4])]
+
+    # Load ONNX model
+    load_path = "third_party/confidential_customer_models/model_2/onnx/lstm_genom/lstm-genom-model.onnx"
+    model_name = f"lstm_genom_onnx"
+    onnx_model = onnx.load(load_path)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
+
+    # Model Verification
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
