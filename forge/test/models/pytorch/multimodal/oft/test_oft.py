@@ -21,13 +21,13 @@ def test_oft(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="oft",
+        variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
     )
 
     forge_property_recorder.record_group("red")
     forger_proprty_recorder.record_priority("P1")
-    forge_property_recorder.record_model_name(module_name)
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

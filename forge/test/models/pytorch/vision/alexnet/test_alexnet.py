@@ -22,7 +22,6 @@ def test_alexnet_torchhub(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="alexnet",
-        variant="alexnet",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
     )

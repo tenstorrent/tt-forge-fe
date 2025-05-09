@@ -6,9 +6,12 @@ import json
 from enum import Enum
 from loguru import logger
 from typing import Any, Dict, List, Optional
+from collections.abc import MutableMapping
 
 import torch
 import onnx
+import flax
+from transformers.modeling_flax_utils import FlaxPreTrainedModel
 
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file
@@ -540,20 +543,43 @@ def extract_and_generate_unique_ops_tests(
     file is created, which includes a Forge module for different configurations and associated test cases.
     """
 
+    named_parameters = {}
     if framework in ["pytorch", "paddle"]:
-        named_parameters = dict(framework_mod.module.state_dict().items())
+        named_parameters.update(framework_mod.module.state_dict())
         named_buffers = dict(framework_mod.module.named_buffers())
         named_parameters.update(named_buffers)
     elif framework == "onnx":
-        named_parameters = {}
         for weight in framework_mod.module.graph.initializer:
             named_parameters[weight.name] = onnx.numpy_helper.to_array(weight)
+    elif framework == "jax":
+
+        def flatten_params(params, parent_key="", sep="."):
+            items = []
+            for key, val in params.items():
+                new_key = parent_key + sep + key if parent_key else key
+                if isinstance(val, MutableMapping):
+                    items.extend(flatten_params(val, new_key, sep=sep).items())
+                else:
+                    items.append((new_key, val))
+            return dict(items)
+
+        if isinstance(framework_mod.module, FlaxPreTrainedModel):
+            named_parameters = framework_mod.module.params
+        elif isinstance(framework_mod.module, flax.linen.Module):
+            if hasattr(framework_mod.module, "variables") and "params" in framework_mod.module.variables:
+                named_parameters = framework_mod.module.variables["params"]
+        if named_parameters:
+            named_parameters = flatten_params(named_parameters)
+    elif framework == "tensorflow":
+        for weight in framework_mod.module.weights:
+            named_parameters[weight.name] = weight.value()
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
 
     # Convert parameters from different framework to pytorch framework(i.e Convert paddle weight/buffer tensor to pytorch tensor)
-    named_parameters = to_pt_parameters(named_parameters, framework)
+    if named_parameters:
+        named_parameters = to_pt_parameters(named_parameters, framework)
 
     # The model's named parameters and named buffers are stored for the following key reasons:
     #
@@ -582,12 +608,14 @@ def extract_and_generate_unique_ops_tests(
     named_buffers_file_name = None
     if compiler_cfg.tvm_generate_unique_ops_tests:
         # Store named parameters
-        named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
-        torch.save(named_parameters, named_params_file_name)
+        if named_parameters:
+            named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
+            torch.save(named_parameters, named_params_file_name)
 
         # Store named buffers
-        named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
-        torch.save(named_buffers, named_buffers_file_name)
+        if named_buffers:
+            named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
+            torch.save(named_buffers, named_buffers_file_name)
     else:
         if param_file_name is not None and os.path.exists(param_file_name):
             os.remove(param_file_name)
@@ -1111,15 +1139,9 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                     # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
                     pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
                 elif op_name == "advindex":
-                    # Calculate advindex op indicies tensor maximum value based upon the reference tensor at dim = 0.
-                    if (
-                        len(operand_shapes[1]) > 1
-                        and len(operand_shapes[0]) > len(operand_shapes[1])
-                        and operand_shapes[0] == 1
-                    ):
-                        pytest_metadata["max_int"] = int(operand_shapes[0][1]) - 1
-                    else:
-                        pytest_metadata["max_int"] = int(operand_shapes[0][0]) - 1
+                    # Calculate advindex op indicies tensor maximum value based upon the reference tensor along the specified dimension (default is 0).
+                    advindex_dim = args["dim"] if not args.is_empty() and "dim" in args else 0
+                    pytest_metadata["max_int"] = int(operand_shapes[0][advindex_dim]) - 1
 
                 pytest_metadata_list.append(pytest_metadata)
 
