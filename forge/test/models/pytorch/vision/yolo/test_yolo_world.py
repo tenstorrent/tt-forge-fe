@@ -4,30 +4,22 @@
 
 
 import pytest
-import torch
-from ultralytics import YOLO
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolovx_utils import get_test_input
+from test.models.pytorch.vision.yolo.utils.yolovx_utils import (
+    WorldModelWrapper,
+    get_test_input,
+)
 
 
-class YoloWorldWrapper(torch.nn.Module):
-    def __init__(self, model_url: str):
-        super().__init__()
-        self.yolo = YOLO(model_url)
-
-    def forward(self, x):
-        return self.yolo.model.forward(x, augment=False)
-
-
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Long Execution Time")
 @pytest.mark.nightly
 def test_yolo_world_inference(forge_property_recorder):
 
-    model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
+    MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -38,13 +30,12 @@ def test_yolo_world_inference(forge_property_recorder):
         source=Source.GITHUB,
     )
 
-    # Record Forge property
-
     forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P2")
 
     # Load framework_model and input
 
-    framework_model = YoloWorldWrapper(model_url)
+    framework_model = WorldModelWrapper(MODEL_URL)
     inputs = [get_test_input()]
 
     # Compile with Forge
