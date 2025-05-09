@@ -1024,6 +1024,10 @@ class FailingReasons(Enum):
         description="Fatal error occured",
     )
 
+    HIGH_MEMORY = FailingReason(
+        description="High memory usage",
+    )
+
     UNSUPPORTED_INPUT_SOURCE = FailingReason(
         description="Unsupported input source",
     )

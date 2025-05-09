@@ -82,4 +82,6 @@ class FailingReasonsRegister:
         ("transpose", FailingReasons.MLIR_RUNTIME),
     ]
 
-    skip = []
+    skip = [
+        ("matmul", FailingReasons.HIGH_MEMORY, None),
+    ]
