@@ -62,47 +62,6 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant, tmp_path):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX,
-        model="swin",
-        variant=variant,
-        source=Source.HUGGINGFACE,
-        task=Task.IMAGE_CLASSIFICATION,
-    )
-    forge_property_recorder.record_group("generality")
-
-    # Load the model
-    framework_model = Swinv2Model.from_pretrained(variant)
-    framework_model.eval()
-
-    # Prepare input data
-    feature_extractor = ViTImageProcessor.from_pretrained(variant)
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = load_image(url, feature_extractor)
-
-    # Export model to ONNX
-    onnx_path = f"{tmp_path}/swin_v2_tiny_4_256.onnx"
-    torch.onnx.export(
-        framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
-    )
-
-    # Load ONNX model
-    onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_model)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
-
-
-@pytest.mark.nightly
-@pytest.mark.xfail
-@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property

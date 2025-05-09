@@ -19,7 +19,7 @@ def test_birnn_crf(forge_property_recorder, tmp_path):
 
     # Build Module Name
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
