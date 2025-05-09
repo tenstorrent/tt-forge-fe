@@ -94,4 +94,6 @@ class FailingReasonsRegister:
 
     # List of skip reasons for each operator
     # Format: (operator, skip_reason, failing_reason)
-    skip = []
+    skip = [
+        ("matmul", FailingReasons.HIGH_MEMORY, None),
+    ]
