@@ -213,6 +213,18 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
     // Note this is not lowering, these are still forge tms
     convert_broadcast_ops_to_tms(graph);
 
+    // Consider a Scenario where cast node with the broadcast TMS in the producer edge is not supported.
+    // This issue will occur during the verification stage, where the error message will indicate:
+    // "Op result shape must match operand shapes after broadcasting."
+    // To resolve this, we are converting the broadcast TMS to a repeat operation.
+    convert_broadcast_tms_to_repeat(graph);
+
+    //
+    // Data formats
+    //
+    // Apply user overrides
+    passes::configure_output_data_formats(graph, default_df_override);
+
     passes::remove_nops(graph);
 
     // Recalculate shapes before lowering to MLIR
