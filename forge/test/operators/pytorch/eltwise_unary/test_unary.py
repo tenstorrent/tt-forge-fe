@@ -49,10 +49,14 @@
 #    (/) Reuse inputs for selected operators
 
 import os
+import torch
 
 from typing import List, Dict
 from loguru import logger
 from forge import MathFidelity, DataFormat
+
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import InputSourceFlags, VerifyUtils
 from test.operators.utils import InputSource
@@ -64,7 +68,9 @@ from test.operators.utils import FailingReasons
 from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
+from test.operators.utils import TestCollectionTorch
 from test.operators.utils import ValueRanges
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -101,6 +107,13 @@ class TestVerification:
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # Using AllCloseValueChecker in all cases except for integer data formats
+        verify_config: VerifyConfig
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+        else:
+            verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -108,10 +121,10 @@ class TestVerification:
             input_params=input_params,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
-            pcc=test_vector.pcc,
+            value_range=ValueRanges.SMALL,
             warm_reset=warm_reset,
-            # Old behavior when dev_data_format was not set
-            value_range=ValueRanges.SMALL if test_vector.dev_data_format is not None else ValueRanges.SMALL_POSITIVE,
+            deprecated_verification=False,
+            verify_config=verify_config,
         )
 
 
@@ -191,6 +204,8 @@ class TestCollectionData:
             "log",
             "log1p",
             "cumsum",
+            "isnan",
+            "tanh",
         ],
     )
     implemented_float = TestCollection(
@@ -233,7 +248,6 @@ class TestCollectionData:
             "log2",
             "logit",
             "i0",
-            "isnan",
             "nan_to_num",
             "positive",
             "rad2deg",
@@ -244,19 +258,26 @@ class TestCollectionData:
             "sinc",
             "sinh",
             "tan",
-            "tanh",
             "trunc",
         ],
+    )
+    bitwise = TestCollection(
+        operators=[
+            "bitwise_not",
+        ],
+    )
+
+    # torch.float16 is not supported well - python crashes
+    common_to_skip = TestCollection(
+        dev_data_formats=[torch.float16],
+        failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        skip_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
     )
 
 
 class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
-
-    failed_cumsum_automatic_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_cumsum_ids_failed_automatic_value_checker.txt"
-    )
 
 
 TestParamsData.test_plan_implemented = TestPlan(
@@ -280,8 +301,8 @@ TestParamsData.test_plan_implemented = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.all.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.all.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -291,7 +312,7 @@ TestParamsData.test_plan_implemented = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
         # Test Special cases collection for "pow" operator:
@@ -308,415 +329,433 @@ TestParamsData.test_plan_implemented = TestPlan(
                 {"exponent": -1.26},
                 {"exponent": 1.52},
             ],
-            dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.all.dev_data_formats,
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
     ],
     failing_rules=[
-        # Skip 2D shapes as we don't test them:
+        TestCollectionData.common_to_skip,
+        *TestIdsDataLoader.build_failing_rules(
+            operators=TestCollectionData.implemented.operators,
+        ),
+        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
+        TestCollection(
+            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "log1p", "sigmoid", "cos", "sin", "tanh"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            dev_data_formats=[
+                torch.int8,
+                torch.int32,
+                torch.int64,
+            ],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.DTYPE_MISMATCH,
+        ),
+        # *********** sqrt failing rules ***********
+        # RuntimeError: ... !has_special_values(a)
         TestCollection(
             criteria=lambda test_vector: len(test_vector.input_shape) in (2,),
             skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
-        # reciprocal: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["reciprocal"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # sigmoid: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["sigmoid"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.RawUInt8,
-                DataFormat.RawUInt16,
-                DataFormat.RawUInt32,
-                DataFormat.Int8,
-                DataFormat.UInt16,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # abs, cos, neg, sin: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["abs", "cos", "neg", "sin"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # rsqrt: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["rsqrt"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Bfp2,
-                DataFormat.Bfp2_b,
-                DataFormat.Bfp4,
-                DataFormat.Bfp4_b,
-                DataFormat.Bfp8,
-                DataFormat.Bfp8_b,
-                DataFormat.Float16,
-                DataFormat.Float32,
-                DataFormat.Lf8,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # rsqrt: Data mismatch for specific math fidelities:
-        TestCollection(
-            operators=["rsqrt"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[DataFormat.Float16_b],
-            math_fidelities=[
-                MathFidelity.LoFi,
-                MathFidelity.HiFi2,
-                MathFidelity.HiFi3,
-                MathFidelity.HiFi4,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # square: Attribute error for specific data formats:
-        TestCollection(
-            operators=["square"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.RawUInt8,
-                DataFormat.RawUInt16,
-                DataFormat.RawUInt32,
-                DataFormat.Int8,
-                DataFormat.UInt16,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.ATTRIBUTE_ERROR,
-        ),
-        # pow: Exponent 0.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 0.0}],
-            input_sources=[
-                InputSource.FROM_HOST,
-                InputSource.FROM_ANOTHER_OP,
-            ],
-            input_shapes=[
-                (1, 2, 3, 4),
-                (1, 45, 17),
-                (1, 100, 100),
-                (1, 10000, 1),
-                (1, 17, 41),
-                (11, 1, 23),
-                (1, 11, 1, 23),
-                (1, 1, 10, 1000),
-                (14, 13, 89, 3),
-            ],
-            dev_data_formats=[
-                DataFormat.RawUInt8,
-                DataFormat.RawUInt16,
-                DataFormat.RawUInt32,
-                DataFormat.UInt16,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent 0.5 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 0.5}],
-            input_sources=[InputSource.CONST_EVAL_PASS],
-            input_shapes=[
-                (1, 45, 17),
-                (1, 100, 100),
-                (1, 10000, 1),
-                (1, 17, 41),
-                (11, 1, 23),
-                (1, 11, 1, 23),
-                (1, 1, 10, 1000),
-                (14, 13, 89, 3),
-            ],
-            dev_data_formats=[
-                DataFormat.Bfp2,
-                DataFormat.Bfp2_b,
-                DataFormat.Bfp4,
-                DataFormat.Bfp4_b,
-                DataFormat.Bfp8,
-                DataFormat.Bfp8_b,
-                DataFormat.Float16,
-                DataFormat.Float16_b,
-                DataFormat.Float32,
-                DataFormat.Lf8,
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent 2.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 2.0}],
-            input_sources=[
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.CONST_EVAL_PASS,
-            ],
-            input_shapes=[
-                (1, 45, 17),
-                (1, 100, 100),
-                (1, 17, 41),
-                (11, 1, 23),
-                (1, 11, 1, 23),
-                (1, 1, 10, 1000),
-                (14, 13, 89, 3),
-            ],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent 2.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 2.0}],
-            input_sources=[InputSource.CONST_EVAL_PASS],
-            input_shapes=[(1, 10000, 1)],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent 10.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 10.0}],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent 10.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": 10.0}],
-            input_sources=[
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
-            input_shapes=[
-                (1, 45, 17),
-                (1, 100, 100),
-                (1, 10000, 1),
-                (1, 17, 41),
-                (11, 1, 23),
-                (1, 11, 1, 23),
-                (1, 1, 10, 1000),
-                (14, 13, 89, 3),
-            ],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            math_fidelities=[MathFidelity.HiFi4],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent -2.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": -2.0}],
-            input_shapes=[
-                (1, 1000, 100),
-                (100, 100, 100),
-                (10, 1000, 100),
-                (10, 10000, 1),
-                (32, 32, 64),
-                (64, 160, 96),
-                (1, 100, 100, 100),
-                (1, 10, 1000, 100),
-                (1, 10, 10000, 1),
-                (1, 32, 32, 64),
-                (1, 64, 160, 96),
-                (6, 100, 100, 100),
-                (7, 10, 1000, 100),
-                (8, 1, 10, 1000),
-                (9, 1, 9920, 1),
-                (10, 10, 10000, 1),
-                (11, 32, 32, 64),
-                (12, 64, 160, 96),
-                (13, 11, 17, 41),
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent -2.0, -1.26, 1.52 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[
-                {"exponent": -2.0},
-                {"exponent": -1.26},
-                {"exponent": 1.52},
-            ],
-            input_shapes=[
-                (1, 45, 17),
-                (1, 100, 100),
-                (1, 10000, 1),
-                (1, 17, 41),
-                (11, 1, 23),
-                (1, 11, 1, 23),
-                (1, 1, 10, 1000),
-                (14, 13, 89, 3),
-            ],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Exponent -2.0 data mismatch:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[{"exponent": -2.0}],
-            input_shapes=[(14, 13, 89, 3)],
-            input_sources=[
-                InputSource.FROM_HOST,
-                InputSource.CONST_EVAL_PASS,
-            ],
-            dev_data_formats=[
-                DataFormat.Bfp2,
-                DataFormat.Bfp2_b,
-                DataFormat.Bfp4,
-                DataFormat.Bfp4_b,
-                DataFormat.Bfp8,
-                DataFormat.Bfp8_b,
-                DataFormat.Float16,
-                DataFormat.Float16_b,
-                DataFormat.Float32,
-                DataFormat.Lf8,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # pow: Cases float exponent (values -1.26 and 1.52) are not supported:
-        TestCollection(
-            operators=["pow"],
-            kwargs=[
-                {"exponent": -1.26},
-                {"exponent": 1.52},
-            ],
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # clamp: min=0.5, max=0.0 data mismatch:
-        TestCollection(
-            operators=["clamp"],
-            input_sources=[InputSource.CONST_EVAL_PASS],
-            kwargs=[
-                {"min": 0.5},
-                {"max": 0.0},
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # clamp: min=0.2 data mismatch:
-        TestCollection(
-            operators=["clamp"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.RawUInt8,
-                DataFormat.RawUInt16,
-                DataFormat.RawUInt32,
-                DataFormat.UInt16,
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            kwargs=[
-                {"min": 0.2},
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            operators=["clamp"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Int8,
-                DataFormat.Int32,
-            ],
-            kwargs=[
-                {"max": 0.2},
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # log: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["log"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Bfp2,
-                DataFormat.Bfp2_b,
-                DataFormat.Bfp4,
-                DataFormat.Bfp4_b,
-                DataFormat.Bfp8,
-                DataFormat.Bfp8_b,
-                DataFormat.Float16,
-                DataFormat.Float32,
-                DataFormat.Lf8,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # log: Data mismatch for specific math fidelities:
-        TestCollection(
-            operators=["log"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.Float16_b,
-            ],
-            math_fidelities=[
-                MathFidelity.LoFi,
-                MathFidelity.HiFi2,
-                MathFidelity.HiFi3,
-                MathFidelity.HiFi4,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # log1p: Data mismatch for specific data formats:
-        TestCollection(
-            operators=["log1p"],
-            input_sources=[InputSource.FROM_HOST],
-            input_shapes=[(1, 2, 3, 4)],
-            dev_data_formats=[
-                DataFormat.RawUInt8,
-                DataFormat.RawUInt16,
-                DataFormat.RawUInt32,
-                DataFormat.UInt16,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_cumsum_automatic_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # reciprocal: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["reciprocal"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # sigmoid: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["sigmoid"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.RawUInt8,
+        #         DataFormat.RawUInt16,
+        #         DataFormat.RawUInt32,
+        #         DataFormat.Int8,
+        #         DataFormat.UInt16,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # abs, cos, neg, sin: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["abs", "cos", "neg", "sin"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # rsqrt: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["rsqrt"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Bfp2,
+        #         DataFormat.Bfp2_b,
+        #         DataFormat.Bfp4,
+        #         DataFormat.Bfp4_b,
+        #         DataFormat.Bfp8,
+        #         DataFormat.Bfp8_b,
+        #         DataFormat.Float16,
+        #         DataFormat.Float32,
+        #         DataFormat.Lf8,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # rsqrt: Data mismatch for specific math fidelities:
+        # TestCollection(
+        #     operators=["rsqrt"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[DataFormat.Float16_b],
+        #     math_fidelities=[
+        #         MathFidelity.LoFi,
+        #         MathFidelity.HiFi2,
+        #         MathFidelity.HiFi3,
+        #         MathFidelity.HiFi4,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # square: Attribute error for specific data formats:
+        # TestCollection(
+        #     operators=["square"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.RawUInt8,
+        #         DataFormat.RawUInt16,
+        #         DataFormat.RawUInt32,
+        #         DataFormat.Int8,
+        #         DataFormat.UInt16,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.ATTRIBUTE_ERROR,
+        # ),
+        # # pow: Exponent 0.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 0.0}],
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #         InputSource.FROM_ANOTHER_OP,
+        #     ],
+        #     input_shapes=[
+        #         (1, 2, 3, 4),
+        #         (1, 45, 17),
+        #         (1, 100, 100),
+        #         (1, 10000, 1),
+        #         (1, 17, 41),
+        #         (11, 1, 23),
+        #         (1, 11, 1, 23),
+        #         (1, 1, 10, 1000),
+        #         (14, 13, 89, 3),
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.RawUInt8,
+        #         DataFormat.RawUInt16,
+        #         DataFormat.RawUInt32,
+        #         DataFormat.UInt16,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent 0.5 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 0.5}],
+        #     input_sources=[InputSource.CONST_EVAL_PASS],
+        #     input_shapes=[
+        #         (1, 45, 17),
+        #         (1, 100, 100),
+        #         (1, 10000, 1),
+        #         (1, 17, 41),
+        #         (11, 1, 23),
+        #         (1, 11, 1, 23),
+        #         (1, 1, 10, 1000),
+        #         (14, 13, 89, 3),
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.Bfp2,
+        #         DataFormat.Bfp2_b,
+        #         DataFormat.Bfp4,
+        #         DataFormat.Bfp4_b,
+        #         DataFormat.Bfp8,
+        #         DataFormat.Bfp8_b,
+        #         DataFormat.Float16,
+        #         DataFormat.Float16_b,
+        #         DataFormat.Float32,
+        #         DataFormat.Lf8,
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent 2.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 2.0}],
+        #     input_sources=[
+        #         InputSource.FROM_ANOTHER_OP,
+        #         InputSource.CONST_EVAL_PASS,
+        #     ],
+        #     input_shapes=[
+        #         (1, 45, 17),
+        #         (1, 100, 100),
+        #         (1, 17, 41),
+        #         (11, 1, 23),
+        #         (1, 11, 1, 23),
+        #         (1, 1, 10, 1000),
+        #         (14, 13, 89, 3),
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent 2.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 2.0}],
+        #     input_sources=[InputSource.CONST_EVAL_PASS],
+        #     input_shapes=[(1, 10000, 1)],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent 10.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 10.0}],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent 10.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": 10.0}],
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #         InputSource.CONST_EVAL_PASS,
+        #     ],
+        #     input_shapes=[
+        #         (1, 45, 17),
+        #         (1, 100, 100),
+        #         (1, 10000, 1),
+        #         (1, 17, 41),
+        #         (11, 1, 23),
+        #         (1, 11, 1, 23),
+        #         (1, 1, 10, 1000),
+        #         (14, 13, 89, 3),
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     math_fidelities=[MathFidelity.HiFi4],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent -2.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": -2.0}],
+        #     input_shapes=[
+        #         (1, 1000, 100),
+        #         (100, 100, 100),
+        #         (10, 1000, 100),
+        #         (10, 10000, 1),
+        #         (32, 32, 64),
+        #         (64, 160, 96),
+        #         (1, 100, 100, 100),
+        #         (1, 10, 1000, 100),
+        #         (1, 10, 10000, 1),
+        #         (1, 32, 32, 64),
+        #         (1, 64, 160, 96),
+        #         (6, 100, 100, 100),
+        #         (7, 10, 1000, 100),
+        #         (8, 1, 10, 1000),
+        #         (9, 1, 9920, 1),
+        #         (10, 10, 10000, 1),
+        #         (11, 32, 32, 64),
+        #         (12, 64, 160, 96),
+        #         (13, 11, 17, 41),
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent -2.0, -1.26, 1.52 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[
+        #         {"exponent": -2.0},
+        #         {"exponent": -1.26},
+        #         {"exponent": 1.52},
+        #     ],
+        #     input_shapes=[
+        #         (1, 45, 17),
+        #         (1, 100, 100),
+        #         (1, 10000, 1),
+        #         (1, 17, 41),
+        #         (11, 1, 23),
+        #         (1, 11, 1, 23),
+        #         (1, 1, 10, 1000),
+        #         (14, 13, 89, 3),
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Exponent -2.0 data mismatch:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[{"exponent": -2.0}],
+        #     input_shapes=[(14, 13, 89, 3)],
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #         InputSource.CONST_EVAL_PASS,
+        #     ],
+        #     dev_data_formats=[
+        #         DataFormat.Bfp2,
+        #         DataFormat.Bfp2_b,
+        #         DataFormat.Bfp4,
+        #         DataFormat.Bfp4_b,
+        #         DataFormat.Bfp8,
+        #         DataFormat.Bfp8_b,
+        #         DataFormat.Float16,
+        #         DataFormat.Float16_b,
+        #         DataFormat.Float32,
+        #         DataFormat.Lf8,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # pow: Cases float exponent (values -1.26 and 1.52) are not supported:
+        # TestCollection(
+        #     operators=["pow"],
+        #     kwargs=[
+        #         {"exponent": -1.26},
+        #         {"exponent": 1.52},
+        #     ],
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # clamp: min=0.5, max=0.0 data mismatch:
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=[InputSource.CONST_EVAL_PASS],
+        #     kwargs=[
+        #         {"min": 0.5},
+        #         {"max": 0.0},
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # clamp: min=0.2 data mismatch:
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.RawUInt8,
+        #         DataFormat.RawUInt16,
+        #         DataFormat.RawUInt32,
+        #         DataFormat.UInt16,
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     kwargs=[
+        #         {"min": 0.2},
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     operators=["clamp"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Int8,
+        #         DataFormat.Int32,
+        #     ],
+        #     kwargs=[
+        #         {"max": 0.2},
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # log: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["log"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Bfp2,
+        #         DataFormat.Bfp2_b,
+        #         DataFormat.Bfp4,
+        #         DataFormat.Bfp4_b,
+        #         DataFormat.Bfp8,
+        #         DataFormat.Bfp8_b,
+        #         DataFormat.Float16,
+        #         DataFormat.Float32,
+        #         DataFormat.Lf8,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # log: Data mismatch for specific math fidelities:
+        # TestCollection(
+        #     operators=["log"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.Float16_b,
+        #     ],
+        #     math_fidelities=[
+        #         MathFidelity.LoFi,
+        #         MathFidelity.HiFi2,
+        #         MathFidelity.HiFi3,
+        #         MathFidelity.HiFi4,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # log1p: Data mismatch for specific data formats:
+        # TestCollection(
+        #     operators=["log1p"],
+        #     input_sources=[InputSource.FROM_HOST],
+        #     input_shapes=[(1, 2, 3, 4)],
+        #     dev_data_formats=[
+        #         DataFormat.RawUInt8,
+        #         DataFormat.RawUInt16,
+        #         DataFormat.RawUInt32,
+        #         DataFormat.UInt16,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_cumsum_automatic_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
     ],
 )
 
@@ -742,8 +781,8 @@ TestParamsData.test_plan_implemented_float = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.float.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.float.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -753,27 +792,113 @@ TestParamsData.test_plan_implemented_float = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(
+            operators=TestCollectionData.implemented_float.operators,
+        ),
+        TestCollectionData.common_to_skip,
+        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
         TestCollection(
-            operators=["gelu"],
-            input_shapes=[(1, 1)],
-            kwargs=[
-                {"approximate": "tanh"},
-                {},
+            operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "log1p", "sigmoid", "cos", "sin", "tanh"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            dev_data_formats=[
+                torch.int8,
+                torch.int32,
+                torch.int64,
             ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.DTYPE_MISMATCH,
         ),
+        # *********** clamp failing rules ***********
+        # RuntimeError: value cannot be converted to type at::BFloat16 without overflow
         TestCollection(
-            operators=["leaky_relu"],
-            input_sources=[InputSource.CONST_EVAL_PASS],
-            input_shapes=[(1, 1)],
-            kwargs=[{"negative_slope": 0.01, "inplace": True}],
-            failing_reason=FailingReasons.DATA_MISMATCH,
+            operators=["clamp"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            kwargs=[
+                {"min": 0.2},
+                {"max": 0.2},
+            ],
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
+            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
         ),
+        # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
+        TestCollection(
+            operators=["clamp"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            kwargs=[
+                {"min": 0.0, "max": 0.5},
+                {"min": 0.2},
+                {"max": 0.2},
+            ],
+            dev_data_formats=[
+                torch.int8,
+                torch.int32,
+                torch.int64,
+            ],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.DTYPE_MISMATCH,
+        ),
+        # Unsupported DataType!
+        TestCollection(
+            operators=["clamp"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            kwargs=[
+                {"min": 0.5, "max": 0.0},
+            ],
+            dev_data_formats=[
+                torch.int8,
+                torch.int32,
+                torch.int64,
+            ],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        ),
+        # ************ cumsum failing rules ***********
+        # RuntimeError: ... !has_special_values(a)
+        TestCollection(
+            operators=["cumsum"],
+            input_sources=[InputSource.FROM_ANOTHER_OP],
+            input_shapes=[(10, 1000, 100), (10, 10000, 1)],
+            kwargs=[{"dim": 2}],
+            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        ),
+        # ************ square failing rules ***********
+        TestCollection(
+            operators=["square"],
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            dev_data_formats=[
+                torch.int8,
+                torch.int32,
+                torch.int64,
+            ],
+            math_fidelities=TestCollectionCommon.single.math_fidelities,
+            failing_reason=FailingReasons.ATTRIBUTE_ERROR,
+        ),
+        # TestCollection(
+        #     operators=["gelu"],
+        #     input_shapes=[(1, 1)],
+        #     kwargs=[
+        #         {"approximate": "tanh"},
+        #         {},
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     operators=["leaky_relu"],
+        #     input_sources=[InputSource.CONST_EVAL_PASS],
+        #     input_shapes=[(1, 1)],
+        #     kwargs=[{"negative_slope": 0.01, "inplace": True}],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
     ],
 )
 
@@ -792,11 +917,18 @@ TestParamsData.test_plan_not_implemented = TestPlan(
         )
     ],
     failing_rules=[
+        TestCollectionData.common_to_skip,
         TestCollection(
             operators=TestCollectionData.not_implemented.operators,
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+        TestCollection(
+            operators=TestCollectionData.bitwise.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
     ],
 )
