@@ -971,3 +971,35 @@ def test_zero(forge_property_recorder, hidden_dim):
     compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
 
     verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (2, 3, 4),
+        (1, 10),
+        (5, 5, 5),
+        (8,),
+    ],
+)
+@pytest.mark.xfail
+def test_zeros_like(forge_property_recorder, input_shape):
+    class ZerosLikeModel(torch.nn.Module):
+        def forward(self, x):
+            z = torch.zeros_like(x)
+            cond = x > 0
+            return torch.where(cond, x, z)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = ZerosLikeModel()
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

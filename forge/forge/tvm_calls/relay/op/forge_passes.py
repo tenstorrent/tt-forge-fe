@@ -4687,6 +4687,17 @@ class DecomposeFloor(DFPatternCallback):
         return floor_result
 
 
+class DecomposeZerosToFull(DFPatternCallback):
+    def __init__(self):
+        super().__init__()
+        self.pattern = is_op("zeros")()
+
+    def callback(self, pre, post, node_map):
+        shape = pre.attrs.shape
+        dtype = pre.attrs.dtype
+        return tvm.relay.full(tvm.relay.const(0, dtype=dtype), shape=shape, dtype=dtype)
+
+
 class DecomposeMeshgrid(DFPatternCallback):
     def __init__(self):
         super().__init__()
@@ -4782,6 +4793,7 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeZerosToFull(),
             DecomposeMeshgrid(),
             DecomposeGridSample(),
             DecomposeFloor(),
