@@ -44,6 +44,11 @@ on:
         required: false
         default: false
         type: boolean
+      show-telemetry:
+        description: 'Show host telemetry'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -70,10 +75,21 @@ jobs:
         - /lib/modules:/lib/modules
         - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
         - /mnt/dockercache:/mnt/dockercache
+        - /proc:/host/proc:ro
 
     name: "run-tests ${{ inputs.test_mark }} (${{ matrix.build.runs-on }}, ${{ matrix.test_group_id }})"
 
     steps:
+
+      - name: Start telemetry collection
+        if: inputs.show-telemetry
+        id: telemetry_start
+        uses: tenstorrent/tt-github-actions/.github/actions/show_telemtery@main
+        with:
+          start_collection: true
+          sampling_rate: 5
+          telemetry_path: 'telemetry'
+          proc_path: '/host/proc'
 
       - name: Fetch job id
         id: fetch-job-id
@@ -199,3 +215,11 @@ jobs:
           files: ${{ steps.strings.outputs.test_report_path }}
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
+      
+      - name: End telemetry collection
+        if: inputs.show-telemetry
+        id: telemetry_end
+        uses: tenstorrent/tt-github-actions/.github/actions/show_telemtery@main
+        with:
+          finish_collection: true
+          telemetry_path: 'telemetry'
