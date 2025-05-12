@@ -5,6 +5,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -38,13 +40,21 @@ def test_mobilenet_v1_ssd_pytorch_1x1(forge_property_recorder):
     framework_model = create_mobilenetv1_ssd(number_of_classes)
     framework_model.load(model_path)
     framework_model.eval()
+    framework_model.to(torch.bfloat16)
 
     input_shape = (1, 3, 300, 300)
-    inputs = [torch.rand(input_shape)]
+    inputs = [torch.rand(input_shape).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

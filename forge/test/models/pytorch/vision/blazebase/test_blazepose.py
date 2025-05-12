@@ -8,6 +8,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -40,6 +42,7 @@ def test_blazepose_detector_pytorch(forge_property_recorder):
     framework_model = BlazePose()
     framework_model.load_weights("mediapipepytorch/blazepose.pth")
     framework_model.load_anchors("mediapipepytorch/anchors_pose.npy")
+    framework_model.to(torch.bfloat16)
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -49,11 +52,17 @@ def test_blazepose_detector_pytorch(forge_property_recorder):
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
 
-    inputs = [img2]
+    inputs = [img2.to(torch.bfloat16)]
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -79,12 +88,20 @@ def test_blazepose_regressor_pytorch(forge_property_recorder):
     # Load BlazePose Landmark Regressor
     framework_model = BlazePoseLandmark()
     framework_model.load_weights("mediapipepytorch/blazepose_landmark.pth")
+    framework_model.to(torch.bfloat16)
 
-    inputs = [torch.rand(1, 3, 256, 256)]
+    inputs = [torch.rand(1, 3, 256, 256).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -108,6 +125,7 @@ def test_blaze_palm_pytorch(forge_property_recorder):
     framework_model.load_weights("mediapipepytorch/blazepalm.pth")
     framework_model.load_anchors("mediapipepytorch/anchors_palm.npy")
     framework_model.min_score_thresh = 0.75
+    framework_model.to(torch.bfloat16)
 
     # Load data sample
     orig_image = cv2.imread("files/samples/girl.png")
@@ -117,11 +135,18 @@ def test_blaze_palm_pytorch(forge_property_recorder):
     img2 = torch.from_numpy(img2).permute((2, 0, 1)).unsqueeze(0)
     img2 = img2.float() / 255.0
 
-    inputs = [img2]
+    inputs = [img2.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -143,12 +168,20 @@ def test_blaze_hand_pytorch(forge_property_recorder):
     # Load BlazePalm Detector
     framework_model = BlazeHandLandmark()
     framework_model.load_weights("mediapipepytorch/blazehand_landmark.pth")
+    framework_model.to(torch.bfloat16)
 
-    inputs = [torch.rand(1, 3, 256, 256)]
+    inputs = [torch.rand(1, 3, 256, 256).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

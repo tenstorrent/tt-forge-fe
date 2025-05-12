@@ -4,6 +4,7 @@
 import requests
 from PIL import Image
 from transformers import BeitForImageClassification, BeitImageProcessor
+import torch
 
 
 def load_model(variant):
@@ -17,4 +18,4 @@ def load_input(variant):
     image = Image.open(requests.get(url, stream=True).raw)
     processor = BeitImageProcessor.from_pretrained(variant)
     inputs = processor(images=image, return_tensors="pt")
-    return [inputs["pixel_values"]]
+    return [inputs["pixel_values"].to(torch.bfloat16)]

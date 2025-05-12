@@ -7,6 +7,8 @@ import torch
 from PIL import Image
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -41,14 +43,21 @@ def test_fchardnet(forge_property_recorder):
     device = torch.device("cpu")
     arch = {"arch": "hardnet"}
     framework_model = get_model(arch, 19).to(device)
-    framework_model = fuse_bn_recursively(model)
+    framework_model = fuse_bn_recursively(model).to(torch.bfloat16)
     framework_model.eval()
 
-    inputs = [input_image]
+    inputs = [input_image.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
