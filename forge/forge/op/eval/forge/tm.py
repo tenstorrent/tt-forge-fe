@@ -968,13 +968,14 @@ def backward(type, attr, ac, operand, inputs, output, grad):
             raise NotImplementedError("Only stride == 1 is supported for index op backward")
         shape = inputs[0].shape.as_list()
 
-        if dim > 0:
-            dim = dim - len(shape)
+        if dim >= 0:
+            dim -= len(shape)
 
-        padding = [0] * 2 * len(shape)
-        padding[2 * dim] = start
-        padding[2 * dim + 1] = shape[dim] - stop
-        return ac.op(Pad.create(padding, 0.0, "constant", len(padding)), (grad,))
+        left = start
+        right = shape[dim] - stop
+        value = 0.0
+
+        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
 
     raise NotImplementedError(f"{type}")
 
