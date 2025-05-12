@@ -140,4 +140,4 @@ jobs:
       operators: ${{ needs.set-inputs.outputs.operators }}
       filters: ${{ needs.set-inputs.outputs.filters }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}
-      show-telemetry: inputs.show-telemetry
+      show-telemetry: ${{ inputs.show-telemetry }}
