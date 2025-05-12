@@ -107,6 +107,18 @@ class ComponentChecker(Enum):
     def __repr__(self) -> str:
         return self.name
 
+    NONE = FailingReason(
+        # A helper component to identify checks that are not used anymore
+        description="None",
+        checks=[
+            ExceptionCheck(
+                error_log=[
+                    M.contains("A non existing line in the error log"),
+                ],
+            ),
+        ],
+    )
+
     METAL = FailingReason(
         description="Metal",
         checks=[
@@ -182,11 +194,30 @@ class ComponentChecker(Enum):
                     M.neg(M.contains("forge/forge/_C.so")),  # Python code
                     M.any(
                         M.last_line(M.starts_with("forge/forge/verify/compare.py:202")),
-                        M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:48")),
+                        M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
+                        M.last_line(M.starts_with("forge/forge/verify/verify.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/interface.py:112")),
                         M.last_line(M.starts_with("forge/forge/compile.py:756")),
                         M.last_line(M.starts_with("forge/forge/compile.py:1015: RuntimeError")),
+                        M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/forge/clip.py:32")),
+                        M.last_line(M.starts_with("forge/test/operators/pytorch/")),
+                        # Fail with pytorch also. TODO: check if tests are correct
+                        M.last_line(
+                            M.starts_with(
+                                "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:952: RuntimeError"
+                            )
+                        ),
+                        M.last_line(
+                            M.starts_with(
+                                "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: RuntimeError"
+                            )
+                        ),
+                        M.last_line(
+                            M.starts_with(
+                                "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: RuntimeError"
+                            )
+                        ),
                     ),
                 ],
             ),
@@ -198,10 +229,9 @@ class ComponentChecker(Enum):
                     M.contains("forge/forge/_C.so"),  # C code
                     M.any(
                         M.last_line(M.starts_with("forge/forge/verify/compare.py:202")),
-                        M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:48")),
+                        M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/interface.py:112")),
                         M.last_line(M.starts_with("forge/forge/compile.py:756")),
-                        M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:54")),
                     ),
                 ],
             ),
@@ -256,28 +286,28 @@ class FailingReasons(Enum):
         checks=[
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.contains("Unsupported data type"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.contains("/forge/csrc/passes/lower_to_mlir.cpp:473: false"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.equals("Tensor 2 - data type mismatch: expected UInt32, got Float32"),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 # bitwise_and	RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
                 # bitwise_left_shift	RuntimeError: "lshift_cpu" not implemented for 'Float'
                 # bitwise_not	RuntimeError: "bitwise_not_cpu" not implemented for 'Float'
@@ -290,20 +320,59 @@ class FailingReasons(Enum):
                 # softmax	RuntimeError: "softmax_lastdim_kernel_impl" not implemented for 'Half'
                 # softmax	RuntimeError: "softmax_lastdim_kernel_impl" not implemented for 'Int'
                 # softmax	RuntimeError: "softmax_lastdim_kernel_impl" not implemented for 'Long'
+                # >       return self.operator(x, y)
+                # E       RuntimeError: "bmm" not implemented for 'Half'
+                # forge/test/operators/pytorch/matmul/test_matmul.py:48: RuntimeError
                 message=[
                     M.regex(r"\".*\" not implemented for '.*'"),
                 ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.starts_with("forge/test/operators/pytorch/")),
+                        M.last_line(
+                            M.starts_with(
+                                "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:"
+                            )
+                        ),
+                    ),
+                ],
             ),
             ExceptionCheck(
+                # matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
+                # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+                # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
+                # E       info:
+                # E       Unsupported data format
+                # E       backtrace:
+                # E        --- ttnn::operations::matmul::Matmul::validate(std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&, std::vector<std::optional<tt::tt_metal::Tensor const>, std::allocator<std::optional<tt::tt_metal::Tensor const> > > const&, std::vector<std::optional<tt::tt_metal::Tensor>, std::allocator<std::optional<tt::tt_metal::Tensor> > > const&) const
+                # E        --- tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::validate_on_program_cache_miss(tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&)
+                # E        --- void ttnn::device_operation::detail::create_and_cache_mesh_workload<ttnn::device_operation::MeshDeviceOperationAdapter<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > > >(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::device_operation::MeshDeviceOperationAdapter<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > >::operation_attributes_t const&)
+                # E        --- tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_return_value_t ttnn::device_operation::detail::invoke<tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > > >(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::operation_attributes_t const&, tt::tt_metal::operation::OldInfraDeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >::tensor_args_t const&)
+                # E        --- std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > tt::tt_metal::operation::run<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >(tt::tt_metal::operation::DeviceOperation<std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > >&&, std::vector<tt::tt_metal::Tensor, std::allocator<tt::tt_metal::Tensor> > const&, std::vector<std::optional<tt::tt_metal::Tensor const>, std::allocator<std::optional<tt::tt_metal::Tensor const> > > const&, std::vector<std::optional<tt::tt_metal::Tensor>, std::allocator<std::optional<tt::tt_metal::Tensor> > > const&, tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>)
+                # E        --- ttnn::operations::matmul::matmul(tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<tt::tt_metal::Tensor const> const&, ttnn::operations::matmul::Matmul const&, tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, std::optional<tt::tt_metal::Tensor> const&)
+                # E        --- ttnn::operations::matmul::bound_matmul(tt::tt_metal::Tensor const&, tt::tt_metal::Tensor const&, std::optional<tt::tt_metal::Tensor const> const&, ttnn::operations::matmul::Matmul const&, unsigned char const&, std::optional<tt::tt_metal::Tensor>&)
+                # E        --- tt::runtime::ttnn::operations::matmul::run(tt::target::ttnn::MatmulOp const*, tt::runtime::ttnn::ProgramContext&)
+                # E        --- tt::runtime::ttnn::ProgramExecutor::runOperation(tt::target::ttnn::Operation const*)
+                # E        --- tt::runtime::ttnn::ProgramExecutor::execute()
+                # E        --- tt::runtime::ttnn::runProgram(std::shared_ptr<tt::tt_metal::distributed::MeshDevice>, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+                # E        --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+                # E        --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
+                # E        --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
+                # E        --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
+                # forge/forge/compiled_graph_state.py:310: RuntimeError
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.TTNN.value,
                 message=[
+                    M.starts_with("TT_FATAL"),
                     M.contains("Unsupported data format"),
+                ],
+                error_log=[
+                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:310:")),
                 ],
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.contains("Input tensors must have the same data type, but got {} and {}"),
                 ],
@@ -323,23 +392,48 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="AssertionError",
-                # component=TODO
+                component=ComponentChecker.NONE.value,
                 message=[
                     M.starts_with("Data mismatch"),
                 ],
             ),
+            # add	ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+            # add	ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([],
+            # clamp	ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+            # E           ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+            # E           - Tensor mismatch. Required rtol=0.01, atol=0.01
+            # E           - Observed maximum relative diff: 19.0, maximum absolute diff: 572239.6875
+            # E           - Framework output: (torch.Size([1, 4]))
+            # E           tensor([[-196356.5625, -371447.5312,  259605.8906, -542121.8125]])
+            # E           - Compiled model output: (torch.Size([1, 4]))
+            # E           tensor([[ 10908.6982,  20635.9746, -14422.5498,  30117.8789]])
+            # forge/forge/verify/value_checkers.py:56: ValueError
+            # E           ValueError: Data mismatch -> AutomaticValueChecker (compare_with_golden): framework_model=tensor([[[7.1363e+04,        inf, 6.9049e+00, 8.3854e+00, 2.7964e+01,
+            # forge/forge/verify/value_checkers.py:39: ValueError
             ExceptionCheck(
                 class_name="ValueError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 message=[
-                    M.starts_with("Data mismatch"),
+                    M.any(
+                        M.starts_with("Data mismatch -> AllCloseValueChecker (all_close)"),
+                        M.starts_with("Data mismatch -> AutomaticValueChecker (compare_with_golden)"),
+                    ),
+                ],
+                error_log=[
+                    M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
                 ],
             ),
+            # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+            # E       RuntimeError: Tensor 2 - data type mismatch: expected Int32, got Float32
+            # forge/forge/compiled_graph_state.py:310: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 message=[
                     M.contains("data type mismatch"),
+                ],
+                error_log=[
+                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:")),
                 ],
             ),
             # and "Tensor 1 - data type mismatch: expected BFloat16, got Float32" in ex.message,
@@ -423,20 +517,36 @@ class FailingReasons(Enum):
     DTYPE_MISMATCH = FailingReason(
         description="Dtype mismatch",
         checks=[
+            # >           raise ValueError(f"Dtype mismatch: framework_model.dtype={fw_dtype}, compiled_model.dtype={co_dtype}")
+            # E           ValueError: Dtype mismatch: framework_model.dtype=torch.uint8, compiled_model.dtype=torch.float32
+            # forge/forge/verify/verify.py:281: ValueError
             ExceptionCheck(
                 class_name="ValueError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 message=[
                     M.starts_with("Dtype mismatch"),
+                    M.regex("Dtype mismatch: framework_model.dtype=torch\..*, compiled_model.dtype=torch\..*"),
+                ],
+                error_log=[
+                    M.last_line(M.starts_with("forge/forge/verify/verify.py:")),
                 ],
             ),
             # conv2d	RuntimeError: Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+            # E       RuntimeError: Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+            # ../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:952: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 message=[
                     M.starts_with(
                         "Input type (CPUBFloat16Type) and weight type (torch.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor"
+                    ),
+                ],
+                error_log=[
+                    M.last_line(
+                        M.starts_with(
+                            "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:"
+                        )
                     ),
                 ],
             ),
@@ -449,12 +559,20 @@ class FailingReasons(Enum):
             # RuntimeError: expected scalar type Char but found Float
             # RuntimeError: expected scalar type Int but found Float
             # RuntimeError: expected scalar type Long but found Float
+            # E       RuntimeError: expected scalar type Char but found Float
+            # ../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: RuntimeError
             ExceptionCheck(
                 class_name="RuntimeError",
-                # component=TODO
+                component=ComponentChecker.FORGE.value,
                 message=[
-                    M.contains("expected scalar type"),
-                    M.contains("but found Float"),
+                    M.regex("expected scalar type .* but found Float"),
+                ],
+                error_log=[
+                    M.last_line(
+                        M.starts_with(
+                            "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:"
+                        )
+                    ),
                 ],
             ),
         ],
