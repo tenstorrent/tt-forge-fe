@@ -13,6 +13,8 @@ from transformers import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -49,7 +51,11 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], model
+    return (
+        vilt_model.to(torch.bfloat16),
+        [embedding_output.detach().cpu().to(torch.bfloat16), attention_mask.detach().cpu().to(torch.bfloat16)],
+        model,
+    )
 
 
 variants = ["dandelin/vilt-b32-finetuned-vqa"]
@@ -69,9 +75,16 @@ def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
@@ -104,7 +117,11 @@ def generate_model_vilt_maskedlm_hf_pytorch(variant):
 
     embedding_output, attention_mask = text_vision_embedding_model(**encoding)
 
-    return vilt_model, [embedding_output.detach().cpu(), attention_mask.detach().cpu().to(torch.float32)], {}
+    return (
+        vilt_model.to(torch.bfloat16),
+        [embedding_output.detach().cpu().to(torch.bfloat16), attention_mask.detach().cpu().to(torch.bfloat16)],
+        {},
+    )
 
 
 variants = ["dandelin/vilt-b32-mlm"]
@@ -125,9 +142,16 @@ def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

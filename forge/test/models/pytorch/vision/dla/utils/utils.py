@@ -31,10 +31,10 @@ def load_dla_model(variant):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    framework_model = func(pretrained="imagenet")
+    framework_model = func(pretrained="imagenet").to(torch.bfloat16)
     framework_model.eval()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
 
     return framework_model, inputs
 
