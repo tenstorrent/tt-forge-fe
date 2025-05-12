@@ -13,6 +13,7 @@ from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
 )
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
 def test_deepseek_inference_no_cache_cpu(variant):
     model_name = f"deepseek-ai/{variant}"

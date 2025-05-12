@@ -75,8 +75,8 @@ def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -84,11 +84,8 @@ def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    output = compiled_model(*inputs)
-
     # post processing
-    logits = output[0]
+    logits = co_out[0]
     mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
@@ -165,17 +162,14 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
     else:
         pcc = 0.95
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
         forge_property_handler=forge_property_recorder,
     )
-
-    # Inference
-    co_out = compiled_model(*inputs)
 
     # post processing
     predicted_token_class_ids = co_out[0].argmax(-1)
@@ -257,11 +251,8 @@ def test_albert_sequence_classification_pytorch(forge_property_recorder, variant
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    co_out = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # post processing
     predicted_class_id = co_out[0].argmax().item()

@@ -27,7 +27,7 @@ def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P2")
 
     # Load model and tokenizer

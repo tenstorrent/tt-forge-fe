@@ -25,10 +25,10 @@ def test_blip_text(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="blip",
+        model="blip_text",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.TEXT_ENCODING,
     )
     forge_property_recorder.record_group("generality")
 
@@ -58,7 +58,7 @@ def test_blip_vision(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="blip",
+        model="blip_vision",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
@@ -94,7 +94,7 @@ def test_blip(variant, forge_property_recorder):
         model="blip",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.IMAGE_CAPTIONING,
     )
     forge_property_recorder.record_group("generality")
 

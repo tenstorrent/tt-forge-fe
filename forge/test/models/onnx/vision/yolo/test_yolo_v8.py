@@ -18,13 +18,13 @@ from forge.forge_property_utils import Framework, Source, Task
 def test_yolov8(forge_property_recorder, tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model="Yolov8",
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P2")
 
     # Load  model and input

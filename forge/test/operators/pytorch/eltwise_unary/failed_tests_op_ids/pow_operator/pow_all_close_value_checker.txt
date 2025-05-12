@@ -1,0 +1,48 @@
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 45, 17)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 45, 17)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 100, 100)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 100, 100)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 10000, 1)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 10000, 1)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 17, 41)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 17, 41)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(1, 1, 10, 1000)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-torch.float32-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 0.0}-(14, 13, 89, 3)-torch.bfloat16-HiFi4
+pow-FROM_ANOTHER_OP-{'exponent': 10.0}-(14, 13, 89, 3)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 45, 17)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 100, 100)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 10000, 1)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 17, 41)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 11, 1, 23)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.bfloat16-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-torch.float32-HiFi4
+pow-FROM_HOST-{'exponent': 0.0}-(14, 13, 89, 3)-torch.bfloat16-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-torch.float32-HiFi4

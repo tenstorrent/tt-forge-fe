@@ -64,6 +64,10 @@ variants = [
         marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
     ),
     pytest.param(
+        "tiiuae/Falcon3-10B-Base",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
+    ),
+    pytest.param(
         "tiiuae/Falcon3-Mamba-7B-Base",
         marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
     ),
@@ -80,7 +84,12 @@ def test_falcon_3(forge_property_recorder, variant):
     )
 
     # Record Forge Property
-    if variant in ["tiiuae/Falcon3-1B-Base", "tiiuae/Falcon3-3B-Base", "tiiuae/Falcon3-7B-Base"]:
+    if variant in [
+        "tiiuae/Falcon3-1B-Base",
+        "tiiuae/Falcon3-3B-Base",
+        "tiiuae/Falcon3-7B-Base",
+        "tiiuae/Falcon3-10B-Base",
+    ]:
         forge_property_recorder.record_group("red")
     else:
         forge_property_recorder.record_group("generality")

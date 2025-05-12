@@ -48,7 +48,22 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
     // If the config is not set, return an empty string.
     if (mlir_config.has_value())
     {
-        options << "enable-const-eval=" << mlir_config->enable_consteval;
+        // Add all specified configs to the options string.
+        if (mlir_config->enable_consteval.has_value())
+        {
+            options << " enable-const-eval=" << *mlir_config->enable_consteval;
+        }
+        if (mlir_config->enable_optimizer.has_value())
+        {
+            options << " enable-optimizer=" << *mlir_config->enable_optimizer;
+        }
+        if (mlir_config->enable_memory_layout_analysis.has_value())
+        {
+            options << " memory-layout-analysis-enabled=" << *mlir_config->enable_memory_layout_analysis;
+        }
+
+        // Add custom configuration options.
+        options << " " << mlir_config->custom_config;
     }
 
     return options.str();

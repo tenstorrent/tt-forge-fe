@@ -163,23 +163,23 @@ variants = [
     pytest.param("hrnet_w18"),
     pytest.param("hrnet_w30"),
     pytest.param(
-        "hrnetv2_w32",
+        "hrnet_w32",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w40",
+        "hrnet_w40",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w44",
+        "hrnet_w44",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w48",
+        "hrnet_w48",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w64",
+        "hrnet_w64",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(

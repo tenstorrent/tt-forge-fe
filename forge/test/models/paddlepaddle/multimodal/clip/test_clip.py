@@ -25,10 +25,10 @@ def test_clip_text(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model="clip_text",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.TEXT_ENCODING,
     )
     forge_property_recorder.record_group("generality")
 
@@ -58,7 +58,7 @@ def test_clip_vision(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model="clip_vision",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
@@ -94,7 +94,7 @@ def test_clip(variant, forge_property_recorder):
         model="clip",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.IMAGE_TEXT_PAIRING,
     )
     forge_property_recorder.record_group("generality")
 

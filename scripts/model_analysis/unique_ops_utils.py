@@ -6,7 +6,7 @@ import json
 from loguru import logger
 import subprocess
 import pandas as pd
-from typing import List
+from typing import List, Optional
 import ast
 
 import torch
@@ -17,6 +17,7 @@ from utils import (
     collect_all_model_analysis_test,
     extract_framework_from_test_file_path,
     extract_test_file_path_and_test_case_func,
+    filter_tests,
 )
 
 
@@ -25,6 +26,7 @@ def generate_and_export_unique_ops_tests(
     unique_ops_output_directory_path: str,
     extract_tvm_unique_ops_config: bool = False,
     timeout: int = 1200,
+    tests_to_filter: Optional[List[str]] = None,
 ):
     """
     Collect all the tests that doesn't contain skip_model_analysis marker in the test_directory_or_file_path specified by the user
@@ -36,6 +38,8 @@ def generate_and_export_unique_ops_tests(
     test_list = collect_all_model_analysis_test(test_directory_or_file_path, unique_ops_output_directory_path)
 
     assert test_list != [], f"No tests found in the {test_directory_or_file_path} path"
+
+    test_list = filter_tests(test_list, tests_to_filter)
 
     # Create a dictonary contains framework as key and value as another dictonary containing model_name as key and list of test command as values
     framework_and_model_name_to_tests = {}

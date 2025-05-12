@@ -30,7 +30,7 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     if variant == "microsoft/phi-3-mini-4k-instruct":
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
         forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
@@ -65,12 +65,12 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     inputs = [input_ids, attn_mask]
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

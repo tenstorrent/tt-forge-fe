@@ -53,14 +53,11 @@ def test_mobilenetv2_basic(forge_property_recorder):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    post_processing(output)
+    post_processing(co_out)
 
 
 def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):

@@ -32,7 +32,7 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_group("generality")
     forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model

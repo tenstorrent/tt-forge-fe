@@ -55,19 +55,16 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    output = compiled_model(*inputs)
-
     # post processing
-    logits = output[0]
+    logits = co_out[0]
     mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
@@ -129,20 +126,17 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    output = compiled_model(*inputs)
-
     # post processing
-    start_logits = output[0]
-    end_logits = output[1]
+    start_logits = co_out[0]
+    end_logits = co_out[1]
 
     answer_start_index = start_logits.argmax()
     answer_end_index = end_logits.argmax()
@@ -196,10 +190,10 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
-    co_out = compiled_model(*inputs)
+    # post processing
     predicted_value = co_out[0].argmax(-1).item()
 
     # Answer - "positive"

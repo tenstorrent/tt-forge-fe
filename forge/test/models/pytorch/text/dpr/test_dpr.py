@@ -69,19 +69,16 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    embeddings = compiled_model(*inputs)
-
     # Results
-    print("embeddings", embeddings)
+    print("embeddings", co_out)
 
 
 variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-question_encoder-multiset-base"]

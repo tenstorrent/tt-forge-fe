@@ -40,7 +40,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
 
     # Record Forge Property
     if variant == "mobilenetv2_050":
-        forge_property_recorder.record_group("red")
+        forge_property_recorder.record_group("generality")
         forge_property_recorder.record_priority("P1")
     else:
         forge_property_recorder.record_group("generality")
@@ -63,7 +63,9 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     pcc = 0.99
     if variant == "mobilenetv2_050":

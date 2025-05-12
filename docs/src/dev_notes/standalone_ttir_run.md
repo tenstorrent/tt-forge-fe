@@ -29,13 +29,13 @@
         module attributes {} {
             func.func @forward(%arg0: tensor<13x89x3xf32> {ttir.name = "x"}, %arg1: tensor<13x89x3xf32> {ttir.name = "y"}, %arg2: tensor<1x89x3xf32> {ttir.name = "input_0_multiply_1"}, %arg3: tensor<1x89x3xf32> {ttir.name = "input_0_reciprocal_0"}) -> (tensor<13x89x3xf32> {ttir.name = "ModelConstEvalPass.output_add_3"}) {
                 %0 = tensor.empty() : tensor<1x89x3xf32>
-                %1 = "ttir.reciprocal"(%arg3, %0) <{operandSegmentSizes = array<i32: 1, 1>}> : (tensor<1x89x3xf32>, tensor<1x89x3xf32>) -> tensor<1x89x3xf32>
+                %1 = "ttir.reciprocal"(%arg3, %0) : (tensor<1x89x3xf32>, tensor<1x89x3xf32>) -> tensor<1x89x3xf32>
                 %2 = tensor.empty() : tensor<1x89x3xf32>
-                %3 = "ttir.multiply"(%arg2, %1, %2) <{operandSegmentSizes = array<i32: 2, 1>}> : (tensor<1x89x3xf32>, tensor<1x89x3xf32>, tensor<1x89x3xf32>) -> tensor<1x89x3xf32>
+                %3 = "ttir.multiply"(%arg2, %1, %2) : (tensor<1x89x3xf32>, tensor<1x89x3xf32>, tensor<1x89x3xf32>) -> tensor<1x89x3xf32>
                 %4 = tensor.empty() : tensor<13x89x3xf32>
-                %5 = "ttir.add"(%arg0, %arg1, %4) <{operandSegmentSizes = array<i32: 2, 1>}> : (tensor<13x89x3xf32>, tensor<13x89x3xf32>, tensor<13x89x3xf32>) -> tensor<13x89x3xf32>
+                %5 = "ttir.add"(%arg0, %arg1, %4) : (tensor<13x89x3xf32>, tensor<13x89x3xf32>, tensor<13x89x3xf32>) -> tensor<13x89x3xf32>
                 %6 = tensor.empty() : tensor<13x89x3xf32>
-                %7 = "ttir.add"(%3, %5, %6) <{operandSegmentSizes = array<i32: 2, 1>}> : (tensor<1x89x3xf32>, tensor<13x89x3xf32>, tensor<13x89x3xf32>) -> tensor<13x89x3xf32>
+                %7 = "ttir.add"(%3, %5, %6) : (tensor<1x89x3xf32>, tensor<13x89x3xf32>, tensor<13x89x3xf32>) -> tensor<13x89x3xf32>
                 return %7 : tensor<13x89x3xf32>
             }
         }
