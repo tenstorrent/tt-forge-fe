@@ -5,9 +5,12 @@ import os
 
 import pytest
 import requests
+import torch
 from yolov6 import YOLOV6
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -58,6 +61,7 @@ def test_yolo_v6_pytorch(forge_property_recorder, variant):
     model = YOLOV6(weights)
     framework_model = model.model
     framework_model.eval()
+    framework_model.to(torch.bfloat16)
 
     # STEP 3 : prepare input
     url = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -67,11 +71,18 @@ def test_yolo_v6_pytorch(forge_property_recorder, variant):
     img, img_src = process_image(url, img_size, stride, half=False)
     input_batch = img.unsqueeze(0)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

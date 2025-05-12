@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import requests
+import torch
 from PIL import Image
 
 
@@ -12,5 +13,10 @@ def load_input(processor):
     messages = [{"role": "user", "content": placeholder + "Summarize the slide."}]
     prompt = processor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     inputs = processor(prompt, image, return_tensors="pt")
-    inputs = [inputs["input_ids"], inputs["attention_mask"], inputs["pixel_values"], inputs["image_sizes"]]
+    inputs = [
+        inputs["input_ids"].to(torch.bfloat16),
+        inputs["attention_mask"].to(torch.bfloat16),
+        inputs["pixel_values"].to(torch.bfloat16),
+        inputs["image_sizes"].to(torch.bfloat16),
+    ]
     return inputs

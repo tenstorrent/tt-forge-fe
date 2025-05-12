@@ -7,6 +7,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -27,7 +29,7 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip("Test uses large amount of host memory (>30GB).")
+# @pytest.mark.skip("Test uses large amount of host memory (>30GB).")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_5_vision(forge_property_recorder, variant):
 
@@ -53,15 +55,22 @@ def test_phi3_5_vision(forge_property_recorder, variant):
         _attn_implementation="eager",
     )
     model.eval()
-    framework_model = Wrapper(model)
+    framework_model = Wrapper(model).to(torch.bfloat16)
     processor = download_model(AutoProcessor.from_pretrained, variant, trust_remote_code=True, num_crops=4)
 
     # prepare input
     inputs = load_input(processor)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

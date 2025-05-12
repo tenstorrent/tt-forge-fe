@@ -25,4 +25,4 @@ def load_input():
         ]
     )
     inputs = transform_image(image).unsqueeze(0)
-    return [inputs]
+    return [inputs.to(torch.bfloat16)]

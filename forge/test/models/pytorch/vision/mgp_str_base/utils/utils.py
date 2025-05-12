@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import requests
+import torch
 
 # From: https://huggingface.co/alibaba-damo/mgp-str-base
 from PIL import Image
@@ -23,4 +24,4 @@ def load_input(variant):
         images=image,
         return_tensors="pt",
     )
-    return [inputs["pixel_values"]]
+    return [inputs["pixel_values"].to(torch.bfloat16)]

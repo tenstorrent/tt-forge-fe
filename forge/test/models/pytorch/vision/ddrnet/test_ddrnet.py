@@ -8,6 +8,8 @@ from PIL import Image
 from torchvision import transforms
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -58,6 +60,7 @@ def test_ddrnet_pytorch(forge_property_recorder, variant):
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
 
     framework_model.load_state_dict(state_dict, strict=False)
+    framework_model.to(torch.bfloat16)
     framework_model.eval()
 
     # STEP 3: Prepare input
@@ -75,11 +78,18 @@ def test_ddrnet_pytorch(forge_property_recorder, variant):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -134,6 +144,7 @@ def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
     )
     state_dict = torch.load(state_dict_path, map_location=torch.device("cpu"))
     framework_model.load_state_dict(state_dict, strict=False)
+    framework_model.to(torch.bfloat16)
     framework_model.eval()
 
     # prepare input
@@ -142,11 +153,18 @@ def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
     input_tensor = transforms.ToTensor()(input_image)
     input_batch = input_tensor.unsqueeze(0)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

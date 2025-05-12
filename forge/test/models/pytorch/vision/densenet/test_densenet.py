@@ -8,6 +8,8 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -38,8 +40,8 @@ class densenet_xray_wrapper(nn.Module):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_densenet_121_pytorch(forge_property_recorder, variant):
-    if variant == "densenet121":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # if variant == "densenet121":
+    #     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -55,20 +57,29 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
-        framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
+        framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True).to(
+            torch.bfloat16
+        )
         img_tensor = get_input_img()
     else:
         model_name = "densenet121-res224-all"
         model = download_model(xrv.models.get_model, model_name)
-        framework_model = densenet_xray_wrapper(model)
+        framework_model = densenet_xray_wrapper(model).to(torch.bfloat16)
         img_tensor = get_input_img_hf_xray()
 
     # STEP 3: Run inference on Tenstorrent device
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -109,15 +120,24 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -145,16 +165,25 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -164,7 +193,7 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
+    # pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -179,16 +208,25 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

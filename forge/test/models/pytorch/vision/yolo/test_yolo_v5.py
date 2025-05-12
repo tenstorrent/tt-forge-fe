@@ -5,6 +5,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -20,7 +22,7 @@ def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
 
     input_shape = (1, 3, 320, 320)
     input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
+    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
 
 
 size = [
@@ -36,8 +38,8 @@ size = [
 @pytest.mark.parametrize("size", size)
 @pytest.mark.xfail
 def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
-    if size != "s":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # if size != "s":
+    #     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -57,9 +59,16 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
         size=size,
     )
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -72,7 +81,7 @@ def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
 
     input_shape = (1, 3, 640, 640)
     input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
+    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
 
 
 size = [
@@ -88,8 +97,8 @@ size = [
 @pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
-    if size != "s":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # if size != "s":
+    #     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -109,9 +118,16 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
         size=size,
     )
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -123,7 +139,7 @@ def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
     model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
     input_shape = (1, 3, 480, 480)
     input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
+    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
 
 
 size = [
@@ -139,8 +155,8 @@ size = [
 @pytest.mark.parametrize("size", size)
 @pytest.mark.xfail
 def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
-    if size != "n":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # if size != "n":
+    #     pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -160,9 +176,16 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
         size=size,
     )
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -172,7 +195,7 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
 def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    # pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -192,15 +215,22 @@ def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, var
         f"{base_url}/{variant}.pt",
         yolov5_loader,
         variant="ultralytics/yolov5",
-    )
+    ).to(torch.bfloat16)
 
     input_shape = (1, 3, 1280, 1280)
-    input_tensor = torch.rand(input_shape)
+    input_tensor = torch.rand(input_shape).to(torch.bfloat16)
     inputs = [input_tensor]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

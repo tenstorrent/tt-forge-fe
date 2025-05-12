@@ -35,6 +35,7 @@ def test_pytorch_ssd300_resnet50(forge_property_recorder):
 
     checkpoint = torch.load(checkpoint_path, map_location=torch.device("cpu"))
     framework_model.load_state_dict(checkpoint["model"])
+    framework_model.to(torch.bfloat16)
     framework_model.eval()
 
     # STEP 3 : prepare input
@@ -43,11 +44,18 @@ def test_pytorch_ssd300_resnet50(forge_property_recorder):
     CHW = np.swapaxes(np.swapaxes(HWC, 0, 2), 1, 2)
     batch = np.expand_dims(CHW, axis=0)
     input_batch = torch.from_numpy(batch).float()
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

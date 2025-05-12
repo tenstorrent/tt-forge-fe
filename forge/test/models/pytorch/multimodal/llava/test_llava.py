@@ -8,6 +8,8 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -38,7 +40,7 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_llava(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
+    # pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -53,16 +55,24 @@ def test_llava(forge_property_recorder, variant):
     forge_property_recorder.record_group("red")
 
     framework_model, processor = load_model(variant)
+    framework_model.to(torch.bfloat16)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
     text = "What’s shown in this image?"
 
     # Input sample
     input_ids, attn_mask, pixel_values = load_inputs(image, text, processor)
-    inputs = [input_ids, attn_mask, pixel_values]
+    inputs = [input_ids.to(torch.bfloat16), attn_mask.to(torch.bfloat16), pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

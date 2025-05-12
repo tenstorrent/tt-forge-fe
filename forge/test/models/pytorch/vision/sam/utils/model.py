@@ -29,7 +29,7 @@ def get_model_inputs(variant, input_url="https://huggingface.co/ybelkada/segment
         inputs["pixel_values"],
         inputs["input_points"],
     )
-    return framework_model, sample_inputs
+    return framework_model.to(torch.bfloat16), sample_inputs.to(torch.bfloat16)
 
 
 class SamWrapper(torch.nn.Module):

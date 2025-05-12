@@ -15,6 +15,8 @@ from torchvision import transforms
 from vgg_pytorch import VGG
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -46,7 +48,7 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
     framework_model.eval()
 
     # Image preprocessing
@@ -69,11 +71,18 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -102,7 +111,7 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    framework_model = download_model(VGG.from_pretrained, "vgg19")
+    framework_model = download_model(VGG.from_pretrained, "vgg19").to(torch.bfloat16)
     framework_model.eval()
 
     # Image preprocessing
@@ -125,11 +134,18 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -155,7 +171,7 @@ def preprocess_timm_model(model_name):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    return model, img_tensor
+    return model.to(torch.bfloat16), img_tensor.to(torch.bfloat16)
 
 
 @pytest.mark.nightly
@@ -174,11 +190,18 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    inputs = [image_tensor]
+    inputs = [image_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -203,7 +226,9 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True).to(
+        torch.bfloat16
+    )
     framework_model.eval()
 
     # Image preprocessing
@@ -226,11 +251,18 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -281,9 +313,16 @@ def test_vgg_torchvision(forge_property_recorder, variant):
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     verify_cfg = VerifyConfig()

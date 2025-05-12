@@ -2,9 +2,12 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -43,15 +46,22 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         forge_property_recorder.record_group("generality")
 
     # Load model
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
 
     # prepare input
     image_tensor = get_image()
-    inputs = [image_tensor]
+    inputs = [image_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -64,7 +74,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
 def generate_model_vovnet39_imgcls_stigma_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet39)
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -87,9 +97,16 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
 
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -100,7 +117,7 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
     # STEP 2: Create Forge module from PyTorch model
     model, image_tensor = download_model(preprocess_steps, vovnet57)
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -123,9 +140,16 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
 
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -135,7 +159,7 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
 def generate_model_vovnet_imgcls_timm_pytorch(variant):
     model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 variants = [
@@ -170,9 +194,17 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant):
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,
     )
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

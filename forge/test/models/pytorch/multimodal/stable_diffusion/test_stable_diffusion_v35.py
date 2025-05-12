@@ -6,6 +6,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -13,7 +15,6 @@ from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_v35,
 )
-
 
 class StableDiffusionWrapper(torch.nn.Module):
     def __init__(self, model, joint_attention_kwargs=None, return_dict=False):
@@ -35,9 +36,9 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
-)
+# @pytest.mark.skip(
+#     reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
+# )
 @pytest.mark.parametrize(
     "variant",
     [
@@ -66,15 +67,30 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
     framework_model = pipe.transformer
 
     # TODO: Implement post-processing using VAE decode after obtaining the transformer output.
-    framework_model = StableDiffusionWrapper(framework_model, joint_attention_kwargs=None, return_dict=False)
+    framework_model = StableDiffusionWrapper(framework_model, joint_attention_kwargs=None, return_dict=False).to(
+        torch.bfloat16
+    )
 
     # Load inputs
     prompt = "An astronaut riding a green horse"
     latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
-    inputs = [latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds]
+    inputs = [
+        latent_model_input.to(torch.bfloat16),
+        timestep.to(torch.bfloat16),
+        prompt_embeds.to(torch.bfloat16),
+        pooled_prompt_embeds.to(torch.bfloat16),
+    ]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

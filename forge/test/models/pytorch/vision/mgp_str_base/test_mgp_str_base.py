@@ -7,6 +7,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import DepricatedVerifyConfig, verify
 
@@ -45,8 +47,11 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
 
     # Load model and input
     framework_model = load_model(variant)
-    framework_model = Wrapper(framework_model)
+    framework_model = Wrapper(framework_model).to(torch.bfloat16)
     inputs = load_input(variant)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -55,6 +60,7 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
         verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

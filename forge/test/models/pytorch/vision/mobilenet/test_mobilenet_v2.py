@@ -18,6 +18,8 @@ from transformers import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -48,9 +50,16 @@ def test_mobilenetv2_basic(forge_property_recorder):
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v2")
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
@@ -70,7 +79,7 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -92,9 +101,16 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -111,7 +127,7 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
     inputs = preprocessor(images=image, return_tensors="pt")
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -133,9 +149,16 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -154,7 +177,7 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -176,9 +199,16 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -206,7 +236,7 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
         )
         image_tensor = torch.rand(1, 3, 224, 224)
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -227,9 +257,16 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -264,7 +301,7 @@ def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    return framework_model, [img_tensor], {}
+    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)], {}
 
 
 variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
@@ -289,9 +326,16 @@ def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -322,10 +366,19 @@ def test_mobilenetv2_torchvision(forge_property_recorder, variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model = framework_model.to(torch.bfloat16)
+    inputs = inputs.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

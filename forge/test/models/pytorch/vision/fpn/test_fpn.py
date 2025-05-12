@@ -5,6 +5,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -22,17 +24,24 @@ def test_fpn_pytorch(forge_property_recorder):
     forge_property_recorder.record_group("generality")
 
     # Load FPN model
-    framework_model = FPNWrapper()
+    framework_model = FPNWrapper().to(torch.bfloat16)
 
-    feat0 = torch.rand(1, 256, 64, 64)
-    feat1 = torch.rand(1, 512, 16, 16)
-    feat2 = torch.rand(1, 2048, 8, 8)
+    feat0 = torch.rand(1, 256, 64, 64).to(torch.bfloat16)
+    feat1 = torch.rand(1, 512, 16, 16).to(torch.bfloat16)
+    feat2 = torch.rand(1, 2048, 8, 8).to(torch.bfloat16)
 
     inputs = [feat0, feat1, feat2]
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
