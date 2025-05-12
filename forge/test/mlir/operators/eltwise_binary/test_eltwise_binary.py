@@ -74,18 +74,8 @@ def test_stack_and_view(forge_property_recorder, shape, dim):
 @pytest.mark.parametrize(
     "einsum_pattern, shape_1, shape_2",
     [
-        pytest.param(
-            "bqnc,bnchw->bqnhw",
-            (1, 100, 8, 32),
-            (1, 8, 32, 14, 20),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.0451398042494029"),
-        ),
-        pytest.param(
-            "bqnc,bnchw->bqnhw",
-            (3, 99, 7, 31),
-            (3, 7, 31, 15, 19),
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.008232882538975006"),
-        ),
+        pytest.param("bqnc,bnchw->bqnhw", (1, 100, 8, 32), (1, 8, 32, 14, 20)),
+        pytest.param("bqnc,bnchw->bqnhw", (3, 99, 7, 31), (3, 7, 31, 15, 19)),
     ],
 )
 @pytest.mark.push
