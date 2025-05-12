@@ -57,10 +57,10 @@ sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-4. Run the container (the prebuilt image is used here):
+4. Run the container of your choice (replace the curly braces and message inside with one of the images listed above):
 
 ```bash
-docker run -it ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
+sudo  docker run -it --shm-size=4g --cap-add ALL -v /dev/hugepages:/dev/hugepages --device /dev/tenstorrent/0 {INSERT DOCKER IMAGE HERE}
 ```
 
 5. If you want to check that it's running, open a new tab with the **Same Command** option and run the following:
@@ -88,22 +88,22 @@ This section walks you through downloading and installing a wheel. You can insta
 
 2. Download the wheel(s) you want to use from the [Tenstorrent Nightly Releases](https://github.com/tenstorrent/tt-forge/releases) page.
 
+> **NOTE**: The link for each wheel you install is structured as
+`https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev{number from top of release page}/forge-0.1.0.dev{number from top of release page}-cp310-cp310-linux_x86_64.whl`
+
 For this walkthrough, tt-forge-fe is used. You need to install two wheels for set up:
 
 ```bash
-pip install https://github.com/tenstorrent/tt-forge/releases/download/0.1.0.dev20250422214451/forge-0.1.0.dev20250422214451-cp310-cp310-linux_x86_64.whl
+pip install https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250509060216/forge-0.1.0.dev20250509060216-cp310-cp310-linux_x86_64.whl
 ```
 
 ```bash
-pip install https://github.com/tenstorrent/tt-forge/releases/download/0.1.0.dev20250422214451/tvm-0.1.0.dev20250422214451-cp310-cp310-linux_x86_64.whl
+pip install  https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250509060216//tvm-0.1.0.dev20250509060216-cp310-cp310-linux_x86_64.whl
 ```
 
 > **NOTE:** The commands are examples, for the latest install link, go to the
 > [Tenstorrent Nightly Releases](https://github.com/tenstorrent/tt-forge/releases)
-> page. The generic download will be:
-> `https://github.com/tenstorrent/tt-forge/releases/download/0.1.0.devDATE/
-> NAMEOFWHEEL`
->
+> page.
 > If you plan to work with wheels from different repositories, make a separate
 > environment for each one. Some wheels have conflicting dependencies.
 
