@@ -182,7 +182,9 @@ void AutogradModule(py::module &m_autograd)
                     graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()),
                     self.created_op_index++,
                     self.epoch_type);
-            })
+            },
+            py::arg("tensor"),
+            py::arg("df") = DataFormat::Invalid)
         .def(
             "get_pytorch_tensor",
             [](tt::autograd::autograd_context &self, tt::autograd::NodeContext const &node)
