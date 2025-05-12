@@ -217,7 +217,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       
       - name: End telemetry collection
-        if: inputs.show-telemetry
+        if: inputs.show-telemetry && always()
         id: telemetry_end
         uses: tenstorrent/tt-github-actions/.github/actions/show_telemtery@main
         with:
