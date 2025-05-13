@@ -300,20 +300,17 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    pytest.param(
-        (
-            Where2,
-            [((1, 1, 32, 32), torch.bool)],
-            {
-                "model_names": [
-                    "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                    "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                    "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    (
+        Where2,
+        [((1, 1, 32, 32), torch.bool)],
+        {
+            "model_names": [
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     pytest.param(
         (
