@@ -23,6 +23,7 @@ from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch
 from test.operators.utils import PytorchUtils
 from test.operators.utils.utils import TestDevice
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -151,6 +152,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(operators=["softmax"]),
         # All dim values are not supported except for the last one:
         TestCollection(
             operators=TestParamsData.operators,
@@ -170,23 +172,23 @@ TestParamsData.test_plan = TestPlan(
                 ),
             ],
         ),
-        # All-close value checker failed (rtol=1e-2, atol=1e-2):
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # Softmax lastdim kernel not implemented for some data formats:
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-            ],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
+        # # All-close value checker failed (rtol=1e-2, atol=1e-2):
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # Softmax lastdim kernel not implemented for some data formats:
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_sources=TestCollectionCommon.single.input_sources,
+        #     input_shapes=TestCollectionCommon.single.input_shapes,
+        #     dev_data_formats=[
+        #         torch.int8,
+        #         torch.int32,
+        #         torch.int64,
+        #     ],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
     ],
 )
 
