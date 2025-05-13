@@ -94,7 +94,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+        inputs = [input.to(torch.bfloat16) for input in inputs]
 
     # Load model
     framework_model = download_model(timm.create_model, "efficientnet_b0", pretrained=True)
@@ -131,7 +131,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
 
     verify(
-        input_sample,
+        [inputs[0]],
         framework_model,
         compiled_model,
         verify_cfg=verify_cfg,

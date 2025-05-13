@@ -91,7 +91,7 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+        inputs = [input.to(torch.bfloat16) for input in inputs]
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "mobilenet_v2", pretrained=True)
     if data_format == "bfloat16":
