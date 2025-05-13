@@ -91,7 +91,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         inputs = [torch.randn(batch_size, channel_size, input_size[0], input_size[1])]
     else:
         raise ValueError(f"Unsupported task: {task}")
-    
+
     if data_format == "bfloat16":
         # Convert input to bfloat16
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
@@ -129,7 +129,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         # Set smaller pcc for bfloat16
         pcc = 0.98
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
-    
+
     verify(
         input_sample,
         framework_model,
