@@ -85,11 +85,11 @@ jobs:
           while read -r machine; do
             for dir in log-a/test-log-"$machine"-*/; do
               sed -n '/=========================== short test summary info ============================/,$p' "$dir/pytest.log" >temp.log
-              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/\(.*\]\).*/\1/' >>a-"$machine".log
+              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/^\(.*\) - .*/\1/; s/^\(.*\]\).*/\1/' >>a-"$machine".log
             done
             for dir in log-b/test-log-"$machine"-*/; do
               sed -n '/=========================== short test summary info ============================/,$p' "$dir/pytest.log" >temp.log
-              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/\(.*\]\).*/\1/' >>b-"$machine".log
+              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/^\(.*\) - .*/\1/; s/^\(.*\]\).*/\1/' >>b-"$machine".log
             done
             # get only the lines that are in b.log but not in a.log
             if [ ! -s a-"$machine".log ]; then
@@ -287,8 +287,15 @@ jobs:
             # Get commit
             no_failed_tests=$(wc -l <a.log)
             commit=$(echo "$test" | sed 's/.*-//')
-            echo "- In <https://github.com/$repo/commit/$commit|$commit> $no_failed_tests test(s) failed\n" >>short_report.txt
-            echo "- In [$commit](<https://github.com/$repo/commit/$commit>) $no_failed_tests test(s) failed:" >>report.txt
+
+            # get commit image link
+            html=$(curl -s "https://github.com/$repo/commit/$commit")
+            commitimg=$(echo "$html" | grep -oP '(?<=<meta name="twitter:image" content=")[^"]*')
+
+            # create commit/summary message
+            echo "* $no_failed_tests test(s) failed in $commit." >>short_report.txt
+            echo "  <https://github.com/$repo/commit/$commit>" >>short_report.txt
+            echo "- In commit [$commit](<https://github.com/$repo/commit/$commit>) $no_failed_tests test(s) failed: <img src=\"$commitimg\" width=\"25%\" align=\"right\"/>" >>report.txt
             sed 's/^/> /' a.log >>report.txt
           done <test_jobs.txt
 
@@ -298,12 +305,11 @@ jobs:
             exit 0
           else
             echo "Report: $(cat report.txt)"
-            echo "<https://github.com/$repo/actions/runs/$workflow_id|More details>" >>short_report.txt
             echo "## Inspection report :rocket:" >> $GITHUB_STEP_SUMMARY
             cat report.txt >> $GITHUB_STEP_SUMMARY
             # Escape special characters in the short report for JSON compatibility
             escaped_report=$(cat short_report.txt | jq -Rs .)
-            echo "send_msg={\"text\": $escaped_report}" >>$GITHUB_OUTPUT
+            echo "send_msg={\"text\": $escaped_report, \"job_link\": \"https://github.com/$repo/actions/runs/$workflow_id\", \"unfurl_links\": false, \"unfurl_media\": false }" >>$GITHUB_OUTPUT
           fi
 
       - name: Send Fail Notification
