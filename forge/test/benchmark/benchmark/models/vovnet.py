@@ -105,7 +105,7 @@ def test_vovnet_osmr(
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        input_sample = [input.to(torch.bfloat16) for input in input_sample]
+        inputs[0] = [input.to(torch.bfloat16) for input in inputs]
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -141,7 +141,7 @@ def test_vovnet_osmr(
         pcc = 0.97
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
     verify(
-        input_sample,
+        [inputs[0]],
         framework_model,
         compiled_model,
         verify_cfg=verify_cfg,
