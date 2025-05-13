@@ -1,0 +1,4 @@
+# xfail_repeat_interleave_DATA_MISMATCH ids
+
+repeat_interleave-FROM_HOST-{'repeats': 7, 'dim': 3}-(1, 2, 3, 4)-forge.Int8-None
+repeat_interleave-FROM_HOST-{'repeats': 7, 'dim': 3}-(1, 2, 3, 4)-forge.Int32-None

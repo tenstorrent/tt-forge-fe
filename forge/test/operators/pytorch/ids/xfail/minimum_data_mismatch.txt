@@ -1,0 +1,9 @@
+# xfail_minimum_DATA_MISMATCH ids
+
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-LoFi
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi2
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi3
+minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi4
