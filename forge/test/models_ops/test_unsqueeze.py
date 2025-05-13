@@ -4312,11 +4312,6 @@ forge_modules_and_shapes_dtypes_list = [
             [((1, 596), torch.bool)],
             {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
         ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/reshape_view/device/reshape_device_operation.cpp:22: input_tensor_a.get_dtype() == DataType::BFLOAT16 or input_tensor_a.get_dtype() == DataType::UINT32 or input_tensor_a.get_dtype() == DataType::FLOAT32 info: Can only work with bfloat16/float32 or uint32 tensors"
-            )
-        ],
     ),
     (
         Unsqueeze2,

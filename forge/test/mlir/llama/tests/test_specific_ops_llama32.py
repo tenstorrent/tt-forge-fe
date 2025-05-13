@@ -515,3 +515,58 @@ def test_transpose(forge_property_recorder, params):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        ((32, 32, 32, 64), 3, 0, 32, 1),
+        ((32, 32, 32, 64), 3, 32, 64, 1),
+        ((32, 8, 32, 64), 3, 32, 64, 1),
+        ((32, 8, 32, 64), 3, 0, 32, 1),
+    ],
+)
+@pytest.mark.parametrize("train", [True, False], ids=["train", "eval"])
+@pytest.mark.push
+def test_indexing(forge_property_recorder, params, train):
+    shape, dim, start, stop, stride = params
+
+    class Indexing(nn.Module):
+        def __init__(self, dim, start, stop, stride):
+            self.dim = dim
+            self.start = start
+            self.stop = stop
+            self.stride = stride
+            super().__init__()
+
+        def forward(self, x):
+            slices = [
+                (
+                    slice(self.start, self.stop, self.stride)
+                    if dim == self.dim or x.ndim + self.dim == dim
+                    else slice(None)
+                )
+                for dim in range(len(x.shape))
+            ]
+            return x[tuple(slices)]
+
+    inputs = [torch.rand(*shape).requires_grad_(train)]
+
+    framework_model = Indexing(dim, start, stop, stride)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        forge_property_handler=forge_property_recorder,
+        training=train,
+    )
+
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    if train:
+        out_grad = torch.randn_like(fw_out[0])
+        verify_backward(inputs, out_grad, fw_out[0], co_out[0], framework_model, compiled_model)

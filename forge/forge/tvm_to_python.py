@@ -2737,7 +2737,7 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if (framework in ["pytorch", "paddle", "onnx"] and compiler_cfg.extract_tvm_unique_ops_config) or (
+        if compiler_cfg.extract_tvm_unique_ops_config or (
             framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
         ):
 

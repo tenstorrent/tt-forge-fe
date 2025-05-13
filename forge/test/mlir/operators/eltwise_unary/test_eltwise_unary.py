@@ -8,6 +8,7 @@ from torch import nn
 
 import forge
 from forge.verify.verify import verify
+import torch.nn.functional as F
 
 
 @pytest.mark.parametrize(
@@ -942,5 +943,63 @@ def test_unflatten(forge_property_recorder, input_shape, dim, unflattened_size):
     model.eval()
 
     compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("hidden_dim", [96, 128, 160, 192])
+def test_zero(forge_property_recorder, hidden_dim):
+    class ZeroModel(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x, qkv_weight, qkv_bias):
+            length = qkv_bias.numel() // 3
+            qkv_bias[length : 2 * length].zero_()
+            qkv = F.linear(x, qkv_weight, qkv_bias)
+            return qkv
+
+    model = ZeroModel()
+    model.eval()
+
+    x = torch.rand(4, 16, hidden_dim)
+    qkv_weight = torch.rand(3 * hidden_dim, hidden_dim)
+    qkv_bias = torch.rand(3 * hidden_dim)
+
+    inputs = [x, qkv_weight, qkv_bias]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (2, 3, 4),
+        (1, 10),
+        (5, 5, 5),
+        (8,),
+    ],
+)
+@pytest.mark.xfail
+def test_zeros_like(forge_property_recorder, input_shape):
+    class ZerosLikeModel(torch.nn.Module):
+        def forward(self, x):
+            z = torch.zeros_like(x)
+            cond = x > 0
+            return torch.where(cond, x, z)
+
+    input_tensor = torch.randn(input_shape)
+    inputs = [input_tensor]
+
+    model = ZerosLikeModel()
+    model.eval()
+
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+        forge_property_handler=forge_property_recorder,
+    )
 
     verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -1,0 +1,315 @@
+name: Failure Inspector
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: On nightly
+    branches:
+      - main
+    types:
+      - completed
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    outputs:
+      should-test: ${{ steps.success-failed.outputs.should-test }}
+      matrix: ${{ steps.success-failed.outputs.matrix }}
+      docker-tag: ${{ steps.get-docker-tag.outputs.docker-tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Get success-failed workflow
+        id: success-failed
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          repo="${{ github.repository }}"
+          wf_name="on-nightly.yml"
+
+          # get json of the last 10 workflow runs
+          gh run list --workflow $wf_name -R $repo -b main -L 10 --status completed --json attempt,conclusion,databaseId,headSha >runs.json
+          if [ "$(jq -r '.[0].conclusion' runs.json)" != "failure" ]; then
+            echo "The latest workflow run did not fail. Exiting."
+            exit 0
+          fi
+          # Filter runs.json to include only entries where "conclusion" is "failure" or "success"
+          jq '[.[] | select(.conclusion == "failure" or .conclusion == "success")]' runs.json >filtered_runs.json
+          mv filtered_runs.json runs.json
+          echo "Extracted runs: $(cat runs.json)"
+          DATABASE_ID_1=$(jq -r '.[0].databaseId' runs.json)
+          HEAD_SHA_1=$(jq -r '.[0].headSha' runs.json)
+          DATABASE_ID_2=$(jq -r '.[1].databaseId' runs.json)
+          HEAD_SHA_2=$(jq -r '.[1].headSha' runs.json)
+          # get list of commits between last 2 workflow runs
+          echo "Get list of commits between last $DATABASE_ID_2 and $DATABASE_ID_1 workflow runs"
+          git fetch --all
+          git switch main
+          git checkout $HEAD_SHA_2
+          git submodule update --init --recursive
+          if git show-ref --verify --quiet refs/remotes/origin/main; then
+            git rev-list --reverse HEAD..origin/main >commits.txt
+          else
+            echo "ERROR: The main branch is not available in the repository."
+            exit 1
+          fi
+          # Remove all lines after $HEAD_SHA_1 in commits.txt
+          if ! grep -q "$HEAD_SHA_1" commits.txt; then
+            echo "WARNING: $HEAD_SHA_1 not found in commits"
+            exit 1
+          else
+            echo "$HEAD_SHA_1 found in commits, setting as last commit"
+            sed -n "/$HEAD_SHA_1/ {p;q;}; p" commits.txt >filtered_commits.txt
+            mv filtered_commits.txt commits.txt
+            echo "Commits: $(cat commits.txt)"
+          fi
+          if [ ! -s commits.txt ]; then
+            echo "No commits found between the last two workflow runs."
+            echo "matrix=\"[]\"" >>$GITHUB_OUTPUT
+            exit 0
+          fi
+          # cleanup before processing
+          rm -rf log-a
+          rm -rf log-b
+          # get list of failed tests from the last two workflow runs
+          gh run download $DATABASE_ID_2 --pattern "test-log*" -R $repo -D log-a || true
+          gh run download $DATABASE_ID_1 --pattern "test-log*" -R $repo -D log-b
+          # get machine names
+          find log-a -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-a.log
+          find log-b -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-b.log
+          cat machines-a.log machines-b.log | sort -u >machines.log
+          echo "Machines: $(cat machines.log)"
+          while read -r machine; do
+            for dir in log-a/test-log-"$machine"-*/; do
+              sed -n '/=========================== short test summary info ============================/,$p' "$dir/pytest.log" >temp.log
+              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/\(.*\]\).*/\1/' >>a-"$machine".log
+            done
+            for dir in log-b/test-log-"$machine"-*/; do
+              sed -n '/=========================== short test summary info ============================/,$p' "$dir/pytest.log" >temp.log
+              grep '^FAILED ' "temp.log" | sed 's/^FAILED //; s/\(.*\]\).*/\1/' >>b-"$machine".log
+            done
+            # get only the lines that are in b.log but not in a.log
+            if [ ! -s a-"$machine".log ]; then
+              cp b-"$machine".log tests-"$machine".log
+            fi
+            if [ ! -s b-"$machine".log ]; then
+              echo "List of failed tests for machine '$machine' is empty, nothing to do."
+            else
+              grep -Fxv -f a-"$machine".log b-"$machine".log >tests-"$machine".log
+              echo "----Tests for machine $machine: $(cat tests-"$machine".log)"
+            fi
+          done <machines.log
+          # Filter out machines with empty test logs
+          cp machines.log filtered_machines.log
+          while read -r machine; do
+            if [ ! -s tests-"$machine".log ]; then
+              echo "No failed tests for machine $machine, removing from list."
+              sed -i "/^$machine$/d" filtered_machines.log
+              rm -f tests-"$machine".log
+            fi
+          done <machines.log
+          if [ ! -s filtered_machines.log ]; then
+            echo "No new failed tests found."
+            exit 0
+          fi
+          # cleanup
+          rm -rf log-a
+          rm -rf log-b
+          rm -f a-*.log
+          rm -f b-*.log
+          rm -f machines-*.log
+          mv filtered_machines.log machines.log
+          # prepare build-test matrix
+          rm -rf matrix.log
+          c=1
+          while read -r commit; do
+            while read -r machine; do
+              echo "{\"runs-on\": \"$machine\", \"commit\": \"$commit\", \"c\": \"$c\"}," >>matrix.log
+            done <machines.log
+            c=$((c+1))
+          done <commits.txt
+          # Remove trailing comma on the last line of matrix.log
+          sed -i '$ s/,$//' matrix.log
+          # Combine all lines in matrix.log into a single line
+          tr -d '\n' <matrix.log >matrix_single_line.log
+          mv matrix_single_line.log matrix.log
+          echo "Extracted matrix: $(cat matrix.log)"
+          echo "matrix=[$(cat matrix.log)]" >>$GITHUB_OUTPUT
+          rm -f matrix.log
+          # set should-build to true
+          echo "should-test=true" >>$GITHUB_OUTPUT
+
+      - name: Get docker tag
+        id: get-docker-tag
+        run: |
+          dt=$(.github/get-docker-tag.sh)
+          echo "docker-tag=$dt" >> "$GITHUB_OUTPUT"
+          echo "Docker tag: $dt"
+
+      - name: Upload tests.log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-to-run
+          path: tests-*.log
+          if-no-files-found: ignore
+
+  test:
+    needs: inspect
+    if: ${{ needs.inspect.outputs.should-test }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build: ${{ fromJSON(needs.inspect.outputs.matrix) }}
+    name: "Test ${{matrix.build.runs-on}}-${{ matrix.build.c }}-${{ matrix.build.commit }}"
+    container:
+      image: "ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:${{ needs.inspect.outputs.docker-tag }}"
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+    runs-on:
+      - ${{ matrix.build.runs-on }}
+      - in-service
+      - runner
+
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            ref: ${{ matrix.build.commit }}
+
+        - name: Download wheels
+          uses: dawidd6/action-download-artifact@v9
+          with:
+            github_token: ${{secrets.GH_TOKEN}}
+            commit: ${{ matrix.build.commit }}
+            workflow_conclusion: completed
+            workflow: on-push.yml
+            name: forge-wheel
+            check_artifacts: true
+
+        # Test
+        - name: Install wheels
+          shell: bash
+          run: |
+            source env/activate
+            pip install tvm*.whl --force-reinstall
+            pip install forge*.whl --force-reinstall
+
+        - name: Download tests.log
+          uses: actions/download-artifact@v4
+          with:
+            name: tests-to-run
+
+        - name: Run Test
+          env:
+            HF_TOKEN: ${{ secrets.HF_TOKEN }}
+            HF_HOME: /mnt/dockercache/huggingface
+            FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+            HF_HUB_DISABLE_PROGRESS_BARS: 1
+            FORGE_DISABLE_REPORTIFY_DUMP: 1
+          shell: bash
+          run: |
+            source env/activate
+            echo "import pytest" >runtest.py
+            echo "import sys" >>runtest.py
+            echo "if __name__ == \"__main__\":" >>runtest.py
+            echo "    with open(sys.argv[1], \"r\") as fd:" >>runtest.py
+            echo "        test_list = [line.strip() for line in fd.readlines()]" >>runtest.py
+            echo "    print(f\"Running tests: {test_list}\")" >>runtest.py
+            echo "    sys.exit(pytest.main(test_list))" >>runtest.py
+            python runtest.py tests-${{matrix.build.runs-on}}.log 2>&1 | tee pytest.log
+
+        - name: Upload Test Log
+          uses: actions/upload-artifact@v4
+          if: failure()
+          with:
+            name: test-log-${{ matrix.build.runs-on }}-${{ matrix.build.c }}-${{ matrix.build.commit }}
+            path: pytest.log
+
+  deduct:
+    needs: test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find all test runs
+        id: do-deduct
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          workflow_id="${{ github.run_id }}"
+          repo="${{ github.repository }}"
+          rm -f report.txt
+          rm -f short_report.txt
+          rm -f pytest.log
+          rm -rf mach
+          gh run download $workflow_id --name "tests-to-run" -R $repo -D mach
+          cat mach/* >pytest.log
+          rm -rf mach
+          gh run view -R $repo $workflow_id --json jobs -q '.jobs[] | select(.name | startswith("Test")) | .name' >test_jobs.txt
+          sed -i 's/^Test //' test_jobs.txt
+          echo "Extracted test jobs: $(cat test_jobs.txt)"
+          set +e
+            while read -r test; do
+            rm -f a.log
+            rm -rf log
+            touch a.log
+            echo "Processing test job $test"
+            gh run download $workflow_id --pattern "test-log-${test}*" -R $repo -D log
+            if [ $? -ne 0 ]; then
+              echo "Could not download log for test job $test."
+              continue
+            fi
+            for dir in log/test-log-*/; do
+              grep '^FAILED ' "$dir/pytest.log" | sed 's/^FAILED //' >>a.log
+            done
+            # Remove all of tests that doesn't exist in initial list of tests (failed in previous jobs)
+            grep -Fx -f pytest.log a.log >f_a.log
+            mv f_a.log a.log
+            if [ ! -s a.log ]; then
+              echo "No failed tests found for test job $test."
+              continue
+            fi
+            echo "Failed tests for test job $test:"
+            cat a.log
+            # Remove all of failed tests from initial list of tests
+            grep -Fxv -f a.log pytest.log >filtered_pytest.log
+            mv filtered_pytest.log pytest.log
+
+            # Get commit
+            no_failed_tests=$(wc -l <a.log)
+            commit=$(echo "$test" | sed 's/.*-//')
+            echo "- In <https://github.com/$repo/commit/$commit|$commit> $no_failed_tests test(s) failed\n" >>short_report.txt
+            echo "- In [$commit](<https://github.com/$repo/commit/$commit>) $no_failed_tests test(s) failed:" >>report.txt
+            sed 's/^/> /' a.log >>report.txt
+          done <test_jobs.txt
+
+          if [ ! -s report.txt ]; then
+            echo "No failed tests to report."
+            echo "send_msg=" >>$GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Report: $(cat report.txt)"
+            echo "<https://github.com/$repo/actions/runs/$workflow_id|More details>" >>short_report.txt
+            echo "## Inspection report :rocket:" >> $GITHUB_STEP_SUMMARY
+            cat report.txt >> $GITHUB_STEP_SUMMARY
+            # Escape special characters in the short report for JSON compatibility
+            escaped_report=$(cat short_report.txt | jq -Rs .)
+            echo "send_msg={\"text\": $escaped_report}" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Send Fail Notification
+        if: ${{ steps.do-deduct.outputs.send_msg }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: ${{ steps.do-deduct.outputs.send_msg }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_INSPECT }}

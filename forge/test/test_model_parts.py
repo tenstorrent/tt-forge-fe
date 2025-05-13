@@ -8,7 +8,8 @@ from torch import nn
 
 import forge
 from forge.verify.verify import verify
-from forge.verify import DepricatedVerifyConfig
+import math
+import onnx
 
 
 @pytest.mark.xfail(
@@ -50,7 +51,65 @@ def test_inplace_updation(forge_property_recorder):
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
         forge_property_handler=forge_property_recorder,
     )
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "input_shape, clamp_min, clamp_max, dtype",
+    [
+        ((64, 3, 64, 64), None, math.log(100.0), torch.float32),
+        ((11, 30, 11, 11), math.log(101.0), None, torch.float32),
+        ((27, 16, 27, 27), -math.log(103.0), None, torch.float32),
+        ((45, 2, 45, 45), None, 5.0, torch.float32),
+        ((3, 21, 3, 3), None, math.log(50.0), torch.float32),
+        ((12, 6, 12, 12), -103.0, None, torch.float32),
+        pytest.param(
+            (18, 11, 18, 18),
+            -50,
+            None,
+            torch.int32,
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.865278346197563"),
+        ),
+        pytest.param(
+            (8, 1, 8, 8),
+            None,
+            876,
+            torch.int32,
+            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.8614933523955847"),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_clamp(input_shape, clamp_min, clamp_max, dtype):
+    class Clamp(nn.Module):
+        def __init__(self):
+            super().__init__()
+            log_value = torch.log(10 * torch.ones(input_shape[1], 1, 1))
+            self.logit_scale = nn.Parameter(log_value)
+
+        def forward(self, attn):
+            clamped = torch.clamp(self.logit_scale, min=clamp_min, max=clamp_max)
+            logit_scale = clamped.exp()
+            return attn * logit_scale
+
+    model = Clamp()
+    model.eval()
+
+    if dtype == torch.float32:
+        attn = torch.randn(input_shape)
+    elif dtype == torch.int32:
+        attn = torch.randint(low=torch.iinfo(dtype).min, high=torch.iinfo(dtype).max, size=input_shape, dtype=dtype)
+
+    inputs = [attn]
+
+    # Export to ONNX
+    torch.onnx.export(model, (inputs[0],), "temp.onnx", opset_version=17)
+
+    # Load and check ONNX
+    onnx_model = onnx.load("temp.onnx")
+    onnx.checker.check_model(onnx_model)
+
+    compiled_model = forge.compile(onnx_model, inputs)
+    verify(inputs, model, compiled_model)
