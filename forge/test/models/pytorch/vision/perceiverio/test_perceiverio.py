@@ -36,9 +36,14 @@ def get_sample_data(model_name):
 
 variants = [
     pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
-    pytest.param("deepmind/vision-perceiver-learned", id="deepmind/vision-perceiver-learned"),
+    pytest.param(
+        "deepmind/vision-perceiver-learned",
+        marks=pytest.mark.xfail,
+        id="deepmind/vision-perceiver-learned",
+    ),
     pytest.param(
         "deepmind/vision-perceiver-fourier",
+        marks=pytest.mark.xfail,
         id="deepmind/vision-perceiver-fourier",
     ),
 ]
@@ -47,8 +52,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, variant):
-    if variant != "deepmind/vision-perceiver-conv":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
