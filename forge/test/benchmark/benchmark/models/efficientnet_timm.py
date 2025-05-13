@@ -129,6 +129,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
         # Set smaller pcc for bfloat16
         pcc = 0.98
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
+    
     verify(
         input_sample,
         framework_model,
