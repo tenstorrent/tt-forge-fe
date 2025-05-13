@@ -150,8 +150,8 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_unet_qubvel_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -212,8 +212,8 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_unet_torchhub_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
