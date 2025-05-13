@@ -7,7 +7,6 @@ Verify by evaluating the forge graph
 """
 
 import os
-import tempfile
 from typing import Tuple, Dict, List, Any, Union, Optional
 
 from forge.module import FrameworkModule
@@ -28,7 +27,6 @@ from ..tensor import (
 from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor, ProgramType
-from forge.tools.run_net2pipe import net2pipe
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
@@ -439,13 +437,6 @@ def verify(
         forge_property_handler.record_execution(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
-
-
-    if "TT_METAL_HOME" in os.environ:
-        print(f"metal: {os.environ['TT_METAL_HOME']}")
-    if "CPM_SOURCE_CACHE" in os.environ:
-        print(f"CPM: {os.environ['CPM_SOURCE_CACHE']}")
-
 
     # Compile EmitC .so
     so_path = compiled_model.export_to_shared_object()

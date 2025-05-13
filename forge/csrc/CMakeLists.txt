@@ -11,7 +11,6 @@ set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
 set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/include
     ${TT_MLIR_ROOT_DIR}/build/include
-    ${TT_MLIR_ROOT_DIR}/runtime/test/include
     ${TT_MLIR_ROOT_DIR}/tools/ttnn-standalone
 )
 
