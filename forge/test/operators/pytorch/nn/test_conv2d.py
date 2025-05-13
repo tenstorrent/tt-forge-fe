@@ -37,6 +37,7 @@ from test.operators.utils import (
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -771,6 +772,7 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_inference_froze,
             skip_reason=FailingReasons.INFERENCE_FROZE,
         ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )
 
