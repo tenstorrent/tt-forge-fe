@@ -40,15 +40,18 @@ jobs:
           jq '[.[] | select(.conclusion == "failure" or .conclusion == "success")]' runs.json >filtered_runs.json
           mv filtered_runs.json runs.json
           echo "Extracted runs: $(cat runs.json)"
-          DATABASE_ID_1=$(jq -r '.[0].databaseId' runs.json)
-          HEAD_SHA_1=$(jq -r '.[0].headSha' runs.json)
-          DATABASE_ID_2=$(jq -r '.[1].databaseId' runs.json)
-          HEAD_SHA_2=$(jq -r '.[1].headSha' runs.json)
+          curr_wf_id=$(jq -r '.[0].databaseId' runs.json)
+          curr_head_sha=$(jq -r '.[0].headSha' runs.json)
+          prev_wf_id=$(jq -r '.[1].databaseId' runs.json)
+          prev_head_sha=$(jq -r '.[1].headSha' runs.json)
+          echo "curr_wf_id=$curr_wf_id" >> $GITHUB_OUTPUT
+          echo "curr_wf_attempt=$(jq -r '.[0].attempt' runs.json)" >> $GITHUB_OUTPUT
+
           # get list of commits between last 2 workflow runs
-          echo "Get list of commits between last $DATABASE_ID_2 and $DATABASE_ID_1 workflow runs"
+          echo "Get list of commits between last $prev_wf_id and $curr_wf_id workflow runs"
           git fetch --all
           git switch main
-          git checkout $HEAD_SHA_2
+          git checkout $prev_head_sha
           git submodule update --init --recursive
           if git show-ref --verify --quiet refs/remotes/origin/main; then
             git rev-list --reverse HEAD..origin/main >commits.txt
@@ -56,13 +59,13 @@ jobs:
             echo "ERROR: The main branch is not available in the repository."
             exit 1
           fi
-          # Remove all lines after $HEAD_SHA_1 in commits.txt
-          if ! grep -q "$HEAD_SHA_1" commits.txt; then
-            echo "WARNING: $HEAD_SHA_1 not found in commits"
+          # Remove all lines after $curr_head_sha in commits.txt
+          if ! grep -q "$curr_head_sha" commits.txt; then
+            echo "WARNING: $curr_head_sha not found in commits"
             exit 1
           else
-            echo "$HEAD_SHA_1 found in commits, setting as last commit"
-            sed -n "/$HEAD_SHA_1/ {p;q;}; p" commits.txt >filtered_commits.txt
+            echo "$curr_head_sha found in commits, setting as last commit"
+            sed -n "/$curr_head_sha/ {p;q;}; p" commits.txt >filtered_commits.txt
             mv filtered_commits.txt commits.txt
             echo "Commits: $(cat commits.txt)"
           fi
@@ -75,8 +78,8 @@ jobs:
           rm -rf log-a
           rm -rf log-b
           # get list of failed tests from the last two workflow runs
-          gh run download $DATABASE_ID_2 --pattern "test-log*" -R $repo -D log-a || true
-          gh run download $DATABASE_ID_1 --pattern "test-log*" -R $repo -D log-b
+          gh run download $prev_wf_id --pattern "test-log*" -R $repo -D log-a || true
+          gh run download $curr_wf_id --pattern "test-log*" -R $repo -D log-b
           # get machine names
           find log-a -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-a.log
           find log-b -type d -name 'test-log-*' | sed -E 's|.*/test-log-([^/-]+)-.*|\1|' | sort -u >machines-b.log
@@ -155,6 +158,67 @@ jobs:
           name: tests-to-run
           path: tests-*.log
           if-no-files-found: ignore
+
+      # Test sanity of last failed nightly, eg. if tests are run
+      - name: Nightly sanity check
+        id: sanity-check
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          repo="${{ github.repository }}"
+          test_step_name="Run Tests"
+          test_job_name=" run-tests "
+
+          curr_wf_id="${{ steps.success-failed.outputs.curr_wf_id }}"
+          curr_wf_attempt="${{ steps.success-failed.outputs.curr_wf_attempt }}"
+          rm -f report.txt
+
+          gh run view $curr_wf_id --attempt $curr_wf_attempt --json jobs >workflow_jobs.json
+
+          # Iterate through jobs using index and echo job name
+          job_count=$(jq '.jobs | length' workflow_jobs.json)
+          for ((i=0; i<job_count; i++)); do
+            job_name=$(jq -r ".jobs[$i].name" workflow_jobs.json)
+            if [[ "$job_name" == *"$test_job_name"* ]]; then
+              echo "Job $i: $job_name"
+              steps_count=$(jq ".jobs[$i].steps | length" workflow_jobs.json)
+              for ((j=0; j<steps_count; j++)); do
+                step_name=$(jq -r ".jobs[$i].steps[$j].name" workflow_jobs.json)
+                step_conclusion=$(jq -r ".jobs[$i].steps[$j].conclusion" workflow_jobs.json)
+                if [[ "$step_name" == $test_step_name ]]; then
+                  break
+                fi
+                if [[ "$step_conclusion" == "failure" ]]; then
+                  job_id=$(jq -r ".jobs[$i].databaseId" workflow_jobs.json)
+                  echo "- Failure detected in step '$step_name' before tests are run in job: [$job_name](<https://github.com/$repo/actions/runs/$curr_wf_id/job/$job_id>)" >>report.txt
+                fi
+              done
+            fi
+          done
+
+          if [ ! -s report.txt ]; then
+            echo "No failed tests to report."
+            echo "send_msg=" >>$GITHUB_OUTPUT
+            exit 0
+          else
+            echo "Report: $(cat report.txt)"
+            echo "## Inspection report :rocket: for [Nightly](<https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_attempt>)" >> $GITHUB_STEP_SUMMARY
+            cat report.txt >> $GITHUB_STEP_SUMMARY
+            echo "send_msg={\"text\": \"Nightly failure caused by machine failures. Test inspection skipped.\", \"job_link\": \"https://github.com/$repo/actions/runs/$curr_wf_id/attempts/$curr_wf_attempt\", \"unfurl_links\": false, \"unfurl_media\": false }" >>$GITHUB_OUTPUT
+          fi
+
+      - name: Send Fail Notification
+        if: ${{ steps.sanity-check.outputs.send_msg }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: ${{ steps.sanity-check.outputs.send_msg }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_INSPECT }}
+      - name: Bad Nightly run detected
+        if: ${{ steps.sanity-check.outputs.send_msg }}
+        run: |
+          echo "Bad nightly run detected. Exiting."
+          exit 1
 
   test:
     needs: inspect
