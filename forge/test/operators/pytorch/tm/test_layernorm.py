@@ -28,6 +28,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -213,7 +214,9 @@ TestParamsData.test_plan = TestPlan(
             ),
         ),
     ],
-    failing_rules=[],
+    failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
+    ],
 )
 
 
