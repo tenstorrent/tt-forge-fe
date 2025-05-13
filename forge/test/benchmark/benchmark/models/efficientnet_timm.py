@@ -14,6 +14,7 @@ from datetime import datetime
 import timm
 import torch
 from tqdm import tqdm
+from transformers import EfficientNetImageProcessor
 
 # Forge modules
 import forge
@@ -80,7 +81,8 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     if task == "classification":
         inputs, labels = load_benchmark_dataset(
             task=task,
-            model_version="microsoft/resnet-50",
+            image_processor=EfficientNetImageProcessor,
+            model_version="google/efficientnet-b0",
             dataset_name="imagenet-1k",
             split="validation",
             batch_size=batch_size,

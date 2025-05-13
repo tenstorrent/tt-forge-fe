@@ -8,13 +8,12 @@
 # Third-party modules
 import torch
 from tqdm import tqdm
-from transformers import AutoImageProcessor
 from datasets import load_dataset
 
 # Forge modules
 
 
-def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size, loop_count):
+def load_benchmark_dataset(task, image_processor, model_version, dataset_name, split, batch_size, loop_count):
     """
     Load the dataset for benchmarking.
 
@@ -22,6 +21,8 @@ def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size,
     ----------
     task: str
         The task to benchmark (e.g., "classification").
+    image_processor: AutoImageProcessor, ...
+        The image processor to use for processing the images.
     model_version: str
         The version of the model to use.
     dataset_name: str
@@ -43,6 +44,7 @@ def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size,
 
     if task == "classification":
         return load_dataset_classification(
+            image_processor=image_processor,
             model_version=model_version,
             dataset_name=dataset_name,
             split=split,
@@ -53,12 +55,14 @@ def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size,
         raise ValueError(f"Unsupported task: {task}. Supported tasks are: classification.")
 
 
-def load_dataset_classification(model_version, dataset_name, split, batch_size, loop_count):
+def load_dataset_classification(image_processor, model_version, dataset_name, split, batch_size, loop_count):
     """
     Load the classification dataset for benchmarking.
 
     Parameters:
     ----------
+    image_processor: AutoImageProcessor, ...
+        The image processor to use for processing the images.
     model_version: str
         The version of the model to use.
     dataset_name: str
@@ -78,10 +82,10 @@ def load_dataset_classification(model_version, dataset_name, split, batch_size, 
         The labels for the input data.
     """
 
-    image_processor = AutoImageProcessor.from_pretrained(model_version)
+    img_processor = image_processor.from_pretrained(model_version)
     # Load the dataset as a generator
     dataset = iter(load_dataset(dataset_name, split=split, use_auth_token=True, streaming=True))
-    inputs, labels = create_input_classification(dataset, image_processor, batch_size, loop_count)
+    inputs, labels = create_input_classification(dataset, img_processor, batch_size, loop_count)
 
     return inputs, labels
 

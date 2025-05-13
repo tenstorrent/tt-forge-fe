@@ -13,6 +13,7 @@ from datetime import datetime
 import torch
 from torch import nn
 from transformers import ResNetForImageClassification
+from transformers import AutoImageProcessor
 from tqdm import tqdm
 
 # Forge modules
@@ -78,6 +79,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     if task == "classification":
         inputs, labels = load_benchmark_dataset(
             task=task,
+            image_processor=AutoImageProcessor,
             model_version=variant,
             dataset_name="imagenet-1k",
             split="validation",
