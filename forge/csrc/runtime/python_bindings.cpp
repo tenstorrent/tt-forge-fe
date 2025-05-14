@@ -18,8 +18,11 @@ void RuntimeModule(py::module &m_runtime)
     py::class_<runtime::Binary>(m_runtime, "Binary")
         .def("get_program_inputs", &runtime::Binary::getProgramInputs)
         .def("get_program_outputs", &runtime::Binary::getProgramOutputs)
-        .def("store", &runtime::Binary::store);
+        .def("store", &runtime::Binary::store)
+        .def("get_file_identifier", &runtime::Binary::getFileIdentifier);
+
     m_runtime.def("run_program", &tt::run_program);
+    m_runtime.def("load_binary_from_file", &tt::load_binary_from_file);
 
     py::class_<Tensor>(m_runtime, "Tensor")
         .def(py::init<torch::Tensor &>())

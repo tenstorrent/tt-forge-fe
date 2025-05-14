@@ -13,6 +13,7 @@ import forge
 from forge.config import CompilerConfig, MLIRConfig
 from forge.tensor import to_forge_tensors, to_pt_tensors
 from forge.verify.value_checkers import AutomaticValueChecker
+from forge._C.runtime import load_binary_from_file
 
 
 @pytest.mark.push
@@ -92,6 +93,35 @@ def test_forge():
 
     if not torch.allclose(output[0], golden.to_pytorch(), rtol=1e-1):
         raise ValueError("Output does not match the golden output")
+
+
+@pytest.mark.push
+def test_save_binary():
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.add(x1, x2)
+
+    model = Add()
+    shape = (1, 1024, 32)
+    inputs = [torch.rand(shape), torch.rand(shape)]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    file_path = "generated_add.ttnn"
+    compiled_model.save(file_path)
+
+    assert os.path.exists(file_path)
+    load_bin = load_binary_from_file(file_path)
+    assert load_bin.get_file_identifier() == "TTNN"
+    os.remove(file_path)
+
+    # Must be *.ttnn extension, it causes an error if it is not
+    file_path = "generated_add.fb"
+    with pytest.raises(ValueError):
+        compiled_model.save(file_path)
 
 
 @pytest.mark.push
