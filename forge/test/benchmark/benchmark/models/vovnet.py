@@ -105,7 +105,7 @@ def test_vovnet_osmr(
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        inputs[0] = [input.to(torch.bfloat16) for input in inputs]
+        inputs = [item.to(torch.bfloat16) for item in inputs]
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -141,7 +141,9 @@ def test_vovnet_osmr(
         pcc = 0.97
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
     verify(
-        [inputs[0]],
+        [
+            inputs[0],
+        ],
         framework_model,
         compiled_model,
         verify_cfg=verify_cfg,
@@ -166,8 +168,9 @@ def test_vovnet_osmr(
     else:
         raise ValueError(f"Unsupported task: {task}.")
 
-    fw_out = framework_model(inputs[-1])[0]
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out.to("cpu"))
+    fw_out = framework_model(inputs[-1])
+    co_out = co_out.to("cpu")
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()

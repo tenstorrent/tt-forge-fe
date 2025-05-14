@@ -152,7 +152,8 @@ def test_vit_base(training, batch_size, input_size, channel_size, loop_count, va
         raise ValueError(f"Unsupported task: {task}.")
 
     fw_out = framework_model(inputs[-1])[0]
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out.to("cpu"))
+    co_out = co_out.to("cpu")
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()

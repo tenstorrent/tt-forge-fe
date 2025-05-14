@@ -94,7 +94,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
 
     if data_format == "bfloat16":
         # Convert input to bfloat16
-        inputs = [input.to(torch.bfloat16) for input in inputs]
+        inputs = [item.to(torch.bfloat16) for item in inputs]
 
     # Load model
     framework_model = download_model(timm.create_model, "efficientnet_b0", pretrained=True)
@@ -126,12 +126,13 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     pcc = 0.99
     verify_cfg = VerifyConfig()
     if data_format == "bfloat16":
-        # Set smaller pcc for bfloat16
         pcc = 0.98
     verify_cfg.value_checker = AutomaticValueChecker(pcc=pcc)
 
     verify(
-        [inputs[0]],
+        [
+            inputs[0],
+        ],
         framework_model,
         compiled_model,
         verify_cfg=verify_cfg,
@@ -156,8 +157,9 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     else:
         raise ValueError(f"Unsupported task: {task}.")
 
-    fw_out = framework_model(inputs[-1])[0]
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out.to("cpu"))
+    fw_out = framework_model(inputs[-1])
+    co_out = co_out.to("cpu")
+    AutomaticValueChecker(pcc=pcc).check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -165,7 +167,7 @@ def test_efficientnet_timm(training, batch_size, input_size, channel_size, loop_
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "EfificientNet Timm B0"
+    model_name = "EfficientNet Timm B0"
     model_type = "Classification"
     if task == "classification":
         model_type += ", ImageNet-1K"
