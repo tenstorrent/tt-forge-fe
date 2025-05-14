@@ -484,3 +484,33 @@ def test_floordiv(bucket_size, forge_property_recorder):
         forge_property_handler=forge_property_recorder,
     )
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (2, 2),
+        (3, 3),
+        (10, 10),
+        (2, 41, 41),
+        (8, 96, 96),
+    ],
+)
+@pytest.mark.xfail(
+    reason="NotImplementedError: The following operators are not implemented: ['aten::linalg_solve']"
+)  # https://github.com/tenstorrent/tt-forge-fe/issues/1991
+def test_linalg_solve(forge_property_recorder, shape):
+    class linalg_solve(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.linalg.solve(a, b)
+
+    inputs = [torch.randn(*shape), torch.randn(*shape)]
+    framework_model = linalg_solve()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
