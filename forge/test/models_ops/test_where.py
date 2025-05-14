@@ -247,6 +247,29 @@ class Where22(ForgeModule):
         return where_output_1
 
 
+class Where23(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("where23_const_1", shape=(1,), dtype=torch.float32)
+
+    def forward(self, where_input_0, where_input_2):
+        where_output_1 = forge.op.Where("", where_input_0, self.get_constant("where23_const_1"), where_input_2)
+        return where_output_1
+
+
+class Where24(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("where24_const_1", shape=(1,), dtype=torch.float32)
+        self.add_constant("where24_const_2", shape=(1, 1, 256, 256), dtype=torch.float32)
+
+    def forward(self, where_input_0):
+        where_output_1 = forge.op.Where(
+            "", where_input_0, self.get_constant("where24_const_1"), self.get_constant("where24_const_2")
+        )
+        return where_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -975,6 +998,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Where23,
+        [((1, 1, 256, 256), torch.bool), ((1, 1, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Where24,
+        [((1, 1, 256, 256), torch.bool)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
 ]
 

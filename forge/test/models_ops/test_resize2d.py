@@ -444,6 +444,39 @@ class Resize2D38(ForgeModule):
         return resize2d_output_1
 
 
+class Resize2D39(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[27, 40], method="nearest_neighbor", align_corners=False, channel_last=0
+        )
+        return resize2d_output_1
+
+
+class Resize2D40(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[54, 80], method="nearest_neighbor", align_corners=False, channel_last=0
+        )
+        return resize2d_output_1
+
+
+class Resize2D41(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, resize2d_input_0):
+        resize2d_output_1 = forge.op.Resize2d(
+            "", resize2d_input_0, sizes=[107, 160], method="nearest_neighbor", align_corners=False, channel_last=0
+        )
+        return resize2d_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -460,9 +493,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -481,9 +514,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -2451,6 +2484,48 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {
                 "sizes": "[52, 52]",
+                "method": '"nearest_neighbor"',
+                "align_corners": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Resize2D39,
+        [((100, 128, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "sizes": "[27, 40]",
+                "method": '"nearest_neighbor"',
+                "align_corners": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Resize2D40,
+        [((100, 64, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "sizes": "[54, 80]",
+                "method": '"nearest_neighbor"',
+                "align_corners": "False",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Resize2D41,
+        [((100, 32, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "sizes": "[107, 160]",
                 "method": '"nearest_neighbor"',
                 "align_corners": "False",
                 "channel_last": "0",

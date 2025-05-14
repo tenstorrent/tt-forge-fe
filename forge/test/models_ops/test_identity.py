@@ -118,6 +118,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
                 "pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -232,6 +233,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -752,6 +755,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -780,6 +784,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -1619,6 +1624,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -1630,6 +1636,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -1780,6 +1787,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
                 "pt_mlp_mixer_base_img_cls_github",
                 "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1818,6 +1826,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -2281,6 +2290,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_swin_s_img_cls_torchvision",
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -2363,7 +2373,11 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
-    (Identity0, [((1, 49, 1024), torch.float32)], {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 49, 1024), torch.float32)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision", "pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
     (
         Identity0,
         [((1, 7, 7, 4096), torch.float32)],
@@ -2375,6 +2389,118 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99},
     ),
     (Identity0, [((1, 4096, 1, 1), torch.float32)], {"model_names": ["pt_vgg_vgg19_bn_obj_det_timm"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 768, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 49, 3072), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 512, 256), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm", "pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 512, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 49, 2048), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 49, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 512), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm", "pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Identity0,
+        [((1, 1024, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 49, 4096), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 512, 196), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 196, 2048), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 196, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 50, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 50, 4096), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (Identity0, [((1, 50, 768), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
+    (
+        Identity0,
+        [((1, 12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 50, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 197, 4096), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1370, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Identity0,
+        [((1, 1370, 5120), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
 ]
 
 

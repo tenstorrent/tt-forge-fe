@@ -132,7 +132,7 @@ class Conv2D6(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d6.weight_1",
-            forge.Parameter(*(32, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -140,7 +140,7 @@ class Conv2D6(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d6.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -154,7 +154,7 @@ class Conv2D7(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d7.weight_1",
-            forge.Parameter(*(64, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -184,7 +184,7 @@ class Conv2D8(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d8.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -198,7 +198,7 @@ class Conv2D9(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d9.weight_1",
-            forge.Parameter(*(64, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 32, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -206,7 +206,7 @@ class Conv2D9(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d9.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -220,7 +220,7 @@ class Conv2D10(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d10.weight_1",
-            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -242,7 +242,7 @@ class Conv2D11(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d11.weight_1",
-            forge.Parameter(*(128, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -264,7 +264,7 @@ class Conv2D12(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d12.weight_1",
-            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -286,7 +286,7 @@ class Conv2D13(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d13.weight_1",
-            forge.Parameter(*(256, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -308,7 +308,7 @@ class Conv2D14(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d14.weight_1",
-            forge.Parameter(*(512, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -330,7 +330,7 @@ class Conv2D15(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d15.weight_1",
-            forge.Parameter(*(512, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -352,7 +352,7 @@ class Conv2D16(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d16.weight_1",
-            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -374,7 +374,7 @@ class Conv2D17(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d17.weight_1",
-            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -396,7 +396,7 @@ class Conv2D18(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d18.weight_1",
-            forge.Parameter(*(64, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -418,7 +418,7 @@ class Conv2D19(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d19.weight_1",
-            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -440,7 +440,7 @@ class Conv2D20(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d20.weight_1",
-            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -449,7 +449,7 @@ class Conv2D20(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d20.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -462,7 +462,7 @@ class Conv2D21(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d21.weight_1",
-            forge.Parameter(*(64, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -470,8 +470,8 @@ class Conv2D21(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d21.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -492,7 +492,7 @@ class Conv2D22(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d22.weight_1"),
-            stride=[1, 1],
+            stride=[2, 2],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -506,7 +506,7 @@ class Conv2D23(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d23.weight_1",
-            forge.Parameter(*(64, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -514,7 +514,7 @@ class Conv2D23(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d23.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -528,7 +528,7 @@ class Conv2D24(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d24.weight_1",
-            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -550,7 +550,7 @@ class Conv2D25(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d25.weight_1",
-            forge.Parameter(*(128, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -572,7 +572,7 @@ class Conv2D26(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d26.weight_1",
-            forge.Parameter(*(256, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -580,8 +580,8 @@ class Conv2D26(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d26.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -594,7 +594,7 @@ class Conv2D27(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d27.weight_1",
-            forge.Parameter(*(160, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -603,7 +603,7 @@ class Conv2D27(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d27.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -616,7 +616,7 @@ class Conv2D28(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d28.weight_1",
-            forge.Parameter(*(160, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -638,7 +638,7 @@ class Conv2D29(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d29.weight_1",
-            forge.Parameter(*(512, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(160, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -647,7 +647,7 @@ class Conv2D29(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d29.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -660,7 +660,7 @@ class Conv2D30(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d30.weight_1",
-            forge.Parameter(*(192, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -669,7 +669,7 @@ class Conv2D30(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d30.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -682,7 +682,7 @@ class Conv2D31(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d31.weight_1",
-            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -704,7 +704,7 @@ class Conv2D32(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d32.weight_1",
-            forge.Parameter(*(768, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -713,7 +713,7 @@ class Conv2D32(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d32.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -726,7 +726,7 @@ class Conv2D33(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d33.weight_1",
-            forge.Parameter(*(192, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768, 1472, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -735,7 +735,7 @@ class Conv2D33(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d33.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -748,7 +748,7 @@ class Conv2D34(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d34.weight_1",
-            forge.Parameter(*(768, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -757,7 +757,7 @@ class Conv2D34(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d34.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -770,7 +770,7 @@ class Conv2D35(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d35.weight_1",
-            forge.Parameter(*(224, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(768, 1728, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -779,7 +779,7 @@ class Conv2D35(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d35.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -792,7 +792,7 @@ class Conv2D36(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d36.weight_1",
-            forge.Parameter(*(224, 224, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(224, 768, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -814,7 +814,7 @@ class Conv2D37(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d37.weight_1",
-            forge.Parameter(*(1024, 1888, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(224, 224, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -823,7 +823,7 @@ class Conv2D37(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d37.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -836,7 +836,7 @@ class Conv2D38(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d38.weight_1",
-            forge.Parameter(*(224, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 1888, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -845,7 +845,7 @@ class Conv2D38(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d38.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -858,7 +858,7 @@ class Conv2D39(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d39.weight_1",
-            forge.Parameter(*(1024, 2144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(224, 1024, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -867,7 +867,7 @@ class Conv2D39(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d39.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -880,7 +880,7 @@ class Conv2D40(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d40.weight_1",
-            forge.Parameter(*(128, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 2144, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -902,7 +902,7 @@ class Conv2D41(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d41.weight_1",
-            forge.Parameter(*(80, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 448, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -911,7 +911,7 @@ class Conv2D41(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d41.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -924,7 +924,7 @@ class Conv2D42(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d42.weight_1",
-            forge.Parameter(*(80, 80, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(80, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -954,7 +954,7 @@ class Conv2D43(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d43.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -968,7 +968,7 @@ class Conv2D44(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d44.weight_1",
-            forge.Parameter(*(256, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(80, 80, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -976,8 +976,8 @@ class Conv2D44(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d44.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -990,7 +990,7 @@ class Conv2D45(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d45.weight_1",
-            forge.Parameter(*(96, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -999,7 +999,7 @@ class Conv2D45(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d45.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1012,7 +1012,7 @@ class Conv2D46(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d46.weight_1",
-            forge.Parameter(*(96, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1034,7 +1034,7 @@ class Conv2D47(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d47.weight_1",
-            forge.Parameter(*(384, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1043,7 +1043,7 @@ class Conv2D47(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d47.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1056,7 +1056,7 @@ class Conv2D48(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d48.weight_1",
-            forge.Parameter(*(112, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1065,7 +1065,7 @@ class Conv2D48(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d48.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1078,7 +1078,7 @@ class Conv2D49(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d49.weight_1",
-            forge.Parameter(*(112, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(112, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1100,7 +1100,7 @@ class Conv2D50(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d50.weight_1",
-            forge.Parameter(*(512, 944, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(112, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1109,7 +1109,7 @@ class Conv2D50(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d50.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1122,7 +1122,7 @@ class Conv2D51(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d51.weight_1",
-            forge.Parameter(*(16, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 944, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1130,8 +1130,8 @@ class Conv2D51(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d51.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1144,7 +1144,7 @@ class Conv2D52(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d52.weight_1",
-            forge.Parameter(*(32, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1166,7 +1166,7 @@ class Conv2D53(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d53.weight_1",
-            forge.Parameter(*(32, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1174,8 +1174,8 @@ class Conv2D53(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d53.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1188,7 +1188,7 @@ class Conv2D54(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d54.weight_1",
-            forge.Parameter(*(16, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1197,7 +1197,7 @@ class Conv2D54(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d54.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1210,7 +1210,7 @@ class Conv2D55(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d55.weight_1",
-            forge.Parameter(*(32, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(16, 16, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1219,7 +1219,7 @@ class Conv2D55(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d55.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1232,7 +1232,7 @@ class Conv2D56(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d56.weight_1",
-            forge.Parameter(*(64, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 48, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1254,7 +1254,7 @@ class Conv2D57(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d57.weight_1",
-            forge.Parameter(*(64, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1276,7 +1276,7 @@ class Conv2D58(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d58.weight_1",
-            forge.Parameter(*(128, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1298,7 +1298,7 @@ class Conv2D59(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d59.weight_1",
-            forge.Parameter(*(128, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1320,7 +1320,7 @@ class Conv2D60(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d60.weight_1",
-            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1328,8 +1328,8 @@ class Conv2D60(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d60.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1342,7 +1342,7 @@ class Conv2D61(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d61.weight_1",
-            forge.Parameter(*(256, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1350,8 +1350,8 @@ class Conv2D61(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d61.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1364,7 +1364,7 @@ class Conv2D62(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d62.weight_1",
-            forge.Parameter(*(256, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1386,7 +1386,7 @@ class Conv2D63(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d63.weight_1",
-            forge.Parameter(*(256, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1408,7 +1408,7 @@ class Conv2D64(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d64.weight_1",
-            forge.Parameter(*(128, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1430,7 +1430,7 @@ class Conv2D65(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d65.weight_1",
-            forge.Parameter(*(128, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1452,7 +1452,7 @@ class Conv2D66(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d66.weight_1",
-            forge.Parameter(*(64, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1474,7 +1474,7 @@ class Conv2D67(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d67.weight_1",
-            forge.Parameter(*(64, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1496,7 +1496,7 @@ class Conv2D68(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d68.weight_1",
-            forge.Parameter(*(80, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1505,7 +1505,7 @@ class Conv2D68(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d68.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1518,7 +1518,7 @@ class Conv2D69(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d69.weight_1",
-            forge.Parameter(*(80, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(80, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1527,7 +1527,7 @@ class Conv2D69(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d69.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1540,7 +1540,7 @@ class Conv2D70(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d70.weight_1",
-            forge.Parameter(*(64, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(80, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1549,7 +1549,7 @@ class Conv2D70(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d70.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1562,7 +1562,7 @@ class Conv2D71(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d71.weight_1",
-            forge.Parameter(*(80, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1584,7 +1584,7 @@ class Conv2D72(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d72.weight_1",
-            forge.Parameter(*(1, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(80, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1593,7 +1593,7 @@ class Conv2D72(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d72.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1606,10 +1606,7 @@ class Conv2D73(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d73.weight_1",
-            forge.Parameter(*(64, 3, 11, 11), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-        self.add_parameter(
-            "conv2d73.weight_2", forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            forge.Parameter(*(1, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1617,9 +1614,8 @@ class Conv2D73(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d73.weight_1"),
-            self.get_parameter("conv2d73.weight_2"),
-            stride=[4, 4],
-            padding=[2, 2, 2, 2],
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1632,10 +1628,10 @@ class Conv2D74(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d74.weight_1",
-            forge.Parameter(*(192, 64, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 3, 11, 11), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
-            "conv2d74.weight_2", forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "conv2d74.weight_2", forge.Parameter(*(64,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, conv2d_input_0):
@@ -1644,7 +1640,7 @@ class Conv2D74(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d74.weight_1"),
             self.get_parameter("conv2d74.weight_2"),
-            stride=[1, 1],
+            stride=[4, 4],
             padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
@@ -1658,10 +1654,10 @@ class Conv2D75(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d75.weight_1",
-            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 64, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
-            "conv2d75.weight_2", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "conv2d75.weight_2", forge.Parameter(*(192,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, conv2d_input_0):
@@ -1671,7 +1667,7 @@ class Conv2D75(ForgeModule):
             self.get_parameter("conv2d75.weight_1"),
             self.get_parameter("conv2d75.weight_2"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1684,10 +1680,10 @@ class Conv2D76(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d76.weight_1",
-            forge.Parameter(*(256, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
-            "conv2d76.weight_2", forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
+            "conv2d76.weight_2", forge.Parameter(*(384,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, conv2d_input_0):
@@ -1710,7 +1706,7 @@ class Conv2D77(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d77.weight_1",
-            forge.Parameter(*(256, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 384, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
         self.add_parameter(
             "conv2d77.weight_2", forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
@@ -1736,7 +1732,10 @@ class Conv2D78(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d78.weight_1",
-            forge.Parameter(*(64, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(256, 256, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+        self.add_parameter(
+            "conv2d78.weight_2", forge.Parameter(*(256,), requires_grad=True, dev_data_format=forge.DataFormat.Float32)
         )
 
     def forward(self, conv2d_input_0):
@@ -1744,8 +1743,9 @@ class Conv2D78(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d78.weight_1"),
-            stride=[2, 2],
-            padding=[3, 3, 3, 3],
+            self.get_parameter("conv2d78.weight_2"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1758,7 +1758,7 @@ class Conv2D79(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d79.weight_1",
-            forge.Parameter(*(128, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 3, 7, 7), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1766,8 +1766,8 @@ class Conv2D79(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d79.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[3, 3, 3, 3],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1788,7 +1788,7 @@ class Conv2D80(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d80.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
@@ -1802,7 +1802,7 @@ class Conv2D81(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d81.weight_1",
-            forge.Parameter(*(32, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1810,8 +1810,8 @@ class Conv2D81(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d81.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            stride=[2, 2],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1832,7 +1832,7 @@ class Conv2D82(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d82.weight_1"),
-            stride=[2, 2],
+            stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
@@ -1846,7 +1846,7 @@ class Conv2D83(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d83.weight_1",
-            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1854,8 +1854,8 @@ class Conv2D83(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d83.weight_1"),
-            stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -1868,7 +1868,7 @@ class Conv2D84(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d84.weight_1",
-            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1890,7 +1890,7 @@ class Conv2D85(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d85.weight_1",
-            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1912,7 +1912,7 @@ class Conv2D86(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d86.weight_1",
-            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1934,7 +1934,7 @@ class Conv2D87(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d87.weight_1",
-            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1956,7 +1956,7 @@ class Conv2D88(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d88.weight_1",
-            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -1978,7 +1978,7 @@ class Conv2D89(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d89.weight_1",
-            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2000,7 +2000,7 @@ class Conv2D90(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d90.weight_1",
-            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 416, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2022,7 +2022,7 @@ class Conv2D91(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d91.weight_1",
-            forge.Parameter(*(128, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2044,7 +2044,7 @@ class Conv2D92(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d92.weight_1",
-            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2066,7 +2066,7 @@ class Conv2D93(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d93.weight_1",
-            forge.Parameter(*(128, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 544, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2088,7 +2088,7 @@ class Conv2D94(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d94.weight_1",
-            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2110,7 +2110,7 @@ class Conv2D95(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d95.weight_1",
-            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 608, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2132,7 +2132,7 @@ class Conv2D96(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d96.weight_1",
-            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 640, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2154,7 +2154,7 @@ class Conv2D97(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d97.weight_1",
-            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 672, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2176,7 +2176,7 @@ class Conv2D98(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d98.weight_1",
-            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 704, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2198,7 +2198,7 @@ class Conv2D99(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d99.weight_1",
-            forge.Parameter(*(128, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 736, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2220,7 +2220,7 @@ class Conv2D100(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d100.weight_1",
-            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2242,7 +2242,7 @@ class Conv2D101(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d101.weight_1",
-            forge.Parameter(*(128, 832, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 800, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2264,7 +2264,7 @@ class Conv2D102(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d102.weight_1",
-            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 832, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2286,7 +2286,7 @@ class Conv2D103(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d103.weight_1",
-            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 864, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2308,7 +2308,7 @@ class Conv2D104(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d104.weight_1",
-            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 896, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2330,7 +2330,7 @@ class Conv2D105(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d105.weight_1",
-            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 928, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2352,7 +2352,7 @@ class Conv2D106(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d106.weight_1",
-            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 960, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2374,7 +2374,7 @@ class Conv2D107(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d107.weight_1",
-            forge.Parameter(*(512, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 992, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2396,7 +2396,7 @@ class Conv2D108(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d108.weight_1",
-            forge.Parameter(*(192, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2404,6 +2404,28 @@ class Conv2D108(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d108.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D109(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d109.weight_1",
+            forge.Parameter(*(192, 64, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d109.weight_1"),
             stride=[1, 1],
             padding=[1, 1, 1, 1],
             dilation=1,
@@ -2413,7 +2435,7 @@ class Conv2D108(ForgeModule):
         return conv2d_output_1
 
 
-class Conv2D109(ForgeModule):
+class Conv2D110(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2431,34 +2453,12 @@ class Conv2D109(ForgeModule):
         return conv2d_output_1
 
 
-class Conv2D110(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-        self.add_parameter(
-            "conv2d110.weight_1",
-            forge.Parameter(*(128, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
-
-    def forward(self, conv2d_input_0):
-        conv2d_output_1 = forge.op.Conv2d(
-            "",
-            conv2d_input_0,
-            self.get_parameter("conv2d110.weight_1"),
-            stride=[1, 1],
-            padding=[1, 1, 1, 1],
-            dilation=1,
-            groups=1,
-            channel_last=0,
-        )
-        return conv2d_output_1
-
-
 class Conv2D111(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
             "conv2d111.weight_1",
-            forge.Parameter(*(32, 16, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2467,7 +2467,7 @@ class Conv2D111(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d111.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2480,7 +2480,7 @@ class Conv2D112(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d112.weight_1",
-            forge.Parameter(*(32, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 16, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2489,7 +2489,7 @@ class Conv2D112(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d112.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2502,7 +2502,7 @@ class Conv2D113(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d113.weight_1",
-            forge.Parameter(*(192, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(32, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2511,7 +2511,7 @@ class Conv2D113(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d113.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2524,7 +2524,7 @@ class Conv2D114(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d114.weight_1",
-            forge.Parameter(*(96, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(192, 128, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2533,7 +2533,7 @@ class Conv2D114(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d114.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2546,7 +2546,7 @@ class Conv2D115(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d115.weight_1",
-            forge.Parameter(*(64, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(96, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2555,7 +2555,7 @@ class Conv2D115(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d115.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2568,7 +2568,7 @@ class Conv2D116(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d116.weight_1",
-            forge.Parameter(*(208, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2577,7 +2577,7 @@ class Conv2D116(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d116.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2590,7 +2590,7 @@ class Conv2D117(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d117.weight_1",
-            forge.Parameter(*(48, 16, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(208, 96, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2599,7 +2599,7 @@ class Conv2D117(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d117.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2612,7 +2612,7 @@ class Conv2D118(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d118.weight_1",
-            forge.Parameter(*(64, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(48, 16, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2621,7 +2621,7 @@ class Conv2D118(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d118.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2634,7 +2634,7 @@ class Conv2D119(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d119.weight_1",
-            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2643,7 +2643,7 @@ class Conv2D119(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d119.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2656,7 +2656,7 @@ class Conv2D120(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d120.weight_1",
-            forge.Parameter(*(64, 24, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(224, 112, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2665,7 +2665,7 @@ class Conv2D120(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d120.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2678,7 +2678,7 @@ class Conv2D121(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d121.weight_1",
-            forge.Parameter(*(64, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 24, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2687,7 +2687,7 @@ class Conv2D121(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d121.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2700,7 +2700,7 @@ class Conv2D122(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d122.weight_1",
-            forge.Parameter(*(288, 144, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2709,7 +2709,7 @@ class Conv2D122(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d122.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2722,7 +2722,7 @@ class Conv2D123(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d123.weight_1",
-            forge.Parameter(*(64, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(288, 144, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2731,7 +2731,7 @@ class Conv2D123(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d123.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2744,7 +2744,7 @@ class Conv2D124(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d124.weight_1",
-            forge.Parameter(*(320, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(64, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2753,7 +2753,7 @@ class Conv2D124(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d124.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2766,7 +2766,7 @@ class Conv2D125(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d125.weight_1",
-            forge.Parameter(*(128, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(320, 160, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2775,7 +2775,7 @@ class Conv2D125(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d125.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2788,7 +2788,7 @@ class Conv2D126(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d126.weight_1",
-            forge.Parameter(*(128, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 32, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2797,7 +2797,7 @@ class Conv2D126(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d126.weight_1"),
             stride=[1, 1],
-            padding=[0, 0, 0, 0],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2810,7 +2810,7 @@ class Conv2D127(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d127.weight_1",
-            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2819,7 +2819,7 @@ class Conv2D127(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d127.weight_1"),
             stride=[1, 1],
-            padding=[1, 1, 1, 1],
+            padding=[0, 0, 0, 0],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2832,7 +2832,7 @@ class Conv2D128(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d128.weight_1",
-            forge.Parameter(*(128, 48, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(384, 192, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2841,7 +2841,7 @@ class Conv2D128(ForgeModule):
             conv2d_input_0,
             self.get_parameter("conv2d128.weight_1"),
             stride=[1, 1],
-            padding=[2, 2, 2, 2],
+            padding=[1, 1, 1, 1],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -2854,7 +2854,7 @@ class Conv2D129(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "conv2d129.weight_1",
-            forge.Parameter(*(32, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(128, 48, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, conv2d_input_0):
@@ -2862,8 +2862,8 @@ class Conv2D129(ForgeModule):
             "",
             conv2d_input_0,
             self.get_parameter("conv2d129.weight_1"),
-            stride=[2, 2],
-            padding=[1, 1, 1, 1],
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
             dilation=1,
             groups=1,
             channel_last=0,
@@ -30970,6 +30970,3108 @@ class Conv2D1449(ForgeModule):
         return conv2d_output_1
 
 
+class Conv2D1450(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1450.weight_1",
+            forge.Parameter(*(40, 3, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1450.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1451(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1451.weight_1",
+            forge.Parameter(*(40, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1451.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=40,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1452(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1452.weight_1",
+            forge.Parameter(*(10, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1452.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1453(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1453.weight_1",
+            forge.Parameter(*(40, 10, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1453.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1454(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1454.weight_1",
+            forge.Parameter(*(24, 40, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1454.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1455(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1455.weight_1",
+            forge.Parameter(*(24, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1455.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=24,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1456(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1456.weight_1",
+            forge.Parameter(*(192, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1456.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=192,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1457(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1457.weight_1",
+            forge.Parameter(*(288, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1457.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=288,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1458(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1458.weight_1",
+            forge.Parameter(*(12, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1458.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1459(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1459.weight_1",
+            forge.Parameter(*(288, 12, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1459.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1460(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1460.weight_1",
+            forge.Parameter(*(288, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1460.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=288,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1461(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1461.weight_1",
+            forge.Parameter(*(24, 576, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1461.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1462(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1462.weight_1",
+            forge.Parameter(*(576, 24, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1462.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1463(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1463.weight_1",
+            forge.Parameter(*(576, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1463.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=576,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1464(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1464.weight_1",
+            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1464.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=816,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1465(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1465.weight_1",
+            forge.Parameter(*(816, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1465.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=816,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1466(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1466.weight_1",
+            forge.Parameter(*(34, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1466.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1467(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1467.weight_1",
+            forge.Parameter(*(816, 34, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1467.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1468(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1468.weight_1",
+            forge.Parameter(*(1392, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1468.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1392,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1469(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1469.weight_1",
+            forge.Parameter(*(58, 1392, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1469.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1470(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1470.weight_1",
+            forge.Parameter(*(1392, 58, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1470.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1471(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1471.weight_1",
+            forge.Parameter(*(1392, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1471.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1392,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1472(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1472.weight_1",
+            forge.Parameter(*(2304, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1472.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1473(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1473.weight_1",
+            forge.Parameter(*(2304, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1473.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=2304,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1474(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1474.weight_1",
+            forge.Parameter(*(96, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1474.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1475(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1475.weight_1",
+            forge.Parameter(*(2304, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1475.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1476(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1476.weight_1",
+            forge.Parameter(*(384, 2304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1476.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1477(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1477.weight_1",
+            forge.Parameter(*(1536, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1477.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1478(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1478.weight_1",
+            forge.Parameter(*(144, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1478.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=144,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1479(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1479.weight_1",
+            forge.Parameter(*(240, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1479.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=240,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1480(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1480.weight_1",
+            forge.Parameter(*(240, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1480.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=240,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1481(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1481.weight_1",
+            forge.Parameter(*(480, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1481.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=480,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1482(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1482.weight_1",
+            forge.Parameter(*(480, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1482.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=480,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1483(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1483.weight_1",
+            forge.Parameter(*(672, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1483.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=672,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1484(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1484.weight_1",
+            forge.Parameter(*(672, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1484.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=672,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1485(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1485.weight_1",
+            forge.Parameter(*(1152, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1485.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1152,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1486(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1486.weight_1",
+            forge.Parameter(*(1152, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1486.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1152,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1487(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1487.weight_1",
+            forge.Parameter(*(16, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1487.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=16,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1488(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1488.weight_1",
+            forge.Parameter(*(4, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1488.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1489(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1489.weight_1",
+            forge.Parameter(*(16, 4, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1489.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1490(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1490.weight_1",
+            forge.Parameter(*(528, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1490.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=528,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1491(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1491.weight_1",
+            forge.Parameter(*(22, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1491.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1492(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1492.weight_1",
+            forge.Parameter(*(528, 22, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1492.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1493(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1493.weight_1",
+            forge.Parameter(*(528, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1493.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=528,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1494(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1494.weight_1",
+            forge.Parameter(*(720, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1494.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=720,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1495(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1495.weight_1",
+            forge.Parameter(*(720, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1495.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=720,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1496(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1496.weight_1",
+            forge.Parameter(*(30, 720, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1496.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1497(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1497.weight_1",
+            forge.Parameter(*(720, 30, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1497.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1498(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1498.weight_1",
+            forge.Parameter(*(1248, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1498.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1248,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1499(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1499.weight_1",
+            forge.Parameter(*(52, 1248, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1499.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1500(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1500.weight_1",
+            forge.Parameter(*(1248, 52, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1500.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1501(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1501.weight_1",
+            forge.Parameter(*(1248, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1501.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1248,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1502(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1502.weight_1",
+            forge.Parameter(*(2112, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1502.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1503(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1503.weight_1",
+            forge.Parameter(*(2112, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1503.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=2112,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1504(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1504.weight_1",
+            forge.Parameter(*(88, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1504.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1505(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1505.weight_1",
+            forge.Parameter(*(2112, 88, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1505.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1506(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1506.weight_1",
+            forge.Parameter(*(352, 2112, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1506.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1507(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1507.weight_1",
+            forge.Parameter(*(1408, 352, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1507.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1508(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1508.weight_1",
+            forge.Parameter(*(48, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1508.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=48,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1509(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1509.weight_1",
+            forge.Parameter(*(240, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1509.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=240,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1510(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1510.weight_1",
+            forge.Parameter(*(240, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1510.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=240,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1511(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1511.weight_1",
+            forge.Parameter(*(384, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1511.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=384,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1512(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1512.weight_1",
+            forge.Parameter(*(16, 384, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1512.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1513(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1513.weight_1",
+            forge.Parameter(*(384, 16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1513.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1514(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1514.weight_1",
+            forge.Parameter(*(384, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1514.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=384,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1515(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1515.weight_1",
+            forge.Parameter(*(768, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1515.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1516(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1516.weight_1",
+            forge.Parameter(*(768, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1516.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=768,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1517(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1517.weight_1",
+            forge.Parameter(*(32, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1517.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1518(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1518.weight_1",
+            forge.Parameter(*(768, 32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1518.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1519(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1519.weight_1",
+            forge.Parameter(*(768, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1519.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=768,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1520(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1520.weight_1",
+            forge.Parameter(*(176, 768, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1520.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1521(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1521.weight_1",
+            forge.Parameter(*(1056, 176, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1521.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1522(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1522.weight_1",
+            forge.Parameter(*(1056, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1522.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1056,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1523(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1523.weight_1",
+            forge.Parameter(*(1056, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1523.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1056,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1524(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1524.weight_1",
+            forge.Parameter(*(44, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1524.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1525(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1525.weight_1",
+            forge.Parameter(*(1056, 44, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1525.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1526(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1526.weight_1",
+            forge.Parameter(*(176, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1526.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1527(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1527.weight_1",
+            forge.Parameter(*(304, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1527.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1528(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1528.weight_1",
+            forge.Parameter(*(1824, 304, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1528.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1529(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1529.weight_1",
+            forge.Parameter(*(1824, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1529.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1824,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1530(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1530.weight_1",
+            forge.Parameter(*(76, 1824, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1530.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1531(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1531.weight_1",
+            forge.Parameter(*(1824, 76, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1531.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1532(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1532.weight_1",
+            forge.Parameter(*(304, 1824, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1532.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1533(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1533.weight_1",
+            forge.Parameter(*(1824, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1533.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1824,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1534(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1534.weight_1",
+            forge.Parameter(*(512, 1824, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1534.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1535(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1535.weight_1",
+            forge.Parameter(*(3072, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1535.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1536(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1536.weight_1",
+            forge.Parameter(*(3072, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1536.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=3072,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1537(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1537.weight_1",
+            forge.Parameter(*(128, 3072, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1537.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1538(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1538.weight_1",
+            forge.Parameter(*(3072, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1538.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1539(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1539.weight_1",
+            forge.Parameter(*(512, 3072, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1539.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1540(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1540.weight_1",
+            forge.Parameter(*(1920, 320, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1540.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1541(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1541.weight_1",
+            forge.Parameter(*(1920, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1541.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1920,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1542(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1542.weight_1",
+            forge.Parameter(*(80, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1542.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1543(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1543.weight_1",
+            forge.Parameter(*(1920, 80, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1543.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1544(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1544.weight_1",
+            forge.Parameter(*(320, 1920, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1544.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1545(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1545.weight_1",
+            forge.Parameter(*(336, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1545.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=336,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1546(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1546.weight_1",
+            forge.Parameter(*(336, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1546.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=336,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1547(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1547.weight_1",
+            forge.Parameter(*(672, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1547.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=672,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1548(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1548.weight_1",
+            forge.Parameter(*(960, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1548.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=960,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1549(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1549.weight_1",
+            forge.Parameter(*(960, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1549.weight_1"),
+            stride=[2, 2],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=960,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1550(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1550.weight_1",
+            forge.Parameter(*(1632, 1, 5, 5), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1550.weight_1"),
+            stride=[1, 1],
+            padding=[2, 2, 2, 2],
+            dilation=1,
+            groups=1632,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1551(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1551.weight_1",
+            forge.Parameter(*(1632, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1551.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1632,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1552(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1552.weight_1",
+            forge.Parameter(*(2688, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1552.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=2688,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1553(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1553.weight_1",
+            forge.Parameter(*(48, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1553.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=48,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1554(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1554.weight_1",
+            forge.Parameter(*(288, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1554.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=288,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1555(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1555.weight_1",
+            forge.Parameter(*(136, 528, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1555.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1556(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1556.weight_1",
+            forge.Parameter(*(816, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1556.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=816,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1557(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1557.weight_1",
+            forge.Parameter(*(816, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1557.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=816,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1558(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1558.weight_1",
+            forge.Parameter(*(224, 816, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1558.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1559(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1559.weight_1",
+            forge.Parameter(*(1344, 224, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1559.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1560(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1560.weight_1",
+            forge.Parameter(*(1344, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1560.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1344,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1561(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1561.weight_1",
+            forge.Parameter(*(224, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1561.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1562(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1562.weight_1",
+            forge.Parameter(*(448, 1344, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1562.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1563(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1563.weight_1",
+            forge.Parameter(*(72, 192, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1563.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1564(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1564.weight_1",
+            forge.Parameter(*(432, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1564.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=432,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1565(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1565.weight_1",
+            forge.Parameter(*(104, 432, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1565.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1566(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1566.weight_1",
+            forge.Parameter(*(624, 104, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1566.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1567(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1567.weight_1",
+            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1567.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=624,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1568(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1568.weight_1",
+            forge.Parameter(*(624, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1568.weight_1"),
+            stride=[2, 2],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=624,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1569(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1569.weight_1",
+            forge.Parameter(*(104, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1569.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1570(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1570.weight_1",
+            forge.Parameter(*(176, 624, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1570.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1571(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1571.weight_1",
+            forge.Parameter(*(1056, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1571.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1056,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1572(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1572.weight_1",
+            forge.Parameter(*(352, 1056, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1572.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1573(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1573.weight_1",
+            forge.Parameter(*(96, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1573.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=96,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1574(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1574.weight_1",
+            forge.Parameter(*(32, 96, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1574.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1575(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1575.weight_1",
+            forge.Parameter(*(80, 288, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1575.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1576(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1576.weight_1",
+            forge.Parameter(*(160, 480, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1576.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1577(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1577.weight_1",
+            forge.Parameter(*(1280, 160, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1577.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1578(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1578.weight_1",
+            forge.Parameter(*(1280, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1578.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1280,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1579(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1579.weight_1",
+            forge.Parameter(*(2048, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1579.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=2048,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1580(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1580.weight_1",
+            forge.Parameter(*(640, 1, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1580.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=640,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1581(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1581.weight_1",
+            forge.Parameter(*(768, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1581.weight_1"),
+            stride=[32, 32],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1582(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1582.weight_1",
+            forge.Parameter(*(512, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1582.weight_1"),
+            stride=[32, 32],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1583(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1583.weight_1",
+            forge.Parameter(*(1024, 3, 32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1583.weight_1"),
+            stride=[32, 32],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1584(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1584.weight_1",
+            forge.Parameter(*(512, 3, 16, 16), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1584.weight_1"),
+            stride=[16, 16],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1585(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1585.weight_1",
+            forge.Parameter(*(1280, 3, 14, 14), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1585.weight_1"),
+            stride=[14, 14],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1586(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1586.weight_1",
+            forge.Parameter(*(32, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1586.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1587(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1587.weight_1",
+            forge.Parameter(*(264, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1587.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1588(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1588.weight_1",
+            forge.Parameter(*(128, 264, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1588.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1589(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1589.weight_1",
+            forge.Parameter(*(160, 512, 3, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1589.weight_1"),
+            stride=[1, 1],
+            padding=[1, 1, 1, 1],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
+class Conv2D1590(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "conv2d1590.weight_1",
+            forge.Parameter(*(512, 1312, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, conv2d_input_0):
+        conv2d_output_1 = forge.op.Conv2d(
+            "",
+            conv2d_input_0,
+            self.get_parameter("conv2d1590.weight_1"),
+            stride=[1, 1],
+            padding=[0, 0, 0, 0],
+            dilation=1,
+            groups=1,
+            channel_last=0,
+        )
+        return conv2d_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -31342,12 +34444,15 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D6,
-        [((1, 32, 256, 256), torch.float32)],
+        [((1, 3, 256, 256), torch.float32)],
         {
-            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
-                "stride": "[1, 1]",
+                "stride": "[2, 2]",
                 "padding": "[1, 1, 1, 1]",
                 "dilation": "1",
                 "groups": "1",
@@ -31357,7 +34462,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D7,
-        [((1, 32, 128, 128), torch.float32)],
+        [((1, 32, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
             "pcc": 0.99,
@@ -31374,9 +34479,25 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D8,
         [((1, 32, 128, 128), torch.float32)],
         {
+            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D9,
+        [((1, 32, 128, 128), torch.float32)],
+        {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -31389,7 +34510,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 128, 128), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31404,7 +34525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D10,
+        Conv2D11,
         [((1, 64, 64, 64), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31419,7 +34540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 64, 64), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31434,7 +34555,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D12,
+        Conv2D13,
         [((1, 128, 32, 32), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31449,7 +34570,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 32, 32), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31464,7 +34585,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D14,
+        Conv2D15,
         [((1, 256, 16, 16), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31479,7 +34600,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 16, 16), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31495,7 +34616,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D16,
+            Conv2D17,
             [((1, 512, 32, 32), torch.float32)],
             {
                 "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31512,7 +34633,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D17,
+        Conv2D18,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31527,7 +34648,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 128, 128), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31542,7 +34663,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D19,
+        Conv2D20,
         [((1, 64, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31557,7 +34678,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D20,
+        Conv2D21,
         [((1, 32, 256, 256), torch.float32)],
         {
             "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
@@ -31572,7 +34693,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D21,
+        Conv2D22,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -31601,6 +34722,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31613,7 +34735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D22,
+        Conv2D23,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -31647,7 +34769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -31661,6 +34783,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31673,7 +34796,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D23,
+        Conv2D24,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -31706,7 +34829,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -31719,6 +34842,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31731,7 +34855,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D10,
+        Conv2D11,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -31765,7 +34889,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -31781,6 +34905,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31793,7 +34918,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -31809,6 +34934,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -31821,7 +34947,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D26,
+        Conv2D27,
         [((1, 768, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -31832,6 +34958,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31844,7 +34971,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D27,
+        Conv2D28,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -31855,29 +34982,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D28,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31891,7 +34996,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D29,
-        [((1, 1056, 28, 28), torch.float32)],
+        [((1, 160, 28, 28), torch.float32)],
         {
             "model_names": [
                 "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
@@ -31901,29 +35006,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D30,
-        [((1, 512, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31936,18 +35019,42 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D31,
-        [((1, 192, 14, 14), torch.float32)],
+        Conv2D30,
+        [((1, 1056, 28, 28), torch.float32)],
         {
             "model_names": [
                 "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
                 "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
                 "pt_vovnet_v1_vovnet39_obj_det_torchhub",
                 "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D31,
+        [((1, 512, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_vovnet57_img_cls_osmr",
+                "pt_vovnet_vovnet39_img_cls_osmr",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31961,6 +35068,31 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D32,
+        [((1, 192, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_vovnet57_img_cls_osmr",
+                "pt_vovnet_vovnet39_img_cls_osmr",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D33,
         [((1, 1472, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -31971,6 +35103,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -31983,7 +35116,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D33,
+        Conv2D34,
         [((1, 768, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -31994,6 +35127,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -32006,7 +35140,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D34,
+        Conv2D35,
         [((1, 1728, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -32017,6 +35151,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -32029,7 +35164,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D35,
+        Conv2D36,
         [((1, 768, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -32040,29 +35175,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D36,
-        [((1, 224, 7, 7), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -32076,6 +35189,30 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D37,
+        [((1, 224, 7, 7), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_v1_vovnet39_obj_det_torchhub",
+                "pt_vovnet_vovnet_v1_57_obj_det_torchhub",
+                "pt_vovnet_vovnet57_img_cls_osmr",
+                "pt_vovnet_vovnet39_img_cls_osmr",
+                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D38,
         [((1, 1888, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -32086,6 +35223,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -32099,7 +35237,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D38,
+            Conv2D39,
             [((1, 1024, 7, 7), torch.float32)],
             {
                 "model_names": [
@@ -32110,6 +35248,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_vovnet_vovnet57_img_cls_osmr",
                     "pt_vovnet_vovnet39_img_cls_osmr",
                     "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -32124,7 +35263,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D39,
+        Conv2D40,
         [((1, 2144, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -32135,6 +35274,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet57_img_cls_osmr",
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -32147,7 +35287,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -32166,7 +35306,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -32203,6 +35343,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
                 "pt_vovnet_vovnet27s_img_cls_osmr",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -32215,7 +35356,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D23,
+        Conv2D24,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -32230,7 +35371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D40,
+        Conv2D41,
         [((1, 448, 56, 56), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32245,7 +35386,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D41,
+        Conv2D42,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32260,7 +35401,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D42,
+        Conv2D43,
         [((1, 80, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -32279,7 +35420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D43,
+        Conv2D44,
         [((1, 80, 28, 28), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -32294,7 +35435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D44,
+        Conv2D45,
         [((1, 528, 28, 28), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32309,7 +35450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D45,
+        Conv2D46,
         [((1, 256, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32324,7 +35465,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32339,7 +35480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D47,
+        Conv2D48,
         [((1, 736, 14, 14), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32354,7 +35495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D48,
+        Conv2D49,
         [((1, 384, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32369,7 +35510,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D49,
+        Conv2D50,
         [((1, 112, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32384,7 +35525,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D50,
+        Conv2D51,
         [((1, 944, 7, 7), torch.float32)],
         {
             "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr", "pt_vovnet_vovnet27s_img_cls_osmr"],
@@ -32399,32 +35540,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D51,
+        Conv2D52,
         [((1, 3, 640, 640), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D52,
-        [((1, 16, 320, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -32438,70 +35560,12 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D53,
-        [((1, 32, 160, 160), torch.float32)],
+        [((1, 16, 320, 320), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D54,
-        [((1, 16, 160, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D55,
-        [((1, 48, 160, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D8,
-        [((1, 32, 160, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -32514,17 +35578,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
-        [((1, 64, 80, 80), torch.float32)],
+        Conv2D54,
+        [((1, 32, 160, 160), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -32537,17 +35598,55 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D6,
-        [((1, 32, 80, 80), torch.float32)],
+        Conv2D55,
+        [((1, 16, 160, 160), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D56,
+        [((1, 48, 160, 160), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D9,
+        [((1, 32, 160, 160), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
                 "padding": "[1, 1, 1, 1]",
                 "dilation": "1",
                 "groups": "1",
@@ -32557,13 +35656,16 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D57,
-        [((1, 128, 80, 80), torch.float32)],
+        [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
+                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -32576,18 +35678,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
-        [((1, 64, 80, 80), torch.float32)],
+        Conv2D7,
+        [((1, 32, 80, 80), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
-                "stride": "[2, 2]",
+                "stride": "[1, 1]",
                 "padding": "[1, 1, 1, 1]",
                 "dilation": "1",
                 "groups": "1",
@@ -32597,428 +35698,13 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D58,
-        [((1, 128, 40, 40), torch.float32)],
+        [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D9,
-        [((1, 64, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D59,
-        [((1, 256, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D60,
-        [((1, 128, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D61,
-        [((1, 256, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D11,
-        [((1, 128, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D62,
-        [((1, 384, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D59,
-        [((1, 256, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D63,
-        [((1, 512, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-                "pt_yolox_yolox_darknet_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D64,
-        [((1, 384, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D65,
-        [((1, 192, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D66,
-        [((1, 192, 80, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D67,
-        [((1, 96, 80, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D9,
-        [((1, 64, 80, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolox_yolox_s_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D23,
-        [((1, 64, 80, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D68,
-        [((1, 64, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D42,
-        [((1, 80, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D69,
-        [((1, 80, 80, 80), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D18,
-        [((1, 128, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D56,
-        [((1, 64, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D41,
-        [((1, 128, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D42,
-        [((1, 80, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D69,
-        [((1, 80, 40, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -33032,9 +35718,14 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D25,
-        [((1, 128, 40, 40), torch.float32)],
+        [((1, 64, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
+                "onnx_yolov8_default_obj_det_github",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -33046,7 +35737,457 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D59,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D10,
+        [((1, 64, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D60,
+        [((1, 256, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D61,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D62,
+        [((1, 256, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D12,
+        [((1, 128, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D63,
+        [((1, 384, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D60,
+        [((1, 256, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D64,
+        [((1, 512, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "pt_yolox_yolox_darknet_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D65,
+        [((1, 384, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D66,
+        [((1, 192, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D67,
+        [((1, 192, 80, 80), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D68,
+        [((1, 96, 80, 80), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D10,
+        [((1, 64, 80, 80), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_mobilenetv3_ssd_resnet18_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                "pt_mobilenetv3_ssd_resnet34_img_cls_torchvision",
+                "pt_yolov10_default_obj_det_github",
+                "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D24,
+        [((1, 64, 80, 80), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D69,
+        [((1, 64, 80, 80), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D43,
+        [((1, 80, 80, 80), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D70,
+        [((1, 80, 80, 80), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D19,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D57,
+        [((1, 64, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D42,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D43,
+        [((1, 80, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D70,
+        [((1, 80, 40, 40), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D26,
+        [((1, 128, 40, 40), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D12,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -33068,67 +36209,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D70,
-        [((1, 256, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D9,
-        [((1, 64, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D56,
-        [((1, 64, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolov8_default_obj_det_github",
-                "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
         Conv2D71,
         [((1, 256, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -33140,28 +36228,32 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D42,
-        [((1, 80, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolov8_default_obj_det_github", "pt_yolov8_default_obj_det_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D69,
-        [((1, 80, 20, 20), torch.float32)],
+        Conv2D10,
+        [((1, 64, 20, 20), torch.float32)],
         {
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D57,
+        [((1, 64, 20, 20), torch.float32)],
+        {
+            "model_names": [
                 "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -33175,9 +36267,58 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D72,
+        [((1, 256, 20, 20), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D43,
+        [((1, 80, 20, 20), torch.float32)],
+        {
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D70,
+        [((1, 80, 20, 20), torch.float32)],
+        {
+            "model_names": [
+                "pt_yolov8_default_obj_det_github",
+                "pt_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D73,
         [((1, 16, 4, 8400), torch.float32)],
         {
-            "model_names": ["pt_yolov8_default_obj_det_github"],
+            "model_names": ["pt_yolov8_default_obj_det_github", "onnx_yolov8_default_obj_det_github"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -33190,7 +36331,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D73,
+            Conv2D74,
             [((1, 3, 224, 224), torch.float32)],
             {
                 "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
@@ -33207,7 +36348,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D74,
+        Conv2D75,
         [((1, 64, 27, 27), torch.float32)],
         {
             "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
@@ -33222,7 +36363,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D75,
+        Conv2D76,
         [((1, 192, 13, 13), torch.float32)],
         {
             "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
@@ -33237,7 +36378,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D76,
+        Conv2D77,
         [((1, 384, 13, 13), torch.float32)],
         {
             "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
@@ -33252,7 +36393,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D77,
+        Conv2D78,
         [((1, 256, 13, 13), torch.float32)],
         {
             "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
@@ -33267,7 +36408,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -33302,6 +36443,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -33314,7 +36456,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33356,7 +36498,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33377,7 +36519,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D81,
+        Conv2D82,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33398,7 +36540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D82,
+        Conv2D83,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33416,7 +36558,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D83,
+        Conv2D84,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33437,7 +36579,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33470,7 +36612,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D84,
+        Conv2D85,
         [((1, 160, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33491,7 +36633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D65,
+        Conv2D66,
         [((1, 192, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33512,7 +36654,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D85,
+        Conv2D86,
         [((1, 224, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33533,7 +36675,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -33564,6 +36706,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -33576,7 +36719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33598,7 +36741,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D81,
+        Conv2D82,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33619,7 +36762,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D84,
+        Conv2D85,
         [((1, 160, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33640,7 +36783,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D65,
+        Conv2D66,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33661,7 +36804,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D85,
+        Conv2D86,
         [((1, 224, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33682,7 +36825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33709,7 +36852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D86,
+        Conv2D87,
         [((1, 288, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33730,7 +36873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D87,
+        Conv2D88,
         [((1, 320, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33751,7 +36894,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D88,
+        Conv2D89,
         [((1, 352, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33772,7 +36915,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D64,
+        Conv2D65,
         [((1, 384, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33781,6 +36924,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_densenet_densenet121_hf_xray_img_cls_torchvision",
                 "pt_densenet_densenet201_img_cls_torchvision",
                 "pt_densenet_densenet121_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -33793,7 +36937,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D89,
+        Conv2D90,
         [((1, 416, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33814,7 +36958,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D40,
+        Conv2D41,
         [((1, 448, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33838,7 +36982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D90,
+        Conv2D91,
         [((1, 480, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33859,7 +37003,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -33891,6 +37035,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -33903,7 +37048,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -33928,7 +37073,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D81,
+        Conv2D82,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -33949,7 +37094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D86,
+        Conv2D87,
         [((1, 288, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -33970,7 +37115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D87,
+        Conv2D88,
         [((1, 320, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -33991,7 +37136,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D88,
+        Conv2D89,
         [((1, 352, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34012,7 +37157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D64,
+        Conv2D65,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34034,7 +37179,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D89,
+        Conv2D90,
         [((1, 416, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34055,7 +37200,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D40,
+        Conv2D41,
         [((1, 448, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34078,7 +37223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D90,
+        Conv2D91,
         [((1, 480, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34099,7 +37244,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34120,7 +37265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D92,
+        Conv2D93,
         [((1, 544, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34141,7 +37286,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D93,
+        Conv2D94,
         [((1, 576, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34163,7 +37308,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D94,
+        Conv2D95,
         [((1, 608, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34184,7 +37329,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D95,
+        Conv2D96,
         [((1, 640, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34205,7 +37350,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D96,
+        Conv2D97,
         [((1, 672, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34226,7 +37371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D97,
+        Conv2D98,
         [((1, 704, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34247,7 +37392,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D98,
+        Conv2D99,
         [((1, 736, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34268,7 +37413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D99,
+        Conv2D100,
         [((1, 768, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34289,7 +37434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D100,
+        Conv2D101,
         [((1, 800, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34310,7 +37455,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D101,
+        Conv2D102,
         [((1, 832, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34331,7 +37476,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D102,
+        Conv2D103,
         [((1, 864, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34352,7 +37497,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D103,
+        Conv2D104,
         [((1, 896, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34373,7 +37518,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D104,
+        Conv2D105,
         [((1, 928, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34394,7 +37539,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D105,
+        Conv2D106,
         [((1, 960, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34415,7 +37560,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D106,
+        Conv2D107,
         [((1, 992, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34436,7 +37581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D107,
+        Conv2D108,
         [((1, 1024, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -34465,6 +37610,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -34477,7 +37623,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34496,7 +37642,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D81,
+        Conv2D82,
         [((1, 128, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34517,7 +37663,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D92,
+        Conv2D93,
         [((1, 544, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34536,7 +37682,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D93,
+        Conv2D94,
         [((1, 576, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34555,7 +37701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D94,
+        Conv2D95,
         [((1, 608, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34574,7 +37720,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D95,
+        Conv2D96,
         [((1, 640, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34594,7 +37740,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D96,
+        Conv2D97,
         [((1, 672, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34614,7 +37760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D97,
+        Conv2D98,
         [((1, 704, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34634,7 +37780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D98,
+        Conv2D99,
         [((1, 736, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34654,7 +37800,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D99,
+        Conv2D100,
         [((1, 768, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34674,7 +37820,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D100,
+        Conv2D101,
         [((1, 800, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34694,7 +37840,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D101,
+        Conv2D102,
         [((1, 832, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34715,7 +37861,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D102,
+        Conv2D103,
         [((1, 864, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34735,7 +37881,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D103,
+        Conv2D104,
         [((1, 896, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34756,7 +37902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D104,
+        Conv2D105,
         [((1, 928, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34777,7 +37923,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D105,
+        Conv2D106,
         [((1, 960, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34798,7 +37944,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D106,
+        Conv2D107,
         [((1, 992, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -34819,7 +37965,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 55, 55), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34834,7 +37980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D108,
+        Conv2D109,
         [((1, 64, 55, 55), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34849,7 +37995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 192, 27, 27), torch.float32), ((176, 192, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34864,7 +38010,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D110,
+        Conv2D111,
         [((1, 96, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34879,7 +38025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D111,
+        Conv2D112,
         [((1, 16, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34894,7 +38040,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34909,7 +38055,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 256, 27, 27), torch.float32), ((288, 256, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34924,7 +38070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D113,
+        Conv2D114,
         [((1, 128, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34939,7 +38085,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D114,
+        Conv2D115,
         [((1, 32, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34954,7 +38100,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34969,7 +38115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 480, 13, 13), torch.float32), ((304, 480, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34984,7 +38130,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D116,
+        Conv2D117,
         [((1, 96, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -34999,7 +38145,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D117,
+        Conv2D118,
         [((1, 16, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35014,7 +38160,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D118,
+        Conv2D119,
         [((1, 480, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35029,7 +38175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 13, 13), torch.float32), ((296, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35044,7 +38190,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D119,
+        Conv2D120,
         [((1, 112, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35059,7 +38205,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D120,
+        Conv2D121,
         [((1, 24, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35074,7 +38220,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D121,
+        Conv2D122,
         [((1, 512, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35089,7 +38235,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 13, 13), torch.float32), ((280, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35104,7 +38250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D12,
+        Conv2D13,
         [((1, 128, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35119,7 +38265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 13, 13), torch.float32), ((288, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35134,7 +38280,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D122,
+        Conv2D123,
         [((1, 144, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35149,7 +38295,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D123,
+        Conv2D124,
         [((1, 32, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35164,7 +38310,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 528, 13, 13), torch.float32), ((448, 528, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35179,7 +38325,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D124,
+        Conv2D125,
         [((1, 160, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35194,7 +38340,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D125,
+        Conv2D126,
         [((1, 32, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35209,7 +38355,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D126,
+        Conv2D127,
         [((1, 528, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35224,7 +38370,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 832, 6, 6), torch.float32), ((448, 832, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35239,7 +38385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D124,
+        Conv2D125,
         [((1, 160, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35254,7 +38400,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D125,
+        Conv2D126,
         [((1, 32, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35269,7 +38415,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D101,
+        Conv2D102,
         [((1, 832, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35284,7 +38430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 832, 6, 6), torch.float32), ((624, 832, 1, 1), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35299,7 +38445,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D127,
+        Conv2D128,
         [((1, 192, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35314,7 +38460,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D128,
+        Conv2D129,
         [((1, 48, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35329,7 +38475,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 3, 3), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35344,7 +38490,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D126,
+        Conv2D127,
         [((1, 528, 3, 3), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -35359,7 +38505,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D129,
+        Conv2D6,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -35387,6 +38533,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_regnet_regnet_x_32gf_img_cls_torchvision",
                 "pt_regnet_regnet_y_800mf_img_cls_torchvision",
                 "pt_regnet_regnet_x_800mf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35425,7 +38575,14 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D131,
         [((1, 32, 112, 112), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv1_basic_img_cls_paddlemodels", "pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv1_basic_img_cls_paddlemodels",
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -35604,7 +38761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -35809,6 +38966,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35834,6 +38995,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35849,7 +39014,13 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D151,
         [((1, 96, 112, 112), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -35874,6 +39045,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35899,6 +39074,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35914,7 +39093,13 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D154,
         [((1, 144, 56, 56), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -35929,7 +39114,11 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D155,
         [((1, 144, 56, 56), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -35954,6 +39143,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35976,6 +39169,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -35998,6 +39193,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36013,7 +39210,11 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D159,
         [((1, 192, 28, 28), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -36028,7 +39229,11 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D160,
         [((1, 192, 28, 28), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -36040,7 +39245,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -36051,6 +39256,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36063,7 +39270,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D66,
+        Conv2D67,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -36072,6 +39279,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36093,6 +39301,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36108,7 +39317,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D162,
         [((1, 384, 14, 14), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -36129,6 +39341,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36150,6 +39363,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36171,6 +39385,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36186,7 +39401,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D166,
         [((1, 576, 14, 14), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -36201,7 +39419,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D167,
         [((1, 576, 14, 14), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -36222,6 +39443,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36243,6 +39465,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36269,6 +39492,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36284,7 +39508,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D171,
         [((1, 960, 7, 7), torch.float32)],
         {
-            "model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"],
+            "model_names": [
+                "pd_mobilenetv2_basic_img_cls_paddlemodels",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -36307,6 +39534,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36328,6 +39556,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36352,6 +39581,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_basic_img_cls_torchhub",
                 "pt_mobilenetv2_mobilenet_v2_img_cls_torchvision",
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -36364,7 +39596,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -36396,6 +39628,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_unet_qubvel_img_seg_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36444,6 +39677,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36456,7 +39690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -36481,6 +39715,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36506,6 +39741,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36543,6 +39779,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36575,7 +39812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -36588,6 +39825,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36600,7 +39838,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -36624,6 +39862,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36636,7 +39875,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -36667,6 +39906,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36679,7 +39919,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -36713,6 +39953,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36749,6 +39990,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36793,6 +40035,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36805,7 +40048,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -36829,6 +40072,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36857,6 +40101,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36869,7 +40114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -36919,6 +40164,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -36956,6 +40202,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                     "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                     "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "onnx_resnet_50_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -37002,6 +40249,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -37014,7 +40262,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -37038,6 +40286,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnet_resnet101_img_cls_torchvision",
                 "pt_resnet_50_img_cls_timm",
                 "pt_unet_qubvel_img_seg_torchhub",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -37050,7 +40299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -37074,7 +40323,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -37375,7 +40624,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 768, 128, 1), torch.float32), ((768, 768, 1, 1), torch.float32)],
         {
             "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
@@ -37535,7 +40784,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D127,
+        Conv2D128,
         [((1, 192, 13, 13), torch.float32)],
         {
             "model_names": ["pt_alexnet_alexnet_img_cls_torchhub", "pt_rcnn_base_obj_det_torchvision_rect_0"],
@@ -37550,7 +40799,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 13, 13), torch.float32)],
         {
             "model_names": ["pt_alexnet_alexnet_img_cls_torchhub", "pt_rcnn_base_obj_det_torchvision_rect_0"],
@@ -37604,6 +40853,8 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
                     "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
                     "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                    "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                    "pt_vit_vit_l_16_img_cls_torchvision",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -37632,6 +40883,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                     "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
                     "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                    "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -38672,6 +41924,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -39936,7 +43190,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D54,
+        Conv2D55,
         [((1, 16, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -39965,7 +43219,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D52,
+        Conv2D53,
         [((1, 16, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -40029,7 +43283,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -40069,7 +43323,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -40128,7 +43382,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D107,
+        Conv2D108,
         [((1, 1024, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -40191,7 +43445,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D8,
+        Conv2D9,
         [((1, 32, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -40248,7 +43502,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -40802,7 +44056,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D26,
+        Conv2D27,
         [((1, 768, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -40929,7 +44183,7 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D182,
         [((1, 512, 14, 14), torch.float32)],
         {
-            "model_names": ["pt_dla_dla102x2_visual_bb_torchvision"],
+            "model_names": ["pt_dla_dla102x2_visual_bb_torchvision", "onnx_efficientnet_efficientnet_b5_img_cls_timm"],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -41079,7 +44333,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41115,7 +44369,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41135,7 +44389,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41170,7 +44424,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -41190,7 +44444,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -41241,7 +44495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -41334,7 +44588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D53,
+        Conv2D54,
         [((1, 32, 112, 112), torch.float32)],
         {
             "model_names": ["pt_dla_dla46_c_visual_bb_torchvision", "pt_regnet_regnet_x_400mf_img_cls_torchvision"],
@@ -41379,7 +44633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D6,
+        Conv2D7,
         [((1, 32, 112, 112), torch.float32)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -41414,7 +44668,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D6,
+        Conv2D7,
         [((1, 32, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -41494,7 +44748,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D6,
+        Conv2D7,
         [((1, 32, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41532,7 +44786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D23,
+        Conv2D24,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41551,7 +44805,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -41581,7 +44835,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": ["pt_dla_dla46_c_visual_bb_torchvision", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
@@ -41596,7 +44850,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -41615,7 +44869,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": ["pt_dla_dla46_c_visual_bb_torchvision"],
@@ -41630,7 +44884,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -41660,7 +44914,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 7, 7), torch.float32)],
         {
             "model_names": ["pt_dla_dla46_c_visual_bb_torchvision"],
@@ -41675,7 +44929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -41694,7 +44948,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D64,
+        Conv2D65,
         [((1, 384, 56, 56), torch.float32)],
         {
             "model_names": ["pt_dla_dla169_visual_bb_torchvision"],
@@ -41772,6 +45026,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -41790,6 +45048,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -41851,6 +45113,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -41869,6 +45135,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -41953,6 +45223,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -41973,6 +45251,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42028,6 +45314,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42049,6 +45337,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42086,6 +45376,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42104,6 +45397,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42123,6 +45419,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42185,6 +45483,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42206,6 +45506,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42245,6 +45547,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42263,6 +45567,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42282,6 +45588,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42322,6 +45630,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42344,6 +45654,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42425,6 +45737,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42445,6 +45760,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42467,6 +45785,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42486,6 +45806,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42505,6 +45827,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42542,6 +45866,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42560,6 +45886,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42598,6 +45926,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42613,7 +45943,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D370,
         [((1, 3, 320, 320), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -42647,6 +45980,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42666,6 +46001,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
                 "pt_regnet_regnet_y_1_6gf_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42681,7 +46018,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D374,
         [((1, 48, 160, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42714,6 +46054,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42732,6 +46076,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42747,7 +46095,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D378,
         [((1, 24, 160, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42762,7 +46113,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D153,
         [((1, 24, 160, 160), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42792,7 +46146,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D157,
         [((1, 144, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42807,7 +46164,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D158,
         [((1, 32, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42840,6 +46200,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42858,6 +46221,9 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42870,10 +46236,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 80, 80), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42903,7 +46272,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D383,
         [((1, 192, 40, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42918,7 +46290,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D384,
         [((1, 56, 40, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -42951,6 +46326,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42969,6 +46345,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -42984,7 +46361,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D388,
         [((1, 336, 40, 40), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43014,7 +46394,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D390,
         [((1, 336, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43029,7 +46412,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D357,
         [((1, 112, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43059,7 +46445,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D363,
         [((1, 672, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43089,7 +46478,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D392,
         [((1, 672, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43104,7 +46496,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D170,
         [((1, 160, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43152,6 +46547,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43170,6 +46566,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43185,7 +46582,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D172,
         [((1, 960, 20, 20), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43200,7 +46600,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D397,
         [((1, 960, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43215,7 +46618,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D398,
         [((1, 272, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43248,6 +46654,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43266,6 +46673,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43281,7 +46689,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D402,
         [((1, 1632, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43311,7 +46722,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D404,
         [((1, 1632, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43326,7 +46740,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D405,
         [((1, 448, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43359,6 +46776,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43377,6 +46795,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -43392,7 +46811,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D409,
         [((1, 2688, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43407,7 +46829,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D410,
         [((1, 448, 10, 10), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43422,7 +46847,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D370,
         [((1, 3, 224, 224), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[2, 2]",
@@ -43471,7 +46899,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D374,
         [((1, 48, 112, 112), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43521,7 +46952,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D153,
         [((1, 24, 112, 112), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43551,7 +46985,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D157,
         [((1, 144, 56, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43566,7 +47003,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D158,
         [((1, 32, 56, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43593,10 +47033,13 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 56, 56), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43945,7 +47388,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D410,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"],
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -43975,6 +47421,21 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
+        Conv2D6,
+        [((1, 3, 240, 240), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
         Conv2D327,
         [((1, 32, 120, 120), torch.float32), ((32, 1, 3, 3), torch.float32)],
         {
@@ -43993,7 +47454,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D149,
         [((1, 32, 120, 120), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44008,7 +47472,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D150,
         [((1, 16, 120, 120), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44041,7 +47508,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D152,
         [((1, 96, 60, 60), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44056,7 +47526,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D153,
         [((1, 24, 60, 60), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44086,7 +47559,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D156,
         [((1, 144, 60, 60), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44119,7 +47595,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D341,
         [((1, 144, 30, 30), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44134,7 +47613,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D342,
         [((1, 40, 30, 30), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44164,7 +47646,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D346,
         [((1, 240, 30, 30), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44197,7 +47682,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D349,
         [((1, 240, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44212,7 +47700,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D350,
         [((1, 80, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44242,7 +47733,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D354,
         [((1, 480, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44272,7 +47766,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D356,
         [((1, 480, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44287,7 +47784,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D357,
         [((1, 112, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44332,7 +47832,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D363,
         [((1, 672, 15, 15), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44347,7 +47850,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D222,
         [((1, 672, 8, 8), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44362,7 +47868,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D364,
         [((1, 192, 8, 8), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44392,7 +47901,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D233,
         [((1, 1152, 8, 8), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44422,7 +47934,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D369,
         [((1, 1152, 8, 8), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44437,7 +47952,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D174,
         [((1, 320, 8, 8), torch.float32)],
         {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -44575,7 +48093,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 95, 95), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
@@ -45553,7 +49071,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 75, 75), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -45916,7 +49434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -45931,7 +49449,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 16, 16), torch.float32)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -45961,7 +49479,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -45976,7 +49494,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 16, 16), torch.float32)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -45991,7 +49509,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 8, 8), torch.float32)],
         {
             "model_names": ["pt_fpn_base_img_cls_torchvision"],
@@ -46006,7 +49524,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D51,
+        Conv2D52,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -46017,6 +49535,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -46036,6 +49555,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -47395,7 +50915,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D350,
         [((1, 80, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+            "model_names": [
+                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -47542,7 +51065,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 480, 640), torch.float32)],
         {
             "model_names": [
@@ -47600,7 +51123,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -47652,7 +51175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47760,7 +51283,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D121,
+        Conv2D122,
         [((1, 512, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47775,7 +51298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47790,7 +51313,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D19,
+        Conv2D20,
         [((1, 64, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47820,7 +51343,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47835,7 +51358,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D19,
+        Conv2D20,
         [((1, 64, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47865,7 +51388,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47880,7 +51403,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D19,
+        Conv2D20,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47911,7 +51434,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D9,
+            Conv2D10,
             [((1, 64, 480, 640), torch.float32)],
             {
                 "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -47954,7 +51477,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Conv2D108,
+        Conv2D109,
         [((1, 64, 56, 56), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -47969,7 +51492,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 192, 28, 28), torch.float32), ((176, 192, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -47984,7 +51507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D110,
+        Conv2D111,
         [((1, 96, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48014,7 +51537,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 256, 28, 28), torch.float32), ((288, 256, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48029,7 +51552,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D113,
+        Conv2D114,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48059,7 +51582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 480, 14, 14), torch.float32), ((304, 480, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48074,7 +51597,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D116,
+        Conv2D117,
         [((1, 96, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48104,7 +51627,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D118,
+        Conv2D119,
         [((1, 480, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48119,7 +51642,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 14, 14), torch.float32), ((296, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48134,7 +51657,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D119,
+        Conv2D120,
         [((1, 112, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48164,7 +51687,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D121,
+        Conv2D122,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48179,7 +51702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 14, 14), torch.float32), ((280, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48194,7 +51717,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D12,
+        Conv2D13,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48209,7 +51732,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 14, 14), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
@@ -48224,7 +51747,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 14, 14), torch.float32), ((288, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48239,7 +51762,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D122,
+        Conv2D123,
         [((1, 144, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48254,7 +51777,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D7,
+        Conv2D8,
         [((1, 32, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48269,7 +51792,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 528, 14, 14), torch.float32), ((448, 528, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48284,7 +51807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D124,
+        Conv2D125,
         [((1, 160, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48347,7 +51870,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D126,
+        Conv2D127,
         [((1, 528, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48362,7 +51885,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 832, 7, 7), torch.float32), ((448, 832, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48377,7 +51900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D124,
+        Conv2D125,
         [((1, 160, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48407,7 +51930,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 832, 7, 7), torch.float32), ((624, 832, 1, 1), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48422,7 +51945,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D127,
+        Conv2D128,
         [((1, 192, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -48767,7 +52290,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 144, 7, 7), torch.float32), ((126, 144, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -48893,7 +52416,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -49160,7 +52683,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -49190,7 +52713,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D12,
+        Conv2D13,
         [((1, 128, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -49254,7 +52777,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D14,
+        Conv2D15,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -49438,7 +52961,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D28,
+        Conv2D29,
         [((1, 160, 14, 14), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -49513,7 +53036,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 320, 7, 7), torch.float32), ((280, 320, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -49618,7 +53141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D84,
+        Conv2D85,
         [((1, 160, 14, 14), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
@@ -49933,7 +53456,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 352, 7, 7), torch.float32), ((308, 352, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
@@ -50353,7 +53876,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 240, 7, 7), torch.float32), ((210, 240, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
@@ -50578,7 +54101,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D70,
+        Conv2D71,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -50593,7 +54116,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D8,
+        Conv2D9,
         [((1, 32, 56, 56), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
@@ -50608,7 +54131,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
@@ -50653,7 +54176,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 256, 7, 7), torch.float32), ((224, 256, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
@@ -50713,7 +54236,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D53,
+        Conv2D54,
         [((1, 32, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -50746,7 +54269,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 14, 14), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -50776,7 +54299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 512, 7, 7), torch.float32), ((448, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -50836,7 +54359,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
@@ -50911,7 +54434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 28, 28), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -50989,7 +54512,10 @@ forge_modules_and_shapes_dtypes_list = [
         Conv2D438,
         [((1, 192, 14, 14), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "model_names": [
+                "pt_hrnet_hrnetv2_w48_pose_estimation_osmr",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {
                 "stride": "[1, 1]",
@@ -51061,7 +54587,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 384, 7, 7), torch.float32), ((336, 384, 1, 1), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -51136,7 +54662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D62,
+        Conv2D63,
         [((1, 384, 7, 7), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -51166,7 +54692,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D65,
+        Conv2D66,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -51196,7 +54722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D67,
+        Conv2D68,
         [((1, 96, 28, 28), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -51226,7 +54752,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D55,
+        Conv2D56,
         [((1, 48, 56, 56), torch.float32)],
         {
             "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
@@ -51274,7 +54800,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D54,
+        Conv2D55,
         [((1, 16, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -51328,7 +54854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D52,
+        Conv2D53,
         [((1, 16, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -51346,7 +54872,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D8,
+        Conv2D9,
         [((1, 32, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -51472,7 +54998,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -51508,7 +55034,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 128, 7, 7), torch.float32), ((112, 128, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -51618,7 +55144,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D129,
+        Conv2D6,
         [((1, 3, 299, 299), torch.float32)],
         {
             "model_names": [
@@ -51657,7 +55183,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D7,
+        Conv2D8,
         [((1, 32, 147, 147), torch.float32)],
         {
             "model_names": [
@@ -51799,7 +55325,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 384, 35, 35), torch.float32), ((224, 384, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -51837,7 +55363,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -51957,7 +55483,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 1024, 17, 17), torch.float32), ((768, 1024, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -52210,7 +55736,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 1536, 8, 8), torch.float32), ((1024, 1536, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -52362,7 +55888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 256, 512, 1), torch.float32), ((1024, 256, 1, 1), torch.float32)],
         {
             "model_names": ["pt_mlp_mixer_base_img_cls_github"],
@@ -52377,7 +55903,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D109,
+        Conv2D110,
         [((1, 1024, 512, 1), torch.float32), ((256, 1024, 1, 1), torch.float32)],
         {
             "model_names": ["pt_mlp_mixer_base_img_cls_github"],
@@ -53121,7 +56647,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D66,
+        Conv2D67,
         [((1, 192, 28, 28), torch.float32)],
         {
             "model_names": ["pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
@@ -54156,7 +57682,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 6, 6), torch.float32)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
@@ -54717,6 +58243,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {
@@ -55232,7 +58759,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 320, 320), torch.float32)],
         {
             "model_names": [
@@ -55253,7 +58780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -55271,7 +58798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolov10_default_obj_det_github"],
@@ -55286,7 +58813,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -55361,7 +58888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 10, 10), torch.float32)],
         {
             "model_names": [
@@ -55419,7 +58946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -55439,7 +58966,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -55460,7 +58987,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -55480,7 +59007,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -55533,7 +59060,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -55553,7 +59080,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -55594,7 +59121,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -55667,7 +59194,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D107,
+        Conv2D108,
         [((1, 1024, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -55708,7 +59235,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -55783,7 +59310,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 320, 1024), torch.float32)],
         {
             "model_names": [
@@ -55802,7 +59329,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 80, 256), torch.float32)],
         {
             "model_names": [
@@ -55821,7 +59348,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 80, 256), torch.float32)],
         {
             "model_names": [
@@ -55840,7 +59367,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 40, 128), torch.float32)],
         {
             "model_names": [
@@ -55859,7 +59386,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 80, 256), torch.float32)],
         {
             "model_names": [
@@ -55878,7 +59405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 40, 128), torch.float32)],
         {
             "model_names": [
@@ -55897,7 +59424,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 20, 64), torch.float32)],
         {
             "model_names": [
@@ -55954,7 +59481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 10, 32), torch.float32)],
         {
             "model_names": [
@@ -56229,7 +59756,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 192, 640), torch.float32)],
         {
             "model_names": [
@@ -56251,7 +59778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 48, 160), torch.float32)],
         {
             "model_names": [
@@ -56273,7 +59800,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 48, 160), torch.float32)],
         {
             "model_names": [
@@ -56295,7 +59822,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 24, 80), torch.float32)],
         {
             "model_names": [
@@ -56317,7 +59844,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 48, 160), torch.float32)],
         {
             "model_names": [
@@ -56339,7 +59866,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 24, 80), torch.float32)],
         {
             "model_names": [
@@ -56361,7 +59888,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 12, 40), torch.float32)],
         {
             "model_names": [
@@ -56427,7 +59954,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 6, 20), torch.float32)],
         {
             "model_names": [
@@ -56737,7 +60264,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D18,
+        Conv2D19,
         [((1, 128, 28, 28), torch.float32)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -56752,7 +60279,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D17,
+        Conv2D18,
         [((1, 256, 14, 14), torch.float32)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -56767,7 +60294,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D17,
+        Conv2D18,
         [((1, 256, 28, 28), torch.float32)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -56782,7 +60309,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D16,
+        Conv2D17,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -56797,7 +60324,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D16,
+        Conv2D17,
         [((1, 512, 14, 14), torch.float32)],
         {
             "model_names": ["pt_monodle_base_obj_det_torchvision"],
@@ -57565,7 +61092,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D129,
+        Conv2D6,
         [((1, 3, 384, 384), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -58141,7 +61668,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D43,
+        Conv2D44,
         [((1, 80, 112, 112), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_8gf_img_cls_torchvision"],
@@ -58156,7 +61683,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D69,
+        Conv2D70,
         [((1, 80, 56, 56), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_8gf_img_cls_torchvision"],
@@ -58171,7 +61698,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D42,
+        Conv2D43,
         [((1, 80, 56, 56), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_8gf_img_cls_torchvision"],
@@ -58939,7 +62466,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -59321,7 +62848,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D112,
+        Conv2D113,
         [((1, 192, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
@@ -59486,7 +63013,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
@@ -62894,7 +66421,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -62913,7 +66440,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -62953,7 +66480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -62972,7 +66499,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -62991,7 +66518,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 120, 160), torch.float32)],
         {
             "model_names": [
@@ -63048,7 +66575,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 60, 80), torch.float32)],
         {
             "model_names": [
@@ -63067,7 +66594,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 60, 80), torch.float32)],
         {
             "model_names": [
@@ -63088,7 +66615,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 60, 80), torch.float32)],
         {
             "model_names": [
@@ -63126,7 +66653,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 60, 80), torch.float32)],
         {
             "model_names": [
@@ -63204,7 +66731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 30, 40), torch.float32)],
         {
             "model_names": [
@@ -63225,7 +66752,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D107,
+        Conv2D108,
         [((1, 1024, 30, 40), torch.float32)],
         {
             "model_names": [
@@ -63326,7 +66853,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 15, 20), torch.float32)],
         {
             "model_names": [
@@ -63408,7 +66935,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 15, 20), torch.float32)],
         {
             "model_names": [
@@ -63472,7 +66999,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 8, 10), torch.float32)],
         {
             "model_names": [
@@ -63535,7 +67062,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 4, 5), torch.float32)],
         {
             "model_names": [
@@ -63682,7 +67209,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": ["pt_retinanet_retinanet_rn18fpn_obj_det_hf", "pt_retinanet_retinanet_rn34fpn_obj_det_hf"],
@@ -63697,7 +67224,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 60, 80), torch.float32)],
         {
             "model_names": ["pt_retinanet_retinanet_rn18fpn_obj_det_hf", "pt_retinanet_retinanet_rn34fpn_obj_det_hf"],
@@ -63772,7 +67299,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 15, 20), torch.float32)],
         {
             "model_names": ["pt_retinanet_retinanet_rn18fpn_obj_det_hf", "pt_retinanet_retinanet_rn34fpn_obj_det_hf"],
@@ -63787,7 +67314,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 30, 40), torch.float32)],
         {
             "model_names": ["pt_retinanet_retinanet_rn18fpn_obj_det_hf", "pt_retinanet_retinanet_rn34fpn_obj_det_hf"],
@@ -63823,6 +67350,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -63842,6 +67370,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "model_names": [
                     "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -63881,6 +67410,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "model_names": [
                     "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -63919,6 +67449,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -63938,6 +67469,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "model_names": [
                     "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -63976,6 +67508,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -64055,6 +67588,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -64081,6 +67617,9 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b3_img_cls_hf",
                     "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -64120,7 +67659,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -64133,6 +67672,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -64159,6 +67701,9 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b3_img_cls_hf",
                     "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -64211,6 +67756,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -64237,6 +67785,9 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                     "pt_segformer_nvidia_mit_b3_img_cls_hf",
                     "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
                 ],
                 "pcc": 0.99,
                 "args": {
@@ -64289,6 +67840,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -64364,7 +67918,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D78,
+        Conv2D79,
         [((1, 3, 300, 300), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64379,7 +67933,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 75, 75), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64394,7 +67948,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 75, 75), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64424,7 +67978,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 75, 75), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64439,7 +67993,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 75, 75), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64454,7 +68008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D25,
+        Conv2D26,
         [((1, 128, 75, 75), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64499,7 +68053,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 38, 38), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64514,7 +68068,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 38, 38), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64529,7 +68083,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 38, 38), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64544,7 +68098,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 38, 38), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64652,7 +68206,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 19, 19), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64697,7 +68251,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 10, 10), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64712,7 +68266,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D60,
+        Conv2D61,
         [((1, 128, 10, 10), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64742,7 +68296,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 5, 5), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64790,7 +68344,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 3, 3), torch.float32)],
         {
             "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
@@ -64965,7 +68519,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 224, 224), torch.float32)],
         {
             "model_names": [
@@ -64996,7 +68550,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D11,
+        Conv2D12,
         [((1, 128, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -65027,7 +68581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 56, 56), torch.float32)],
         {
             "model_names": [
@@ -65081,7 +68635,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D15,
+        Conv2D16,
         [((1, 512, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -65195,7 +68749,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D16,
+            Conv2D17,
             [((1, 512, 56, 56), torch.float32)],
             {
                 "model_names": ["pt_unet_carvana_base_img_seg_github"],
@@ -65213,7 +68767,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D17,
+            Conv2D18,
             [((1, 256, 112, 112), torch.float32)],
             {
                 "model_names": ["pt_unet_carvana_base_img_seg_github"],
@@ -65231,7 +68785,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D18,
+            Conv2D19,
             [((1, 128, 224, 224), torch.float32)],
             {
                 "model_names": ["pt_unet_carvana_base_img_seg_github", "pt_unet_cityscape_img_seg_osmr"],
@@ -65314,7 +68868,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D81,
+        Conv2D82,
         [((1, 128, 112, 112), torch.float32)],
         {
             "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
@@ -65396,7 +68950,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D70,
+            Conv2D71,
             [((1, 256, 112, 112), torch.float32)],
             {
                 "model_names": ["pt_unet_cityscape_img_seg_osmr"],
@@ -65461,7 +69015,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 112, 112), torch.float32)],
         {
             "model_names": [
@@ -65497,13 +69051,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 1, 1), torch.float32)],
         {
             "model_names": [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -65595,6 +69150,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -65686,6 +69242,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -65777,6 +69334,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -65812,7 +69370,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D7,
+        Conv2D8,
         [((1, 32, 150, 150), torch.float32)],
         {
             "model_names": [
@@ -65852,7 +69410,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 150, 150), torch.float32)],
         {
             "model_names": [
@@ -65872,7 +69430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 150, 150), torch.float32)],
         {
             "model_names": [
@@ -65932,7 +69490,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 150, 150), torch.float32)],
         {
             "model_names": [
@@ -65952,7 +69510,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 75, 75), torch.float32)],
         {
             "model_names": [
@@ -66067,7 +69625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 75, 75), torch.float32)],
         {
             "model_names": [
@@ -66102,7 +69660,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 38, 38), torch.float32)],
         {
             "model_names": [
@@ -66516,7 +70074,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 147, 147), torch.float32)],
         {
             "model_names": ["pt_xception_xception_img_cls_timm"],
@@ -66531,7 +70089,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D80,
+        Conv2D81,
         [((1, 64, 147, 147), torch.float32)],
         {
             "model_names": ["pt_xception_xception_img_cls_timm"],
@@ -66561,7 +70119,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 147, 147), torch.float32)],
         {
             "model_names": ["pt_xception_xception_img_cls_timm"],
@@ -66636,7 +70194,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 74, 74), torch.float32)],
         {
             "model_names": ["pt_xception_xception_img_cls_timm"],
@@ -66786,7 +70344,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolov10_default_obj_det_github"],
@@ -75016,7 +78574,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D8,
+        Conv2D9,
         [((1, 32, 320, 320), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
@@ -75031,7 +78589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D7,
+        Conv2D8,
         [((1, 32, 320, 320), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75061,7 +78619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D6,
+        Conv2D7,
         [((1, 32, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
@@ -75076,7 +78634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75091,7 +78649,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
@@ -75106,7 +78664,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D10,
+        Conv2D11,
         [((1, 64, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75121,7 +78679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75129,36 +78687,6 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {
                 "stride": "[1, 1]",
                 "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D60,
-        [((1, 128, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
-            },
-        },
-    ),
-    (
-        Conv2D12,
-        [((1, 128, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
                 "dilation": "1",
                 "groups": "1",
                 "channel_last": "0",
@@ -75167,6 +78695,36 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Conv2D61,
+        [((1, 128, 80, 80), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D13,
+        [((1, 128, 80, 80), torch.float32)],
+        {
+            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D62,
         [((1, 256, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -75200,7 +78758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D14,
+        Conv2D15,
         [((1, 256, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75305,7 +78863,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_s_obj_det_torchhub"],
@@ -75380,7 +78938,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D24,
+        Conv2D25,
         [((1, 64, 320, 320), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75395,7 +78953,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75410,7 +78968,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D9,
+        Conv2D10,
         [((1, 64, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75425,7 +78983,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75441,7 +78999,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D60,
+            Conv2D61,
             [((1, 128, 160, 160), torch.float32)],
             {
                 "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75458,7 +79016,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75566,7 +79124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D91,
+        Conv2D92,
         [((1, 512, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
@@ -75581,7 +79139,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D13,
+        Conv2D14,
         [((1, 256, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_l_obj_det_torchhub", "pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -75884,7 +79442,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -75959,7 +79517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D31,
+        Conv2D32,
         [((1, 192, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -76109,7 +79667,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D31,
+        Conv2D32,
         [((1, 192, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -76259,7 +79817,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D31,
+        Conv2D32,
         [((1, 192, 20, 20), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_m_obj_det_torchhub"],
@@ -76371,7 +79929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D69,
+        Conv2D70,
         [((1, 80, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
@@ -76386,7 +79944,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D42,
+        Conv2D43,
         [((1, 80, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
@@ -76464,7 +80022,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D28,
+        Conv2D29,
         [((1, 160, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
@@ -76930,7 +80488,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Conv2D8,
+            Conv2D9,
             [((1, 32, 640, 640), torch.float32)],
             {
                 "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -76996,7 +80554,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D26,
+        Conv2D27,
         [((1, 768, 40, 40), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -77011,7 +80569,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D64,
+        Conv2D65,
         [((1, 384, 80, 80), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
@@ -77131,7 +80689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D53,
+        Conv2D54,
         [((1, 32, 104, 104), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77191,7 +80749,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D53,
+        Conv2D54,
         [((1, 32, 52, 52), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77221,7 +80779,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 52, 52), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77266,7 +80824,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D79,
+        Conv2D80,
         [((1, 64, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77281,7 +80839,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D57,
+        Conv2D58,
         [((1, 128, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77296,7 +80854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77326,7 +80884,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77371,7 +80929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D59,
+        Conv2D60,
         [((1, 256, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77386,7 +80944,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D63,
+        Conv2D64,
         [((1, 512, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77401,7 +80959,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D58,
+        Conv2D59,
         [((1, 128, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77431,7 +80989,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D61,
+        Conv2D62,
         [((1, 256, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77446,7 +81004,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77566,7 +81124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D115,
+        Conv2D116,
         [((1, 256, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77596,7 +81154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D56,
+        Conv2D57,
         [((1, 64, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub"],
@@ -77866,7 +81424,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -77956,7 +81514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D31,
+        Conv2D32,
         [((1, 192, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -78016,7 +81574,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 52, 52), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -78166,7 +81724,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Conv2D46,
+        Conv2D47,
         [((1, 96, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -78534,6 +82092,4807 @@ forge_modules_and_shapes_dtypes_list = [
                 "dilation": "1",
                 "groups": "1",
                 "channel_last": "1",
+            },
+        },
+    ),
+    (
+        Conv2D1450,
+        [((1, 3, 288, 288), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1451,
+        [((1, 40, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "40",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1452,
+        [((1, 40, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1453,
+        [((1, 10, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1454,
+        [((1, 40, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1455,
+        [((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "24",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D378,
+        [((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D153,
+        [((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D155,
+        [((1, 144, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D157,
+        [((1, 144, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D158,
+        [((1, 32, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D159,
+        [((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D113,
+        [((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1456,
+        [((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D438,
+        [((1, 192, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D417,
+        [((1, 48, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1457,
+        [((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1458,
+        [((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1459,
+        [((1, 12, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D419,
+        [((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1460,
+        [((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D440,
+        [((1, 288, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D165,
+        [((1, 96, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D166,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "576",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1461,
+        [((1, 576, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1462,
+        [((1, 24, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D168,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1463,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "576",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D443,
+        [((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D444,
+        [((1, 136, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1464,
+        [((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "816",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1465,
+        [((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "816",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1466,
+        [((1, 816, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1467,
+        [((1, 34, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D447,
+        [((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D448,
+        [((1, 816, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D449,
+        [((1, 232, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1468,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1392",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1469,
+        [((1, 1392, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1470,
+        [((1, 58, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D451,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1471,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1392",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D453,
+        [((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1472,
+        [((1, 384, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1473,
+        [((1, 2304, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "2304",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1474,
+        [((1, 2304, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1475,
+        [((1, 96, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1476,
+        [((1, 2304, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1477,
+        [((1, 384, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1478,
+        [((1, 144, 56, 56), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1479,
+        [((1, 240, 28, 28), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1480,
+        [((1, 240, 28, 28), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1481,
+        [((1, 480, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "480",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1482,
+        [((1, 480, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "480",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1483,
+        [((1, 672, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1484,
+        [((1, 672, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1485,
+        [((1, 1152, 7, 7), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1152",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1486,
+        [((1, 1152, 7, 7), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1152",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D131,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "32",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D149,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1487,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "16",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1488,
+        [((1, 16, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1489,
+        [((1, 4, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D761,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D150,
+        [((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D151,
+        [((1, 96, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D152,
+        [((1, 96, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D153,
+        [((1, 24, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D154,
+        [((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D156,
+        [((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1478,
+        [((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D416,
+        [((1, 144, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D417,
+        [((1, 48, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1457,
+        [((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D419,
+        [((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1460,
+        [((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D421,
+        [((1, 288, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D422,
+        [((1, 88, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1490,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "528",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1491,
+        [((1, 528, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1492,
+        [((1, 22, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D424,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1493,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "528",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D426,
+        [((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D427,
+        [((1, 120, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1494,
+        [((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "720",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1495,
+        [((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "720",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1496,
+        [((1, 720, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1497,
+        [((1, 30, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D430,
+        [((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D431,
+        [((1, 720, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D432,
+        [((1, 208, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1498,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1248",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1499,
+        [((1, 1248, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1500,
+        [((1, 52, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D434,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1501,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1248",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D436,
+        [((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1502,
+        [((1, 352, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1503,
+        [((1, 2112, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "2112",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1504,
+        [((1, 2112, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1505,
+        [((1, 88, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1506,
+        [((1, 2112, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1507,
+        [((1, 352, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D370,
+        [((1, 3, 448, 448), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1508,
+        [((1, 48, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D374,
+        [((1, 48, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1455,
+        [((1, 24, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "24",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D378,
+        [((1, 24, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D153,
+        [((1, 24, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D155,
+        [((1, 144, 224, 224), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D341,
+        [((1, 144, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D342,
+        [((1, 40, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1509,
+        [((1, 240, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D346,
+        [((1, 240, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1510,
+        [((1, 240, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D772,
+        [((1, 240, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D161,
+        [((1, 64, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1511,
+        [((1, 384, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "384",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1512,
+        [((1, 384, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1513,
+        [((1, 16, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D163,
+        [((1, 384, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1514,
+        [((1, 384, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "384",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1515,
+        [((1, 128, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1516,
+        [((1, 768, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "768",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1517,
+        [((1, 768, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1518,
+        [((1, 32, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D100,
+        [((1, 768, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1519,
+        [((1, 768, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "768",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1520,
+        [((1, 768, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1521,
+        [((1, 176, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1522,
+        [((1, 1056, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1056",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1523,
+        [((1, 1056, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1056",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1524,
+        [((1, 1056, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1525,
+        [((1, 44, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1526,
+        [((1, 1056, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1527,
+        [((1, 1056, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1528,
+        [((1, 304, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1529,
+        [((1, 1824, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1824",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1530,
+        [((1, 1824, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1531,
+        [((1, 76, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1532,
+        [((1, 1824, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1533,
+        [((1, 1824, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1824",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1534,
+        [((1, 1824, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1535,
+        [((1, 512, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1536,
+        [((1, 3072, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "3072",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1537,
+        [((1, 3072, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1538,
+        [((1, 128, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1539,
+        [((1, 3072, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D131,
+        [((1, 32, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "32",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1487,
+        [((1, 16, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "16",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D761,
+        [((1, 16, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D151,
+        [((1, 96, 120, 120), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D154,
+        [((1, 144, 60, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1478,
+        [((1, 144, 60, 60), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1479,
+        [((1, 240, 30, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1480,
+        [((1, 240, 30, 30), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "240",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1481,
+        [((1, 480, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "480",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1482,
+        [((1, 480, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "480",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1483,
+        [((1, 672, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1484,
+        [((1, 672, 15, 15), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1485,
+        [((1, 1152, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1152",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1486,
+        [((1, 1152, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1152",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1540,
+        [((1, 320, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1541,
+        [((1, 1920, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1920",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1542,
+        [((1, 1920, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1543,
+        [((1, 80, 1, 1), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1544,
+        [((1, 1920, 8, 8), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1508,
+        [((1, 48, 160, 160), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1455,
+        [((1, 24, 160, 160), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "24",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D155,
+        [((1, 144, 160, 160), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D159,
+        [((1, 192, 80, 80), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1456,
+        [((1, 192, 80, 80), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1545,
+        [((1, 336, 40, 40), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "336",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1546,
+        [((1, 336, 40, 40), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "336",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1547,
+        [((1, 672, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1483,
+        [((1, 672, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "672",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1548,
+        [((1, 960, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "960",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1549,
+        [((1, 960, 20, 20), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "960",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1550,
+        [((1, 1632, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[2, 2, 2, 2]",
+                "dilation": "1",
+                "groups": "1632",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1551,
+        [((1, 1632, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1632",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1552,
+        [((1, 2688, 10, 10), torch.float32)],
+        {
+            "model_names": ["onnx_efficientnet_efficientnet_b4_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "2688",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1508,
+        [((1, 48, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1553,
+        [((1, 48, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "48",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D155,
+        [((1, 144, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "144",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D159,
+        [((1, 192, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D160,
+        [((1, 192, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D438,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D417,
+        [((1, 48, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1554,
+        [((1, 288, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1460,
+        [((1, 288, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D419,
+        [((1, 288, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D421,
+        [((1, 288, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D422,
+        [((1, 88, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1490,
+        [((1, 528, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "528",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D424,
+        [((1, 528, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1555,
+        [((1, 528, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D444,
+        [((1, 136, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1556,
+        [((1, 816, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "816",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1557,
+        [((1, 816, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "816",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D447,
+        [((1, 816, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1558,
+        [((1, 816, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1559,
+        [((1, 224, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1560,
+        [((1, 1344, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1344",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1561,
+        [((1, 1344, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1562,
+        [((1, 1344, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_140_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1563,
+        [((1, 192, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D746,
+        [((1, 72, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1564,
+        [((1, 432, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "432",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D749,
+        [((1, 432, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1565,
+        [((1, 432, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1566,
+        [((1, 104, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1567,
+        [((1, 624, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "624",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1568,
+        [((1, 624, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "624",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1569,
+        [((1, 624, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1570,
+        [((1, 624, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1521,
+        [((1, 176, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1571,
+        [((1, 1056, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1056",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1526,
+        [((1, 1056, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1572,
+        [((1, 1056, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D437,
+        [((1, 352, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1487,
+        [((1, 16, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "16",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D755,
+        [((1, 8, 112, 112), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D757,
+        [((1, 48, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D150,
+        [((1, 16, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1573,
+        [((1, 96, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D151,
+        [((1, 96, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D758,
+        [((1, 96, 56, 56), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D758,
+        [((1, 96, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D150,
+        [((1, 16, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1573,
+        [((1, 96, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D151,
+        [((1, 96, 28, 28), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "96",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1574,
+        [((1, 96, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D158,
+        [((1, 32, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D159,
+        [((1, 192, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "192",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D113,
+        [((1, 192, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1554,
+        [((1, 288, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1460,
+        [((1, 288, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "288",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D419,
+        [((1, 288, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1575,
+        [((1, 288, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1481,
+        [((1, 480, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "480",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D354,
+        [((1, 480, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1576,
+        [((1, 480, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1577,
+        [((1, 160, 7, 7), torch.float32)],
+        {
+            "model_names": ["onnx_mobilenetv2_mobilenetv2_050_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D139,
+        [((1, 256, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "256",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D143,
+        [((1, 512, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "512",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1578,
+        [((1, 1280, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1280",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1579,
+        [((1, 2048, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "2048",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D135,
+        [((1, 128, 128, 128), torch.float32)],
+        {
+            "model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "128",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D139,
+        [((1, 256, 64, 64), torch.float32)],
+        {
+            "model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "256",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1580,
+        [((1, 640, 32, 32), torch.float32)],
+        {
+            "model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "640",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D147,
+        [((1, 1024, 16, 16), torch.float32)],
+        {
+            "model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1024",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1581,
+        [((1, 3, 224, 224), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm", "pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[32, 32]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1582,
+        [((1, 3, 224, 224), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[32, 32]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1583,
+        [((1, 3, 224, 224), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm", "pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[32, 32]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1584,
+        [((1, 3, 224, 224), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[16, 16]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1585,
+        [((1, 3, 518, 518), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[14, 14]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D79,
+        [((1, 3, 427, 640), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[3, 3, 3, 3]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D57,
+        [((1, 64, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D10,
+        [((1, 64, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D175,
+        [((1, 64, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D116,
+        [((1, 256, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D60,
+        [((1, 256, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D26,
+        [((1, 128, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D176,
+        [((1, 128, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D142,
+        [((1, 256, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D92,
+        [((1, 512, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D12,
+        [((1, 128, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D64,
+        [((1, 512, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D177,
+        [((1, 256, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D178,
+        [((1, 256, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D179,
+        [((1, 512, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D180,
+        [((1, 1024, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D14,
+        [((1, 256, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D108,
+        [((1, 1024, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D181,
+        [((1, 512, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D182,
+        [((1, 512, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D183,
+        [((1, 1024, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[2, 2]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D185,
+        [((1, 2048, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D16,
+        [((1, 512, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D455,
+        [((1, 2048, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1586,
+        [((1, 256, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D122,
+        [((1, 512, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D256,
+        [((1, 1024, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D62,
+        [((1, 256, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1587,
+        [((100, 264, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1588,
+        [((100, 264, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D19,
+        [((100, 128, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D20,
+        [((100, 64, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1196,
+        [((100, 32, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1197,
+        [((100, 16, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1589,
+        [((1, 512, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_vovnet_ese_vovnet99b_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
+            },
+        },
+    ),
+    (
+        Conv2D1590,
+        [((1, 1312, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_vovnet_ese_vovnet99b_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {
+                "stride": "[1, 1]",
+                "padding": "[0, 0, 0, 0]",
+                "dilation": "1",
+                "groups": "1",
+                "channel_last": "0",
             },
         },
     ),

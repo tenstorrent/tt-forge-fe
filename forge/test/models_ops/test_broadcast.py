@@ -60,6 +60,15 @@ class Broadcast4(ForgeModule):
         return broadcast_output_1
 
 
+class Broadcast5(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, broadcast_input_0):
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=256)
+        return broadcast_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -89,6 +98,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                     "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                     "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
                 ],
                 "pcc": 0.99,
                 "args": {"dim": "-3", "shape": "12"},
@@ -105,6 +115,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-4", "shape": "1"},
@@ -120,6 +131,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                     "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                     "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
                 ],
                 "pcc": 0.99,
                 "args": {"dim": "-2", "shape": "128"},
@@ -159,6 +171,18 @@ forge_modules_and_shapes_dtypes_list = [
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    (
+        Broadcast5,
+        [((1, 1, 1, 256), torch.int64)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "shape": "256"},
+        },
     ),
 ]
 
