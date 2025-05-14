@@ -221,6 +221,80 @@ def test_interpolate(forge_property_recorder, shape, mode):
 
 
 @pytest.mark.parametrize(
+    "input_shape, target_height, target_width",
+    [
+        pytest.param(
+            (1, 192, 64, 84),
+            32,
+            42,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 128, 126, 126),
+            42,
+            42,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 64, 400, 840),
+            100,
+            210,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 3, 50, 150),
+            10,
+            30,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 256, 100, 120),
+            50,
+            60,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d(https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 192, 50, 83),
+            32,
+            42,
+            marks=pytest.mark.xfail(
+                reason="AssertionError: Only support downsample with integer scale factor (https://github.com/tenstorrent/tt-forge-fe/issues/2041) "
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_downsample(forge_property_recorder, input_shape, target_height, target_width):
+    class Downsample(nn.Module):
+        def __init__(self, height, width):
+            super().__init__()
+            self.height = height
+            self.width = width
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, size=(self.height, self.width), mode="bicubic", align_corners=False)
+
+    framework_model = Downsample(target_height, target_width)
+    framework_model.eval()
+
+    inputs = torch.randn(*input_shape)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
     "batch_size, num_channels, height, width",
     [
         (1, 32, 56, 56),
