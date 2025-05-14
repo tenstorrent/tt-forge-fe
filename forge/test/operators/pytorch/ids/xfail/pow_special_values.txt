@@ -1,5 +1,29 @@
 # xfail_pow_SPECIAL_VALUES ids
 
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 4)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 17)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 23)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 100)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 500)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 1000)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 1920)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 10000)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 64)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 96)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 41)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 3)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(3, 4)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(45, 17)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(64, 1)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(100, 100)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1000, 100)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(10, 1000)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(9920, 1)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(10000, 1)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(32, 64)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(160, 96)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(17, 41)-None-None
+pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(89, 3)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 3, 4)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 45, 17)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(1, 1, 23)-None-None
@@ -50,6 +74,30 @@ pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(11, 32, 32, 64)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(12, 64, 160, 96)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(13, 11, 17, 41)-None-None
 pow-FROM_ANOTHER_OP-{'exponent': 0.5}-(14, 13, 89, 3)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 4)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 17)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 23)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 100)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 500)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 1000)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 1920)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 10000)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 64)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 96)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 41)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1, 3)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(3, 4)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(45, 17)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(64, 1)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(100, 100)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(1000, 100)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(10, 1000)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(9920, 1)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(10000, 1)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(32, 64)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(160, 96)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(17, 41)-None-None
+pow-FROM_HOST-{'exponent': 0.5}-(89, 3)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(1, 3, 4)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(1, 45, 17)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(1, 1, 23)-None-None
@@ -100,6 +148,31 @@ pow-FROM_HOST-{'exponent': 0.5}-(11, 32, 32, 64)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(12, 64, 160, 96)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(13, 11, 17, 41)-None-None
 pow-FROM_HOST-{'exponent': 0.5}-(14, 13, 89, 3)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 4)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 17)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 23)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 100)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 500)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1000)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1920)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 10000)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 64)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 96)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 41)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 3)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(3, 4)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(45, 17)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(64, 1)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(100, 100)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1000, 100)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(10, 1000)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(9920, 1)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(10000, 1)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(32, 64)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(160, 96)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(17, 41)-None-None
+pow-CONST_EVAL_PASS-{'exponent': 0.5}-(89, 3)-None-None
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 3, 4)-None-None
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 45, 17)-None-None
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1, 23)-None-None
