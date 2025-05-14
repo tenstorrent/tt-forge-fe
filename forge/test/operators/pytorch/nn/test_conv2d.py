@@ -20,7 +20,7 @@ import forge
 import forge.op
 
 from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AllCloseValueChecker
+from forge.verify.value_checkers import AllCloseValueChecker, AutomaticValueChecker
 
 from test.operators.utils import (
     InputSourceFlags,
@@ -147,6 +147,13 @@ class TestVerification:
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
 
+        # Using AllCloseValueChecker in all cases except for integer data formats
+        verify_config: VerifyConfig
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
+            verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
+        else:
+            verify_config = VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2))
+
         VerifyUtils.verify(
             model=pytorch_model,
             test_device=test_device,
@@ -157,7 +164,7 @@ class TestVerification:
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
             deprecated_verification=False,
-            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
+            verify_config=verify_config,
             value_range=ValueRanges.SMALL,
             skip_forge_verification=False,
         )
@@ -617,7 +624,7 @@ class TestCollectionData:
         input_sources=TestCollectionCommon.all.input_sources,
         # only 4D input tensors are supported
         input_shapes=[input_shape for input_shape in TestCollectionCommon.all.input_shapes if len(input_shape) == 4],
-        dev_data_formats=TestCollectionCommon.all.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.all.dev_data_formats,
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
@@ -626,7 +633,7 @@ class TestCollectionData:
         input_shapes=[
             (3, 11, 45, 17),
         ],
-        dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+        dev_data_formats=TestCollectionTorch.single.dev_data_formats,
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
@@ -750,8 +757,8 @@ TestParamsData.test_plan = TestPlan(
             ),
             dev_data_formats=[
                 item
-                for item in TestCollectionTorch.all.dev_data_formats
-                if item not in TestCollectionTorch.single.dev_data_formats
+                for item in TestCollectionData.all.dev_data_formats
+                if item not in TestCollectionData.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -763,7 +770,7 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(
                 test_vector, bias=False
             ),
-            dev_data_formats=TestCollectionTorch.single.dev_data_formats,  # Can't use it because it's unsupported data format
+            dev_data_formats=TestCollectionData.single.dev_data_formats,  # Can't use it because it's unsupported data format
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
     ],
