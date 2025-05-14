@@ -29,9 +29,6 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
     framework_model = BertForMaskedLM.from_pretrained(variant, return_dict=False)
@@ -115,9 +112,6 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
     framework_model.eval()
 
@@ -180,9 +174,6 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -232,9 +223,6 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
 

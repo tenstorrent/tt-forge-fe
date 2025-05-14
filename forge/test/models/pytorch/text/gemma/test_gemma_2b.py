@@ -40,9 +40,6 @@ def test_gemma_2b(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Random see for reproducibility
     torch.manual_seed(42)
 
@@ -108,7 +105,7 @@ def test_gemma_pytorch_v2(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
+    
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)

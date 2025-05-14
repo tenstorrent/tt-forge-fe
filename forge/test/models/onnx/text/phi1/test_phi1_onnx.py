@@ -33,9 +33,8 @@ def test_phi_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
+        priority="P1"
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

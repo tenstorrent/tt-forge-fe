@@ -49,9 +49,6 @@ def test_bloom(forge_property_recorder, variant):
         task=Task.CAUSAL_LM,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")
     model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)

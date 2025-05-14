@@ -25,9 +25,6 @@ def test_mistral(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     configuration = MistralConfig()
     configuration.sliding_window = None
     configuration.use_cache = False
@@ -75,7 +72,7 @@ def test_mistral_v0_3(forge_property_recorder, variant):
 
     # Record Forge Property
     forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
+    
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

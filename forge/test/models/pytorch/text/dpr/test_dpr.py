@@ -41,9 +41,6 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
         task=Task.QA,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-ctx_encoder-single-nq-base, facebook/dpr-ctx_encoder-multiset-base
     model_ckpt = variant
@@ -98,9 +95,6 @@ def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.QA,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-question_encoder-single-nq-base, facebook/dpr-question_encoder-multiset-base
@@ -165,9 +159,6 @@ def test_dpr_reader_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.QA,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     # Variants: facebook/dpr-reader-single-nq-base, facebook/dpr-reader-multiset-base

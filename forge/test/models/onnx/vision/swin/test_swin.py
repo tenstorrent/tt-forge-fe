@@ -29,9 +29,8 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        prioritoy="P1"
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = Swinv2ForImageClassification.from_pretrained(variant)
@@ -72,7 +71,7 @@ def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, tmp_path):
         task=Task.MASKED_IMAGE_MODELLING,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
+    
 
     # Load the model
     framework_model = Swinv2ForMaskedImageModeling.from_pretrained(variant)
@@ -116,7 +115,7 @@ def test_swin_torchvision(forge_property_recorder, variant, tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-    forge_property_recorder.record_group("generality")
+    
 
     # Load model and input
     weight_name = variants_with_weights[variant]

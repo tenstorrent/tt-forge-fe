@@ -23,9 +23,8 @@ def test_yolov10(forge_property_recorder, tmp_path):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        priority="P1"
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

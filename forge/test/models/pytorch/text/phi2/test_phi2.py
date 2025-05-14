@@ -46,7 +46,7 @@ def test_phi2_clm(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
         forge_property_recorder.record_priority("P1")
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -101,9 +101,6 @@ def test_phi2_token_classification(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -146,9 +143,6 @@ def test_phi2_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

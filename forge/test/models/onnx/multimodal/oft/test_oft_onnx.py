@@ -21,9 +21,8 @@ def test_oft(forge_property_recorder, tmp_path, variant):
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        priority="P1",
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

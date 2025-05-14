@@ -33,9 +33,9 @@ def test_sam(forge_property_recorder, variant):
 
     if variant == "facebook/sam-vit-base":
         forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
+        
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load  model and input
 

@@ -22,18 +22,12 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+    priority = "P1" if variant == "microsoft/phi-3-mini-4k-instruct" else "P2"
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.ONNX, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, priority=priority
     )
-
-    # Record Forge Property
-    if variant == "microsoft/phi-3-mini-4k-instruct":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt", trust_remote_code=True)

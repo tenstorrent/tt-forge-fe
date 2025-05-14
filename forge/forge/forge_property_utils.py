@@ -431,30 +431,6 @@ class ForgePropertyHandler:
         # Fallback: return an empty dictionary if no dataclass instance can be created.
         return {}
 
-    def record_group(self, group: str):
-        """
-        Records the group property in the tags.
-
-        Args:
-            group (str): The group value to be recorded.
-        """
-        self.add("group", group)
-        self.add("tags.group", group)
-
-    def record_priority(self, priority: str):
-
-        """
-
-         Records the priority property in the tags.
-
-        Args:
-
-             priority (str): The priority value to be recorded.
-
-        """
-
-        self.add("priority", priority)
-
     def record_model_name(self, model_name: str):
         """
         Records the model name in the tags.
@@ -774,6 +750,8 @@ class ForgePropertyHandler:
         source: Source,
         variant: str = "base",
         suffix: str | None = None,
+        priority: str = "P2",
+        group: str = "generality",
     ) -> str:
         """
         Records model properties and generates a module name and stores it.
@@ -785,6 +763,8 @@ class ForgePropertyHandler:
             task: The task type (e.g., qa,mlm, etc.)
             source: The model source (e.g., hf,torchhub etc.)
             suffix: Optional suffix to append to the module name
+            priority: The model priority
+            group: The model group
 
         Returns:
             The generated module name
@@ -796,6 +776,8 @@ class ForgePropertyHandler:
         self.add("tags.model_info.variant_name", variant)
         self.add("tags.model_info.task", task.full)
         self.add("tags.model_info.source", source.full)
+        self.add("tags.model_info.priority", priority)
+        self.add("tags.model_info.group", group)
 
         # Build and return the module name
         module_name = build_module_name(

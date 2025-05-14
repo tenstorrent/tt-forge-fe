@@ -30,7 +30,7 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
     )
 
     # Record Forge Property
-    forge_property_recorder.record_group("generality")
+    
     forge_property_recorder.record_priority("P1")
 
     # Load the model
@@ -72,9 +72,6 @@ def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model
     framework_model = download_model(DetrForSegmentation.from_pretrained, variant, return_dict=False)

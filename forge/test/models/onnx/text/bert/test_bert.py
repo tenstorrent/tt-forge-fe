@@ -36,7 +36,7 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
+    
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -89,7 +89,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
+    
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -150,11 +150,8 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
+        priority="P1"
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

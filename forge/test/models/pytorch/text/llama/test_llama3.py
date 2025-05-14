@@ -150,9 +150,9 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
         forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
+        
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -211,9 +211,6 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

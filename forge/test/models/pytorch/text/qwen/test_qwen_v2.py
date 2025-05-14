@@ -66,9 +66,9 @@ def test_qwen_clm(forge_property_recorder, variant):
         "Qwen/Qwen2.5-7B-Instruct",
     ]:
         forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
+        
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
@@ -108,9 +108,6 @@ def test_qwen2_token_classification(forge_property_recorder, variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = Qwen2ForTokenClassification.from_pretrained(variant)

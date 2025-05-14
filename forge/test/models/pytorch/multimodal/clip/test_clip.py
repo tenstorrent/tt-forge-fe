@@ -35,9 +35,6 @@ def test_clip_pytorch(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load processor and model from HuggingFace
     model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)
     processor = download_model(CLIPProcessor.from_pretrained, variant)

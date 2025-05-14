@@ -69,7 +69,7 @@ def test_phi_token_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
+    
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(
@@ -104,7 +104,7 @@ def test_phi_sequence_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
+    
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

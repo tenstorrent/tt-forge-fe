@@ -65,7 +65,7 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         forge_property_recorder.record_group("red")
         forge_property_recorder.record_priority("P1")
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)
@@ -133,9 +133,6 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model
     if variant == "efficientnet_b0":

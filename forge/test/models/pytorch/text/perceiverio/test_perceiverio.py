@@ -27,9 +27,6 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and tokenizer
     tokenizer = download_model(PerceiverTokenizer.from_pretrained, variant)
     framework_model = download_model(PerceiverForMaskedLM.from_pretrained, variant, return_dict=False)

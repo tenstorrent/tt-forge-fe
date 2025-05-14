@@ -53,9 +53,6 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     load_pretrained_weights = True
     if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
         load_pretrained_weights = False
@@ -96,9 +93,6 @@ def test_mlp_mixer_pytorch(forge_property_recorder):
         source=Source.GITHUB,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = MLPMixer(

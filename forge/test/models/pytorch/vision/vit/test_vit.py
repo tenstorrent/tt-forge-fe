@@ -29,20 +29,23 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
+    if variant in ["google/vit-base-patch16-224"]:
+        group = "red"
+        priority = "P1"
+    else:
+        group = "generality"
+        priority = "P2"
+
+    # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority
     )
-
-    # Record Forge Property
-    if variant in ["google/vit-base-patch16-224"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load processor and model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
@@ -97,9 +100,6 @@ def test_vit_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

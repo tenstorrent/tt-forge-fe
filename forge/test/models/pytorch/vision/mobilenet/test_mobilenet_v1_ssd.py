@@ -25,9 +25,6 @@ def test_mobilenet_v1_ssd_pytorch_1x1(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load PASCAL VOC dataset class labels
     label_path = "mobilenetv1_ssd/models/voc-model-labels.txt"
     class_names = [name.strip() for name in open(label_path).readlines()]

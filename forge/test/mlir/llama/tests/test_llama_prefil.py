@@ -39,7 +39,6 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
         # Update input_ids with the new token
         input_ids = torch.cat([input_ids, next_token_id.unsqueeze(0)], dim=-1)
-
         # Run the model again to get the new hidden state
         # Here we do effectively prefil again because we don't use KV cache.
         # If we used KV cache, we could just run the model with for the new token.
@@ -84,8 +83,8 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
+        group=group,
     )
-    forge_property_recorder.record_group(group)
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)

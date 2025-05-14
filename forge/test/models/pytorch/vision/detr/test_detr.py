@@ -77,9 +77,6 @@ def test_detr_segmentation(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)
 

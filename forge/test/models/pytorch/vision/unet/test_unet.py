@@ -103,9 +103,6 @@ def test_unet_holocron_pytorch(forge_property_recorder):
         task=Task.IMAGE_SEGMENTATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     from holocron.models.segmentation.unet import unet_tvvgg11
 
     framework_model = download_model(unet_tvvgg11, pretrained=True).eval()
@@ -162,9 +159,6 @@ def test_unet_qubvel_pytorch(forge_property_recorder):
         task=Task.IMAGE_SEGMENTATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
     # Forge compile framework model
@@ -220,9 +214,6 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
@@ -247,9 +238,6 @@ def test_unet_carvana(forge_property_recorder):
         source=Source.GITHUB,
         task=Task.IMAGE_SEGMENTATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = UNET(in_channels=3, out_channels=1)

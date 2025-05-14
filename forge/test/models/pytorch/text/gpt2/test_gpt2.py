@@ -43,9 +43,6 @@ def test_gpt2_text_gen(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -91,9 +88,6 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")

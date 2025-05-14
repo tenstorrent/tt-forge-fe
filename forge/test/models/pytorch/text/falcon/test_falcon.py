@@ -23,9 +23,6 @@ def test_falcon(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
     model.config.use_cache = False
@@ -92,7 +89,7 @@ def test_falcon_3(forge_property_recorder, variant):
     ]:
         forge_property_recorder.record_group("red")
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

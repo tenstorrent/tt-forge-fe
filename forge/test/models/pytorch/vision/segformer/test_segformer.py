@@ -45,7 +45,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
         forge_property_recorder.record_group("red")
         forge_property_recorder.record_priority("P1")
     else:
-        forge_property_recorder.record_group("generality")
+        
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -97,9 +97,6 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model from HuggingFace
     framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)

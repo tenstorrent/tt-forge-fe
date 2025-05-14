@@ -59,9 +59,6 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Sample Image
     pixel_values = get_sample_data(variant)
 
