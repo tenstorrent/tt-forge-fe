@@ -216,7 +216,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["concatenate"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operators),
         # Unsupported ttnn::DataType... Fatal Python error: Aborted
         TestCollection(
             operators=TestParamsData.operators,

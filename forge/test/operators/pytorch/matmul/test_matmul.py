@@ -119,10 +119,6 @@ class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_matmul_ids_failed_allclose_value_checker.txt"
-    )
-
 
 class TestParamsData:
 
@@ -179,7 +175,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["matmul"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operators),
         # Memory issue (too large input shapes):
         TestCollection(
             operators=TestParamsData.operators,
@@ -187,12 +183,6 @@ TestParamsData.test_plan = TestPlan(
             skip_reason=FailingReasons.ALLOCATION_FAILED,
             failing_reason=FailingReasons.ALLOCATION_FAILED,
         ),
-        # # All-close value checker failed (rtol=1e-2, atol=1e-2):
-        # #    >> ValueError: Data mismatch -> AllCloseValueChecker (all_close)
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
         # # Unsupported data format:
         # TestCollection(
         #     operators=TestParamsData.operators,

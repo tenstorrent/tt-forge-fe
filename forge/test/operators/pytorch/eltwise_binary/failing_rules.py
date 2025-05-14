@@ -23,46 +23,6 @@ class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    add_failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/add_operator/add_allclose_value_checker.txt"
-    )
-
-    add_failed_assertion_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/add_operator/add_assertion_error.txt"
-    )
-
-    sub_failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/sub_operator/sub_allclose_value_checker.txt"
-    )
-
-    sub_failed_assertion_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/sub_operator/sub_assertion_error.txt"
-    )
-
-    div_failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/div_operator/div_allclose_value_checker.txt"
-    )
-
-    div_failed_assertion_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/div_operator/div_assertion_error.txt"
-    )
-
-    ge_failed_dtype_mismatch = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/ge_operator/ge_dtype_mismatch.txt"
-    )
-
-    ne_failed_dtype_mismatch = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/ne_operator/ne_dtype_mismatch.txt"
-    )
-
-    gt_failed_dtype_mismatch = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/gt_operator/gt_dtype_mismatch.txt"
-    )
-
-    lt_failed_dtype_mismatch = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/lt_operator/lt_dtype_mismatch.txt"
-    )
-
 
 class FailingRulesData:
 
@@ -77,16 +37,6 @@ class FailingRulesData:
     )
 
     add = [
-        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_allclose_value_checker,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.add_failed_assertion_error,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
         # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
@@ -101,16 +51,6 @@ class FailingRulesData:
     ]
 
     sub = [
-        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_allclose_value_checker,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sub_failed_assertion_error,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
         # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
@@ -149,16 +89,6 @@ class FailingRulesData:
     ]
 
     div = [
-        # # ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_allclose_value_checker,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
-        # # AssertionError: Data mismatch on output 0 between framework and Forge codegen:
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.div_failed_assertion_error,
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
         # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Tensor a contains NaN/Inf values
@@ -200,41 +130,21 @@ class FailingRulesData:
     ]
 
     ge = [
-        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ge_failed_dtype_mismatch,
-        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
-        # ),
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["ge"]),
     ]
 
     ne = [
-        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.ne_failed_dtype_mismatch,
-        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
-        # ),
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["ne"]),
     ]
 
     gt = [
-        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.gt_failed_dtype_mismatch,
-        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
-        # ),
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["gt"]),
     ]
 
     lt = [
-        # # ValueError: Dtype mismatch: framework_model.dtype=torch.xxx, compiled_model.dtype=torch.xxx
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.lt_failed_dtype_mismatch,
-        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
-        # ),
         common,
         *TestIdsDataLoader.build_failing_rules(operators=["lt"]),
     ]
