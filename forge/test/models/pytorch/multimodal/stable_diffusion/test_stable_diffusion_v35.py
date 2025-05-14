@@ -6,7 +6,7 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
@@ -54,10 +54,8 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

@@ -12,7 +12,7 @@ import torch
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import preprocess_input_data
 
 
@@ -27,11 +27,8 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = download_model(DetrForObjectDetection.from_pretrained, variant, return_dict=False)
@@ -72,9 +69,6 @@ def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model
     framework_model = download_model(DetrForSegmentation.from_pretrained, variant, return_dict=False)

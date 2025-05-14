@@ -48,9 +48,6 @@ def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     model_ckpt = f"albert-{size}-{variant}"
 
     # Load Albert tokenizer and model from HuggingFace
@@ -123,9 +120,6 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
     # Variants: albert-base-v1, albert-large-v1, albert-xlarge-v1, albert-xxlarge-v1
@@ -193,9 +187,6 @@ def test_albert_question_answering_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(AlbertForQuestionAnswering.from_pretrained, variant, return_dict=False)
@@ -230,9 +221,6 @@ def test_albert_sequence_classification_pytorch(forge_property_recorder, variant
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)

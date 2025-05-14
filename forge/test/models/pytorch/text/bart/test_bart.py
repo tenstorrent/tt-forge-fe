@@ -44,9 +44,6 @@ def test_pt_bart_classifier(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     model = download_model(BartForSequenceClassification.from_pretrained, variant, torchscript=True)
     tokenizer = download_model(BartTokenizer.from_pretrained, variant, pad_to_max_length=True)
     hypothesis = "Most of Mrinal Sen's work can be found in European collections."

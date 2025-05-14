@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.text.bi_lstm_crf.utils.model import get_model
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 
 
 @pytest.mark.nightly
@@ -23,11 +23,8 @@ def test_birnn_crf(forge_property_recorder, tmp_path):
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
+        priority=ModelPriority.P1
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
 

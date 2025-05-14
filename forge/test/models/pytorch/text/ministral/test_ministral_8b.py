@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -25,9 +25,8 @@ def test_ministral_8b(forge_property_recorder, variant):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
+        group=ModelGroup.RED,
     )
-
-    forge_property_recorder.record_group("red")
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

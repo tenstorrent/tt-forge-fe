@@ -45,12 +45,6 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    if variant == "efficientnet_b0":
-        forge_property_recorder.record_group("generality")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load efficientnet model
     model = timm.create_model(variant, pretrained=True)
 

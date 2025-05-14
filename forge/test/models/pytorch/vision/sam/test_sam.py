@@ -5,7 +5,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
@@ -21,6 +21,7 @@ from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inp
 )
 @pytest.mark.nightly
 def test_sam(forge_property_recorder, variant):
+    group = ModelGroup.RED if variant == "facebook/sam-vit-base" else ModelGroup.GENERALITY
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -29,16 +30,10 @@ def test_sam(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,
+        group=group,
     )
-
-    if variant == "facebook/sam-vit-base":
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
+        
     # Load  model and input
-
     framework_model, sample_inputs = get_model_inputs(variant)
 
     # Forge compile framework model

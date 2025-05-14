@@ -33,9 +33,6 @@ def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load DistilBert tokenizer and model from HuggingFace
     # Variants: distilbert-base-uncased, distilbert-base-cased,
     # distilbert-base-multilingual-cased
@@ -76,9 +73,6 @@ def test_distilbert_question_answering_pytorch(forge_property_recorder, variant)
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
@@ -131,9 +125,6 @@ def test_distilbert_sequence_classification_pytorch(forge_property_recorder, var
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load DistilBert tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)
     framework_model = download_model(DistilBertForSequenceClassification.from_pretrained, variant)
@@ -174,9 +165,6 @@ def test_distilbert_token_classification_pytorch(forge_property_recorder, varian
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load DistilBERT tokenizer and model from HuggingFace
     tokenizer = download_model(DistilBertTokenizer.from_pretrained, variant)

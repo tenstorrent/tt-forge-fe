@@ -31,7 +31,6 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ErnieForSequenceClassification.from_pretrained(variant, num_classes=2)
@@ -65,7 +64,6 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ErnieForMaskedLM.from_pretrained(variant)
@@ -104,7 +102,6 @@ def test_ernie_question_answering(forge_property_recorder, variant):
         task=Task.QA,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ErnieForQuestionAnswering.from_pretrained(variant)

@@ -23,9 +23,6 @@ def test_fchardnet(forge_property_recorder):
         framework=Framework.PYTORCH, model="fchardnet", task=Task.IMAGE_CLASSIFICATION, source=Source.TORCHVISION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load and pre-process image
     image_path = "tt-forge-fe/forge/test/model_demos/high_prio/cnn/pytorch/model2/pytorch/pidnet/image/road_scenes.png"
     img = Image.open(image_path)

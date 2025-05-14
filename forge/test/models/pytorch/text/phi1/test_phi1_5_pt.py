@@ -10,7 +10,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -30,10 +30,9 @@ def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
@@ -67,7 +66,7 @@ def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
+    
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -102,7 +101,7 @@ def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, varian
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
+    
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(

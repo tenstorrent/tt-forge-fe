@@ -9,8 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
-
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 
 class LlamaPrefillModel(torch.nn.Module):
     def __init__(self, model):
@@ -39,7 +38,6 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
         # Update input_ids with the new token
         input_ids = torch.cat([input_ids, next_token_id.unsqueeze(0)], dim=-1)
-
         # Run the model again to get the new hidden state
         # Here we do effectively prefil again because we don't use KV cache.
         # If we used KV cache, we could just run the model with for the new token.
@@ -67,15 +65,15 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
     if "open_llama_3b" in model_path:
         model_name = "Open Llama"
         variant = "3b"
-        group = "generality"
+        group = ModelGroup.GENERALITY
     elif "Llama-3.2-1B" in model_path:
         model_name = "Llama 3.2"
         variant = "1b"
-        group = "red"
+        group = ModelGroup.RED
     else:
         model_name = "Llama"
         variant = "unknown"
-        group = "generality"
+        group = ModelGroup.GENERALITY
 
     # Record model details
     module_name = forge_property_recorder.record_model_properties(
@@ -84,8 +82,8 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
+        group=group,
     )
-    forge_property_recorder.record_group(group)
 
     # Load Llama model and tokenizer
     model, tokenizer = load_model(model_path, return_dict=True)

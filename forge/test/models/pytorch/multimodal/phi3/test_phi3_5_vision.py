@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.utils.utils import load_input
@@ -38,10 +38,8 @@ def test_phi3_5_vision(forge_property_recorder, variant):
         variant=variant,
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load model and processor
     model = download_model(

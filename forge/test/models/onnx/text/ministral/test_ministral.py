@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import build_optimum_cli_command
 import subprocess
 import onnx
@@ -27,11 +27,8 @@ def test_ministral(forge_property_recorder, variant, tmp_path):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")

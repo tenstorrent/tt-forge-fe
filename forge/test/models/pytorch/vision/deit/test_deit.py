@@ -48,9 +48,6 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )

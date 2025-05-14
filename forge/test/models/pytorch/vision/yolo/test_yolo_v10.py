@@ -8,7 +8,7 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolo_utils import (
@@ -26,9 +26,9 @@ def test_yolov10(forge_property_recorder):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

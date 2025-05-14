@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -20,12 +20,14 @@ def test_phi3_5_causal_lm(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi3_5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="phi3_5",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

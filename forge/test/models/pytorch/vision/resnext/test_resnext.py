@@ -31,9 +31,6 @@ def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
 
@@ -61,9 +58,6 @@ def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model and prepare input data
     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
@@ -93,9 +87,6 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model and prepare input data
     framework_model = download_model(torch.hub.load, "facebookresearch/WSL-Images", variant)
@@ -127,9 +118,6 @@ def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
@@ -159,9 +147,6 @@ def test_resnext_26_osmr_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
@@ -193,9 +178,6 @@ def test_resnext_50_osmr_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
@@ -225,9 +207,6 @@ def test_resnext_101_osmr_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

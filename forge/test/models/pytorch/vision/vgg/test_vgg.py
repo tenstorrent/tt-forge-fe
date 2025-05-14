@@ -43,9 +43,6 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
 
@@ -90,9 +87,6 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -168,9 +162,6 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
@@ -199,9 +190,6 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     framework_model.eval()
@@ -273,9 +261,6 @@ def test_vgg_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.vision.yolo.utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 
 
 @pytest.mark.xfail
@@ -23,9 +23,8 @@ def test_yolov10(forge_property_recorder, tmp_path):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        priority=ModelPriority.P1
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

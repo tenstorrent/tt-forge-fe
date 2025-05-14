@@ -21,9 +21,6 @@ def test_pytorch_ssd300_resnet50(forge_property_recorder):
         framework=Framework.PYTORCH, model="ssd300_resnet50", source=Source.TORCH_HUB, task=Task.IMAGE_CLASSIFICATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2 : prepare model
     framework_model = torch.hub.load("NVIDIA/DeepLearningExamples:torchhub", "nvidia_ssd", pretrained=False)
     url = "https://api.ngc.nvidia.com/v2/models/nvidia/ssd_pyt_ckpt_amp/versions/19.09.0/files/nvidia_ssdpyt_fp16_190826.pt"

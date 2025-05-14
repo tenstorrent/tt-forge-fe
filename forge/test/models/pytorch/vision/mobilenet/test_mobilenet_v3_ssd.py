@@ -34,9 +34,6 @@ def test_mobilenetv3_ssd(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model = load_model(variant, weight_name)

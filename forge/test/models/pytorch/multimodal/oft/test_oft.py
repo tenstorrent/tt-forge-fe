@@ -4,7 +4,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.oft.utils.oft_utils import (
@@ -24,10 +24,9 @@ def test_oft(forge_property_recorder, variant):
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

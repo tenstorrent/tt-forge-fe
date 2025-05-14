@@ -26,9 +26,6 @@ def test_regnet_img_classification(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the image processor and the RegNet model
     framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")
 
@@ -94,9 +91,6 @@ def test_regnet_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

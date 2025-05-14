@@ -40,9 +40,6 @@ def test_wideresnet_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
 
@@ -91,9 +88,6 @@ def test_wideresnet_timm(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
 

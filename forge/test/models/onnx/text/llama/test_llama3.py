@@ -156,17 +156,6 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
         framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    if variant in [
-        "meta-llama/Llama-3.1-8B-Instruct",
-        "meta-llama/Llama-3.2-1B-Instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-    ]:
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
     framework_model.eval()
