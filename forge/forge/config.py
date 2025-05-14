@@ -39,6 +39,10 @@ class CompileDepth(Enum):
         return value in cls._value2member_map_
 
     @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
     def to_json(cls, value):
         return value.name
 

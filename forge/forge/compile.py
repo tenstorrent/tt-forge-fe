@@ -38,7 +38,7 @@ from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage, record_property_var, log_property
 
 
 LAST_SUCCESSFUL_STAGE = None
@@ -259,7 +259,6 @@ def compile_main(
 
     return forge_compile_from_context(compile_context)
 
-
 def forge_compile_from_context(context: CompileContext) -> CompiledModel:
     """
     Run front-end compile passes and generate a Forge netlist, with a given compile context.
@@ -293,6 +292,8 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
 
     while context.stage != CompileDepth.FULL:
         logger.info("Running compile stage {}", context.stage.name.lower())
+        log_property("Eve ga properti.", 1)
+        context.forge_property_handler.record_execution_stage_2(current_stage)
 
         current_stage = context.stage
         verify_cfg = context.verify_cfg

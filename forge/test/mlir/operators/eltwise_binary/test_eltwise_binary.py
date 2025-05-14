@@ -2,6 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+from loguru import logger
+from typing import List, Optional, Union
+from forge.config import CompilerConfig
+from forge.forge_property_utils import ForgePropertyHandler, log_property
+from forge.module import AnyModule
 import torch
 from torch import nn
 
@@ -9,6 +14,28 @@ import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify import DepricatedVerifyConfig
+from forge.compiled_graph_state import CompiledModel
+
+def compile_2(
+    module: AnyModule,
+    sample_inputs: List[torch.Tensor],
+    module_name: Optional[str] = None,
+    optimizer: Optional[Union[torch.optim.Optimizer, forge.optimizers.Optimizer]] = None,
+    training: bool = False,
+    attach_to: Optional[CompiledModel] = None,
+    compiler_cfg: CompilerConfig = CompilerConfig(),
+    forge_property_handler: Optional[ForgePropertyHandler] = None,
+    verify_cfg: DepricatedVerifyConfig = DepricatedVerifyConfig(),
+) -> CompiledModel:
+    """
+    Wrappper function that invokes forge compilation.
+    """
+    try:
+        compiled_model = forge.compile(module, sample_inputs, module_name, optimizer, training, attach_to, compiler_cfg, forge_property_handler, verify_cfg)
+    except Exception as ex:
+        logger.error("Exception in compile: ", ex)
+        logger.error("Mapping failed state to report:")
+        # stage = 
 
 
 @pytest.mark.parametrize(
@@ -18,35 +45,35 @@ from forge.verify import DepricatedVerifyConfig
         pytest.param(
             (5, 10),
             1,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
+            # marks=pytest.mark.xfail(
+                # reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            # ),
         ),
-        pytest.param(
-            (3, 5, 10),
-            2,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (2, 3, 5, 10),
-            3,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
-        pytest.param(
-            (1, 6, 20, 50, 64),
-            4,
-            marks=pytest.mark.xfail(
-                reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
-            ),
-        ),
+        # pytest.param(
+            # (3, 5, 10),
+            # 2,
+            # marks=pytest.mark.xfail(
+                # reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            # ),
+        # ),
+        # pytest.param(
+            # (2, 3, 5, 10),
+            # 3,
+            # marks=pytest.mark.xfail(
+                # reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            # ),
+        # ),
+        # pytest.param(
+            # (1, 6, 20, 50, 64),
+            # 4,
+            # marks=pytest.mark.xfail(
+                # reason="[run_optimization_graph_passes] RuntimeError: TT_ASSERT @forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size())"
+            # ),
+        # ),
     ],
 )
 @pytest.mark.push
-def test_stack_and_view(forge_property_recorder, shape, dim):
+def test_stack_and_view(shape, dim):
     class stack_and_view(nn.Module):
         def __init__(self, dim):
             super().__init__()
@@ -63,12 +90,14 @@ def test_stack_and_view(forge_property_recorder, shape, dim):
 
     inputs = [x, y]
 
+    log_property("prop", 1)
     framework_model = stack_and_view(dim)
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs
+        #, forge_property_handler=forge_property_recorder
     )
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(

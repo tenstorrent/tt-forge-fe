@@ -6,11 +6,11 @@ import time
 import pytest
 import psutil
 import threading
+import contextvars
 from loguru import logger
 from datetime import datetime
-from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
+from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage, record_property_var, log_property
 from forge._C import ExecutionDepth
-
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -20,15 +20,15 @@ def pytest_addoption(parser):
         help="log per-test memory usage into pytest-memory-usage.csv",
     )
 
-
 @pytest.fixture(scope="function", autouse=True)
-def record_test_timestamp(record_property):
-    start_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z")
-    record_property("start_timestamp", start_timestamp)
-    yield
-    end_timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z")
-    record_property("end_timestamp", end_timestamp)
+def record_property_context(record_property):
+    token = record_property_var.set(record_property)
 
+    record_property("start_timestamp", datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z"))
+    yield
+    record_property("end_timestamp", datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S%z"))
+
+    record_property_var.reset(token)
 
 @pytest.fixture(scope="function")
 def forge_property_recorder(request, record_property):

@@ -5,17 +5,26 @@
 from enum import Enum, auto
 import json
 import re
+import contextvars
+import forge
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
-from forge.config import CompilerConfig
+from forge.config import CompileDepth, CompilerConfig
 from forge._C import ExecutionDepth, DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
-import forge
 
+# Context var used for storing test properties without passing record_property as a parameter to all functions.
+record_property_var = contextvars.ContextVar("record_property_var")
+
+# Saves property using record_property callable
+def log_property(key, value):
+    rpv = record_property_var.get()
+    if rpv is not None:
+        rpv(key, value)
 
 class StrEnum(str, Enum):
     def __str__(self):
@@ -492,6 +501,50 @@ class ForgePropertyHandler:
         """
         self.record_pcc(pcc)
         self.record_atol(atol)
+    
+    def record_execution_stage_2(self, execution_stage: CompileDepth):
+        """
+        Records the execution stage in the tags.
+
+        Args:
+            execution_stage (CompileDepth): The execution stage value.
+        """
+        self.add("tags.execution_stage", CompileDepth.to_str(execution_stage))
+
+        # INIT_COMPILE            -> (FAILED_FE_COMPILATION) FAILED_BEFORE_FORGE_COMPILATION_INITIATION, FAILED_TVM_RELAY_IRMODULE_GENERATION, FAILED_TVM_RELAY_IO_FLATTENING, FAILED_TVM_RELAY_IR_TRANSFORMATION, FAILED_TVM_PATTERN_CALLBACKS, FAILED_TVM_GRAPH_PARTITIONING, FAILED_FORGE_MODULE_GENERATION
+        # GENERATE_INITIAL_GRAPH  -> FAILED_FORGE_INITIAL_GRAPH_PASS
+        # POST_INITIAL_GRAPH_PASS -> FAILED_FORGE_POST_INITIAL_GRAPH_PASS
+        # CONSTEVAL_GRAPH         -> FAILED_FORGE_CONSTEVAL
+        # POST_PATTERN_MATCHER    -> Ovde nema nista.
+        # OPTIMIZED_GRAPH         -> FAILED_FORGE_OPTIMIZATION_GRAPH_PASS, FAILED_FORGE_POST_OPTIMIZATION_DECOMP
+        # AUTOGRAD                -> FAILED_FORGE_AUTOGRAD_PASS
+        # POST_AUTOGRAD_PASS      -> FAILED_FORGE_POST_AUTOGRAD_DECOMP
+        # PRE_LOWERING_PASS       -> FAILED_FORGE_PRE_LOWERING
+        # SPLIT_GRAP              -> FAILED_FORGE_GRAPH_SPLIT
+        # RUN_MLIR_COMPILER       -> (FAILED_TTMLIR_COMPILATION) FAILED_FORGE_MLIR_COMPILATION
+        # ---                     -> (FAILED_RUNTIME) -> This is inside mlir code
+        # FINISH_COMPILE          -> Nista.
+        # FULL                    -> Nista.
+        # ...
+        # FAILED_TTNN_BINARY_EXECUTION
+        # FAILED_VERIFICATION
+        # PASSED
+
+        # Map forge stages to execution state.
+        # stage_mapper = {
+            # CompileDepth.INIT_COMPILE: 
+            # CompileDepth.GENERATE_INITIAL_GRAPH:
+            # CompileDepth.POST_INITIAL_GRAPH_PASS:
+            # CompileDepth.CONSTEVAL_GRAPH:
+            # CompileDepth.POST_PATTERN_MATCHER:
+            # CompileDepth.OPTIMIZED_GRAPH:
+            # CompileDepth.AUTOGRAD:
+            # CompileDepth.POST_AUTOGRAD_PASS:
+            # CompileDepth.PRE_LOWERING_PASS:
+            # CompileDepth.SPLIT_GRAPH:
+            # CompileDepth.RUN_MLIR_COMPILER:
+            # CompileDepth.FINISH_COMPILE:
+        # }
 
     def record_execution_depth(self, execution_depth: ExecutionDepth):
         """
