@@ -23,6 +23,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch
 from test.operators.utils.utils import PytorchUtils, TestDevice
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -178,6 +179,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(operators=["matmul"]),
         # Memory issue (too large input shapes):
         TestCollection(
             operators=TestParamsData.operators,
@@ -185,39 +187,39 @@ TestParamsData.test_plan = TestPlan(
             skip_reason=FailingReasons.ALLOCATION_FAILED,
             failing_reason=FailingReasons.ALLOCATION_FAILED,
         ),
-        # All-close value checker failed (rtol=1e-2, atol=1e-2):
-        #    >> ValueError: Data mismatch -> AllCloseValueChecker (all_close)
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # Unsupported data format:
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_sources=TestCollectionCommon.single.input_sources,
-            input_shapes=TestCollectionCommon.single.input_shapes,
-            dev_data_formats=[
-                torch.int8,
-                torch.int32,
-                torch.int64,
-                torch.float16,
-            ],
-            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
-        ),
-        # Matmul op when two input tensors are vectors is not supported:
-        #    >> tvm.error.InternalError
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_shapes=[((3,), (3,))],
-            failing_reason=FailingReasons.COMPILATION_FAILED,
-        ),
-        # Matmul op when one of the arguments is 1-dimensional and the other one is N-dimensional:
-        #    >> AssertionError: Data mismatch on output 0 between framework and Forge codegen
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_shapes=[((64,), (3, 1, 64, 32))],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # All-close value checker failed (rtol=1e-2, atol=1e-2):
+        # #    >> ValueError: Data mismatch -> AllCloseValueChecker (all_close)
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # Unsupported data format:
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_sources=TestCollectionCommon.single.input_sources,
+        #     input_shapes=TestCollectionCommon.single.input_shapes,
+        #     dev_data_formats=[
+        #         torch.int8,
+        #         torch.int32,
+        #         torch.int64,
+        #         torch.float16,
+        #     ],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+        # ),
+        # # Matmul op when two input tensors are vectors is not supported:
+        # #    >> tvm.error.InternalError
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_shapes=[((3,), (3,))],
+        #     failing_reason=FailingReasons.COMPILATION_FAILED,
+        # ),
+        # # Matmul op when one of the arguments is 1-dimensional and the other one is N-dimensional:
+        # #    >> AssertionError: Data mismatch on output 0 between framework and Forge codegen
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_shapes=[((64,), (3, 1, 64, 32))],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
     ],
 )
 
