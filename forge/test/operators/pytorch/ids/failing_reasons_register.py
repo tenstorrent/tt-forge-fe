@@ -9,6 +9,8 @@ from test.operators.utils import FailingReasons
 
 class FailingReasonsRegister:
 
+    # List of failing reasons for each operator
+    # Format: (operator, failing_reason)
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH),
         ("clamp", FailingReasons.DATA_MISMATCH),
@@ -90,6 +92,8 @@ class FailingReasonsRegister:
         ("transpose", FailingReasons.MLIR_RUNTIME),
     ]
 
+    # List of skip reasons for each operator
+    # Format: (operator, skip_reason, failing_reason)
     skip = [
         ("matmul", FailingReasons.HIGH_MEMORY, None),
     ]
