@@ -4,29 +4,26 @@
 import urllib
 
 import pytest
-import requests
 import timm
 import torch
 from loguru import logger
 from PIL import Image
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from transformers import (
-    AutoImageProcessor,
-    AutoModelForImageClassification,
-    MobileNetV2ForSemanticSegmentation,
-)
+from transformers import MobileNetV2ForSemanticSegmentation
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.mobilenet.utils.utils import (
-    load_mobilenet_model,
+from test.models.models_utils import (
+    load_input,
+    load_model,
+    load_vision_model_and_input,
     post_processing,
+    print_cls_results,
 )
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.pytorch.vision.mobilenet.utils.utils import load_mobilenet_model
 from test.utils import download_model
 
 
@@ -60,19 +57,6 @@ def test_mobilenetv2_basic(forge_property_recorder):
     post_processing(co_out)
 
 
-def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
-    preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
-    model = download_model(AutoModelForImageClassification.from_pretrained, variant)
-
-    # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
-    inputs = preprocessor(images=image, return_tensors="pt")
-    image_tensor = inputs.pixel_values
-
-    return model, [image_tensor], {}
-
-
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
 def test_mobilenetv2_96(forge_property_recorder, variant):
@@ -90,7 +74,9 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
+    # Load model and input
+    framework_model = load_model(variant)
+    inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -99,19 +85,6 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-
-def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
-    preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
-    model = download_model(AutoModelForImageClassification.from_pretrained, variant)
-
-    # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
-    inputs = preprocessor(images=image, return_tensors="pt")
-    image_tensor = inputs.pixel_values
-
-    return model, [image_tensor], {}
 
 
 @pytest.mark.nightly
@@ -131,7 +104,9 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
+    # Load model and input
+    framework_model = load_model(variant)
+    inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -140,21 +115,6 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-
-def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
-    # Create Forge module from PyTorch model
-    preprocessor = download_model(AutoImageProcessor.from_pretrained, variant)
-    model = download_model(AutoModelForImageClassification.from_pretrained, variant)
-
-    # Image load and pre-processing into pixel_values
-    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    image = Image.open(requests.get(url, stream=True).raw)
-    inputs = preprocessor(images=image, return_tensors="pt")
-
-    image_tensor = inputs.pixel_values
-
-    return model, [image_tensor], {}
 
 
 @pytest.mark.nightly
@@ -174,7 +134,9 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
     # Record Forge Property
     forge_property_recorder.record_group("generality")
 
-    framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
+    # Load model and input
+    framework_model = load_model(variant)
+    inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(

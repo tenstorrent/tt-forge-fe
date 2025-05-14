@@ -13,7 +13,7 @@ import torch
 import forge
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.models_utils import load_vision_model_and_input
 from forge.forge_property_utils import Framework, Source, Task
 
 

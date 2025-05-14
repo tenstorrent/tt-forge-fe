@@ -9,12 +9,8 @@ import forge
 import onnx
 import torch
 from forge.verify.verify import verify
-from datasets import load_dataset
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
-from utils import load_inputs
-from urllib.request import urlopen
-from PIL import Image
-from test.models.models_utils import print_cls_results
+from test.models.models_utils import print_cls_results, load_timm_model_and_input
 from forge.forge_property_utils import Framework, Source, Task
 
 params = [
@@ -45,15 +41,8 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     else:
         forge_property_recorder.record_group("generality")
 
-    # Load mobilenetv2 model
-    model = timm.create_model(variant, pretrained=True)
-
-    # Load the inputs
-    img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
-    )
-
-    inputs = load_inputs(img, model)
+    # Load the model and inputs
+    model, inputs = load_timm_model_and_input(variant)
     onnx_path = f"{tmp_path}/mobilenetv2.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
 

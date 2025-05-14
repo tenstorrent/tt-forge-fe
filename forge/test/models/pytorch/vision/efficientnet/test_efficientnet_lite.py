@@ -8,10 +8,10 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import load_timm_model_and_input
 from test.models.pytorch.vision.efficientnet.utils import (
     src_efficientnet_lite as efflite,
 )
-from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
 
 
 @pytest.mark.skip_model_analysis

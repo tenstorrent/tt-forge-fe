@@ -7,8 +7,8 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.dla.utils.utils import load_dla_model, post_processing
-from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
+from test.models.models_utils import load_timm_model_and_input, post_processing
+from test.models.pytorch.vision.dla.utils.utils import load_dla_model
 
 variants = [
     "dla34",

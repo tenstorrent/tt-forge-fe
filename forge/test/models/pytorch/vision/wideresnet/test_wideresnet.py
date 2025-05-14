@@ -13,9 +13,9 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import post_processing
 from test.models.pytorch.vision.wideresnet.utils.utils import (
     generate_model_wideresnet_imgcls_pytorch,
-    post_processing,
 )
 from test.utils import download_model
 

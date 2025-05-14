@@ -5,12 +5,26 @@ import torch
 import requests
 from PIL import Image
 from torchvision import transforms
-from transformers import AutoImageProcessor
+from transformers import (
+    AutoImageProcessor,
+    AutoModelForImageClassification,
+    AutoModelForDepthEstimation,
+    MgpstrForSceneTextRecognition,
+    MgpstrProcessor,
+    AutoModelForObjectDetection,
+)
 import torch
 from tabulate import tabulate
 import json
 from typing import Optional, Tuple
 from transformers import Cache
+from test.utils import download_model
+from urllib.request import urlopen
+import timm
+from torchvision import models
+import os
+import urllib
+
 
 # Mean Pooling - Take attention mask into account for correct averaging
 def mean_pooling(model_output, attention_mask):
@@ -260,3 +274,79 @@ def Gemma2DecoderLayer_patched_forward(
         outputs += (present_key_value,)
 
     return outputs
+
+
+def load_model(variant):
+    if variant == "vinvino02/glpn-kitti":
+        model = download_model(AutoModelForDepthEstimation.from_pretrained, variant)
+    elif variant == "alibaba-damo/mgp-str-base":
+        model = download_model(MgpstrForSceneTextRecognition.from_pretrained, variant)
+    elif variant == "hustvl/yolos-tiny":
+        model = download_model(AutoModelForObjectDetection.from_pretrained, variant)
+    else:
+        model = download_model(AutoModelForImageClassification.from_pretrained, variant)
+    model.eval()
+    return model
+
+
+def load_input(variant):
+    if variant == "alibaba-damo/mgp-str-base":
+        url = "https://i.postimg.cc/ZKwLg2Gw/367-14.png"
+        processor = download_model(MgpstrProcessor.from_pretrained, variant)
+    else:
+        url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+        processor = download_model(AutoImageProcessor.from_pretrained, variant)
+
+    image = Image.open(requests.get(url, stream=True).raw)
+    inputs = processor(images=image, return_tensors="pt")
+    return [inputs["pixel_values"]]
+
+
+def load_timm_model_and_input(model_name):
+    model = timm.create_model(model_name, pretrained=True)
+    model.eval()
+    img = Image.open(
+        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
+    )
+    data_config = timm.data.resolve_model_data_config(model)
+    transforms = timm.data.create_transform(**data_config, is_training=False)
+    input_batch = transforms(img).unsqueeze(0)
+    return model, [input_batch]
+
+
+def load_vision_model_and_input(variant, task, weight_name):
+    if task == "detection":
+        weights = getattr(models.detection, weight_name).DEFAULT
+        model = getattr(models.detection, variant)(weights=weights)
+    else:
+        weights = getattr(models, weight_name).DEFAULT
+        model = getattr(models, variant)(weights=weights)
+
+    model.eval()
+
+    # Preprocess image
+    preprocess = weights.transforms()
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    image = Image.open(requests.get(url, stream=True).raw).convert("RGB")
+    img_t = preprocess(image)
+    batch_t = torch.unsqueeze(img_t, 0)
+
+    return model, [batch_t]
+
+
+url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
+
+
+def post_processing(output, top_k=5):
+
+    probabilities = torch.nn.functional.softmax(output[0][0], dim=0)
+    urllib.request.urlretrieve(url, "imagenet_classes.txt")
+
+    with open("imagenet_classes.txt", "r") as f:
+        categories = [s.strip() for s in f.readlines()]
+    topk_prob, topk_catid = torch.topk(probabilities, top_k)
+    for i in range(topk_prob.size(0)):
+        print(categories[topk_catid[i]], topk_prob[i].item())
+
+    # Cleanup
+    os.remove("imagenet_classes.txt")

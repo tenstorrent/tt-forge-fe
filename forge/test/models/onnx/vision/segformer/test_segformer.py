@@ -11,7 +11,7 @@ import torch
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
-from test.models.models_utils import get_sample_data
+from test.models.models_utils import load_input
 from test.utils import download_model
 
 variants_img_classification = [
@@ -48,7 +48,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
     torch_model.eval()
 
     # prepare input
-    inputs = get_sample_data(variant)
+    inputs = load_input(variant)
 
     # Export model to ONNX
     onnx_path = f"{tmp_path}/segformer_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
@@ -109,7 +109,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     torch_model.eval()
 
     # prepare input
-    inputs = get_sample_data(variant)
+    inputs = load_input(variant)
 
     # Export model to ONNX
     onnx_path = f"{tmp_path}/" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
