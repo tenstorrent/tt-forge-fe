@@ -1,0 +1,4 @@
+# xfail_embedding_ALLOCATION_FAILED ids
+
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 21, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int8-None
