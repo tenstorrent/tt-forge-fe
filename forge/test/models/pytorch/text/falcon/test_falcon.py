@@ -74,12 +74,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_falcon_3(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
     # Record Forge Property
     if variant in [
         "tiiuae/Falcon3-1B-Base",
@@ -87,9 +81,14 @@ def test_falcon_3(forge_property_recorder, variant):
         "tiiuae/Falcon3-7B-Base",
         "tiiuae/Falcon3-10B-Base",
     ]:
-        forge_property_recorder.record_group("red")
+        group = "red"
     else:
-        
+        group = "generality"
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, group=group
+    )   
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

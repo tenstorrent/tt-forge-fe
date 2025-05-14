@@ -25,9 +25,8 @@ def test_ministral_8b(forge_property_recorder, variant):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
+        group="red",
     )
-
-    forge_property_recorder.record_group("red")
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

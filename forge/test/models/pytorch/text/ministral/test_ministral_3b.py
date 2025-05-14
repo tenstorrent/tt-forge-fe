@@ -23,9 +23,8 @@ def test_ministral_3b(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group="red",
     )
-
-    forge_property_recorder.record_group("red")
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(variant)

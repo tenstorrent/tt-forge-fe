@@ -137,22 +137,19 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_llama3_causal_lm(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
-    # Record Forge Property
     if variant in [
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
-        forge_property_recorder.record_group("red")
-        
+        group="red"
     else:
-        
+        group="generality"
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, group=group
+    )   
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

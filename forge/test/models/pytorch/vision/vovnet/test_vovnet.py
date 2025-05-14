@@ -30,17 +30,23 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     if variant != "vovnet27s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vovnet", variant=variant, source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
-    )
+    if variant in ["vovnet27s"]:
+        group="red"
+        priority="P1"
+    else:
+        group="generality"
+        priority="P2"
 
     # Record Forge Property
-    if variant in ["vovnet27s"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH,
+        model="vovnet",
+        variant=variant,
+        source=Source.OSMR,
+        task=Task.IMAGE_CLASSIFICATION,
+        group=group,
+        priority=priority,
+    )
 
     # Load model
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)

@@ -36,14 +36,10 @@ def test_yolo_world_inference(forge_property_recorder):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        group="red",
     )
 
-    # Record Forge property
-
-    forge_property_recorder.record_group("red")
-
     # Load framework_model and input
-
     framework_model = YoloWorldWrapper(model_url)
     inputs = [get_test_input()]
 

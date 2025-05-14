@@ -27,9 +27,8 @@ def test_yolov8(forge_property_recorder):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        group="red",
     )
-    forge_property_recorder.record_group("red")
-    
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(

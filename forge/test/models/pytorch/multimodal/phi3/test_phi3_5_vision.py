@@ -38,10 +38,8 @@ def test_phi3_5_vision(forge_property_recorder, variant):
         variant=variant,
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,
+        group="red",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load model and processor
     model = download_model(

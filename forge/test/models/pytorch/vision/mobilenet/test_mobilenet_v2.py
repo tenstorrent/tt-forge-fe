@@ -40,10 +40,8 @@ def test_mobilenetv2_basic(forge_property_recorder):
         variant="basic",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
+        group="red",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v2")

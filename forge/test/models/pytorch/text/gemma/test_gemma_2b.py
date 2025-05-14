@@ -100,12 +100,13 @@ def test_gemma_pytorch_v2(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE
+        group="red",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)

@@ -68,11 +68,8 @@ def test_mistral_v0_3(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
-    )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    
+        group="red",
+    )    
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

@@ -29,7 +29,7 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
-        prioritoy="P1"
+        priority="P1"
     )
 
     # Load the model

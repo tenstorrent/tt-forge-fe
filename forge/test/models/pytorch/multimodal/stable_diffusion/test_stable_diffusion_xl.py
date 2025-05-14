@@ -53,10 +53,8 @@ def test_stable_diffusion_generation(forge_property_recorder, variant):
         variant=variant,
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
+        group="red",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load the pipeline
     pipe = load_pipe(variant, variant_type="xl")

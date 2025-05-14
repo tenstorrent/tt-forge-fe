@@ -54,10 +54,8 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group="red",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load pipeline
     pipe = load_pipe(variant, variant_type="v35")

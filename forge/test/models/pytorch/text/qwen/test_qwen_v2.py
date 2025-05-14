@@ -52,23 +52,20 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_qwen_clm(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
-    # Record Forge Property
     if variant in [
         "Qwen/Qwen2.5-0.5B-Instruct",
         "Qwen/Qwen2.5-1.5B-Instruct",
         "Qwen/Qwen2.5-3B-Instruct",
         "Qwen/Qwen2.5-7B-Instruct",
     ]:
-        forge_property_recorder.record_group("red")
-        
+        group="red"
     else:
-        
+        group="generality"
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, group=group
+    )   
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
