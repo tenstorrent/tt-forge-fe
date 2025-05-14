@@ -35,18 +35,22 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(forge_property_recorder, variant):
+    if variant in ["microsoft/phi-2"]:
+        group="red"
+        priority="P1"
+    else:
+        group="generality"
+        priority="P2"
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="phi2", variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority
     )
-
-    # Record Forge Property
-    if variant in ["microsoft/phi-2"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

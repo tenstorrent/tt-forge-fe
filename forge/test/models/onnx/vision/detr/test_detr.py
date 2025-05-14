@@ -27,11 +27,8 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
+        priority="P1"
     )
-
-    # Record Forge Property
-    
-    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = download_model(DetrForObjectDetection.from_pretrained, variant, return_dict=False)

@@ -76,11 +76,9 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
+        group="red",
+        priority="P1",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)

@@ -21,11 +21,9 @@ def test_birnn_crf(forge_property_recorder):
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
+        group="red",
+        priority="P1",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
 

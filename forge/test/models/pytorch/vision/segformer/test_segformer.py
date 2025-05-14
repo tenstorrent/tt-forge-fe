@@ -31,6 +31,13 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     if variant != "nvidia/mit-b0":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
+    if variant in ["nvidia/mit-b0"]:
+        group="red"
+        priority="P1"
+    else:
+        group="generality"
+        priority="P2"
+
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
@@ -38,14 +45,9 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant in ["nvidia/mit-b0"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)

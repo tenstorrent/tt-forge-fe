@@ -43,12 +43,14 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model="unet",
+        variant="cityscape",
+        source=Source.OSMR,
+        task=Task.IMAGE_SEGMENTATION,
+        group="red",
+        priority="P1",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 

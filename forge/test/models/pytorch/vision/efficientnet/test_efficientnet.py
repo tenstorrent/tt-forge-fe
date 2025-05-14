@@ -50,7 +50,13 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(forge_property_recorder, variant):
-
+    if variant in ["efficientnet_b0"]:
+        group="red"
+        priority="P1"
+    else:
+        group="generality"
+        priority="P2"
+        
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
@@ -58,14 +64,9 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
+        group=group,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant in ["efficientnet_b0"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        
 
     # Load model
     framework_model = download_model(timm.create_model, variant, pretrained=True)

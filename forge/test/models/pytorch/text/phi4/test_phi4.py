@@ -30,10 +30,9 @@ def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group="red",
+        priority="P1",
     )
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
