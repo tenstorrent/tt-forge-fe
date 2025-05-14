@@ -27,18 +27,24 @@ GPTNeoModel._prepare_4d_causal_attention_mask_with_cache_position = (
 variants = [
     pytest.param(
         "EleutherAI/gpt-neo-125M",
-        marks=[pytest.mark.xfail],
+        marks=pytest.mark.xfail,
     ),
-    "EleutherAI/gpt-neo-1.3B",
-    "EleutherAI/gpt-neo-2.7B",
+    pytest.param(
+        "EleutherAI/gpt-neo-1.3B",
+        marks=pytest.mark.xfail,
+    ),
+    pytest.param(
+        "EleutherAI/gpt-neo-2.7B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_gptneo_causal_lm(forge_property_recorder, variant):
-    if variant != "EleutherAI/gpt-neo-125M":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -93,16 +99,28 @@ def test_gptneo_causal_lm(forge_property_recorder, variant):
 
 
 variants = [
-    "EleutherAI/gpt-neo-125M",
-    "EleutherAI/gpt-neo-1.3B",
-    "EleutherAI/gpt-neo-2.7B",
+    pytest.param(
+        "EleutherAI/gpt-neo-125M",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "EleutherAI/gpt-neo-1.3B",
+        marks=pytest.mark.xfail,
+    ),
+    pytest.param(
+        "EleutherAI/gpt-neo-2.7B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_gptneo_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
