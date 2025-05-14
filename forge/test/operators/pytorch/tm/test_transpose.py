@@ -298,7 +298,7 @@ TestParamsData.test_plan = TestPlan(
         #     math_fidelities=TestCollectionData.single.math_fidelities,
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
-        *TestIdsDataLoader.build_failing_rules(operators=["transpose"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )
 

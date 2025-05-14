@@ -289,7 +289,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["embedding"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
         # # FLOAT32 ERRORS:
         # # RuntimeError: Fatal error
         # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
