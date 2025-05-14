@@ -150,14 +150,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["squeeze"]),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id()
-        #     in TestPlanUtils.load_test_ids_from_file(
-        #         f"{os.path.dirname(__file__)}/test_squeeze_ids_failed_allclose_value_checker.txt"
-        #     ),
-        #     failing_reason=FailingReasons.DATA_MISMATCH,
-        # ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operators),
         # TestCollection(
         #     operators=TestParamsData.operators,
         #     input_shapes=[(1, 1)],

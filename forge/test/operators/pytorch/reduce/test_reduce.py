@@ -253,26 +253,6 @@ class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    failed_mlir_verif_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/errors/test_reduce_ids_failed_mlir_verif_error.txt"
-    )
-
-    pcc_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/errors/test_reduce_ids_pcc_error.txt"
-    )
-
-    tilize_dtype_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/errors/test_reduce_ids_tilize_dtype_error.txt"
-    )
-
-    tilize_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/errors/test_reduce_ids_tilize_error.txt"
-    )
-
-    unsupported_dim_error = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/errors/test_reduce_ids_unsupported_dim_error.txt"
-    )
-
 
 TestParamsData.test_plan = TestPlan(
     verify=lambda test_device, test_vector: TestVerification.verify(
@@ -334,28 +314,7 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: len(test_vector.input_shape) == 2,
             skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_mlir_verif_error,
-        #     failing_reason=FailingReasons.COMPILATION_FAILED,
-        # ),
-        *TestIdsDataLoader.build_failing_rules(
-            operators=[
-                "sum",
-                "mean",
-            ],
-        ),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_dtype_error,
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_error,
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.unsupported_dim_error,
-        #     failing_reason=FailingReasons.INFERENCE_FAILED,
-        # ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )
 

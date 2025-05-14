@@ -158,7 +158,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["repeat_interleave"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
         # # Failed automatic value checker:
         # TestCollection(
         #     input_sources=[InputSource.FROM_HOST],

@@ -187,7 +187,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["max"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
         TestCollection(
             operators=TestParamsData.operator,
             input_sources=TestCollectionCommon.all.input_sources,
