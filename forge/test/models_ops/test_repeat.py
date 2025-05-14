@@ -15,22 +15,22 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Reducesum0(ForgeModule):
+class Repeat0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-1, keep_dim=True)
-        return reducesum_output_1
+    def forward(self, repeat_input_0):
+        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 1, 1])
+        return repeat_output_1
 
 
-class Reducesum1(ForgeModule):
+class Repeat1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, reducesum_input_0):
-        reducesum_output_1 = forge.op.ReduceSum("", reducesum_input_0, dim=-2, keep_dim=True)
-        return reducesum_output_1
+    def forward(self, repeat_input_0):
+        repeat_output_1 = forge.op.Repeat("", repeat_input_0, repeats=[1, 100, 1, 1, 1])
+        return repeat_output_1
 
 
 def ids_func(param):
@@ -41,84 +41,64 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Reducesum0,
-        [((1, 12, 8, 8), torch.float32)],
+        Repeat0,
+        [((1, 100, 256), torch.float32)],
         {
             "model_names": [
-                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
-                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
+            "args": {"repeats": "[1, 1, 1]"},
         },
     ),
-    (
-        Reducesum0,
-        [((1, 12, 11, 11), torch.float32)],
-        {
-            "model_names": [
-                "pd_albert_chinese_tiny_mlm_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-                "pd_bert_chinese_roberta_base_qa_padlenlp",
-                "pd_roberta_rbt4_ch_clm_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 32, 107, 160), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Reducesum0,
-        [((1, 12, 9, 9), torch.float32)],
-        {
-            "model_names": [
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
-                "pd_bert_chinese_roberta_base_mlm_padlenlp",
-                "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pd_ernie_1_0_mlm_padlenlp",
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 64, 54, 80), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Reducesum0,
-        [((1, 12, 15, 15), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_seq_cls_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 128, 27, 40), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Reducesum0,
-        [((1, 12, 14, 14), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum0,
-        [((1, 12, 10, 10), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducesum1,
-        [((1, 100, 8, 32, 280), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Repeat1,
+            [((1, 1, 256, 14, 20), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 
@@ -128,7 +108,7 @@ forge_modules_and_shapes_dtypes_list = [
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("ReduceSum")
+    forge_property_recorder.record_forge_op_name("Repeat")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
