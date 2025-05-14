@@ -15,7 +15,7 @@ from forge.forge_property_utils import Framework, Source, Task
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
-def test_birnn_crf(forge_property_recorder, tmp_path):
+def test_birnn_crf(forge_property_recorder, forge_tmp_path):
 
     # Build Module Name
     module_name = forge_property_recorder.record_model_properties(
@@ -35,7 +35,7 @@ def test_birnn_crf(forge_property_recorder, tmp_path):
     model, test_input = get_model(test_sentence)
     model.eval()
 
-    onnx_path = f"{tmp_path}/bilstm_crf.onnx"
+    onnx_path = f"{forge_tmp_path}/bilstm_crf.onnx"
     torch.onnx.export(model, test_input, onnx_path, opset_version=17)
 
     # Load ONNX model

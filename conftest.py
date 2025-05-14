@@ -6,6 +6,7 @@ import gc
 import time
 import pytest
 import psutil
+import shutil
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
@@ -20,6 +21,20 @@ def pytest_addoption(parser):
         default=False,
         help="log per-test memory usage into pytest-memory-usage.csv",
     )
+
+
+@pytest.fixture(scope="function")
+def forge_tmp_path(tmp_path):
+    """
+    Yield a temporary directory path and remove it immediately after the test execution complete.
+
+    This fixture wraps pytest's built-in tmp_path fixture to ensure that
+    the temporary directory is cleaned up as soon as the test finishes,
+    regardless of the test outcome.
+    """
+    yield tmp_path
+    # After the test, delete the entire temporary directory and its contents
+    shutil.rmtree(str(tmp_path), ignore_errors=True)
 
 
 @pytest.fixture(scope="function", autouse=True)

@@ -149,7 +149,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
         ),
     ],
 )
-def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+def test_llama3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -196,8 +196,8 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input_ids, attn_mask]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model

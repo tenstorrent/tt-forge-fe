@@ -22,7 +22,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
+def test_vit_classify_224(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -45,7 +45,7 @@ def test_vit_classify_224(forge_property_recorder, variant, tmp_path):
     # Load the inputs
     inputs = [torch.rand(1, 3, 224, 224)]
 
-    onnx_path = f"{tmp_path}/vit.onnx"
+    onnx_path = f"{forge_tmp_path}/vit.onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path, opset_version=17)
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
