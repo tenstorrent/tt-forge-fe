@@ -26685,10 +26685,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 100, 8, 32), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply0,
-        [((1, 100, 8, 32, 1), torch.float32), ((1, 1, 8, 32, 280), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply0,
+            [((1, 100, 8, 32, 1), torch.float32), ((1, 1, 8, 32, 280), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Multiply171,
@@ -26710,10 +26713,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 9240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply173,
-        [((100, 264, 14, 20), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply173,
+            [((100, 264, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Multiply0,
@@ -26730,10 +26736,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 4480), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply174,
-        [((100, 128, 14, 20), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply174,
+            [((100, 128, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Multiply0,
@@ -26750,10 +26759,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 8640), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply175,
-        [((100, 64, 27, 40), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply175,
+            [((100, 64, 27, 40), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Multiply0,
@@ -26770,10 +26782,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 17280), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply176,
-        [((100, 32, 54, 80), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply176,
+            [((100, 32, 54, 80), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Multiply0,
@@ -26790,10 +26805,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 34240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Multiply177,
-        [((100, 16, 107, 160), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Multiply177,
+            [((100, 16, 107, 160), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

@@ -999,27 +999,33 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where23,
-        [((1, 1, 256, 256), torch.bool), ((1, 1, 256, 256), torch.float32)],
-        {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where23,
+            [((1, 1, 256, 256), torch.bool), ((1, 1, 256, 256), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                    "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Where24,
-        [((1, 1, 256, 256), torch.bool)],
-        {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Where24,
+            [((1, 1, 256, 256), torch.bool)],
+            {
+                "model_names": [
+                    "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                    "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

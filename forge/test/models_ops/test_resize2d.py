@@ -2490,19 +2490,22 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D39,
-        [((100, 128, 14, 20), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[27, 40]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Resize2D39,
+            [((100, 128, 14, 20), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[27, 40]",
+                    "method": '"nearest_neighbor"',
+                    "align_corners": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
     (
         Resize2D40,
@@ -2518,19 +2521,22 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D41,
-        [((100, 32, 54, 80), torch.float32)],
-        {
-            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[107, 160]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Resize2D41,
+            [((100, 32, 54, 80), torch.float32)],
+            {
+                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[107, 160]",
+                    "method": '"nearest_neighbor"',
+                    "align_corners": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
 ]
 

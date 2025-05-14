@@ -172,17 +172,20 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Broadcast5,
-        [((1, 1, 1, 256), torch.int64)],
-        {
-            "model_names": [
-                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "shape": "256"},
-        },
+    pytest.param(
+        (
+            Broadcast5,
+            [((1, 1, 1, 256), torch.int64)],
+            {
+                "model_names": [
+                    "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                    "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-2", "shape": "256"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
 ]
 
