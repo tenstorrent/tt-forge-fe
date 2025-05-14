@@ -151,9 +151,6 @@ gt-FROM_HOST-None-(12, 64, 160, 96)-None-None
 gt-FROM_HOST-None-(13, 11, 17, 41)-None-None
 gt-FROM_HOST-None-(14, 13, 89, 3)-None-None
 gt-FROM_HOST-None-(1, 2, 3, 4)-torch.float32-HiFi4
-gt-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
-gt-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
-gt-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
 gt-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-LoFi
 gt-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi2
 gt-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi3
