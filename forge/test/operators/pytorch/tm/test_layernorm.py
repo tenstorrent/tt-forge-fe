@@ -215,7 +215,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        *TestIdsDataLoader.build_failing_rules(operators=["layer_norm"]),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
     ],
 )
 
