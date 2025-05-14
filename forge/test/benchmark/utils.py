@@ -78,7 +78,6 @@ def load_dataset_classification(model_version, dataset_name, split, batch_size, 
         The labels for the input data.
     """
 
-    model_version = "microsoft/resnet-50"
     image_processor = AutoImageProcessor.from_pretrained(model_version)
     # Load the dataset as a generator
     dataset = iter(load_dataset(dataset_name, split=split, use_auth_token=True, streaming=True))
