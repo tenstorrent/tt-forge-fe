@@ -24,6 +24,9 @@ python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o forge-
 # Resnet HF
 python forge/test/benchmark/benchmark.py -m resnet50_hf -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-resnet50_hf.json
 
+# Resnet HF
+python forge/test/benchmark/benchmark.py -m resnet50_hf_config -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-resnet50_hf_config.json
+
 # Llama
 python forge/test/benchmark/benchmark.py -m llama -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-llama.json
 
