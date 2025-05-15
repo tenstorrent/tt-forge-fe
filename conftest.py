@@ -10,7 +10,6 @@ import shutil
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
-from forge._C import ExecutionDepth
 from forge._C.verif import malloc_trim
 
 
@@ -69,9 +68,8 @@ def forge_property_recorder(request, record_property):
     # Create a handler that uses the property store; the handler is responsible for recording and managing property details.
     forge_property_handler = ForgePropertyHandler(forge_property_store)
 
-    # Set CI_FAILURE as default execution depth and FAILED_BEFORE_FORGE_COMPILATION_INITIATION as default execution stage
-    forge_property_handler.record_execution_depth(ExecutionDepth.CI_FAILURE)
-    forge_property_handler.record_execution_stage(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
+    # Set FAILED_BEFORE_FORGE_COMPILATION_INITIATION as default execution stage
+    forge_property_handler.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
 
     # Provide the handler instance to the test function so it can record properties during test execution.
     yield forge_property_handler

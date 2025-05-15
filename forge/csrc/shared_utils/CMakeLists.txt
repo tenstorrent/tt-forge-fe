@@ -1,6 +1,5 @@
 add_library(shared_utils
     STATIC
-    forge_property_utils.cpp
     placement_printer.cpp
     pretty_table.cpp
     sparse_matmul_utils.cpp

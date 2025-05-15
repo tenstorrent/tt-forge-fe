@@ -30,7 +30,6 @@ from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge._C import ExecutionDepth
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
 
 
@@ -430,14 +429,10 @@ def verify(
     fw_out = framework_model(*inputs)
 
     if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
-        )
+        forge_property_handler.record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
     if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
-        )
+        forge_property_handler.record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
@@ -484,9 +479,7 @@ def verify(
             verify_cfg.value_checker.check(fw, co)
 
     if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
-        )
+        forge_property_handler.record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

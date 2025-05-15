@@ -10,7 +10,7 @@ from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
-from forge._C import ExecutionDepth, DataFormat
+from forge._C import DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
@@ -127,6 +127,46 @@ class ExecutionStage(Enum):
     @classmethod
     def from_str(cls, value):
         return cls[value.upper()]
+
+
+class ExecutionDepth(Enum):
+    CI_FAILURE = auto()
+    FAILED_FE_COMPILATION = auto()
+    FAILED_TTMLIR_COMPILATION = auto()
+    FAILED_RUNTIME = auto()
+    INCORRECT_RESULT = auto()
+    PASSED = auto()
+
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_str(cls, value):
+        return cls[value.upper()]
+
+    # fmt: off
+    @staticmethod
+    def from_exec_stage(exec_stage: ExecutionStage):
+        match exec_stage:
+            case ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION:
+                return ExecutionDepth.CI_FAILURE
+            case ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION | ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING | ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION | ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS \
+                | ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING | ExecutionStage.FAILED_FORGE_MODULE_GENERATION | ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS | ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS \
+                | ExecutionStage.FAILED_FORGE_CONSTEVAL | ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS | ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP | ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS \
+                | ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP | ExecutionStage.FAILED_FORGE_PRE_LOWERING | ExecutionStage.FAILED_FORGE_GRAPH_SPLIT:
+                return ExecutionDepth.FAILED_FE_COMPILATION
+            case ExecutionStage.FAILED_FORGE_MLIR_COMPILATION:
+                return ExecutionDepth.FAILED_TTMLIR_COMPILATION
+            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION:
+                return ExecutionDepth.FAILED_RUNTIME
+            case ExecutionStage.FAILED_VERIFICATION:
+                return ExecutionDepth.INCORRECT_RESULT
+            case ExecutionStage.PASSED:
+                return ExecutionDepth.PASSED
+            case _:
+                raise ValueError("Invalid ExecutionStage passed.")
+    # fmt: on
 
 
 @dataclass_json
@@ -274,7 +314,6 @@ class ModelInfo:
 @dataclass
 class Tags:
     model_name: Optional[str] = None
-    bringup_status: str = ""
     execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
@@ -511,16 +550,15 @@ class ForgePropertyHandler:
         """
         self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
 
-    def record_execution(self, execution_depth: ExecutionDepth, execution_stage: ExecutionStage):
+    def record_execution(self, execution_stage: ExecutionStage):
         """
         Records the execution depth and stage in the tags.
 
         Args:
-            execution_depth (ExecutionDepth): The execution depth value.
             execution_stage (ExecutionStage): The execution stage value.
         """
-        self.record_execution_depth(execution_depth)
         self.record_execution_stage(execution_stage)
+        self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
     def record_compiler_config(self, compiler_config: CompilerConfig):
         """
