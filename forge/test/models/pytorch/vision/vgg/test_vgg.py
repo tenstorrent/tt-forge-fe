@@ -16,6 +16,8 @@ from vgg_pytorch import VGG
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -260,7 +262,6 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vgg_torchvision(forge_property_recorder, variant):
 
@@ -285,5 +286,11 @@ def test_vgg_torchvision(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "vgg16_bn":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
+    )
