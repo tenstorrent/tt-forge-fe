@@ -5,6 +5,7 @@
 # https://huggingface.co/docs/transformers/en/model_doc/detr
 
 import pytest
+import torch
 from transformers import DetrForObjectDetection, DetrForSegmentation
 
 import forge
@@ -12,6 +13,21 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+
+
+class DetrWrapper(torch.nn.Module):
+    def __init__(self, model, task="detection"):
+        super().__init__()
+        self.model = model
+        assert task in ["detection", "segmentation"], "Task must be 'detection' or 'segmentation'"
+        self.task = task
+
+    def forward(self, input_batch):
+        output = self.model(input_batch)
+        if self.task == "detection":
+            return output.logits
+        else:
+            return (output.logits, output.pred_masks, output.pred_boxes)
 
 
 @pytest.mark.nightly
@@ -40,6 +56,7 @@ def test_detr_detection(forge_property_recorder, variant):
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
+    framework_model = DetrWrapper(framework_model, task="detection")
 
     # Preprocess the image for the model
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -82,6 +99,7 @@ def test_detr_segmentation(forge_property_recorder, variant):
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)
+    framework_model = DetrWrapper(framework_model, task="segmentation")
 
     # Preprocess the image for the model
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"

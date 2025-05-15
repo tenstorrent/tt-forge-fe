@@ -74,13 +74,16 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
 Phi3Model._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
 
 
-variants = ["microsoft/phi-3-mini-4k-instruct"]
+variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instruct"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
+    if variant == "microsoft/phi-3-mini-4k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
+    elif variant == "microsoft/phi-3-mini-128k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

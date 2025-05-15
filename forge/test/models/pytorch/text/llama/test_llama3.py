@@ -126,11 +126,24 @@ variants = [
     pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Llama-3.2-3B", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
     pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")
+        "meta-llama/Llama-3.2-3B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+        ),
     ),
-    pytest.param("huggyllama/llama-7b", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "huggyllama/llama-7b",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 58 GB during compile time)"
+        ),
+    ),
 ]
 
 
@@ -198,10 +211,62 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+variants = [
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.2-1B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param("meta-llama/Llama-3.2-1B-Instruct"),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "huggyllama/llama-7b",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+]
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_llama3_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

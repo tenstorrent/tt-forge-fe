@@ -22,29 +22,34 @@ from ...tensor import pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_d
 from forge import DataFormat, MathFidelity
 
 
-def to_torch_operands(*ops):
+def to_torch_operands(*operands):
     """
-    Convert input tensors into torch tensors.
+    Convert input tensors into compatible torch tensors with a common promoted dtype.
     """
-
-    for o in ops:
+    # Validate
+    for o in operands:
         assert isinstance(o, (int, torch.Tensor)), f"Invalid operand type: {type(o)}"
 
-    if len(ops) == 2:
-        if ops[0].is_floating_point() and ops[1].is_floating_point() and ops[0].dtype != ops[1].dtype:
-            ops = (ops[0], ops[1].type(ops[0].dtype))
+    # Extract all floating point dtypes
+    float_dtypes = [o.dtype for o in operands if isinstance(o, torch.Tensor) and o.is_floating_point()]
 
-    if len(ops) == 3:
-        ops = list(ops)
-        if ops[0].is_floating_point() and ops[1].is_floating_point() and ops[0].dtype != ops[1].dtype:
-            ops[1] = ops[1].type(ops[0].dtype)
+    if not float_dtypes:
+        return operands  # nothing to promote
 
-        if ops[0].is_floating_point() and ops[2].is_floating_point() and ops[0].dtype != ops[2].dtype:
-            ops[2] = ops[2].type(ops[0].dtype)
+    # Determine highest precision dtype
+    promoted_dtype = float_dtypes[0]
+    for dt in float_dtypes[1:]:
+        promoted_dtype = torch.promote_types(promoted_dtype, dt)
 
-        ops = tuple(ops)
+    # Cast tensors as needed
+    new_operands = []
+    for o in operands:
+        if isinstance(o, torch.Tensor) and o.is_floating_point() and o.dtype != promoted_dtype:
+            new_operands.append(o.to(promoted_dtype))
+        else:
+            new_operands.append(o)
 
-    return ops
+    return tuple(new_operands)
 
 
 def cast_for_cpu_eval(t_ops, op_name=None):

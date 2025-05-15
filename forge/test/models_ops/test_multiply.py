@@ -2077,6 +2077,169 @@ class Multiply164(ForgeModule):
         return multiply_output_1
 
 
+class Multiply165(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply165.weight_1",
+            forge.Parameter(*(1, 64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply165.weight_1"))
+        return multiply_output_1
+
+
+class Multiply166(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply166.weight_1",
+            forge.Parameter(*(1, 256, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply166.weight_1"))
+        return multiply_output_1
+
+
+class Multiply167(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply167.weight_1",
+            forge.Parameter(*(1, 128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply167.weight_1"))
+        return multiply_output_1
+
+
+class Multiply168(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply168.weight_1",
+            forge.Parameter(*(1, 512, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply168.weight_1"))
+        return multiply_output_1
+
+
+class Multiply169(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply169.weight_1",
+            forge.Parameter(*(1, 1024, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply169.weight_1"))
+        return multiply_output_1
+
+
+class Multiply170(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply170.weight_1",
+            forge.Parameter(*(1, 2048, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply170.weight_1"))
+        return multiply_output_1
+
+
+class Multiply171(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("multiply171_const_0", shape=(1, 1, 14, 20), dtype=torch.float32)
+
+    def forward(self, multiply_input_1):
+        multiply_output_1 = forge.op.Multiply("", self.get_constant("multiply171_const_0"), multiply_input_1)
+        return multiply_output_1
+
+
+class Multiply172(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_constant("multiply172_const_1", shape=(8, 1), dtype=torch.float32)
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_constant("multiply172_const_1"))
+        return multiply_output_1
+
+
+class Multiply173(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply173.weight_1",
+            forge.Parameter(*(264, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply173.weight_1"))
+        return multiply_output_1
+
+
+class Multiply174(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply174.weight_1",
+            forge.Parameter(*(128, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply174.weight_1"))
+        return multiply_output_1
+
+
+class Multiply175(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply175.weight_1",
+            forge.Parameter(*(64, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply175.weight_1"))
+        return multiply_output_1
+
+
+class Multiply176(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply176.weight_1",
+            forge.Parameter(*(32, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply176.weight_1"))
+        return multiply_output_1
+
+
+class Multiply177(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "multiply177.weight_1",
+            forge.Parameter(*(16, 1, 1), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, multiply_input_0):
+        multiply_output_1 = forge.op.Multiply("", multiply_input_0, self.get_parameter("multiply177.weight_1"))
+        return multiply_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -2251,7 +2414,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2266,8 +2429,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2281,7 +2444,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2297,8 +2460,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2313,7 +2476,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2329,8 +2492,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2345,7 +2508,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2361,9 +2524,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5l_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2378,8 +2541,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
                 "pt_yolox_yolox_s_obj_det_torchhub",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2392,7 +2555,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5x_img_cls_torchhub_320x320",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2404,7 +2567,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2417,7 +2580,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_320x320",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2429,7 +2592,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2441,7 +2604,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2453,7 +2616,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
         },
@@ -2958,6 +3121,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3090,6 +3254,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3166,6 +3331,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3298,6 +3464,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3430,6 +3597,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3614,6 +3782,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3735,6 +3904,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3801,6 +3971,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -3922,6 +4093,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4043,6 +4215,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4271,6 +4444,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4310,6 +4484,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4363,6 +4538,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4402,6 +4578,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4449,6 +4626,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_tiny_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4496,6 +4674,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_tiny_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4562,6 +4741,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_tiny_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4609,6 +4789,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_tiny_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4636,6 +4817,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4663,6 +4845,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4706,6 +4889,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4733,6 +4917,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4860,6 +5045,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -4987,6 +5173,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -5053,6 +5240,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -5180,6 +5368,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -5307,6 +5496,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "pt_yolox_yolox_nano_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -5374,6 +5564,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -6332,6 +6523,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -6444,6 +6636,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -6499,6 +6692,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -6611,6 +6805,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -6723,6 +6918,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -7619,6 +7815,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -7646,6 +7843,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -7668,6 +7866,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -7695,6 +7894,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -7722,6 +7922,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8370,6 +8571,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8451,6 +8653,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8570,6 +8773,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8651,6 +8855,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolox_yolox_l_obj_det_torchhub",
                 "pt_yolox_yolox_darknet_obj_det_torchhub",
                 "tf_resnet_resnet50_img_cls_keras",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8982,6 +9187,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -8997,6 +9203,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
                 ],
                 "pcc": 0.99,
             },
@@ -10043,6 +10250,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -11270,6 +11478,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -11283,6 +11492,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -11296,6 +11506,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12203,6 +12414,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12241,6 +12454,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12253,6 +12468,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12265,6 +12482,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12294,6 +12513,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12665,6 +12886,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -12790,6 +13015,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -12867,7 +13094,14 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply56,
         [((1, 32, 256, 96), torch.float32)],
-        {"model_names": ["pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -13882,6 +14116,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -13900,6 +14136,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -16976,6 +17213,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -16989,6 +17227,13 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17005,6 +17250,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17016,6 +17262,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17027,6 +17274,10 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17044,6 +17295,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17057,6 +17309,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17079,6 +17339,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17206,6 +17467,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17217,6 +17479,11 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17256,6 +17523,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17395,6 +17663,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17406,6 +17675,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17546,6 +17817,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17559,6 +17831,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17584,6 +17859,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17606,6 +17882,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17617,6 +17894,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17633,6 +17912,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_torchvision",
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17762,6 +18042,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_320x320",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17773,6 +18054,12 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17780,7 +18067,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 48, 160, 160), torch.float32), ((1, 48, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17790,12 +18083,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 24, 160, 160), torch.float32), ((1, 24, 160, 160), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 24, 160, 160), torch.float32), ((1, 24, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17805,7 +18110,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 144, 160, 160), torch.float32), ((1, 144, 160, 160), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17815,12 +18126,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 144, 80, 80), torch.float32), ((1, 144, 80, 80), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 144, 80, 80), torch.float32), ((1, 144, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17850,6 +18173,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17857,7 +18181,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 192, 80, 80), torch.float32), ((1, 192, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17876,6 +18206,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_640x640",
                 "pt_yolo_v5_yolov5m_img_cls_torchhub_320x320",
                 "pt_yolox_yolox_m_obj_det_torchhub",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17883,7 +18214,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 192, 40, 40), torch.float32), ((1, 192, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply6,
@@ -17962,7 +18299,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 336, 40, 40), torch.float32), ((1, 336, 40, 40), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17971,6 +18314,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -17978,7 +18322,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 336, 40, 40), torch.float32), ((1, 336, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -17988,12 +18338,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 336, 20, 20), torch.float32), ((1, 336, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 336, 20, 20), torch.float32), ((1, 336, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18008,12 +18370,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 672, 20, 20), torch.float32), ((1, 672, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 672, 20, 20), torch.float32), ((1, 672, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18028,7 +18402,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 960, 20, 20), torch.float32), ((1, 960, 20, 20), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18037,6 +18417,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18044,7 +18425,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 960, 20, 20), torch.float32), ((1, 960, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18054,12 +18441,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 960, 10, 10), torch.float32), ((1, 960, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 960, 10, 10), torch.float32), ((1, 960, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply6,
@@ -18122,7 +18521,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 1632, 10, 10), torch.float32), ((1, 1632, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18131,6 +18536,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18138,7 +18544,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 1632, 10, 10), torch.float32), ((1, 1632, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18197,7 +18609,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 2688, 10, 10), torch.float32), ((1, 2688, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18206,6 +18624,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18213,7 +18632,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 2688, 10, 10), torch.float32), ((1, 2688, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18223,32 +18648,68 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 1792, 10, 10), torch.float32), ((1, 1792, 10, 10), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 32, 112, 112), torch.float32), ((1, 32, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 96, 56, 56), torch.float32), ((1, 96, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 144, 56, 56), torch.float32), ((1, 144, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 144, 28, 28), torch.float32), ((1, 144, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
         [((1, 240, 28, 28), torch.float32), ((1, 240, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18257,6 +18718,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b0_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18271,6 +18733,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18285,6 +18748,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18299,6 +18763,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_ghostnet_ghostnet_100_img_cls_timm",
                 "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -18306,7 +18771,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 1152, 7, 7), torch.float32), ((1, 1152, 1, 1), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b0_img_cls_timm"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -18361,7 +18832,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 144, 112, 112), torch.float32), ((1, 144, 112, 112), torch.float32)],
-        {"model_names": ["pt_efficientnet_efficientnet_b4_img_cls_torchvision"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -20709,6 +21186,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -23048,6 +23526,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -23068,6 +23550,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -23088,6 +23574,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -23338,6 +23828,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
                 ],
                 "pcc": 0.99,
             },
@@ -23352,6 +23843,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -23365,6 +23857,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
                 ],
                 "pcc": 0.99,
             },
@@ -23379,6 +23872,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -23392,6 +23886,7 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                     "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
                 ],
                 "pcc": 0.99,
             },
@@ -23406,6 +23901,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -23418,6 +23914,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -24069,6 +24566,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480",
                 "pt_yolo_v5_yolov5s_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -24076,7 +24574,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 16, 120, 120), torch.float32), ((1, 16, 120, 120), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5n_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5n_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -24414,7 +24918,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 96, 120, 120), torch.float32), ((1, 96, 120, 120), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -24429,7 +24939,13 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Multiply0,
         [((1, 96, 60, 60), torch.float32), ((1, 96, 60, 60), torch.float32)],
-        {"model_names": ["pt_yolo_v5_yolov5m_img_cls_torchhub_480x480"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_yolo_v5_yolov5m_img_cls_torchhub_480x480",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Multiply0,
@@ -25058,6 +25574,1244 @@ forge_modules_and_shapes_dtypes_list = [
         Multiply0,
         [((1, 7, 7, 512), torch.float32), ((512,), torch.float32)],
         {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99},
+    ),
+    (
+        Multiply6,
+        [((1, 256, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 40, 144, 144), torch.float32), ((1, 40, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 40, 144, 144), torch.float32), ((1, 40, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 24, 144, 144), torch.float32), ((1, 24, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 24, 144, 144), torch.float32), ((1, 24, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 144, 144), torch.float32), ((1, 144, 144, 144), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 72, 72), torch.float32), ((1, 144, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 72, 72), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 192, 72, 72), torch.float32), ((1, 192, 72, 72), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 192, 72, 72), torch.float32), ((1, 192, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 192, 36, 36), torch.float32), ((1, 192, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 192, 36, 36), torch.float32), ((1, 192, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 36, 36), torch.float32), ((1, 288, 36, 36), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 36, 36), torch.float32), ((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 18, 18), torch.float32), ((1, 288, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 18, 18), torch.float32), ((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 576, 18, 18), torch.float32), ((1, 576, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 24, 1, 1), torch.float32), ((1, 24, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 576, 18, 18), torch.float32), ((1, 576, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 816, 18, 18), torch.float32), ((1, 816, 18, 18), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 34, 1, 1), torch.float32), ((1, 34, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 816, 18, 18), torch.float32), ((1, 816, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 816, 9, 9), torch.float32), ((1, 816, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 816, 9, 9), torch.float32), ((1, 816, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1392, 9, 9), torch.float32), ((1, 1392, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 58, 1, 1), torch.float32), ((1, 58, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1392, 9, 9), torch.float32), ((1, 1392, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 2304, 9, 9), torch.float32), ((1, 2304, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 96, 1, 1), torch.float32), ((1, 96, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 2304, 9, 9), torch.float32), ((1, 2304, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1536, 9, 9), torch.float32), ((1, 1536, 9, 9), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 32, 128, 128), torch.float32), ((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 32, 128, 128), torch.float32), ((1, 32, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 16, 128, 128), torch.float32), ((1, 16, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 16, 128, 128), torch.float32), ((1, 16, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 96, 128, 128), torch.float32), ((1, 96, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 96, 64, 64), torch.float32), ((1, 96, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 96, 64, 64), torch.float32), ((1, 96, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 64, 64), torch.float32), ((1, 144, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 64, 64), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 32, 32), torch.float32), ((1, 144, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 144, 32, 32), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 32, 32), torch.float32), ((1, 288, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 32, 32), torch.float32), ((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 16, 16), torch.float32), ((1, 288, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 288, 16, 16), torch.float32), ((1, 288, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 528, 16, 16), torch.float32), ((1, 528, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 22, 1, 1), torch.float32), ((1, 22, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 528, 16, 16), torch.float32), ((1, 528, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 720, 16, 16), torch.float32), ((1, 720, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 30, 1, 1), torch.float32), ((1, 30, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 720, 16, 16), torch.float32), ((1, 720, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 720, 8, 8), torch.float32), ((1, 720, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 720, 8, 8), torch.float32), ((1, 720, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1248, 8, 8), torch.float32), ((1, 1248, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 52, 1, 1), torch.float32), ((1, 52, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1248, 8, 8), torch.float32), ((1, 1248, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 2112, 8, 8), torch.float32), ((1, 2112, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 88, 1, 1), torch.float32), ((1, 88, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 2112, 8, 8), torch.float32), ((1, 2112, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 1408, 8, 8), torch.float32), ((1, 1408, 8, 8), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply0,
+        [((1, 48, 224, 224), torch.float32), ((1, 48, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 48, 224, 224), torch.float32), ((1, 48, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 24, 224, 224), torch.float32), ((1, 24, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 24, 224, 224), torch.float32), ((1, 24, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 224, 224), torch.float32), ((1, 144, 224, 224), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 112, 112), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 112, 112), torch.float32), ((1, 240, 112, 112), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 112, 112), torch.float32), ((1, 240, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 56, 56), torch.float32), ((1, 240, 56, 56), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 56, 56), torch.float32), ((1, 240, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 384, 56, 56), torch.float32), ((1, 384, 56, 56), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 16, 1, 1), torch.float32), ((1, 16, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 384, 56, 56), torch.float32), ((1, 384, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 384, 28, 28), torch.float32), ((1, 384, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 384, 28, 28), torch.float32), ((1, 384, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 768, 28, 28), torch.float32), ((1, 768, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 32, 1, 1), torch.float32), ((1, 32, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 768, 28, 28), torch.float32), ((1, 768, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1056, 28, 28), torch.float32), ((1, 1056, 28, 28), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 44, 1, 1), torch.float32), ((1, 44, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1056, 28, 28), torch.float32), ((1, 1056, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1056, 14, 14), torch.float32), ((1, 1056, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1056, 14, 14), torch.float32), ((1, 1056, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1824, 14, 14), torch.float32), ((1, 1824, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 76, 1, 1), torch.float32), ((1, 76, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1824, 14, 14), torch.float32), ((1, 1824, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 3072, 14, 14), torch.float32), ((1, 3072, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 128, 1, 1), torch.float32), ((1, 128, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 3072, 14, 14), torch.float32), ((1, 3072, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 2048, 14, 14), torch.float32), ((1, 2048, 14, 14), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 32, 120, 120), torch.float32), ((1, 32, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 16, 120, 120), torch.float32), ((1, 16, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 96, 60, 60), torch.float32), ((1, 96, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 60, 60), torch.float32), ((1, 144, 60, 60), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 60, 60), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 30, 30), torch.float32), ((1, 144, 30, 30), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 144, 30, 30), torch.float32), ((1, 144, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 30, 30), torch.float32), ((1, 240, 30, 30), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 30, 30), torch.float32), ((1, 240, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 15, 15), torch.float32), ((1, 240, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 240, 15, 15), torch.float32), ((1, 240, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 480, 15, 15), torch.float32), ((1, 480, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 480, 15, 15), torch.float32), ((1, 480, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 672, 15, 15), torch.float32), ((1, 672, 15, 15), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 672, 15, 15), torch.float32), ((1, 672, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 672, 8, 8), torch.float32), ((1, 672, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 672, 8, 8), torch.float32), ((1, 672, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1152, 8, 8), torch.float32), ((1, 1152, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1152, 8, 8), torch.float32), ((1, 1152, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1920, 8, 8), torch.float32), ((1, 1920, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 80, 1, 1), torch.float32), ((1, 80, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1920, 8, 8), torch.float32), ((1, 1920, 1, 1), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((1, 1280, 8, 8), torch.float32), ((1, 1280, 8, 8), torch.float32)],
+        {"model_names": ["onnx_efficientnet_efficientnet_b1_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Multiply1,
+        [((1, 16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Multiply1,
+        [((1, 12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Multiply1,
+        [((1, 16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Multiply1,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply165,
+        [((1, 64, 214, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply165,
+        [((1, 64, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply166,
+        [((1, 256, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply167,
+        [((1, 128, 107, 160), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply167,
+        [((1, 128, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply168,
+        [((1, 512, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply166,
+        [((1, 256, 54, 80), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply166,
+        [((1, 256, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply169,
+        [((1, 1024, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply168,
+        [((1, 512, 27, 40), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply168,
+        [((1, 512, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply170,
+        [((1, 2048, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply1,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Multiply1,
+        [((1, 100, 8, 32), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply0,
+            [((1, 100, 8, 32, 1), torch.float32), ((1, 1, 8, 32, 280), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Multiply171,
+        [((1, 100, 8, 14, 20), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 9240), torch.float32), ((100, 8, 9240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 9240), torch.float32), ((100, 8, 1), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply172,
+        [((100, 8, 9240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply173,
+            [((100, 264, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Multiply0,
+        [((100, 8, 4480), torch.float32), ((100, 8, 4480), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 4480), torch.float32), ((100, 8, 1), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply172,
+        [((100, 8, 4480), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply174,
+            [((100, 128, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Multiply0,
+        [((100, 8, 8640), torch.float32), ((100, 8, 8640), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 8640), torch.float32), ((100, 8, 1), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply172,
+        [((100, 8, 8640), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply175,
+            [((100, 64, 27, 40), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Multiply0,
+        [((100, 8, 17280), torch.float32), ((100, 8, 17280), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 17280), torch.float32), ((100, 8, 1), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply172,
+        [((100, 8, 17280), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply176,
+            [((100, 32, 54, 80), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    (
+        Multiply0,
+        [((100, 8, 34240), torch.float32), ((100, 8, 34240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply0,
+        [((100, 8, 34240), torch.float32), ((100, 8, 1), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    (
+        Multiply172,
+        [((100, 8, 34240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    ),
+    pytest.param(
+        (
+            Multiply177,
+            [((100, 16, 107, 160), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
 ]
 

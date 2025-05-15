@@ -27,14 +27,15 @@ def test_cogito_generation(forge_property_recorder, variant):
 
     # Load model and tokenizer
     input_tensor_list, framework_model = get_input_model(variant)
+    sample_inputs = [input_tensor_list]
 
     # Compile with Forge
     compiled_model = forge.compile(
         framework_model,
-        input_tensor_list,
-        module_name,
+        sample_inputs=sample_inputs,
+        module_name=module_name,
         forge_property_handler=forge_property_recorder,
     )
 
     # Run verification
-    verify(input_tensor_list, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

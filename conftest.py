@@ -64,11 +64,8 @@ def forge_property_recorder(request, record_property):
         # Retrieve any refined error message that might have been set during the test execution
         refined_error_message = getattr(request.node, "refined_error_message", None)
 
-        # Check if:
-        # 1. The refined error message exists.
-        # 2. The handler is configured to record single operation details (record_single_op_details flag is True).
-        # If either of these checks fail, exit without further recording.
-        if refined_error_message is None or not forge_property_handler.record_single_op_details:
+        # If refined error message doesn't exists, exit without further recording.
+        if refined_error_message is None:
             return
 
         # Record the refined error message in the handler's property store.

@@ -674,23 +674,21 @@ class ForgePropertyHandler:
 
     def record_refined_error_message(self, refined_error_message: str):
         """
-        Records the refined error message in the tags if single op details recording is enabled.
+        Records the refined error message in the tags.
 
         Args:
             refined_error_message (str): The refined error message string.
         """
-        if self.record_single_op_details:
-            self.add("tags.refined_error_message", refined_error_message)
+        self.add("tags.refined_error_message", refined_error_message)
 
     def record_failure_category(self, failure_category: str):
         """
-        Records the failure category in the tags if single op details recording is enabled.
+        Records the failure category in the tags.
 
         Args:
             failure_category (str): The failure category string.
         """
-        if self.record_single_op_details:
-            self.add("tags.failure_category", failure_category)
+        self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """

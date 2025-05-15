@@ -2220,6 +2220,51 @@ class Index244(ForgeModule):
         return index_output_1
 
 
+class Index245(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=8192, stop=16384, stride=1)
+        return index_output_1
+
+
+class Index246(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8192, stride=1)
+        return index_output_1
+
+
+class Index247(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=0, stop=1, stride=1)
+        return index_output_1
+
+
+class Index248(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=1, stop=2, stride=1)
+        return index_output_1
+
+
+class Index249(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=2, stop=3, stride=1)
+        return index_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -2231,7 +2276,11 @@ forge_modules_and_shapes_dtypes_list = [
         Index0,
         [((2, 1024), torch.float32)],
         {
-            "model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"],
+            "model_names": [
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
@@ -2240,7 +2289,11 @@ forge_modules_and_shapes_dtypes_list = [
         Index1,
         [((2, 1024), torch.float32)],
         {
-            "model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"],
+            "model_names": [
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
         },
@@ -2316,7 +2369,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "16", "stride": "1"},
@@ -2329,7 +2382,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "16", "stop": "32", "stride": "1"},
@@ -2342,7 +2395,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "1"},
@@ -2355,7 +2408,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "32", "stop": "64", "stride": "1"},
@@ -2368,7 +2421,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "1"},
@@ -2381,7 +2434,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "128", "stride": "1"},
@@ -2394,7 +2447,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "128", "stride": "1"},
@@ -2407,7 +2460,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "128", "stop": "256", "stride": "1"},
@@ -2420,7 +2473,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "64", "stride": "1"},
@@ -2433,7 +2486,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "64", "stop": "144", "stride": "1"},
@@ -2446,7 +2499,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "2", "stride": "1"},
@@ -2459,7 +2512,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "2", "stop": "4", "stride": "1"},
@@ -2509,6 +2562,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
@@ -3458,30 +3512,6 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index0,
-        [((2, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index1,
-        [((2, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
         },
     ),
     (
@@ -4921,6 +4951,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "3072", "stride": "1"},
@@ -4933,6 +4965,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "3072", "stop": "6144", "stride": "1"},
@@ -4945,6 +4979,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "6144", "stop": "9216", "stride": "1"},
@@ -4957,6 +4993,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "48", "stop": "96", "stride": "1"},
@@ -4969,6 +5007,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "48", "stride": "1"},
@@ -5953,7 +5993,11 @@ forge_modules_and_shapes_dtypes_list = [
         Index0,
         [((1, 197, 1024), torch.float32)],
         {
-            "model_names": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"],
+            "model_names": [
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
@@ -5993,6 +6037,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
@@ -8564,6 +8609,165 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "1", "stop": "416", "stride": "2"},
+        },
+    ),
+    (
+        Index245,
+        [((1, 256, 16384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "8192", "stop": "16384", "stride": "1"},
+        },
+    ),
+    (
+        Index246,
+        [((1, 256, 16384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "8192", "stride": "1"},
+        },
+    ),
+    (
+        Index247,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index248,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index249,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 50, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index247,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index248,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index249,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 50, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index247,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index248,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index249,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index247,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index248,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index249,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 1370, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
     ),
 ]

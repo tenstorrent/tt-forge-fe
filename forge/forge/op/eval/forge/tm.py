@@ -30,6 +30,7 @@ from forge.tensor import change_rank
 from forge.forgeglobal import TILE_DIM
 from forge.utils import align_up_tile, round_up_div, align_up
 from .transpose import TransposeTM
+from .pad import Pad
 from ..lforge.splice import Splice
 from .nop import Nop
 from ..lforge.nop import Nop as ForgeNop
@@ -958,6 +959,23 @@ def backward(type, attr, ac, operand, inputs, output, grad):
         ret = ac.op("reduce_sum", (ret,), (dim, True), {"dim_arg": [dim], "keep_dim": True})
         ret = ac.op("squeeze", (ret,), (dim,), {"dim": dim})
         return ret
+
+    elif type == "index":
+        assert len(attr) == 4
+        dim, start, stop, stride = attr
+
+        if stride != 1:
+            raise NotImplementedError("Only stride == 1 is supported for index op backward")
+        shape = inputs[0].shape.as_list()
+
+        if dim >= 0:
+            dim -= len(shape)
+
+        left = start
+        right = shape[dim] - stop
+        value = 0.0
+
+        return Pad.decompose_constant_mode(ac, grad, value, left, right, 0, 0, dim, 0)
 
     raise NotImplementedError(f"{type}")
 

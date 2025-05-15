@@ -112,33 +112,10 @@ class Pad(PyTM):
         if self.mode == 0:  # 'constant' mode
             # TODO: MLIR has ttir::PadOp that works only for constant mode
             # so we could potentialy map it directly to mlir's PadOp
-            result = activations
-            data_format = activations.output_df
-
-            left_pad, right_pad, top_pad, bot_pad = None, None, None, None
-
-            width_shape = list(result.shape)
-            if left > 0:
-                width_shape[c_dim_axis] = left
-                left_pad = create_pad(dc, width_shape, self.value, data_format)
-            if right > 0:
-                width_shape[c_dim_axis] = right
-                right_pad = create_pad(dc, width_shape, self.value, data_format)
-
-            result = concat_patches(dc, left_pad, result, right_pad, c_dim_axis)
-
-            height_shape = list(result.shape)
-            if top > 0:
-                height_shape[r_dim_axis] = top
-                top_pad = create_pad(dc, height_shape, self.value, data_format)
-            if bottom > 0:
-                height_shape[r_dim_axis] = bottom
-                bot_pad = create_pad(dc, height_shape, self.value, data_format)
-
-            result = concat_patches(dc, top_pad, result, bot_pad, r_dim_axis)
-
+            result = Pad.decompose_constant_mode(
+                dc, activations, self.value, left, right, top, bottom, c_dim_axis, r_dim_axis
+            )
             dc.fuse(result)
-
             return
 
         ###############################################################
@@ -229,6 +206,34 @@ class Pad(PyTM):
             return ac.op(
                 "narrow", (grad,), (width_dim, pad_left, original_width - pad_left - pad_right, original_width)
             )
+
+    def decompose_constant_mode(dc, input, value, left, right, top, bottom, c_dim_axis, r_dim_axis):
+        result = input
+        data_format = input.output_df
+
+        left_pad, right_pad, top_pad, bot_pad = None, None, None, None
+
+        width_shape = list(result.shape)
+        if left > 0:
+            width_shape[c_dim_axis] = left
+            left_pad = create_pad(dc, width_shape, value, data_format)
+        if right > 0:
+            width_shape[c_dim_axis] = right
+            right_pad = create_pad(dc, width_shape, value, data_format)
+
+        result = concat_patches(dc, left_pad, result, right_pad, c_dim_axis)
+
+        height_shape = list(result.shape)
+        if top > 0:
+            height_shape[r_dim_axis] = top
+            top_pad = create_pad(dc, height_shape, value, data_format)
+        if bottom > 0:
+            height_shape[r_dim_axis] = bottom
+            bot_pad = create_pad(dc, height_shape, value, data_format)
+
+        result = concat_patches(dc, top_pad, result, bot_pad, r_dim_axis)
+
+        return result
 
 
 def extract_and_mirror(dc, input, dim_axis, start, stop):

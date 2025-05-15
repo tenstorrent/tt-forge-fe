@@ -16,7 +16,9 @@ class YoloWrapper(torch.nn.Module):
 
     def forward(self, image: torch.Tensor):
         y, x = self.model(image)
-        return (y, *x)
+        # Post processing inside model casts output to float32, even though raw output is aligned with image.dtype
+        # Therefore we need to cast it back to image.dtype
+        return (y.to(image.dtype), *x)
 
 
 def load_yolo_model_and_image(url):

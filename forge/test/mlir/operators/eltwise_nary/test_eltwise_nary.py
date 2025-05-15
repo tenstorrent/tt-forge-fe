@@ -108,3 +108,34 @@ def test_concat(forge_property_recorder, inputs_and_dim):
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "input_shapes",
+    [
+        [(1, 78), (52,)],
+        [(18,), (26,), (13,)],
+        [(1, 11), (2, 2), (31, 3), (1, 5)],
+        [(31,), (12, 3), (66,), (13, 12), (20,)],
+        [(2, 2), (1, 3), (11,), (62,), (11,), (31,)],
+        [(384, 384)] * 7,
+        [(96, 96)] * 8,
+    ],
+)
+@pytest.mark.push
+def test_block_diag(input_shapes, forge_property_recorder):
+
+    inputs = [torch.randn(*shape) for shape in input_shapes]
+
+    class block_diag(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, *inputs):
+            return torch.block_diag(*inputs)
+
+    framework_model = block_diag()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
