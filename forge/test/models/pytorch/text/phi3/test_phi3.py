@@ -137,7 +137,10 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+    if variant == "microsoft/phi-3-mini-4k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 29 GB)")
+    elif variant == "microsoft/phi-3-mini-128k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -180,9 +183,9 @@ def test_phi3_token_classification(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
