@@ -9,4 +9,5 @@ from .models import mobilenetv2_basic
 from .models import efficientnet_timm
 from .models import segformer
 from .models import vit
+from .models import deit
 from .models import vovnet

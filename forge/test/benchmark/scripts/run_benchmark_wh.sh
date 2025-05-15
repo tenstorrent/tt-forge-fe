@@ -42,5 +42,8 @@ python forge/test/benchmark/benchmark.py -m segformer_classification -bs 1 -df f
 # ViT Base
 python forge/test/benchmark/benchmark.py -m vit_base -ts classification -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-vit_base.json
 
+# DeiT Tiny
+python forge/test/benchmark/benchmark.py -m deit_tiny -ts na -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-deit_tiny.json
+
 # Vovnet OSMR
 python forge/test/benchmark/benchmark.py -m vovnet_osmr -ts classification -bs 16 -df bfloat16 -lp 32 -o forge-benchmark-e2e-vovnet_osmr.json

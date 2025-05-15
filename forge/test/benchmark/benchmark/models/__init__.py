@@ -10,4 +10,5 @@ from .mobilenetv2_basic import mobilenetv2_basic_benchmark
 from .efficientnet_timm import efficientnet_timm_benchmark
 from .segformer import segformer_classification_benchmark
 from .vit import vit_base_benchmark
+from .deit import deit_tiny_benchmark
 from .vovnet import vovnet_osmr_benchmark

@@ -26,6 +26,7 @@ MODELS = {
     "efficientnet_timm": models.efficientnet_timm.efficientnet_timm_benchmark,
     "segformer_classification": models.segformer.segformer_classification_benchmark,
     "vit_base": models.vit.vit_base_benchmark,
+    "deit_tiny": models.deit.deit_tiny_benchmark,
     "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
 }
 
