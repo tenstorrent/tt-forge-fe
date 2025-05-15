@@ -5,6 +5,7 @@
 from .mnist_linear import mnist_linear_benchmark
 from .resnet_hf import resnet_hf_benchmark
 from .resnet_hf_config import resnet_hf_config_benchmark
+from .resnet_hf_tensorflow import resnet_hf_tensorflow_benchmark
 from .llama import llama_prefill_benchmark
 from .mobilenetv2_basic import mobilenetv2_basic_benchmark
 from .efficientnet_timm import efficientnet_timm_benchmark

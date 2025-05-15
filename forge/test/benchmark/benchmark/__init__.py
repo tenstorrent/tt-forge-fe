@@ -4,6 +4,8 @@
 
 from .models import mnist_linear
 from .models import resnet_hf
+from .models import resnet_hf_config
+from .models import resnet_hf_tensorflow
 from .models import llama
 from .models import mobilenetv2_basic
 from .models import efficientnet_timm
