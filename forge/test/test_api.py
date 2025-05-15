@@ -13,7 +13,6 @@ import forge
 from forge.config import CompilerConfig, MLIRConfig
 from forge.tensor import to_forge_tensors, to_pt_tensors
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge._C.runtime import load_binary_from_file
 
 
 @pytest.mark.push
@@ -114,8 +113,10 @@ def test_save_binary():
     compiled_model.save(file_path)
 
     assert os.path.exists(file_path)
-    load_bin = load_binary_from_file(file_path)
-    assert load_bin.get_file_identifier() == "TTNN"
+    with open(file_path, "rb") as f:
+        f.seek(8)
+        load_identify = f.read(4)
+    assert load_identify == b"TTNN"
     os.remove(file_path)
 
     # Must be *.ttnn extension, it causes an error if it is not
