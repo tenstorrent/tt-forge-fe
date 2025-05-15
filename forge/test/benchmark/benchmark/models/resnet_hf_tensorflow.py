@@ -78,29 +78,31 @@ def test_resnet_hf_tensorflow(training, batch_size, data_format, input_size, cha
     if training:
         pytest.skip("Training is not supported")
 
-    # inputs = [tf.random.normal(shape=(batch_size, input_size[0], input_size[1], channel_size), mean=0.0, stddev=1.0), ]
-    sample_input = get_sample_inputs()
-    inputs = [sample_input]
-    inputs = [tf.cast(item, tf.bfloat16) for item in inputs]
+    inputs = [
+        tf.random.normal(shape=(batch_size, input_size[0], input_size[1], channel_size), mean=0.0, stddev=1.0),
+    ]
+    # sample_input = get_sample_inputs()
+    # inputs = [sample_input]
+    # inputs = [tf.cast(item, tf.bfloat16) for item in inputs]
 
     module_name = "ResNetForImageClassificationTF"
 
     framework_model = ResNet50(weights="imagenet")
-    print(f"Type of framework model: {type(framework_model)}")
-    import sys
+    # print(f"Type of framework model: {type(framework_model)}")
+    # import sys
 
     # sys.exit(0)
 
     # import tensorflow as tf
-    from tensorflow.keras import mixed_precision
+    # from tensorflow.keras import mixed_precision
 
-    # Enable mixed precision with bfloat16
-    policy = mixed_precision.Policy("mixed_bfloat16")
-    mixed_precision.set_global_policy(policy)
+    # # Enable mixed precision with bfloat16
+    # policy = mixed_precision.Policy("mixed_bfloat16")
+    # mixed_precision.set_global_policy(policy)
 
     # Compile model
     compiler_cfg = CompilerConfig()
-    compiler_cfg.default_df_override = DataFormat.Float16_b
+    # compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
     # compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
