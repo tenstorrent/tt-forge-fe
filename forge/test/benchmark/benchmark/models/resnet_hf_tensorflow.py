@@ -103,7 +103,7 @@ def test_resnet_hf_tensorflow(training, batch_size, data_format, input_size, cha
     compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    # compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
 
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg, module_name=module_name
@@ -116,14 +116,14 @@ def test_resnet_hf_tensorflow(training, batch_size, data_format, input_size, cha
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-    # verify(
-    #     [
-    #         inputs[0],
-    #     ],
-    #     framework_model,
-    #     compiled_model,
-    #     verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    # )
+    verify(
+        [
+            inputs[0],
+        ],
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+    )
 
     start = time.time()
     for i in tqdm(range(loop_count)):
@@ -131,14 +131,14 @@ def test_resnet_hf_tensorflow(training, batch_size, data_format, input_size, cha
     end = time.time()
     evaluation_score = 0.0
 
-    # verify(
-    #     [
-    #         inputs[0],
-    #     ],
-    #     framework_model,
-    #     compiled_model,
-    #     verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    # )
+    verify(
+        [
+            inputs[0],
+        ],
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+    )
 
     # fw_out = framework_model(inputs[-1])[0]
     # co_out = co_out.to("cpu")
