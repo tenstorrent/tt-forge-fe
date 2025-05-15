@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Perform inspection
         id: inspect
-        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-inspect@nsumrak/fail-inspector-debug-2
+        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-inspect@main
         with:
           workflow: "on-nightly.yml"
           token: ${{ secrets.GH_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
             FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
             HF_HUB_DISABLE_PROGRESS_BARS: 1
             FORGE_DISABLE_REPORTIFY_DUMP: 1
-          uses: tenstorrent/tt-forge/.github/actions/fail-inspector-test@nsumrak/fail-inspector-debug-2
+          uses: tenstorrent/tt-forge/.github/actions/fail-inspector-test@main
           with:
             runs-on: ${{ matrix.build.runs-on }}
             c: ${{ matrix.build.c }}
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Find all test runs
-        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-deduct@nsumrak/fail-inspector-debug-2
+        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-deduct@main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
