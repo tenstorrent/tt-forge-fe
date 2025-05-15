@@ -4,8 +4,11 @@
 
 
 import pytest
+import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -15,9 +18,6 @@ from test.models.pytorch.vision.yolo.utils.yolo_utils import (
 )
 
 
-@pytest.mark.xfail(
-    reason="RuntimeError: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B"
-)
 @pytest.mark.nightly
 def test_yolov8(forge_property_recorder):
     # Record Forge Property
@@ -35,15 +35,19 @@ def test_yolov8(forge_property_recorder):
     model, image_tensor = load_yolo_model_and_image(
         "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n.pt"
     )
-    framework_model = YoloWrapper(model)
-    input = [image_tensor]
+    framework_model = YoloWrapper(model).to(torch.bfloat16)
+    input = [image_tensor.to(torch.bfloat16)]
 
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=input,
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

@@ -17,7 +17,6 @@ from forge.verify.verify import verify
             torch.tensor([True, False, True, False, True, False, True, False, True, False]),  # Mask
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0]),  # Source tensor
             id="test_masked_scatter_1",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         # Less Number of elements in source
         pytest.param(
@@ -25,7 +24,6 @@ from forge.verify.verify import verify
             torch.tensor([True, False, True, False, True], dtype=torch.bool),  # mask shape = (5,)
             torch.tensor([10, 20, 30], dtype=torch.float32),  # source shape = (3,)
             id="test_masked_scatter_2",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         # Broadcasting: 1D input and mask with 2D source tensor
         pytest.param(
@@ -33,7 +31,6 @@ from forge.verify.verify import verify
             torch.tensor([True, False, True, False, True], dtype=torch.bool),  # mask shape = (5,)
             torch.tensor([[10], [20], [30]], dtype=torch.float32),  # source shape = (3, 1)
             id="test_masked_scatter_3",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         # 2D tensors where mask has a different shape from input tensor but can be broadcasted
         pytest.param(
@@ -41,7 +38,6 @@ from forge.verify.verify import verify
             torch.tensor([[True, False], [False, True], [True, True]], dtype=torch.bool),  # mask shape = (3, 2)
             torch.tensor([10, 20, 30, 40], dtype=torch.float32),  # source shape = (4,)
             id="test_masked_scatter_4",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         # Test with a mask of all False (nothing should be replaced)
         pytest.param(
@@ -49,7 +45,6 @@ from forge.verify.verify import verify
             torch.tensor([False, False, False, False, False], dtype=torch.bool),  # mask shape = (5,)
             torch.tensor([10, 20, 30], dtype=torch.float32),  # source shape = (3,)
             id="test_masked_scatter_5",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         # Test with a mask of all True (everything should be replaced)
         pytest.param(
@@ -57,7 +52,6 @@ from forge.verify.verify import verify
             torch.tensor([True, True, True, True, True], dtype=torch.bool),  # mask shape = (5,)
             torch.tensor([10, 20, 30, 40, 50], dtype=torch.float32),  # source shape = (5,)
             id="test_masked_scatter_6",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
         pytest.param(
             torch.zeros((4, 4), dtype=torch.float32),  # 2D input tensor
@@ -71,7 +65,6 @@ from forge.verify.verify import verify
             ),
             torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]),  # Source tensor
             id="test_masked_scatter_7",
-            marks=pytest.mark.xfail(reason="RuntimeError: users.size() > 0"),
         ),
     ],
 )
