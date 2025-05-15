@@ -88,7 +88,12 @@ def test_deit_tiny(training, batch_size, input_size, channel_size, loop_count, v
     print("Torch pixel values shape:")
     print(torch_pixel_values.shape)
 
-    compiled_model = forge.compile(model, sample_inputs=[torch_pixel_values], module_name=module_name)
+    compiler_cfg = CompilerConfig()
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+
+    compiled_model = forge.compile(
+        model, sample_inputs=[torch_pixel_values], module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # file_path = "generated_export_deit_tiny.cpp"
     # compiled_model.export_to_cpp(file_path)
