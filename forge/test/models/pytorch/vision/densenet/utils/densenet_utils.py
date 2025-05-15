@@ -39,6 +39,10 @@ def get_input_img():
 
         # Preprocessing
         img_tensor = transform(img).unsqueeze(0)
+
+        # Make the tensor contiguous.
+        # Current limitation of compiler/runtime is that it does not support non-contiguous tensors properly.
+        img_tensor = img_tensor.contiguous()
     except:
         logger.warning(
             "Failed to download the image file, replacing input with random tensor. Please check if the URL is up to date"

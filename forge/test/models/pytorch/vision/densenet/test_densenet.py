@@ -92,10 +92,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet161",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet161",
     ],
 )
 def test_densenet_161_pytorch(forge_property_recorder, variant):
@@ -131,10 +128,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet169",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet169",
     ],
 )
 def test_densenet_169_pytorch(forge_property_recorder, variant):
