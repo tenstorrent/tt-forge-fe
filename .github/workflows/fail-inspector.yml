@@ -166,8 +166,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           repo="${{ github.repository }}"
-          test_step_name="Run Tests"
-          test_job_name=" run-tests "
+          test_job_names=(" run-tests ")
+          test_step_names=("Run Test")
 
           curr_wf_id="${{ steps.success-failed.outputs.curr_wf_id }}"
           curr_wf_attempt="${{ steps.success-failed.outputs.curr_wf_attempt }}"
@@ -175,19 +175,33 @@ jobs:
 
           gh run view $curr_wf_id --attempt $curr_wf_attempt --json jobs >workflow_jobs.json
 
-          # Iterate through jobs using index and echo job name
+          # Iterate through jobs using index
           job_count=$(jq '.jobs | length' workflow_jobs.json)
           for ((i=0; i<job_count; i++)); do
             job_name=$(jq -r ".jobs[$i].name" workflow_jobs.json)
-            if [[ "$job_name" == *"$test_job_name"* ]]; then
+            job_conclusion=$(jq -r ".jobs[$i].conclusion" workflow_jobs.json)
+            if [[ "$job_conclusion" == "success" ]]; then
+                continue
+            fi
+
+            is_job_test=0
+            for test_job_name in "${test_job_names[@]}"; do
+              if [[ "$job_name" == *"$test_job_name"* ]]; then
+                is_job_test=1
+                break
+              fi
+            done
+            if [[ "$is_job_test" -eq 1 ]]; then
               echo "Job $i: $job_name"
               steps_count=$(jq ".jobs[$i].steps | length" workflow_jobs.json)
               for ((j=0; j<steps_count; j++)); do
                 step_name=$(jq -r ".jobs[$i].steps[$j].name" workflow_jobs.json)
                 step_conclusion=$(jq -r ".jobs[$i].steps[$j].conclusion" workflow_jobs.json)
-                if [[ "$step_name" == $test_step_name ]]; then
-                  break
-                fi
+                for test_step_name in "${test_step_names[@]}"; do
+                  if [[ "$step_name" == $test_step_name ]]; then
+                    break 2
+                  fi
+                done
                 if [[ "$step_conclusion" == "failure" ]]; then
                   job_id=$(jq -r ".jobs[$i].databaseId" workflow_jobs.json)
                   echo "- Failure detected in step '$step_name' before tests are run in job: [$job_name](<https://github.com/$repo/actions/runs/$curr_wf_id/job/$job_id>)" >>report.txt
