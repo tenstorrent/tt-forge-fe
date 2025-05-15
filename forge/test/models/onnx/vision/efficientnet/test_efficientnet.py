@@ -8,9 +8,7 @@ import onnx
 import torch
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
-from test.models.onnx.vision.utils import load_inputs
-from urllib.request import urlopen
-from PIL import Image
+from test.models.models_utils import load_timm_model_and_input
 from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task
 
@@ -51,15 +49,8 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     else:
         forge_property_recorder.record_group("generality")
 
-    # Load efficientnet model
-    model = timm.create_model(variant, pretrained=True)
-
-    # Load the inputs
-    img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
-    )
-
-    inputs = load_inputs(img, model)
+    # Load the model and inputs
+    model, inputs = load_timm_model_and_input(variant)
     onnx_path = f"{tmp_path}/efficientnet.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
 

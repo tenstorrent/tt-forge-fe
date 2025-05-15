@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.models_utils import load_vision_model_and_input
 from test.utils import download_model
 
 dataset = load_dataset("huggingface/cats-image")

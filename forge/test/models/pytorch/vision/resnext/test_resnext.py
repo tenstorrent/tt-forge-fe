@@ -10,10 +10,10 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import post_processing
 from test.models.pytorch.vision.resnext.utils.utils import (
     get_image_tensor,
     get_resnext_model_and_input,
-    post_processing,
 )
 from test.utils import download_model
 

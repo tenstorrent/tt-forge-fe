@@ -16,7 +16,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.bert.utils.utils import mean_pooling
+from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
 

@@ -8,10 +8,8 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.ghostnet.utils.utils import (
-    load_ghostnet_model,
-    post_processing,
-)
+from test.models.models_utils import post_processing
+from test.models.pytorch.vision.ghostnet.utils.utils import load_ghostnet_model
 
 params = [
     pytest.param("ghostnet_100", marks=[pytest.mark.push]),

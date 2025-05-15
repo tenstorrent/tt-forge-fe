@@ -13,7 +13,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from test.models.models_utils import load_input
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
@@ -58,8 +58,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     framework_model.eval()
 
     # Load the sample image
-    pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -106,8 +105,7 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     framework_model.eval()
 
     # Load the sample image
-    pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = load_input(variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(

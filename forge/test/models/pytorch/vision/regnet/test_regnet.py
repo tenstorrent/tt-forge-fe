@@ -8,8 +8,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.regnet.utils.image_utils import preprocess_input_data
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.models_utils import load_input, load_vision_model_and_input
 
 
 @pytest.mark.nightly
@@ -34,7 +33,7 @@ def test_regnet_img_classification(forge_property_recorder, variant):
 
     # Preprocess the image
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-    inputs = preprocess_input_data(image_url, variant)
+    inputs = load_input(image_url, variant)
 
     # Forge compile framework model
     compiled_model = forge.compile(
