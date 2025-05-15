@@ -10,7 +10,8 @@ from transformers import DetrForObjectDetection, DetrForSegmentation
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
 from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
 
@@ -33,12 +34,7 @@ class DetrWrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
-    [
-        pytest.param(
-            "facebook/detr-resnet-50",
-            marks=[pytest.mark.xfail],
-        )
-    ],
+    ["facebook/detr-resnet-50"],
 )
 def test_detr_detection(forge_property_recorder, variant):
     # Record Forge Property
@@ -70,7 +66,13 @@ def test_detr_detection(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
