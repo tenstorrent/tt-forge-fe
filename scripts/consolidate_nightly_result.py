@@ -43,7 +43,7 @@ fail_count = 0
 xfail_count = 0
 skip_count = 0
 pass_count = 0
-runner_count = 4
+runner_count = 20
 log_path_list = []
 latest_job_name_list = []
 header_name = ["JOB_NAME"]
@@ -73,7 +73,7 @@ def unzip_files(output_file):
             os.remove(zip_file_path)
 
 
-def download_ci_logs(owner, repo, run_id, output_file):
+def download_ci_logs(owner, repo, run_id, output_file, nightly_name):
     """
     Function is used to download the log files
     ----------
@@ -86,34 +86,83 @@ def download_ci_logs(owner, repo, run_id, output_file):
     """
     artifact_url = f"https://api.github.com/repos/{owner}/{repo}/actions/runs/{run_id}/artifacts"
     artifact_url_response = requests.get(artifact_url, headers=headers, stream=True)
-    if artifact_url_response.status_code == 200:
-        try:
-            response_str = artifact_url_response.content.decode("utf-8")
-            artifacts = json.loads(response_str).get("artifacts", [])
+    writing_filelist = {}
+    while artifact_url_response:
+        if artifact_url_response.status_code == 200:
+            try:
+                response_str = artifact_url_response.content.decode("utf-8")
+                artifacts = json.loads(response_str).get("artifacts", [])
 
-            if artifacts:
-                for artifact in artifacts:
-                    if "test-log-n150" in str(artifact["name"]):
-                        download_url = artifact["archive_download_url"]
-                        download_response = requests.get(download_url, headers=headers)
-                        if download_response.status_code == 200:
-                            artifact_file_name = output_file + "/" + str(artifact["name"]) + ".zip"
-                            with open(artifact_file_name, "wb") as f:
-                                f.write(download_response.content)
+                if artifacts:
+                    for artifact in artifacts:
+                        if "test-log-n150" in str(artifact["name"]):
+                            if nightly_name == "On nightly":
+                                if "nightly and not xfail" in str(artifact["name"]) or "nightly and xfail" in str(
+                                    artifact["name"]
+                                ):
+                                    download_url = artifact["archive_download_url"]
+                                    download_response = requests.get(download_url, headers=headers)
+                                    if download_response.status_code == 200:
+                                        artifact_file_name = output_file + "/" + str(artifact["name"]) + ".zip"
+                                        temp_filename = str(artifact["name"]).split(" and")
+                                        filename = temp_filename[0] + " and" + (temp_filename[1].split("-"))[0]
+                                        if filename not in writing_filelist:
+                                            with open(artifact_file_name, "wb") as f:
+                                                writing_filelist[filename] = [str(artifact["name"])]
+                                                writing_filelist[filename].append(artifact["size_in_bytes"])
+                                                f.write(download_response.content)
+                                        else:
+                                            if artifact["size_in_bytes"] > writing_filelist[filename][1]:
+                                                rm_file_path = (
+                                                    output_file + "/" + writing_filelist[filename][0] + ".zip"
+                                                )
+                                                os.remove(rm_file_path)
+                                                with open(artifact_file_name, "wb") as f:
+                                                    f.write(download_response.content)
 
-                        else:
-                            print(f"Error downloading artifact: {download_response.status_code}")
+                                    else:
+                                        print(f"Error downloading artifact: {download_response.status_code}")
+                            elif nightly_name == "On Nightly Models Ops":
+                                if "nightly_models_ops" in str(artifact["name"]):
 
-                unzip_files(output_file)
+                                    download_url = artifact["archive_download_url"]
+                                    download_response = requests.get(download_url, headers=headers)
+                                    if download_response.status_code == 200:
+                                        artifact_file_name = output_file + "/" + str(artifact["name"]) + ".zip"
+                                        temp_filename = str(artifact["name"]).split("_ops")
+                                        filename = temp_filename[0] + "_ops"
+                                        if filename not in writing_filelist:
+                                            with open(artifact_file_name, "wb") as f:
+                                                writing_filelist[filename] = [str(artifact["name"])]
+                                                writing_filelist[filename].append(artifact["size_in_bytes"])
+                                                f.write(download_response.content)
+                                        else:
+                                            if artifact["size_in_bytes"] > writing_filelist[filename][1]:
+                                                rm_file_path = (
+                                                    output_file + "/" + writing_filelist[filename][0] + ".zip"
+                                                )
+                                                os.remove(rm_file_path)
+                                                with open(artifact_file_name, "wb") as f:
+                                                    f.write(download_response.content)
 
-            else:
-                print("No artifacts found.")
+                                    else:
+                                        print(f"Error downloading artifact: {download_response.status_code}")
 
-        except requests.exceptions.JSONDecodeError as e:
-            print(f"JSONDecodeError: {str(e)}")
-            print("The response is not valid JSON.")
-    else:
-        print(f"Failed to download logs. HTTP Status: {artifact_url_response.status_code}")
+                if "next" in artifact_url_response.links:
+                    # Set the 'next' page URL for the next request
+                    artifact_url_response = artifact_url_response.links["next"]["url"]
+                    artifact_url_response = requests.get(artifact_url_response, headers=headers, stream=True)
+                else:
+                    # No more pages, break the loop
+                    artifact_url_response = None
+                    writing_filelist = {}
+                    unzip_files(output_file)
+
+            except requests.exceptions.JSONDecodeError as e:
+                print(f"JSONDecodeError: {str(e)}")
+                print("The response is not valid JSON.")
+        else:
+            print(f"Failed to download logs. HTTP Status: {artifact_url_response.status_code}")
 
 
 def fetch_nightly_ids(url, nightly_name):
@@ -139,7 +188,7 @@ def fetch_nightly_ids(url, nightly_name):
 
                 for run in runs:
 
-                    if run["name"] == nightly_name:
+                    if run["name"] == "On nightly":
                         if run["head_branch"] == "main" and run["event"] == "schedule":
                             id_count += 1
                             nightly_date = str((date.today() - timedelta(id_count)).strftime("%m-%d")).replace("-", "/")
@@ -344,6 +393,8 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     nightly_name = args.nightly_name
+    if nightly_name == "On Nightly Models Ops":
+        runner_count = 10
     fetch_nightly_ids(nightly_url, nightly_name)
     latest_id = latest_10_nightly_id[0]
 
@@ -372,15 +423,24 @@ if __name__ == "__main__":
         output_second_dir = "Nightly_results/" + output_dir_date + "/" + str(id).split("-")[0]
         os.makedirs(output_second_dir, exist_ok=True)
         run_id = latest_10_run_id[run_count]
-        download_ci_logs(REPO_OWNER, REPO_NAME, run_id, output_second_dir)
+        download_ci_logs(REPO_OWNER, REPO_NAME, run_id, output_second_dir, nightly_name)
         run_count = run_count + 1
 
         dir = os.listdir(output_second_dir)
-        if len(dir) != 0:
+        if len(dir) == runner_count:
             header_name.append(str(id))
             for i in range(1, (runner_count + 1)):
                 runner_path = output_second_dir + "/pytest_" + str(i) + ".log"
-                log_path_list.append(runner_path)
+                if os.path.isfile(runner_path):
+                    log_path_list.append(runner_path)
+                    file_exist = True
+                else:
+                    print("File doesn't exist")
+                    file_exist = False
+                    break
+
+            if file_exist == False:
+                continue
 
             for log_file in log_path_list:
                 with open(log_file, "r") as log:
@@ -394,6 +454,20 @@ if __name__ == "__main__":
                     if "==== short test summary info ====" in line:
                         break
 
+                    if latest_result == True:
+                        if "=== FAILURES ====" in line:
+                            append_lines = True
+
+                        if append_lines:
+                            failure_reason_lines.append(line.strip("\n"))
+                            continue
+
+                        if "warnings summary" in line:
+                            break
+
+                    if ("=== FAILURES ===" in line or "warnings summary" in line) and latest_result == False:
+                        break
+
                     if "plugins: " in line:
                         iteration = True
                     elif iteration == False:
@@ -403,7 +477,10 @@ if __name__ == "__main__":
                         if nightly_name == "On Nightly Models Ops":
                             case_name = ((line.strip("\n").split("py::")[1]).split("] ")[0]) + "]"
                         elif nightly_name == "On nightly":
-                            case_name = (line.strip("\n").split("py::")[1]).split(" ")[0]
+                            tmp_name = line.strip("\n").split("py::")
+                            extract_model_type = tmp_name[0].split("/")[3]
+                            testcase_name = tmp_name[1].split(" ")[0]
+                            case_name = extract_model_type + "_" + testcase_name
                         test_log_status = "started"
 
                     if ("XFAIL" in line) and (test_log_status == "started"):
@@ -430,15 +507,11 @@ if __name__ == "__main__":
                             total_count = total_count + 1
                             skip_count = skip_count + 1
 
-                    if latest_result == True:
-                        if "=== FAILURES ====" in line:
-                            append_lines = True
-
-                        if append_lines:
-                            failure_reason_lines.append(line.strip("\n"))
-
-                        if "warnings summary" in line:
+                    if "Fatal Python error: Segmentation fault" in line:
+                        if latest_result == False:
                             break
+                        elif latest_result == True:
+                            append_lines = True
             cmd3 = f"rm -rf {output_second_dir}"
         else:
             print("-------Empty directory for run id:", id, "-------")
