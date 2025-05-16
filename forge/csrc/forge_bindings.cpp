@@ -144,7 +144,7 @@ PYBIND11_MODULE(_C, m)
     py::module m_runtime = m.def_submodule("runtime", "Submodule defining runtime functions");
     RuntimeModule(m_runtime);
 
-    py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification functions");
+    py::module_ m_verif = m.def_submodule("verif", "Submodule defining verification and test utilities");
     VerifModule(m_verif);
 
     py::enum_<tt::MathFidelity>(m, "MathFidelity")
