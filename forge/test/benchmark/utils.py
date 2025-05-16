@@ -10,8 +10,33 @@ import torch
 from tqdm import tqdm
 from transformers import AutoImageProcessor
 from datasets import load_dataset
+from ultralytics.nn.tasks import DetectionModel
 
 # Forge modules
+
+
+class YoloWrapper(torch.nn.Module):
+    def __init__(self, url):
+        super().__init__()
+        self.model = self.load_model(url)
+        self.model.model[-1].end2end = False  # Disable internal post processing steps
+
+    def forward(self, image: torch.Tensor):
+        y, x = self.model(image)
+        # Post processing inside model casts output to float32, even though raw output is aligned with image.dtype
+        # Therefore we need to cast it back to image.dtype
+        return (y.to(image.dtype), *x)
+
+    def load_model(self, url):
+        # Load YOLO model weights
+        weights = torch.hub.load_state_dict_from_url(url, map_location="cpu")
+
+        # Initialize and load model
+        model = DetectionModel(cfg=weights["model"].yaml)
+        model.load_state_dict(weights["model"].float().state_dict())
+        model.eval()
+
+        return model
 
 
 def load_benchmark_dataset(task, model_version, dataset_name, split, batch_size, loop_count):
