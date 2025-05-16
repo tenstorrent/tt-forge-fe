@@ -103,9 +103,16 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
-@pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
+@pytest.mark.parametrize(
+    "variant",
+    [
+        pytest.param(
+            "microsoft/swinv2-tiny-patch4-window8-256",
+            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
+        ),
+    ],
+)
 def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -133,9 +140,9 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
 def test_swin_v2_tiny_masked(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

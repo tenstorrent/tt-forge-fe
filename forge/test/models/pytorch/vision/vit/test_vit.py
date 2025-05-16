@@ -15,6 +15,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
@@ -31,8 +32,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
-    if variant != "google/vit-base-patch16-224":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
@@ -83,20 +82,17 @@ variants_with_weights = {
 }
 
 variants = [
-    "vit_b_16",
-    "vit_b_32",
-    "vit_l_16",
-    "vit_l_32",
-    "vit_h_14",
+    pytest.param("vit_b_16"),
+    pytest.param("vit_b_32", marks=[pytest.mark.xfail]),
+    pytest.param("vit_l_16"),
+    pytest.param("vit_l_32", marks=[pytest.mark.xfail]),
+    pytest.param("vit_h_14", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vit_torchvision(forge_property_recorder, variant):
-
-    if variant != "vit_b_16":
-        pytest.skip("Skipping this variant; only testing the small variant(vit_b_16) for now.")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -117,4 +113,7 @@ def test_vit_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

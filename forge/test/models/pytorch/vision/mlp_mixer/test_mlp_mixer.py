@@ -15,6 +15,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 varaints = [
@@ -22,15 +23,36 @@ varaints = [
         "mixer_b16_224",
         marks=[pytest.mark.xfail],
     ),
-    "mixer_b16_224_in21k",
-    "mixer_b16_224_miil",
-    "mixer_b16_224_miil_in21k",
-    "mixer_b32_224",
-    "mixer_l16_224",
-    "mixer_l16_224_in21k",
-    "mixer_l32_224",
-    "mixer_s16_224",
-    "mixer_s32_224",
+    pytest.param(
+        "mixer_b16_224_in21k",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param("mixer_b16_224_miil"),
+    pytest.param(
+        "mixer_b16_224_miil_in21k",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "mixer_b32_224",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "mixer_l16_224",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "mixer_l16_224_in21k",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "mixer_l32_224",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param("mixer_s16_224"),
+    pytest.param(
+        "mixer_s32_224",
+        marks=[pytest.mark.xfail],
+    ),
     pytest.param(
         "mixer_b16_224.goog_in21k",
         marks=[pytest.mark.xfail],
@@ -41,8 +63,6 @@ varaints = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
 def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
-    if variant not in ["mixer_b16_224", "mixer_b16_224.goog_in21k"]:
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -79,7 +99,10 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
