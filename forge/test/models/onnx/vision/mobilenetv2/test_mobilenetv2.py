@@ -27,7 +27,7 @@ params = [
 
 @pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
-def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
+def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -54,7 +54,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, tmp_path):
     )
 
     inputs = load_inputs(img, model)
-    onnx_path = f"{tmp_path}/mobilenetv2.onnx"
+    onnx_path = f"{forge_tmp_path}/mobilenetv2.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
 
     # Load onnx model

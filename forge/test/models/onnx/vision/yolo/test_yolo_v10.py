@@ -15,7 +15,7 @@ from forge.forge_property_utils import Framework, Source, Task
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_yolov10(forge_property_recorder, tmp_path):
+def test_yolov10(forge_property_recorder, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -34,7 +34,7 @@ def test_yolov10(forge_property_recorder, tmp_path):
     torch_model = YoloWrapper(model)
 
     # Export model to ONNX
-    onnx_path = tmp_path / "yolov10.onnx"
+    onnx_path = forge_tmp_path / "yolov10.onnx"
     torch.onnx.export(
         torch_model,
         image_tensor,

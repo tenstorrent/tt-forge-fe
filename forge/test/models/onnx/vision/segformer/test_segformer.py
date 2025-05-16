@@ -25,7 +25,7 @@ variants_img_classification = [
 
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly
-def test_segformer_image_classification_onnx(forge_property_recorder, variant, tmp_path):
+def test_segformer_image_classification_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -51,7 +51,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
     inputs = get_sample_data(variant)
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/segformer_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
+    onnx_path = f"{forge_tmp_path}/segformer_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path, opset_version=17)
 
     # Load framework model
@@ -90,7 +90,7 @@ variants_semseg = [
 @pytest.mark.parametrize("variant", variants_semseg)
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, tmp_path):
+def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -112,7 +112,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     inputs = get_sample_data(variant)
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
+    onnx_path = f"{forge_tmp_path}/" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path, opset_version=17)
 
     # Load framework model
