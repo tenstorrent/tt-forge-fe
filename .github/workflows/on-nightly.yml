@@ -88,7 +88,7 @@ jobs:
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: '[{"runs-on": "n150"}, {"runs-on": "p150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
 
   perf-benchmark:

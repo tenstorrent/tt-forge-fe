@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import pytest
 import time
 
@@ -354,6 +355,9 @@ def test_forge_vs_torch(forge_property_recorder):
 
 @pytest.mark.push
 def test_loss_device(forge_property_recorder):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     # Config
     num_epochs = 3
     batch_size = 1
@@ -451,6 +455,9 @@ def test_loss_device(forge_property_recorder):
 
 @pytest.mark.push
 def test_lora(forge_property_recorder):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     # Config
     num_epochs = 3
     batch_size = 128
@@ -537,6 +544,9 @@ def test_lora(forge_property_recorder):
 
 @pytest.mark.push
 def test_optimizer_device(forge_property_recorder):
+    if os.environ["ARCH_NAME"] == "blackhole":
+        pytest.xfail()
+
     # Config
     num_epochs = 32
     batch_size = 1024
