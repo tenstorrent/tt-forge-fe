@@ -7,6 +7,7 @@ import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
 from forge.tensor import forge_dataformat_to_pytorch_dtype
+from .nop import Nop
 
 
 class Pad(PyTM):

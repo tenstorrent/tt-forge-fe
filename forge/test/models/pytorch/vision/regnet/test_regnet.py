@@ -11,10 +11,18 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.regnet.utils.image_utils import preprocess_input_data
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 
+variants = [
+    "facebook/regnet-y-040",
+    "facebook/regnet-y-064",
+    "facebook/regnet-y-080",
+    "facebook/regnet-y-120",
+    "facebook/regnet-y-160",
+    "facebook/regnet-y-320",
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.xfail
-@pytest.mark.parametrize("variant", ["facebook/regnet-y-040"])
+@pytest.mark.parametrize("variant", variants)
 def test_regnet_img_classification(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -30,7 +38,7 @@ def test_regnet_img_classification(forge_property_recorder, variant):
     forge_property_recorder.record_group("generality")
 
     # Load the image processor and the RegNet model
-    framework_model = RegNetForImageClassification.from_pretrained("facebook/regnet-y-040")
+    framework_model = RegNetForImageClassification.from_pretrained(variant, return_dict=False)
 
     # Preprocess the image
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
