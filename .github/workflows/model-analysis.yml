@@ -2,19 +2,6 @@ name: Model Analysis
 
 on:
   workflow_dispatch:
-    inputs:
-      generate_models_ops_test:
-        description: 'If set to True, it will generate models ops test by extracting the unique ops config across all the models otherwise it will run the model analysis and generate markdown files'
-        required: false
-        type: boolean
-        default: false
-  workflow_call:
-    inputs:
-      generate_models_ops_test:
-        description: 'If set to True, it will generate models ops test by extracting the unique ops config across all the models otherwise it will run the model analysis and generate markdown files'
-        required: false
-        type: boolean
-        default: false
 
 jobs:
 
@@ -42,6 +29,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
       HF_HOME: /mnt/dockercache/huggingface
+      FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
       HF_HUB_DISABLE_PROGRESS_BARS: 1
 
     steps:
@@ -78,7 +66,7 @@ jobs:
       - name: Set environment variables
         shell: bash
         run: |
-            OUTPUT=$(bash .github/model-analysis-config.sh ${{ inputs.generate_models_ops_test }})
+            OUTPUT=$(bash .github/model-analysis-config.sh)
             # Assign the script output to GitHub environment variables
             echo "$OUTPUT" | while IFS= read -r line; do
               echo "$line" >> $GITHUB_ENV
@@ -97,23 +85,7 @@ jobs:
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
-      - name: Run Model Analysis Script
-        if: ${{ !inputs.generate_models_ops_test }}
-        shell: bash
-        run: |
-          source env/activate
-          apt-get update
-          apt install -y libgl1 libglx-mesa0
-          set -o pipefail # Ensures that the exit code reflects the first command that fails
-          python scripts/model_analysis/run_analysis_and_generate_md_files.py \
-            --test_directory_or_file_path ${{ env.TEST_DIR_OR_FILE_PATH }} \
-            --dump_failure_logs \
-            --markdown_directory_path ${{ env.MARDOWN_DIR_PATH }} \
-            --unique_ops_output_directory_path ${{ env.UNIQUE_OPS_OUTPUT_DIR_PATH }} \
-            2>&1 | tee ${{ env.SCRIPT_OUTPUT_LOG }}
-
       - name: Generate Models Ops test
-        if: ${{ inputs.generate_models_ops_test }}
         shell: bash
         run: |
           source env/activate
