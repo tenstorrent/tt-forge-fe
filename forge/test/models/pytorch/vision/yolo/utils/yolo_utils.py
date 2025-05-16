@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import torch
-from datasets import load_dataset
-from torchvision import transforms
 from ultralytics.nn.tasks import DetectionModel
 
 
 class YoloWrapper(torch.nn.Module):
-    def __init__(self, model):
+    # def __init__(self, model):
+    def __init__(self, url):
         super().__init__()
-        self.model = model
+        # self.model = model
+        self.model = load_yolo_model_and_image(url)
         self.model.model[-1].end2end = False  # Disable internal post processing steps
 
     def forward(self, image: torch.Tensor):
@@ -30,15 +30,16 @@ def load_yolo_model_and_image(url):
     model.load_state_dict(weights["model"].float().state_dict())
     model.eval()
 
-    # Load sample image and preprocess
-    dataset = load_dataset("huggingface/cats-image", split="test[:1]")
-    image = dataset[0]["image"]
-    preprocess = transforms.Compose(
-        [
-            transforms.Resize((640, 640)),
-            transforms.ToTensor(),
-        ]
-    )
-    image_tensor = preprocess(image).unsqueeze(0)
+    # # Load sample image and preprocess
+    # dataset = load_dataset("huggingface/cats-image", split="test[:1]")
+    # image = dataset[0]["image"]
+    # preprocess = transforms.Compose(
+    #     [
+    #         transforms.Resize((640, 640)),
+    #         transforms.ToTensor(),
+    #     ]
+    # )
+    # image_tensor = preprocess(image).unsqueeze(0)
 
-    return model, image_tensor
+    # return model, image_tensor
+    return model
