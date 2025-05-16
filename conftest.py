@@ -6,6 +6,7 @@ import gc
 import time
 import pytest
 import psutil
+import sys
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
@@ -159,6 +160,18 @@ def memory_usage_tracker(request):
     after_trim = process.memory_info().rss / (1024 * 1024)
     logger.info(f"Memory usage after malloc_trim: {after_trim:.2f} MB")
 
+    def calculate_memory_usage():
+        total_memory = 0
+        for obj in gc.get_objects():  # Get all objects tracked by the garbage collector
+            try:
+                total_memory += sys.getsizeof(obj)
+            except TypeError:
+                pass  # Some objects may not be measurable
+        return total_memory / (1024 * 1024)  # Convert to MB
+
+    python_memory = calculate_memory_usage()
+    print(f"Total memory used by all referenced objects: {python_memory:.2f} MB")
+
     should_log = request.config.getoption("--log-memory-usage")
     if not should_log:
         return
@@ -171,8 +184,10 @@ def memory_usage_tracker(request):
     with open(file_name, "a") as f:
         if f.tell() == 0:
             # Write header if file is empty
-            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx), after_gc, after_trim\n")
+            f.write(
+                "test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx), after_gc, after_trim, python_mem\n"
+            )
         # NOTE: escape test_name in double quotes because some tests have commas in their parameter list...
         f.write(
-            f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f},{after_gc:2f},{after_trim:2f}\n'
+            f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f},{after_gc:2f},{after_trim:2f},{python_memory:2f}\n'
         )
