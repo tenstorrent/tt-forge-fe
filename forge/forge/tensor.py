@@ -1420,7 +1420,9 @@ def consteval_input(consteval_trace, name: str, inputs: Dict[str, torch.Tensor],
     # Sometimes, the stride is inconsistent with shape because some consteval operations might change the shape but not the stride.
     # For example, if we had transpose in consteval graph, output tensor would have stride same as input.
     # However, since we store that input as constant tensor, its shape defines its stride.
-    return torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
+    return (
+        const_eval_tensor.contiguous()
+    )  # torch.empty(const_eval_tensor.shape, dtype=const_eval_tensor.dtype).copy_(const_eval_tensor)
 
 
 def consteval_shape(compiled_graph_state, name: str, tensor: torch.Tensor, is_forge: bool = False) -> torch.Tensor:
