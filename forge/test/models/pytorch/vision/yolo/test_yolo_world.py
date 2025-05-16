@@ -8,7 +8,7 @@ import torch
 from ultralytics import YOLO
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolovx_utils import get_test_input

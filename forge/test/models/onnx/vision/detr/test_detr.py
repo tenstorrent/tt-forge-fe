@@ -27,7 +27,7 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
-        priority=ModelPriority.P1
+        priority=ModelPriority.P1,
     )
 
     # Load the model

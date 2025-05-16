@@ -9,7 +9,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 # Variants for testing
@@ -58,14 +58,19 @@ def test_qwen_clm(forge_property_recorder, variant):
         "Qwen/Qwen2.5-3B-Instruct",
         "Qwen/Qwen2.5-7B-Instruct",
     ]:
-        group=ModelGroup.RED
+        group = ModelGroup.RED
     else:
-        group=ModelGroup.GENERALITY
+        group = ModelGroup.GENERALITY
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, group=group
-    )   
+        framework=Framework.PYTORCH,
+        model="qwen_v2",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+    )
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")

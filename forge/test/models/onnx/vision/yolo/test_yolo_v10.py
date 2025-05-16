@@ -23,7 +23,7 @@ def test_yolov10(forge_property_recorder, tmp_path):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
-        priority=ModelPriority.P1
+        priority=ModelPriority.P1,
     )
 
     # Load  model and input

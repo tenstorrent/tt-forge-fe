@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.utils.utils import load_input

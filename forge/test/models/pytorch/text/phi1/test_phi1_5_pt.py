@@ -10,7 +10,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -66,8 +72,6 @@ def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    
-
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(
@@ -100,8 +104,6 @@ def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, varian
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    
 
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(

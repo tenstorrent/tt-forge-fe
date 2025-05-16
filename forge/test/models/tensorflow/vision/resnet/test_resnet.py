@@ -27,8 +27,6 @@ def test_resnet_tensorflow(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    
-
     # Load Resnet50 Model
     framework_model = ResNet50(weights="imagenet")
 

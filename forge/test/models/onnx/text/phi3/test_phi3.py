@@ -26,7 +26,12 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, priority=priority
+        framework=Framework.ONNX,
+        model="phi3",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        priority=priority,
     )
 
     # Load tokenizer and model from HuggingFace

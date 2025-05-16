@@ -5,7 +5,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model

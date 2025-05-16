@@ -20,7 +20,13 @@ from torchvision.models import (
 from torchvision.models._api import WeightsEnum
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -51,12 +57,12 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_efficientnet_timm(forge_property_recorder, variant):
     if variant in ["efficientnet_b0"]:
-        group=ModelGroup.RED
-        priority=ModelPriority.P1
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
-        group=ModelGroup.GENERALITY
-        priority=ModelPriority.P2
-        
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,

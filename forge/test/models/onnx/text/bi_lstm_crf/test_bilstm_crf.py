@@ -23,7 +23,7 @@ def test_birnn_crf(forge_property_recorder, tmp_path):
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
-        priority=ModelPriority.P1
+        priority=ModelPriority.P1,
     )
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]

@@ -8,7 +8,7 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from .utils import load_inputs

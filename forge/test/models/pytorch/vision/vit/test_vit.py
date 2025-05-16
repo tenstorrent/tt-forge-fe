@@ -6,7 +6,13 @@ from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
@@ -30,11 +36,11 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
-        group=ModelGroup.RED
-        priority=ModelPriority.P1
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
-        group=ModelGroup.GENERALITY
-        priority=ModelPriority.P2
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -44,7 +50,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         group=group,
-        priority=priority
+        priority=priority,
     )
 
     # Load processor and model

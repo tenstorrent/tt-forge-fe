@@ -23,7 +23,6 @@ def test_cogito_generation(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    
 
     # Load model and tokenizer
     input_tensor_list, framework_model = get_input_model(variant)

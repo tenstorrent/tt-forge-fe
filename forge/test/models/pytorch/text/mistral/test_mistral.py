@@ -6,7 +6,7 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.mistral.utils.utils import get_current_weather
@@ -69,7 +69,7 @@ def test_mistral_v0_3(forge_property_recorder, variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
-    )    
+    )
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

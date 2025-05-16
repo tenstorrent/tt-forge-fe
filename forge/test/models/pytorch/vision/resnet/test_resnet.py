@@ -39,8 +39,6 @@ def test_resnet_hf(variant, forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    
-
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
     images = random.sample(dataset["valid"]["image"], 10)
@@ -109,8 +107,6 @@ def test_resnet_timm(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
-
-    
 
     # Load framework model
     framework_model = download_model(timm.create_model, "resnet50", pretrained=True)

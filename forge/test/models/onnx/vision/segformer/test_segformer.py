@@ -36,7 +36,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, t
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
-        priority=priority
+        priority=priority,
     )
 
     # Load the model from HuggingFace

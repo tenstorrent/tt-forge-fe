@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelGroup
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -155,14 +155,19 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
-        group=ModelGroup.RED
+        group = ModelGroup.RED
     else:
-        group=ModelGroup.GENERALITY
+        group = ModelGroup.GENERALITY
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE, group=group
-    )   
+        framework=Framework.PYTORCH,
+        model="llama3",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+    )
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

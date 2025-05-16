@@ -29,7 +29,7 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
-        priority=ModelPriority.P1    
+        priority=ModelPriority.P1,
     )
 
     # Load tokenizer and model

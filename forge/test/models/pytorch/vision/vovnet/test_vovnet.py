@@ -5,7 +5,13 @@ import pytest
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, ModelPriority
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -31,11 +37,11 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     if variant in ["vovnet27s"]:
-        group=ModelGroup.RED
-        priority=ModelPriority.P1
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
-        group=ModelGroup.GENERALITY
-        priority=ModelPriority.P2
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

@@ -11,6 +11,7 @@ from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelGroup
 
+
 class LlamaPrefillModel(torch.nn.Module):
     def __init__(self, model):
         super().__init__()

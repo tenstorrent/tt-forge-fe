@@ -19,7 +19,7 @@ from test.utils import download_model
 def test_googlenet_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    
+
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
     )
