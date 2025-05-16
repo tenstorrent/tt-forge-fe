@@ -26,9 +26,6 @@ def test_tri_basic_2_sematic_segmentation_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="tri", variant="basic_2", task=Task.SEMANTIC_SEGMENTATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Sample Input
     image_w = 800
     image_h = 800

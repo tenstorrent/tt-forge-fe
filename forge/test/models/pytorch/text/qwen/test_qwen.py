@@ -26,9 +26,6 @@ def test_qwen1_5_causal_lm(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)
     config.use_cache = False
@@ -72,9 +69,6 @@ def test_qwen1_5_chat(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Setup model configuration
     config = Qwen2Config.from_pretrained(variant)

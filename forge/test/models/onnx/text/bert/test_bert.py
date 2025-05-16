@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
@@ -36,7 +36,6 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, forge_tmp_path, o
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -89,7 +88,6 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, forge_tm
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -150,11 +148,8 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

@@ -29,9 +29,6 @@ def test_roberta_masked_lm(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
@@ -72,9 +69,6 @@ def test_roberta_sentiment_pytorch(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

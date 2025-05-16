@@ -7,7 +7,7 @@ from datasets import load_dataset
 from transformers import AutoFeatureExtractor, WhisperModel
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -27,10 +27,8 @@ def test_whisper_large_v3(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
 
     # model loading
     model = download_model(WhisperModel.from_pretrained, variant, return_dict=False)

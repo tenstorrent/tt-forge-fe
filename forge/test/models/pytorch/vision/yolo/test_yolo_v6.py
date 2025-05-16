@@ -40,9 +40,6 @@ def test_yolo_v6_pytorch(forge_property_recorder, variant):
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2 :prepare model
     url = f"https://github.com/meituan/YOLOv6/releases/download/0.3.0/{variant}.pt"
     weights = f"{variant}.pt"

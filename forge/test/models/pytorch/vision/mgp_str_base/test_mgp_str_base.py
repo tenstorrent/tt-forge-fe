@@ -40,9 +40,6 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
         task=Task.SCENE_TEXT_RECOGNITION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     framework_model = load_model(variant)
     framework_model = Wrapper(framework_model)

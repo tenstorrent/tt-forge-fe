@@ -26,9 +26,6 @@ def test_alexnet_torchhub(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
     framework_model.eval()
@@ -71,9 +68,6 @@ def test_alexnet_osmr(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model
     framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)

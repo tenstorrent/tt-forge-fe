@@ -34,9 +34,6 @@ def test_hardnet_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # load only the model architecture without pre-trained weights.
     framework_model = torch.hub.load("PingoLH/Pytorch-HarDNet", variant, pretrained=False)
 

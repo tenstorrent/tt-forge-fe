@@ -58,9 +58,6 @@ def test_mamba(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="mamba", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     model = download_model(MambaForCausalLM.from_pretrained, variant, use_cache=False)

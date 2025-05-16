@@ -35,7 +35,6 @@ def test_chineseclip_text(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPTextModel.from_pretrained(variant)
@@ -68,7 +67,6 @@ def test_chineseclip_vision(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPVisionModel.from_pretrained(variant)
@@ -105,7 +103,6 @@ def test_chineseclip(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_TEXT_PAIRING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPModel.from_pretrained(variant)

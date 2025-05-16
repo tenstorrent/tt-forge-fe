@@ -34,9 +34,6 @@ def test_beit_image_classification(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     framework_model = load_model(variant)
     inputs = load_input(variant)

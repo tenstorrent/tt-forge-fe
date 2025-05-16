@@ -50,9 +50,6 @@ def test_t5_generation(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     # Variants: t5-small, t5-base, t5-large
 

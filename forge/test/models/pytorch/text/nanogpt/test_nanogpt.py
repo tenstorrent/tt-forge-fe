@@ -39,9 +39,6 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model
     tokenizer = AutoTokenizer.from_pretrained(variant)
     tokenizer.pad_token = tokenizer.eos_token

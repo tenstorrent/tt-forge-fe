@@ -15,7 +15,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 
@@ -87,12 +93,14 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="phi3",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -151,9 +159,6 @@ def test_phi3_token_classification(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
     config_dict = config.to_dict()
@@ -195,9 +200,6 @@ def test_phi3_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)

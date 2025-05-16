@@ -39,9 +39,6 @@ def test_retinanet(forge_property_recorder, variant):
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
     local_zip_path = f"{variant}.zip"
@@ -100,9 +97,6 @@ def test_retinanet_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

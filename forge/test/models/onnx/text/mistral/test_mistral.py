@@ -31,10 +31,6 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P2")
-
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

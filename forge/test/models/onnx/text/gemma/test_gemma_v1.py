@@ -36,9 +36,6 @@ def test_gemma_v1_onnx(forge_property_recorder, variant, forge_tmp_path):
         framework=Framework.ONNX, model="gemma", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and tokenizer from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)

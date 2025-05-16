@@ -35,9 +35,6 @@ def test_deepseek_inference(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="deepseek", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     model_name = f"deepseek-ai/{variant}"
     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
     framework_model = DeepSeekWrapper(model)

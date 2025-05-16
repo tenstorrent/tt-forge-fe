@@ -9,7 +9,13 @@ import torch
 from transformers import DetrForObjectDetection, DetrForSegmentation
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
@@ -44,11 +50,9 @@ def test_detr_detection(forge_property_recorder, variant):
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
@@ -95,9 +99,6 @@ def test_detr_segmentation(forge_property_recorder, variant):
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model
     framework_model = DetrForSegmentation.from_pretrained(variant)

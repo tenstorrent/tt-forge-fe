@@ -30,7 +30,6 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, f
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load MiniLM tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

@@ -18,9 +18,6 @@ def test_fpn_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="fpn", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load FPN model
     framework_model = FPNWrapper()
 

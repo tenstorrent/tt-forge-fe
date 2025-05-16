@@ -21,9 +21,6 @@ def test_stable_diffusion_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="stable_diffusion", variant=variant
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     batch_size = 1
 
     # Set inference steps

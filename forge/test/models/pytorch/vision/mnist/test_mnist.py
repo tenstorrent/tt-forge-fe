@@ -21,9 +21,6 @@ def test_mnist(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     framework_model = load_model()
     inputs = load_input()

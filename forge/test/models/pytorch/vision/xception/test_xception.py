@@ -61,9 +61,6 @@ def test_xception_timm(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
 
     # Forge compile framework model

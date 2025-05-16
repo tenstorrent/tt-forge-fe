@@ -27,9 +27,6 @@ def test_efficientnet_lite_0_pytorch(forge_property_recorder):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite0"
     framework_model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -60,9 +57,6 @@ def test_efficientnet_lite_1_pytorch(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite1"
@@ -95,9 +89,6 @@ def test_efficientnet_lite_2_pytorch(forge_property_recorder):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite2"
     framework_model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -129,9 +120,6 @@ def test_efficientnet_lite_3_pytorch(forge_property_recorder):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite3"
     framework_model = efflite.build_efficientnet_lite(model_name, 1000)
@@ -162,9 +150,6 @@ def test_efficientnet_lite_4_pytorch(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Model load in Forge
     model_name = "efficientnet_lite4"
@@ -204,9 +189,6 @@ def test_efficientnet_lite_timm(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
