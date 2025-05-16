@@ -10,7 +10,7 @@ from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
-from forge._C import ExecutionDepth, DataFormat
+from forge._C import DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
@@ -274,7 +274,6 @@ class ModelInfo:
 @dataclass
 class Tags:
     model_name: Optional[str] = None
-    bringup_status: str = ""
     execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
@@ -493,15 +492,6 @@ class ForgePropertyHandler:
         self.record_pcc(pcc)
         self.record_atol(atol)
 
-    def record_execution_depth(self, execution_depth: ExecutionDepth):
-        """
-        Records the execution depth (as bringup_status) in the tags.
-
-        Args:
-            execution_depth (ExecutionDepth): The execution depth value.
-        """
-        self.add("tags.bringup_status", ExecutionDepth.to_str(execution_depth))
-
     def record_execution_stage(self, execution_stage: ExecutionStage):
         """
         Records the execution stage in the tags.
@@ -510,17 +500,6 @@ class ForgePropertyHandler:
             execution_stage (ExecutionStage): The execution stage value.
         """
         self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
-
-    def record_execution(self, execution_depth: ExecutionDepth, execution_stage: ExecutionStage):
-        """
-        Records the execution depth and stage in the tags.
-
-        Args:
-            execution_depth (ExecutionDepth): The execution depth value.
-            execution_stage (ExecutionStage): The execution stage value.
-        """
-        self.record_execution_depth(execution_depth)
-        self.record_execution_stage(execution_stage)
 
     def record_compiler_config(self, compiler_config: CompilerConfig):
         """

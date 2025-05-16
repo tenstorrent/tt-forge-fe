@@ -26,7 +26,7 @@ from forge._C import (
     dump_graph,
     extract_unique_op_configuration,
 )
-from forge._C import ForgeGraphModule, GraphType, ExecutionDepth
+from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
@@ -238,9 +238,8 @@ def compile_main(
 
     if forge_property_handler is not None:
         forge_property_handler.record_compiler_config(compiler_cfg)
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.FAILED_FE_COMPILATION,
-            execution_stage=ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION,
+        forge_property_handler.record_execution_stage(
+            execution_stage=ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION
         )
 
     compile_context: CompileContext = CompileContext(
@@ -1012,7 +1011,10 @@ def run_mlir_compiler(context: CompileContext) -> CompileDepth:
     if forge_property_handler is not None:
         forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
 
-    context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config, forge_property_handler)
+    context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config)
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_flatbuffer_details(context.compiled_binary.as_json())
 
     return CompileDepth.FINISH_COMPILE
 
