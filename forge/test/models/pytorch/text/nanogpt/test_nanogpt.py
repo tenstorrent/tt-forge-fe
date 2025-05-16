@@ -25,10 +25,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "FinancialSupport/NanoGPT",
-            marks=pytest.mark.xfail,
-        ),
+        "FinancialSupport/NanoGPT",
     ],
 )
 def test_nanogpt_text_generation(forge_property_recorder, variant):

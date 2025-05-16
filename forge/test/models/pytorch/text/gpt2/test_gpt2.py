@@ -31,10 +31,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "gpt2",
-            marks=[pytest.mark.xfail],
-        ),
+        "gpt2",
     ],
 )
 def test_gpt2_text_gen(forge_property_recorder, variant):
