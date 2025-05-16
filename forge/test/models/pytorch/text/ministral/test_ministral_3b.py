@@ -17,7 +17,7 @@ variants = ["ministral/Ministral-3b-instruct"]
 def test_ministral_3b(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_propertiese(
+    module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
         model="ministral",
         variant=variant,

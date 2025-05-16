@@ -47,10 +47,12 @@ def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
     sample_inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs, module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs, module_name, forge_property_handler=forge_property_recorder
+    )
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model)
+    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
