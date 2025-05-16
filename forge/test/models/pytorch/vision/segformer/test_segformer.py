@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 from transformers import (
     SegformerConfig,
     SegformerForImageClassification,
@@ -10,6 +11,8 @@ from transformers import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -54,16 +57,23 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     config = SegformerConfig(**config_dict)
 
     # Load the model from HuggingFace
-    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -102,16 +112,23 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     forge_property_recorder.record_group("generality")
 
     # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

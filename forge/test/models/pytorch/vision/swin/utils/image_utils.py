@@ -10,7 +10,7 @@ from torchvision import models
 def load_image(image_path, feature_extractor):
     image = Image.open(requests.get(image_path, stream=True).raw)
     img_tensor = feature_extractor(images=image, return_tensors="pt").pixel_values
-    return [img_tensor]
+    return [img_tensor.to(torch.bfloat16)]
 
 
 variants_with_weights = {

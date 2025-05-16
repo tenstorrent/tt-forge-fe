@@ -39,7 +39,7 @@ def load_mobilenet_model(model_name):
     input_tensor = preprocess(input_image)
     input_batch = input_tensor.unsqueeze(0)
 
-    return model, [input_batch]
+    return model.to(torch.bfloat16), [input_batch.to(torch.bfloat16)]
 
 
 url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"

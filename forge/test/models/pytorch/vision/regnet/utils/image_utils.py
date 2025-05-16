@@ -19,4 +19,4 @@ def preprocess_input_data(image_url, variant):
     # Preprocess the image
     image_tensor = preprocessor(images=image, return_tensors="pt").pixel_values
 
-    return [image_tensor]
+    return [image_tensor.to(torch.bfloat16)]

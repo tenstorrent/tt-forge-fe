@@ -30,7 +30,7 @@ def load_ghostnet_model(variant):
     transforms = create_transform(**data_config, is_training=False)
     img_tensor = transforms(img).unsqueeze(0)
 
-    return framework_model, [img_tensor]
+    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
 
 
 url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
