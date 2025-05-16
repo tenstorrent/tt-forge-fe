@@ -16,3 +16,6 @@
 [submodule "third_party/pybind11_json"]
 	path = third_party/pybind11_json
 	url = https://github.com/pybind/pybind11_json
+[submodule "third_party/tt_forge_models"]
+	path = third_party/tt_forge_models
+	url = https://github.com/tenstorrent/tt-forge-models.git
