@@ -39,7 +39,6 @@ from test.exception_utils import extract_refined_error_message, extract_failure_
 
 collect_ignore = ["legacy_tests"]
 
-
 def pytest_sessionstart(session):
     # See: https://github.com/pytorch/pytorch/wiki/Autograd-and-Fork
     mp.set_start_method("spawn")
