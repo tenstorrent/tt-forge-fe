@@ -20,7 +20,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
-def test_mistral_v0_3_onnx(forge_property_recorder, variant, tmp_path):
+def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -48,7 +48,7 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input["input_ids"]]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/mistral_7b_v0_3.onnx"
+    onnx_path = f"{forge_tmp_path}/mistral_7b_v0_3.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=17)
 
     # Load framework model

@@ -13,7 +13,7 @@ from utils import load_inputs
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
-def test_unet_onnx(forge_property_recorder, tmp_path):
+def test_unet_onnx(forge_property_recorder, forge_tmp_path):
 
     # Build Module Name
     module_name = forge_property_recorder.record_model_properties(
@@ -43,7 +43,7 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
     )
     inputs = load_inputs(url, filename)
 
-    onnx_path = f"{tmp_path}/unet.onnx"
+    onnx_path = f"{forge_tmp_path}/unet.onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path)
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)

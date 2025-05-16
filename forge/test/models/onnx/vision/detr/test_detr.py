@@ -19,7 +19,7 @@ from test.models.models_utils import preprocess_input_data
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
-def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
+def test_detr_detection_onnx(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -40,7 +40,7 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input_batch]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/detr_obj_det.onnx"
+    onnx_path = f"{forge_tmp_path}/detr_obj_det.onnx"
     torch.onnx.export(framework_model, (inputs[0]), onnx_path, opset_version=17)
 
     # Load ONNX model
@@ -60,7 +60,7 @@ def test_detr_detection_onnx(forge_property_recorder, variant, tmp_path):
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
-def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
+def test_detr_segmentation_onnx(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -80,7 +80,7 @@ def test_detr_segmentation_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input_batch]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/detr_semseg.onnx"
+    onnx_path = f"{forge_tmp_path}/detr_semseg.onnx"
     torch.onnx.export(framework_model, (inputs[0]), onnx_path, opset_version=17)
 
     # Load ONNX model

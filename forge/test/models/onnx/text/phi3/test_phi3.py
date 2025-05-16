@@ -21,7 +21,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
-def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+def test_phi3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
     priority = ModelPriority.P1 if variant == "microsoft/phi-3-mini-4k-instruct" else ModelPriority.P2
 
     # Record Forge Property
@@ -55,8 +55,8 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     attn_mask = inputs["attention_mask"]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model

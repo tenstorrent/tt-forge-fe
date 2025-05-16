@@ -29,7 +29,7 @@ opset_versions = [7, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
+def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
     random.seed(0)
 
     # Record model details
@@ -44,7 +44,7 @@ def test_resnet_onnx(forge_property_recorder, variant, tmp_path, opset_version):
     # Export model to ONNX
     torch_model = ResNetForImageClassification.from_pretrained(variant)
     input_sample = torch.randn(1, 3, 224, 224)
-    onnx_path = f"{tmp_path}/resnet50.onnx"
+    onnx_path = f"{forge_tmp_path}/resnet50.onnx"
     torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
 
     # Load framework model

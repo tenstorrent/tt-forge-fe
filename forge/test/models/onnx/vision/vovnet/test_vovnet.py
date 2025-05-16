@@ -30,7 +30,7 @@ def generate_model_vovnet_imgcls_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet27s"])
-def test_vovnet_osmr_pytorch(forge_property_recorder, variant, tmp_path):
+def test_vovnet_osmr_pytorch(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -41,7 +41,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant, tmp_path):
     framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/vovnet_osmr.onnx"
+    onnx_path = f"{forge_tmp_path}/vovnet_osmr.onnx"
     torch.onnx.export(
         framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
     )
@@ -66,7 +66,7 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet39"])
-def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, tmp_path):
+def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -80,7 +80,7 @@ def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, tmp_path):
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/vovnet_v1_39.onnx"
+    onnx_path = f"{forge_tmp_path}/vovnet_v1_39.onnx"
     torch.onnx.export(
         framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
     )
@@ -106,7 +106,7 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet_v1_57"])
-def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, tmp_path):
+def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -120,7 +120,7 @@ def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, tmp_path):
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/vovnet_v1_57.onnx"
+    onnx_path = f"{forge_tmp_path}/vovnet_v1_57.onnx"
     torch.onnx.export(
         framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
     )
@@ -145,7 +145,7 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["ese_vovnet19b_dw.ra_in1k"])
-def test_vovnet_timm_pytorch(forge_property_recorder, variant, tmp_path):
+def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -161,7 +161,7 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, tmp_path):
     )
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/vovnet_timm.onnx"
+    onnx_path = f"{forge_tmp_path}/vovnet_timm.onnx"
     torch.onnx.export(
         framework_model, inputs[0], onnx_path, opset_version=17, input_names=["input"], output_names=["output"]
     )

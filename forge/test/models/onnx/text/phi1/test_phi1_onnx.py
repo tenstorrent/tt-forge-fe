@@ -24,7 +24,7 @@ variants = ["microsoft/phi-1"]
 @pytest.mark.nightly
 @pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)")
 @pytest.mark.parametrize("variant", variants)
-def test_phi_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+def test_phi_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -49,8 +49,8 @@ def test_phi_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     sample_inputs = [input_ids, attn_mask]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model
