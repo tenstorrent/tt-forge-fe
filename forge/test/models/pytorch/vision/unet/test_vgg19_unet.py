@@ -1,30 +1,28 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+
 import pytest
 
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from third_party.tt_forge_models.yolov3 import ModelLoader
+from third_party.tt_forge_models.vgg19_unet import ModelLoader
 
 
 @pytest.mark.nightly
-def test_yolo_v3(forge_property_recorder):
+@pytest.mark.xfail
+def test_vgg19_unet(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="Yolo v3",
+        model="VGG19 UNet",
         variant="default",
-        task=Task.OBJECT_DETECTION,
+        task=Task.SEMANTIC_SEGMENTATION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and input
     framework_model = ModelLoader.load_model()
@@ -44,10 +42,4 @@ def test_yolo_v3(forge_property_recorder):
     )
 
     # Model Verification
-    verify(
-        [input_sample],
-        framework_model,
-        compiled_model,
-        forge_property_handler=forge_property_recorder,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    )
+    verify([input_sample], framework_model, compiled_model, forge_property_handler=forge_property_recorder)

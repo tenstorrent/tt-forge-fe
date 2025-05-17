@@ -77,14 +77,14 @@ version = "0.1." + date + "+dev." + short_hash
 forge_c = TTExtension("forge")
 
 # Find packages as before
-packages = [p for p in find_packages("forge") if not p.startswith("test")]
+packages = [p for p in find_packages("forge") if not p.startswith("test")] + ["third_party.tt_forge_models"]
 
 setup(
     name="forge",
     version=version,
     install_requires=requirements,
     packages=packages,
-    package_dir={"forge": "forge/forge"},
+    package_dir={"forge": "forge/forge", "third_party.tt_forge_models": "third_party/tt_forge_models"},
     ext_modules=[forge_c],
     cmdclass={"build_ext": CMakeBuild},
     long_description=long_description,
