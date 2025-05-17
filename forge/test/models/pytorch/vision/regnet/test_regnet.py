@@ -49,8 +49,13 @@ def test_regnet_img_classification(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # post processing
+    logits = co_out[0]
+    predicted_label = logits.argmax(-1).item()
+    print(framework_model.config.id2label[predicted_label])
 
 
 variants_with_weights = {

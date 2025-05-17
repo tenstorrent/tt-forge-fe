@@ -12,7 +12,7 @@ from utils import load_inputs
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.xfail
 def test_unet_onnx(forge_property_recorder, forge_tmp_path):
 
     # Build Module Name
