@@ -1011,3 +1011,46 @@ def test_zeros_like(forge_property_recorder, input_shape):
     )
 
     verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 10),
+        (4, 10),
+        (1, 1),
+        (2, 3, 10),
+        (32, 1024),
+        (64, 2048),
+        (8, 128, 512),
+        (16, 512, 1024),
+        (4, 64, 64, 256),
+        (1, 8192),
+        (128, 128),
+    ],
+)
+@pytest.mark.xfail
+def test_bernoulli(forge_property_recorder, input_shape):
+    class BernoulliNet(nn.Module):
+        def __init__(self, in_features):
+            super(BernoulliNet, self).__init__()
+            self.linear = nn.Linear(in_features, 10)
+
+        def forward(self, x):
+            x = torch.sigmoid(self.linear(x))
+            x = torch.bernoulli(x)
+            return x
+
+    input_tensor = torch.randn(input_shape)
+    in_features = input_tensor.shape[-1]
+    model = BernoulliNet(in_features)
+    inputs = [input_tensor]
+
+    model.eval()
+    compiled_model = forge.compile(
+        model,
+        sample_inputs=inputs,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
