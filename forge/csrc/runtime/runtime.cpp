@@ -8,7 +8,7 @@
 
 #include "tensor.hpp"
 #include "tt/runtime/runtime.h"
-#include "tt/runtime/detail/ttnn/test/dylib.h"
+#include "tt/runtime/test/ttnn/dylib.h"
 #include "tt_device.hpp"
 #include "utils/assert.hpp"
 #include "utils/logger.hpp"
@@ -142,8 +142,8 @@ std::vector<tt::Tensor> run_program(runtime::Binary& binary, int program_idx, st
     return outputs;
 }
 
-void* open_so(std::string path) { return runtime::ttnn::test::openSo(path); }
-void close_so(void* handle) { return runtime::ttnn::test::closeSo(handle); }
+void* open_so(std::string path) { return ::tt::runtime::test::ttnn::openSo(path); }
+void close_so(void* handle) { return ::tt::runtime::test::ttnn::closeSo(handle); }
 
 std::vector<tt::runtime::Tensor> run_so_program(
     void* so_handle, std::string func_name, std::vector<tt::Tensor>& inputs, std::vector<tt::Tensor>& consts_and_params)
@@ -188,14 +188,14 @@ std::vector<tt::runtime::Tensor> run_so_program(
     }
 
     std::vector<tt::runtime::Tensor> rt_outputs =
-        runtime::ttnn::test::runSoProgram(so_handle, func_name, rt_inputs_consts_params, device);
+        ::tt::runtime::test::ttnn::runSoProgram(so_handle, func_name, rt_inputs_consts_params, device);
 
     return rt_outputs;
 }
 
 bool compareOuts(std::vector<tt::runtime::Tensor>& lhs, std::vector<tt::runtime::Tensor>& rhs)
 {
-    return runtime::ttnn::test::compareOuts(lhs, rhs);
+    return ::tt::runtime::test::ttnn::compareOuts(lhs, rhs);
 }
 
 }  // namespace tt
