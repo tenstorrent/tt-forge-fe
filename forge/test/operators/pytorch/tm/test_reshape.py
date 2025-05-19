@@ -23,12 +23,13 @@ from test.operators.utils import VerifyUtils
 from test.operators.utils import InputSource
 from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
-from test.operators.utils.compat import TestDevice
+from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
 from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from test.operators.utils.test_data import TestCollectionTorch
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -111,22 +112,31 @@ class TestVerification:
     ):
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+        value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
-        pytorch_model = (
-            model_type(operator, test_vector.input_shape, kwargs)
-            if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
-            else model_type(operator, kwargs)
-        )
+        if test_vector.input_source == InputSource.CONST_EVAL_PASS:
+            pytorch_model = model_type(
+                operator=operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                value_range=value_range,
+            )
+        else:
+            pytorch_model = model_type(
+                operator=operator,
+                kwargs=kwargs,
+            )
 
         input_shapes = tuple([test_vector.input_shape])
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
-        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2, rtol=1e-8))
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
 
         VerifyUtils.verify(
@@ -137,7 +147,7 @@ class TestVerification:
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
-            value_range=ValueRanges.SMALL,
+            value_range=value_range,
             deprecated_verification=False,
             verify_config=verify_config,
         )
@@ -260,8 +270,8 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.all.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.all.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -271,7 +281,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
         # Test specific classes of reshape operations collection:

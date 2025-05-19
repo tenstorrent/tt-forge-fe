@@ -207,6 +207,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("test/operators/pytorch/")),
                         # Fail with pytorch also. TODO: check if tests are correct
                         M.last_line(M.contains("torch/nn/modules/conv.py:")),
+                        M.last_line(M.contains("torch/nn/functional.py")),
                     ),
                 ],
             ),
@@ -265,6 +266,25 @@ class FailingReasons(Enum):
 
     UNCLASSIFIED = FailingReason(
         description="Unclassified error",
+    )
+
+    NOT_SUPPORTED_IN_TORCH = FailingReason(
+        description="Not supported in Torch",
+        checks=[
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    # layer_norm RuntimeError: "LayerNormKernelImpl" not implemented for 'Half'
+                    M.regex(r"\".*\" not implemented for '.*'"),
+                ],
+                error_log=[
+                    M.any(
+                        M.last_line(M.contains("torch/nn/functional.py")),
+                    ),
+                ],
+            ),
+        ],
     )
 
     UNSUPPORTED_DATA_FORMAT = FailingReason(
