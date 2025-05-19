@@ -40,9 +40,6 @@ def test_mobilenetv3_basic(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model(variant)
 
@@ -102,9 +99,6 @@ def test_mobilenetv3_timm(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,

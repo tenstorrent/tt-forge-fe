@@ -12,7 +12,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import (
@@ -27,26 +33,33 @@ variants = [
         "microsoft/phi-2",
         marks=[pytest.mark.xfail],
     ),
-    "microsoft/phi-2-pytdml",
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB"),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(forge_property_recorder, variant):
+    if variant in ["microsoft/phi-2"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="phi2",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant in ["microsoft/phi-2"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -87,10 +100,21 @@ def test_phi2_clm(forge_property_recorder, variant):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
+]
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -100,9 +124,6 @@ def test_phi2_token_classification(forge_property_recorder, variant):
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -133,10 +154,21 @@ def test_phi2_token_classification(forge_property_recorder, variant):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 27 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
+]
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -146,9 +178,6 @@ def test_phi2_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)

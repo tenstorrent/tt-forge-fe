@@ -42,6 +42,15 @@ class Softmax2(ForgeModule):
         return softmax_output_1
 
 
+class Softmax3(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, softmax_input_0):
+        softmax_output_1 = forge.op.Softmax("", softmax_input_0, dim=2)
+        return softmax_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -113,6 +122,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -135,7 +145,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "model_names": [
                     "pt_yolov8_default_obj_det_github",
                     "pt_yolov10_default_obj_det_github",
-                    "pt_yolov8_default_obj_det_github",
+                    "onnx_yolov8_default_obj_det_github",
                 ],
                 "pcc": 0.99,
                 "args": {"dim": "1"},
@@ -635,6 +645,18 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Softmax0,
+        [((1, 32, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
         Softmax1,
         [((1, 24, 256, 256), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"dim": "-1"}},
@@ -779,6 +801,20 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 8, 256, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
         },
     ),
     (
@@ -1001,10 +1037,16 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
+    ),
+    (
+        Softmax0,
+        [((1, 16, 197, 197), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
     (
         Softmax1,
@@ -1019,6 +1061,11 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"dim": "-1"},
         },
+    ),
+    (
+        Softmax0,
+        [((1, 12, 197, 197), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
     (
         Softmax1,
@@ -1072,6 +1119,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Softmax0,
+        [((1, 1, 16384, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
         Softmax1,
         [((1, 2, 4096, 256), torch.float32)],
         {
@@ -1093,6 +1154,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Softmax0,
+        [((1, 2, 4096, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
+        },
+    ),
+    (
         Softmax1,
         [((1, 5, 1024, 256), torch.float32)],
         {
@@ -1111,6 +1186,20 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
+        },
+    ),
+    (
+        Softmax0,
+        [((1, 5, 1024, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "3"},
         },
     ),
     (
@@ -1242,6 +1331,62 @@ forge_modules_and_shapes_dtypes_list = [
         Softmax1,
         [((1, 1000), torch.float32)],
         {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax1,
+        [((1, 16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Softmax3,
+        [((8, 100, 100), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax3,
+        [((8, 280, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax3,
+        [((8, 100, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "2"},
+        },
+    ),
+    (
+        Softmax3,
+        [((1, 100, 2240), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99, "args": {"dim": "2"}},
     ),
 ]
 

@@ -30,9 +30,6 @@ def test_mobilenetv1_basic(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v1")
 
@@ -78,9 +75,6 @@ def test_mobilenetv1_192(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -121,9 +115,6 @@ def test_mobilenetv1_224(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -151,9 +142,6 @@ def test_mobilenet_v1_timm(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)

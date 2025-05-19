@@ -30,6 +30,6 @@ def get_input_model(variant):
         messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
     )
     model_inputs = model.tokenizer([text], return_tensors="pt", truncation=True)
-    input_tensor_list = [model_inputs["input_ids"]]
+    input_tensor_list = model_inputs["input_ids"]
 
     return input_tensor_list, model

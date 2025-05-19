@@ -28,9 +28,6 @@ def test_ssd300_vgg16(forge_property_recorder, variant):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)

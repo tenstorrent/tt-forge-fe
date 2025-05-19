@@ -30,7 +30,6 @@ def test_clip_text(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPTextModel.from_pretrained(variant)
@@ -63,7 +62,6 @@ def test_clip_vision(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPVisionModel.from_pretrained(variant)
@@ -96,7 +94,6 @@ def test_clip(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_TEXT_PAIRING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPModel.from_pretrained(variant)

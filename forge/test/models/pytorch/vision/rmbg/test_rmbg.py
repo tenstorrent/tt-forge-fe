@@ -25,9 +25,6 @@ def test_rmbg(forge_property_recorder, variant):
         task=Task.IMAGE_SEGMENTATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     framework_model = load_model(variant)
     inputs = load_input()

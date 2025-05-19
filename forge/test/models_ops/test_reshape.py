@@ -1086,7 +1086,7 @@ class Reshape118(ForgeModule):
         return reshape_output_1
 
 
-class Reshape134(ForgeModule):
+class Reshape119(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1095,7 +1095,7 @@ class Reshape134(ForgeModule):
         return reshape_output_1
 
 
-class Reshape135(ForgeModule):
+class Reshape120(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1104,7 +1104,7 @@ class Reshape135(ForgeModule):
         return reshape_output_1
 
 
-class Reshape136(ForgeModule):
+class Reshape121(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1113,7 +1113,7 @@ class Reshape136(ForgeModule):
         return reshape_output_1
 
 
-class Reshape137(ForgeModule):
+class Reshape122(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1122,601 +1122,7 @@ class Reshape137(ForgeModule):
         return reshape_output_1
 
 
-class Reshape138(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 4, 1))
-        return reshape_output_1
-
-
-class Reshape139(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1))
-        return reshape_output_1
-
-
-class Reshape140(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 2048))
-        return reshape_output_1
-
-
-class Reshape141(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 2048))
-        return reshape_output_1
-
-
-class Reshape142(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 32, 64))
-        return reshape_output_1
-
-
-class Reshape143(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 2048))
-        return reshape_output_1
-
-
-class Reshape144(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 1, 64))
-        return reshape_output_1
-
-
-class Reshape145(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 32, 1, 64))
-        return reshape_output_1
-
-
-class Reshape146(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13))
-        return reshape_output_1
-
-
-class Reshape147(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 768))
-        return reshape_output_1
-
-
-class Reshape148(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 12, 64))
-        return reshape_output_1
-
-
-class Reshape149(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 768))
-        return reshape_output_1
-
-
-class Reshape150(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 13, 64))
-        return reshape_output_1
-
-
-class Reshape151(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 12, 13, 13))
-        return reshape_output_1
-
-
-class Reshape152(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 13, 13))
-        return reshape_output_1
-
-
-class Reshape153(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 64, 13))
-        return reshape_output_1
-
-
-class Reshape154(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 12, 13, 64))
-        return reshape_output_1
-
-
-class Reshape155(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 3072))
-        return reshape_output_1
-
-
-class Reshape156(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 3072))
-        return reshape_output_1
-
-
-class Reshape157(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 2048))
-        return reshape_output_1
-
-
-class Reshape158(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 32, 64))
-        return reshape_output_1
-
-
-class Reshape159(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 2048))
-        return reshape_output_1
-
-
-class Reshape160(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 13, 64))
-        return reshape_output_1
-
-
-class Reshape161(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 32, 1, 13))
-        return reshape_output_1
-
-
-class Reshape162(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 1, 13))
-        return reshape_output_1
-
-
-class Reshape163(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 8192))
-        return reshape_output_1
-
-
-class Reshape164(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 8192))
-        return reshape_output_1
-
-
-class Reshape165(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 2048))
-        return reshape_output_1
-
-
-class Reshape166(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1536))
-        return reshape_output_1
-
-
-class Reshape167(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1536))
-        return reshape_output_1
-
-
-class Reshape168(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 24, 64))
-        return reshape_output_1
-
-
-class Reshape169(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 1536))
-        return reshape_output_1
-
-
-class Reshape170(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 1, 64))
-        return reshape_output_1
-
-
-class Reshape171(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 24, 1, 64))
-        return reshape_output_1
-
-
-class Reshape172(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 1536))
-        return reshape_output_1
-
-
-class Reshape173(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 24, 64))
-        return reshape_output_1
-
-
-class Reshape174(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 1536))
-        return reshape_output_1
-
-
-class Reshape175(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 13, 64))
-        return reshape_output_1
-
-
-class Reshape176(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 24, 1, 13))
-        return reshape_output_1
-
-
-class Reshape177(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 1, 13))
-        return reshape_output_1
-
-
-class Reshape178(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 6144))
-        return reshape_output_1
-
-
-class Reshape179(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 6144))
-        return reshape_output_1
-
-
-class Reshape180(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1))
-        return reshape_output_1
-
-
-class Reshape181(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 8, 64))
-        return reshape_output_1
-
-
-class Reshape182(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 512))
-        return reshape_output_1
-
-
-class Reshape183(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 64))
-        return reshape_output_1
-
-
-class Reshape184(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 1))
-        return reshape_output_1
-
-
-class Reshape185(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 1))
-        return reshape_output_1
-
-
-class Reshape186(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 1))
-        return reshape_output_1
-
-
-class Reshape187(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 64))
-        return reshape_output_1
-
-
-class Reshape188(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 3000, 1))
-        return reshape_output_1
-
-
-class Reshape189(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(512, 80, 3, 1))
-        return reshape_output_1
-
-
-class Reshape190(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 3000))
-        return reshape_output_1
-
-
-class Reshape191(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 3000, 1))
-        return reshape_output_1
-
-
-class Reshape192(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(512, 512, 3, 1))
-        return reshape_output_1
-
-
-class Reshape193(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 1500))
-        return reshape_output_1
-
-
-class Reshape194(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1500, 512))
-        return reshape_output_1
-
-
-class Reshape195(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1500, 8, 64))
-        return reshape_output_1
-
-
-class Reshape196(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1500, 512))
-        return reshape_output_1
-
-
-class Reshape197(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1500, 64))
-        return reshape_output_1
-
-
-class Reshape198(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1500, 1500))
-        return reshape_output_1
-
-
-class Reshape199(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1500, 1500))
-        return reshape_output_1
-
-
-class Reshape200(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 1500))
-        return reshape_output_1
-
-
-class Reshape201(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1500, 64))
-        return reshape_output_1
-
-
-class Reshape202(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 1500))
-        return reshape_output_1
-
-
-class Reshape203(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 1500))
-        return reshape_output_1
-
-
-class Reshape204(ForgeModule):
+class Reshape123(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1725,7 +1131,601 @@ class Reshape204(ForgeModule):
         return reshape_output_1
 
 
-class Reshape205(ForgeModule):
+class Reshape124(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 4, 1))
+        return reshape_output_1
+
+
+class Reshape125(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1))
+        return reshape_output_1
+
+
+class Reshape126(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 2048))
+        return reshape_output_1
+
+
+class Reshape127(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 2048))
+        return reshape_output_1
+
+
+class Reshape128(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 32, 64))
+        return reshape_output_1
+
+
+class Reshape129(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 2048))
+        return reshape_output_1
+
+
+class Reshape130(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 1, 64))
+        return reshape_output_1
+
+
+class Reshape131(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 32, 1, 64))
+        return reshape_output_1
+
+
+class Reshape132(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13))
+        return reshape_output_1
+
+
+class Reshape133(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 768))
+        return reshape_output_1
+
+
+class Reshape134(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 12, 64))
+        return reshape_output_1
+
+
+class Reshape135(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 768))
+        return reshape_output_1
+
+
+class Reshape136(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 13, 64))
+        return reshape_output_1
+
+
+class Reshape137(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 12, 13, 13))
+        return reshape_output_1
+
+
+class Reshape138(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 13, 13))
+        return reshape_output_1
+
+
+class Reshape139(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 64, 13))
+        return reshape_output_1
+
+
+class Reshape140(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 12, 13, 64))
+        return reshape_output_1
+
+
+class Reshape141(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 3072))
+        return reshape_output_1
+
+
+class Reshape142(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 3072))
+        return reshape_output_1
+
+
+class Reshape143(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 2048))
+        return reshape_output_1
+
+
+class Reshape144(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 32, 64))
+        return reshape_output_1
+
+
+class Reshape145(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 2048))
+        return reshape_output_1
+
+
+class Reshape146(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 13, 64))
+        return reshape_output_1
+
+
+class Reshape147(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 32, 1, 13))
+        return reshape_output_1
+
+
+class Reshape148(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 1, 13))
+        return reshape_output_1
+
+
+class Reshape149(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 8192))
+        return reshape_output_1
+
+
+class Reshape150(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 8192))
+        return reshape_output_1
+
+
+class Reshape151(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 2048))
+        return reshape_output_1
+
+
+class Reshape152(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1536))
+        return reshape_output_1
+
+
+class Reshape153(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1536))
+        return reshape_output_1
+
+
+class Reshape154(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 24, 64))
+        return reshape_output_1
+
+
+class Reshape155(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 1536))
+        return reshape_output_1
+
+
+class Reshape156(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 1, 64))
+        return reshape_output_1
+
+
+class Reshape157(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 24, 1, 64))
+        return reshape_output_1
+
+
+class Reshape158(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 1536))
+        return reshape_output_1
+
+
+class Reshape159(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 13, 24, 64))
+        return reshape_output_1
+
+
+class Reshape160(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(26, 1536))
+        return reshape_output_1
+
+
+class Reshape161(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 13, 64))
+        return reshape_output_1
+
+
+class Reshape162(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 24, 1, 13))
+        return reshape_output_1
+
+
+class Reshape163(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 1, 13))
+        return reshape_output_1
+
+
+class Reshape164(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 1, 6144))
+        return reshape_output_1
+
+
+class Reshape165(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 6144))
+        return reshape_output_1
+
+
+class Reshape166(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1))
+        return reshape_output_1
+
+
+class Reshape167(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 8, 64))
+        return reshape_output_1
+
+
+class Reshape168(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 512))
+        return reshape_output_1
+
+
+class Reshape169(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 64))
+        return reshape_output_1
+
+
+class Reshape170(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 1))
+        return reshape_output_1
+
+
+class Reshape171(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 1))
+        return reshape_output_1
+
+
+class Reshape172(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 1))
+        return reshape_output_1
+
+
+class Reshape173(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 64))
+        return reshape_output_1
+
+
+class Reshape174(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 3000, 1))
+        return reshape_output_1
+
+
+class Reshape175(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(512, 80, 3, 1))
+        return reshape_output_1
+
+
+class Reshape176(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 3000))
+        return reshape_output_1
+
+
+class Reshape177(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 3000, 1))
+        return reshape_output_1
+
+
+class Reshape178(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(512, 512, 3, 1))
+        return reshape_output_1
+
+
+class Reshape179(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 1500))
+        return reshape_output_1
+
+
+class Reshape180(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1500, 512))
+        return reshape_output_1
+
+
+class Reshape181(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1500, 8, 64))
+        return reshape_output_1
+
+
+class Reshape182(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1500, 512))
+        return reshape_output_1
+
+
+class Reshape183(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1500, 64))
+        return reshape_output_1
+
+
+class Reshape184(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1500, 1500))
+        return reshape_output_1
+
+
+class Reshape185(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1500, 1500))
+        return reshape_output_1
+
+
+class Reshape186(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 1500))
+        return reshape_output_1
+
+
+class Reshape187(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1500, 64))
+        return reshape_output_1
+
+
+class Reshape188(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 1, 1500))
+        return reshape_output_1
+
+
+class Reshape189(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 1, 1500))
+        return reshape_output_1
+
+
+class Reshape190(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1734,7 +1734,7 @@ class Reshape205(ForgeModule):
         return reshape_output_1
 
 
-class Reshape206(ForgeModule):
+class Reshape191(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1743,7 +1743,7 @@ class Reshape206(ForgeModule):
         return reshape_output_1
 
 
-class Reshape207(ForgeModule):
+class Reshape192(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1752,7 +1752,7 @@ class Reshape207(ForgeModule):
         return reshape_output_1
 
 
-class Reshape208(ForgeModule):
+class Reshape193(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1761,7 +1761,7 @@ class Reshape208(ForgeModule):
         return reshape_output_1
 
 
-class Reshape209(ForgeModule):
+class Reshape194(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1770,7 +1770,7 @@ class Reshape209(ForgeModule):
         return reshape_output_1
 
 
-class Reshape210(ForgeModule):
+class Reshape195(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1779,7 +1779,7 @@ class Reshape210(ForgeModule):
         return reshape_output_1
 
 
-class Reshape211(ForgeModule):
+class Reshape196(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1788,7 +1788,7 @@ class Reshape211(ForgeModule):
         return reshape_output_1
 
 
-class Reshape212(ForgeModule):
+class Reshape197(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1797,7 +1797,7 @@ class Reshape212(ForgeModule):
         return reshape_output_1
 
 
-class Reshape213(ForgeModule):
+class Reshape198(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1806,7 +1806,7 @@ class Reshape213(ForgeModule):
         return reshape_output_1
 
 
-class Reshape214(ForgeModule):
+class Reshape199(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1815,7 +1815,7 @@ class Reshape214(ForgeModule):
         return reshape_output_1
 
 
-class Reshape215(ForgeModule):
+class Reshape200(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1824,7 +1824,7 @@ class Reshape215(ForgeModule):
         return reshape_output_1
 
 
-class Reshape216(ForgeModule):
+class Reshape201(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1833,7 +1833,7 @@ class Reshape216(ForgeModule):
         return reshape_output_1
 
 
-class Reshape217(ForgeModule):
+class Reshape202(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1842,7 +1842,7 @@ class Reshape217(ForgeModule):
         return reshape_output_1
 
 
-class Reshape218(ForgeModule):
+class Reshape203(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1851,7 +1851,7 @@ class Reshape218(ForgeModule):
         return reshape_output_1
 
 
-class Reshape219(ForgeModule):
+class Reshape204(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1860,7 +1860,7 @@ class Reshape219(ForgeModule):
         return reshape_output_1
 
 
-class Reshape220(ForgeModule):
+class Reshape205(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1869,7 +1869,7 @@ class Reshape220(ForgeModule):
         return reshape_output_1
 
 
-class Reshape221(ForgeModule):
+class Reshape206(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1878,7 +1878,7 @@ class Reshape221(ForgeModule):
         return reshape_output_1
 
 
-class Reshape222(ForgeModule):
+class Reshape207(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1887,7 +1887,7 @@ class Reshape222(ForgeModule):
         return reshape_output_1
 
 
-class Reshape223(ForgeModule):
+class Reshape208(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1896,7 +1896,7 @@ class Reshape223(ForgeModule):
         return reshape_output_1
 
 
-class Reshape224(ForgeModule):
+class Reshape209(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1905,7 +1905,7 @@ class Reshape224(ForgeModule):
         return reshape_output_1
 
 
-class Reshape225(ForgeModule):
+class Reshape210(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1914,7 +1914,7 @@ class Reshape225(ForgeModule):
         return reshape_output_1
 
 
-class Reshape226(ForgeModule):
+class Reshape211(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1923,7 +1923,7 @@ class Reshape226(ForgeModule):
         return reshape_output_1
 
 
-class Reshape227(ForgeModule):
+class Reshape212(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1932,7 +1932,7 @@ class Reshape227(ForgeModule):
         return reshape_output_1
 
 
-class Reshape228(ForgeModule):
+class Reshape213(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1941,7 +1941,7 @@ class Reshape228(ForgeModule):
         return reshape_output_1
 
 
-class Reshape229(ForgeModule):
+class Reshape214(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1950,7 +1950,7 @@ class Reshape229(ForgeModule):
         return reshape_output_1
 
 
-class Reshape230(ForgeModule):
+class Reshape215(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1959,7 +1959,7 @@ class Reshape230(ForgeModule):
         return reshape_output_1
 
 
-class Reshape231(ForgeModule):
+class Reshape216(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1968,7 +1968,7 @@ class Reshape231(ForgeModule):
         return reshape_output_1
 
 
-class Reshape232(ForgeModule):
+class Reshape217(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1977,7 +1977,7 @@ class Reshape232(ForgeModule):
         return reshape_output_1
 
 
-class Reshape233(ForgeModule):
+class Reshape218(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1986,7 +1986,7 @@ class Reshape233(ForgeModule):
         return reshape_output_1
 
 
-class Reshape234(ForgeModule):
+class Reshape219(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -1995,7 +1995,7 @@ class Reshape234(ForgeModule):
         return reshape_output_1
 
 
-class Reshape235(ForgeModule):
+class Reshape220(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2004,7 +2004,7 @@ class Reshape235(ForgeModule):
         return reshape_output_1
 
 
-class Reshape236(ForgeModule):
+class Reshape221(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2013,7 +2013,7 @@ class Reshape236(ForgeModule):
         return reshape_output_1
 
 
-class Reshape237(ForgeModule):
+class Reshape222(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2022,7 +2022,7 @@ class Reshape237(ForgeModule):
         return reshape_output_1
 
 
-class Reshape238(ForgeModule):
+class Reshape223(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2031,7 +2031,7 @@ class Reshape238(ForgeModule):
         return reshape_output_1
 
 
-class Reshape239(ForgeModule):
+class Reshape224(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2040,7 +2040,7 @@ class Reshape239(ForgeModule):
         return reshape_output_1
 
 
-class Reshape240(ForgeModule):
+class Reshape225(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2049,7 +2049,7 @@ class Reshape240(ForgeModule):
         return reshape_output_1
 
 
-class Reshape241(ForgeModule):
+class Reshape226(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2058,7 +2058,7 @@ class Reshape241(ForgeModule):
         return reshape_output_1
 
 
-class Reshape242(ForgeModule):
+class Reshape227(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2067,7 +2067,7 @@ class Reshape242(ForgeModule):
         return reshape_output_1
 
 
-class Reshape243(ForgeModule):
+class Reshape228(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2076,7 +2076,7 @@ class Reshape243(ForgeModule):
         return reshape_output_1
 
 
-class Reshape244(ForgeModule):
+class Reshape229(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2085,7 +2085,7 @@ class Reshape244(ForgeModule):
         return reshape_output_1
 
 
-class Reshape245(ForgeModule):
+class Reshape230(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2094,7 +2094,7 @@ class Reshape245(ForgeModule):
         return reshape_output_1
 
 
-class Reshape246(ForgeModule):
+class Reshape231(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2103,7 +2103,7 @@ class Reshape246(ForgeModule):
         return reshape_output_1
 
 
-class Reshape247(ForgeModule):
+class Reshape232(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2112,7 +2112,7 @@ class Reshape247(ForgeModule):
         return reshape_output_1
 
 
-class Reshape248(ForgeModule):
+class Reshape233(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2121,7 +2121,7 @@ class Reshape248(ForgeModule):
         return reshape_output_1
 
 
-class Reshape249(ForgeModule):
+class Reshape234(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2130,7 +2130,7 @@ class Reshape249(ForgeModule):
         return reshape_output_1
 
 
-class Reshape250(ForgeModule):
+class Reshape235(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2139,7 +2139,7 @@ class Reshape250(ForgeModule):
         return reshape_output_1
 
 
-class Reshape251(ForgeModule):
+class Reshape236(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2148,7 +2148,7 @@ class Reshape251(ForgeModule):
         return reshape_output_1
 
 
-class Reshape252(ForgeModule):
+class Reshape237(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2157,7 +2157,7 @@ class Reshape252(ForgeModule):
         return reshape_output_1
 
 
-class Reshape253(ForgeModule):
+class Reshape238(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2166,7 +2166,7 @@ class Reshape253(ForgeModule):
         return reshape_output_1
 
 
-class Reshape254(ForgeModule):
+class Reshape239(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2175,7 +2175,7 @@ class Reshape254(ForgeModule):
         return reshape_output_1
 
 
-class Reshape255(ForgeModule):
+class Reshape240(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2184,7 +2184,7 @@ class Reshape255(ForgeModule):
         return reshape_output_1
 
 
-class Reshape256(ForgeModule):
+class Reshape241(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2193,7 +2193,7 @@ class Reshape256(ForgeModule):
         return reshape_output_1
 
 
-class Reshape257(ForgeModule):
+class Reshape242(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2202,7 +2202,7 @@ class Reshape257(ForgeModule):
         return reshape_output_1
 
 
-class Reshape258(ForgeModule):
+class Reshape243(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2211,7 +2211,7 @@ class Reshape258(ForgeModule):
         return reshape_output_1
 
 
-class Reshape259(ForgeModule):
+class Reshape244(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2220,7 +2220,7 @@ class Reshape259(ForgeModule):
         return reshape_output_1
 
 
-class Reshape260(ForgeModule):
+class Reshape245(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2229,7 +2229,7 @@ class Reshape260(ForgeModule):
         return reshape_output_1
 
 
-class Reshape261(ForgeModule):
+class Reshape246(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2238,7 +2238,7 @@ class Reshape261(ForgeModule):
         return reshape_output_1
 
 
-class Reshape262(ForgeModule):
+class Reshape247(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2247,7 +2247,7 @@ class Reshape262(ForgeModule):
         return reshape_output_1
 
 
-class Reshape263(ForgeModule):
+class Reshape248(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2256,7 +2256,7 @@ class Reshape263(ForgeModule):
         return reshape_output_1
 
 
-class Reshape264(ForgeModule):
+class Reshape249(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2265,7 +2265,7 @@ class Reshape264(ForgeModule):
         return reshape_output_1
 
 
-class Reshape265(ForgeModule):
+class Reshape250(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2274,7 +2274,7 @@ class Reshape265(ForgeModule):
         return reshape_output_1
 
 
-class Reshape266(ForgeModule):
+class Reshape251(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2283,7 +2283,7 @@ class Reshape266(ForgeModule):
         return reshape_output_1
 
 
-class Reshape267(ForgeModule):
+class Reshape252(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2292,7 +2292,7 @@ class Reshape267(ForgeModule):
         return reshape_output_1
 
 
-class Reshape268(ForgeModule):
+class Reshape253(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2301,7 +2301,7 @@ class Reshape268(ForgeModule):
         return reshape_output_1
 
 
-class Reshape269(ForgeModule):
+class Reshape254(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2310,7 +2310,7 @@ class Reshape269(ForgeModule):
         return reshape_output_1
 
 
-class Reshape270(ForgeModule):
+class Reshape255(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2319,7 +2319,7 @@ class Reshape270(ForgeModule):
         return reshape_output_1
 
 
-class Reshape271(ForgeModule):
+class Reshape256(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2328,7 +2328,7 @@ class Reshape271(ForgeModule):
         return reshape_output_1
 
 
-class Reshape272(ForgeModule):
+class Reshape257(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2337,7 +2337,7 @@ class Reshape272(ForgeModule):
         return reshape_output_1
 
 
-class Reshape273(ForgeModule):
+class Reshape258(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2346,7 +2346,7 @@ class Reshape273(ForgeModule):
         return reshape_output_1
 
 
-class Reshape274(ForgeModule):
+class Reshape259(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2355,7 +2355,7 @@ class Reshape274(ForgeModule):
         return reshape_output_1
 
 
-class Reshape275(ForgeModule):
+class Reshape260(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2364,7 +2364,7 @@ class Reshape275(ForgeModule):
         return reshape_output_1
 
 
-class Reshape276(ForgeModule):
+class Reshape261(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2373,7 +2373,7 @@ class Reshape276(ForgeModule):
         return reshape_output_1
 
 
-class Reshape277(ForgeModule):
+class Reshape262(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2382,7 +2382,7 @@ class Reshape277(ForgeModule):
         return reshape_output_1
 
 
-class Reshape278(ForgeModule):
+class Reshape263(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2391,7 +2391,7 @@ class Reshape278(ForgeModule):
         return reshape_output_1
 
 
-class Reshape279(ForgeModule):
+class Reshape264(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2400,7 +2400,7 @@ class Reshape279(ForgeModule):
         return reshape_output_1
 
 
-class Reshape280(ForgeModule):
+class Reshape265(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2409,7 +2409,7 @@ class Reshape280(ForgeModule):
         return reshape_output_1
 
 
-class Reshape281(ForgeModule):
+class Reshape266(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2418,7 +2418,7 @@ class Reshape281(ForgeModule):
         return reshape_output_1
 
 
-class Reshape282(ForgeModule):
+class Reshape267(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2427,7 +2427,7 @@ class Reshape282(ForgeModule):
         return reshape_output_1
 
 
-class Reshape283(ForgeModule):
+class Reshape268(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2436,7 +2436,7 @@ class Reshape283(ForgeModule):
         return reshape_output_1
 
 
-class Reshape284(ForgeModule):
+class Reshape269(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2445,7 +2445,7 @@ class Reshape284(ForgeModule):
         return reshape_output_1
 
 
-class Reshape285(ForgeModule):
+class Reshape270(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2454,7 +2454,7 @@ class Reshape285(ForgeModule):
         return reshape_output_1
 
 
-class Reshape286(ForgeModule):
+class Reshape271(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2463,7 +2463,7 @@ class Reshape286(ForgeModule):
         return reshape_output_1
 
 
-class Reshape287(ForgeModule):
+class Reshape272(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2472,7 +2472,7 @@ class Reshape287(ForgeModule):
         return reshape_output_1
 
 
-class Reshape288(ForgeModule):
+class Reshape273(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2481,7 +2481,7 @@ class Reshape288(ForgeModule):
         return reshape_output_1
 
 
-class Reshape289(ForgeModule):
+class Reshape274(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2490,7 +2490,7 @@ class Reshape289(ForgeModule):
         return reshape_output_1
 
 
-class Reshape290(ForgeModule):
+class Reshape275(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2499,7 +2499,7 @@ class Reshape290(ForgeModule):
         return reshape_output_1
 
 
-class Reshape291(ForgeModule):
+class Reshape276(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2508,7 +2508,7 @@ class Reshape291(ForgeModule):
         return reshape_output_1
 
 
-class Reshape292(ForgeModule):
+class Reshape277(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2517,7 +2517,7 @@ class Reshape292(ForgeModule):
         return reshape_output_1
 
 
-class Reshape293(ForgeModule):
+class Reshape278(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2526,7 +2526,7 @@ class Reshape293(ForgeModule):
         return reshape_output_1
 
 
-class Reshape294(ForgeModule):
+class Reshape279(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2535,7 +2535,7 @@ class Reshape294(ForgeModule):
         return reshape_output_1
 
 
-class Reshape295(ForgeModule):
+class Reshape280(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2544,7 +2544,7 @@ class Reshape295(ForgeModule):
         return reshape_output_1
 
 
-class Reshape296(ForgeModule):
+class Reshape281(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2553,7 +2553,7 @@ class Reshape296(ForgeModule):
         return reshape_output_1
 
 
-class Reshape297(ForgeModule):
+class Reshape282(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2562,7 +2562,7 @@ class Reshape297(ForgeModule):
         return reshape_output_1
 
 
-class Reshape298(ForgeModule):
+class Reshape283(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2571,7 +2571,7 @@ class Reshape298(ForgeModule):
         return reshape_output_1
 
 
-class Reshape299(ForgeModule):
+class Reshape284(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2580,7 +2580,7 @@ class Reshape299(ForgeModule):
         return reshape_output_1
 
 
-class Reshape300(ForgeModule):
+class Reshape285(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2589,7 +2589,7 @@ class Reshape300(ForgeModule):
         return reshape_output_1
 
 
-class Reshape301(ForgeModule):
+class Reshape286(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2598,7 +2598,7 @@ class Reshape301(ForgeModule):
         return reshape_output_1
 
 
-class Reshape302(ForgeModule):
+class Reshape287(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2607,7 +2607,7 @@ class Reshape302(ForgeModule):
         return reshape_output_1
 
 
-class Reshape303(ForgeModule):
+class Reshape288(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2616,7 +2616,7 @@ class Reshape303(ForgeModule):
         return reshape_output_1
 
 
-class Reshape304(ForgeModule):
+class Reshape289(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2625,7 +2625,7 @@ class Reshape304(ForgeModule):
         return reshape_output_1
 
 
-class Reshape305(ForgeModule):
+class Reshape290(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2634,7 +2634,7 @@ class Reshape305(ForgeModule):
         return reshape_output_1
 
 
-class Reshape306(ForgeModule):
+class Reshape291(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2643,7 +2643,7 @@ class Reshape306(ForgeModule):
         return reshape_output_1
 
 
-class Reshape307(ForgeModule):
+class Reshape292(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2652,7 +2652,7 @@ class Reshape307(ForgeModule):
         return reshape_output_1
 
 
-class Reshape308(ForgeModule):
+class Reshape293(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2661,7 +2661,7 @@ class Reshape308(ForgeModule):
         return reshape_output_1
 
 
-class Reshape309(ForgeModule):
+class Reshape294(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2670,7 +2670,7 @@ class Reshape309(ForgeModule):
         return reshape_output_1
 
 
-class Reshape310(ForgeModule):
+class Reshape295(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2679,7 +2679,7 @@ class Reshape310(ForgeModule):
         return reshape_output_1
 
 
-class Reshape311(ForgeModule):
+class Reshape296(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2688,7 +2688,7 @@ class Reshape311(ForgeModule):
         return reshape_output_1
 
 
-class Reshape312(ForgeModule):
+class Reshape297(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2697,7 +2697,7 @@ class Reshape312(ForgeModule):
         return reshape_output_1
 
 
-class Reshape313(ForgeModule):
+class Reshape298(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2706,7 +2706,7 @@ class Reshape313(ForgeModule):
         return reshape_output_1
 
 
-class Reshape314(ForgeModule):
+class Reshape299(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2715,7 +2715,7 @@ class Reshape314(ForgeModule):
         return reshape_output_1
 
 
-class Reshape315(ForgeModule):
+class Reshape300(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2724,7 +2724,7 @@ class Reshape315(ForgeModule):
         return reshape_output_1
 
 
-class Reshape316(ForgeModule):
+class Reshape301(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2733,7 +2733,7 @@ class Reshape316(ForgeModule):
         return reshape_output_1
 
 
-class Reshape317(ForgeModule):
+class Reshape302(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2742,7 +2742,7 @@ class Reshape317(ForgeModule):
         return reshape_output_1
 
 
-class Reshape318(ForgeModule):
+class Reshape303(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2751,7 +2751,7 @@ class Reshape318(ForgeModule):
         return reshape_output_1
 
 
-class Reshape319(ForgeModule):
+class Reshape304(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2760,7 +2760,7 @@ class Reshape319(ForgeModule):
         return reshape_output_1
 
 
-class Reshape320(ForgeModule):
+class Reshape305(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2769,7 +2769,7 @@ class Reshape320(ForgeModule):
         return reshape_output_1
 
 
-class Reshape321(ForgeModule):
+class Reshape306(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2778,7 +2778,7 @@ class Reshape321(ForgeModule):
         return reshape_output_1
 
 
-class Reshape322(ForgeModule):
+class Reshape307(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2787,7 +2787,7 @@ class Reshape322(ForgeModule):
         return reshape_output_1
 
 
-class Reshape323(ForgeModule):
+class Reshape308(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2796,7 +2796,7 @@ class Reshape323(ForgeModule):
         return reshape_output_1
 
 
-class Reshape324(ForgeModule):
+class Reshape309(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2805,7 +2805,7 @@ class Reshape324(ForgeModule):
         return reshape_output_1
 
 
-class Reshape325(ForgeModule):
+class Reshape310(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2814,7 +2814,7 @@ class Reshape325(ForgeModule):
         return reshape_output_1
 
 
-class Reshape326(ForgeModule):
+class Reshape311(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2823,7 +2823,7 @@ class Reshape326(ForgeModule):
         return reshape_output_1
 
 
-class Reshape327(ForgeModule):
+class Reshape312(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2832,7 +2832,7 @@ class Reshape327(ForgeModule):
         return reshape_output_1
 
 
-class Reshape328(ForgeModule):
+class Reshape313(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2841,7 +2841,7 @@ class Reshape328(ForgeModule):
         return reshape_output_1
 
 
-class Reshape329(ForgeModule):
+class Reshape314(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2850,7 +2850,7 @@ class Reshape329(ForgeModule):
         return reshape_output_1
 
 
-class Reshape330(ForgeModule):
+class Reshape315(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2859,7 +2859,7 @@ class Reshape330(ForgeModule):
         return reshape_output_1
 
 
-class Reshape331(ForgeModule):
+class Reshape316(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2868,7 +2868,7 @@ class Reshape331(ForgeModule):
         return reshape_output_1
 
 
-class Reshape332(ForgeModule):
+class Reshape317(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2877,7 +2877,7 @@ class Reshape332(ForgeModule):
         return reshape_output_1
 
 
-class Reshape333(ForgeModule):
+class Reshape318(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2886,7 +2886,7 @@ class Reshape333(ForgeModule):
         return reshape_output_1
 
 
-class Reshape334(ForgeModule):
+class Reshape319(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2895,7 +2895,7 @@ class Reshape334(ForgeModule):
         return reshape_output_1
 
 
-class Reshape335(ForgeModule):
+class Reshape320(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2904,7 +2904,7 @@ class Reshape335(ForgeModule):
         return reshape_output_1
 
 
-class Reshape336(ForgeModule):
+class Reshape321(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2913,7 +2913,7 @@ class Reshape336(ForgeModule):
         return reshape_output_1
 
 
-class Reshape337(ForgeModule):
+class Reshape322(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2922,7 +2922,7 @@ class Reshape337(ForgeModule):
         return reshape_output_1
 
 
-class Reshape338(ForgeModule):
+class Reshape323(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2931,7 +2931,7 @@ class Reshape338(ForgeModule):
         return reshape_output_1
 
 
-class Reshape339(ForgeModule):
+class Reshape324(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2940,7 +2940,7 @@ class Reshape339(ForgeModule):
         return reshape_output_1
 
 
-class Reshape340(ForgeModule):
+class Reshape325(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2949,7 +2949,7 @@ class Reshape340(ForgeModule):
         return reshape_output_1
 
 
-class Reshape341(ForgeModule):
+class Reshape326(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2958,7 +2958,7 @@ class Reshape341(ForgeModule):
         return reshape_output_1
 
 
-class Reshape342(ForgeModule):
+class Reshape327(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2967,7 +2967,7 @@ class Reshape342(ForgeModule):
         return reshape_output_1
 
 
-class Reshape343(ForgeModule):
+class Reshape328(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2976,7 +2976,7 @@ class Reshape343(ForgeModule):
         return reshape_output_1
 
 
-class Reshape344(ForgeModule):
+class Reshape329(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2985,7 +2985,7 @@ class Reshape344(ForgeModule):
         return reshape_output_1
 
 
-class Reshape345(ForgeModule):
+class Reshape330(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2994,7 +2994,7 @@ class Reshape345(ForgeModule):
         return reshape_output_1
 
 
-class Reshape346(ForgeModule):
+class Reshape331(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3003,7 +3003,7 @@ class Reshape346(ForgeModule):
         return reshape_output_1
 
 
-class Reshape347(ForgeModule):
+class Reshape332(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3012,7 +3012,7 @@ class Reshape347(ForgeModule):
         return reshape_output_1
 
 
-class Reshape348(ForgeModule):
+class Reshape333(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3021,7 +3021,7 @@ class Reshape348(ForgeModule):
         return reshape_output_1
 
 
-class Reshape349(ForgeModule):
+class Reshape334(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3030,7 +3030,7 @@ class Reshape349(ForgeModule):
         return reshape_output_1
 
 
-class Reshape350(ForgeModule):
+class Reshape335(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3039,7 +3039,7 @@ class Reshape350(ForgeModule):
         return reshape_output_1
 
 
-class Reshape351(ForgeModule):
+class Reshape336(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3048,7 +3048,7 @@ class Reshape351(ForgeModule):
         return reshape_output_1
 
 
-class Reshape352(ForgeModule):
+class Reshape337(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3057,7 +3057,7 @@ class Reshape352(ForgeModule):
         return reshape_output_1
 
 
-class Reshape353(ForgeModule):
+class Reshape338(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3066,7 +3066,7 @@ class Reshape353(ForgeModule):
         return reshape_output_1
 
 
-class Reshape354(ForgeModule):
+class Reshape339(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3075,7 +3075,7 @@ class Reshape354(ForgeModule):
         return reshape_output_1
 
 
-class Reshape355(ForgeModule):
+class Reshape340(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3084,7 +3084,7 @@ class Reshape355(ForgeModule):
         return reshape_output_1
 
 
-class Reshape356(ForgeModule):
+class Reshape341(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3093,7 +3093,7 @@ class Reshape356(ForgeModule):
         return reshape_output_1
 
 
-class Reshape357(ForgeModule):
+class Reshape342(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3102,7 +3102,7 @@ class Reshape357(ForgeModule):
         return reshape_output_1
 
 
-class Reshape358(ForgeModule):
+class Reshape343(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3111,7 +3111,7 @@ class Reshape358(ForgeModule):
         return reshape_output_1
 
 
-class Reshape359(ForgeModule):
+class Reshape344(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3120,7 +3120,7 @@ class Reshape359(ForgeModule):
         return reshape_output_1
 
 
-class Reshape360(ForgeModule):
+class Reshape345(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3129,7 +3129,7 @@ class Reshape360(ForgeModule):
         return reshape_output_1
 
 
-class Reshape361(ForgeModule):
+class Reshape346(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3138,7 +3138,7 @@ class Reshape361(ForgeModule):
         return reshape_output_1
 
 
-class Reshape362(ForgeModule):
+class Reshape347(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3147,7 +3147,7 @@ class Reshape362(ForgeModule):
         return reshape_output_1
 
 
-class Reshape363(ForgeModule):
+class Reshape348(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3156,7 +3156,7 @@ class Reshape363(ForgeModule):
         return reshape_output_1
 
 
-class Reshape364(ForgeModule):
+class Reshape349(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3165,7 +3165,7 @@ class Reshape364(ForgeModule):
         return reshape_output_1
 
 
-class Reshape365(ForgeModule):
+class Reshape350(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3174,7 +3174,7 @@ class Reshape365(ForgeModule):
         return reshape_output_1
 
 
-class Reshape366(ForgeModule):
+class Reshape351(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3183,7 +3183,7 @@ class Reshape366(ForgeModule):
         return reshape_output_1
 
 
-class Reshape367(ForgeModule):
+class Reshape352(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3192,7 +3192,7 @@ class Reshape367(ForgeModule):
         return reshape_output_1
 
 
-class Reshape368(ForgeModule):
+class Reshape353(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3201,7 +3201,7 @@ class Reshape368(ForgeModule):
         return reshape_output_1
 
 
-class Reshape369(ForgeModule):
+class Reshape354(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3210,7 +3210,7 @@ class Reshape369(ForgeModule):
         return reshape_output_1
 
 
-class Reshape370(ForgeModule):
+class Reshape355(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3219,7 +3219,7 @@ class Reshape370(ForgeModule):
         return reshape_output_1
 
 
-class Reshape371(ForgeModule):
+class Reshape356(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3228,7 +3228,7 @@ class Reshape371(ForgeModule):
         return reshape_output_1
 
 
-class Reshape372(ForgeModule):
+class Reshape357(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3237,7 +3237,7 @@ class Reshape372(ForgeModule):
         return reshape_output_1
 
 
-class Reshape373(ForgeModule):
+class Reshape358(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3246,7 +3246,7 @@ class Reshape373(ForgeModule):
         return reshape_output_1
 
 
-class Reshape374(ForgeModule):
+class Reshape359(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3255,7 +3255,7 @@ class Reshape374(ForgeModule):
         return reshape_output_1
 
 
-class Reshape375(ForgeModule):
+class Reshape360(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3264,7 +3264,7 @@ class Reshape375(ForgeModule):
         return reshape_output_1
 
 
-class Reshape376(ForgeModule):
+class Reshape361(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3273,7 +3273,7 @@ class Reshape376(ForgeModule):
         return reshape_output_1
 
 
-class Reshape377(ForgeModule):
+class Reshape362(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3282,7 +3282,7 @@ class Reshape377(ForgeModule):
         return reshape_output_1
 
 
-class Reshape378(ForgeModule):
+class Reshape363(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3291,7 +3291,7 @@ class Reshape378(ForgeModule):
         return reshape_output_1
 
 
-class Reshape379(ForgeModule):
+class Reshape364(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3300,7 +3300,7 @@ class Reshape379(ForgeModule):
         return reshape_output_1
 
 
-class Reshape380(ForgeModule):
+class Reshape365(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3309,7 +3309,7 @@ class Reshape380(ForgeModule):
         return reshape_output_1
 
 
-class Reshape381(ForgeModule):
+class Reshape366(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3318,7 +3318,7 @@ class Reshape381(ForgeModule):
         return reshape_output_1
 
 
-class Reshape382(ForgeModule):
+class Reshape367(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3327,7 +3327,7 @@ class Reshape382(ForgeModule):
         return reshape_output_1
 
 
-class Reshape383(ForgeModule):
+class Reshape368(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3336,7 +3336,7 @@ class Reshape383(ForgeModule):
         return reshape_output_1
 
 
-class Reshape384(ForgeModule):
+class Reshape369(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3345,7 +3345,7 @@ class Reshape384(ForgeModule):
         return reshape_output_1
 
 
-class Reshape385(ForgeModule):
+class Reshape370(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3354,7 +3354,7 @@ class Reshape385(ForgeModule):
         return reshape_output_1
 
 
-class Reshape386(ForgeModule):
+class Reshape371(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3363,7 +3363,7 @@ class Reshape386(ForgeModule):
         return reshape_output_1
 
 
-class Reshape387(ForgeModule):
+class Reshape372(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3372,7 +3372,7 @@ class Reshape387(ForgeModule):
         return reshape_output_1
 
 
-class Reshape388(ForgeModule):
+class Reshape373(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3381,7 +3381,7 @@ class Reshape388(ForgeModule):
         return reshape_output_1
 
 
-class Reshape389(ForgeModule):
+class Reshape374(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3390,7 +3390,7 @@ class Reshape389(ForgeModule):
         return reshape_output_1
 
 
-class Reshape390(ForgeModule):
+class Reshape375(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3399,7 +3399,7 @@ class Reshape390(ForgeModule):
         return reshape_output_1
 
 
-class Reshape391(ForgeModule):
+class Reshape376(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3408,7 +3408,7 @@ class Reshape391(ForgeModule):
         return reshape_output_1
 
 
-class Reshape392(ForgeModule):
+class Reshape377(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3417,7 +3417,7 @@ class Reshape392(ForgeModule):
         return reshape_output_1
 
 
-class Reshape393(ForgeModule):
+class Reshape378(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3426,7 +3426,7 @@ class Reshape393(ForgeModule):
         return reshape_output_1
 
 
-class Reshape394(ForgeModule):
+class Reshape379(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3435,7 +3435,7 @@ class Reshape394(ForgeModule):
         return reshape_output_1
 
 
-class Reshape395(ForgeModule):
+class Reshape380(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3444,7 +3444,7 @@ class Reshape395(ForgeModule):
         return reshape_output_1
 
 
-class Reshape396(ForgeModule):
+class Reshape381(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3453,7 +3453,7 @@ class Reshape396(ForgeModule):
         return reshape_output_1
 
 
-class Reshape397(ForgeModule):
+class Reshape382(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3462,7 +3462,7 @@ class Reshape397(ForgeModule):
         return reshape_output_1
 
 
-class Reshape398(ForgeModule):
+class Reshape383(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3471,7 +3471,7 @@ class Reshape398(ForgeModule):
         return reshape_output_1
 
 
-class Reshape399(ForgeModule):
+class Reshape384(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3480,7 +3480,7 @@ class Reshape399(ForgeModule):
         return reshape_output_1
 
 
-class Reshape400(ForgeModule):
+class Reshape385(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3489,7 +3489,7 @@ class Reshape400(ForgeModule):
         return reshape_output_1
 
 
-class Reshape401(ForgeModule):
+class Reshape386(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3498,7 +3498,7 @@ class Reshape401(ForgeModule):
         return reshape_output_1
 
 
-class Reshape402(ForgeModule):
+class Reshape387(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3507,7 +3507,7 @@ class Reshape402(ForgeModule):
         return reshape_output_1
 
 
-class Reshape403(ForgeModule):
+class Reshape388(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3516,7 +3516,7 @@ class Reshape403(ForgeModule):
         return reshape_output_1
 
 
-class Reshape404(ForgeModule):
+class Reshape389(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3525,7 +3525,7 @@ class Reshape404(ForgeModule):
         return reshape_output_1
 
 
-class Reshape405(ForgeModule):
+class Reshape390(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3534,7 +3534,7 @@ class Reshape405(ForgeModule):
         return reshape_output_1
 
 
-class Reshape406(ForgeModule):
+class Reshape391(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3543,7 +3543,7 @@ class Reshape406(ForgeModule):
         return reshape_output_1
 
 
-class Reshape407(ForgeModule):
+class Reshape392(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3552,7 +3552,7 @@ class Reshape407(ForgeModule):
         return reshape_output_1
 
 
-class Reshape408(ForgeModule):
+class Reshape393(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3561,7 +3561,7 @@ class Reshape408(ForgeModule):
         return reshape_output_1
 
 
-class Reshape409(ForgeModule):
+class Reshape394(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3570,7 +3570,7 @@ class Reshape409(ForgeModule):
         return reshape_output_1
 
 
-class Reshape410(ForgeModule):
+class Reshape395(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3579,7 +3579,7 @@ class Reshape410(ForgeModule):
         return reshape_output_1
 
 
-class Reshape411(ForgeModule):
+class Reshape396(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3588,7 +3588,7 @@ class Reshape411(ForgeModule):
         return reshape_output_1
 
 
-class Reshape412(ForgeModule):
+class Reshape397(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3597,7 +3597,7 @@ class Reshape412(ForgeModule):
         return reshape_output_1
 
 
-class Reshape413(ForgeModule):
+class Reshape398(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3606,7 +3606,7 @@ class Reshape413(ForgeModule):
         return reshape_output_1
 
 
-class Reshape414(ForgeModule):
+class Reshape399(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3615,7 +3615,7 @@ class Reshape414(ForgeModule):
         return reshape_output_1
 
 
-class Reshape415(ForgeModule):
+class Reshape400(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3624,7 +3624,7 @@ class Reshape415(ForgeModule):
         return reshape_output_1
 
 
-class Reshape416(ForgeModule):
+class Reshape401(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3633,7 +3633,7 @@ class Reshape416(ForgeModule):
         return reshape_output_1
 
 
-class Reshape417(ForgeModule):
+class Reshape402(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3642,7 +3642,7 @@ class Reshape417(ForgeModule):
         return reshape_output_1
 
 
-class Reshape418(ForgeModule):
+class Reshape403(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3651,7 +3651,7 @@ class Reshape418(ForgeModule):
         return reshape_output_1
 
 
-class Reshape419(ForgeModule):
+class Reshape404(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3660,7 +3660,7 @@ class Reshape419(ForgeModule):
         return reshape_output_1
 
 
-class Reshape420(ForgeModule):
+class Reshape405(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3669,7 +3669,7 @@ class Reshape420(ForgeModule):
         return reshape_output_1
 
 
-class Reshape421(ForgeModule):
+class Reshape406(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3678,7 +3678,7 @@ class Reshape421(ForgeModule):
         return reshape_output_1
 
 
-class Reshape422(ForgeModule):
+class Reshape407(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3687,7 +3687,7 @@ class Reshape422(ForgeModule):
         return reshape_output_1
 
 
-class Reshape423(ForgeModule):
+class Reshape408(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3696,7 +3696,7 @@ class Reshape423(ForgeModule):
         return reshape_output_1
 
 
-class Reshape424(ForgeModule):
+class Reshape409(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3705,7 +3705,7 @@ class Reshape424(ForgeModule):
         return reshape_output_1
 
 
-class Reshape425(ForgeModule):
+class Reshape410(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3714,7 +3714,7 @@ class Reshape425(ForgeModule):
         return reshape_output_1
 
 
-class Reshape426(ForgeModule):
+class Reshape411(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3723,7 +3723,7 @@ class Reshape426(ForgeModule):
         return reshape_output_1
 
 
-class Reshape427(ForgeModule):
+class Reshape412(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3732,7 +3732,7 @@ class Reshape427(ForgeModule):
         return reshape_output_1
 
 
-class Reshape428(ForgeModule):
+class Reshape413(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3741,7 +3741,7 @@ class Reshape428(ForgeModule):
         return reshape_output_1
 
 
-class Reshape429(ForgeModule):
+class Reshape414(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3750,7 +3750,7 @@ class Reshape429(ForgeModule):
         return reshape_output_1
 
 
-class Reshape430(ForgeModule):
+class Reshape415(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3759,7 +3759,7 @@ class Reshape430(ForgeModule):
         return reshape_output_1
 
 
-class Reshape431(ForgeModule):
+class Reshape416(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3768,7 +3768,16 @@ class Reshape431(ForgeModule):
         return reshape_output_1
 
 
-class Reshape432(ForgeModule):
+class Reshape417(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 16384))
+        return reshape_output_1
+
+
+class Reshape418(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3777,7 +3786,7 @@ class Reshape432(ForgeModule):
         return reshape_output_1
 
 
-class Reshape433(ForgeModule):
+class Reshape419(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3786,7 +3795,7 @@ class Reshape433(ForgeModule):
         return reshape_output_1
 
 
-class Reshape434(ForgeModule):
+class Reshape420(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3795,7 +3804,7 @@ class Reshape434(ForgeModule):
         return reshape_output_1
 
 
-class Reshape435(ForgeModule):
+class Reshape421(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3804,7 +3813,7 @@ class Reshape435(ForgeModule):
         return reshape_output_1
 
 
-class Reshape436(ForgeModule):
+class Reshape422(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3813,7 +3822,7 @@ class Reshape436(ForgeModule):
         return reshape_output_1
 
 
-class Reshape437(ForgeModule):
+class Reshape423(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3822,7 +3831,7 @@ class Reshape437(ForgeModule):
         return reshape_output_1
 
 
-class Reshape438(ForgeModule):
+class Reshape424(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3831,7 +3840,7 @@ class Reshape438(ForgeModule):
         return reshape_output_1
 
 
-class Reshape439(ForgeModule):
+class Reshape425(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3840,7 +3849,7 @@ class Reshape439(ForgeModule):
         return reshape_output_1
 
 
-class Reshape440(ForgeModule):
+class Reshape426(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3849,7 +3858,7 @@ class Reshape440(ForgeModule):
         return reshape_output_1
 
 
-class Reshape441(ForgeModule):
+class Reshape427(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3858,7 +3867,7 @@ class Reshape441(ForgeModule):
         return reshape_output_1
 
 
-class Reshape442(ForgeModule):
+class Reshape428(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3867,7 +3876,7 @@ class Reshape442(ForgeModule):
         return reshape_output_1
 
 
-class Reshape443(ForgeModule):
+class Reshape429(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3876,7 +3885,7 @@ class Reshape443(ForgeModule):
         return reshape_output_1
 
 
-class Reshape444(ForgeModule):
+class Reshape430(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3885,7 +3894,7 @@ class Reshape444(ForgeModule):
         return reshape_output_1
 
 
-class Reshape445(ForgeModule):
+class Reshape431(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3894,7 +3903,7 @@ class Reshape445(ForgeModule):
         return reshape_output_1
 
 
-class Reshape446(ForgeModule):
+class Reshape432(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3903,7 +3912,7 @@ class Reshape446(ForgeModule):
         return reshape_output_1
 
 
-class Reshape447(ForgeModule):
+class Reshape433(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3912,7 +3921,7 @@ class Reshape447(ForgeModule):
         return reshape_output_1
 
 
-class Reshape448(ForgeModule):
+class Reshape434(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3921,7 +3930,7 @@ class Reshape448(ForgeModule):
         return reshape_output_1
 
 
-class Reshape449(ForgeModule):
+class Reshape435(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3930,7 +3939,7 @@ class Reshape449(ForgeModule):
         return reshape_output_1
 
 
-class Reshape450(ForgeModule):
+class Reshape436(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3939,7 +3948,7 @@ class Reshape450(ForgeModule):
         return reshape_output_1
 
 
-class Reshape451(ForgeModule):
+class Reshape437(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3948,7 +3957,7 @@ class Reshape451(ForgeModule):
         return reshape_output_1
 
 
-class Reshape452(ForgeModule):
+class Reshape438(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3957,7 +3966,7 @@ class Reshape452(ForgeModule):
         return reshape_output_1
 
 
-class Reshape453(ForgeModule):
+class Reshape439(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3966,7 +3975,7 @@ class Reshape453(ForgeModule):
         return reshape_output_1
 
 
-class Reshape454(ForgeModule):
+class Reshape440(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3975,7 +3984,7 @@ class Reshape454(ForgeModule):
         return reshape_output_1
 
 
-class Reshape455(ForgeModule):
+class Reshape441(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3984,7 +3993,7 @@ class Reshape455(ForgeModule):
         return reshape_output_1
 
 
-class Reshape456(ForgeModule):
+class Reshape442(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -3993,7 +4002,7 @@ class Reshape456(ForgeModule):
         return reshape_output_1
 
 
-class Reshape457(ForgeModule):
+class Reshape443(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4002,7 +4011,7 @@ class Reshape457(ForgeModule):
         return reshape_output_1
 
 
-class Reshape458(ForgeModule):
+class Reshape444(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4011,7 +4020,7 @@ class Reshape458(ForgeModule):
         return reshape_output_1
 
 
-class Reshape459(ForgeModule):
+class Reshape445(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4020,7 +4029,7 @@ class Reshape459(ForgeModule):
         return reshape_output_1
 
 
-class Reshape460(ForgeModule):
+class Reshape446(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4029,7 +4038,7 @@ class Reshape460(ForgeModule):
         return reshape_output_1
 
 
-class Reshape461(ForgeModule):
+class Reshape447(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4038,7 +4047,7 @@ class Reshape461(ForgeModule):
         return reshape_output_1
 
 
-class Reshape462(ForgeModule):
+class Reshape448(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4047,7 +4056,7 @@ class Reshape462(ForgeModule):
         return reshape_output_1
 
 
-class Reshape463(ForgeModule):
+class Reshape449(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4056,7 +4065,7 @@ class Reshape463(ForgeModule):
         return reshape_output_1
 
 
-class Reshape464(ForgeModule):
+class Reshape450(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4065,7 +4074,7 @@ class Reshape464(ForgeModule):
         return reshape_output_1
 
 
-class Reshape465(ForgeModule):
+class Reshape451(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4074,7 +4083,7 @@ class Reshape465(ForgeModule):
         return reshape_output_1
 
 
-class Reshape466(ForgeModule):
+class Reshape452(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4083,7 +4092,7 @@ class Reshape466(ForgeModule):
         return reshape_output_1
 
 
-class Reshape467(ForgeModule):
+class Reshape453(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4092,7 +4101,7 @@ class Reshape467(ForgeModule):
         return reshape_output_1
 
 
-class Reshape468(ForgeModule):
+class Reshape454(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4101,7 +4110,7 @@ class Reshape468(ForgeModule):
         return reshape_output_1
 
 
-class Reshape469(ForgeModule):
+class Reshape455(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4110,7 +4119,7 @@ class Reshape469(ForgeModule):
         return reshape_output_1
 
 
-class Reshape470(ForgeModule):
+class Reshape456(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4119,7 +4128,7 @@ class Reshape470(ForgeModule):
         return reshape_output_1
 
 
-class Reshape471(ForgeModule):
+class Reshape457(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4128,7 +4137,7 @@ class Reshape471(ForgeModule):
         return reshape_output_1
 
 
-class Reshape472(ForgeModule):
+class Reshape458(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4137,7 +4146,7 @@ class Reshape472(ForgeModule):
         return reshape_output_1
 
 
-class Reshape473(ForgeModule):
+class Reshape459(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4146,7 +4155,7 @@ class Reshape473(ForgeModule):
         return reshape_output_1
 
 
-class Reshape474(ForgeModule):
+class Reshape460(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4155,7 +4164,7 @@ class Reshape474(ForgeModule):
         return reshape_output_1
 
 
-class Reshape475(ForgeModule):
+class Reshape461(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4164,7 +4173,7 @@ class Reshape475(ForgeModule):
         return reshape_output_1
 
 
-class Reshape476(ForgeModule):
+class Reshape462(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4173,7 +4182,7 @@ class Reshape476(ForgeModule):
         return reshape_output_1
 
 
-class Reshape477(ForgeModule):
+class Reshape463(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4182,7 +4191,7 @@ class Reshape477(ForgeModule):
         return reshape_output_1
 
 
-class Reshape478(ForgeModule):
+class Reshape464(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4191,7 +4200,7 @@ class Reshape478(ForgeModule):
         return reshape_output_1
 
 
-class Reshape479(ForgeModule):
+class Reshape465(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4200,7 +4209,7 @@ class Reshape479(ForgeModule):
         return reshape_output_1
 
 
-class Reshape480(ForgeModule):
+class Reshape466(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4209,7 +4218,7 @@ class Reshape480(ForgeModule):
         return reshape_output_1
 
 
-class Reshape481(ForgeModule):
+class Reshape467(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4218,7 +4227,7 @@ class Reshape481(ForgeModule):
         return reshape_output_1
 
 
-class Reshape482(ForgeModule):
+class Reshape468(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4227,7 +4236,7 @@ class Reshape482(ForgeModule):
         return reshape_output_1
 
 
-class Reshape483(ForgeModule):
+class Reshape469(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4236,7 +4245,7 @@ class Reshape483(ForgeModule):
         return reshape_output_1
 
 
-class Reshape484(ForgeModule):
+class Reshape470(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4245,7 +4254,7 @@ class Reshape484(ForgeModule):
         return reshape_output_1
 
 
-class Reshape485(ForgeModule):
+class Reshape471(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4254,7 +4263,7 @@ class Reshape485(ForgeModule):
         return reshape_output_1
 
 
-class Reshape486(ForgeModule):
+class Reshape472(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4263,7 +4272,7 @@ class Reshape486(ForgeModule):
         return reshape_output_1
 
 
-class Reshape487(ForgeModule):
+class Reshape473(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4272,7 +4281,7 @@ class Reshape487(ForgeModule):
         return reshape_output_1
 
 
-class Reshape488(ForgeModule):
+class Reshape474(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4281,7 +4290,7 @@ class Reshape488(ForgeModule):
         return reshape_output_1
 
 
-class Reshape489(ForgeModule):
+class Reshape475(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4290,7 +4299,7 @@ class Reshape489(ForgeModule):
         return reshape_output_1
 
 
-class Reshape490(ForgeModule):
+class Reshape476(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4299,7 +4308,7 @@ class Reshape490(ForgeModule):
         return reshape_output_1
 
 
-class Reshape491(ForgeModule):
+class Reshape477(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4308,7 +4317,7 @@ class Reshape491(ForgeModule):
         return reshape_output_1
 
 
-class Reshape492(ForgeModule):
+class Reshape478(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4317,7 +4326,7 @@ class Reshape492(ForgeModule):
         return reshape_output_1
 
 
-class Reshape493(ForgeModule):
+class Reshape479(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4326,7 +4335,7 @@ class Reshape493(ForgeModule):
         return reshape_output_1
 
 
-class Reshape494(ForgeModule):
+class Reshape480(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4335,7 +4344,7 @@ class Reshape494(ForgeModule):
         return reshape_output_1
 
 
-class Reshape495(ForgeModule):
+class Reshape481(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4344,7 +4353,7 @@ class Reshape495(ForgeModule):
         return reshape_output_1
 
 
-class Reshape496(ForgeModule):
+class Reshape482(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4353,7 +4362,7 @@ class Reshape496(ForgeModule):
         return reshape_output_1
 
 
-class Reshape497(ForgeModule):
+class Reshape483(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4362,7 +4371,7 @@ class Reshape497(ForgeModule):
         return reshape_output_1
 
 
-class Reshape498(ForgeModule):
+class Reshape484(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4371,7 +4380,7 @@ class Reshape498(ForgeModule):
         return reshape_output_1
 
 
-class Reshape499(ForgeModule):
+class Reshape485(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4380,7 +4389,7 @@ class Reshape499(ForgeModule):
         return reshape_output_1
 
 
-class Reshape500(ForgeModule):
+class Reshape486(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4389,7 +4398,7 @@ class Reshape500(ForgeModule):
         return reshape_output_1
 
 
-class Reshape501(ForgeModule):
+class Reshape487(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4398,7 +4407,7 @@ class Reshape501(ForgeModule):
         return reshape_output_1
 
 
-class Reshape502(ForgeModule):
+class Reshape488(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4407,7 +4416,7 @@ class Reshape502(ForgeModule):
         return reshape_output_1
 
 
-class Reshape503(ForgeModule):
+class Reshape489(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4416,7 +4425,7 @@ class Reshape503(ForgeModule):
         return reshape_output_1
 
 
-class Reshape504(ForgeModule):
+class Reshape490(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4425,7 +4434,7 @@ class Reshape504(ForgeModule):
         return reshape_output_1
 
 
-class Reshape505(ForgeModule):
+class Reshape491(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4434,7 +4443,7 @@ class Reshape505(ForgeModule):
         return reshape_output_1
 
 
-class Reshape506(ForgeModule):
+class Reshape492(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4443,7 +4452,7 @@ class Reshape506(ForgeModule):
         return reshape_output_1
 
 
-class Reshape507(ForgeModule):
+class Reshape493(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4452,7 +4461,7 @@ class Reshape507(ForgeModule):
         return reshape_output_1
 
 
-class Reshape508(ForgeModule):
+class Reshape494(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4461,7 +4470,7 @@ class Reshape508(ForgeModule):
         return reshape_output_1
 
 
-class Reshape509(ForgeModule):
+class Reshape495(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4470,7 +4479,7 @@ class Reshape509(ForgeModule):
         return reshape_output_1
 
 
-class Reshape510(ForgeModule):
+class Reshape496(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4479,7 +4488,7 @@ class Reshape510(ForgeModule):
         return reshape_output_1
 
 
-class Reshape511(ForgeModule):
+class Reshape497(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4488,7 +4497,7 @@ class Reshape511(ForgeModule):
         return reshape_output_1
 
 
-class Reshape512(ForgeModule):
+class Reshape498(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4497,7 +4506,7 @@ class Reshape512(ForgeModule):
         return reshape_output_1
 
 
-class Reshape513(ForgeModule):
+class Reshape499(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4506,7 +4515,7 @@ class Reshape513(ForgeModule):
         return reshape_output_1
 
 
-class Reshape514(ForgeModule):
+class Reshape500(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4515,7 +4524,7 @@ class Reshape514(ForgeModule):
         return reshape_output_1
 
 
-class Reshape515(ForgeModule):
+class Reshape501(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4524,7 +4533,7 @@ class Reshape515(ForgeModule):
         return reshape_output_1
 
 
-class Reshape516(ForgeModule):
+class Reshape502(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4533,7 +4542,7 @@ class Reshape516(ForgeModule):
         return reshape_output_1
 
 
-class Reshape517(ForgeModule):
+class Reshape503(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4542,7 +4551,7 @@ class Reshape517(ForgeModule):
         return reshape_output_1
 
 
-class Reshape518(ForgeModule):
+class Reshape504(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4551,7 +4560,7 @@ class Reshape518(ForgeModule):
         return reshape_output_1
 
 
-class Reshape519(ForgeModule):
+class Reshape505(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4560,7 +4569,7 @@ class Reshape519(ForgeModule):
         return reshape_output_1
 
 
-class Reshape520(ForgeModule):
+class Reshape506(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4569,7 +4578,7 @@ class Reshape520(ForgeModule):
         return reshape_output_1
 
 
-class Reshape521(ForgeModule):
+class Reshape507(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4578,7 +4587,7 @@ class Reshape521(ForgeModule):
         return reshape_output_1
 
 
-class Reshape522(ForgeModule):
+class Reshape508(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4587,7 +4596,7 @@ class Reshape522(ForgeModule):
         return reshape_output_1
 
 
-class Reshape523(ForgeModule):
+class Reshape509(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4596,7 +4605,7 @@ class Reshape523(ForgeModule):
         return reshape_output_1
 
 
-class Reshape524(ForgeModule):
+class Reshape510(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4605,7 +4614,7 @@ class Reshape524(ForgeModule):
         return reshape_output_1
 
 
-class Reshape525(ForgeModule):
+class Reshape511(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4614,7 +4623,7 @@ class Reshape525(ForgeModule):
         return reshape_output_1
 
 
-class Reshape526(ForgeModule):
+class Reshape512(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4623,7 +4632,7 @@ class Reshape526(ForgeModule):
         return reshape_output_1
 
 
-class Reshape527(ForgeModule):
+class Reshape513(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4632,7 +4641,7 @@ class Reshape527(ForgeModule):
         return reshape_output_1
 
 
-class Reshape528(ForgeModule):
+class Reshape514(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4641,7 +4650,7 @@ class Reshape528(ForgeModule):
         return reshape_output_1
 
 
-class Reshape529(ForgeModule):
+class Reshape515(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4650,7 +4659,7 @@ class Reshape529(ForgeModule):
         return reshape_output_1
 
 
-class Reshape530(ForgeModule):
+class Reshape516(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4659,7 +4668,7 @@ class Reshape530(ForgeModule):
         return reshape_output_1
 
 
-class Reshape531(ForgeModule):
+class Reshape517(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4668,7 +4677,7 @@ class Reshape531(ForgeModule):
         return reshape_output_1
 
 
-class Reshape532(ForgeModule):
+class Reshape518(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4677,7 +4686,7 @@ class Reshape532(ForgeModule):
         return reshape_output_1
 
 
-class Reshape533(ForgeModule):
+class Reshape519(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4686,7 +4695,7 @@ class Reshape533(ForgeModule):
         return reshape_output_1
 
 
-class Reshape534(ForgeModule):
+class Reshape520(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4695,7 +4704,7 @@ class Reshape534(ForgeModule):
         return reshape_output_1
 
 
-class Reshape535(ForgeModule):
+class Reshape521(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4704,7 +4713,7 @@ class Reshape535(ForgeModule):
         return reshape_output_1
 
 
-class Reshape536(ForgeModule):
+class Reshape522(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4713,7 +4722,7 @@ class Reshape536(ForgeModule):
         return reshape_output_1
 
 
-class Reshape537(ForgeModule):
+class Reshape523(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4722,7 +4731,7 @@ class Reshape537(ForgeModule):
         return reshape_output_1
 
 
-class Reshape538(ForgeModule):
+class Reshape524(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4731,7 +4740,7 @@ class Reshape538(ForgeModule):
         return reshape_output_1
 
 
-class Reshape539(ForgeModule):
+class Reshape525(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4740,7 +4749,7 @@ class Reshape539(ForgeModule):
         return reshape_output_1
 
 
-class Reshape540(ForgeModule):
+class Reshape526(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4749,7 +4758,7 @@ class Reshape540(ForgeModule):
         return reshape_output_1
 
 
-class Reshape541(ForgeModule):
+class Reshape527(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4758,7 +4767,7 @@ class Reshape541(ForgeModule):
         return reshape_output_1
 
 
-class Reshape542(ForgeModule):
+class Reshape528(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4767,7 +4776,7 @@ class Reshape542(ForgeModule):
         return reshape_output_1
 
 
-class Reshape543(ForgeModule):
+class Reshape529(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4776,7 +4785,7 @@ class Reshape543(ForgeModule):
         return reshape_output_1
 
 
-class Reshape544(ForgeModule):
+class Reshape530(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4785,7 +4794,7 @@ class Reshape544(ForgeModule):
         return reshape_output_1
 
 
-class Reshape545(ForgeModule):
+class Reshape531(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4794,7 +4803,7 @@ class Reshape545(ForgeModule):
         return reshape_output_1
 
 
-class Reshape546(ForgeModule):
+class Reshape532(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4803,7 +4812,7 @@ class Reshape546(ForgeModule):
         return reshape_output_1
 
 
-class Reshape547(ForgeModule):
+class Reshape533(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4812,7 +4821,7 @@ class Reshape547(ForgeModule):
         return reshape_output_1
 
 
-class Reshape548(ForgeModule):
+class Reshape534(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4821,7 +4830,7 @@ class Reshape548(ForgeModule):
         return reshape_output_1
 
 
-class Reshape549(ForgeModule):
+class Reshape535(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4830,7 +4839,7 @@ class Reshape549(ForgeModule):
         return reshape_output_1
 
 
-class Reshape550(ForgeModule):
+class Reshape536(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4839,7 +4848,7 @@ class Reshape550(ForgeModule):
         return reshape_output_1
 
 
-class Reshape551(ForgeModule):
+class Reshape537(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4848,7 +4857,7 @@ class Reshape551(ForgeModule):
         return reshape_output_1
 
 
-class Reshape552(ForgeModule):
+class Reshape538(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4857,7 +4866,7 @@ class Reshape552(ForgeModule):
         return reshape_output_1
 
 
-class Reshape553(ForgeModule):
+class Reshape539(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4866,7 +4875,7 @@ class Reshape553(ForgeModule):
         return reshape_output_1
 
 
-class Reshape554(ForgeModule):
+class Reshape540(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4875,7 +4884,7 @@ class Reshape554(ForgeModule):
         return reshape_output_1
 
 
-class Reshape555(ForgeModule):
+class Reshape541(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4884,7 +4893,7 @@ class Reshape555(ForgeModule):
         return reshape_output_1
 
 
-class Reshape556(ForgeModule):
+class Reshape542(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4893,7 +4902,7 @@ class Reshape556(ForgeModule):
         return reshape_output_1
 
 
-class Reshape557(ForgeModule):
+class Reshape543(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4902,7 +4911,7 @@ class Reshape557(ForgeModule):
         return reshape_output_1
 
 
-class Reshape558(ForgeModule):
+class Reshape544(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4911,7 +4920,7 @@ class Reshape558(ForgeModule):
         return reshape_output_1
 
 
-class Reshape559(ForgeModule):
+class Reshape545(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4920,7 +4929,7 @@ class Reshape559(ForgeModule):
         return reshape_output_1
 
 
-class Reshape560(ForgeModule):
+class Reshape546(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4929,7 +4938,7 @@ class Reshape560(ForgeModule):
         return reshape_output_1
 
 
-class Reshape561(ForgeModule):
+class Reshape547(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4938,7 +4947,7 @@ class Reshape561(ForgeModule):
         return reshape_output_1
 
 
-class Reshape562(ForgeModule):
+class Reshape548(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4947,7 +4956,7 @@ class Reshape562(ForgeModule):
         return reshape_output_1
 
 
-class Reshape563(ForgeModule):
+class Reshape549(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4956,7 +4965,7 @@ class Reshape563(ForgeModule):
         return reshape_output_1
 
 
-class Reshape564(ForgeModule):
+class Reshape550(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4965,7 +4974,7 @@ class Reshape564(ForgeModule):
         return reshape_output_1
 
 
-class Reshape565(ForgeModule):
+class Reshape551(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4974,7 +4983,7 @@ class Reshape565(ForgeModule):
         return reshape_output_1
 
 
-class Reshape566(ForgeModule):
+class Reshape552(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4983,7 +4992,7 @@ class Reshape566(ForgeModule):
         return reshape_output_1
 
 
-class Reshape567(ForgeModule):
+class Reshape553(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -4992,7 +5001,7 @@ class Reshape567(ForgeModule):
         return reshape_output_1
 
 
-class Reshape568(ForgeModule):
+class Reshape554(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5001,7 +5010,7 @@ class Reshape568(ForgeModule):
         return reshape_output_1
 
 
-class Reshape569(ForgeModule):
+class Reshape555(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5010,7 +5019,7 @@ class Reshape569(ForgeModule):
         return reshape_output_1
 
 
-class Reshape570(ForgeModule):
+class Reshape556(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5019,7 +5028,7 @@ class Reshape570(ForgeModule):
         return reshape_output_1
 
 
-class Reshape571(ForgeModule):
+class Reshape557(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5028,7 +5037,7 @@ class Reshape571(ForgeModule):
         return reshape_output_1
 
 
-class Reshape572(ForgeModule):
+class Reshape558(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5037,7 +5046,7 @@ class Reshape572(ForgeModule):
         return reshape_output_1
 
 
-class Reshape573(ForgeModule):
+class Reshape559(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5046,7 +5055,7 @@ class Reshape573(ForgeModule):
         return reshape_output_1
 
 
-class Reshape574(ForgeModule):
+class Reshape560(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5055,7 +5064,7 @@ class Reshape574(ForgeModule):
         return reshape_output_1
 
 
-class Reshape575(ForgeModule):
+class Reshape561(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5064,7 +5073,7 @@ class Reshape575(ForgeModule):
         return reshape_output_1
 
 
-class Reshape576(ForgeModule):
+class Reshape562(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5073,7 +5082,7 @@ class Reshape576(ForgeModule):
         return reshape_output_1
 
 
-class Reshape577(ForgeModule):
+class Reshape563(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5082,7 +5091,7 @@ class Reshape577(ForgeModule):
         return reshape_output_1
 
 
-class Reshape578(ForgeModule):
+class Reshape564(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5091,7 +5100,7 @@ class Reshape578(ForgeModule):
         return reshape_output_1
 
 
-class Reshape579(ForgeModule):
+class Reshape565(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5100,7 +5109,7 @@ class Reshape579(ForgeModule):
         return reshape_output_1
 
 
-class Reshape580(ForgeModule):
+class Reshape566(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5109,7 +5118,7 @@ class Reshape580(ForgeModule):
         return reshape_output_1
 
 
-class Reshape581(ForgeModule):
+class Reshape567(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5118,7 +5127,7 @@ class Reshape581(ForgeModule):
         return reshape_output_1
 
 
-class Reshape582(ForgeModule):
+class Reshape568(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5127,7 +5136,7 @@ class Reshape582(ForgeModule):
         return reshape_output_1
 
 
-class Reshape583(ForgeModule):
+class Reshape569(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5136,7 +5145,7 @@ class Reshape583(ForgeModule):
         return reshape_output_1
 
 
-class Reshape584(ForgeModule):
+class Reshape570(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5145,7 +5154,7 @@ class Reshape584(ForgeModule):
         return reshape_output_1
 
 
-class Reshape585(ForgeModule):
+class Reshape571(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5154,7 +5163,7 @@ class Reshape585(ForgeModule):
         return reshape_output_1
 
 
-class Reshape586(ForgeModule):
+class Reshape572(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5163,7 +5172,7 @@ class Reshape586(ForgeModule):
         return reshape_output_1
 
 
-class Reshape587(ForgeModule):
+class Reshape573(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5172,7 +5181,7 @@ class Reshape587(ForgeModule):
         return reshape_output_1
 
 
-class Reshape588(ForgeModule):
+class Reshape574(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5181,7 +5190,7 @@ class Reshape588(ForgeModule):
         return reshape_output_1
 
 
-class Reshape589(ForgeModule):
+class Reshape575(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5190,7 +5199,7 @@ class Reshape589(ForgeModule):
         return reshape_output_1
 
 
-class Reshape590(ForgeModule):
+class Reshape576(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5199,7 +5208,7 @@ class Reshape590(ForgeModule):
         return reshape_output_1
 
 
-class Reshape591(ForgeModule):
+class Reshape577(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5208,7 +5217,7 @@ class Reshape591(ForgeModule):
         return reshape_output_1
 
 
-class Reshape592(ForgeModule):
+class Reshape578(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5217,7 +5226,7 @@ class Reshape592(ForgeModule):
         return reshape_output_1
 
 
-class Reshape593(ForgeModule):
+class Reshape579(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5226,7 +5235,7 @@ class Reshape593(ForgeModule):
         return reshape_output_1
 
 
-class Reshape594(ForgeModule):
+class Reshape580(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5235,7 +5244,7 @@ class Reshape594(ForgeModule):
         return reshape_output_1
 
 
-class Reshape595(ForgeModule):
+class Reshape581(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5244,7 +5253,7 @@ class Reshape595(ForgeModule):
         return reshape_output_1
 
 
-class Reshape596(ForgeModule):
+class Reshape582(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5253,7 +5262,7 @@ class Reshape596(ForgeModule):
         return reshape_output_1
 
 
-class Reshape597(ForgeModule):
+class Reshape583(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5262,7 +5271,7 @@ class Reshape597(ForgeModule):
         return reshape_output_1
 
 
-class Reshape598(ForgeModule):
+class Reshape584(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5271,7 +5280,7 @@ class Reshape598(ForgeModule):
         return reshape_output_1
 
 
-class Reshape599(ForgeModule):
+class Reshape585(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5280,7 +5289,7 @@ class Reshape599(ForgeModule):
         return reshape_output_1
 
 
-class Reshape600(ForgeModule):
+class Reshape586(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5289,7 +5298,7 @@ class Reshape600(ForgeModule):
         return reshape_output_1
 
 
-class Reshape601(ForgeModule):
+class Reshape587(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5298,7 +5307,7 @@ class Reshape601(ForgeModule):
         return reshape_output_1
 
 
-class Reshape602(ForgeModule):
+class Reshape588(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5307,7 +5316,7 @@ class Reshape602(ForgeModule):
         return reshape_output_1
 
 
-class Reshape603(ForgeModule):
+class Reshape589(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5316,7 +5325,7 @@ class Reshape603(ForgeModule):
         return reshape_output_1
 
 
-class Reshape604(ForgeModule):
+class Reshape590(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5325,7 +5334,7 @@ class Reshape604(ForgeModule):
         return reshape_output_1
 
 
-class Reshape605(ForgeModule):
+class Reshape591(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5334,7 +5343,7 @@ class Reshape605(ForgeModule):
         return reshape_output_1
 
 
-class Reshape606(ForgeModule):
+class Reshape592(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5343,7 +5352,7 @@ class Reshape606(ForgeModule):
         return reshape_output_1
 
 
-class Reshape607(ForgeModule):
+class Reshape593(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5352,7 +5361,7 @@ class Reshape607(ForgeModule):
         return reshape_output_1
 
 
-class Reshape608(ForgeModule):
+class Reshape594(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5361,7 +5370,7 @@ class Reshape608(ForgeModule):
         return reshape_output_1
 
 
-class Reshape609(ForgeModule):
+class Reshape595(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5370,7 +5379,7 @@ class Reshape609(ForgeModule):
         return reshape_output_1
 
 
-class Reshape610(ForgeModule):
+class Reshape596(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5379,7 +5388,7 @@ class Reshape610(ForgeModule):
         return reshape_output_1
 
 
-class Reshape611(ForgeModule):
+class Reshape597(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5388,7 +5397,7 @@ class Reshape611(ForgeModule):
         return reshape_output_1
 
 
-class Reshape612(ForgeModule):
+class Reshape598(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5397,7 +5406,7 @@ class Reshape612(ForgeModule):
         return reshape_output_1
 
 
-class Reshape613(ForgeModule):
+class Reshape599(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5406,7 +5415,7 @@ class Reshape613(ForgeModule):
         return reshape_output_1
 
 
-class Reshape614(ForgeModule):
+class Reshape600(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5415,7 +5424,7 @@ class Reshape614(ForgeModule):
         return reshape_output_1
 
 
-class Reshape615(ForgeModule):
+class Reshape601(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5424,7 +5433,7 @@ class Reshape615(ForgeModule):
         return reshape_output_1
 
 
-class Reshape616(ForgeModule):
+class Reshape602(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5433,7 +5442,7 @@ class Reshape616(ForgeModule):
         return reshape_output_1
 
 
-class Reshape617(ForgeModule):
+class Reshape603(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5442,7 +5451,7 @@ class Reshape617(ForgeModule):
         return reshape_output_1
 
 
-class Reshape618(ForgeModule):
+class Reshape604(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5451,7 +5460,7 @@ class Reshape618(ForgeModule):
         return reshape_output_1
 
 
-class Reshape619(ForgeModule):
+class Reshape605(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5460,7 +5469,7 @@ class Reshape619(ForgeModule):
         return reshape_output_1
 
 
-class Reshape620(ForgeModule):
+class Reshape606(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5469,7 +5478,7 @@ class Reshape620(ForgeModule):
         return reshape_output_1
 
 
-class Reshape621(ForgeModule):
+class Reshape607(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5478,7 +5487,7 @@ class Reshape621(ForgeModule):
         return reshape_output_1
 
 
-class Reshape622(ForgeModule):
+class Reshape608(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5487,7 +5496,7 @@ class Reshape622(ForgeModule):
         return reshape_output_1
 
 
-class Reshape623(ForgeModule):
+class Reshape609(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5496,7 +5505,7 @@ class Reshape623(ForgeModule):
         return reshape_output_1
 
 
-class Reshape624(ForgeModule):
+class Reshape610(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5505,7 +5514,7 @@ class Reshape624(ForgeModule):
         return reshape_output_1
 
 
-class Reshape625(ForgeModule):
+class Reshape611(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5514,7 +5523,7 @@ class Reshape625(ForgeModule):
         return reshape_output_1
 
 
-class Reshape626(ForgeModule):
+class Reshape612(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5523,7 +5532,7 @@ class Reshape626(ForgeModule):
         return reshape_output_1
 
 
-class Reshape627(ForgeModule):
+class Reshape613(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5532,7 +5541,7 @@ class Reshape627(ForgeModule):
         return reshape_output_1
 
 
-class Reshape628(ForgeModule):
+class Reshape614(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5541,7 +5550,7 @@ class Reshape628(ForgeModule):
         return reshape_output_1
 
 
-class Reshape629(ForgeModule):
+class Reshape615(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5550,7 +5559,7 @@ class Reshape629(ForgeModule):
         return reshape_output_1
 
 
-class Reshape630(ForgeModule):
+class Reshape616(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5559,7 +5568,7 @@ class Reshape630(ForgeModule):
         return reshape_output_1
 
 
-class Reshape631(ForgeModule):
+class Reshape617(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5568,7 +5577,7 @@ class Reshape631(ForgeModule):
         return reshape_output_1
 
 
-class Reshape632(ForgeModule):
+class Reshape618(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5577,7 +5586,7 @@ class Reshape632(ForgeModule):
         return reshape_output_1
 
 
-class Reshape633(ForgeModule):
+class Reshape619(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5586,7 +5595,7 @@ class Reshape633(ForgeModule):
         return reshape_output_1
 
 
-class Reshape634(ForgeModule):
+class Reshape620(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5595,7 +5604,7 @@ class Reshape634(ForgeModule):
         return reshape_output_1
 
 
-class Reshape635(ForgeModule):
+class Reshape621(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5604,7 +5613,7 @@ class Reshape635(ForgeModule):
         return reshape_output_1
 
 
-class Reshape636(ForgeModule):
+class Reshape622(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5613,7 +5622,7 @@ class Reshape636(ForgeModule):
         return reshape_output_1
 
 
-class Reshape637(ForgeModule):
+class Reshape623(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5622,7 +5631,7 @@ class Reshape637(ForgeModule):
         return reshape_output_1
 
 
-class Reshape638(ForgeModule):
+class Reshape624(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5631,7 +5640,7 @@ class Reshape638(ForgeModule):
         return reshape_output_1
 
 
-class Reshape639(ForgeModule):
+class Reshape625(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5640,7 +5649,7 @@ class Reshape639(ForgeModule):
         return reshape_output_1
 
 
-class Reshape640(ForgeModule):
+class Reshape626(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5649,7 +5658,7 @@ class Reshape640(ForgeModule):
         return reshape_output_1
 
 
-class Reshape641(ForgeModule):
+class Reshape627(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5658,7 +5667,7 @@ class Reshape641(ForgeModule):
         return reshape_output_1
 
 
-class Reshape642(ForgeModule):
+class Reshape628(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5667,7 +5676,7 @@ class Reshape642(ForgeModule):
         return reshape_output_1
 
 
-class Reshape643(ForgeModule):
+class Reshape629(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5676,7 +5685,7 @@ class Reshape643(ForgeModule):
         return reshape_output_1
 
 
-class Reshape644(ForgeModule):
+class Reshape630(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5685,7 +5694,7 @@ class Reshape644(ForgeModule):
         return reshape_output_1
 
 
-class Reshape645(ForgeModule):
+class Reshape631(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5694,7 +5703,7 @@ class Reshape645(ForgeModule):
         return reshape_output_1
 
 
-class Reshape646(ForgeModule):
+class Reshape632(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5703,7 +5712,7 @@ class Reshape646(ForgeModule):
         return reshape_output_1
 
 
-class Reshape647(ForgeModule):
+class Reshape633(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5712,7 +5721,7 @@ class Reshape647(ForgeModule):
         return reshape_output_1
 
 
-class Reshape648(ForgeModule):
+class Reshape634(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5721,7 +5730,7 @@ class Reshape648(ForgeModule):
         return reshape_output_1
 
 
-class Reshape649(ForgeModule):
+class Reshape635(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5730,7 +5739,7 @@ class Reshape649(ForgeModule):
         return reshape_output_1
 
 
-class Reshape650(ForgeModule):
+class Reshape636(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5739,7 +5748,7 @@ class Reshape650(ForgeModule):
         return reshape_output_1
 
 
-class Reshape651(ForgeModule):
+class Reshape637(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5748,7 +5757,7 @@ class Reshape651(ForgeModule):
         return reshape_output_1
 
 
-class Reshape652(ForgeModule):
+class Reshape638(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5757,7 +5766,7 @@ class Reshape652(ForgeModule):
         return reshape_output_1
 
 
-class Reshape653(ForgeModule):
+class Reshape639(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5766,7 +5775,7 @@ class Reshape653(ForgeModule):
         return reshape_output_1
 
 
-class Reshape654(ForgeModule):
+class Reshape640(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5775,7 +5784,7 @@ class Reshape654(ForgeModule):
         return reshape_output_1
 
 
-class Reshape655(ForgeModule):
+class Reshape641(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5784,7 +5793,7 @@ class Reshape655(ForgeModule):
         return reshape_output_1
 
 
-class Reshape656(ForgeModule):
+class Reshape642(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5793,7 +5802,7 @@ class Reshape656(ForgeModule):
         return reshape_output_1
 
 
-class Reshape657(ForgeModule):
+class Reshape643(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5802,7 +5811,7 @@ class Reshape657(ForgeModule):
         return reshape_output_1
 
 
-class Reshape658(ForgeModule):
+class Reshape644(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5811,7 +5820,7 @@ class Reshape658(ForgeModule):
         return reshape_output_1
 
 
-class Reshape659(ForgeModule):
+class Reshape645(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5820,7 +5829,7 @@ class Reshape659(ForgeModule):
         return reshape_output_1
 
 
-class Reshape660(ForgeModule):
+class Reshape646(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5829,7 +5838,7 @@ class Reshape660(ForgeModule):
         return reshape_output_1
 
 
-class Reshape661(ForgeModule):
+class Reshape647(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5838,7 +5847,7 @@ class Reshape661(ForgeModule):
         return reshape_output_1
 
 
-class Reshape662(ForgeModule):
+class Reshape648(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5847,7 +5856,7 @@ class Reshape662(ForgeModule):
         return reshape_output_1
 
 
-class Reshape663(ForgeModule):
+class Reshape649(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5856,7 +5865,7 @@ class Reshape663(ForgeModule):
         return reshape_output_1
 
 
-class Reshape664(ForgeModule):
+class Reshape650(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5865,7 +5874,7 @@ class Reshape664(ForgeModule):
         return reshape_output_1
 
 
-class Reshape665(ForgeModule):
+class Reshape651(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5874,7 +5883,7 @@ class Reshape665(ForgeModule):
         return reshape_output_1
 
 
-class Reshape666(ForgeModule):
+class Reshape652(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5883,7 +5892,7 @@ class Reshape666(ForgeModule):
         return reshape_output_1
 
 
-class Reshape667(ForgeModule):
+class Reshape653(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5892,7 +5901,7 @@ class Reshape667(ForgeModule):
         return reshape_output_1
 
 
-class Reshape668(ForgeModule):
+class Reshape654(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5901,7 +5910,7 @@ class Reshape668(ForgeModule):
         return reshape_output_1
 
 
-class Reshape669(ForgeModule):
+class Reshape655(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5910,7 +5919,7 @@ class Reshape669(ForgeModule):
         return reshape_output_1
 
 
-class Reshape670(ForgeModule):
+class Reshape656(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5919,7 +5928,7 @@ class Reshape670(ForgeModule):
         return reshape_output_1
 
 
-class Reshape671(ForgeModule):
+class Reshape657(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5928,7 +5937,7 @@ class Reshape671(ForgeModule):
         return reshape_output_1
 
 
-class Reshape672(ForgeModule):
+class Reshape658(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5937,7 +5946,7 @@ class Reshape672(ForgeModule):
         return reshape_output_1
 
 
-class Reshape673(ForgeModule):
+class Reshape659(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5946,7 +5955,7 @@ class Reshape673(ForgeModule):
         return reshape_output_1
 
 
-class Reshape674(ForgeModule):
+class Reshape660(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5955,7 +5964,7 @@ class Reshape674(ForgeModule):
         return reshape_output_1
 
 
-class Reshape675(ForgeModule):
+class Reshape661(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5964,7 +5973,7 @@ class Reshape675(ForgeModule):
         return reshape_output_1
 
 
-class Reshape676(ForgeModule):
+class Reshape662(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5973,7 +5982,7 @@ class Reshape676(ForgeModule):
         return reshape_output_1
 
 
-class Reshape677(ForgeModule):
+class Reshape663(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5982,7 +5991,7 @@ class Reshape677(ForgeModule):
         return reshape_output_1
 
 
-class Reshape678(ForgeModule):
+class Reshape664(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -5991,7 +6000,7 @@ class Reshape678(ForgeModule):
         return reshape_output_1
 
 
-class Reshape679(ForgeModule):
+class Reshape665(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6000,7 +6009,7 @@ class Reshape679(ForgeModule):
         return reshape_output_1
 
 
-class Reshape680(ForgeModule):
+class Reshape666(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6009,7 +6018,7 @@ class Reshape680(ForgeModule):
         return reshape_output_1
 
 
-class Reshape681(ForgeModule):
+class Reshape667(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6018,7 +6027,7 @@ class Reshape681(ForgeModule):
         return reshape_output_1
 
 
-class Reshape682(ForgeModule):
+class Reshape668(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6027,7 +6036,7 @@ class Reshape682(ForgeModule):
         return reshape_output_1
 
 
-class Reshape683(ForgeModule):
+class Reshape669(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6036,7 +6045,7 @@ class Reshape683(ForgeModule):
         return reshape_output_1
 
 
-class Reshape684(ForgeModule):
+class Reshape670(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6045,7 +6054,7 @@ class Reshape684(ForgeModule):
         return reshape_output_1
 
 
-class Reshape685(ForgeModule):
+class Reshape671(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6054,7 +6063,7 @@ class Reshape685(ForgeModule):
         return reshape_output_1
 
 
-class Reshape686(ForgeModule):
+class Reshape672(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6063,7 +6072,7 @@ class Reshape686(ForgeModule):
         return reshape_output_1
 
 
-class Reshape687(ForgeModule):
+class Reshape673(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6072,7 +6081,7 @@ class Reshape687(ForgeModule):
         return reshape_output_1
 
 
-class Reshape688(ForgeModule):
+class Reshape674(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6081,7 +6090,7 @@ class Reshape688(ForgeModule):
         return reshape_output_1
 
 
-class Reshape689(ForgeModule):
+class Reshape675(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6090,7 +6099,7 @@ class Reshape689(ForgeModule):
         return reshape_output_1
 
 
-class Reshape690(ForgeModule):
+class Reshape676(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6099,7 +6108,7 @@ class Reshape690(ForgeModule):
         return reshape_output_1
 
 
-class Reshape691(ForgeModule):
+class Reshape677(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6108,7 +6117,7 @@ class Reshape691(ForgeModule):
         return reshape_output_1
 
 
-class Reshape692(ForgeModule):
+class Reshape678(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6117,7 +6126,7 @@ class Reshape692(ForgeModule):
         return reshape_output_1
 
 
-class Reshape693(ForgeModule):
+class Reshape679(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6126,7 +6135,7 @@ class Reshape693(ForgeModule):
         return reshape_output_1
 
 
-class Reshape694(ForgeModule):
+class Reshape680(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6135,7 +6144,7 @@ class Reshape694(ForgeModule):
         return reshape_output_1
 
 
-class Reshape695(ForgeModule):
+class Reshape681(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6144,7 +6153,7 @@ class Reshape695(ForgeModule):
         return reshape_output_1
 
 
-class Reshape696(ForgeModule):
+class Reshape682(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6153,7 +6162,7 @@ class Reshape696(ForgeModule):
         return reshape_output_1
 
 
-class Reshape697(ForgeModule):
+class Reshape683(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6162,7 +6171,7 @@ class Reshape697(ForgeModule):
         return reshape_output_1
 
 
-class Reshape698(ForgeModule):
+class Reshape684(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6171,7 +6180,7 @@ class Reshape698(ForgeModule):
         return reshape_output_1
 
 
-class Reshape699(ForgeModule):
+class Reshape685(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6180,7 +6189,7 @@ class Reshape699(ForgeModule):
         return reshape_output_1
 
 
-class Reshape700(ForgeModule):
+class Reshape686(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6189,7 +6198,7 @@ class Reshape700(ForgeModule):
         return reshape_output_1
 
 
-class Reshape701(ForgeModule):
+class Reshape687(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6198,7 +6207,7 @@ class Reshape701(ForgeModule):
         return reshape_output_1
 
 
-class Reshape702(ForgeModule):
+class Reshape688(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6207,7 +6216,7 @@ class Reshape702(ForgeModule):
         return reshape_output_1
 
 
-class Reshape703(ForgeModule):
+class Reshape689(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6216,7 +6225,7 @@ class Reshape703(ForgeModule):
         return reshape_output_1
 
 
-class Reshape704(ForgeModule):
+class Reshape690(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6225,7 +6234,7 @@ class Reshape704(ForgeModule):
         return reshape_output_1
 
 
-class Reshape705(ForgeModule):
+class Reshape691(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6234,7 +6243,7 @@ class Reshape705(ForgeModule):
         return reshape_output_1
 
 
-class Reshape706(ForgeModule):
+class Reshape692(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6243,7 +6252,7 @@ class Reshape706(ForgeModule):
         return reshape_output_1
 
 
-class Reshape707(ForgeModule):
+class Reshape693(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6252,7 +6261,7 @@ class Reshape707(ForgeModule):
         return reshape_output_1
 
 
-class Reshape708(ForgeModule):
+class Reshape694(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6261,7 +6270,7 @@ class Reshape708(ForgeModule):
         return reshape_output_1
 
 
-class Reshape709(ForgeModule):
+class Reshape695(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6270,7 +6279,7 @@ class Reshape709(ForgeModule):
         return reshape_output_1
 
 
-class Reshape710(ForgeModule):
+class Reshape696(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6279,7 +6288,7 @@ class Reshape710(ForgeModule):
         return reshape_output_1
 
 
-class Reshape711(ForgeModule):
+class Reshape697(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6288,7 +6297,7 @@ class Reshape711(ForgeModule):
         return reshape_output_1
 
 
-class Reshape712(ForgeModule):
+class Reshape698(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6297,7 +6306,7 @@ class Reshape712(ForgeModule):
         return reshape_output_1
 
 
-class Reshape713(ForgeModule):
+class Reshape699(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6306,7 +6315,7 @@ class Reshape713(ForgeModule):
         return reshape_output_1
 
 
-class Reshape714(ForgeModule):
+class Reshape700(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6315,7 +6324,16 @@ class Reshape714(ForgeModule):
         return reshape_output_1
 
 
-class Reshape715(ForgeModule):
+class Reshape701(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 16384))
+        return reshape_output_1
+
+
+class Reshape702(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6324,7 +6342,7 @@ class Reshape715(ForgeModule):
         return reshape_output_1
 
 
-class Reshape716(ForgeModule):
+class Reshape703(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6333,7 +6351,7 @@ class Reshape716(ForgeModule):
         return reshape_output_1
 
 
-class Reshape717(ForgeModule):
+class Reshape704(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6342,7 +6360,7 @@ class Reshape717(ForgeModule):
         return reshape_output_1
 
 
-class Reshape718(ForgeModule):
+class Reshape705(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6351,7 +6369,7 @@ class Reshape718(ForgeModule):
         return reshape_output_1
 
 
-class Reshape719(ForgeModule):
+class Reshape706(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6360,7 +6378,7 @@ class Reshape719(ForgeModule):
         return reshape_output_1
 
 
-class Reshape720(ForgeModule):
+class Reshape707(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6369,7 +6387,7 @@ class Reshape720(ForgeModule):
         return reshape_output_1
 
 
-class Reshape721(ForgeModule):
+class Reshape708(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6378,7 +6396,7 @@ class Reshape721(ForgeModule):
         return reshape_output_1
 
 
-class Reshape722(ForgeModule):
+class Reshape709(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6387,7 +6405,7 @@ class Reshape722(ForgeModule):
         return reshape_output_1
 
 
-class Reshape723(ForgeModule):
+class Reshape710(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6396,7 +6414,7 @@ class Reshape723(ForgeModule):
         return reshape_output_1
 
 
-class Reshape724(ForgeModule):
+class Reshape711(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6405,7 +6423,7 @@ class Reshape724(ForgeModule):
         return reshape_output_1
 
 
-class Reshape725(ForgeModule):
+class Reshape712(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6414,7 +6432,7 @@ class Reshape725(ForgeModule):
         return reshape_output_1
 
 
-class Reshape726(ForgeModule):
+class Reshape713(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6423,7 +6441,7 @@ class Reshape726(ForgeModule):
         return reshape_output_1
 
 
-class Reshape727(ForgeModule):
+class Reshape714(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6432,7 +6450,7 @@ class Reshape727(ForgeModule):
         return reshape_output_1
 
 
-class Reshape728(ForgeModule):
+class Reshape715(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6441,7 +6459,7 @@ class Reshape728(ForgeModule):
         return reshape_output_1
 
 
-class Reshape729(ForgeModule):
+class Reshape716(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6450,7 +6468,7 @@ class Reshape729(ForgeModule):
         return reshape_output_1
 
 
-class Reshape730(ForgeModule):
+class Reshape717(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6459,7 +6477,7 @@ class Reshape730(ForgeModule):
         return reshape_output_1
 
 
-class Reshape731(ForgeModule):
+class Reshape718(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6468,7 +6486,7 @@ class Reshape731(ForgeModule):
         return reshape_output_1
 
 
-class Reshape732(ForgeModule):
+class Reshape719(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6477,7 +6495,7 @@ class Reshape732(ForgeModule):
         return reshape_output_1
 
 
-class Reshape733(ForgeModule):
+class Reshape720(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6486,7 +6504,7 @@ class Reshape733(ForgeModule):
         return reshape_output_1
 
 
-class Reshape734(ForgeModule):
+class Reshape721(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6495,7 +6513,7 @@ class Reshape734(ForgeModule):
         return reshape_output_1
 
 
-class Reshape735(ForgeModule):
+class Reshape722(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6504,7 +6522,7 @@ class Reshape735(ForgeModule):
         return reshape_output_1
 
 
-class Reshape736(ForgeModule):
+class Reshape723(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6513,7 +6531,7 @@ class Reshape736(ForgeModule):
         return reshape_output_1
 
 
-class Reshape737(ForgeModule):
+class Reshape724(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6522,7 +6540,7 @@ class Reshape737(ForgeModule):
         return reshape_output_1
 
 
-class Reshape738(ForgeModule):
+class Reshape725(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6531,7 +6549,7 @@ class Reshape738(ForgeModule):
         return reshape_output_1
 
 
-class Reshape739(ForgeModule):
+class Reshape726(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6540,7 +6558,7 @@ class Reshape739(ForgeModule):
         return reshape_output_1
 
 
-class Reshape740(ForgeModule):
+class Reshape727(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6549,7 +6567,7 @@ class Reshape740(ForgeModule):
         return reshape_output_1
 
 
-class Reshape741(ForgeModule):
+class Reshape728(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6558,7 +6576,7 @@ class Reshape741(ForgeModule):
         return reshape_output_1
 
 
-class Reshape742(ForgeModule):
+class Reshape729(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6567,7 +6585,7 @@ class Reshape742(ForgeModule):
         return reshape_output_1
 
 
-class Reshape743(ForgeModule):
+class Reshape730(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6576,7 +6594,7 @@ class Reshape743(ForgeModule):
         return reshape_output_1
 
 
-class Reshape744(ForgeModule):
+class Reshape731(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6585,7 +6603,7 @@ class Reshape744(ForgeModule):
         return reshape_output_1
 
 
-class Reshape745(ForgeModule):
+class Reshape732(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6594,7 +6612,7 @@ class Reshape745(ForgeModule):
         return reshape_output_1
 
 
-class Reshape746(ForgeModule):
+class Reshape733(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6603,7 +6621,7 @@ class Reshape746(ForgeModule):
         return reshape_output_1
 
 
-class Reshape747(ForgeModule):
+class Reshape734(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6612,7 +6630,7 @@ class Reshape747(ForgeModule):
         return reshape_output_1
 
 
-class Reshape748(ForgeModule):
+class Reshape735(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6621,7 +6639,7 @@ class Reshape748(ForgeModule):
         return reshape_output_1
 
 
-class Reshape749(ForgeModule):
+class Reshape736(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6630,7 +6648,7 @@ class Reshape749(ForgeModule):
         return reshape_output_1
 
 
-class Reshape750(ForgeModule):
+class Reshape737(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6639,7 +6657,7 @@ class Reshape750(ForgeModule):
         return reshape_output_1
 
 
-class Reshape751(ForgeModule):
+class Reshape738(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6648,7 +6666,7 @@ class Reshape751(ForgeModule):
         return reshape_output_1
 
 
-class Reshape752(ForgeModule):
+class Reshape739(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6657,7 +6675,7 @@ class Reshape752(ForgeModule):
         return reshape_output_1
 
 
-class Reshape753(ForgeModule):
+class Reshape740(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6666,7 +6684,7 @@ class Reshape753(ForgeModule):
         return reshape_output_1
 
 
-class Reshape754(ForgeModule):
+class Reshape741(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6675,7 +6693,7 @@ class Reshape754(ForgeModule):
         return reshape_output_1
 
 
-class Reshape755(ForgeModule):
+class Reshape742(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6684,7 +6702,7 @@ class Reshape755(ForgeModule):
         return reshape_output_1
 
 
-class Reshape756(ForgeModule):
+class Reshape743(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6693,7 +6711,7 @@ class Reshape756(ForgeModule):
         return reshape_output_1
 
 
-class Reshape757(ForgeModule):
+class Reshape744(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6702,7 +6720,7 @@ class Reshape757(ForgeModule):
         return reshape_output_1
 
 
-class Reshape758(ForgeModule):
+class Reshape745(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6711,7 +6729,7 @@ class Reshape758(ForgeModule):
         return reshape_output_1
 
 
-class Reshape759(ForgeModule):
+class Reshape746(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6720,7 +6738,7 @@ class Reshape759(ForgeModule):
         return reshape_output_1
 
 
-class Reshape760(ForgeModule):
+class Reshape747(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6729,7 +6747,7 @@ class Reshape760(ForgeModule):
         return reshape_output_1
 
 
-class Reshape761(ForgeModule):
+class Reshape748(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6738,7 +6756,7 @@ class Reshape761(ForgeModule):
         return reshape_output_1
 
 
-class Reshape762(ForgeModule):
+class Reshape749(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6747,7 +6765,7 @@ class Reshape762(ForgeModule):
         return reshape_output_1
 
 
-class Reshape763(ForgeModule):
+class Reshape750(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6756,7 +6774,7 @@ class Reshape763(ForgeModule):
         return reshape_output_1
 
 
-class Reshape764(ForgeModule):
+class Reshape751(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6765,7 +6783,7 @@ class Reshape764(ForgeModule):
         return reshape_output_1
 
 
-class Reshape765(ForgeModule):
+class Reshape752(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6774,7 +6792,7 @@ class Reshape765(ForgeModule):
         return reshape_output_1
 
 
-class Reshape766(ForgeModule):
+class Reshape753(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6783,7 +6801,7 @@ class Reshape766(ForgeModule):
         return reshape_output_1
 
 
-class Reshape767(ForgeModule):
+class Reshape754(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6792,7 +6810,7 @@ class Reshape767(ForgeModule):
         return reshape_output_1
 
 
-class Reshape768(ForgeModule):
+class Reshape755(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6801,7 +6819,7 @@ class Reshape768(ForgeModule):
         return reshape_output_1
 
 
-class Reshape769(ForgeModule):
+class Reshape756(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6810,7 +6828,7 @@ class Reshape769(ForgeModule):
         return reshape_output_1
 
 
-class Reshape770(ForgeModule):
+class Reshape757(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6819,7 +6837,7 @@ class Reshape770(ForgeModule):
         return reshape_output_1
 
 
-class Reshape771(ForgeModule):
+class Reshape758(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6828,7 +6846,7 @@ class Reshape771(ForgeModule):
         return reshape_output_1
 
 
-class Reshape772(ForgeModule):
+class Reshape759(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6837,7 +6855,7 @@ class Reshape772(ForgeModule):
         return reshape_output_1
 
 
-class Reshape773(ForgeModule):
+class Reshape760(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6846,7 +6864,7 @@ class Reshape773(ForgeModule):
         return reshape_output_1
 
 
-class Reshape774(ForgeModule):
+class Reshape761(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6855,7 +6873,7 @@ class Reshape774(ForgeModule):
         return reshape_output_1
 
 
-class Reshape775(ForgeModule):
+class Reshape762(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6864,7 +6882,7 @@ class Reshape775(ForgeModule):
         return reshape_output_1
 
 
-class Reshape776(ForgeModule):
+class Reshape763(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6873,7 +6891,7 @@ class Reshape776(ForgeModule):
         return reshape_output_1
 
 
-class Reshape777(ForgeModule):
+class Reshape764(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6882,7 +6900,7 @@ class Reshape777(ForgeModule):
         return reshape_output_1
 
 
-class Reshape778(ForgeModule):
+class Reshape765(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6891,7 +6909,7 @@ class Reshape778(ForgeModule):
         return reshape_output_1
 
 
-class Reshape779(ForgeModule):
+class Reshape766(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6900,7 +6918,7 @@ class Reshape779(ForgeModule):
         return reshape_output_1
 
 
-class Reshape780(ForgeModule):
+class Reshape767(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6909,7 +6927,7 @@ class Reshape780(ForgeModule):
         return reshape_output_1
 
 
-class Reshape781(ForgeModule):
+class Reshape768(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6918,7 +6936,7 @@ class Reshape781(ForgeModule):
         return reshape_output_1
 
 
-class Reshape782(ForgeModule):
+class Reshape769(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6927,7 +6945,7 @@ class Reshape782(ForgeModule):
         return reshape_output_1
 
 
-class Reshape783(ForgeModule):
+class Reshape770(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6936,7 +6954,7 @@ class Reshape783(ForgeModule):
         return reshape_output_1
 
 
-class Reshape784(ForgeModule):
+class Reshape771(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6945,7 +6963,7 @@ class Reshape784(ForgeModule):
         return reshape_output_1
 
 
-class Reshape785(ForgeModule):
+class Reshape772(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6954,7 +6972,7 @@ class Reshape785(ForgeModule):
         return reshape_output_1
 
 
-class Reshape786(ForgeModule):
+class Reshape773(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6963,7 +6981,7 @@ class Reshape786(ForgeModule):
         return reshape_output_1
 
 
-class Reshape787(ForgeModule):
+class Reshape774(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6972,7 +6990,7 @@ class Reshape787(ForgeModule):
         return reshape_output_1
 
 
-class Reshape788(ForgeModule):
+class Reshape775(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6981,7 +6999,7 @@ class Reshape788(ForgeModule):
         return reshape_output_1
 
 
-class Reshape789(ForgeModule):
+class Reshape776(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6990,7 +7008,7 @@ class Reshape789(ForgeModule):
         return reshape_output_1
 
 
-class Reshape790(ForgeModule):
+class Reshape777(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -6999,7 +7017,7 @@ class Reshape790(ForgeModule):
         return reshape_output_1
 
 
-class Reshape791(ForgeModule):
+class Reshape778(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7008,7 +7026,7 @@ class Reshape791(ForgeModule):
         return reshape_output_1
 
 
-class Reshape792(ForgeModule):
+class Reshape779(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7017,7 +7035,7 @@ class Reshape792(ForgeModule):
         return reshape_output_1
 
 
-class Reshape793(ForgeModule):
+class Reshape780(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7026,7 +7044,7 @@ class Reshape793(ForgeModule):
         return reshape_output_1
 
 
-class Reshape794(ForgeModule):
+class Reshape781(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7035,7 +7053,7 @@ class Reshape794(ForgeModule):
         return reshape_output_1
 
 
-class Reshape795(ForgeModule):
+class Reshape782(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7044,7 +7062,7 @@ class Reshape795(ForgeModule):
         return reshape_output_1
 
 
-class Reshape796(ForgeModule):
+class Reshape783(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7053,7 +7071,7 @@ class Reshape796(ForgeModule):
         return reshape_output_1
 
 
-class Reshape797(ForgeModule):
+class Reshape784(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7062,7 +7080,7 @@ class Reshape797(ForgeModule):
         return reshape_output_1
 
 
-class Reshape798(ForgeModule):
+class Reshape785(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7071,7 +7089,7 @@ class Reshape798(ForgeModule):
         return reshape_output_1
 
 
-class Reshape799(ForgeModule):
+class Reshape786(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7080,7 +7098,7 @@ class Reshape799(ForgeModule):
         return reshape_output_1
 
 
-class Reshape800(ForgeModule):
+class Reshape787(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7089,7 +7107,7 @@ class Reshape800(ForgeModule):
         return reshape_output_1
 
 
-class Reshape801(ForgeModule):
+class Reshape788(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7098,7 +7116,7 @@ class Reshape801(ForgeModule):
         return reshape_output_1
 
 
-class Reshape802(ForgeModule):
+class Reshape789(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7107,7 +7125,7 @@ class Reshape802(ForgeModule):
         return reshape_output_1
 
 
-class Reshape803(ForgeModule):
+class Reshape790(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7116,7 +7134,7 @@ class Reshape803(ForgeModule):
         return reshape_output_1
 
 
-class Reshape804(ForgeModule):
+class Reshape791(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7125,7 +7143,7 @@ class Reshape804(ForgeModule):
         return reshape_output_1
 
 
-class Reshape805(ForgeModule):
+class Reshape792(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7134,7 +7152,7 @@ class Reshape805(ForgeModule):
         return reshape_output_1
 
 
-class Reshape806(ForgeModule):
+class Reshape793(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7143,7 +7161,7 @@ class Reshape806(ForgeModule):
         return reshape_output_1
 
 
-class Reshape807(ForgeModule):
+class Reshape794(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7152,7 +7170,7 @@ class Reshape807(ForgeModule):
         return reshape_output_1
 
 
-class Reshape808(ForgeModule):
+class Reshape795(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7161,7 +7179,7 @@ class Reshape808(ForgeModule):
         return reshape_output_1
 
 
-class Reshape809(ForgeModule):
+class Reshape796(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7170,7 +7188,7 @@ class Reshape809(ForgeModule):
         return reshape_output_1
 
 
-class Reshape810(ForgeModule):
+class Reshape797(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7179,7 +7197,7 @@ class Reshape810(ForgeModule):
         return reshape_output_1
 
 
-class Reshape811(ForgeModule):
+class Reshape798(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7188,7 +7206,7 @@ class Reshape811(ForgeModule):
         return reshape_output_1
 
 
-class Reshape812(ForgeModule):
+class Reshape799(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7197,7 +7215,7 @@ class Reshape812(ForgeModule):
         return reshape_output_1
 
 
-class Reshape813(ForgeModule):
+class Reshape800(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7206,7 +7224,7 @@ class Reshape813(ForgeModule):
         return reshape_output_1
 
 
-class Reshape814(ForgeModule):
+class Reshape801(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7215,7 +7233,7 @@ class Reshape814(ForgeModule):
         return reshape_output_1
 
 
-class Reshape815(ForgeModule):
+class Reshape802(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7224,7 +7242,7 @@ class Reshape815(ForgeModule):
         return reshape_output_1
 
 
-class Reshape816(ForgeModule):
+class Reshape803(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7233,7 +7251,7 @@ class Reshape816(ForgeModule):
         return reshape_output_1
 
 
-class Reshape817(ForgeModule):
+class Reshape804(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7242,7 +7260,7 @@ class Reshape817(ForgeModule):
         return reshape_output_1
 
 
-class Reshape818(ForgeModule):
+class Reshape805(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7251,7 +7269,7 @@ class Reshape818(ForgeModule):
         return reshape_output_1
 
 
-class Reshape819(ForgeModule):
+class Reshape806(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7260,7 +7278,7 @@ class Reshape819(ForgeModule):
         return reshape_output_1
 
 
-class Reshape820(ForgeModule):
+class Reshape807(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7269,7 +7287,7 @@ class Reshape820(ForgeModule):
         return reshape_output_1
 
 
-class Reshape821(ForgeModule):
+class Reshape808(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7278,7 +7296,7 @@ class Reshape821(ForgeModule):
         return reshape_output_1
 
 
-class Reshape822(ForgeModule):
+class Reshape809(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7287,7 +7305,7 @@ class Reshape822(ForgeModule):
         return reshape_output_1
 
 
-class Reshape823(ForgeModule):
+class Reshape810(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7296,7 +7314,7 @@ class Reshape823(ForgeModule):
         return reshape_output_1
 
 
-class Reshape824(ForgeModule):
+class Reshape811(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7305,7 +7323,7 @@ class Reshape824(ForgeModule):
         return reshape_output_1
 
 
-class Reshape825(ForgeModule):
+class Reshape812(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7314,7 +7332,7 @@ class Reshape825(ForgeModule):
         return reshape_output_1
 
 
-class Reshape826(ForgeModule):
+class Reshape813(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7323,7 +7341,7 @@ class Reshape826(ForgeModule):
         return reshape_output_1
 
 
-class Reshape827(ForgeModule):
+class Reshape814(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7332,7 +7350,7 @@ class Reshape827(ForgeModule):
         return reshape_output_1
 
 
-class Reshape828(ForgeModule):
+class Reshape815(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7341,7 +7359,7 @@ class Reshape828(ForgeModule):
         return reshape_output_1
 
 
-class Reshape829(ForgeModule):
+class Reshape816(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7350,7 +7368,7 @@ class Reshape829(ForgeModule):
         return reshape_output_1
 
 
-class Reshape830(ForgeModule):
+class Reshape817(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7359,7 +7377,7 @@ class Reshape830(ForgeModule):
         return reshape_output_1
 
 
-class Reshape831(ForgeModule):
+class Reshape818(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7368,7 +7386,7 @@ class Reshape831(ForgeModule):
         return reshape_output_1
 
 
-class Reshape832(ForgeModule):
+class Reshape819(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7377,7 +7395,7 @@ class Reshape832(ForgeModule):
         return reshape_output_1
 
 
-class Reshape833(ForgeModule):
+class Reshape820(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7386,7 +7404,7 @@ class Reshape833(ForgeModule):
         return reshape_output_1
 
 
-class Reshape834(ForgeModule):
+class Reshape821(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7395,7 +7413,7 @@ class Reshape834(ForgeModule):
         return reshape_output_1
 
 
-class Reshape835(ForgeModule):
+class Reshape822(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7404,7 +7422,7 @@ class Reshape835(ForgeModule):
         return reshape_output_1
 
 
-class Reshape836(ForgeModule):
+class Reshape823(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7413,7 +7431,7 @@ class Reshape836(ForgeModule):
         return reshape_output_1
 
 
-class Reshape837(ForgeModule):
+class Reshape824(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7422,7 +7440,7 @@ class Reshape837(ForgeModule):
         return reshape_output_1
 
 
-class Reshape838(ForgeModule):
+class Reshape825(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7431,7 +7449,7 @@ class Reshape838(ForgeModule):
         return reshape_output_1
 
 
-class Reshape839(ForgeModule):
+class Reshape826(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7440,7 +7458,7 @@ class Reshape839(ForgeModule):
         return reshape_output_1
 
 
-class Reshape840(ForgeModule):
+class Reshape827(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7449,7 +7467,7 @@ class Reshape840(ForgeModule):
         return reshape_output_1
 
 
-class Reshape841(ForgeModule):
+class Reshape828(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7458,7 +7476,7 @@ class Reshape841(ForgeModule):
         return reshape_output_1
 
 
-class Reshape842(ForgeModule):
+class Reshape829(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7467,7 +7485,7 @@ class Reshape842(ForgeModule):
         return reshape_output_1
 
 
-class Reshape843(ForgeModule):
+class Reshape830(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7476,7 +7494,7 @@ class Reshape843(ForgeModule):
         return reshape_output_1
 
 
-class Reshape844(ForgeModule):
+class Reshape831(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7485,7 +7503,7 @@ class Reshape844(ForgeModule):
         return reshape_output_1
 
 
-class Reshape845(ForgeModule):
+class Reshape832(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7494,7 +7512,7 @@ class Reshape845(ForgeModule):
         return reshape_output_1
 
 
-class Reshape846(ForgeModule):
+class Reshape833(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7503,7 +7521,7 @@ class Reshape846(ForgeModule):
         return reshape_output_1
 
 
-class Reshape847(ForgeModule):
+class Reshape834(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7512,7 +7530,7 @@ class Reshape847(ForgeModule):
         return reshape_output_1
 
 
-class Reshape848(ForgeModule):
+class Reshape835(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7521,7 +7539,7 @@ class Reshape848(ForgeModule):
         return reshape_output_1
 
 
-class Reshape849(ForgeModule):
+class Reshape836(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7530,7 +7548,7 @@ class Reshape849(ForgeModule):
         return reshape_output_1
 
 
-class Reshape850(ForgeModule):
+class Reshape837(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7539,7 +7557,7 @@ class Reshape850(ForgeModule):
         return reshape_output_1
 
 
-class Reshape851(ForgeModule):
+class Reshape838(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7548,7 +7566,7 @@ class Reshape851(ForgeModule):
         return reshape_output_1
 
 
-class Reshape852(ForgeModule):
+class Reshape839(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7557,7 +7575,7 @@ class Reshape852(ForgeModule):
         return reshape_output_1
 
 
-class Reshape853(ForgeModule):
+class Reshape840(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7566,7 +7584,7 @@ class Reshape853(ForgeModule):
         return reshape_output_1
 
 
-class Reshape854(ForgeModule):
+class Reshape841(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7575,7 +7593,7 @@ class Reshape854(ForgeModule):
         return reshape_output_1
 
 
-class Reshape855(ForgeModule):
+class Reshape842(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7584,7 +7602,7 @@ class Reshape855(ForgeModule):
         return reshape_output_1
 
 
-class Reshape856(ForgeModule):
+class Reshape843(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7593,7 +7611,7 @@ class Reshape856(ForgeModule):
         return reshape_output_1
 
 
-class Reshape857(ForgeModule):
+class Reshape844(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7602,7 +7620,7 @@ class Reshape857(ForgeModule):
         return reshape_output_1
 
 
-class Reshape858(ForgeModule):
+class Reshape845(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7611,7 +7629,7 @@ class Reshape858(ForgeModule):
         return reshape_output_1
 
 
-class Reshape859(ForgeModule):
+class Reshape846(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7620,7 +7638,7 @@ class Reshape859(ForgeModule):
         return reshape_output_1
 
 
-class Reshape860(ForgeModule):
+class Reshape847(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7629,7 +7647,7 @@ class Reshape860(ForgeModule):
         return reshape_output_1
 
 
-class Reshape861(ForgeModule):
+class Reshape848(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7638,7 +7656,7 @@ class Reshape861(ForgeModule):
         return reshape_output_1
 
 
-class Reshape862(ForgeModule):
+class Reshape849(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7647,7 +7665,7 @@ class Reshape862(ForgeModule):
         return reshape_output_1
 
 
-class Reshape863(ForgeModule):
+class Reshape850(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7656,7 +7674,7 @@ class Reshape863(ForgeModule):
         return reshape_output_1
 
 
-class Reshape864(ForgeModule):
+class Reshape851(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7665,7 +7683,7 @@ class Reshape864(ForgeModule):
         return reshape_output_1
 
 
-class Reshape865(ForgeModule):
+class Reshape852(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7674,7 +7692,7 @@ class Reshape865(ForgeModule):
         return reshape_output_1
 
 
-class Reshape866(ForgeModule):
+class Reshape853(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7683,7 +7701,7 @@ class Reshape866(ForgeModule):
         return reshape_output_1
 
 
-class Reshape867(ForgeModule):
+class Reshape854(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7692,7 +7710,7 @@ class Reshape867(ForgeModule):
         return reshape_output_1
 
 
-class Reshape868(ForgeModule):
+class Reshape855(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7701,7 +7719,7 @@ class Reshape868(ForgeModule):
         return reshape_output_1
 
 
-class Reshape869(ForgeModule):
+class Reshape856(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7710,7 +7728,7 @@ class Reshape869(ForgeModule):
         return reshape_output_1
 
 
-class Reshape870(ForgeModule):
+class Reshape857(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7719,7 +7737,7 @@ class Reshape870(ForgeModule):
         return reshape_output_1
 
 
-class Reshape871(ForgeModule):
+class Reshape858(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7728,7 +7746,7 @@ class Reshape871(ForgeModule):
         return reshape_output_1
 
 
-class Reshape872(ForgeModule):
+class Reshape859(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7737,7 +7755,7 @@ class Reshape872(ForgeModule):
         return reshape_output_1
 
 
-class Reshape873(ForgeModule):
+class Reshape860(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7746,7 +7764,7 @@ class Reshape873(ForgeModule):
         return reshape_output_1
 
 
-class Reshape874(ForgeModule):
+class Reshape861(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7755,7 +7773,7 @@ class Reshape874(ForgeModule):
         return reshape_output_1
 
 
-class Reshape875(ForgeModule):
+class Reshape862(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7764,7 +7782,7 @@ class Reshape875(ForgeModule):
         return reshape_output_1
 
 
-class Reshape876(ForgeModule):
+class Reshape863(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7773,7 +7791,7 @@ class Reshape876(ForgeModule):
         return reshape_output_1
 
 
-class Reshape877(ForgeModule):
+class Reshape864(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7782,7 +7800,7 @@ class Reshape877(ForgeModule):
         return reshape_output_1
 
 
-class Reshape878(ForgeModule):
+class Reshape865(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7791,7 +7809,7 @@ class Reshape878(ForgeModule):
         return reshape_output_1
 
 
-class Reshape879(ForgeModule):
+class Reshape866(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7800,7 +7818,7 @@ class Reshape879(ForgeModule):
         return reshape_output_1
 
 
-class Reshape880(ForgeModule):
+class Reshape867(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7809,7 +7827,7 @@ class Reshape880(ForgeModule):
         return reshape_output_1
 
 
-class Reshape881(ForgeModule):
+class Reshape868(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7818,7 +7836,7 @@ class Reshape881(ForgeModule):
         return reshape_output_1
 
 
-class Reshape882(ForgeModule):
+class Reshape869(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7827,7 +7845,7 @@ class Reshape882(ForgeModule):
         return reshape_output_1
 
 
-class Reshape883(ForgeModule):
+class Reshape870(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7836,7 +7854,7 @@ class Reshape883(ForgeModule):
         return reshape_output_1
 
 
-class Reshape884(ForgeModule):
+class Reshape871(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7845,7 +7863,7 @@ class Reshape884(ForgeModule):
         return reshape_output_1
 
 
-class Reshape885(ForgeModule):
+class Reshape872(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7854,7 +7872,7 @@ class Reshape885(ForgeModule):
         return reshape_output_1
 
 
-class Reshape886(ForgeModule):
+class Reshape873(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7863,7 +7881,7 @@ class Reshape886(ForgeModule):
         return reshape_output_1
 
 
-class Reshape887(ForgeModule):
+class Reshape874(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7872,7 +7890,7 @@ class Reshape887(ForgeModule):
         return reshape_output_1
 
 
-class Reshape888(ForgeModule):
+class Reshape875(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7881,7 +7899,7 @@ class Reshape888(ForgeModule):
         return reshape_output_1
 
 
-class Reshape889(ForgeModule):
+class Reshape876(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7890,7 +7908,7 @@ class Reshape889(ForgeModule):
         return reshape_output_1
 
 
-class Reshape890(ForgeModule):
+class Reshape877(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7899,7 +7917,7 @@ class Reshape890(ForgeModule):
         return reshape_output_1
 
 
-class Reshape891(ForgeModule):
+class Reshape878(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7908,7 +7926,7 @@ class Reshape891(ForgeModule):
         return reshape_output_1
 
 
-class Reshape892(ForgeModule):
+class Reshape879(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7917,7 +7935,7 @@ class Reshape892(ForgeModule):
         return reshape_output_1
 
 
-class Reshape893(ForgeModule):
+class Reshape880(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7926,7 +7944,7 @@ class Reshape893(ForgeModule):
         return reshape_output_1
 
 
-class Reshape894(ForgeModule):
+class Reshape881(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7935,7 +7953,7 @@ class Reshape894(ForgeModule):
         return reshape_output_1
 
 
-class Reshape895(ForgeModule):
+class Reshape882(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7944,7 +7962,7 @@ class Reshape895(ForgeModule):
         return reshape_output_1
 
 
-class Reshape896(ForgeModule):
+class Reshape883(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7953,7 +7971,7 @@ class Reshape896(ForgeModule):
         return reshape_output_1
 
 
-class Reshape897(ForgeModule):
+class Reshape884(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7962,7 +7980,7 @@ class Reshape897(ForgeModule):
         return reshape_output_1
 
 
-class Reshape898(ForgeModule):
+class Reshape885(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7971,7 +7989,7 @@ class Reshape898(ForgeModule):
         return reshape_output_1
 
 
-class Reshape899(ForgeModule):
+class Reshape886(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7980,7 +7998,7 @@ class Reshape899(ForgeModule):
         return reshape_output_1
 
 
-class Reshape900(ForgeModule):
+class Reshape887(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7989,7 +8007,7 @@ class Reshape900(ForgeModule):
         return reshape_output_1
 
 
-class Reshape901(ForgeModule):
+class Reshape888(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -7998,7 +8016,7 @@ class Reshape901(ForgeModule):
         return reshape_output_1
 
 
-class Reshape902(ForgeModule):
+class Reshape889(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8007,7 +8025,7 @@ class Reshape902(ForgeModule):
         return reshape_output_1
 
 
-class Reshape903(ForgeModule):
+class Reshape890(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8016,7 +8034,7 @@ class Reshape903(ForgeModule):
         return reshape_output_1
 
 
-class Reshape904(ForgeModule):
+class Reshape891(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8025,7 +8043,7 @@ class Reshape904(ForgeModule):
         return reshape_output_1
 
 
-class Reshape905(ForgeModule):
+class Reshape892(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8034,7 +8052,7 @@ class Reshape905(ForgeModule):
         return reshape_output_1
 
 
-class Reshape906(ForgeModule):
+class Reshape893(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8043,7 +8061,7 @@ class Reshape906(ForgeModule):
         return reshape_output_1
 
 
-class Reshape907(ForgeModule):
+class Reshape894(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8052,7 +8070,7 @@ class Reshape907(ForgeModule):
         return reshape_output_1
 
 
-class Reshape908(ForgeModule):
+class Reshape895(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8061,7 +8079,7 @@ class Reshape908(ForgeModule):
         return reshape_output_1
 
 
-class Reshape909(ForgeModule):
+class Reshape896(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8070,7 +8088,7 @@ class Reshape909(ForgeModule):
         return reshape_output_1
 
 
-class Reshape910(ForgeModule):
+class Reshape897(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8079,7 +8097,7 @@ class Reshape910(ForgeModule):
         return reshape_output_1
 
 
-class Reshape911(ForgeModule):
+class Reshape898(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8088,7 +8106,7 @@ class Reshape911(ForgeModule):
         return reshape_output_1
 
 
-class Reshape912(ForgeModule):
+class Reshape899(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8097,7 +8115,7 @@ class Reshape912(ForgeModule):
         return reshape_output_1
 
 
-class Reshape913(ForgeModule):
+class Reshape900(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8106,7 +8124,7 @@ class Reshape913(ForgeModule):
         return reshape_output_1
 
 
-class Reshape914(ForgeModule):
+class Reshape901(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8115,7 +8133,7 @@ class Reshape914(ForgeModule):
         return reshape_output_1
 
 
-class Reshape915(ForgeModule):
+class Reshape902(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8124,7 +8142,7 @@ class Reshape915(ForgeModule):
         return reshape_output_1
 
 
-class Reshape916(ForgeModule):
+class Reshape903(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8133,7 +8151,7 @@ class Reshape916(ForgeModule):
         return reshape_output_1
 
 
-class Reshape917(ForgeModule):
+class Reshape904(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8142,7 +8160,7 @@ class Reshape917(ForgeModule):
         return reshape_output_1
 
 
-class Reshape918(ForgeModule):
+class Reshape905(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8151,7 +8169,7 @@ class Reshape918(ForgeModule):
         return reshape_output_1
 
 
-class Reshape919(ForgeModule):
+class Reshape906(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8160,7 +8178,7 @@ class Reshape919(ForgeModule):
         return reshape_output_1
 
 
-class Reshape920(ForgeModule):
+class Reshape907(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8169,7 +8187,7 @@ class Reshape920(ForgeModule):
         return reshape_output_1
 
 
-class Reshape921(ForgeModule):
+class Reshape908(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8178,7 +8196,7 @@ class Reshape921(ForgeModule):
         return reshape_output_1
 
 
-class Reshape922(ForgeModule):
+class Reshape909(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8187,7 +8205,7 @@ class Reshape922(ForgeModule):
         return reshape_output_1
 
 
-class Reshape923(ForgeModule):
+class Reshape910(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8196,7 +8214,7 @@ class Reshape923(ForgeModule):
         return reshape_output_1
 
 
-class Reshape924(ForgeModule):
+class Reshape911(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8205,7 +8223,7 @@ class Reshape924(ForgeModule):
         return reshape_output_1
 
 
-class Reshape925(ForgeModule):
+class Reshape912(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8214,7 +8232,7 @@ class Reshape925(ForgeModule):
         return reshape_output_1
 
 
-class Reshape926(ForgeModule):
+class Reshape913(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8223,7 +8241,7 @@ class Reshape926(ForgeModule):
         return reshape_output_1
 
 
-class Reshape927(ForgeModule):
+class Reshape914(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8232,7 +8250,7 @@ class Reshape927(ForgeModule):
         return reshape_output_1
 
 
-class Reshape928(ForgeModule):
+class Reshape915(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8241,7 +8259,7 @@ class Reshape928(ForgeModule):
         return reshape_output_1
 
 
-class Reshape929(ForgeModule):
+class Reshape916(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8250,7 +8268,7 @@ class Reshape929(ForgeModule):
         return reshape_output_1
 
 
-class Reshape930(ForgeModule):
+class Reshape917(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8259,7 +8277,7 @@ class Reshape930(ForgeModule):
         return reshape_output_1
 
 
-class Reshape931(ForgeModule):
+class Reshape918(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8268,7 +8286,7 @@ class Reshape931(ForgeModule):
         return reshape_output_1
 
 
-class Reshape932(ForgeModule):
+class Reshape919(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8277,7 +8295,7 @@ class Reshape932(ForgeModule):
         return reshape_output_1
 
 
-class Reshape933(ForgeModule):
+class Reshape920(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8286,7 +8304,7 @@ class Reshape933(ForgeModule):
         return reshape_output_1
 
 
-class Reshape934(ForgeModule):
+class Reshape921(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8295,7 +8313,7 @@ class Reshape934(ForgeModule):
         return reshape_output_1
 
 
-class Reshape935(ForgeModule):
+class Reshape922(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8304,7 +8322,7 @@ class Reshape935(ForgeModule):
         return reshape_output_1
 
 
-class Reshape936(ForgeModule):
+class Reshape923(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8313,7 +8331,7 @@ class Reshape936(ForgeModule):
         return reshape_output_1
 
 
-class Reshape937(ForgeModule):
+class Reshape924(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8322,7 +8340,7 @@ class Reshape937(ForgeModule):
         return reshape_output_1
 
 
-class Reshape938(ForgeModule):
+class Reshape925(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8331,7 +8349,7 @@ class Reshape938(ForgeModule):
         return reshape_output_1
 
 
-class Reshape939(ForgeModule):
+class Reshape926(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8340,7 +8358,7 @@ class Reshape939(ForgeModule):
         return reshape_output_1
 
 
-class Reshape940(ForgeModule):
+class Reshape927(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8349,7 +8367,7 @@ class Reshape940(ForgeModule):
         return reshape_output_1
 
 
-class Reshape941(ForgeModule):
+class Reshape928(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8358,7 +8376,7 @@ class Reshape941(ForgeModule):
         return reshape_output_1
 
 
-class Reshape942(ForgeModule):
+class Reshape929(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8367,7 +8385,7 @@ class Reshape942(ForgeModule):
         return reshape_output_1
 
 
-class Reshape943(ForgeModule):
+class Reshape930(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8376,7 +8394,7 @@ class Reshape943(ForgeModule):
         return reshape_output_1
 
 
-class Reshape944(ForgeModule):
+class Reshape931(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8385,7 +8403,7 @@ class Reshape944(ForgeModule):
         return reshape_output_1
 
 
-class Reshape945(ForgeModule):
+class Reshape932(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8394,7 +8412,7 @@ class Reshape945(ForgeModule):
         return reshape_output_1
 
 
-class Reshape946(ForgeModule):
+class Reshape933(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8403,7 +8421,7 @@ class Reshape946(ForgeModule):
         return reshape_output_1
 
 
-class Reshape947(ForgeModule):
+class Reshape934(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8412,7 +8430,7 @@ class Reshape947(ForgeModule):
         return reshape_output_1
 
 
-class Reshape948(ForgeModule):
+class Reshape935(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8421,7 +8439,7 @@ class Reshape948(ForgeModule):
         return reshape_output_1
 
 
-class Reshape949(ForgeModule):
+class Reshape936(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8430,7 +8448,7 @@ class Reshape949(ForgeModule):
         return reshape_output_1
 
 
-class Reshape950(ForgeModule):
+class Reshape937(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8439,7 +8457,7 @@ class Reshape950(ForgeModule):
         return reshape_output_1
 
 
-class Reshape951(ForgeModule):
+class Reshape938(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8448,7 +8466,7 @@ class Reshape951(ForgeModule):
         return reshape_output_1
 
 
-class Reshape952(ForgeModule):
+class Reshape939(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8457,7 +8475,7 @@ class Reshape952(ForgeModule):
         return reshape_output_1
 
 
-class Reshape953(ForgeModule):
+class Reshape940(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8466,7 +8484,7 @@ class Reshape953(ForgeModule):
         return reshape_output_1
 
 
-class Reshape954(ForgeModule):
+class Reshape941(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8475,7 +8493,7 @@ class Reshape954(ForgeModule):
         return reshape_output_1
 
 
-class Reshape955(ForgeModule):
+class Reshape942(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8484,7 +8502,7 @@ class Reshape955(ForgeModule):
         return reshape_output_1
 
 
-class Reshape956(ForgeModule):
+class Reshape943(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8493,7 +8511,7 @@ class Reshape956(ForgeModule):
         return reshape_output_1
 
 
-class Reshape957(ForgeModule):
+class Reshape944(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8502,7 +8520,7 @@ class Reshape957(ForgeModule):
         return reshape_output_1
 
 
-class Reshape958(ForgeModule):
+class Reshape945(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8511,7 +8529,7 @@ class Reshape958(ForgeModule):
         return reshape_output_1
 
 
-class Reshape959(ForgeModule):
+class Reshape946(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8520,7 +8538,7 @@ class Reshape959(ForgeModule):
         return reshape_output_1
 
 
-class Reshape960(ForgeModule):
+class Reshape947(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8529,7 +8547,7 @@ class Reshape960(ForgeModule):
         return reshape_output_1
 
 
-class Reshape961(ForgeModule):
+class Reshape948(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8538,7 +8556,7 @@ class Reshape961(ForgeModule):
         return reshape_output_1
 
 
-class Reshape962(ForgeModule):
+class Reshape949(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8547,7 +8565,7 @@ class Reshape962(ForgeModule):
         return reshape_output_1
 
 
-class Reshape963(ForgeModule):
+class Reshape950(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8556,7 +8574,7 @@ class Reshape963(ForgeModule):
         return reshape_output_1
 
 
-class Reshape964(ForgeModule):
+class Reshape951(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8565,7 +8583,7 @@ class Reshape964(ForgeModule):
         return reshape_output_1
 
 
-class Reshape965(ForgeModule):
+class Reshape952(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8574,7 +8592,7 @@ class Reshape965(ForgeModule):
         return reshape_output_1
 
 
-class Reshape966(ForgeModule):
+class Reshape953(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8583,7 +8601,7 @@ class Reshape966(ForgeModule):
         return reshape_output_1
 
 
-class Reshape967(ForgeModule):
+class Reshape954(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8592,7 +8610,7 @@ class Reshape967(ForgeModule):
         return reshape_output_1
 
 
-class Reshape968(ForgeModule):
+class Reshape955(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8601,7 +8619,7 @@ class Reshape968(ForgeModule):
         return reshape_output_1
 
 
-class Reshape969(ForgeModule):
+class Reshape956(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8610,7 +8628,7 @@ class Reshape969(ForgeModule):
         return reshape_output_1
 
 
-class Reshape970(ForgeModule):
+class Reshape957(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8619,7 +8637,7 @@ class Reshape970(ForgeModule):
         return reshape_output_1
 
 
-class Reshape971(ForgeModule):
+class Reshape958(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8628,7 +8646,7 @@ class Reshape971(ForgeModule):
         return reshape_output_1
 
 
-class Reshape972(ForgeModule):
+class Reshape959(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8637,7 +8655,7 @@ class Reshape972(ForgeModule):
         return reshape_output_1
 
 
-class Reshape973(ForgeModule):
+class Reshape960(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8646,7 +8664,7 @@ class Reshape973(ForgeModule):
         return reshape_output_1
 
 
-class Reshape974(ForgeModule):
+class Reshape961(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8655,7 +8673,7 @@ class Reshape974(ForgeModule):
         return reshape_output_1
 
 
-class Reshape975(ForgeModule):
+class Reshape962(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8664,7 +8682,7 @@ class Reshape975(ForgeModule):
         return reshape_output_1
 
 
-class Reshape976(ForgeModule):
+class Reshape963(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8673,7 +8691,7 @@ class Reshape976(ForgeModule):
         return reshape_output_1
 
 
-class Reshape977(ForgeModule):
+class Reshape964(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8682,7 +8700,7 @@ class Reshape977(ForgeModule):
         return reshape_output_1
 
 
-class Reshape978(ForgeModule):
+class Reshape965(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8691,7 +8709,7 @@ class Reshape978(ForgeModule):
         return reshape_output_1
 
 
-class Reshape979(ForgeModule):
+class Reshape966(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8700,7 +8718,7 @@ class Reshape979(ForgeModule):
         return reshape_output_1
 
 
-class Reshape980(ForgeModule):
+class Reshape967(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8709,7 +8727,7 @@ class Reshape980(ForgeModule):
         return reshape_output_1
 
 
-class Reshape981(ForgeModule):
+class Reshape968(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8718,7 +8736,7 @@ class Reshape981(ForgeModule):
         return reshape_output_1
 
 
-class Reshape982(ForgeModule):
+class Reshape969(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8727,7 +8745,7 @@ class Reshape982(ForgeModule):
         return reshape_output_1
 
 
-class Reshape983(ForgeModule):
+class Reshape970(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8736,7 +8754,7 @@ class Reshape983(ForgeModule):
         return reshape_output_1
 
 
-class Reshape984(ForgeModule):
+class Reshape971(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8745,7 +8763,7 @@ class Reshape984(ForgeModule):
         return reshape_output_1
 
 
-class Reshape985(ForgeModule):
+class Reshape972(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8754,7 +8772,7 @@ class Reshape985(ForgeModule):
         return reshape_output_1
 
 
-class Reshape986(ForgeModule):
+class Reshape973(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8763,7 +8781,7 @@ class Reshape986(ForgeModule):
         return reshape_output_1
 
 
-class Reshape987(ForgeModule):
+class Reshape974(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8772,7 +8790,7 @@ class Reshape987(ForgeModule):
         return reshape_output_1
 
 
-class Reshape988(ForgeModule):
+class Reshape975(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8781,7 +8799,7 @@ class Reshape988(ForgeModule):
         return reshape_output_1
 
 
-class Reshape989(ForgeModule):
+class Reshape976(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8790,7 +8808,7 @@ class Reshape989(ForgeModule):
         return reshape_output_1
 
 
-class Reshape990(ForgeModule):
+class Reshape977(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8799,7 +8817,7 @@ class Reshape990(ForgeModule):
         return reshape_output_1
 
 
-class Reshape991(ForgeModule):
+class Reshape978(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8808,7 +8826,7 @@ class Reshape991(ForgeModule):
         return reshape_output_1
 
 
-class Reshape992(ForgeModule):
+class Reshape979(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8817,7 +8835,7 @@ class Reshape992(ForgeModule):
         return reshape_output_1
 
 
-class Reshape993(ForgeModule):
+class Reshape980(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8826,7 +8844,7 @@ class Reshape993(ForgeModule):
         return reshape_output_1
 
 
-class Reshape994(ForgeModule):
+class Reshape981(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8835,7 +8853,7 @@ class Reshape994(ForgeModule):
         return reshape_output_1
 
 
-class Reshape995(ForgeModule):
+class Reshape982(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8844,7 +8862,7 @@ class Reshape995(ForgeModule):
         return reshape_output_1
 
 
-class Reshape996(ForgeModule):
+class Reshape983(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8853,7 +8871,7 @@ class Reshape996(ForgeModule):
         return reshape_output_1
 
 
-class Reshape997(ForgeModule):
+class Reshape984(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8862,7 +8880,7 @@ class Reshape997(ForgeModule):
         return reshape_output_1
 
 
-class Reshape998(ForgeModule):
+class Reshape985(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8871,7 +8889,7 @@ class Reshape998(ForgeModule):
         return reshape_output_1
 
 
-class Reshape999(ForgeModule):
+class Reshape986(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8880,7 +8898,7 @@ class Reshape999(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1000(ForgeModule):
+class Reshape987(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8889,7 +8907,7 @@ class Reshape1000(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1001(ForgeModule):
+class Reshape988(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8898,7 +8916,7 @@ class Reshape1001(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1002(ForgeModule):
+class Reshape989(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8907,7 +8925,7 @@ class Reshape1002(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1003(ForgeModule):
+class Reshape990(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8916,7 +8934,7 @@ class Reshape1003(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1004(ForgeModule):
+class Reshape991(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8925,7 +8943,7 @@ class Reshape1004(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1005(ForgeModule):
+class Reshape992(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8934,7 +8952,7 @@ class Reshape1005(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1006(ForgeModule):
+class Reshape993(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8943,7 +8961,7 @@ class Reshape1006(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1007(ForgeModule):
+class Reshape994(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8952,7 +8970,7 @@ class Reshape1007(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1008(ForgeModule):
+class Reshape995(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8961,7 +8979,7 @@ class Reshape1008(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1009(ForgeModule):
+class Reshape996(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8970,7 +8988,7 @@ class Reshape1009(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1010(ForgeModule):
+class Reshape997(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8979,7 +8997,7 @@ class Reshape1010(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1011(ForgeModule):
+class Reshape998(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8988,7 +9006,7 @@ class Reshape1011(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1012(ForgeModule):
+class Reshape999(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -8997,7 +9015,7 @@ class Reshape1012(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1013(ForgeModule):
+class Reshape1000(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9006,7 +9024,7 @@ class Reshape1013(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1014(ForgeModule):
+class Reshape1001(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9015,7 +9033,7 @@ class Reshape1014(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1015(ForgeModule):
+class Reshape1002(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9024,7 +9042,7 @@ class Reshape1015(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1016(ForgeModule):
+class Reshape1003(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9033,7 +9051,7 @@ class Reshape1016(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1017(ForgeModule):
+class Reshape1004(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9042,7 +9060,7 @@ class Reshape1017(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1018(ForgeModule):
+class Reshape1005(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9051,7 +9069,7 @@ class Reshape1018(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1019(ForgeModule):
+class Reshape1006(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9060,7 +9078,7 @@ class Reshape1019(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1020(ForgeModule):
+class Reshape1007(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9069,7 +9087,7 @@ class Reshape1020(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1021(ForgeModule):
+class Reshape1008(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9078,7 +9096,7 @@ class Reshape1021(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1022(ForgeModule):
+class Reshape1009(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9087,7 +9105,7 @@ class Reshape1022(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1023(ForgeModule):
+class Reshape1010(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9096,7 +9114,7 @@ class Reshape1023(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1024(ForgeModule):
+class Reshape1011(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9105,7 +9123,7 @@ class Reshape1024(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1025(ForgeModule):
+class Reshape1012(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9114,7 +9132,7 @@ class Reshape1025(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1026(ForgeModule):
+class Reshape1013(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9123,7 +9141,7 @@ class Reshape1026(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1027(ForgeModule):
+class Reshape1014(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9132,7 +9150,7 @@ class Reshape1027(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1028(ForgeModule):
+class Reshape1015(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9141,7 +9159,7 @@ class Reshape1028(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1029(ForgeModule):
+class Reshape1016(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9150,7 +9168,7 @@ class Reshape1029(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1030(ForgeModule):
+class Reshape1017(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9159,7 +9177,7 @@ class Reshape1030(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1031(ForgeModule):
+class Reshape1018(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9168,7 +9186,7 @@ class Reshape1031(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1032(ForgeModule):
+class Reshape1019(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9177,7 +9195,7 @@ class Reshape1032(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1033(ForgeModule):
+class Reshape1020(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9186,7 +9204,7 @@ class Reshape1033(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1034(ForgeModule):
+class Reshape1021(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9195,7 +9213,7 @@ class Reshape1034(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1035(ForgeModule):
+class Reshape1022(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9204,7 +9222,7 @@ class Reshape1035(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1036(ForgeModule):
+class Reshape1023(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9213,7 +9231,7 @@ class Reshape1036(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1037(ForgeModule):
+class Reshape1024(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9222,7 +9240,7 @@ class Reshape1037(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1038(ForgeModule):
+class Reshape1025(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9231,7 +9249,7 @@ class Reshape1038(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1039(ForgeModule):
+class Reshape1026(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9240,7 +9258,7 @@ class Reshape1039(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1040(ForgeModule):
+class Reshape1027(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9249,7 +9267,7 @@ class Reshape1040(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1041(ForgeModule):
+class Reshape1028(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9258,7 +9276,7 @@ class Reshape1041(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1042(ForgeModule):
+class Reshape1029(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9267,7 +9285,7 @@ class Reshape1042(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1043(ForgeModule):
+class Reshape1030(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9276,7 +9294,7 @@ class Reshape1043(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1044(ForgeModule):
+class Reshape1031(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9285,7 +9303,7 @@ class Reshape1044(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1045(ForgeModule):
+class Reshape1032(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9294,7 +9312,7 @@ class Reshape1045(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1046(ForgeModule):
+class Reshape1033(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9303,7 +9321,7 @@ class Reshape1046(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1047(ForgeModule):
+class Reshape1034(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9312,7 +9330,7 @@ class Reshape1047(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1048(ForgeModule):
+class Reshape1035(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9321,7 +9339,7 @@ class Reshape1048(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1049(ForgeModule):
+class Reshape1036(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9330,7 +9348,7 @@ class Reshape1049(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1050(ForgeModule):
+class Reshape1037(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9339,7 +9357,7 @@ class Reshape1050(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1051(ForgeModule):
+class Reshape1038(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9348,7 +9366,7 @@ class Reshape1051(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1052(ForgeModule):
+class Reshape1039(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9357,7 +9375,7 @@ class Reshape1052(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1053(ForgeModule):
+class Reshape1040(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9366,7 +9384,7 @@ class Reshape1053(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1054(ForgeModule):
+class Reshape1041(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9375,7 +9393,7 @@ class Reshape1054(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1055(ForgeModule):
+class Reshape1042(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9384,7 +9402,7 @@ class Reshape1055(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1056(ForgeModule):
+class Reshape1043(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9393,7 +9411,7 @@ class Reshape1056(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1057(ForgeModule):
+class Reshape1044(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9402,7 +9420,7 @@ class Reshape1057(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1058(ForgeModule):
+class Reshape1045(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9411,7 +9429,7 @@ class Reshape1058(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1059(ForgeModule):
+class Reshape1046(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9420,7 +9438,7 @@ class Reshape1059(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1060(ForgeModule):
+class Reshape1047(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9429,7 +9447,7 @@ class Reshape1060(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1061(ForgeModule):
+class Reshape1048(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9438,7 +9456,7 @@ class Reshape1061(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1062(ForgeModule):
+class Reshape1049(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9447,7 +9465,7 @@ class Reshape1062(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1063(ForgeModule):
+class Reshape1050(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9456,7 +9474,7 @@ class Reshape1063(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1064(ForgeModule):
+class Reshape1051(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9465,7 +9483,7 @@ class Reshape1064(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1065(ForgeModule):
+class Reshape1052(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9474,7 +9492,7 @@ class Reshape1065(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1066(ForgeModule):
+class Reshape1053(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9483,7 +9501,7 @@ class Reshape1066(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1067(ForgeModule):
+class Reshape1054(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9492,7 +9510,7 @@ class Reshape1067(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1068(ForgeModule):
+class Reshape1055(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9501,7 +9519,7 @@ class Reshape1068(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1069(ForgeModule):
+class Reshape1056(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9510,7 +9528,7 @@ class Reshape1069(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1070(ForgeModule):
+class Reshape1057(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9519,7 +9537,7 @@ class Reshape1070(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1071(ForgeModule):
+class Reshape1058(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9528,7 +9546,7 @@ class Reshape1071(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1072(ForgeModule):
+class Reshape1059(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9537,7 +9555,7 @@ class Reshape1072(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1073(ForgeModule):
+class Reshape1060(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9546,7 +9564,16 @@ class Reshape1073(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1074(ForgeModule):
+class Reshape1061(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 196))
+        return reshape_output_1
+
+
+class Reshape1062(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9555,7 +9582,7 @@ class Reshape1074(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1075(ForgeModule):
+class Reshape1063(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9564,7 +9591,7 @@ class Reshape1075(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1076(ForgeModule):
+class Reshape1064(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9573,7 +9600,16 @@ class Reshape1076(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1077(ForgeModule):
+class Reshape1065(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 1024))
+        return reshape_output_1
+
+
+class Reshape1066(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9582,7 +9618,7 @@ class Reshape1077(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1078(ForgeModule):
+class Reshape1067(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9591,7 +9627,7 @@ class Reshape1078(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1079(ForgeModule):
+class Reshape1068(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9600,7 +9636,7 @@ class Reshape1079(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1080(ForgeModule):
+class Reshape1069(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9609,7 +9645,7 @@ class Reshape1080(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1081(ForgeModule):
+class Reshape1070(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9618,7 +9654,7 @@ class Reshape1081(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1082(ForgeModule):
+class Reshape1071(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9627,7 +9663,7 @@ class Reshape1082(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1083(ForgeModule):
+class Reshape1072(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9636,7 +9672,7 @@ class Reshape1083(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1084(ForgeModule):
+class Reshape1073(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9645,7 +9681,7 @@ class Reshape1084(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1085(ForgeModule):
+class Reshape1074(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9654,7 +9690,16 @@ class Reshape1085(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1086(ForgeModule):
+class Reshape1075(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 196))
+        return reshape_output_1
+
+
+class Reshape1076(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9663,7 +9708,7 @@ class Reshape1086(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1087(ForgeModule):
+class Reshape1077(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9672,7 +9717,7 @@ class Reshape1087(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1088(ForgeModule):
+class Reshape1078(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9681,7 +9726,7 @@ class Reshape1088(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1089(ForgeModule):
+class Reshape1079(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9690,7 +9735,7 @@ class Reshape1089(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1090(ForgeModule):
+class Reshape1080(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9699,7 +9744,7 @@ class Reshape1090(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1091(ForgeModule):
+class Reshape1081(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9708,7 +9753,7 @@ class Reshape1091(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1092(ForgeModule):
+class Reshape1082(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9717,7 +9762,7 @@ class Reshape1092(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1093(ForgeModule):
+class Reshape1083(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9726,7 +9771,7 @@ class Reshape1093(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1094(ForgeModule):
+class Reshape1084(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9735,7 +9780,7 @@ class Reshape1094(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1095(ForgeModule):
+class Reshape1085(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9744,7 +9789,7 @@ class Reshape1095(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1096(ForgeModule):
+class Reshape1086(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9753,7 +9798,7 @@ class Reshape1096(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1097(ForgeModule):
+class Reshape1087(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9762,7 +9807,7 @@ class Reshape1097(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1098(ForgeModule):
+class Reshape1088(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9771,7 +9816,7 @@ class Reshape1098(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1099(ForgeModule):
+class Reshape1089(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9780,7 +9825,7 @@ class Reshape1099(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1100(ForgeModule):
+class Reshape1090(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9789,7 +9834,7 @@ class Reshape1100(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1101(ForgeModule):
+class Reshape1091(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9798,7 +9843,7 @@ class Reshape1101(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1102(ForgeModule):
+class Reshape1092(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9807,7 +9852,7 @@ class Reshape1102(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1103(ForgeModule):
+class Reshape1093(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9816,7 +9861,7 @@ class Reshape1103(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1104(ForgeModule):
+class Reshape1094(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9825,7 +9870,7 @@ class Reshape1104(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1105(ForgeModule):
+class Reshape1095(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9834,7 +9879,7 @@ class Reshape1105(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1106(ForgeModule):
+class Reshape1096(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9843,7 +9888,7 @@ class Reshape1106(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1107(ForgeModule):
+class Reshape1097(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9852,7 +9897,7 @@ class Reshape1107(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1108(ForgeModule):
+class Reshape1098(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9861,7 +9906,7 @@ class Reshape1108(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1109(ForgeModule):
+class Reshape1099(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9870,7 +9915,7 @@ class Reshape1109(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1110(ForgeModule):
+class Reshape1100(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9879,7 +9924,7 @@ class Reshape1110(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1111(ForgeModule):
+class Reshape1101(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9888,7 +9933,7 @@ class Reshape1111(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1112(ForgeModule):
+class Reshape1102(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9897,7 +9942,7 @@ class Reshape1112(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1113(ForgeModule):
+class Reshape1103(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9906,7 +9951,7 @@ class Reshape1113(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1114(ForgeModule):
+class Reshape1104(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9915,7 +9960,7 @@ class Reshape1114(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1115(ForgeModule):
+class Reshape1105(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9924,7 +9969,7 @@ class Reshape1115(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1116(ForgeModule):
+class Reshape1106(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9933,7 +9978,7 @@ class Reshape1116(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1117(ForgeModule):
+class Reshape1107(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9942,7 +9987,7 @@ class Reshape1117(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1118(ForgeModule):
+class Reshape1108(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9951,7 +9996,7 @@ class Reshape1118(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1119(ForgeModule):
+class Reshape1109(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9960,7 +10005,7 @@ class Reshape1119(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1120(ForgeModule):
+class Reshape1110(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9969,7 +10014,7 @@ class Reshape1120(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1121(ForgeModule):
+class Reshape1111(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9978,7 +10023,7 @@ class Reshape1121(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1122(ForgeModule):
+class Reshape1112(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9987,7 +10032,7 @@ class Reshape1122(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1123(ForgeModule):
+class Reshape1113(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -9996,7 +10041,7 @@ class Reshape1123(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1124(ForgeModule):
+class Reshape1114(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10005,7 +10050,7 @@ class Reshape1124(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1125(ForgeModule):
+class Reshape1115(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10014,7 +10059,7 @@ class Reshape1125(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1126(ForgeModule):
+class Reshape1116(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10023,7 +10068,7 @@ class Reshape1126(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1127(ForgeModule):
+class Reshape1117(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10032,7 +10077,7 @@ class Reshape1127(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1128(ForgeModule):
+class Reshape1118(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10041,7 +10086,7 @@ class Reshape1128(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1129(ForgeModule):
+class Reshape1119(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10050,7 +10095,7 @@ class Reshape1129(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1130(ForgeModule):
+class Reshape1120(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10059,7 +10104,7 @@ class Reshape1130(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1131(ForgeModule):
+class Reshape1121(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10068,7 +10113,7 @@ class Reshape1131(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1132(ForgeModule):
+class Reshape1122(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10077,7 +10122,7 @@ class Reshape1132(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1133(ForgeModule):
+class Reshape1123(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10086,7 +10131,7 @@ class Reshape1133(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1134(ForgeModule):
+class Reshape1124(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10095,7 +10140,7 @@ class Reshape1134(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1135(ForgeModule):
+class Reshape1125(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10104,7 +10149,7 @@ class Reshape1135(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1136(ForgeModule):
+class Reshape1126(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10113,7 +10158,7 @@ class Reshape1136(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1137(ForgeModule):
+class Reshape1127(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10122,7 +10167,7 @@ class Reshape1137(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1138(ForgeModule):
+class Reshape1128(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10131,7 +10176,7 @@ class Reshape1138(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1139(ForgeModule):
+class Reshape1129(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10140,7 +10185,7 @@ class Reshape1139(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1140(ForgeModule):
+class Reshape1130(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10149,7 +10194,7 @@ class Reshape1140(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1141(ForgeModule):
+class Reshape1131(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10158,7 +10203,7 @@ class Reshape1141(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1142(ForgeModule):
+class Reshape1132(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10167,7 +10212,16 @@ class Reshape1142(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1143(ForgeModule):
+class Reshape1133(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1792))
+        return reshape_output_1
+
+
+class Reshape1134(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10176,7 +10230,7 @@ class Reshape1143(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1144(ForgeModule):
+class Reshape1135(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10185,7 +10239,7 @@ class Reshape1144(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1145(ForgeModule):
+class Reshape1136(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10194,7 +10248,7 @@ class Reshape1145(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1146(ForgeModule):
+class Reshape1137(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10203,7 +10257,7 @@ class Reshape1146(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1147(ForgeModule):
+class Reshape1138(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10212,7 +10266,7 @@ class Reshape1147(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1148(ForgeModule):
+class Reshape1139(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10221,7 +10275,7 @@ class Reshape1148(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1149(ForgeModule):
+class Reshape1140(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10230,7 +10284,7 @@ class Reshape1149(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1150(ForgeModule):
+class Reshape1141(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10239,7 +10293,7 @@ class Reshape1150(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1151(ForgeModule):
+class Reshape1142(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10248,7 +10302,7 @@ class Reshape1151(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1152(ForgeModule):
+class Reshape1143(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10257,7 +10311,7 @@ class Reshape1152(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1153(ForgeModule):
+class Reshape1144(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10266,7 +10320,7 @@ class Reshape1153(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1154(ForgeModule):
+class Reshape1145(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10275,7 +10329,7 @@ class Reshape1154(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1155(ForgeModule):
+class Reshape1146(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10284,7 +10338,7 @@ class Reshape1155(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1156(ForgeModule):
+class Reshape1147(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10293,7 +10347,7 @@ class Reshape1156(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1157(ForgeModule):
+class Reshape1148(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10302,7 +10356,7 @@ class Reshape1157(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1158(ForgeModule):
+class Reshape1149(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10311,7 +10365,7 @@ class Reshape1158(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1159(ForgeModule):
+class Reshape1150(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10320,7 +10374,7 @@ class Reshape1159(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1160(ForgeModule):
+class Reshape1151(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10329,7 +10383,7 @@ class Reshape1160(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1161(ForgeModule):
+class Reshape1152(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10338,7 +10392,7 @@ class Reshape1161(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1162(ForgeModule):
+class Reshape1153(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10347,7 +10401,7 @@ class Reshape1162(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1163(ForgeModule):
+class Reshape1154(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10356,7 +10410,7 @@ class Reshape1163(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1164(ForgeModule):
+class Reshape1155(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10365,7 +10419,7 @@ class Reshape1164(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1165(ForgeModule):
+class Reshape1156(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10374,7 +10428,7 @@ class Reshape1165(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1166(ForgeModule):
+class Reshape1157(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10383,7 +10437,7 @@ class Reshape1166(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1167(ForgeModule):
+class Reshape1158(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10392,7 +10446,7 @@ class Reshape1167(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1168(ForgeModule):
+class Reshape1159(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10401,7 +10455,7 @@ class Reshape1168(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1169(ForgeModule):
+class Reshape1160(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10410,7 +10464,7 @@ class Reshape1169(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1170(ForgeModule):
+class Reshape1161(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10419,7 +10473,7 @@ class Reshape1170(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1171(ForgeModule):
+class Reshape1162(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10428,7 +10482,7 @@ class Reshape1171(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1172(ForgeModule):
+class Reshape1163(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10437,7 +10491,7 @@ class Reshape1172(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1173(ForgeModule):
+class Reshape1164(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10446,7 +10500,7 @@ class Reshape1173(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1174(ForgeModule):
+class Reshape1165(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10455,7 +10509,7 @@ class Reshape1174(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1175(ForgeModule):
+class Reshape1166(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10464,7 +10518,7 @@ class Reshape1175(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1176(ForgeModule):
+class Reshape1167(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10473,7 +10527,7 @@ class Reshape1176(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1177(ForgeModule):
+class Reshape1168(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10482,7 +10536,7 @@ class Reshape1177(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1178(ForgeModule):
+class Reshape1169(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10491,7 +10545,7 @@ class Reshape1178(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1179(ForgeModule):
+class Reshape1170(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10500,7 +10554,7 @@ class Reshape1179(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1180(ForgeModule):
+class Reshape1171(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10509,7 +10563,7 @@ class Reshape1180(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1181(ForgeModule):
+class Reshape1172(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10518,7 +10572,7 @@ class Reshape1181(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1182(ForgeModule):
+class Reshape1173(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10527,7 +10581,7 @@ class Reshape1182(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1183(ForgeModule):
+class Reshape1174(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10536,7 +10590,7 @@ class Reshape1183(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1184(ForgeModule):
+class Reshape1175(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10545,7 +10599,7 @@ class Reshape1184(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1185(ForgeModule):
+class Reshape1176(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10554,7 +10608,7 @@ class Reshape1185(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1186(ForgeModule):
+class Reshape1177(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10563,7 +10617,7 @@ class Reshape1186(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1187(ForgeModule):
+class Reshape1178(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10572,7 +10626,7 @@ class Reshape1187(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1188(ForgeModule):
+class Reshape1179(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10581,7 +10635,7 @@ class Reshape1188(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1189(ForgeModule):
+class Reshape1180(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10590,7 +10644,7 @@ class Reshape1189(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1190(ForgeModule):
+class Reshape1181(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10599,7 +10653,7 @@ class Reshape1190(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1191(ForgeModule):
+class Reshape1182(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10608,7 +10662,7 @@ class Reshape1191(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1192(ForgeModule):
+class Reshape1183(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10617,7 +10671,7 @@ class Reshape1192(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1193(ForgeModule):
+class Reshape1184(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10626,7 +10680,7 @@ class Reshape1193(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1194(ForgeModule):
+class Reshape1185(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10635,7 +10689,7 @@ class Reshape1194(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1195(ForgeModule):
+class Reshape1186(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10644,7 +10698,7 @@ class Reshape1195(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1196(ForgeModule):
+class Reshape1187(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10653,7 +10707,7 @@ class Reshape1196(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1197(ForgeModule):
+class Reshape1188(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10662,7 +10716,7 @@ class Reshape1197(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1198(ForgeModule):
+class Reshape1189(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10671,7 +10725,7 @@ class Reshape1198(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1199(ForgeModule):
+class Reshape1190(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10680,7 +10734,7 @@ class Reshape1199(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1200(ForgeModule):
+class Reshape1191(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10689,7 +10743,7 @@ class Reshape1200(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1201(ForgeModule):
+class Reshape1192(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10698,7 +10752,7 @@ class Reshape1201(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1202(ForgeModule):
+class Reshape1193(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10707,7 +10761,7 @@ class Reshape1202(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1203(ForgeModule):
+class Reshape1194(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10716,7 +10770,7 @@ class Reshape1203(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1204(ForgeModule):
+class Reshape1195(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10725,7 +10779,7 @@ class Reshape1204(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1205(ForgeModule):
+class Reshape1196(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10734,7 +10788,7 @@ class Reshape1205(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1206(ForgeModule):
+class Reshape1197(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10743,7 +10797,7 @@ class Reshape1206(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1207(ForgeModule):
+class Reshape1198(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10752,7 +10806,7 @@ class Reshape1207(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1208(ForgeModule):
+class Reshape1199(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10761,7 +10815,7 @@ class Reshape1208(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1209(ForgeModule):
+class Reshape1200(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10770,7 +10824,7 @@ class Reshape1209(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1210(ForgeModule):
+class Reshape1201(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10779,7 +10833,7 @@ class Reshape1210(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1211(ForgeModule):
+class Reshape1202(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10788,7 +10842,7 @@ class Reshape1211(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1212(ForgeModule):
+class Reshape1203(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10797,7 +10851,7 @@ class Reshape1212(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1213(ForgeModule):
+class Reshape1204(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10806,7 +10860,7 @@ class Reshape1213(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1214(ForgeModule):
+class Reshape1205(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10815,7 +10869,7 @@ class Reshape1214(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1215(ForgeModule):
+class Reshape1206(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10824,7 +10878,7 @@ class Reshape1215(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1216(ForgeModule):
+class Reshape1207(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10833,7 +10887,7 @@ class Reshape1216(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1217(ForgeModule):
+class Reshape1208(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10842,7 +10896,7 @@ class Reshape1217(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1218(ForgeModule):
+class Reshape1209(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10851,7 +10905,7 @@ class Reshape1218(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1219(ForgeModule):
+class Reshape1210(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10860,7 +10914,7 @@ class Reshape1219(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1220(ForgeModule):
+class Reshape1211(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10869,7 +10923,7 @@ class Reshape1220(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1221(ForgeModule):
+class Reshape1212(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10878,7 +10932,7 @@ class Reshape1221(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1222(ForgeModule):
+class Reshape1213(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10887,7 +10941,7 @@ class Reshape1222(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1223(ForgeModule):
+class Reshape1214(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10896,7 +10950,7 @@ class Reshape1223(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1224(ForgeModule):
+class Reshape1215(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10905,7 +10959,7 @@ class Reshape1224(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1225(ForgeModule):
+class Reshape1216(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10914,7 +10968,7 @@ class Reshape1225(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1226(ForgeModule):
+class Reshape1217(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10923,7 +10977,7 @@ class Reshape1226(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1227(ForgeModule):
+class Reshape1218(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10932,7 +10986,7 @@ class Reshape1227(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1228(ForgeModule):
+class Reshape1219(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10941,7 +10995,7 @@ class Reshape1228(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1229(ForgeModule):
+class Reshape1220(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10950,7 +11004,7 @@ class Reshape1229(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1230(ForgeModule):
+class Reshape1221(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10959,7 +11013,7 @@ class Reshape1230(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1231(ForgeModule):
+class Reshape1222(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10968,7 +11022,7 @@ class Reshape1231(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1232(ForgeModule):
+class Reshape1223(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10977,7 +11031,7 @@ class Reshape1232(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1233(ForgeModule):
+class Reshape1224(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10986,7 +11040,7 @@ class Reshape1233(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1234(ForgeModule):
+class Reshape1225(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -10995,7 +11049,7 @@ class Reshape1234(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1235(ForgeModule):
+class Reshape1226(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11004,7 +11058,7 @@ class Reshape1235(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1236(ForgeModule):
+class Reshape1227(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11013,7 +11067,7 @@ class Reshape1236(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1237(ForgeModule):
+class Reshape1228(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11022,7 +11076,7 @@ class Reshape1237(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1238(ForgeModule):
+class Reshape1229(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11031,7 +11085,7 @@ class Reshape1238(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1239(ForgeModule):
+class Reshape1230(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11040,7 +11094,7 @@ class Reshape1239(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1240(ForgeModule):
+class Reshape1231(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11049,7 +11103,7 @@ class Reshape1240(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1241(ForgeModule):
+class Reshape1232(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11058,7 +11112,7 @@ class Reshape1241(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1242(ForgeModule):
+class Reshape1233(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11067,7 +11121,7 @@ class Reshape1242(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1243(ForgeModule):
+class Reshape1234(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11076,7 +11130,7 @@ class Reshape1243(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1244(ForgeModule):
+class Reshape1235(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11085,7 +11139,7 @@ class Reshape1244(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1245(ForgeModule):
+class Reshape1236(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11094,7 +11148,7 @@ class Reshape1245(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1246(ForgeModule):
+class Reshape1237(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11103,7 +11157,7 @@ class Reshape1246(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1247(ForgeModule):
+class Reshape1238(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11112,7 +11166,7 @@ class Reshape1247(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1248(ForgeModule):
+class Reshape1239(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11121,7 +11175,7 @@ class Reshape1248(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1249(ForgeModule):
+class Reshape1240(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11130,7 +11184,7 @@ class Reshape1249(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1250(ForgeModule):
+class Reshape1241(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11139,7 +11193,7 @@ class Reshape1250(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1251(ForgeModule):
+class Reshape1242(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11148,7 +11202,7 @@ class Reshape1251(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1252(ForgeModule):
+class Reshape1243(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11157,7 +11211,7 @@ class Reshape1252(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1253(ForgeModule):
+class Reshape1244(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11166,7 +11220,7 @@ class Reshape1253(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1254(ForgeModule):
+class Reshape1245(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11175,7 +11229,7 @@ class Reshape1254(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1255(ForgeModule):
+class Reshape1246(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11184,7 +11238,7 @@ class Reshape1255(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1256(ForgeModule):
+class Reshape1247(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11193,7 +11247,7 @@ class Reshape1256(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1257(ForgeModule):
+class Reshape1248(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11202,7 +11256,7 @@ class Reshape1257(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1258(ForgeModule):
+class Reshape1249(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11211,7 +11265,7 @@ class Reshape1258(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1259(ForgeModule):
+class Reshape1250(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11220,7 +11274,7 @@ class Reshape1259(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1260(ForgeModule):
+class Reshape1251(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11229,7 +11283,7 @@ class Reshape1260(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1261(ForgeModule):
+class Reshape1252(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11238,7 +11292,7 @@ class Reshape1261(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1262(ForgeModule):
+class Reshape1253(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11247,7 +11301,7 @@ class Reshape1262(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1263(ForgeModule):
+class Reshape1254(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11256,7 +11310,7 @@ class Reshape1263(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1264(ForgeModule):
+class Reshape1255(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11265,7 +11319,7 @@ class Reshape1264(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1265(ForgeModule):
+class Reshape1256(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11274,7 +11328,7 @@ class Reshape1265(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1266(ForgeModule):
+class Reshape1257(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11283,7 +11337,7 @@ class Reshape1266(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1267(ForgeModule):
+class Reshape1258(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11292,7 +11346,7 @@ class Reshape1267(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1268(ForgeModule):
+class Reshape1259(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11301,7 +11355,7 @@ class Reshape1268(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1269(ForgeModule):
+class Reshape1260(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11310,7 +11364,7 @@ class Reshape1269(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1270(ForgeModule):
+class Reshape1261(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11319,7 +11373,7 @@ class Reshape1270(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1271(ForgeModule):
+class Reshape1262(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11328,7 +11382,7 @@ class Reshape1271(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1272(ForgeModule):
+class Reshape1263(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11337,7 +11391,7 @@ class Reshape1272(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1273(ForgeModule):
+class Reshape1264(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11346,7 +11400,7 @@ class Reshape1273(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1274(ForgeModule):
+class Reshape1265(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11355,7 +11409,7 @@ class Reshape1274(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1275(ForgeModule):
+class Reshape1266(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11364,7 +11418,7 @@ class Reshape1275(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1276(ForgeModule):
+class Reshape1267(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11373,7 +11427,7 @@ class Reshape1276(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1277(ForgeModule):
+class Reshape1268(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11382,7 +11436,7 @@ class Reshape1277(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1278(ForgeModule):
+class Reshape1269(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11391,7 +11445,7 @@ class Reshape1278(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1279(ForgeModule):
+class Reshape1270(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11400,7 +11454,7 @@ class Reshape1279(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1280(ForgeModule):
+class Reshape1271(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11409,7 +11463,7 @@ class Reshape1280(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1281(ForgeModule):
+class Reshape1272(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11418,7 +11472,7 @@ class Reshape1281(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1282(ForgeModule):
+class Reshape1273(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11427,7 +11481,7 @@ class Reshape1282(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1283(ForgeModule):
+class Reshape1274(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11436,7 +11490,7 @@ class Reshape1283(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1284(ForgeModule):
+class Reshape1275(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11445,7 +11499,7 @@ class Reshape1284(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1285(ForgeModule):
+class Reshape1276(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11454,7 +11508,7 @@ class Reshape1285(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1286(ForgeModule):
+class Reshape1277(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11463,7 +11517,7 @@ class Reshape1286(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1287(ForgeModule):
+class Reshape1278(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11472,7 +11526,7 @@ class Reshape1287(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1288(ForgeModule):
+class Reshape1279(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11481,7 +11535,7 @@ class Reshape1288(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1289(ForgeModule):
+class Reshape1280(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11490,7 +11544,7 @@ class Reshape1289(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1290(ForgeModule):
+class Reshape1281(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11499,7 +11553,7 @@ class Reshape1290(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1291(ForgeModule):
+class Reshape1282(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11508,7 +11562,7 @@ class Reshape1291(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1292(ForgeModule):
+class Reshape1283(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11517,7 +11571,7 @@ class Reshape1292(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1293(ForgeModule):
+class Reshape1284(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11526,7 +11580,7 @@ class Reshape1293(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1294(ForgeModule):
+class Reshape1285(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11535,7 +11589,7 @@ class Reshape1294(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1295(ForgeModule):
+class Reshape1286(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11544,7 +11598,7 @@ class Reshape1295(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1296(ForgeModule):
+class Reshape1287(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11553,7 +11607,7 @@ class Reshape1296(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1297(ForgeModule):
+class Reshape1288(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11562,7 +11616,7 @@ class Reshape1297(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1298(ForgeModule):
+class Reshape1289(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11571,7 +11625,7 @@ class Reshape1298(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1299(ForgeModule):
+class Reshape1290(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11580,7 +11634,7 @@ class Reshape1299(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1300(ForgeModule):
+class Reshape1291(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11589,7 +11643,7 @@ class Reshape1300(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1301(ForgeModule):
+class Reshape1292(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11598,7 +11652,16 @@ class Reshape1301(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1302(ForgeModule):
+class Reshape1293(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 128, 16384))
+        return reshape_output_1
+
+
+class Reshape1294(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11607,7 +11670,16 @@ class Reshape1302(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1303(ForgeModule):
+class Reshape1295(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 4096))
+        return reshape_output_1
+
+
+class Reshape1296(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11616,7 +11688,7 @@ class Reshape1303(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1304(ForgeModule):
+class Reshape1297(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11625,7 +11697,7 @@ class Reshape1304(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1305(ForgeModule):
+class Reshape1298(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11634,7 +11706,7 @@ class Reshape1305(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1306(ForgeModule):
+class Reshape1299(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11643,7 +11715,7 @@ class Reshape1306(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1307(ForgeModule):
+class Reshape1300(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11652,7 +11724,7 @@ class Reshape1307(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1308(ForgeModule):
+class Reshape1301(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11661,7 +11733,7 @@ class Reshape1308(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1309(ForgeModule):
+class Reshape1302(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11670,7 +11742,7 @@ class Reshape1309(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1310(ForgeModule):
+class Reshape1303(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11679,7 +11751,7 @@ class Reshape1310(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1311(ForgeModule):
+class Reshape1304(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11688,7 +11760,7 @@ class Reshape1311(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1312(ForgeModule):
+class Reshape1305(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11697,7 +11769,7 @@ class Reshape1312(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1313(ForgeModule):
+class Reshape1306(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11706,7 +11778,7 @@ class Reshape1313(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1314(ForgeModule):
+class Reshape1307(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11715,7 +11787,7 @@ class Reshape1314(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1315(ForgeModule):
+class Reshape1308(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11724,7 +11796,7 @@ class Reshape1315(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1316(ForgeModule):
+class Reshape1309(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11733,7 +11805,7 @@ class Reshape1316(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1317(ForgeModule):
+class Reshape1310(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11742,7 +11814,7 @@ class Reshape1317(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1318(ForgeModule):
+class Reshape1311(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11751,7 +11823,7 @@ class Reshape1318(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1319(ForgeModule):
+class Reshape1312(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11760,7 +11832,16 @@ class Reshape1319(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1320(ForgeModule):
+class Reshape1313(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 160, 1024))
+        return reshape_output_1
+
+
+class Reshape1314(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11769,7 +11850,7 @@ class Reshape1320(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1321(ForgeModule):
+class Reshape1315(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11778,7 +11859,7 @@ class Reshape1321(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1322(ForgeModule):
+class Reshape1316(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11787,7 +11868,7 @@ class Reshape1322(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1323(ForgeModule):
+class Reshape1317(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11796,7 +11877,7 @@ class Reshape1323(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1324(ForgeModule):
+class Reshape1318(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11805,7 +11886,7 @@ class Reshape1324(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1325(ForgeModule):
+class Reshape1319(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11814,7 +11895,7 @@ class Reshape1325(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1326(ForgeModule):
+class Reshape1320(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11823,7 +11904,7 @@ class Reshape1326(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1327(ForgeModule):
+class Reshape1321(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11832,7 +11913,7 @@ class Reshape1327(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1328(ForgeModule):
+class Reshape1322(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11841,7 +11922,7 @@ class Reshape1328(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1329(ForgeModule):
+class Reshape1323(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11850,7 +11931,7 @@ class Reshape1329(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1330(ForgeModule):
+class Reshape1324(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11859,7 +11940,7 @@ class Reshape1330(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1331(ForgeModule):
+class Reshape1325(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11868,7 +11949,7 @@ class Reshape1331(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1332(ForgeModule):
+class Reshape1326(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11877,7 +11958,7 @@ class Reshape1332(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1333(ForgeModule):
+class Reshape1327(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11886,7 +11967,7 @@ class Reshape1333(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1334(ForgeModule):
+class Reshape1328(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11895,7 +11976,7 @@ class Reshape1334(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1335(ForgeModule):
+class Reshape1329(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11904,7 +11985,7 @@ class Reshape1335(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1336(ForgeModule):
+class Reshape1330(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11913,7 +11994,7 @@ class Reshape1336(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1337(ForgeModule):
+class Reshape1331(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11922,7 +12003,16 @@ class Reshape1337(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1338(ForgeModule):
+class Reshape1332(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 640, 1024))
+        return reshape_output_1
+
+
+class Reshape1333(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11931,7 +12021,7 @@ class Reshape1338(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1339(ForgeModule):
+class Reshape1334(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11940,7 +12030,7 @@ class Reshape1339(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1340(ForgeModule):
+class Reshape1335(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11949,7 +12039,7 @@ class Reshape1340(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1341(ForgeModule):
+class Reshape1336(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11958,7 +12048,7 @@ class Reshape1341(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1342(ForgeModule):
+class Reshape1337(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11967,7 +12057,16 @@ class Reshape1342(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1343(ForgeModule):
+class Reshape1338(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 256))
+        return reshape_output_1
+
+
+class Reshape1339(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11976,7 +12075,7 @@ class Reshape1343(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1344(ForgeModule):
+class Reshape1340(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11985,7 +12084,7 @@ class Reshape1344(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1345(ForgeModule):
+class Reshape1341(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -11994,7 +12093,7 @@ class Reshape1345(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1346(ForgeModule):
+class Reshape1342(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12003,7 +12102,16 @@ class Reshape1346(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1347(ForgeModule):
+class Reshape1343(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 16384))
+        return reshape_output_1
+
+
+class Reshape1344(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12012,7 +12120,7 @@ class Reshape1347(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1348(ForgeModule):
+class Reshape1345(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12021,7 +12129,7 @@ class Reshape1348(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1349(ForgeModule):
+class Reshape1346(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12030,7 +12138,7 @@ class Reshape1349(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1350(ForgeModule):
+class Reshape1347(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12039,7 +12147,7 @@ class Reshape1350(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1351(ForgeModule):
+class Reshape1348(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12048,7 +12156,7 @@ class Reshape1351(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1352(ForgeModule):
+class Reshape1349(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12057,7 +12165,7 @@ class Reshape1352(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1353(ForgeModule):
+class Reshape1350(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12066,7 +12174,7 @@ class Reshape1353(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1354(ForgeModule):
+class Reshape1351(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12075,7 +12183,7 @@ class Reshape1354(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1355(ForgeModule):
+class Reshape1352(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12084,7 +12192,7 @@ class Reshape1355(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1356(ForgeModule):
+class Reshape1353(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12093,7 +12201,7 @@ class Reshape1356(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1357(ForgeModule):
+class Reshape1354(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12102,7 +12210,7 @@ class Reshape1357(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1358(ForgeModule):
+class Reshape1355(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12111,7 +12219,16 @@ class Reshape1358(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1359(ForgeModule):
+class Reshape1356(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 4096))
+        return reshape_output_1
+
+
+class Reshape1357(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12120,7 +12237,16 @@ class Reshape1359(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1360(ForgeModule):
+class Reshape1358(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 320, 1024))
+        return reshape_output_1
+
+
+class Reshape1359(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12129,7 +12255,7 @@ class Reshape1360(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1361(ForgeModule):
+class Reshape1360(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12138,7 +12264,7 @@ class Reshape1361(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1362(ForgeModule):
+class Reshape1361(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12147,7 +12273,7 @@ class Reshape1362(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1363(ForgeModule):
+class Reshape1362(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12156,7 +12282,7 @@ class Reshape1363(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1364(ForgeModule):
+class Reshape1363(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12165,7 +12291,7 @@ class Reshape1364(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1365(ForgeModule):
+class Reshape1364(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12174,7 +12300,7 @@ class Reshape1365(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1366(ForgeModule):
+class Reshape1365(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12183,7 +12309,7 @@ class Reshape1366(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1367(ForgeModule):
+class Reshape1366(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12192,7 +12318,7 @@ class Reshape1367(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1368(ForgeModule):
+class Reshape1367(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12201,7 +12327,7 @@ class Reshape1368(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1369(ForgeModule):
+class Reshape1368(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12210,7 +12336,7 @@ class Reshape1369(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1370(ForgeModule):
+class Reshape1369(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12219,7 +12345,7 @@ class Reshape1370(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1371(ForgeModule):
+class Reshape1370(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12228,7 +12354,7 @@ class Reshape1371(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1372(ForgeModule):
+class Reshape1371(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12237,7 +12363,7 @@ class Reshape1372(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1373(ForgeModule):
+class Reshape1372(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -12246,12 +12372,21 @@ class Reshape1373(ForgeModule):
         return reshape_output_1
 
 
-class Reshape1374(ForgeModule):
+class Reshape1373(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280, 1024, 1))
+        return reshape_output_1
+
+
+class Reshape1374(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280, 1024))
         return reshape_output_1
 
 
@@ -12269,7 +12404,7 @@ class Reshape1376(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 256, 64))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 256))
         return reshape_output_1
 
 
@@ -12278,7 +12413,7 @@ class Reshape1377(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 256, 64))
         return reshape_output_1
 
 
@@ -12287,7 +12422,7 @@ class Reshape1378(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 256, 64))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 64, 256))
         return reshape_output_1
 
 
@@ -12296,7 +12431,7 @@ class Reshape1379(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2048, 256, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 256, 64))
         return reshape_output_1
 
 
@@ -12305,7 +12440,7 @@ class Reshape1380(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 16, 16))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2048, 256, 1))
         return reshape_output_1
 
 
@@ -12314,7 +12449,7 @@ class Reshape1381(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 32, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 16, 16))
         return reshape_output_1
 
 
@@ -12323,7 +12458,7 @@ class Reshape1382(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 64, 64))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 32, 32))
         return reshape_output_1
 
 
@@ -12332,7 +12467,7 @@ class Reshape1383(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 128, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 64, 64))
         return reshape_output_1
 
 
@@ -12341,7 +12476,7 @@ class Reshape1384(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 5776))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 128, 128))
         return reshape_output_1
 
 
@@ -12350,7 +12485,7 @@ class Reshape1385(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 2166))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 5776))
         return reshape_output_1
 
 
@@ -12359,7 +12494,7 @@ class Reshape1386(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 2166))
         return reshape_output_1
 
 
@@ -12368,7 +12503,7 @@ class Reshape1387(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 150))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 600))
         return reshape_output_1
 
 
@@ -12377,7 +12512,7 @@ class Reshape1388(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 36))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 150))
         return reshape_output_1
 
 
@@ -12386,7 +12521,7 @@ class Reshape1389(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 5776))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 36))
         return reshape_output_1
 
 
@@ -12395,7 +12530,7 @@ class Reshape1390(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 2166))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 5776))
         return reshape_output_1
 
 
@@ -12404,7 +12539,7 @@ class Reshape1391(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 2166))
         return reshape_output_1
 
 
@@ -12413,7 +12548,7 @@ class Reshape1392(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 150))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 600))
         return reshape_output_1
 
 
@@ -12422,7 +12557,7 @@ class Reshape1393(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 36))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 150))
         return reshape_output_1
 
 
@@ -12431,7 +12566,7 @@ class Reshape1394(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 4))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 36))
         return reshape_output_1
 
 
@@ -12440,7 +12575,7 @@ class Reshape1395(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 7, 8, 7, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 81, 4))
         return reshape_output_1
 
 
@@ -12449,7 +12584,7 @@ class Reshape1396(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 7, 8, 7, 96))
         return reshape_output_1
 
 
@@ -12458,7 +12593,7 @@ class Reshape1397(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3136, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 96))
         return reshape_output_1
 
 
@@ -12467,7 +12602,7 @@ class Reshape1398(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 288))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3136, 96))
         return reshape_output_1
 
 
@@ -12476,7 +12611,7 @@ class Reshape1399(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 3, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 288))
         return reshape_output_1
 
 
@@ -12485,7 +12620,7 @@ class Reshape1400(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 3, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 3, 32))
         return reshape_output_1
 
 
@@ -12494,7 +12629,7 @@ class Reshape1401(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 3, 49, 32))
         return reshape_output_1
 
 
@@ -12503,7 +12638,7 @@ class Reshape1402(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 3, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 49, 32))
         return reshape_output_1
 
 
@@ -12512,7 +12647,7 @@ class Reshape1403(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 3))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 3, 49, 49))
         return reshape_output_1
 
 
@@ -12521,7 +12656,7 @@ class Reshape1404(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 3))
         return reshape_output_1
 
 
@@ -12530,7 +12665,7 @@ class Reshape1405(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 3, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 49, 49))
         return reshape_output_1
 
 
@@ -12539,7 +12674,7 @@ class Reshape1406(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 3, 49, 49))
         return reshape_output_1
 
 
@@ -12548,7 +12683,7 @@ class Reshape1407(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(192, 32, 49))
         return reshape_output_1
 
 
@@ -12557,7 +12692,7 @@ class Reshape1408(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 96))
         return reshape_output_1
 
 
@@ -12566,7 +12701,7 @@ class Reshape1409(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 8, 7, 7, 96))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 96))
         return reshape_output_1
 
 
@@ -12575,7 +12710,7 @@ class Reshape1410(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 8, 7, 7, 96))
         return reshape_output_1
 
 
@@ -12584,7 +12719,7 @@ class Reshape1411(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 32))
         return reshape_output_1
 
 
@@ -12593,7 +12728,7 @@ class Reshape1412(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 384))
         return reshape_output_1
 
 
@@ -12602,7 +12737,7 @@ class Reshape1413(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 384))
         return reshape_output_1
 
 
@@ -12611,7 +12746,7 @@ class Reshape1414(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 384))
         return reshape_output_1
 
 
@@ -12620,7 +12755,7 @@ class Reshape1415(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 784, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 384))
         return reshape_output_1
 
 
@@ -12629,7 +12764,7 @@ class Reshape1416(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 784, 384))
         return reshape_output_1
 
 
@@ -12638,7 +12773,7 @@ class Reshape1417(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 192))
         return reshape_output_1
 
 
@@ -12647,7 +12782,7 @@ class Reshape1418(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 7, 4, 7, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 192))
         return reshape_output_1
 
 
@@ -12656,7 +12791,7 @@ class Reshape1419(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 7, 4, 7, 192))
         return reshape_output_1
 
 
@@ -12665,7 +12800,7 @@ class Reshape1420(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 784, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 192))
         return reshape_output_1
 
 
@@ -12674,7 +12809,7 @@ class Reshape1421(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 576))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 784, 192))
         return reshape_output_1
 
 
@@ -12683,7 +12818,7 @@ class Reshape1422(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 3, 6, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 576))
         return reshape_output_1
 
 
@@ -12692,7 +12827,7 @@ class Reshape1423(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 6, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 3, 6, 32))
         return reshape_output_1
 
 
@@ -12701,7 +12836,7 @@ class Reshape1424(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 6, 49, 32))
         return reshape_output_1
 
 
@@ -12710,7 +12845,7 @@ class Reshape1425(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 6, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 49, 32))
         return reshape_output_1
 
 
@@ -12719,7 +12854,7 @@ class Reshape1426(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 6))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 6, 49, 49))
         return reshape_output_1
 
 
@@ -12728,7 +12863,7 @@ class Reshape1427(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 6))
         return reshape_output_1
 
 
@@ -12737,7 +12872,7 @@ class Reshape1428(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 6, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 49, 49))
         return reshape_output_1
 
 
@@ -12746,7 +12881,7 @@ class Reshape1429(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 6, 49, 49))
         return reshape_output_1
 
 
@@ -12755,7 +12890,7 @@ class Reshape1430(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4, 7, 7, 192))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(96, 32, 49))
         return reshape_output_1
 
 
@@ -12764,7 +12899,7 @@ class Reshape1431(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 6, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4, 7, 7, 192))
         return reshape_output_1
 
 
@@ -12773,7 +12908,7 @@ class Reshape1432(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 6, 32))
         return reshape_output_1
 
 
@@ -12782,7 +12917,7 @@ class Reshape1433(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 768))
         return reshape_output_1
 
 
@@ -12791,7 +12926,7 @@ class Reshape1434(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 768))
         return reshape_output_1
 
 
@@ -12800,7 +12935,7 @@ class Reshape1435(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 768))
         return reshape_output_1
 
 
@@ -12809,7 +12944,7 @@ class Reshape1436(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 196, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 768))
         return reshape_output_1
 
 
@@ -12818,7 +12953,7 @@ class Reshape1437(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 196, 768))
         return reshape_output_1
 
 
@@ -12827,7 +12962,7 @@ class Reshape1438(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 384))
         return reshape_output_1
 
 
@@ -12836,7 +12971,7 @@ class Reshape1439(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 7, 2, 7, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 384))
         return reshape_output_1
 
 
@@ -12845,7 +12980,7 @@ class Reshape1440(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 7, 2, 7, 384))
         return reshape_output_1
 
 
@@ -12854,7 +12989,7 @@ class Reshape1441(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 196, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 384))
         return reshape_output_1
 
 
@@ -12863,7 +12998,7 @@ class Reshape1442(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 1152))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 196, 384))
         return reshape_output_1
 
 
@@ -12872,7 +13007,7 @@ class Reshape1443(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 3, 12, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 1152))
         return reshape_output_1
 
 
@@ -12881,7 +13016,7 @@ class Reshape1444(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 12, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 3, 12, 32))
         return reshape_output_1
 
 
@@ -12890,7 +13025,7 @@ class Reshape1445(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 12, 49, 32))
         return reshape_output_1
 
 
@@ -12899,7 +13034,7 @@ class Reshape1446(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 12, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 49, 32))
         return reshape_output_1
 
 
@@ -12908,7 +13043,7 @@ class Reshape1447(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 12))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 12, 49, 49))
         return reshape_output_1
 
 
@@ -12917,7 +13052,7 @@ class Reshape1448(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 12))
         return reshape_output_1
 
 
@@ -12926,7 +13061,7 @@ class Reshape1449(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 12, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 49, 49))
         return reshape_output_1
 
 
@@ -12935,7 +13070,7 @@ class Reshape1450(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 12, 49, 49))
         return reshape_output_1
 
 
@@ -12944,7 +13079,7 @@ class Reshape1451(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 2, 7, 7, 384))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(48, 32, 49))
         return reshape_output_1
 
 
@@ -12953,7 +13088,7 @@ class Reshape1452(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 12, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 2, 7, 7, 384))
         return reshape_output_1
 
 
@@ -12962,7 +13097,7 @@ class Reshape1453(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 1536))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 12, 32))
         return reshape_output_1
 
 
@@ -12971,7 +13106,7 @@ class Reshape1454(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 1536))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 1536))
         return reshape_output_1
 
 
@@ -12980,7 +13115,7 @@ class Reshape1455(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 1536))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 1536))
         return reshape_output_1
 
 
@@ -12989,7 +13124,7 @@ class Reshape1456(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 1536))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 1536))
         return reshape_output_1
 
 
@@ -12998,7 +13133,7 @@ class Reshape1457(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 1536))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 1536))
         return reshape_output_1
 
 
@@ -13007,7 +13142,7 @@ class Reshape1458(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 1536))
         return reshape_output_1
 
 
@@ -13016,7 +13151,7 @@ class Reshape1459(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 768))
         return reshape_output_1
 
 
@@ -13025,7 +13160,7 @@ class Reshape1460(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 7, 1, 7, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 768))
         return reshape_output_1
 
 
@@ -13034,7 +13169,7 @@ class Reshape1461(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 7, 1, 7, 768))
         return reshape_output_1
 
 
@@ -13043,7 +13178,7 @@ class Reshape1462(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 2304))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 768))
         return reshape_output_1
 
 
@@ -13052,7 +13187,7 @@ class Reshape1463(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3, 24, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 2304))
         return reshape_output_1
 
 
@@ -13061,7 +13196,7 @@ class Reshape1464(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3, 24, 32))
         return reshape_output_1
 
 
@@ -13070,7 +13205,7 @@ class Reshape1465(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 49, 32))
         return reshape_output_1
 
 
@@ -13079,7 +13214,7 @@ class Reshape1466(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 49, 32))
         return reshape_output_1
 
 
@@ -13088,7 +13223,7 @@ class Reshape1467(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 24))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 24, 49, 49))
         return reshape_output_1
 
 
@@ -13097,7 +13232,7 @@ class Reshape1468(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 24))
         return reshape_output_1
 
 
@@ -13106,7 +13241,7 @@ class Reshape1469(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 49, 49))
         return reshape_output_1
 
 
@@ -13115,7 +13250,7 @@ class Reshape1470(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 1, 7, 7, 768))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(24, 32, 49))
         return reshape_output_1
 
 
@@ -13124,7 +13259,7 @@ class Reshape1471(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 24, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 1, 7, 7, 768))
         return reshape_output_1
 
 
@@ -13133,7 +13268,7 @@ class Reshape1472(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 3072))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 24, 32))
         return reshape_output_1
 
 
@@ -13142,7 +13277,7 @@ class Reshape1473(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3072))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 3072))
         return reshape_output_1
 
 
@@ -13151,7 +13286,7 @@ class Reshape1474(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 3072))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3072))
         return reshape_output_1
 
 
@@ -13160,7 +13295,7 @@ class Reshape1475(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 96, 3136, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 3072))
         return reshape_output_1
 
 
@@ -13169,7 +13304,7 @@ class Reshape1476(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2401,))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 96, 3136, 1))
         return reshape_output_1
 
 
@@ -13178,7 +13313,7 @@ class Reshape1477(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2401,))
         return reshape_output_1
 
 
@@ -13187,7 +13322,7 @@ class Reshape1478(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 7, 8, 7, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 1))
         return reshape_output_1
 
 
@@ -13196,7 +13331,7 @@ class Reshape1479(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 7, 8, 7, 128))
         return reshape_output_1
 
 
@@ -13205,7 +13340,7 @@ class Reshape1480(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 4, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 128))
         return reshape_output_1
 
 
@@ -13214,7 +13349,7 @@ class Reshape1481(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 4, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 3, 4, 32))
         return reshape_output_1
 
 
@@ -13223,7 +13358,7 @@ class Reshape1482(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 4, 49, 32))
         return reshape_output_1
 
 
@@ -13232,7 +13367,7 @@ class Reshape1483(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 4, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 49, 32))
         return reshape_output_1
 
 
@@ -13241,7 +13376,7 @@ class Reshape1484(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 4))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 4, 49, 49))
         return reshape_output_1
 
 
@@ -13250,7 +13385,7 @@ class Reshape1485(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 4))
         return reshape_output_1
 
 
@@ -13259,7 +13394,7 @@ class Reshape1486(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 4, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 49, 49))
         return reshape_output_1
 
 
@@ -13268,7 +13403,7 @@ class Reshape1487(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 64, 4, 49, 49))
         return reshape_output_1
 
 
@@ -13277,7 +13412,7 @@ class Reshape1488(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 32, 49))
         return reshape_output_1
 
 
@@ -13286,7 +13421,7 @@ class Reshape1489(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 128))
         return reshape_output_1
 
 
@@ -13295,7 +13430,7 @@ class Reshape1490(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 8, 7, 7, 128))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 128))
         return reshape_output_1
 
 
@@ -13304,7 +13439,7 @@ class Reshape1491(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 8, 7, 7, 128))
         return reshape_output_1
 
 
@@ -13313,7 +13448,7 @@ class Reshape1492(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 56, 56, 512))
         return reshape_output_1
 
 
@@ -13322,7 +13457,7 @@ class Reshape1493(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(3136, 512))
         return reshape_output_1
 
 
@@ -13331,7 +13466,7 @@ class Reshape1494(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 512))
         return reshape_output_1
 
 
@@ -13340,7 +13475,7 @@ class Reshape1495(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 256))
         return reshape_output_1
 
 
@@ -13349,7 +13484,7 @@ class Reshape1496(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 7, 4, 7, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 256))
         return reshape_output_1
 
 
@@ -13358,7 +13493,7 @@ class Reshape1497(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 7, 4, 7, 256))
         return reshape_output_1
 
 
@@ -13367,7 +13502,7 @@ class Reshape1498(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 3, 8, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 256))
         return reshape_output_1
 
 
@@ -13376,7 +13511,7 @@ class Reshape1499(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 8, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 49, 3, 8, 32))
         return reshape_output_1
 
 
@@ -13385,7 +13520,7 @@ class Reshape1500(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 8, 49, 32))
         return reshape_output_1
 
 
@@ -13394,7 +13529,7 @@ class Reshape1501(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 8, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 49, 32))
         return reshape_output_1
 
 
@@ -13403,7 +13538,7 @@ class Reshape1502(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 8))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 8, 49, 49))
         return reshape_output_1
 
 
@@ -13412,7 +13547,7 @@ class Reshape1503(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 8))
         return reshape_output_1
 
 
@@ -13421,7 +13556,7 @@ class Reshape1504(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 8, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 49, 49))
         return reshape_output_1
 
 
@@ -13430,7 +13565,7 @@ class Reshape1505(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 8, 49, 49))
         return reshape_output_1
 
 
@@ -13439,7 +13574,7 @@ class Reshape1506(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4, 7, 7, 256))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(128, 32, 49))
         return reshape_output_1
 
 
@@ -13448,7 +13583,7 @@ class Reshape1507(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4, 7, 7, 256))
         return reshape_output_1
 
 
@@ -13457,7 +13592,7 @@ class Reshape1508(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 28, 28, 1024))
         return reshape_output_1
 
 
@@ -13466,7 +13601,7 @@ class Reshape1509(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(784, 1024))
         return reshape_output_1
 
 
@@ -13475,7 +13610,7 @@ class Reshape1510(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 1024))
         return reshape_output_1
 
 
@@ -13484,7 +13619,7 @@ class Reshape1511(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 512))
         return reshape_output_1
 
 
@@ -13493,7 +13628,7 @@ class Reshape1512(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 7, 2, 7, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 512))
         return reshape_output_1
 
 
@@ -13502,7 +13637,7 @@ class Reshape1513(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 7, 2, 7, 512))
         return reshape_output_1
 
 
@@ -13511,7 +13646,7 @@ class Reshape1514(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 3, 16, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 512))
         return reshape_output_1
 
 
@@ -13520,7 +13655,7 @@ class Reshape1515(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 16, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 49, 3, 16, 32))
         return reshape_output_1
 
 
@@ -13529,7 +13664,7 @@ class Reshape1516(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 16, 49, 32))
         return reshape_output_1
 
 
@@ -13538,7 +13673,7 @@ class Reshape1517(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 16, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 32))
         return reshape_output_1
 
 
@@ -13547,7 +13682,7 @@ class Reshape1518(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 16))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(4, 16, 49, 49))
         return reshape_output_1
 
 
@@ -13556,7 +13691,7 @@ class Reshape1519(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 16))
         return reshape_output_1
 
 
@@ -13565,7 +13700,7 @@ class Reshape1520(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 16, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 49, 49))
         return reshape_output_1
 
 
@@ -13574,7 +13709,7 @@ class Reshape1521(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 16, 49, 49))
         return reshape_output_1
 
 
@@ -13583,7 +13718,7 @@ class Reshape1522(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 2, 7, 7, 512))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(64, 32, 49))
         return reshape_output_1
 
 
@@ -13592,7 +13727,7 @@ class Reshape1523(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 2048))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 2, 7, 7, 512))
         return reshape_output_1
 
 
@@ -13601,7 +13736,7 @@ class Reshape1524(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 2048))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 14, 14, 2048))
         return reshape_output_1
 
 
@@ -13610,7 +13745,7 @@ class Reshape1525(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 2048))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(196, 2048))
         return reshape_output_1
 
 
@@ -13619,7 +13754,7 @@ class Reshape1526(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 2048))
         return reshape_output_1
 
 
@@ -13628,7 +13763,7 @@ class Reshape1527(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 1024))
         return reshape_output_1
 
 
@@ -13637,7 +13772,7 @@ class Reshape1528(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 7, 1, 7, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 1024))
         return reshape_output_1
 
 
@@ -13646,7 +13781,7 @@ class Reshape1529(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 7, 1, 7, 1024))
         return reshape_output_1
 
 
@@ -13655,7 +13790,7 @@ class Reshape1530(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3, 32, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 1024))
         return reshape_output_1
 
 
@@ -13664,7 +13799,7 @@ class Reshape1531(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 49, 3, 32, 32))
         return reshape_output_1
 
 
@@ -13673,7 +13808,7 @@ class Reshape1532(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 49, 32))
         return reshape_output_1
 
 
@@ -13682,7 +13817,7 @@ class Reshape1533(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 49, 32))
         return reshape_output_1
 
 
@@ -13691,7 +13826,7 @@ class Reshape1534(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 32, 49, 49))
         return reshape_output_1
 
 
@@ -13700,7 +13835,7 @@ class Reshape1535(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 49, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 49, 32))
         return reshape_output_1
 
 
@@ -13709,7 +13844,7 @@ class Reshape1536(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 32, 49))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 49, 49))
         return reshape_output_1
 
 
@@ -13718,7 +13853,7 @@ class Reshape1537(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 1, 7, 7, 1024))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(32, 32, 49))
         return reshape_output_1
 
 
@@ -13727,7 +13862,7 @@ class Reshape1538(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 4096))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 1, 7, 7, 1024))
         return reshape_output_1
 
 
@@ -13736,7 +13871,7 @@ class Reshape1539(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 4096))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 7, 7, 4096))
         return reshape_output_1
 
 
@@ -13745,7 +13880,7 @@ class Reshape1540(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 25088))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(49, 4096))
         return reshape_output_1
 
 
@@ -13754,7 +13889,7 @@ class Reshape1541(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 25088, 1, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 25088))
         return reshape_output_1
 
 
@@ -13763,7 +13898,7 @@ class Reshape1542(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4096, 1, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 25088, 1, 1))
         return reshape_output_1
 
 
@@ -13772,7 +13907,7 @@ class Reshape1543(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(160, 1, 3, 3))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 49, 1))
         return reshape_output_1
 
 
@@ -13781,7 +13916,7 @@ class Reshape1544(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(224, 1, 3, 3))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4096, 1, 1))
         return reshape_output_1
 
 
@@ -13790,7 +13925,7 @@ class Reshape1545(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(728, 1, 3, 3))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(160, 1, 3, 3))
         return reshape_output_1
 
 
@@ -13799,7 +13934,7 @@ class Reshape1546(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1536, 1, 3, 3))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(224, 1, 3, 3))
         return reshape_output_1
 
 
@@ -13808,7 +13943,7 @@ class Reshape1547(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 128, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(728, 1, 3, 3))
         return reshape_output_1
 
 
@@ -13817,7 +13952,7 @@ class Reshape1548(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 64, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1536, 1, 3, 3))
         return reshape_output_1
 
 
@@ -13826,7 +13961,7 @@ class Reshape1549(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 128, 20, 20))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 128, 400))
         return reshape_output_1
 
 
@@ -13835,7 +13970,7 @@ class Reshape1550(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 400, 32))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 64, 400))
         return reshape_output_1
 
 
@@ -13844,7 +13979,7 @@ class Reshape1551(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 400, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 128, 20, 20))
         return reshape_output_1
 
 
@@ -13853,7 +13988,7 @@ class Reshape1552(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 400, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 400, 32))
         return reshape_output_1
 
 
@@ -13862,7 +13997,7 @@ class Reshape1553(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 1, 7, 7))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2, 400, 400))
         return reshape_output_1
 
 
@@ -13871,7 +14006,7 @@ class Reshape1554(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 40, 40))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(2, 400, 400))
         return reshape_output_1
 
 
@@ -13880,7 +14015,7 @@ class Reshape1555(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 1600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(256, 1, 7, 7))
         return reshape_output_1
 
 
@@ -13889,7 +14024,7 @@ class Reshape1556(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 1600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 40, 40))
         return reshape_output_1
 
 
@@ -13898,7 +14033,7 @@ class Reshape1557(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4800, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 1600))
         return reshape_output_1
 
 
@@ -13907,7 +14042,7 @@ class Reshape1558(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 20, 20))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 1600))
         return reshape_output_1
 
 
@@ -13916,7 +14051,7 @@ class Reshape1559(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4800, 85))
         return reshape_output_1
 
 
@@ -13925,7 +14060,7 @@ class Reshape1560(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 20, 20))
         return reshape_output_1
 
 
@@ -13934,7 +14069,7 @@ class Reshape1561(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1200, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 400))
         return reshape_output_1
 
 
@@ -13943,7 +14078,7 @@ class Reshape1562(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 10, 10))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 400))
         return reshape_output_1
 
 
@@ -13952,7 +14087,7 @@ class Reshape1563(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 100))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1200, 85))
         return reshape_output_1
 
 
@@ -13961,7 +14096,7 @@ class Reshape1564(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 100))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 10, 10))
         return reshape_output_1
 
 
@@ -13970,7 +14105,7 @@ class Reshape1565(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 300, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 100))
         return reshape_output_1
 
 
@@ -13979,7 +14114,7 @@ class Reshape1566(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 60, 60))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 100))
         return reshape_output_1
 
 
@@ -13988,7 +14123,7 @@ class Reshape1567(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 3600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 300, 85))
         return reshape_output_1
 
 
@@ -13997,7 +14132,7 @@ class Reshape1568(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 3600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 60, 60))
         return reshape_output_1
 
 
@@ -14006,7 +14141,7 @@ class Reshape1569(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 10800, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 3600))
         return reshape_output_1
 
 
@@ -14015,7 +14150,7 @@ class Reshape1570(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 30, 30))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 3600))
         return reshape_output_1
 
 
@@ -14024,7 +14159,7 @@ class Reshape1571(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 900))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 10800, 85))
         return reshape_output_1
 
 
@@ -14033,7 +14168,7 @@ class Reshape1572(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 900))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 30, 30))
         return reshape_output_1
 
 
@@ -14042,7 +14177,7 @@ class Reshape1573(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2700, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 900))
         return reshape_output_1
 
 
@@ -14051,7 +14186,7 @@ class Reshape1574(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 15, 15))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 900))
         return reshape_output_1
 
 
@@ -14060,7 +14195,7 @@ class Reshape1575(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 225))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 2700, 85))
         return reshape_output_1
 
 
@@ -14069,7 +14204,7 @@ class Reshape1576(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 225))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 15, 15))
         return reshape_output_1
 
 
@@ -14078,7 +14213,7 @@ class Reshape1577(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 675, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 225))
         return reshape_output_1
 
 
@@ -14087,7 +14222,7 @@ class Reshape1578(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 160, 160))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 225))
         return reshape_output_1
 
 
@@ -14096,7 +14231,7 @@ class Reshape1579(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 25600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 675, 85))
         return reshape_output_1
 
 
@@ -14105,7 +14240,7 @@ class Reshape1580(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 25600))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 160, 160))
         return reshape_output_1
 
 
@@ -14114,7 +14249,7 @@ class Reshape1581(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 76800, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 25600))
         return reshape_output_1
 
 
@@ -14123,7 +14258,7 @@ class Reshape1582(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 80, 80))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 25600))
         return reshape_output_1
 
 
@@ -14132,7 +14267,7 @@ class Reshape1583(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 6400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 76800, 85))
         return reshape_output_1
 
 
@@ -14141,7 +14276,7 @@ class Reshape1584(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 6400))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 255, 80, 80))
         return reshape_output_1
 
 
@@ -14150,7 +14285,7 @@ class Reshape1585(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 19200, 85))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1, 255, 6400))
         return reshape_output_1
 
 
@@ -14159,7 +14294,7 @@ class Reshape1586(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 4480))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 3, 85, 6400))
         return reshape_output_1
 
 
@@ -14168,7 +14303,7 @@ class Reshape1587(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4480))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 19200, 85))
         return reshape_output_1
 
 
@@ -14177,7 +14312,7 @@ class Reshape1588(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 1120))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 4480))
         return reshape_output_1
 
 
@@ -14186,7 +14321,7 @@ class Reshape1589(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 1120))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 4480))
         return reshape_output_1
 
 
@@ -14195,7 +14330,7 @@ class Reshape1590(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 280))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 1120))
         return reshape_output_1
 
 
@@ -14204,7 +14339,7 @@ class Reshape1591(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 280))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 1120))
         return reshape_output_1
 
 
@@ -14213,7 +14348,7 @@ class Reshape1592(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 4480))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 17, 280))
         return reshape_output_1
 
 
@@ -14222,7 +14357,7 @@ class Reshape1593(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 1120))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 4, 280))
         return reshape_output_1
 
 
@@ -14231,7 +14366,7 @@ class Reshape1594(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 280))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 4480))
         return reshape_output_1
 
 
@@ -14240,7 +14375,7 @@ class Reshape1595(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 6400, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 1120))
         return reshape_output_1
 
 
@@ -14249,7 +14384,7 @@ class Reshape1596(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 1600, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 80, 280))
         return reshape_output_1
 
 
@@ -14258,7 +14393,7 @@ class Reshape1597(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 400, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 6400, 1))
         return reshape_output_1
 
 
@@ -14267,7 +14402,7 @@ class Reshape1598(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 2704, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 1600, 1))
         return reshape_output_1
 
 
@@ -14276,7 +14411,7 @@ class Reshape1599(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
-        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 676, 1))
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 400, 1))
         return reshape_output_1
 
 
@@ -14285,7 +14420,700 @@ class Reshape1600(ForgeModule):
         super().__init__(name)
 
     def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 2704, 1))
+        return reshape_output_1
+
+
+class Reshape1601(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 676, 1))
+        return reshape_output_1
+
+
+class Reshape1602(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
         reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 85, 169, 1))
+        return reshape_output_1
+
+
+class Reshape1603(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1408))
+        return reshape_output_1
+
+
+class Reshape1604(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 49, 1))
+        return reshape_output_1
+
+
+class Reshape1605(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 768, 49))
+        return reshape_output_1
+
+
+class Reshape1606(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 49, 1))
+        return reshape_output_1
+
+
+class Reshape1607(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1024, 49))
+        return reshape_output_1
+
+
+class Reshape1608(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 512, 196, 1))
+        return reshape_output_1
+
+
+class Reshape1609(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1024))
+        return reshape_output_1
+
+
+class Reshape1610(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3072))
+        return reshape_output_1
+
+
+class Reshape1611(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3, 1024))
+        return reshape_output_1
+
+
+class Reshape1612(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 16, 64))
+        return reshape_output_1
+
+
+class Reshape1613(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1614(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1615(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1616(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1617(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 1024))
+        return reshape_output_1
+
+
+class Reshape1618(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 768))
+        return reshape_output_1
+
+
+class Reshape1619(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 2304))
+        return reshape_output_1
+
+
+class Reshape1620(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 3, 768))
+        return reshape_output_1
+
+
+class Reshape1621(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 12, 64))
+        return reshape_output_1
+
+
+class Reshape1622(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1623(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 50, 64))
+        return reshape_output_1
+
+
+class Reshape1624(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 12, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1625(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(12, 50, 50))
+        return reshape_output_1
+
+
+class Reshape1626(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(50, 1, 768))
+        return reshape_output_1
+
+
+class Reshape1627(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 3072))
+        return reshape_output_1
+
+
+class Reshape1628(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 1, 3, 1024))
+        return reshape_output_1
+
+
+class Reshape1629(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(197, 16, 64))
+        return reshape_output_1
+
+
+class Reshape1630(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 1280, 1369))
+        return reshape_output_1
+
+
+class Reshape1631(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1280))
+        return reshape_output_1
+
+
+class Reshape1632(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 3840))
+        return reshape_output_1
+
+
+class Reshape1633(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 3, 1280))
+        return reshape_output_1
+
+
+class Reshape1634(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 16, 80))
+        return reshape_output_1
+
+
+class Reshape1635(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 1370, 80))
+        return reshape_output_1
+
+
+class Reshape1636(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 1370, 80))
+        return reshape_output_1
+
+
+class Reshape1637(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 16, 1370, 1370))
+        return reshape_output_1
+
+
+class Reshape1638(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(16, 1370, 1370))
+        return reshape_output_1
+
+
+class Reshape1639(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1370, 1, 1280))
+        return reshape_output_1
+
+
+class Reshape1640(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 256))
+        return reshape_output_1
+
+
+class Reshape1641(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 8, 32))
+        return reshape_output_1
+
+
+class Reshape1642(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 256))
+        return reshape_output_1
+
+
+class Reshape1643(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 100, 32))
+        return reshape_output_1
+
+
+class Reshape1644(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 100, 100))
+        return reshape_output_1
+
+
+class Reshape1645(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 100, 32))
+        return reshape_output_1
+
+
+class Reshape1646(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 280))
+        return reshape_output_1
+
+
+class Reshape1647(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 32, 280))
+        return reshape_output_1
+
+
+class Reshape1648(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(280, 256))
+        return reshape_output_1
+
+
+class Reshape1649(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 280, 8, 32))
+        return reshape_output_1
+
+
+class Reshape1650(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 280, 256))
+        return reshape_output_1
+
+
+class Reshape1651(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 280, 32))
+        return reshape_output_1
+
+
+class Reshape1652(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 280, 280))
+        return reshape_output_1
+
+
+class Reshape1653(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 280, 280))
+        return reshape_output_1
+
+
+class Reshape1654(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 280, 32))
+        return reshape_output_1
+
+
+class Reshape1655(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 8, 100, 280))
+        return reshape_output_1
+
+
+class Reshape1656(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(8, 100, 280))
+        return reshape_output_1
+
+
+class Reshape1657(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 92))
+        return reshape_output_1
+
+
+class Reshape1658(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 251))
+        return reshape_output_1
+
+
+class Reshape1659(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 32, 107, 160))
+        return reshape_output_1
+
+
+class Reshape1660(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 64, 54, 80))
+        return reshape_output_1
+
+
+class Reshape1661(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 128, 27, 40))
+        return reshape_output_1
+
+
+class Reshape1662(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 256, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1663(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 256, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1664(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 8, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1665(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 2240))
+        return reshape_output_1
+
+
+class Reshape1666(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1667(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 9240))
+        return reshape_output_1
+
+
+class Reshape1668(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 264, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1669(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 4480))
+        return reshape_output_1
+
+
+class Reshape1670(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 128, 14, 20))
+        return reshape_output_1
+
+
+class Reshape1671(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 8640))
+        return reshape_output_1
+
+
+class Reshape1672(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 64, 27, 40))
+        return reshape_output_1
+
+
+class Reshape1673(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 17280))
+        return reshape_output_1
+
+
+class Reshape1674(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 32, 54, 80))
+        return reshape_output_1
+
+
+class Reshape1675(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 8, 34240))
+        return reshape_output_1
+
+
+class Reshape1676(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(100, 16, 107, 160))
+        return reshape_output_1
+
+
+class Reshape1677(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, reshape_input_0):
+        reshape_output_1 = forge.op.Reshape("", reshape_input_0, shape=(1, 100, 107, 160))
         return reshape_output_1
 
 
@@ -14375,6 +15203,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_resnext_resnext101_64x4d_img_cls_osmr",
                 "pt_resnext_resnext26_32x4d_img_cls_osmr",
                 "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2048)"},
@@ -14689,6 +15519,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 768)"},
@@ -14727,6 +15559,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(128, 768)"},
@@ -14756,6 +15589,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 12, 64)"},
@@ -14785,6 +15619,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 768)"},
@@ -14815,6 +15650,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 128, 64)"},
@@ -14844,6 +15680,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 64, 128)"},
@@ -14883,6 +15720,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 128, 128)"},
@@ -14913,6 +15751,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 128, 128)"},
@@ -14943,6 +15782,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 128, 64)"},
@@ -14968,6 +15808,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(128, 768)"},
@@ -15124,6 +15965,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 1, 1)"},
@@ -15161,7 +16003,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 6400)"},
@@ -15174,7 +16016,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 1600)"},
@@ -15187,7 +16029,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 144, 400)"},
@@ -15200,7 +16042,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4, 16, 8400)"},
@@ -15213,7 +16055,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4, 8400)"},
@@ -15865,7 +16707,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"], "pcc": 0.99, "args": {"shape": "(10, 768)"}},
     ),
     (
-        Reshape134,
+        Reshape119,
         [((1, 256, 6, 6), torch.float32)],
         {
             "model_names": [
@@ -15878,17 +16720,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape135,
+        Reshape120,
         [((1, 256, 6, 6), torch.float32)],
         {"model_names": ["pt_alexnet_base_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 9216)"}},
     ),
     (
-        Reshape136,
+        Reshape121,
         [((1, 128, 3, 3), torch.float32)],
         {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99, "args": {"shape": "(1, 1152, 1, 1)"}},
     ),
     (
-        Reshape137,
+        Reshape122,
         [((1, 1280, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -15916,7 +16758,23 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape138,
+        Reshape123,
+        [((1, 1280, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1280)"},
+        },
+    ),
+    (
+        Reshape124,
         [((8, 1), torch.int64)],
         {
             "model_names": [
@@ -15928,7 +16786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape139,
+        Reshape125,
         [((2, 1, 1), torch.int64)],
         {
             "model_names": [
@@ -15949,12 +16807,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape140,
+        Reshape126,
         [((1, 2048), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 1, 2048)"}},
     ),
     (
-        Reshape141,
+        Reshape127,
         [((2, 1, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -15963,7 +16821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape142,
+        Reshape128,
         [((2, 1, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -15972,7 +16830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape143,
+        Reshape129,
         [((2, 2048), torch.float32)],
         {
             "model_names": [
@@ -15984,7 +16842,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape142,
+        Reshape128,
         [((2, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -15993,7 +16851,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape144,
+        Reshape130,
         [((2, 32, 1, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16002,7 +16860,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape145,
+        Reshape131,
         [((64, 1, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16011,7 +16869,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape141,
+        Reshape127,
         [((2, 1, 32, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16020,7 +16878,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape146,
+        Reshape132,
         [((2, 13), torch.int64)],
         {
             "model_names": [
@@ -16032,7 +16890,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape147,
+        Reshape133,
         [((2, 13, 768), torch.float32)],
         {
             "model_names": [
@@ -16044,7 +16902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape148,
+        Reshape134,
         [((26, 768), torch.float32)],
         {
             "model_names": [
@@ -16056,7 +16914,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape149,
+        Reshape135,
         [((26, 768), torch.float32)],
         {
             "model_names": [
@@ -16068,7 +16926,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape150,
+        Reshape136,
         [((2, 12, 13, 64), torch.float32)],
         {
             "model_names": [
@@ -16080,7 +16938,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape151,
+        Reshape137,
         [((24, 13, 13), torch.float32)],
         {
             "model_names": [
@@ -16092,7 +16950,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape152,
+        Reshape138,
         [((2, 12, 13, 13), torch.float32)],
         {
             "model_names": [
@@ -16104,7 +16962,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape153,
+        Reshape139,
         [((2, 12, 64, 13), torch.float32)],
         {
             "model_names": [
@@ -16116,7 +16974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape154,
+        Reshape140,
         [((24, 13, 64), torch.float32)],
         {
             "model_names": [
@@ -16128,7 +16986,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape147,
+        Reshape133,
         [((2, 13, 12, 64), torch.float32)],
         {
             "model_names": [
@@ -16140,7 +16998,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape155,
+        Reshape141,
         [((26, 3072), torch.float32)],
         {
             "model_names": [
@@ -16152,7 +17010,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape156,
+        Reshape142,
         [((2, 13, 3072), torch.float32)],
         {
             "model_names": [
@@ -16164,7 +17022,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape157,
+        Reshape143,
         [((26, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16173,7 +17031,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape158,
+        Reshape144,
         [((26, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16182,7 +17040,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape159,
+        Reshape145,
         [((2, 13, 2048), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16191,7 +17049,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape160,
+        Reshape146,
         [((2, 32, 13, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16200,7 +17058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape161,
+        Reshape147,
         [((64, 1, 13), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16209,7 +17067,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape162,
+        Reshape148,
         [((2, 32, 1, 13), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16218,7 +17076,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape163,
+        Reshape149,
         [((2, 8192), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16227,7 +17085,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape164,
+        Reshape150,
         [((2, 1, 8192), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
@@ -16236,7 +17094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape165,
+        Reshape151,
         [((2, 4, 1, 2048), torch.float32)],
         {
             "model_names": [
@@ -16248,7 +17106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape166,
+        Reshape152,
         [((1, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16257,7 +17115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape167,
+        Reshape153,
         [((2, 1, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16266,7 +17124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape168,
+        Reshape154,
         [((2, 1, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16275,7 +17133,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape169,
+        Reshape155,
         [((2, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16284,7 +17142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape168,
+        Reshape154,
         [((2, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16293,7 +17151,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape170,
+        Reshape156,
         [((2, 24, 1, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16302,7 +17160,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape171,
+        Reshape157,
         [((48, 1, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16311,7 +17169,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape167,
+        Reshape153,
         [((2, 1, 24, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16320,7 +17178,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape172,
+        Reshape158,
         [((26, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16329,7 +17187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape173,
+        Reshape159,
         [((26, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16338,7 +17196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape174,
+        Reshape160,
         [((2, 13, 1536), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16347,7 +17205,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape175,
+        Reshape161,
         [((2, 24, 13, 64), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16356,7 +17214,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape176,
+        Reshape162,
         [((48, 1, 13), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16365,7 +17223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape177,
+        Reshape163,
         [((2, 24, 1, 13), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16374,7 +17232,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape178,
+        Reshape164,
         [((2, 6144), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16383,7 +17241,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape179,
+        Reshape165,
         [((2, 1, 6144), torch.float32)],
         {
             "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
@@ -16392,7 +17250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape180,
+        Reshape166,
         [((1, 1), torch.int64)],
         {
             "model_names": [
@@ -16426,7 +17284,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape181,
+        Reshape167,
         [((1, 1, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16448,7 +17306,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape182,
+        Reshape168,
         [((1, 512), torch.float32)],
         {
             "model_names": [
@@ -16461,7 +17319,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape181,
+        Reshape167,
         [((1, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16470,7 +17328,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape183,
+        Reshape169,
         [((1, 8, 1, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16479,7 +17337,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape184,
+        Reshape170,
         [((8, 1, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16488,7 +17346,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape185,
+        Reshape171,
         [((1, 8, 1, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16497,7 +17355,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape186,
+        Reshape172,
         [((1, 8, 64, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16506,7 +17364,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape187,
+        Reshape173,
         [((8, 1, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf", "pt_t5_t5_small_text_gen_hf"],
@@ -16524,7 +17382,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape188,
+        Reshape174,
         [((1, 80, 3000), torch.float32)],
         {
             "model_names": [
@@ -16539,7 +17397,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape189,
+        Reshape175,
         [((512, 80, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16548,7 +17406,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape190,
+        Reshape176,
         [((1, 512, 3000, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16557,7 +17415,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape191,
+        Reshape177,
         [((1, 512, 3000), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16566,7 +17424,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape192,
+        Reshape178,
         [((512, 512, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16575,7 +17433,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape193,
+        Reshape179,
         [((1, 512, 1500, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16584,7 +17442,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape194,
+        Reshape180,
         [((1, 1500, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16593,7 +17451,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape195,
+        Reshape181,
         [((1, 1500, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16602,7 +17460,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape196,
+        Reshape182,
         [((1500, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16611,7 +17469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape195,
+        Reshape181,
         [((1500, 512), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16620,7 +17478,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape197,
+        Reshape183,
         [((1, 8, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16629,7 +17487,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape198,
+        Reshape184,
         [((8, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16638,7 +17496,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape199,
+        Reshape185,
         [((1, 8, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16647,7 +17505,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape200,
+        Reshape186,
         [((1, 8, 64, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16656,7 +17514,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape201,
+        Reshape187,
         [((8, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16665,7 +17523,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape194,
+        Reshape180,
         [((1, 1500, 8, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16674,7 +17532,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape202,
+        Reshape188,
         [((8, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16683,7 +17541,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape203,
+        Reshape189,
         [((1, 8, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
@@ -16692,16 +17550,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape204,
+        Reshape123,
         [((1, 1, 1280), torch.float32)],
         {
-            "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
+            "model_names": [
+                "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                "pt_vit_vit_h_14_img_cls_torchvision",
+            ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280)"},
         },
     ),
     (
-        Reshape205,
+        Reshape190,
         [((1, 1, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16710,7 +17571,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape206,
+        Reshape191,
         [((1, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16719,7 +17580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape205,
+        Reshape190,
         [((1, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16728,7 +17589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape207,
+        Reshape192,
         [((1, 20, 1, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16737,7 +17598,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape208,
+        Reshape193,
         [((20, 1, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16746,7 +17607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape209,
+        Reshape194,
         [((1, 20, 1, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16755,7 +17616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape210,
+        Reshape195,
         [((1, 20, 64, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16764,7 +17625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape211,
+        Reshape196,
         [((20, 1, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16773,7 +17634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape204,
+        Reshape123,
         [((1, 1, 20, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16782,7 +17643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape212,
+        Reshape197,
         [((1280, 80, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16791,7 +17652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape213,
+        Reshape198,
         [((1, 1280, 3000, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16800,7 +17661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape214,
+        Reshape199,
         [((1, 1280, 3000), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16810,7 +17671,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Reshape215,
+            Reshape200,
             [((1280, 1280, 3), torch.float32)],
             {
                 "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16825,7 +17686,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Reshape216,
+        Reshape201,
         [((1, 1280, 1500, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16834,7 +17695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape217,
+        Reshape202,
         [((1, 1500, 1280), torch.float32)],
         {
             "model_names": [
@@ -16846,7 +17707,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape218,
+        Reshape203,
         [((1, 1500, 1280), torch.float32)],
         {
             "model_names": [
@@ -16858,7 +17719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape219,
+        Reshape204,
         [((1500, 1280), torch.float32)],
         {
             "model_names": [
@@ -16870,7 +17731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape218,
+        Reshape203,
         [((1500, 1280), torch.float32)],
         {
             "model_names": [
@@ -16882,7 +17743,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape220,
+        Reshape205,
         [((1, 20, 1500, 64), torch.float32)],
         {
             "model_names": [
@@ -16894,7 +17755,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape221,
+        Reshape206,
         [((20, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16903,7 +17764,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape222,
+        Reshape207,
         [((1, 20, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16912,7 +17773,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape223,
+        Reshape208,
         [((1, 20, 64, 1500), torch.float32)],
         {
             "model_names": [
@@ -16924,7 +17785,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape224,
+        Reshape209,
         [((20, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16933,7 +17794,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape217,
+        Reshape202,
         [((1, 1500, 20, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16942,7 +17803,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape225,
+        Reshape210,
         [((20, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16951,7 +17812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape226,
+        Reshape211,
         [((1, 20, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"],
@@ -16960,7 +17821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape227,
+        Reshape212,
         [((1, 768), torch.float32)],
         {
             "model_names": [
@@ -16986,7 +17847,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape228,
+        Reshape213,
         [((1, 12, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -16999,7 +17860,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape229,
+        Reshape214,
         [((12, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17012,7 +17873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape230,
+        Reshape215,
         [((1, 12, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17025,7 +17886,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape231,
+        Reshape216,
         [((1, 12, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -17038,7 +17899,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape232,
+        Reshape217,
         [((12, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -17064,7 +17925,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape233,
+        Reshape218,
         [((768, 80, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17073,7 +17934,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape234,
+        Reshape219,
         [((1, 768, 3000, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17082,7 +17943,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape235,
+        Reshape220,
         [((1, 768, 3000), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17091,7 +17952,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape236,
+        Reshape221,
         [((768, 768, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17100,7 +17961,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape237,
+        Reshape222,
         [((1, 768, 1500, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17109,7 +17970,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape238,
+        Reshape223,
         [((1, 1500, 768), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17118,7 +17979,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape239,
+        Reshape224,
         [((1, 1500, 768), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17127,7 +17988,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape240,
+        Reshape225,
         [((1500, 768), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17136,7 +17997,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape239,
+        Reshape224,
         [((1500, 768), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17145,7 +18006,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape241,
+        Reshape226,
         [((1, 12, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17154,7 +18015,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape242,
+        Reshape227,
         [((12, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17163,7 +18024,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape243,
+        Reshape228,
         [((1, 12, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17172,7 +18033,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape244,
+        Reshape229,
         [((1, 12, 64, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17181,7 +18042,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape245,
+        Reshape230,
         [((12, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17190,7 +18051,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape238,
+        Reshape223,
         [((1, 1500, 12, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17199,7 +18060,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape246,
+        Reshape231,
         [((12, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17208,7 +18069,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape247,
+        Reshape232,
         [((1, 12, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
@@ -17225,13 +18086,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_t5_google_flan_t5_large_text_gen_hf",
                 "pt_t5_t5_large_text_gen_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024)"},
         },
     ),
     (
-        Reshape248,
+        Reshape233,
         [((1, 1, 1024), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17253,7 +18117,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape249,
+        Reshape234,
         [((1, 1024), torch.float32)],
         {
             "model_names": [
@@ -17267,7 +18131,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape248,
+        Reshape233,
         [((1, 1024), torch.float32)],
         {
             "model_names": [
@@ -17280,7 +18144,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape250,
+        Reshape235,
         [((1, 16, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -17293,7 +18157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape251,
+        Reshape236,
         [((16, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17306,7 +18170,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape252,
+        Reshape237,
         [((1, 16, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17319,12 +18183,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape253,
+        Reshape238,
         [((1, 16, 1, 1), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 4)"}},
     ),
     (
-        Reshape254,
+        Reshape239,
         [((1, 16, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -17337,7 +18201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape255,
+        Reshape240,
         [((16, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -17363,7 +18227,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape256,
+        Reshape241,
         [((1024, 80, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17372,7 +18236,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape257,
+        Reshape242,
         [((1, 1024, 3000, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17381,7 +18245,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape258,
+        Reshape243,
         [((1, 1024, 3000), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17391,7 +18255,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Reshape259,
+            Reshape244,
             [((1024, 1024, 3), torch.float32)],
             {
                 "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17402,7 +18266,7 @@ forge_modules_and_shapes_dtypes_list = [
         marks=[pytest.mark.skip(reason="Segmentation fault occurs while executing ttnn binary")],
     ),
     (
-        Reshape260,
+        Reshape245,
         [((1, 1024, 1500, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17411,7 +18275,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape261,
+        Reshape246,
         [((1, 1500, 1024), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17420,7 +18284,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape262,
+        Reshape247,
         [((1, 1500, 1024), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17429,7 +18293,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape263,
+        Reshape248,
         [((1500, 1024), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17438,7 +18302,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape262,
+        Reshape247,
         [((1500, 1024), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17447,7 +18311,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape264,
+        Reshape249,
         [((1, 16, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17456,7 +18320,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape265,
+        Reshape250,
         [((16, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17465,7 +18329,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape266,
+        Reshape251,
         [((1, 16, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17474,7 +18338,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape267,
+        Reshape252,
         [((1, 16, 64, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17483,7 +18347,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape268,
+        Reshape253,
         [((16, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17492,7 +18356,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape261,
+        Reshape246,
         [((1, 1500, 16, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17501,7 +18365,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape269,
+        Reshape254,
         [((16, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17510,7 +18374,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape270,
+        Reshape255,
         [((1, 16, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
@@ -17519,7 +18383,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape271,
+        Reshape256,
         [((1, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17540,7 +18404,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape272,
+        Reshape257,
         [((1, 6, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -17552,7 +18416,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape273,
+        Reshape258,
         [((1, 6, 1, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -17561,7 +18425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape274,
+        Reshape259,
         [((6, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17573,7 +18437,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape275,
+        Reshape260,
         [((1, 6, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -17585,7 +18449,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape276,
+        Reshape261,
         [((1, 6, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -17597,7 +18461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape273,
+        Reshape258,
         [((6, 1, 64), torch.float32)],
         {
             "model_names": [
@@ -17630,12 +18494,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape277,
+        Reshape262,
         [((1, 1, 6, 64), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 64)"}},
     ),
     (
-        Reshape278,
+        Reshape263,
         [((384, 80, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17644,7 +18508,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape279,
+        Reshape264,
         [((1, 384, 3000, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17653,7 +18517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape280,
+        Reshape265,
         [((1, 384, 3000), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17662,7 +18526,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape281,
+        Reshape266,
         [((384, 384, 3), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17671,7 +18535,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape282,
+        Reshape267,
         [((1, 384, 1500, 1), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17680,7 +18544,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape283,
+        Reshape268,
         [((1, 1500, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17689,7 +18553,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape284,
+        Reshape269,
         [((1, 1500, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17698,7 +18562,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape285,
+        Reshape270,
         [((1500, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17707,7 +18571,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape284,
+        Reshape269,
         [((1500, 384), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17716,7 +18580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape286,
+        Reshape271,
         [((1, 6, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17725,7 +18589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape287,
+        Reshape272,
         [((6, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17734,7 +18598,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape288,
+        Reshape273,
         [((1, 6, 1500, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17743,7 +18607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape289,
+        Reshape274,
         [((1, 6, 64, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17752,7 +18616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape290,
+        Reshape275,
         [((6, 1500, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17761,7 +18625,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape283,
+        Reshape268,
         [((1, 1500, 6, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17770,7 +18634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape291,
+        Reshape276,
         [((6, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17779,7 +18643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape292,
+        Reshape277,
         [((1, 6, 1, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
@@ -17788,7 +18652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape293,
+        Reshape278,
         [((1, 2), torch.int64)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17797,7 +18661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape294,
+        Reshape279,
         [((1, 2, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17806,7 +18670,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape295,
+        Reshape280,
         [((1, 2, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17815,7 +18679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape296,
+        Reshape281,
         [((2, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17824,7 +18688,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape295,
+        Reshape280,
         [((2, 1280), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17833,7 +18697,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape297,
+        Reshape282,
         [((1, 20, 2, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17842,7 +18706,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape298,
+        Reshape283,
         [((20, 2, 2), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17851,7 +18715,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape299,
+        Reshape284,
         [((1, 20, 2, 2), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17860,7 +18724,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape300,
+        Reshape285,
         [((1, 20, 64, 2), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17869,7 +18733,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape301,
+        Reshape286,
         [((20, 2, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17878,7 +18742,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape294,
+        Reshape279,
         [((1, 2, 20, 64), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17887,7 +18751,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape302,
+        Reshape287,
         [((20, 2, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17896,7 +18760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape303,
+        Reshape288,
         [((1, 20, 2, 1500), torch.float32)],
         {
             "model_names": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"],
@@ -17905,7 +18769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape304,
+        Reshape289,
         [((2, 7), torch.int64)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17914,7 +18778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape305,
+        Reshape290,
         [((2, 7, 512), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17923,7 +18787,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape306,
+        Reshape291,
         [((2, 7, 512), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17932,7 +18796,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape307,
+        Reshape292,
         [((14, 512), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17941,7 +18805,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape308,
+        Reshape293,
         [((2, 8, 7, 64), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17950,7 +18814,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape309,
+        Reshape294,
         [((16, 7, 7), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17959,7 +18823,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape309,
+        Reshape294,
         [((2, 8, 7, 7), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17968,7 +18832,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape310,
+        Reshape295,
         [((2, 8, 7, 7), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17977,7 +18841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape311,
+        Reshape296,
         [((16, 7, 64), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17986,7 +18850,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape305,
+        Reshape290,
         [((2, 7, 8, 64), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -17995,7 +18859,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape312,
+        Reshape297,
         [((14, 2048), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -18004,7 +18868,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape313,
+        Reshape298,
         [((2, 7, 2048), torch.float32)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -18013,7 +18877,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape314,
+        Reshape299,
         [((1, 588, 2048), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18022,7 +18886,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape315,
+        Reshape300,
         [((588, 2048), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18031,7 +18895,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape316,
+        Reshape301,
         [((588, 2048), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18040,7 +18904,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape317,
+        Reshape302,
         [((1, 16, 588, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18049,7 +18913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape318,
+        Reshape303,
         [((16, 588, 588), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18058,7 +18922,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape319,
+        Reshape304,
         [((1, 16, 588, 588), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18067,7 +18931,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape320,
+        Reshape305,
         [((1, 16, 128, 588), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18076,7 +18940,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape321,
+        Reshape306,
         [((16, 588, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18085,7 +18949,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape314,
+        Reshape299,
         [((1, 588, 16, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18094,7 +18958,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape322,
+        Reshape307,
         [((588, 5504), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -18103,12 +18967,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape323,
+        Reshape308,
         [((1, 39, 4096), torch.float32)],
         {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "args": {"shape": "(39, 4096)"}},
     ),
     (
-        Reshape324,
+        Reshape309,
         [((39, 4096), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18117,7 +18981,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape325,
+        Reshape310,
         [((39, 4096), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18126,7 +18990,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape326,
+        Reshape311,
         [((1, 32, 39, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18135,7 +18999,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape327,
+        Reshape312,
         [((32, 39, 39), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18144,7 +19008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape328,
+        Reshape313,
         [((1, 32, 39, 39), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18153,7 +19017,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape329,
+        Reshape314,
         [((1, 32, 128, 39), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18162,7 +19026,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape330,
+        Reshape315,
         [((32, 39, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -18171,12 +19035,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape323,
+        Reshape308,
         [((1, 39, 32, 128), torch.float32)],
         {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99, "args": {"shape": "(39, 4096)"}},
     ),
     (
-        Reshape331,
+        Reshape316,
         [((39, 11008), torch.float32)],
         {
             "model_names": [
@@ -18188,7 +19052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape332,
+        Reshape317,
         [((1, 596, 4096), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18197,7 +19061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape333,
+        Reshape318,
         [((1, 596, 4096), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18206,7 +19070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape334,
+        Reshape319,
         [((1, 1024, 24, 24), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18215,7 +19079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape335,
+        Reshape320,
         [((1, 577, 1024), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18224,7 +19088,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape336,
+        Reshape321,
         [((1, 577, 1024), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18233,7 +19097,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape337,
+        Reshape322,
         [((577, 1024), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18242,7 +19106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape338,
+        Reshape323,
         [((1, 16, 577, 64), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18251,7 +19115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape339,
+        Reshape324,
         [((16, 577, 64), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18260,7 +19124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape335,
+        Reshape320,
         [((1, 577, 16, 64), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18269,7 +19133,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape340,
+        Reshape325,
         [((1, 576, 4096), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18278,7 +19142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape332,
+        Reshape317,
         [((1, 2441216), torch.int32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18287,7 +19151,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape332,
+        Reshape317,
         [((2441216,), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18296,7 +19160,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape341,
+        Reshape326,
         [((2441216,), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18305,7 +19169,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape342,
+        Reshape327,
         [((596, 4096), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18314,7 +19178,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape341,
+        Reshape326,
         [((596, 4096), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18323,7 +19187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape343,
+        Reshape328,
         [((1, 32, 596, 128), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18332,7 +19196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape344,
+        Reshape329,
         [((32, 596, 596), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18341,7 +19205,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape345,
+        Reshape330,
         [((1, 32, 596, 596), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18350,7 +19214,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape346,
+        Reshape331,
         [((1, 32, 128, 596), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18359,7 +19223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape347,
+        Reshape332,
         [((32, 596, 128), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18368,7 +19232,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape333,
+        Reshape318,
         [((1, 596, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18377,7 +19241,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape348,
+        Reshape333,
         [((596, 11008), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -18386,7 +19250,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape349,
+        Reshape334,
         [((2, 2432, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -18398,7 +19262,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape350,
+        Reshape335,
         [((1, 36864, 2432), torch.float32)],
         {
             "model_names": [
@@ -18410,7 +19274,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape351,
+        Reshape336,
         [((1, 64, 64, 2432), torch.float32)],
         {
             "model_names": [
@@ -18422,7 +19286,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape352,
+        Reshape337,
         [((2, 4096, 2432), torch.float32)],
         {
             "model_names": [
@@ -18434,7 +19298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape353,
+        Reshape338,
         [((2, 4096, 2432), torch.float32)],
         {
             "model_names": [
@@ -18446,7 +19310,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape354,
+        Reshape339,
         [((8192, 2432), torch.float32)],
         {
             "model_names": [
@@ -18458,7 +19322,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape355,
+        Reshape340,
         [((2, 333, 4096), torch.float32)],
         {
             "model_names": [
@@ -18471,7 +19335,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape356,
+        Reshape341,
         [((666, 2432), torch.float32)],
         {
             "model_names": [
@@ -18483,7 +19347,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape357,
+        Reshape342,
         [((2, 333, 2432), torch.float32)],
         {
             "model_names": [
@@ -18495,7 +19359,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape358,
+        Reshape343,
         [((2, 333, 2432), torch.float32)],
         {
             "model_names": [
@@ -18507,7 +19371,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape359,
+        Reshape344,
         [((2, 38, 4429, 64), torch.float32)],
         {
             "model_names": [
@@ -18520,7 +19384,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Reshape360,
+            Reshape345,
             [((76, 4429, 4429), torch.float32)],
             {
                 "model_names": [
@@ -18539,7 +19403,7 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Reshape361,
+            Reshape346,
             [((2, 38, 4429, 4429), torch.float32)],
             {
                 "model_names": [
@@ -18557,7 +19421,7 @@ forge_modules_and_shapes_dtypes_list = [
         ],
     ),
     (
-        Reshape362,
+        Reshape347,
         [((76, 4429, 64), torch.float32)],
         {
             "model_names": [
@@ -18569,7 +19433,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape363,
+        Reshape348,
         [((2, 4429, 38, 64), torch.float32)],
         {
             "model_names": [
@@ -18581,7 +19445,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape364,
+        Reshape349,
         [((8192, 9728), torch.float32)],
         {
             "model_names": [
@@ -18593,7 +19457,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape365,
+        Reshape350,
         [((2, 4096, 9728), torch.float32)],
         {
             "model_names": [
@@ -18605,7 +19469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape366,
+        Reshape351,
         [((666, 9728), torch.float32)],
         {
             "model_names": [
@@ -18617,7 +19481,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape367,
+        Reshape352,
         [((2, 333, 9728), torch.float32)],
         {
             "model_names": [
@@ -18629,7 +19493,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape368,
+        Reshape353,
         [((8192, 64), torch.float32)],
         {
             "model_names": [
@@ -18642,7 +19506,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape369,
+        Reshape354,
         [((2, 4096, 64), torch.float32)],
         {
             "model_names": [
@@ -18655,7 +19519,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape370,
+        Reshape355,
         [((2, 4096, 64), torch.float32)],
         {
             "model_names": [
@@ -18668,13 +19532,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 64)"},
         },
     ),
     (
-        Reshape371,
+        Reshape356,
         [((2, 16, 64, 2, 64, 2), torch.float32)],
         {
             "model_names": [
@@ -18687,7 +19554,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape372,
+        Reshape357,
         [((2, 1536, 64, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18696,7 +19563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape373,
+        Reshape358,
         [((1, 147456, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18705,7 +19572,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape374,
+        Reshape359,
         [((1, 64, 64, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18714,7 +19581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape375,
+        Reshape360,
         [((2, 4096, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18723,7 +19590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape376,
+        Reshape361,
         [((2, 4096, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18732,7 +19599,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape377,
+        Reshape362,
         [((8192, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18741,7 +19608,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape378,
+        Reshape363,
         [((666, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18750,7 +19617,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape379,
+        Reshape364,
         [((2, 333, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18759,7 +19626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape380,
+        Reshape365,
         [((2, 333, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18768,7 +19635,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape381,
+        Reshape366,
         [((2, 24, 4429, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18777,7 +19644,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape382,
+        Reshape367,
         [((48, 4429, 4429), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18786,7 +19653,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape383,
+        Reshape368,
         [((2, 24, 4429, 4429), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18795,7 +19662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape384,
+        Reshape369,
         [((48, 4429, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18804,7 +19671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape385,
+        Reshape370,
         [((2, 4429, 24, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18813,7 +19680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape386,
+        Reshape371,
         [((2, 24, 4096, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18822,7 +19689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape387,
+        Reshape372,
         [((48, 4096, 4096), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18831,7 +19698,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape388,
+        Reshape373,
         [((2, 24, 4096, 4096), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18840,7 +19707,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape389,
+        Reshape374,
         [((48, 4096, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18849,7 +19716,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape375,
+        Reshape360,
         [((2, 4096, 24, 64), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18858,7 +19725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape390,
+        Reshape375,
         [((8192, 6144), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18867,7 +19734,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape391,
+        Reshape376,
         [((2, 4096, 6144), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18876,7 +19743,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape392,
+        Reshape377,
         [((666, 6144), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18885,7 +19752,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape393,
+        Reshape378,
         [((2, 333, 6144), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -18894,7 +19761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape394,
+        Reshape379,
         [((1, 201, 768), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18903,7 +19770,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape395,
+        Reshape380,
         [((1, 201, 768), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18912,7 +19779,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape396,
+        Reshape381,
         [((201, 768), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18921,7 +19788,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape397,
+        Reshape382,
         [((1, 12, 201, 64), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18930,7 +19797,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape398,
+        Reshape383,
         [((12, 201, 201), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18939,7 +19806,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape399,
+        Reshape384,
         [((1, 12, 201, 201), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18948,7 +19815,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape400,
+        Reshape385,
         [((1, 12, 64, 201), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18957,7 +19824,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape401,
+        Reshape386,
         [((12, 201, 64), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18966,7 +19833,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape394,
+        Reshape379,
         [((1, 201, 12, 64), torch.float32)],
         {
             "model_names": ["pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf"],
@@ -18975,52 +19842,52 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape402,
+        Reshape387,
         [((1, 204, 768), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(204, 768)"}},
     ),
     (
-        Reshape403,
+        Reshape388,
         [((1, 204, 768), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(1, 204, 12, 64)"}},
     ),
     (
-        Reshape404,
+        Reshape389,
         [((204, 768), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(1, 204, 768)"}},
     ),
     (
-        Reshape405,
+        Reshape390,
         [((1, 12, 204, 64), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(12, 204, 64)"}},
     ),
     (
-        Reshape406,
+        Reshape391,
         [((12, 204, 204), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 204, 204)"}},
     ),
     (
-        Reshape407,
+        Reshape392,
         [((1, 12, 204, 204), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(12, 204, 204)"}},
     ),
     (
-        Reshape408,
+        Reshape393,
         [((1, 12, 64, 204), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(12, 64, 204)"}},
     ),
     (
-        Reshape409,
+        Reshape394,
         [((12, 204, 64), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 204, 64)"}},
     ),
     (
-        Reshape402,
+        Reshape387,
         [((1, 204, 12, 64), torch.float32)],
         {"model_names": ["pt_vilt_dandelin_vilt_b32_mlm_mlm_hf"], "pcc": 0.99, "args": {"shape": "(204, 768)"}},
     ),
     (
-        Reshape410,
+        Reshape395,
         [((1, 128, 1024), torch.float32)],
         {
             "model_names": [
@@ -19035,7 +19902,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape411,
+        Reshape396,
         [((1, 128, 1024), torch.float32)],
         {
             "model_names": [
@@ -19050,7 +19917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape412,
+        Reshape397,
         [((128, 1024), torch.float32)],
         {
             "model_names": [
@@ -19065,7 +19932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape413,
+        Reshape398,
         [((128, 1024), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -19074,7 +19941,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape414,
+        Reshape399,
         [((1, 16, 128, 64), torch.float32)],
         {
             "model_names": [
@@ -19089,7 +19956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape415,
+        Reshape400,
         [((16, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -19108,7 +19975,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape416,
+        Reshape401,
         [((1, 16, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -19127,7 +19994,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape417,
+        Reshape402,
         [((1, 16, 64, 128), torch.float32)],
         {
             "model_names": [
@@ -19142,7 +20009,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape418,
+        Reshape403,
         [((16, 128, 64), torch.float32)],
         {
             "model_names": [
@@ -19157,7 +20024,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape419,
+        Reshape404,
         [((1, 128, 16, 64), torch.float32)],
         {
             "model_names": [
@@ -19171,7 +20038,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape410,
+        Reshape395,
         [((1, 128, 16, 64), torch.float32)],
         {
             "model_names": ["pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf"],
@@ -19180,7 +20047,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape420,
+        Reshape405,
         [((1, 128, 2048), torch.float32)],
         {
             "model_names": [
@@ -19194,7 +20061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape421,
+        Reshape406,
         [((1, 128, 2048), torch.float32)],
         {
             "model_names": [
@@ -19208,7 +20075,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape422,
+        Reshape407,
         [((128, 2048), torch.float32)],
         {
             "model_names": [
@@ -19222,7 +20089,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape423,
+        Reshape408,
         [((1, 128, 16, 128), torch.float32)],
         {
             "model_names": [
@@ -19236,7 +20103,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape424,
+        Reshape409,
         [((1, 128, 4096), torch.float32)],
         {
             "model_names": [
@@ -19251,7 +20118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape425,
+        Reshape410,
         [((1, 128, 4096), torch.float32)],
         {
             "model_names": [
@@ -19268,13 +20135,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 64, 64)"},
         },
     ),
     (
-        Reshape426,
+        Reshape411,
         [((128, 4096), torch.float32)],
         {
             "model_names": [
@@ -19289,7 +20159,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape427,
+        Reshape412,
         [((128, 4096), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -19298,7 +20168,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape428,
+        Reshape413,
         [((1, 64, 128, 64), torch.float32)],
         {
             "model_names": [
@@ -19312,7 +20182,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape429,
+        Reshape414,
         [((64, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -19326,7 +20196,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape430,
+        Reshape415,
         [((1, 64, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -19340,7 +20210,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape431,
+        Reshape416,
         [((1, 64, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -19359,7 +20229,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape432,
+        Reshape417,
+        [((1, 64, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 64, 16384)"},
+        },
+    ),
+    (
+        Reshape418,
         [((1, 64, 64, 128), torch.float32)],
         {
             "model_names": [
@@ -19373,7 +20256,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape433,
+        Reshape419,
         [((64, 128, 64), torch.float32)],
         {
             "model_names": [
@@ -19387,7 +20270,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape434,
+        Reshape420,
         [((1, 128, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -19410,12 +20293,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape435,
+        Reshape411,
+        [((1, 128, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 128, 4096)"},
+        },
+    ),
+    (
+        Reshape421,
         [((14, 1), torch.float32)],
         {"model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 14, 1)"}},
     ),
     (
-        Reshape436,
+        Reshape422,
         [((1, 256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19431,7 +20327,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape437,
+        Reshape423,
         [((1, 256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19444,7 +20340,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape438,
+        Reshape424,
         [((1, 256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19456,7 +20352,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape439,
+        Reshape425,
         [((256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19472,7 +20368,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape440,
+        Reshape426,
         [((256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19485,7 +20381,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape441,
+        Reshape427,
         [((256, 1024), torch.float32)],
         {
             "model_names": [
@@ -19500,7 +20396,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape442,
+        Reshape428,
         [((1, 16, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -19516,7 +20412,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape443,
+        Reshape429,
         [((16, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -19534,7 +20430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape444,
+        Reshape430,
         [((1, 16, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -19552,7 +20448,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape445,
+        Reshape431,
         [((16, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -19568,7 +20464,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape436,
+        Reshape422,
         [((1, 256, 16, 64), torch.float32)],
         {
             "model_names": [
@@ -19584,7 +20480,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape446,
+        Reshape432,
         [((1, 256), torch.int64)],
         {
             "model_names": [
@@ -19601,27 +20497,27 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape447,
+        Reshape433,
         [((1, 32, 4608), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 16, 3, 96)"}},
     ),
     (
-        Reshape448,
+        Reshape434,
         [((1, 32, 16, 1, 96), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 16, 96)"}},
     ),
     (
-        Reshape449,
+        Reshape435,
         [((1, 16, 32, 96), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 32, 96)"}},
     ),
     (
-        Reshape450,
+        Reshape436,
         [((1, 16, 32), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 1, 32)"}},
     ),
     (
-        Reshape451,
+        Reshape437,
         [((16, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -19635,7 +20531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape452,
+        Reshape438,
         [((1, 16, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -19649,22 +20545,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape453,
+        Reshape439,
         [((16, 32, 96), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 32, 96)"}},
     ),
     (
-        Reshape454,
+        Reshape440,
         [((1, 32, 16, 96), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 1536)"}},
     ),
     (
-        Reshape455,
+        Reshape441,
         [((32, 1536), torch.float32)],
         {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 1536)"}},
     ),
     (
-        Reshape437,
+        Reshape423,
         [((1, 256, 4, 256), torch.float32)],
         {
             "model_names": [
@@ -19677,7 +20573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape456,
+        Reshape442,
         [((1, 256, 16, 16, 2), torch.float32)],
         {
             "model_names": [
@@ -19690,7 +20586,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape457,
+        Reshape443,
         [((1, 16, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -19703,7 +20599,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape458,
+        Reshape444,
         [((256, 4096), torch.float32)],
         {
             "model_names": [
@@ -19720,7 +20616,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape459,
+        Reshape445,
         [((256, 4096), torch.float32)],
         {
             "model_names": [
@@ -19742,13 +20638,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 1, 128)"},
         },
     ),
     (
-        Reshape460,
+        Reshape446,
         [((1, 384, 768), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19757,7 +20654,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape461,
+        Reshape447,
         [((1, 384, 768), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19766,7 +20663,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape462,
+        Reshape448,
         [((384, 768), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19775,7 +20672,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape463,
+        Reshape449,
         [((1, 12, 384, 64), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19784,7 +20681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape464,
+        Reshape450,
         [((12, 384, 384), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19793,7 +20690,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape465,
+        Reshape451,
         [((1, 384), torch.bool)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19802,7 +20699,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape466,
+        Reshape452,
         [((1, 12, 384, 384), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19811,7 +20708,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape467,
+        Reshape453,
         [((1, 12, 64, 384), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19820,7 +20717,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape468,
+        Reshape454,
         [((12, 384, 64), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19829,7 +20726,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape460,
+        Reshape446,
         [((1, 384, 12, 64), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
@@ -19838,7 +20735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape469,
+        Reshape455,
         [((128, 1), torch.float32)],
         {
             "model_names": [
@@ -19850,7 +20747,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape470,
+        Reshape456,
         [((1, 128), torch.float32)],
         {
             "model_names": [
@@ -19862,7 +20759,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape471,
+        Reshape457,
         [((1, 1), torch.float32)],
         {
             "model_names": [
@@ -19874,7 +20771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape472,
+        Reshape458,
         [((1, 522, 3072), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19883,7 +20780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape473,
+        Reshape459,
         [((522, 3072), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19892,7 +20789,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape474,
+        Reshape460,
         [((522, 3072), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19901,7 +20798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape475,
+        Reshape461,
         [((1, 12, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19910,7 +20807,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape476,
+        Reshape462,
         [((522, 1024), torch.float32)],
         {
             "model_names": [
@@ -19923,7 +20820,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape475,
+        Reshape461,
         [((1, 4, 3, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19932,7 +20829,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape477,
+        Reshape463,
         [((1, 4, 3, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19941,7 +20838,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape478,
+        Reshape464,
         [((12, 522, 522), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19950,7 +20847,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape479,
+        Reshape465,
         [((1, 12, 522, 522), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19959,7 +20856,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape480,
+        Reshape466,
         [((1, 12, 256, 522), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19968,7 +20865,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape477,
+        Reshape463,
         [((12, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19977,7 +20874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape472,
+        Reshape458,
         [((1, 522, 12, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
@@ -19986,7 +20883,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape481,
+        Reshape467,
         [((522, 23040), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf"],
@@ -19995,12 +20892,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape482,
+        Reshape468,
         [((1, 522, 2048), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(522, 2048)"}},
     ),
     (
-        Reshape483,
+        Reshape469,
         [((522, 2048), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
@@ -20009,22 +20906,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape484,
+        Reshape470,
         [((522, 2048), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 522, 2048)"}},
     ),
     (
-        Reshape485,
+        Reshape471,
         [((1, 8, 522, 256), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(8, 522, 256)"}},
     ),
     (
-        Reshape485,
+        Reshape471,
         [((1, 4, 2, 522, 256), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(8, 522, 256)"}},
     ),
     (
-        Reshape486,
+        Reshape472,
         [((1, 4, 2, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
@@ -20033,7 +20930,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape487,
+        Reshape473,
         [((8, 522, 522), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
@@ -20042,17 +20939,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape488,
+        Reshape474,
         [((1, 8, 522, 522), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(8, 522, 522)"}},
     ),
     (
-        Reshape489,
+        Reshape475,
         [((1, 8, 256, 522), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(8, 256, 522)"}},
     ),
     (
-        Reshape486,
+        Reshape472,
         [((8, 522, 256), torch.float32)],
         {
             "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
@@ -20061,22 +20958,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape482,
+        Reshape468,
         [((1, 522, 8, 256), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(522, 2048)"}},
     ),
     (
-        Reshape490,
+        Reshape476,
         [((522, 8192), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 522, 8192)"}},
     ),
     (
-        Reshape491,
+        Reshape477,
         [((1, 6, 4544), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 4544)"}},
     ),
     (
-        Reshape492,
+        Reshape478,
         [((6, 18176), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -20085,7 +20982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape493,
+        Reshape479,
         [((6, 4672), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -20094,7 +20991,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape494,
+        Reshape480,
         [((1, 71, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -20103,12 +21000,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape495,
+        Reshape481,
         [((1, 71, 6, 64), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(71, 6, 64)"}},
     ),
     (
-        Reshape496,
+        Reshape482,
         [((71, 6, 6), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -20117,12 +21014,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape497,
+        Reshape483,
         [((1, 71, 6, 6), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(71, 6, 6)"}},
     ),
     (
-        Reshape494,
+        Reshape480,
         [((71, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -20131,72 +21028,72 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape491,
+        Reshape477,
         [((1, 6, 71, 64), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 4544)"}},
     ),
     (
-        Reshape498,
+        Reshape484,
         [((6, 4544), torch.float32)],
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 4544)"}},
     ),
     (
-        Reshape499,
+        Reshape485,
         [((522, 9216), torch.float32)],
         {"model_names": ["pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 522, 9216)"}},
     ),
     (
-        Reshape500,
+        Reshape486,
         [((1, 334, 12288), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 334, 64, 3, 64)"}},
     ),
     (
-        Reshape501,
+        Reshape487,
         [((1, 334, 64, 1, 64), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 334, 64, 64)"}},
     ),
     (
-        Reshape502,
+        Reshape488,
         [((1, 64, 334, 64), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(64, 334, 64)"}},
     ),
     (
-        Reshape503,
+        Reshape489,
         [((64, 334, 334), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 64, 334, 334)"}},
     ),
     (
-        Reshape504,
+        Reshape490,
         [((1, 64, 334, 334), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(64, 334, 334)"}},
     ),
     (
-        Reshape505,
+        Reshape491,
         [((1, 64, 64, 334), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(64, 64, 334)"}},
     ),
     (
-        Reshape506,
+        Reshape492,
         [((64, 334, 64), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 64, 334, 64)"}},
     ),
     (
-        Reshape507,
+        Reshape493,
         [((1, 334, 64, 64), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(334, 4096)"}},
     ),
     (
-        Reshape508,
+        Reshape494,
         [((334, 4096), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 334, 4096)"}},
     ),
     (
-        Reshape509,
+        Reshape495,
         [((1, 207, 2304), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(207, 2304)"}},
     ),
     (
-        Reshape510,
+        Reshape496,
         [((207, 2048), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"],
@@ -20205,122 +21102,122 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape511,
+        Reshape497,
         [((1, 8, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 207, 256)"}},
     ),
     (
-        Reshape512,
+        Reshape498,
         [((207, 1024), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 4, 256)"}},
     ),
     (
-        Reshape511,
+        Reshape497,
         [((1, 4, 2, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 207, 256)"}},
     ),
     (
-        Reshape513,
+        Reshape499,
         [((1, 4, 2, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 207, 256)"}},
     ),
     (
-        Reshape514,
+        Reshape500,
         [((8, 207, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 207, 207)"}},
     ),
     (
-        Reshape515,
+        Reshape501,
         [((1, 8, 207, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 207, 207)"}},
     ),
     (
-        Reshape516,
+        Reshape502,
         [((1, 8, 256, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 256, 207)"}},
     ),
     (
-        Reshape513,
+        Reshape499,
         [((8, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 207, 256)"}},
     ),
     (
-        Reshape517,
+        Reshape503,
         [((1, 207, 8, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(207, 2048)"}},
     ),
     (
-        Reshape518,
+        Reshape504,
         [((207, 2304), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 2304)"}},
     ),
     (
-        Reshape519,
+        Reshape505,
         [((207, 9216), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 9216)"}},
     ),
     (
-        Reshape520,
+        Reshape506,
         [((1, 207, 3584), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(207, 3584)"}},
     ),
     (
-        Reshape521,
+        Reshape507,
         [((207, 4096), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 16, 256)"}},
     ),
     (
-        Reshape522,
+        Reshape508,
         [((1, 16, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 207, 256)"}},
     ),
     (
-        Reshape522,
+        Reshape508,
         [((1, 8, 2, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 207, 256)"}},
     ),
     (
-        Reshape523,
+        Reshape509,
         [((1, 8, 2, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 207, 256)"}},
     ),
     (
-        Reshape524,
+        Reshape510,
         [((16, 207, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 207, 207)"}},
     ),
     (
-        Reshape525,
+        Reshape511,
         [((1, 16, 207, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 207, 207)"}},
     ),
     (
-        Reshape526,
+        Reshape512,
         [((1, 16, 256, 207), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 256, 207)"}},
     ),
     (
-        Reshape523,
+        Reshape509,
         [((16, 207, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 207, 256)"}},
     ),
     (
-        Reshape527,
+        Reshape513,
         [((1, 207, 16, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(207, 4096)"}},
     ),
     (
-        Reshape528,
+        Reshape514,
         [((207, 3584), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 3584)"}},
     ),
     (
-        Reshape529,
+        Reshape515,
         [((207, 14336), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 207, 14336)"}},
     ),
     (
-        Reshape530,
+        Reshape516,
         [((1, 7, 2048), torch.float32)],
         {
             "model_names": [
@@ -20333,7 +21230,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape531,
+        Reshape517,
         [((1, 7, 2048), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -20342,12 +21239,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape532,
+        Reshape518,
         [((7, 2048), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 7, 8, 256)"}},
     ),
     (
-        Reshape533,
+        Reshape519,
         [((7, 2048), torch.float32)],
         {
             "model_names": [
@@ -20360,172 +21257,172 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape534,
+        Reshape520,
         [((1, 8, 7, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 7, 256)"}},
     ),
     (
-        Reshape535,
+        Reshape521,
         [((7, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 7, 1, 256)"}},
     ),
     (
-        Reshape534,
+        Reshape520,
         [((1, 1, 8, 7, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 7, 256)"}},
     ),
     (
-        Reshape536,
+        Reshape522,
         [((1, 1, 8, 7, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 7, 256)"}},
     ),
     (
-        Reshape537,
+        Reshape523,
         [((8, 7, 7), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 7, 7)"}},
     ),
     (
-        Reshape538,
+        Reshape524,
         [((1, 8, 7, 7), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 7, 7)"}},
     ),
     (
-        Reshape539,
+        Reshape525,
         [((1, 8, 256, 7), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 256, 7)"}},
     ),
     (
-        Reshape536,
+        Reshape522,
         [((8, 7, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 7, 256)"}},
     ),
     (
-        Reshape530,
+        Reshape516,
         [((1, 7, 8, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(7, 2048)"}},
     ),
     (
-        Reshape540,
+        Reshape526,
         [((7, 16384), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 7, 16384)"}},
     ),
     (
-        Reshape541,
+        Reshape527,
         [((1, 107, 3072), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(107, 3072)"}},
     ),
     (
-        Reshape542,
+        Reshape528,
         [((107, 4096), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 16, 256)"}},
     ),
     (
-        Reshape543,
+        Reshape529,
         [((1, 16, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 107, 256)"}},
     ),
     (
-        Reshape544,
+        Reshape530,
         [((16, 107, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 107, 107)"}},
     ),
     (
-        Reshape545,
+        Reshape531,
         [((1, 16, 107, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 107, 107)"}},
     ),
     (
-        Reshape546,
+        Reshape532,
         [((1, 16, 256, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(16, 256, 107)"}},
     ),
     (
-        Reshape547,
+        Reshape533,
         [((16, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 107, 256)"}},
     ),
     (
-        Reshape548,
+        Reshape534,
         [((1, 107, 16, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(107, 4096)"}},
     ),
     (
-        Reshape549,
+        Reshape535,
         [((107, 3072), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 3072)"}},
     ),
     (
-        Reshape550,
+        Reshape536,
         [((107, 24576), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 24576)"}},
     ),
     (
-        Reshape551,
+        Reshape537,
         [((1, 107, 2048), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(107, 2048)"}},
     ),
     (
-        Reshape552,
+        Reshape538,
         [((107, 2048), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 8, 256)"}},
     ),
     (
-        Reshape553,
+        Reshape539,
         [((107, 2048), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 2048)"}},
     ),
     (
-        Reshape554,
+        Reshape540,
         [((1, 8, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 107, 256)"}},
     ),
     (
-        Reshape555,
+        Reshape541,
         [((107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 1, 256)"}},
     ),
     (
-        Reshape554,
+        Reshape540,
         [((1, 1, 8, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 107, 256)"}},
     ),
     (
-        Reshape556,
+        Reshape542,
         [((1, 1, 8, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 107, 256)"}},
     ),
     (
-        Reshape557,
+        Reshape543,
         [((8, 107, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 107, 107)"}},
     ),
     (
-        Reshape558,
+        Reshape544,
         [((1, 8, 107, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 107, 107)"}},
     ),
     (
-        Reshape559,
+        Reshape545,
         [((1, 8, 256, 107), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(8, 256, 107)"}},
     ),
     (
-        Reshape556,
+        Reshape542,
         [((8, 107, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 107, 256)"}},
     ),
     (
-        Reshape551,
+        Reshape537,
         [((1, 107, 8, 256), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(107, 2048)"}},
     ),
     (
-        Reshape560,
+        Reshape546,
         [((107, 16384), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"], "pcc": 0.99, "args": {"shape": "(1, 107, 16384)"}},
     ),
     (
-        Reshape561,
+        Reshape547,
         [((1, 256, 768), torch.float32)],
         {
             "model_names": [
@@ -20538,7 +21435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape562,
+        Reshape548,
         [((1, 256, 768), torch.float32)],
         {
             "model_names": ["pt_gpt2_gpt2_text_gen_hf", "pt_opt_facebook_opt_125m_clm_hf"],
@@ -20547,7 +21444,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape563,
+        Reshape549,
         [((1, 256, 768), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -20556,7 +21453,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape564,
+        Reshape550,
         [((256, 768), torch.float32)],
         {
             "model_names": [
@@ -20570,7 +21467,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape562,
+        Reshape548,
         [((256, 768), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
@@ -20579,7 +21476,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape565,
+        Reshape551,
         [((1, 12, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -20592,7 +21489,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape566,
+        Reshape552,
         [((12, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -20605,12 +21502,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape446,
+        Reshape432,
         [((1, 256), torch.float32)],
         {"model_names": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 256)"}},
     ),
     (
-        Reshape567,
+        Reshape553,
         [((1, 12, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -20623,7 +21520,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape568,
+        Reshape554,
         [((1, 12, 64, 256), torch.float32)],
         {
             "model_names": ["pt_gpt2_gpt2_text_gen_hf", "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf"],
@@ -20632,7 +21529,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape569,
+        Reshape555,
         [((12, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -20645,7 +21542,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape561,
+        Reshape547,
         [((1, 256, 12, 64), torch.float32)],
         {
             "model_names": [
@@ -20658,7 +21555,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape570,
+        Reshape556,
         [((256, 3072), torch.float32)],
         {
             "model_names": [
@@ -20666,13 +21563,15 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 3072)"},
         },
     ),
     (
-        Reshape571,
+        Reshape557,
         [((256, 3072), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -20681,7 +21580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape572,
+        Reshape558,
         [((1, 256, 3072), torch.float32)],
         {
             "model_names": [
@@ -20695,19 +21594,21 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape573,
+        Reshape559,
         [((1, 256, 3072), torch.float32)],
         {
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 32, 96)"},
         },
     ),
     (
-        Reshape574,
+        Reshape560,
         [((1, 7), torch.int64)],
         {
             "model_names": [
@@ -20719,7 +21620,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape575,
+        Reshape561,
         [((1, 7, 768), torch.float32)],
         {
             "model_names": [
@@ -20731,7 +21632,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape576,
+        Reshape562,
         [((1, 7, 768), torch.float32)],
         {
             "model_names": [
@@ -20743,7 +21644,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape577,
+        Reshape563,
         [((1, 7, 768), torch.float32)],
         {
             "model_names": ["pt_nanogpt_financialsupport_nanogpt_text_gen_hf"],
@@ -20752,7 +21653,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape577,
+        Reshape563,
         [((7, 768), torch.float32)],
         {
             "model_names": [
@@ -20764,7 +21665,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape578,
+        Reshape564,
         [((1, 12, 7, 64), torch.float32)],
         {
             "model_names": [
@@ -20776,7 +21677,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape579,
+        Reshape565,
         [((12, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -20788,7 +21689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape580,
+        Reshape566,
         [((1, 12, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -20800,7 +21701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape581,
+        Reshape567,
         [((1, 12, 64, 7), torch.float32)],
         {
             "model_names": [
@@ -20812,7 +21713,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape582,
+        Reshape568,
         [((12, 7, 64), torch.float32)],
         {
             "model_names": [
@@ -20824,7 +21725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape575,
+        Reshape561,
         [((1, 7, 12, 64), torch.float32)],
         {
             "model_names": [
@@ -20836,7 +21737,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape583,
+        Reshape569,
         [((7, 3072), torch.float32)],
         {
             "model_names": [
@@ -20848,7 +21749,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape584,
+        Reshape570,
         [((1, 7, 3072), torch.float32)],
         {
             "model_names": [
@@ -20860,7 +21761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape585,
+        Reshape571,
         [((7, 2), torch.float32)],
         {
             "model_names": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"],
@@ -20869,7 +21770,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape293,
+        Reshape278,
         [((1, 2), torch.float32)],
         {
             "model_names": [
@@ -20884,12 +21785,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape586,
+        Reshape572,
         [((1, 32, 2560), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(32, 2560)"}},
     ),
     (
-        Reshape587,
+        Reshape573,
         [((32, 2560), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20898,7 +21799,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape588,
+        Reshape574,
         [((32, 2560), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20907,7 +21808,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape589,
+        Reshape575,
         [((1, 20, 32, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20916,7 +21817,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape590,
+        Reshape576,
         [((20, 32, 32), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20925,7 +21826,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape591,
+        Reshape577,
         [((1, 20, 32, 32), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20934,7 +21835,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape592,
+        Reshape578,
         [((1, 20, 128, 32), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20943,7 +21844,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape593,
+        Reshape579,
         [((20, 32, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"],
@@ -20952,12 +21853,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape586,
+        Reshape572,
         [((1, 32, 20, 128), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(32, 2560)"}},
     ),
     (
-        Reshape293,
+        Reshape278,
         [((1, 1, 2), torch.float32)],
         {
             "model_names": [
@@ -20983,7 +21884,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape594,
+        Reshape580,
         [((1, 32, 2048), torch.float32)],
         {
             "model_names": [
@@ -20996,7 +21897,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape595,
+        Reshape581,
         [((1, 32, 2048), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
@@ -21005,7 +21906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape596,
+        Reshape582,
         [((32, 2048), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
@@ -21014,7 +21915,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape597,
+        Reshape583,
         [((32, 2048), torch.float32)],
         {
             "model_names": [
@@ -21027,7 +21928,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape598,
+        Reshape584,
         [((1, 16, 32, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
@@ -21036,7 +21937,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape599,
+        Reshape585,
         [((1, 16, 128, 32), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
@@ -21045,7 +21946,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape600,
+        Reshape586,
         [((16, 32, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"],
@@ -21054,12 +21955,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape594,
+        Reshape580,
         [((1, 32, 16, 128), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(32, 2048)"}},
     ),
     (
-        Reshape601,
+        Reshape587,
         [((1, 32, 768), torch.float32)],
         {
             "model_names": [
@@ -21072,7 +21973,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape602,
+        Reshape588,
         [((1, 32, 768), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"],
@@ -21081,7 +21982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape602,
+        Reshape588,
         [((32, 768), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"],
@@ -21090,7 +21991,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape603,
+        Reshape589,
         [((32, 768), torch.float32)],
         {
             "model_names": [
@@ -21103,7 +22004,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape604,
+        Reshape590,
         [((1, 12, 32, 64), torch.float32)],
         {
             "model_names": [
@@ -21116,7 +22017,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape605,
+        Reshape591,
         [((1, 12, 32, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -21125,7 +22026,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape606,
+        Reshape592,
         [((12, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -21138,7 +22039,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape607,
+        Reshape593,
         [((1, 12, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -21151,7 +22052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape608,
+        Reshape594,
         [((1, 12, 64, 32), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf"],
@@ -21160,7 +22061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape609,
+        Reshape595,
         [((12, 32, 64), torch.float32)],
         {
             "model_names": [
@@ -21173,7 +22074,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape601,
+        Reshape587,
         [((1, 32, 12, 64), torch.float32)],
         {
             "model_names": [
@@ -21186,7 +22087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape610,
+        Reshape596,
         [((1, 32, 12, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -21195,7 +22096,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape611,
+        Reshape597,
         [((1, 256, 2048), torch.float32)],
         {
             "model_names": [
@@ -21212,7 +22113,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape612,
+        Reshape598,
         [((1, 256, 2048), torch.float32)],
         {
             "model_names": [
@@ -21225,12 +22126,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape613,
+        Reshape599,
         [((1, 256, 2048), torch.float32)],
         {"model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 16, 128)"}},
     ),
     (
-        Reshape613,
+        Reshape599,
         [((256, 2048), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"],
@@ -21239,7 +22140,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape614,
+        Reshape600,
         [((256, 2048), torch.float32)],
         {
             "model_names": [
@@ -21256,7 +22157,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape612,
+        Reshape598,
         [((256, 2048), torch.float32)],
         {
             "model_names": [
@@ -21268,7 +22169,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape615,
+        Reshape601,
         [((1, 16, 256, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf", "pt_xglm_facebook_xglm_1_7b_clm_hf"],
@@ -21277,12 +22178,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape616,
+        Reshape602,
         [((1, 16, 128, 256), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 128, 256)"}},
     ),
     (
-        Reshape617,
+        Reshape603,
         [((16, 256, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf", "pt_xglm_facebook_xglm_1_7b_clm_hf"],
@@ -21291,7 +22192,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape611,
+        Reshape597,
         [((1, 256, 16, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf", "pt_xglm_facebook_xglm_1_7b_clm_hf"],
@@ -21300,7 +22201,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape618,
+        Reshape604,
         [((1, 256, 2560), torch.float32)],
         {
             "model_names": [
@@ -21313,7 +22214,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape619,
+        Reshape605,
         [((1, 256, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -21322,7 +22223,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape620,
+        Reshape606,
         [((256, 2560), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"],
@@ -21331,7 +22232,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape621,
+        Reshape607,
         [((256, 2560), torch.float32)],
         {
             "model_names": [
@@ -21344,12 +22245,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape622,
+        Reshape608,
         [((1, 20, 256, 128), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(20, 256, 128)"}},
     ),
     (
-        Reshape623,
+        Reshape609,
         [((20, 256, 256), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"],
@@ -21358,17 +22259,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape624,
+        Reshape610,
         [((1, 20, 256, 256), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(20, 256, 256)"}},
     ),
     (
-        Reshape625,
+        Reshape611,
         [((1, 20, 128, 256), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(20, 128, 256)"}},
     ),
     (
-        Reshape626,
+        Reshape612,
         [((20, 256, 128), torch.float32)],
         {
             "model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"],
@@ -21377,37 +22278,37 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape618,
+        Reshape604,
         [((1, 256, 20, 128), torch.float32)],
         {"model_names": ["pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(256, 2560)"}},
     ),
     (
-        Reshape627,
+        Reshape613,
         [((1, 32, 4096), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 4096)"}},
     ),
     (
-        Reshape628,
+        Reshape614,
         [((32, 4096), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 32, 128)"}},
     ),
     (
-        Reshape629,
+        Reshape615,
         [((32, 4096), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 4096)"}},
     ),
     (
-        Reshape630,
+        Reshape616,
         [((1, 32, 32, 128), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 32, 128)"}},
     ),
     (
-        Reshape627,
+        Reshape613,
         [((1, 32, 32, 128), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 4096)"}},
     ),
     (
-        Reshape631,
+        Reshape617,
         [((32, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -21420,7 +22321,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape632,
+        Reshape618,
         [((1, 32, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -21433,22 +22334,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape633,
+        Reshape619,
         [((1, 32, 128, 32), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 128, 32)"}},
     ),
     (
-        Reshape628,
+        Reshape614,
         [((32, 32, 128), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 32, 128)"}},
     ),
     (
-        Reshape634,
+        Reshape620,
         [((32, 11008), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 11008)"}},
     ),
     (
-        Reshape635,
+        Reshape621,
         [((1, 4, 3072), torch.float32)],
         {
             "model_names": [
@@ -21460,7 +22361,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape636,
+        Reshape622,
         [((4, 3072), torch.float32)],
         {
             "model_names": [
@@ -21472,7 +22373,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape637,
+        Reshape623,
         [((4, 3072), torch.float32)],
         {
             "model_names": [
@@ -21484,7 +22385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape638,
+        Reshape624,
         [((1, 24, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21496,7 +22397,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape639,
+        Reshape625,
         [((4, 1024), torch.float32)],
         {
             "model_names": [
@@ -21512,7 +22413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape638,
+        Reshape624,
         [((1, 8, 3, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21524,7 +22425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape640,
+        Reshape626,
         [((1, 8, 3, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21536,7 +22437,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape641,
+        Reshape627,
         [((24, 4, 4), torch.float32)],
         {
             "model_names": [
@@ -21548,7 +22449,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape642,
+        Reshape628,
         [((1, 24, 4, 4), torch.float32)],
         {
             "model_names": [
@@ -21560,7 +22461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape643,
+        Reshape629,
         [((1, 24, 128, 4), torch.float32)],
         {
             "model_names": [
@@ -21572,7 +22473,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape640,
+        Reshape626,
         [((24, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21584,7 +22485,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape635,
+        Reshape621,
         [((1, 4, 24, 128), torch.float32)],
         {
             "model_names": [
@@ -21596,7 +22497,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape644,
+        Reshape630,
         [((4, 8192), torch.float32)],
         {
             "model_names": [
@@ -21610,7 +22511,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape645,
+        Reshape631,
         [((1, 4, 4096), torch.float32)],
         {
             "model_names": [
@@ -21625,7 +22526,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape646,
+        Reshape632,
         [((4, 4096), torch.float32)],
         {
             "model_names": [
@@ -21640,7 +22541,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape647,
+        Reshape633,
         [((4, 4096), torch.float32)],
         {
             "model_names": [
@@ -21655,7 +22556,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape648,
+        Reshape634,
         [((1, 32, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21670,7 +22571,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape649,
+        Reshape635,
         [((32, 4, 4), torch.float32)],
         {
             "model_names": [
@@ -21687,7 +22588,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape650,
+        Reshape636,
         [((1, 32, 4, 4), torch.float32)],
         {
             "model_names": [
@@ -21704,7 +22605,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape651,
+        Reshape637,
         [((1, 32, 128, 4), torch.float32)],
         {
             "model_names": [
@@ -21719,7 +22620,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape652,
+        Reshape638,
         [((32, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -21734,7 +22635,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape645,
+        Reshape631,
         [((1, 4, 32, 128), torch.float32)],
         {
             "model_names": [
@@ -21749,17 +22650,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape653,
+        Reshape639,
         [((4, 11008), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 4, 11008)"}},
     ),
     (
-        Reshape654,
+        Reshape640,
         [((4, 2), torch.float32)],
         {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(4, 2)"}},
     ),
     (
-        Reshape655,
+        Reshape641,
         [((1, 4, 2048), torch.float32)],
         {
             "model_names": [
@@ -21771,7 +22672,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape656,
+        Reshape642,
         [((4, 2048), torch.float32)],
         {
             "model_names": [
@@ -21783,7 +22684,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape657,
+        Reshape643,
         [((4, 2048), torch.float32)],
         {
             "model_names": [
@@ -21795,7 +22696,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape658,
+        Reshape644,
         [((1, 32, 4, 64), torch.float32)],
         {
             "model_names": [
@@ -21807,7 +22708,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape659,
+        Reshape645,
         [((4, 512), torch.float32)],
         {
             "model_names": [
@@ -21819,7 +22720,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape658,
+        Reshape644,
         [((1, 8, 4, 4, 64), torch.float32)],
         {
             "model_names": [
@@ -21831,7 +22732,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape660,
+        Reshape646,
         [((1, 8, 4, 4, 64), torch.float32)],
         {
             "model_names": [
@@ -21843,7 +22744,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape661,
+        Reshape647,
         [((1, 32, 64, 4), torch.float32)],
         {
             "model_names": [
@@ -21855,7 +22756,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape660,
+        Reshape646,
         [((32, 4, 64), torch.float32)],
         {
             "model_names": [
@@ -21867,7 +22768,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape655,
+        Reshape641,
         [((1, 4, 32, 64), torch.float32)],
         {
             "model_names": [
@@ -21879,7 +22780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape662,
+        Reshape648,
         [((1, 256, 4096), torch.float32)],
         {
             "model_names": [
@@ -21893,20 +22794,21 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape663,
+        Reshape649,
         [((1, 256, 4096), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 64, 64)"},
         },
     ),
     (
-        Reshape664,
+        Reshape650,
         [((1, 32, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -21920,7 +22822,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape664,
+        Reshape650,
         [((1, 8, 4, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -21934,7 +22836,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape665,
+        Reshape651,
         [((1, 8, 4, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -21948,7 +22850,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape666,
+        Reshape652,
         [((32, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -21965,13 +22867,15 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256, 256)"},
         },
     ),
     (
-        Reshape667,
+        Reshape653,
         [((1, 32, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -21988,13 +22892,15 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 256, 256)"},
         },
     ),
     (
-        Reshape668,
+        Reshape654,
         [((1, 32, 128, 256), torch.float32)],
         {
             "model_names": [
@@ -22008,7 +22914,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape665,
+        Reshape651,
         [((32, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -22022,7 +22928,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape662,
+        Reshape648,
         [((1, 256, 32, 128), torch.float32)],
         {
             "model_names": [
@@ -22036,7 +22942,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape669,
+        Reshape655,
         [((256, 14336), torch.float32)],
         {
             "model_names": [
@@ -22050,7 +22956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape648,
+        Reshape634,
         [((1, 8, 4, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -22064,7 +22970,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape652,
+        Reshape638,
         [((1, 8, 4, 4, 128), torch.float32)],
         {
             "model_names": [
@@ -22078,7 +22984,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape670,
+        Reshape656,
         [((4, 14336), torch.float32)],
         {
             "model_names": [
@@ -22092,7 +22998,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape671,
+        Reshape657,
         [((1, 24, 256, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22101,7 +23007,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape671,
+        Reshape657,
         [((1, 8, 3, 256, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22110,7 +23016,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape672,
+        Reshape658,
         [((1, 8, 3, 256, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22119,7 +23025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape673,
+        Reshape659,
         [((24, 256, 256), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22128,7 +23034,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape674,
+        Reshape660,
         [((1, 24, 256, 256), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22137,7 +23043,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape675,
+        Reshape661,
         [((1, 24, 128, 256), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22146,7 +23052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape672,
+        Reshape658,
         [((24, 256, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22155,7 +23061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape572,
+        Reshape558,
         [((1, 256, 24, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
@@ -22164,7 +23070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape676,
+        Reshape662,
         [((256, 8192), torch.float32)],
         {
             "model_names": [
@@ -22181,7 +23087,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape677,
+        Reshape663,
         [((1, 32, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -22196,7 +23102,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape678,
+        Reshape664,
         [((256, 512), torch.float32)],
         {
             "model_names": [
@@ -22208,12 +23114,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape679,
+        Reshape665,
         [((256, 512), torch.float32)],
         {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "args": {"shape": "(256, 512)"}},
     ),
     (
-        Reshape680,
+        Reshape666,
         [((256, 512), torch.float32)],
         {
             "model_names": [
@@ -22227,13 +23133,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 512)"},
         },
     ),
     (
-        Reshape677,
+        Reshape663,
         [((1, 8, 4, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -22245,7 +23154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape681,
+        Reshape667,
         [((1, 8, 4, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -22257,7 +23166,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape682,
+        Reshape668,
         [((1, 32, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -22271,7 +23180,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape681,
+        Reshape667,
         [((32, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -22286,7 +23195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape611,
+        Reshape597,
         [((1, 256, 32, 64), torch.float32)],
         {
             "model_names": [
@@ -22301,12 +23210,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape683,
+        Reshape669,
         [((1, 32, 3072), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 3072)"}},
     ),
     (
-        Reshape684,
+        Reshape670,
         [((32, 3072), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -22315,17 +23224,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape685,
+        Reshape671,
         [((32, 3072), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 3072)"}},
     ),
     (
-        Reshape686,
+        Reshape672,
         [((1, 24, 32, 128), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(24, 32, 128)"}},
     ),
     (
-        Reshape687,
+        Reshape673,
         [((32, 1024), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -22334,7 +23243,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape688,
+        Reshape674,
         [((32, 1024), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22343,12 +23252,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape686,
+        Reshape672,
         [((1, 8, 3, 32, 128), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(24, 32, 128)"}},
     ),
     (
-        Reshape689,
+        Reshape675,
         [((1, 8, 3, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -22357,7 +23266,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape690,
+        Reshape676,
         [((24, 32, 32), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -22366,17 +23275,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape691,
+        Reshape677,
         [((1, 24, 32, 32), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(24, 32, 32)"}},
     ),
     (
-        Reshape692,
+        Reshape678,
         [((1, 24, 128, 32), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(24, 128, 32)"}},
     ),
     (
-        Reshape689,
+        Reshape675,
         [((24, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -22385,17 +23294,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape683,
+        Reshape669,
         [((1, 32, 24, 128), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(32, 3072)"}},
     ),
     (
-        Reshape693,
+        Reshape679,
         [((32, 8192), torch.float32)],
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 8192)"}},
     ),
     (
-        Reshape694,
+        Reshape680,
         [((1, 8, 4096), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22404,7 +23313,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape695,
+        Reshape681,
         [((8, 4096), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22413,7 +23322,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape696,
+        Reshape682,
         [((8, 4096), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22422,7 +23331,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape697,
+        Reshape683,
         [((1, 32, 8, 128), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22431,7 +23340,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape698,
+        Reshape684,
         [((8, 1024), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22440,7 +23349,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape697,
+        Reshape683,
         [((1, 8, 4, 8, 128), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22449,7 +23358,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape687,
+        Reshape673,
         [((1, 8, 4, 8, 128), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22458,7 +23367,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape699,
+        Reshape685,
         [((32, 8, 8), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22467,7 +23376,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape700,
+        Reshape686,
         [((1, 32, 8, 8), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22476,7 +23385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape701,
+        Reshape687,
         [((1, 32, 128, 8), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22485,7 +23394,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape687,
+        Reshape673,
         [((32, 8, 128), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22494,7 +23403,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape694,
+        Reshape680,
         [((1, 8, 32, 128), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22503,7 +23412,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape702,
+        Reshape688,
         [((8, 12288), torch.float32)],
         {
             "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
@@ -22512,7 +23421,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape703,
+        Reshape689,
         [((1, 135, 4096), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22521,7 +23430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape704,
+        Reshape690,
         [((135, 4096), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22530,7 +23439,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape705,
+        Reshape691,
         [((135, 4096), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22539,7 +23448,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape706,
+        Reshape692,
         [((1, 32, 135, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22548,7 +23457,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape707,
+        Reshape693,
         [((135, 1024), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22557,7 +23466,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape706,
+        Reshape692,
         [((1, 8, 4, 135, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22566,7 +23475,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape708,
+        Reshape694,
         [((1, 8, 4, 135, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22575,7 +23484,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape709,
+        Reshape695,
         [((32, 135, 135), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22584,7 +23493,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape710,
+        Reshape696,
         [((1, 32, 135, 135), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22593,7 +23502,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape711,
+        Reshape697,
         [((1, 32, 128, 135), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22602,7 +23511,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape708,
+        Reshape694,
         [((32, 135, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22611,7 +23520,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape703,
+        Reshape689,
         [((1, 135, 32, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22620,7 +23529,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape712,
+        Reshape698,
         [((135, 14336), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
@@ -22629,7 +23538,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape713,
+        Reshape699,
         [((1, 32, 128, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -22638,7 +23547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape714,
+        Reshape700,
         [((1, 32, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -22650,7 +23559,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape713,
+        Reshape701,
+        [((1, 32, 128, 128), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 32, 16384)"}},
+    ),
+    (
+        Reshape699,
         [((1, 8, 4, 128, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -22659,7 +23573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape715,
+        Reshape702,
         [((1, 8, 4, 128, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -22668,7 +23582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape715,
+        Reshape702,
         [((32, 128, 128), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -22677,12 +23591,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape424,
+        Reshape409,
         [((1, 128, 32, 128), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99, "args": {"shape": "(128, 4096)"}},
     ),
     (
-        Reshape716,
+        Reshape703,
         [((128, 14336), torch.float32)],
         {
             "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
@@ -22691,7 +23605,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape717,
+        Reshape704,
         [((1, 32), torch.int64)],
         {
             "model_names": [
@@ -22707,7 +23621,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape718,
+        Reshape705,
         [((32, 1), torch.float32)],
         {
             "model_names": [
@@ -22720,7 +23634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape719,
+        Reshape706,
         [((1, 32, 1024), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22729,7 +23643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape720,
+        Reshape707,
         [((1, 32, 1024), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22738,7 +23652,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape721,
+        Reshape708,
         [((1, 16, 32, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22747,7 +23661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape722,
+        Reshape709,
         [((16, 32, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22756,7 +23670,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape719,
+        Reshape706,
         [((1, 32, 16, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22765,7 +23679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape723,
+        Reshape710,
         [((32, 512), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"],
@@ -22774,7 +23688,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape724,
+        Reshape711,
         [((32, 2), torch.float32)],
         {
             "model_names": [
@@ -22787,7 +23701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape725,
+        Reshape712,
         [((1, 32, 32, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
@@ -22796,7 +23710,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape594,
+        Reshape580,
         [((1, 32, 32, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
@@ -22805,7 +23719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape595,
+        Reshape581,
         [((32, 32, 64), torch.float32)],
         {
             "model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"],
@@ -22814,12 +23728,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape726,
+        Reshape713,
         [((256, 50272), torch.float32)],
         {"model_names": ["pt_opt_facebook_opt_350m_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 50272)"}},
     ),
     (
-        Reshape727,
+        Reshape714,
         [((1, 512, 512), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -22828,7 +23742,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape728,
+        Reshape715,
         [((1, 224, 224, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -22837,7 +23751,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape729,
+        Reshape716,
         [((1, 50176, 512), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -22846,7 +23760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape730,
+        Reshape717,
         [((1, 50176, 512), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -22855,7 +23769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape731,
+        Reshape718,
         [((50176, 512), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf"],
@@ -22864,7 +23778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape732,
+        Reshape719,
         [((1, 512, 50176), torch.float32)],
         {
             "model_names": [
@@ -22876,7 +23790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape733,
+        Reshape720,
         [((1, 1, 512, 50176), torch.float32)],
         {
             "model_names": [
@@ -22888,7 +23802,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape734,
+        Reshape721,
         [((1, 512, 1024), torch.float32)],
         {
             "model_names": [
@@ -22901,7 +23815,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape735,
+        Reshape722,
         [((1, 512, 1024), torch.float32)],
         {
             "model_names": [
@@ -22914,7 +23828,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape736,
+        Reshape723,
         [((1, 512, 1024), torch.float32)],
         {
             "model_names": [
@@ -22927,7 +23841,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape737,
+        Reshape724,
         [((512, 1024), torch.float32)],
         {
             "model_names": [
@@ -22940,7 +23854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape738,
+        Reshape725,
         [((1, 8, 512, 128), torch.float32)],
         {
             "model_names": [
@@ -22953,7 +23867,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape739,
+        Reshape726,
         [((8, 512, 512), torch.float32)],
         {
             "model_names": [
@@ -22966,7 +23880,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape740,
+        Reshape727,
         [((1, 8, 512, 512), torch.float32)],
         {
             "model_names": [
@@ -22979,7 +23893,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape741,
+        Reshape728,
         [((1, 8, 128, 512), torch.float32)],
         {
             "model_names": [
@@ -22992,7 +23906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape742,
+        Reshape729,
         [((8, 512, 128), torch.float32)],
         {
             "model_names": [
@@ -23005,7 +23919,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape734,
+        Reshape721,
         [((1, 512, 8, 128), torch.float32)],
         {
             "model_names": [
@@ -23018,7 +23932,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape182,
+        Reshape168,
         [((1, 1, 1, 512), torch.float32)],
         {
             "model_names": [
@@ -23031,7 +23945,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape743,
+        Reshape730,
         [((1, 1, 1024, 512), torch.float32)],
         {
             "model_names": [
@@ -23057,7 +23971,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape744,
+        Reshape731,
         [((1, 512, 322), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23066,7 +23980,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape745,
+        Reshape732,
         [((1, 55, 55, 64), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23075,7 +23989,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape746,
+        Reshape733,
         [((1, 3025, 322), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23084,7 +23998,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape747,
+        Reshape734,
         [((1, 3025, 322), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23093,7 +24007,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape748,
+        Reshape735,
         [((3025, 322), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23102,7 +24016,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape749,
+        Reshape736,
         [((1, 512, 3025), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23111,7 +24025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape750,
+        Reshape737,
         [((1, 1, 512, 3025), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23120,7 +24034,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape751,
+        Reshape738,
         [((1, 1, 322, 3025), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf"],
@@ -23129,7 +24043,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape752,
+        Reshape739,
         [((1, 512, 261), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23138,7 +24052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape753,
+        Reshape740,
         [((1, 224, 224, 3), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23147,7 +24061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape754,
+        Reshape741,
         [((1, 50176, 261), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23156,7 +24070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape755,
+        Reshape742,
         [((1, 50176, 261), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23165,7 +24079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape756,
+        Reshape743,
         [((50176, 261), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23174,7 +24088,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape757,
+        Reshape744,
         [((1, 1, 261, 50176), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf"],
@@ -23183,7 +24097,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape758,
+        Reshape745,
         [((1, 2048, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23192,7 +24106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape759,
+        Reshape746,
         [((1, 2048, 256), torch.float32)],
         {
             "model_names": [
@@ -23205,13 +24119,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2048, 16, 16)"},
         },
     ),
     (
-        Reshape760,
+        Reshape747,
         [((1, 8, 2048, 32), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23220,32 +24137,34 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape761,
+        Reshape748,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 8, 32)"},
         },
     ),
     (
-        Reshape762,
+        Reshape749,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 256)"},
         },
     ),
     (
-        Reshape763,
+        Reshape750,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": ["pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf"],
@@ -23254,7 +24173,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape764,
+        Reshape751,
         [((1, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -23266,25 +24185,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape765,
+        Reshape752,
         [((1, 256, 256), torch.float32)],
-        {"model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 256)"}},
+        {
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 256)"},
+        },
     ),
     (
-        Reshape766,
+        Reshape753,
         [((1, 8, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 32)"},
         },
     ),
     (
-        Reshape767,
+        Reshape754,
         [((1, 2048, 768), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23293,7 +24217,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape768,
+        Reshape755,
         [((2048, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23302,7 +24226,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape769,
+        Reshape756,
         [((8, 256, 2048), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23311,7 +24235,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape770,
+        Reshape757,
         [((1, 8, 256, 2048), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23320,7 +24244,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape771,
+        Reshape758,
         [((2048, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23329,7 +24253,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape772,
+        Reshape759,
         [((1, 2048, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23338,7 +24262,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape773,
+        Reshape760,
         [((1, 8, 160, 2048), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23347,7 +24271,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape774,
+        Reshape761,
         [((8, 256, 160), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23356,7 +24280,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape775,
+        Reshape762,
         [((1, 256, 8, 160), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23365,7 +24289,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape776,
+        Reshape763,
         [((256, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf", "pt_phi4_microsoft_phi_4_seq_cls_hf"],
@@ -23374,7 +24298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape775,
+        Reshape762,
         [((1, 256, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23383,7 +24307,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape777,
+        Reshape764,
         [((1, 256, 1280), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23392,25 +24316,26 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape778,
+        Reshape765,
         [((1, 256, 1280), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 10, 128)"}},
     ),
     (
-        Reshape765,
+        Reshape752,
         [((256, 256), torch.float32)],
         {
             "model_names": [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 256)"},
         },
     ),
     (
-        Reshape779,
+        Reshape766,
         [((8, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -23426,13 +24351,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 256)"},
         },
     ),
     (
-        Reshape780,
+        Reshape767,
         [((1, 8, 256, 256), torch.float32)],
         {
             "model_names": [
@@ -23448,13 +24377,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 256)"},
         },
     ),
     (
-        Reshape781,
+        Reshape768,
         [((1, 8, 160, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23463,7 +24396,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape782,
+        Reshape769,
         [((8, 2048, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23472,7 +24405,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape783,
+        Reshape770,
         [((1, 8, 2048, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23481,7 +24414,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape784,
+        Reshape771,
         [((1, 8, 96, 256), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23490,7 +24423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape785,
+        Reshape772,
         [((8, 2048, 96), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23499,7 +24432,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape767,
+        Reshape754,
         [((1, 2048, 8, 96), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23508,7 +24441,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape786,
+        Reshape773,
         [((2048, 768), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23517,7 +24450,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape787,
+        Reshape774,
         [((2048, 262), torch.float32)],
         {
             "model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"],
@@ -23526,7 +24459,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape788,
+        Reshape775,
         [((1, 32, 7, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23535,7 +24468,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape789,
+        Reshape776,
         [((32, 7, 7), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23544,7 +24477,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape790,
+        Reshape777,
         [((1, 32, 7, 7), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23553,7 +24486,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape791,
+        Reshape778,
         [((1, 32, 64, 7), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23562,7 +24495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape792,
+        Reshape779,
         [((32, 7, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23571,7 +24504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape530,
+        Reshape516,
         [((1, 7, 32, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23580,7 +24513,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape793,
+        Reshape780,
         [((7, 8192), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -23589,7 +24522,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape605,
+        Reshape591,
         [((1, 12, 2048), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23598,7 +24531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape609,
+        Reshape595,
         [((1, 12, 2048), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23607,7 +24540,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape794,
+        Reshape781,
         [((12, 2048), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23616,7 +24549,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape795,
+        Reshape782,
         [((32, 12, 12), torch.float32)],
         {
             "model_names": [
@@ -23630,7 +24563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape796,
+        Reshape783,
         [((1, 32, 12, 12), torch.float32)],
         {
             "model_names": [
@@ -23644,7 +24577,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape797,
+        Reshape784,
         [((1, 32, 64, 12), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23653,7 +24586,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape602,
+        Reshape588,
         [((32, 12, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23662,7 +24595,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape798,
+        Reshape785,
         [((12, 8192), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -23671,7 +24604,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape799,
+        Reshape786,
         [((1, 11, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23680,7 +24613,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape800,
+        Reshape787,
         [((1, 11, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23689,7 +24622,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape801,
+        Reshape788,
         [((11, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23698,7 +24631,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape802,
+        Reshape789,
         [((1, 32, 11, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23707,7 +24640,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape803,
+        Reshape790,
         [((32, 11, 11), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23716,7 +24649,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape804,
+        Reshape791,
         [((1, 32, 11, 11), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23725,7 +24658,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape805,
+        Reshape792,
         [((1, 32, 80, 11), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23734,7 +24667,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape806,
+        Reshape793,
         [((32, 11, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23743,7 +24676,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape799,
+        Reshape786,
         [((1, 11, 32, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23752,7 +24685,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape807,
+        Reshape794,
         [((11, 10240), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -23761,7 +24694,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape808,
+        Reshape795,
         [((1, 12, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23770,7 +24703,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape809,
+        Reshape796,
         [((1, 12, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23779,7 +24712,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape810,
+        Reshape797,
         [((12, 2560), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23788,7 +24721,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape811,
+        Reshape798,
         [((1, 32, 12, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23797,7 +24730,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape812,
+        Reshape799,
         [((1, 32, 80, 12), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23806,7 +24739,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape813,
+        Reshape800,
         [((32, 12, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23815,7 +24748,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape808,
+        Reshape795,
         [((1, 12, 32, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23824,7 +24757,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape814,
+        Reshape801,
         [((12, 10240), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
@@ -23833,7 +24766,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape815,
+        Reshape802,
         [((1, 32, 256, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -23842,7 +24775,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape816,
+        Reshape803,
         [((1, 32, 80, 256), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -23851,7 +24784,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape817,
+        Reshape804,
         [((32, 256, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -23860,7 +24793,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape618,
+        Reshape604,
         [((1, 256, 32, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -23869,7 +24802,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape818,
+        Reshape805,
         [((256, 10240), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
@@ -23878,55 +24811,63 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape819,
+        Reshape806,
         [((1, 32, 256, 96), torch.float32)],
         {
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 256, 96)"},
         },
     ),
     (
-        Reshape820,
+        Reshape807,
         [((1, 32, 96, 256), torch.float32)],
         {
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(32, 96, 256)"},
         },
     ),
     (
-        Reshape821,
+        Reshape808,
         [((32, 256, 96), torch.float32)],
         {
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256, 96)"},
         },
     ),
     (
-        Reshape572,
+        Reshape558,
         [((1, 256, 32, 96), torch.float32)],
         {
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 3072)"},
         },
     ),
     (
-        Reshape822,
+        Reshape809,
         [((1, 5, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23935,7 +24876,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape823,
+        Reshape810,
         [((1, 5, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23944,7 +24885,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape824,
+        Reshape811,
         [((1, 32, 5, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23953,7 +24894,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape825,
+        Reshape812,
         [((32, 5, 5), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23962,7 +24903,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape826,
+        Reshape813,
         [((1, 32, 5, 5), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23971,7 +24912,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape827,
+        Reshape814,
         [((1, 32, 96, 5), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23980,7 +24921,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape828,
+        Reshape815,
         [((32, 5, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23989,7 +24930,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape823,
+        Reshape810,
         [((1, 5, 32, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -23998,7 +24939,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape829,
+        Reshape816,
         [((5, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -24007,7 +24948,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape830,
+        Reshape817,
         [((5, 8192), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
@@ -24016,7 +24957,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape831,
+        Reshape818,
         [((1, 13, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24025,7 +24966,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape832,
+        Reshape819,
         [((1, 13, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24034,7 +24975,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape833,
+        Reshape820,
         [((1, 32, 13, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24043,7 +24984,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape834,
+        Reshape821,
         [((32, 13, 13), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24052,7 +24993,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape835,
+        Reshape822,
         [((1, 32, 13, 13), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24061,7 +25002,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape836,
+        Reshape823,
         [((1, 32, 96, 13), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24070,7 +25011,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape837,
+        Reshape824,
         [((32, 13, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24079,7 +25020,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape832,
+        Reshape819,
         [((1, 13, 32, 96), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24088,7 +25029,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape838,
+        Reshape825,
         [((13, 3072), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24097,7 +25038,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape839,
+        Reshape826,
         [((13, 8192), torch.float32)],
         {
             "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
@@ -24106,212 +25047,212 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape840,
+        Reshape827,
         [((1, 256, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(256, 5120)"}},
     ),
     (
-        Reshape841,
+        Reshape828,
         [((1, 256, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 40, 128)"}},
     ),
     (
-        Reshape842,
+        Reshape829,
         [((256, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 5120)"}},
     ),
     (
-        Reshape843,
+        Reshape830,
         [((1, 40, 256, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 256, 128)"}},
     ),
     (
-        Reshape843,
+        Reshape830,
         [((1, 10, 4, 256, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 256, 128)"}},
     ),
     (
-        Reshape844,
+        Reshape831,
         [((1, 10, 4, 256, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 256, 128)"}},
     ),
     (
-        Reshape845,
+        Reshape832,
         [((40, 256, 256), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 256, 256)"}},
     ),
     (
-        Reshape846,
+        Reshape833,
         [((1, 40, 256, 256), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 256, 256)"}},
     ),
     (
-        Reshape847,
+        Reshape834,
         [((1, 40, 128, 256), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 128, 256)"}},
     ),
     (
-        Reshape844,
+        Reshape831,
         [((40, 256, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 256, 128)"}},
     ),
     (
-        Reshape840,
+        Reshape827,
         [((1, 256, 40, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(256, 5120)"}},
     ),
     (
-        Reshape848,
+        Reshape835,
         [((256, 17920), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 17920)"}},
     ),
     (
-        Reshape849,
+        Reshape836,
         [((1, 12, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(12, 5120)"}},
     ),
     (
-        Reshape850,
+        Reshape837,
         [((1, 12, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 40, 128)"}},
     ),
     (
-        Reshape851,
+        Reshape838,
         [((12, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 5120)"}},
     ),
     (
-        Reshape852,
+        Reshape839,
         [((1, 40, 12, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 12, 128)"}},
     ),
     (
-        Reshape853,
+        Reshape840,
         [((12, 1280), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 1280)"}},
     ),
     (
-        Reshape854,
+        Reshape841,
         [((1, 12, 1280), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 10, 128)"}},
     ),
     (
-        Reshape852,
+        Reshape839,
         [((1, 10, 4, 12, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 12, 128)"}},
     ),
     (
-        Reshape855,
+        Reshape842,
         [((1, 10, 4, 12, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 12, 128)"}},
     ),
     (
-        Reshape856,
+        Reshape843,
         [((40, 12, 12), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 12, 12)"}},
     ),
     (
-        Reshape857,
+        Reshape844,
         [((1, 40, 12, 12), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 12, 12)"}},
     ),
     (
-        Reshape858,
+        Reshape845,
         [((1, 40, 128, 12), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(40, 128, 12)"}},
     ),
     (
-        Reshape855,
+        Reshape842,
         [((40, 12, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 12, 128)"}},
     ),
     (
-        Reshape849,
+        Reshape836,
         [((1, 12, 40, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(12, 5120)"}},
     ),
     (
-        Reshape859,
+        Reshape846,
         [((12, 17920), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 17920)"}},
     ),
     (
-        Reshape860,
+        Reshape847,
         [((1, 6, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 5120)"}},
     ),
     (
-        Reshape861,
+        Reshape848,
         [((1, 6, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 40, 128)"}},
     ),
     (
-        Reshape862,
+        Reshape849,
         [((6, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 5120)"}},
     ),
     (
-        Reshape863,
+        Reshape850,
         [((1, 40, 6, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(40, 6, 128)"}},
     ),
     (
-        Reshape864,
+        Reshape851,
         [((6, 1280), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 1280)"}},
     ),
     (
-        Reshape865,
+        Reshape852,
         [((1, 6, 1280), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 10, 128)"}},
     ),
     (
-        Reshape863,
+        Reshape850,
         [((1, 10, 4, 6, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(40, 6, 128)"}},
     ),
     (
-        Reshape866,
+        Reshape853,
         [((1, 10, 4, 6, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 6, 128)"}},
     ),
     (
-        Reshape867,
+        Reshape854,
         [((40, 6, 6), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 6, 6)"}},
     ),
     (
-        Reshape868,
+        Reshape855,
         [((1, 40, 6, 6), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(40, 6, 6)"}},
     ),
     (
-        Reshape869,
+        Reshape856,
         [((1, 40, 128, 6), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(40, 128, 6)"}},
     ),
     (
-        Reshape866,
+        Reshape853,
         [((40, 6, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 40, 6, 128)"}},
     ),
     (
-        Reshape860,
+        Reshape847,
         [((1, 6, 40, 128), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 5120)"}},
     ),
     (
-        Reshape870,
+        Reshape857,
         [((6, 17920), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 17920)"}},
     ),
     (
-        Reshape871,
+        Reshape858,
         [((1, 29, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 1024)"}},
     ),
     (
-        Reshape872,
+        Reshape859,
         [((1, 29, 1024), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
@@ -24320,17 +25261,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape873,
+        Reshape860,
         [((29, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 1024)"}},
     ),
     (
-        Reshape874,
+        Reshape861,
         [((1, 16, 29, 64), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 29, 64)"}},
     ),
     (
-        Reshape875,
+        Reshape862,
         [((16, 29, 29), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
@@ -24339,7 +25280,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape876,
+        Reshape863,
         [((1, 16, 29, 29), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
@@ -24348,12 +25289,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape877,
+        Reshape864,
         [((1, 16, 64, 29), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 64, 29)"}},
     ),
     (
-        Reshape878,
+        Reshape865,
         [((16, 29, 64), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
@@ -24362,67 +25303,67 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape871,
+        Reshape858,
         [((1, 29, 16, 64), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 1024)"}},
     ),
     (
-        Reshape879,
+        Reshape866,
         [((29, 2816), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 2816)"}},
     ),
     (
-        Reshape880,
+        Reshape867,
         [((1, 6, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 1024)"}},
     ),
     (
-        Reshape881,
+        Reshape868,
         [((1, 6, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 16, 64)"}},
     ),
     (
-        Reshape882,
+        Reshape869,
         [((6, 1024), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 1024)"}},
     ),
     (
-        Reshape883,
+        Reshape870,
         [((1, 16, 6, 64), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 6, 64)"}},
     ),
     (
-        Reshape884,
+        Reshape871,
         [((16, 6, 6), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 6, 6)"}},
     ),
     (
-        Reshape885,
+        Reshape872,
         [((1, 16, 6, 6), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 6, 6)"}},
     ),
     (
-        Reshape886,
+        Reshape873,
         [((1, 16, 64, 6), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 64, 6)"}},
     ),
     (
-        Reshape887,
+        Reshape874,
         [((16, 6, 64), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 6, 64)"}},
     ),
     (
-        Reshape880,
+        Reshape867,
         [((1, 6, 16, 64), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(6, 1024)"}},
     ),
     (
-        Reshape888,
+        Reshape875,
         [((6, 2816), torch.float32)],
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 2816)"}},
     ),
     (
-        Reshape889,
+        Reshape876,
         [((1, 35, 3584), torch.float32)],
         {
             "model_names": [
@@ -24434,7 +25375,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape890,
+        Reshape877,
         [((1, 35, 3584), torch.float32)],
         {
             "model_names": [
@@ -24446,7 +25387,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape891,
+        Reshape878,
         [((35, 3584), torch.float32)],
         {
             "model_names": [
@@ -24458,7 +25399,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape892,
+        Reshape879,
         [((1, 28, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24470,7 +25411,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape893,
+        Reshape880,
         [((35, 512), torch.float32)],
         {
             "model_names": [
@@ -24482,7 +25423,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape894,
+        Reshape881,
         [((1, 35, 512), torch.float32)],
         {
             "model_names": [
@@ -24494,7 +25435,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape892,
+        Reshape879,
         [((1, 4, 7, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24506,7 +25447,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape895,
+        Reshape882,
         [((1, 4, 7, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24518,7 +25459,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape896,
+        Reshape883,
         [((28, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24530,7 +25471,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape897,
+        Reshape884,
         [((1, 28, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24542,7 +25483,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape898,
+        Reshape885,
         [((1, 28, 128, 35), torch.float32)],
         {
             "model_names": [
@@ -24554,7 +25495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape895,
+        Reshape882,
         [((28, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24566,7 +25507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape889,
+        Reshape876,
         [((1, 35, 28, 128), torch.float32)],
         {
             "model_names": [
@@ -24578,7 +25519,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape899,
+        Reshape886,
         [((35, 18944), torch.float32)],
         {
             "model_names": [
@@ -24590,7 +25531,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape900,
+        Reshape887,
         [((1, 35, 1536), torch.float32)],
         {
             "model_names": [
@@ -24602,7 +25543,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape901,
+        Reshape888,
         [((1, 35, 1536), torch.float32)],
         {
             "model_names": [
@@ -24614,7 +25555,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape902,
+        Reshape889,
         [((35, 1536), torch.float32)],
         {
             "model_names": [
@@ -24626,7 +25567,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape903,
+        Reshape890,
         [((1, 12, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24638,7 +25579,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape904,
+        Reshape891,
         [((35, 256), torch.float32)],
         {
             "model_names": [
@@ -24652,7 +25593,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape905,
+        Reshape892,
         [((1, 35, 256), torch.float32)],
         {
             "model_names": [
@@ -24666,7 +25607,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape903,
+        Reshape890,
         [((1, 2, 6, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24678,7 +25619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape906,
+        Reshape893,
         [((1, 2, 6, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24690,7 +25631,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape907,
+        Reshape894,
         [((12, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24702,7 +25643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape908,
+        Reshape895,
         [((1, 12, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24714,7 +25655,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape909,
+        Reshape896,
         [((1, 12, 128, 35), torch.float32)],
         {
             "model_names": [
@@ -24726,7 +25667,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape906,
+        Reshape893,
         [((12, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24738,7 +25679,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape900,
+        Reshape887,
         [((1, 35, 12, 128), torch.float32)],
         {
             "model_names": [
@@ -24750,7 +25691,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape910,
+        Reshape897,
         [((35, 8960), torch.float32)],
         {
             "model_names": [
@@ -24762,12 +25703,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape911,
+        Reshape898,
         [((1, 35, 896), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(35, 896)"}},
     ),
     (
-        Reshape912,
+        Reshape899,
         [((1, 35, 896), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24776,7 +25717,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape913,
+        Reshape900,
         [((35, 896), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24785,7 +25726,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape914,
+        Reshape901,
         [((1, 14, 35, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24794,7 +25735,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape915,
+        Reshape902,
         [((35, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24803,7 +25744,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape916,
+        Reshape903,
         [((1, 35, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24812,7 +25753,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape914,
+        Reshape901,
         [((1, 2, 7, 35, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24821,7 +25762,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape917,
+        Reshape904,
         [((1, 2, 7, 35, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24830,7 +25771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape918,
+        Reshape905,
         [((14, 35, 35), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24839,7 +25780,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape919,
+        Reshape906,
         [((1, 14, 35, 35), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24848,7 +25789,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape920,
+        Reshape907,
         [((1, 14, 64, 35), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24857,7 +25798,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape917,
+        Reshape904,
         [((14, 35, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24866,12 +25807,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape911,
+        Reshape898,
         [((1, 35, 14, 64), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(35, 896)"}},
     ),
     (
-        Reshape921,
+        Reshape908,
         [((35, 4864), torch.float32)],
         {
             "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
@@ -24880,7 +25821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape922,
+        Reshape909,
         [((1, 35, 2048), torch.float32)],
         {
             "model_names": [
@@ -24892,7 +25833,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape923,
+        Reshape910,
         [((1, 35, 2048), torch.float32)],
         {
             "model_names": [
@@ -24904,7 +25845,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape924,
+        Reshape911,
         [((35, 2048), torch.float32)],
         {
             "model_names": [
@@ -24916,7 +25857,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape925,
+        Reshape912,
         [((1, 16, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24928,7 +25869,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape925,
+        Reshape912,
         [((1, 2, 8, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24940,7 +25881,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape926,
+        Reshape913,
         [((1, 2, 8, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -24952,7 +25893,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape927,
+        Reshape914,
         [((16, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24964,7 +25905,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape928,
+        Reshape915,
         [((1, 16, 35, 35), torch.float32)],
         {
             "model_names": [
@@ -24976,7 +25917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape929,
+        Reshape916,
         [((1, 16, 128, 35), torch.float32)],
         {
             "model_names": [
@@ -24988,7 +25929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape926,
+        Reshape913,
         [((16, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -25000,7 +25941,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape922,
+        Reshape909,
         [((1, 35, 16, 128), torch.float32)],
         {
             "model_names": [
@@ -25012,7 +25953,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape930,
+        Reshape917,
         [((35, 11008), torch.float32)],
         {
             "model_names": [
@@ -25024,82 +25965,82 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape931,
+        Reshape918,
         [((1, 13, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(13, 3584)"}},
     ),
     (
-        Reshape932,
+        Reshape919,
         [((1, 13, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 13, 28, 128)"}},
     ),
     (
-        Reshape933,
+        Reshape920,
         [((13, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 13, 3584)"}},
     ),
     (
-        Reshape934,
+        Reshape921,
         [((1, 28, 13, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(28, 13, 128)"}},
     ),
     (
-        Reshape935,
+        Reshape922,
         [((13, 512), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 13, 512)"}},
     ),
     (
-        Reshape936,
+        Reshape923,
         [((1, 13, 512), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 13, 4, 128)"}},
     ),
     (
-        Reshape934,
+        Reshape921,
         [((1, 4, 7, 13, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(28, 13, 128)"}},
     ),
     (
-        Reshape937,
+        Reshape924,
         [((1, 4, 7, 13, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 13, 128)"}},
     ),
     (
-        Reshape938,
+        Reshape925,
         [((28, 13, 13), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 13, 13)"}},
     ),
     (
-        Reshape939,
+        Reshape926,
         [((1, 28, 13, 13), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(28, 13, 13)"}},
     ),
     (
-        Reshape940,
+        Reshape927,
         [((1, 28, 128, 13), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(28, 128, 13)"}},
     ),
     (
-        Reshape937,
+        Reshape924,
         [((28, 13, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 13, 128)"}},
     ),
     (
-        Reshape931,
+        Reshape918,
         [((1, 13, 28, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(13, 3584)"}},
     ),
     (
-        Reshape941,
+        Reshape928,
         [((13, 18944), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 13, 18944)"}},
     ),
     (
-        Reshape942,
+        Reshape929,
         [((1, 39, 2048), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 2048)"}},
     ),
     (
-        Reshape943,
+        Reshape930,
         [((1, 39, 2048), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25108,7 +26049,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape944,
+        Reshape931,
         [((39, 2048), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25117,7 +26058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape945,
+        Reshape932,
         [((1, 16, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25126,7 +26067,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape946,
+        Reshape933,
         [((39, 256), torch.float32)],
         {
             "model_names": [
@@ -25138,7 +26079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape947,
+        Reshape934,
         [((1, 39, 256), torch.float32)],
         {
             "model_names": [
@@ -25150,7 +26091,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape945,
+        Reshape932,
         [((1, 2, 8, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25159,7 +26100,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape948,
+        Reshape935,
         [((1, 2, 8, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25168,7 +26109,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape949,
+        Reshape936,
         [((16, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25177,12 +26118,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape950,
+        Reshape937,
         [((1, 16, 39, 39), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 39, 39)"}},
     ),
     (
-        Reshape951,
+        Reshape938,
         [((1, 16, 128, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25191,7 +26132,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape948,
+        Reshape935,
         [((16, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -25200,32 +26141,32 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape942,
+        Reshape929,
         [((1, 39, 16, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 2048)"}},
     ),
     (
-        Reshape952,
+        Reshape939,
         [((1, 29, 2048), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 2048)"}},
     ),
     (
-        Reshape953,
+        Reshape940,
         [((1, 29, 2048), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 16, 128)"}},
     ),
     (
-        Reshape954,
+        Reshape941,
         [((29, 2048), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 2048)"}},
     ),
     (
-        Reshape955,
+        Reshape942,
         [((1, 16, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 29, 128)"}},
     ),
     (
-        Reshape956,
+        Reshape943,
         [((29, 256), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
@@ -25234,7 +26175,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape957,
+        Reshape944,
         [((1, 29, 256), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
@@ -25243,112 +26184,112 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape955,
+        Reshape942,
         [((1, 2, 8, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 29, 128)"}},
     ),
     (
-        Reshape958,
+        Reshape945,
         [((1, 2, 8, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 29, 128)"}},
     ),
     (
-        Reshape959,
+        Reshape946,
         [((1, 16, 128, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(16, 128, 29)"}},
     ),
     (
-        Reshape958,
+        Reshape945,
         [((16, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 16, 29, 128)"}},
     ),
     (
-        Reshape952,
+        Reshape939,
         [((1, 29, 16, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 2048)"}},
     ),
     (
-        Reshape960,
+        Reshape947,
         [((29, 11008), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 11008)"}},
     ),
     (
-        Reshape961,
+        Reshape948,
         [((1, 29, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 3584)"}},
     ),
     (
-        Reshape962,
+        Reshape949,
         [((1, 29, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 28, 128)"}},
     ),
     (
-        Reshape963,
+        Reshape950,
         [((29, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 3584)"}},
     ),
     (
-        Reshape964,
+        Reshape951,
         [((1, 28, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(28, 29, 128)"}},
     ),
     (
-        Reshape965,
+        Reshape952,
         [((29, 512), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 512)"}},
     ),
     (
-        Reshape966,
+        Reshape953,
         [((1, 29, 512), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 4, 128)"}},
     ),
     (
-        Reshape964,
+        Reshape951,
         [((1, 4, 7, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(28, 29, 128)"}},
     ),
     (
-        Reshape967,
+        Reshape954,
         [((1, 4, 7, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 29, 128)"}},
     ),
     (
-        Reshape968,
+        Reshape955,
         [((28, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 29, 29)"}},
     ),
     (
-        Reshape969,
+        Reshape956,
         [((1, 28, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(28, 29, 29)"}},
     ),
     (
-        Reshape970,
+        Reshape957,
         [((1, 28, 128, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(28, 128, 29)"}},
     ),
     (
-        Reshape967,
+        Reshape954,
         [((28, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 28, 29, 128)"}},
     ),
     (
-        Reshape961,
+        Reshape948,
         [((1, 29, 28, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 3584)"}},
     ),
     (
-        Reshape971,
+        Reshape958,
         [((29, 18944), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 18944)"}},
     ),
     (
-        Reshape972,
+        Reshape959,
         [((1, 39, 1536), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 1536)"}},
     ),
     (
-        Reshape973,
+        Reshape960,
         [((1, 39, 1536), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25357,7 +26298,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape974,
+        Reshape961,
         [((39, 1536), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25366,7 +26307,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape975,
+        Reshape962,
         [((1, 12, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25375,7 +26316,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape975,
+        Reshape962,
         [((1, 2, 6, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25384,7 +26325,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape976,
+        Reshape963,
         [((1, 2, 6, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25393,7 +26334,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape977,
+        Reshape964,
         [((12, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25402,7 +26343,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape978,
+        Reshape965,
         [((1, 12, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25411,7 +26352,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape979,
+        Reshape966,
         [((1, 12, 128, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25420,7 +26361,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape976,
+        Reshape963,
         [((12, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25429,12 +26370,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape972,
+        Reshape959,
         [((1, 39, 12, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 1536)"}},
     ),
     (
-        Reshape980,
+        Reshape967,
         [((39, 8960), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -25443,12 +26384,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape981,
+        Reshape968,
         [((1, 39, 896), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 896)"}},
     ),
     (
-        Reshape982,
+        Reshape969,
         [((1, 39, 896), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25457,7 +26398,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape983,
+        Reshape970,
         [((39, 896), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25466,7 +26407,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape984,
+        Reshape971,
         [((1, 14, 39, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25475,7 +26416,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape985,
+        Reshape972,
         [((39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25484,7 +26425,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape986,
+        Reshape973,
         [((1, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25493,7 +26434,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape984,
+        Reshape971,
         [((1, 2, 7, 39, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25502,7 +26443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape987,
+        Reshape974,
         [((1, 2, 7, 39, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25511,7 +26452,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape988,
+        Reshape975,
         [((14, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25520,7 +26461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape989,
+        Reshape976,
         [((1, 14, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25529,7 +26470,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape990,
+        Reshape977,
         [((1, 14, 64, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25538,7 +26479,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape987,
+        Reshape974,
         [((14, 39, 64), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25547,12 +26488,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape981,
+        Reshape968,
         [((1, 39, 14, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 896)"}},
     ),
     (
-        Reshape991,
+        Reshape978,
         [((39, 4864), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
@@ -25561,142 +26502,142 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape992,
+        Reshape979,
         [((1, 29, 896), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 896)"}},
     ),
     (
-        Reshape993,
+        Reshape980,
         [((1, 29, 896), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 14, 64)"}},
     ),
     (
-        Reshape994,
+        Reshape981,
         [((29, 896), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 896)"}},
     ),
     (
-        Reshape995,
+        Reshape982,
         [((1, 14, 29, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(14, 29, 64)"}},
     ),
     (
-        Reshape996,
+        Reshape983,
         [((29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 128)"}},
     ),
     (
-        Reshape997,
+        Reshape984,
         [((1, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 2, 64)"}},
     ),
     (
-        Reshape995,
+        Reshape982,
         [((1, 2, 7, 29, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(14, 29, 64)"}},
     ),
     (
-        Reshape998,
+        Reshape985,
         [((1, 2, 7, 29, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 14, 29, 64)"}},
     ),
     (
-        Reshape999,
+        Reshape986,
         [((14, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 14, 29, 29)"}},
     ),
     (
-        Reshape1000,
+        Reshape987,
         [((1, 14, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(14, 29, 29)"}},
     ),
     (
-        Reshape1001,
+        Reshape988,
         [((1, 14, 64, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(14, 64, 29)"}},
     ),
     (
-        Reshape998,
+        Reshape985,
         [((14, 29, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 14, 29, 64)"}},
     ),
     (
-        Reshape992,
+        Reshape979,
         [((1, 29, 14, 64), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 896)"}},
     ),
     (
-        Reshape1002,
+        Reshape989,
         [((29, 4864), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 4864)"}},
     ),
     (
-        Reshape1003,
+        Reshape990,
         [((1, 29, 1536), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 1536)"}},
     ),
     (
-        Reshape1004,
+        Reshape991,
         [((1, 29, 1536), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 12, 128)"}},
     ),
     (
-        Reshape1005,
+        Reshape992,
         [((29, 1536), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 1536)"}},
     ),
     (
-        Reshape1006,
+        Reshape993,
         [((1, 12, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(12, 29, 128)"}},
     ),
     (
-        Reshape1006,
+        Reshape993,
         [((1, 2, 6, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(12, 29, 128)"}},
     ),
     (
-        Reshape1007,
+        Reshape994,
         [((1, 2, 6, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 29, 128)"}},
     ),
     (
-        Reshape1008,
+        Reshape995,
         [((12, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 29, 29)"}},
     ),
     (
-        Reshape1009,
+        Reshape996,
         [((1, 12, 29, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(12, 29, 29)"}},
     ),
     (
-        Reshape1010,
+        Reshape997,
         [((1, 12, 128, 29), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(12, 128, 29)"}},
     ),
     (
-        Reshape1007,
+        Reshape994,
         [((12, 29, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 12, 29, 128)"}},
     ),
     (
-        Reshape1003,
+        Reshape990,
         [((1, 29, 12, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(29, 1536)"}},
     ),
     (
-        Reshape1011,
+        Reshape998,
         [((29, 8960), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 29, 8960)"}},
     ),
     (
-        Reshape1012,
+        Reshape999,
         [((1, 39, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 3584)"}},
     ),
     (
-        Reshape1013,
+        Reshape1000,
         [((1, 39, 3584), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25705,7 +26646,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1014,
+        Reshape1001,
         [((39, 3584), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25714,7 +26655,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1015,
+        Reshape1002,
         [((1, 28, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25723,12 +26664,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1016,
+        Reshape1003,
         [((39, 512), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(1, 39, 512)"}},
     ),
     (
-        Reshape1017,
+        Reshape1004,
         [((1, 39, 512), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25737,7 +26678,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1015,
+        Reshape1002,
         [((1, 4, 7, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25746,7 +26687,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1018,
+        Reshape1005,
         [((1, 4, 7, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25755,7 +26696,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1019,
+        Reshape1006,
         [((28, 39, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25764,12 +26705,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1020,
+        Reshape1007,
         [((1, 28, 39, 39), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(28, 39, 39)"}},
     ),
     (
-        Reshape1021,
+        Reshape1008,
         [((1, 28, 128, 39), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25778,7 +26719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1018,
+        Reshape1005,
         [((28, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25787,12 +26728,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1012,
+        Reshape999,
         [((1, 39, 28, 128), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"], "pcc": 0.99, "args": {"shape": "(39, 3584)"}},
     ),
     (
-        Reshape1022,
+        Reshape1009,
         [((39, 18944), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
@@ -25801,7 +26742,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1023,
+        Reshape1010,
         [((1, 768, 128), torch.float32)],
         {
             "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
@@ -25819,7 +26760,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1024,
+        Reshape1011,
         [((768, 768, 1), torch.float32)],
         {
             "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
@@ -25828,7 +26769,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1025,
+        Reshape1012,
         [((1, 768, 128, 1), torch.float32)],
         {
             "model_names": ["pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf"],
@@ -25837,7 +26778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1026,
+        Reshape1013,
         [((1, 61), torch.int64)],
         {
             "model_names": [
@@ -25853,7 +26794,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1027,
+        Reshape1014,
         [((1, 61, 1024), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25862,7 +26803,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1028,
+        Reshape1015,
         [((61, 1024), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25871,7 +26812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1029,
+        Reshape1016,
         [((61, 1024), torch.float32)],
         {
             "model_names": [
@@ -25884,7 +26825,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1030,
+        Reshape1017,
         [((1, 16, 61, 64), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25893,7 +26834,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1031,
+        Reshape1018,
         [((16, 61, 61), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25902,7 +26843,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1032,
+        Reshape1019,
         [((1, 16, 61, 61), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25911,7 +26852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1033,
+        Reshape1020,
         [((1, 16, 64, 61), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25920,7 +26861,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1034,
+        Reshape1021,
         [((16, 61, 64), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25929,7 +26870,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1027,
+        Reshape1014,
         [((1, 61, 16, 64), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25938,12 +26879,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1035,
+        Reshape1022,
         [((61, 2816), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 61, 2816)"}},
     ),
     (
-        Reshape1036,
+        Reshape1023,
         [((16, 1, 61), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25952,7 +26893,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1037,
+        Reshape1024,
         [((1, 16, 1, 61), torch.float32)],
         {
             "model_names": ["pt_t5_google_flan_t5_large_text_gen_hf", "pt_t5_t5_large_text_gen_hf"],
@@ -25961,12 +26902,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1038,
+        Reshape1025,
         [((1, 2816), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_large_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 1, 2816)"}},
     ),
     (
-        Reshape1039,
+        Reshape1026,
         [((1, 61, 512), torch.float32)],
         {
             "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
@@ -25975,12 +26916,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1040,
+        Reshape1027,
         [((61, 512), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 61, 8, 64)"}},
     ),
     (
-        Reshape1041,
+        Reshape1028,
         [((61, 512), torch.float32)],
         {
             "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
@@ -25989,47 +26930,47 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1042,
+        Reshape1029,
         [((1, 8, 61, 64), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 61, 64)"}},
     ),
     (
-        Reshape1043,
+        Reshape1030,
         [((8, 61, 61), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 61, 61)"}},
     ),
     (
-        Reshape1044,
+        Reshape1031,
         [((1, 8, 61, 61), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 61, 61)"}},
     ),
     (
-        Reshape1045,
+        Reshape1032,
         [((1, 8, 64, 61), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 64, 61)"}},
     ),
     (
-        Reshape1046,
+        Reshape1033,
         [((8, 61, 64), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 61, 64)"}},
     ),
     (
-        Reshape1039,
+        Reshape1026,
         [((1, 61, 8, 64), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(61, 512)"}},
     ),
     (
-        Reshape1047,
+        Reshape1034,
         [((8, 1, 61), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 8, 1, 61)"}},
     ),
     (
-        Reshape1048,
+        Reshape1035,
         [((1, 8, 1, 61), torch.float32)],
         {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(8, 1, 61)"}},
     ),
     (
-        Reshape1049,
+        Reshape1036,
         [((1, 61, 768), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26038,7 +26979,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1050,
+        Reshape1037,
         [((61, 768), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26047,7 +26988,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1051,
+        Reshape1038,
         [((61, 768), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26056,7 +26997,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1052,
+        Reshape1039,
         [((1, 12, 61, 64), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26065,7 +27006,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1053,
+        Reshape1040,
         [((12, 61, 61), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26074,7 +27015,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1054,
+        Reshape1041,
         [((1, 12, 61, 61), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26083,7 +27024,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1055,
+        Reshape1042,
         [((1, 12, 64, 61), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26092,7 +27033,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1056,
+        Reshape1043,
         [((12, 61, 64), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26101,7 +27042,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1049,
+        Reshape1036,
         [((1, 61, 12, 64), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26110,7 +27051,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1057,
+        Reshape1044,
         [((12, 1, 61), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26119,7 +27060,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1058,
+        Reshape1045,
         [((1, 12, 1, 61), torch.float32)],
         {
             "model_names": ["pt_t5_t5_base_text_gen_hf", "pt_t5_google_flan_t5_base_text_gen_hf"],
@@ -26128,77 +27069,77 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1059,
+        Reshape1046,
         [((61, 384), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 61, 6, 64)"}},
     ),
     (
-        Reshape1060,
+        Reshape1047,
         [((1, 6, 61, 64), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(6, 61, 64)"}},
     ),
     (
-        Reshape1061,
+        Reshape1048,
         [((6, 61, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 61, 61)"}},
     ),
     (
-        Reshape1062,
+        Reshape1049,
         [((1, 6, 61, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(6, 61, 61)"}},
     ),
     (
-        Reshape1063,
+        Reshape1050,
         [((1, 6, 64, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(6, 64, 61)"}},
     ),
     (
-        Reshape1064,
+        Reshape1051,
         [((6, 61, 64), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 61, 64)"}},
     ),
     (
-        Reshape1065,
+        Reshape1052,
         [((1, 61, 6, 64), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(61, 384)"}},
     ),
     (
-        Reshape1066,
+        Reshape1053,
         [((6, 1, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 6, 1, 61)"}},
     ),
     (
-        Reshape1067,
+        Reshape1054,
         [((1, 6, 1, 61), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(6, 1, 61)"}},
     ),
     (
-        Reshape1068,
+        Reshape1055,
         [((61, 2048), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_base_text_gen_hf"], "pcc": 0.99, "args": {"shape": "(1, 61, 2048)"}},
     ),
     (
-        Reshape1069,
+        Reshape1056,
         [((1, 96, 54, 54), torch.float32)],
         {"model_names": ["pt_alexnet_base_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 1, 96, 54, 54)"}},
     ),
     (
-        Reshape1070,
+        Reshape1057,
         [((1, 96, 54, 54), torch.float32)],
         {"model_names": ["pt_alexnet_base_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 96, 54, 54)"}},
     ),
     (
-        Reshape1071,
+        Reshape1058,
         [((1, 256, 27, 27), torch.float32)],
         {"model_names": ["pt_alexnet_base_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 1, 256, 27, 27)"}},
     ),
     (
-        Reshape1072,
+        Reshape1059,
         [((1, 256, 27, 27), torch.float32)],
         {"model_names": ["pt_alexnet_base_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 256, 27, 27)"}},
     ),
     (
-        Reshape1073,
+        Reshape1060,
         [((1, 1024, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -26212,43 +27153,58 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1074,
+        Reshape1061,
+        [((1, 1024, 14, 14), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1024, 196)"},
+        },
+    ),
+    (
+        Reshape1062,
         [((1, 197, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 1024)"},
         },
     ),
     (
-        Reshape1075,
+        Reshape1063,
         [((1, 197, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 16, 64)"},
         },
     ),
     (
-        Reshape1076,
+        Reshape1064,
         [((197, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 1024)"},
         },
     ),
     (
-        Reshape1075,
+        Reshape1063,
         [((197, 1024), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -26257,31 +27213,39 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1077,
+        Reshape1065,
+        [((197, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 1024)"}},
+    ),
+    (
+        Reshape1066,
         [((1, 16, 197, 64), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 197, 64)"},
         },
     ),
     (
-        Reshape1078,
+        Reshape1067,
         [((16, 197, 197), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16, 197, 197)"},
         },
     ),
     (
-        Reshape1079,
+        Reshape1068,
         [((729, 16), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -26290,7 +27254,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1080,
+        Reshape1069,
         [((1, 27, 27, 16), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -26299,7 +27263,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1081,
+        Reshape1070,
         [((38809, 16), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -26308,55 +27272,66 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1082,
+        Reshape1071,
         [((1, 16, 197, 197), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 197, 197)"},
         },
     ),
     (
-        Reshape1083,
+        Reshape1072,
         [((1, 16, 64, 197), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(16, 64, 197)"},
         },
     ),
     (
-        Reshape1084,
+        Reshape1073,
         [((16, 197, 64), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16, 197, 64)"},
         },
     ),
     (
-        Reshape1074,
+        Reshape1066,
+        [((16, 197, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 197, 64)"}},
+    ),
+    (
+        Reshape1062,
         [((1, 197, 16, 64), torch.float32)],
         {
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 1024)"},
         },
     ),
     (
-        Reshape1085,
+        Reshape1074,
         [((1, 768, 14, 14), torch.float32)],
         {
             "model_names": [
@@ -26375,7 +27350,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1086,
+        Reshape1075,
+        [((1, 768, 14, 14), torch.float32)],
+        {
+            "model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 768, 196)"},
+        },
+    ),
+    (
+        Reshape1076,
         [((1, 197, 768), torch.float32)],
         {
             "model_names": [
@@ -26383,13 +27367,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 768)"},
         },
     ),
     (
-        Reshape1087,
+        Reshape1077,
         [((1, 197, 768), torch.float32)],
         {
             "model_names": [
@@ -26397,13 +27382,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 12, 64)"},
         },
     ),
     (
-        Reshape1088,
+        Reshape1078,
         [((197, 768), torch.float32)],
         {
             "model_names": [
@@ -26411,13 +27397,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 197, 768)"},
         },
     ),
     (
-        Reshape1087,
+        Reshape1077,
         [((197, 768), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -26426,7 +27413,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1089,
+        Reshape1079,
         [((1, 12, 197, 64), torch.float32)],
         {
             "model_names": [
@@ -26434,13 +27421,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 197, 64)"},
         },
     ),
     (
-        Reshape1090,
+        Reshape1080,
         [((12, 197, 197), torch.float32)],
         {
             "model_names": [
@@ -26448,13 +27436,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 197, 197)"},
         },
     ),
     (
-        Reshape1091,
+        Reshape1081,
         [((729, 12), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -26463,7 +27452,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1092,
+        Reshape1082,
         [((1, 27, 27, 12), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -26472,7 +27461,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1093,
+        Reshape1083,
         [((38809, 12), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -26481,7 +27470,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1094,
+        Reshape1084,
         [((1, 12, 197, 197), torch.float32)],
         {
             "model_names": [
@@ -26489,13 +27478,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 197, 197)"},
         },
     ),
     (
-        Reshape1095,
+        Reshape1085,
         [((1, 12, 64, 197), torch.float32)],
         {
             "model_names": [
@@ -26503,13 +27493,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(12, 64, 197)"},
         },
     ),
     (
-        Reshape1096,
+        Reshape1086,
         [((12, 197, 64), torch.float32)],
         {
             "model_names": [
@@ -26517,13 +27508,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 12, 197, 64)"},
         },
     ),
     (
-        Reshape1086,
+        Reshape1076,
         [((1, 197, 12, 64), torch.float32)],
         {
             "model_names": [
@@ -26531,13 +27523,14 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(197, 768)"},
         },
     ),
     (
-        Reshape1097,
+        Reshape1087,
         [((1, 384, 14, 14), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26546,7 +27539,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1098,
+        Reshape1088,
         [((1, 197, 384), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26555,7 +27548,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1099,
+        Reshape1089,
         [((1, 197, 384), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26564,7 +27557,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1100,
+        Reshape1090,
         [((197, 384), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26573,7 +27566,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1101,
+        Reshape1091,
         [((1, 6, 197, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26582,7 +27575,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1102,
+        Reshape1092,
         [((6, 197, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26591,7 +27584,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1103,
+        Reshape1093,
         [((1, 6, 197, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26600,7 +27593,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1104,
+        Reshape1094,
         [((1, 6, 64, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26609,7 +27602,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1105,
+        Reshape1095,
         [((6, 197, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26618,7 +27611,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1098,
+        Reshape1088,
         [((1, 197, 6, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
@@ -26627,7 +27620,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1106,
+        Reshape1096,
         [((1, 192, 14, 14), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26636,7 +27629,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1107,
+        Reshape1097,
         [((1, 197, 192), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26645,7 +27638,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1108,
+        Reshape1098,
         [((1, 197, 192), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26654,7 +27647,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1109,
+        Reshape1099,
         [((197, 192), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26663,7 +27656,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1110,
+        Reshape1100,
         [((1, 3, 197, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26672,7 +27665,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1111,
+        Reshape1101,
         [((3, 197, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26681,7 +27674,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1112,
+        Reshape1102,
         [((1, 3, 197, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26690,7 +27683,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1113,
+        Reshape1103,
         [((1, 3, 64, 197), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26699,7 +27692,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1114,
+        Reshape1104,
         [((3, 197, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26708,7 +27701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1107,
+        Reshape1097,
         [((1, 197, 3, 64), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26717,7 +27710,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1115,
+        Reshape1105,
         [((1, 1, 192), torch.float32)],
         {
             "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
@@ -26726,7 +27719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1116,
+        Reshape1106,
         [((1, 2208, 1, 1), torch.float32)],
         {
             "model_names": ["pt_densenet_densenet161_img_cls_torchvision"],
@@ -26735,7 +27728,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1117,
+        Reshape1107,
         [((1, 1664, 1, 1), torch.float32)],
         {
             "model_names": ["pt_densenet_densenet169_img_cls_torchvision"],
@@ -26744,7 +27737,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1118,
+        Reshape1108,
         [((1, 1920, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -26776,12 +27769,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1119,
+        Reshape1109,
         [((1, 1000, 1, 1), torch.float32)],
         {"model_names": ["pt_dla_dla34_in1k_img_cls_timm"], "pcc": 0.99, "args": {"shape": "(1, 1000, 1, 1)"}},
     ),
     (
-        Reshape1120,
+        Reshape1110,
         [((32, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26807,7 +27800,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1121,
+        Reshape1111,
         [((96, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26830,7 +27823,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1122,
+        Reshape1112,
         [((144, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26856,7 +27849,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1123,
+        Reshape1113,
         [((144, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -26873,7 +27866,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1124,
+        Reshape1114,
         [((240, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -26889,7 +27882,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1125,
+        Reshape1115,
         [((240, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26908,7 +27901,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1126,
+        Reshape1116,
         [((480, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26927,7 +27920,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1127,
+        Reshape1117,
         [((480, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -26941,7 +27934,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1128,
+        Reshape1118,
         [((672, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -26963,7 +27956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1129,
+        Reshape1119,
         [((1152, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -26977,7 +27970,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1130,
+        Reshape1120,
         [((1152, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -26991,7 +27984,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1131,
+        Reshape1121,
         [((48, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27008,7 +28001,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1132,
+        Reshape1122,
         [((24, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27025,7 +28018,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1133,
+        Reshape1123,
         [((192, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27048,7 +28041,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1134,
+        Reshape1124,
         [((192, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27062,7 +28055,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1135,
+        Reshape1125,
         [((336, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27075,7 +28068,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1136,
+        Reshape1126,
         [((336, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27092,7 +28085,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1137,
+        Reshape1127,
         [((672, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27107,7 +28100,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1138,
+        Reshape1128,
         [((960, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27122,7 +28115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1139,
+        Reshape1129,
         [((1632, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27135,7 +28128,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1140,
+        Reshape1130,
         [((1632, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27148,7 +28141,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1141,
+        Reshape1131,
         [((2688, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27160,7 +28153,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1142,
+        Reshape1132,
         [((1, 1792, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -27172,7 +28165,19 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1143,
+        Reshape1133,
+        [((1, 1792, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1792)"},
+        },
+    ),
+    (
+        Reshape1134,
         [((288, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27186,7 +28191,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1144,
+        Reshape1135,
         [((288, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27199,7 +28204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1145,
+        Reshape1136,
         [((528, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -27208,7 +28213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1146,
+        Reshape1137,
         [((528, 1, 5, 5), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -27217,7 +28222,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1147,
+        Reshape1138,
         [((720, 1, 5, 5), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -27226,7 +28231,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1148,
+        Reshape1139,
         [((1248, 1, 5, 5), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -27235,7 +28240,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1149,
+        Reshape1140,
         [((1248, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
@@ -27244,7 +28249,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1150,
+        Reshape1141,
         [((576, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27260,7 +28265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1151,
+        Reshape1142,
         [((576, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27273,7 +28278,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1152,
+        Reshape1143,
         [((816, 1, 5, 5), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -27282,7 +28287,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1153,
+        Reshape1144,
         [((1392, 1, 5, 5), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -27291,7 +28296,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1154,
+        Reshape1145,
         [((1392, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
@@ -27300,7 +28305,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1155,
+        Reshape1146,
         [((8, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27313,7 +28318,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1156,
+        Reshape1147,
         [((12, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27326,7 +28331,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1157,
+        Reshape1148,
         [((16, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27345,7 +28350,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1158,
+        Reshape1149,
         [((36, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27358,7 +28363,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1159,
+        Reshape1150,
         [((72, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27373,7 +28378,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1160,
+        Reshape1151,
         [((20, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27386,7 +28391,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1161,
+        Reshape1152,
         [((24, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27399,7 +28404,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1162,
+        Reshape1153,
         [((60, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27412,7 +28417,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1163,
+        Reshape1154,
         [((120, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27425,7 +28430,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1164,
+        Reshape1155,
         [((40, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27438,7 +28443,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1165,
+        Reshape1156,
         [((100, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27451,7 +28456,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1166,
+        Reshape1157,
         [((92, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27464,7 +28469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1167,
+        Reshape1158,
         [((56, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27477,7 +28482,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1168,
+        Reshape1159,
         [((80, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27491,7 +28496,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1169,
+        Reshape1160,
         [((112, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -27504,7 +28509,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1170,
+        Reshape1161,
         [((72, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27513,7 +28518,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1171,
+        Reshape1162,
         [((72, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27522,7 +28527,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1172,
+        Reshape1163,
         [((120, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27531,7 +28536,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1173,
+        Reshape1164,
         [((120, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27540,7 +28545,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1174,
+        Reshape1165,
         [((240, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27549,7 +28554,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1175,
+        Reshape1166,
         [((240, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27558,7 +28563,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1176,
+        Reshape1167,
         [((200, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27567,7 +28572,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1177,
+        Reshape1168,
         [((200, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27576,7 +28581,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1178,
+        Reshape1169,
         [((184, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27585,7 +28590,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1179,
+        Reshape1170,
         [((184, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27594,7 +28599,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1180,
+        Reshape1171,
         [((480, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27603,7 +28608,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1181,
+        Reshape1172,
         [((480, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27612,7 +28617,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1182,
+        Reshape1173,
         [((672, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27621,7 +28626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1183,
+        Reshape1174,
         [((672, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27630,7 +28635,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1184,
+        Reshape1175,
         [((960, 1, 1, 5), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27639,7 +28644,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1185,
+        Reshape1176,
         [((960, 1, 5, 1), torch.float32)],
         {
             "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
@@ -27648,7 +28653,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1186,
+        Reshape1177,
         [((1, 64, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27657,7 +28662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1187,
+        Reshape1178,
         [((1, 19200, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27666,7 +28671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1188,
+        Reshape1179,
         [((1, 19200, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27675,7 +28680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1189,
+        Reshape1180,
         [((1, 64, 19200), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27684,7 +28689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1190,
+        Reshape1181,
         [((1, 64, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27693,7 +28698,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1191,
+        Reshape1182,
         [((1, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27702,7 +28707,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1192,
+        Reshape1183,
         [((1, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27711,7 +28716,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1193,
+        Reshape1184,
         [((300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27720,7 +28725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1194,
+        Reshape1185,
         [((1, 19200, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27729,7 +28734,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1195,
+        Reshape1186,
         [((1, 1, 19200, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27738,7 +28743,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1190,
+        Reshape1181,
         [((1, 1, 64, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27747,7 +28752,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1196,
+        Reshape1187,
         [((1, 256, 19200), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27756,7 +28761,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1197,
+        Reshape1188,
         [((256, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27787,7 +28792,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1198,
+        Reshape1189,
         [((1, 256, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27796,7 +28801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1199,
+        Reshape1190,
         [((1, 128, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27805,7 +28810,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1200,
+        Reshape1191,
         [((1, 4800, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27814,7 +28819,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1201,
+        Reshape1192,
         [((1, 4800, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27823,7 +28828,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1202,
+        Reshape1193,
         [((1, 2, 4800, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27832,7 +28837,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1203,
+        Reshape1194,
         [((1, 128, 4800), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27841,7 +28846,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1204,
+        Reshape1195,
         [((1, 128, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27850,7 +28855,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1205,
+        Reshape1196,
         [((1, 300, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27859,7 +28864,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1206,
+        Reshape1197,
         [((1, 300, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27868,7 +28873,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1207,
+        Reshape1198,
         [((300, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27877,7 +28882,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1208,
+        Reshape1199,
         [((1, 2, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27886,7 +28891,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1209,
+        Reshape1200,
         [((2, 4800, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27895,7 +28900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1210,
+        Reshape1201,
         [((1, 2, 4800, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27904,7 +28909,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1211,
+        Reshape1202,
         [((1, 2, 64, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27913,7 +28918,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1212,
+        Reshape1203,
         [((2, 4800, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27922,7 +28927,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1213,
+        Reshape1204,
         [((1, 4800, 2, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27931,7 +28936,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1214,
+        Reshape1205,
         [((4800, 128), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27940,7 +28945,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1215,
+        Reshape1206,
         [((1, 512, 4800), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27949,7 +28954,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1216,
+        Reshape1207,
         [((512, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -27972,7 +28977,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1217,
+        Reshape1208,
         [((1, 512, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27981,7 +28986,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1218,
+        Reshape1209,
         [((1, 320, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27990,7 +28995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1219,
+        Reshape1210,
         [((1, 1200, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -27999,7 +29004,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1220,
+        Reshape1211,
         [((1, 1200, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28008,7 +29013,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1221,
+        Reshape1212,
         [((1, 5, 1200, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28017,7 +29022,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1222,
+        Reshape1213,
         [((1, 320, 1200), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28026,7 +29031,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1223,
+        Reshape1214,
         [((1, 320, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28035,7 +29040,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1224,
+        Reshape1215,
         [((1, 300, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28044,7 +29049,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1225,
+        Reshape1216,
         [((1, 300, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28053,7 +29058,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1226,
+        Reshape1217,
         [((300, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28062,7 +29067,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1227,
+        Reshape1218,
         [((1, 5, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28071,7 +29076,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1228,
+        Reshape1219,
         [((5, 1200, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28080,7 +29085,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1229,
+        Reshape1220,
         [((1, 5, 1200, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28089,7 +29094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1230,
+        Reshape1221,
         [((1, 5, 64, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28098,7 +29103,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1231,
+        Reshape1222,
         [((5, 1200, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28107,7 +29112,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1232,
+        Reshape1223,
         [((1, 1200, 5, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28116,7 +29121,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1233,
+        Reshape1224,
         [((1200, 320), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28125,7 +29130,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1234,
+        Reshape1225,
         [((1, 1280, 1200), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28134,7 +29139,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1235,
+        Reshape1226,
         [((1280, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28154,7 +29159,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1236,
+        Reshape1227,
         [((1, 1280, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28163,7 +29168,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1237,
+        Reshape1228,
         [((1, 512, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28172,7 +29177,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1238,
+        Reshape1229,
         [((1, 300, 512), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28181,7 +29186,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1239,
+        Reshape1230,
         [((1, 300, 512), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28190,7 +29195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1240,
+        Reshape1231,
         [((1, 300, 512), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28199,7 +29204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1241,
+        Reshape1232,
         [((300, 512), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28208,7 +29213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1242,
+        Reshape1233,
         [((1, 8, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28217,7 +29222,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1243,
+        Reshape1234,
         [((8, 300, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28226,7 +29231,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1244,
+        Reshape1235,
         [((1, 8, 300, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28235,7 +29240,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1245,
+        Reshape1236,
         [((1, 8, 64, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28244,7 +29249,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1246,
+        Reshape1237,
         [((8, 300, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28253,7 +29258,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1238,
+        Reshape1229,
         [((1, 300, 8, 64), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28262,7 +29267,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1247,
+        Reshape1238,
         [((1, 2048, 300), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28271,7 +29276,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1248,
+        Reshape1239,
         [((2048, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28291,7 +29296,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1249,
+        Reshape1240,
         [((1, 2048, 15, 20), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28300,7 +29305,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1250,
+        Reshape1241,
         [((1, 1, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28309,7 +29314,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1251,
+        Reshape1242,
         [((1, 1, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28318,7 +29323,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1252,
+        Reshape1243,
         [((1, 1, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -28327,17 +29332,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1253,
+        Reshape1244,
         [((1, 1, 224, 224), torch.float32)],
         {"model_names": ["pt_googlenet_base_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 224, 224)"}},
     ),
     (
-        Reshape166,
+        Reshape152,
         [((1, 1536, 1, 1), torch.float32)],
-        {"model_names": ["pt_inception_v4_img_cls_osmr"], "pcc": 0.99, "args": {"shape": "(1, 1536)"}},
+        {
+            "model_names": [
+                "pt_inception_v4_img_cls_osmr",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1536)"},
+        },
     ),
     (
-        Reshape1254,
+        Reshape1245,
         [((1, 1536, 1, 1), torch.float32)],
         {
             "model_names": ["pt_inception_inception_v4_img_cls_timm", "pt_inception_inception_v4_tf_in1k_img_cls_timm"],
@@ -28346,22 +29359,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1255,
+        Reshape1246,
         [((1, 3, 256, 256), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 3, 16, 16, 16, 16)"}},
     ),
     (
-        Reshape561,
+        Reshape547,
         [((1, 16, 16, 16, 16, 3), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(256, 768)"}},
     ),
     (
-        Reshape1256,
+        Reshape1247,
         [((1, 256, 512), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 256, 512, 1)"}},
     ),
     (
-        Reshape679,
+        Reshape665,
         [((1, 256, 512), torch.float32)],
         {
             "model_names": [
@@ -28374,13 +29387,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 512)"},
         },
     ),
     (
-        Reshape678,
+        Reshape664,
         [((1, 256, 512), torch.float32)],
         {
             "model_names": [
@@ -28393,13 +29409,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 8, 64)"},
         },
     ),
     (
-        Reshape680,
+        Reshape666,
         [((1, 256, 512), torch.float32)],
         {
             "model_names": [
@@ -28408,13 +29427,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 512)"},
         },
     ),
     (
-        Reshape1257,
+        Reshape1248,
         [((1, 256, 512), torch.float32)],
         {
             "model_names": [
@@ -28428,37 +29450,37 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1258,
+        Reshape1249,
         [((1024, 256, 1), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1024, 256, 1, 1)"}},
     ),
     (
-        Reshape743,
+        Reshape730,
         [((1, 1024, 512, 1), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 1024, 512)"}},
     ),
     (
-        Reshape1259,
+        Reshape1250,
         [((1, 1024, 512), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 1024, 512, 1)"}},
     ),
     (
-        Reshape1260,
+        Reshape1251,
         [((256, 1024, 1), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(256, 1024, 1, 1)"}},
     ),
     (
-        Reshape680,
+        Reshape666,
         [((1, 256, 512, 1), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 256, 512)"}},
     ),
     (
-        Reshape134,
+        Reshape119,
         [((1, 64, 12, 12), torch.float32)],
         {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "args": {"shape": "(1, 9216, 1, 1)"}},
     ),
     (
-        Reshape1261,
+        Reshape1252,
         [((64, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28482,7 +29504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1262,
+        Reshape1253,
         [((128, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28506,7 +29528,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1263,
+        Reshape1254,
         [((1024, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28526,7 +29548,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1264,
+        Reshape1255,
         [((384, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28542,7 +29564,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1265,
+        Reshape1256,
         [((768, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
@@ -28551,7 +29573,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1266,
+        Reshape1257,
         [((1, 768, 1, 1), torch.float32)],
         {
             "model_names": [
@@ -28564,7 +29586,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1267,
+        Reshape1258,
         [((960, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28579,7 +29601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1268,
+        Reshape1259,
         [((432, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -28588,7 +29610,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1269,
+        Reshape1260,
         [((720, 1, 3, 3), torch.float32)],
         {
             "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
@@ -28597,7 +29619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1270,
+        Reshape1261,
         [((72, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28611,7 +29633,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1271,
+        Reshape1262,
         [((88, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28623,7 +29645,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1272,
+        Reshape1263,
         [((96, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -28635,7 +29657,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1273,
+        Reshape1264,
         [((120, 1, 5, 5), torch.float32)],
         {
             "model_names": [
@@ -28649,7 +29671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1274,
+        Reshape1265,
         [((200, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28661,7 +29683,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1275,
+        Reshape1266,
         [((184, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -28673,7 +29695,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1276,
+        Reshape1267,
         [((1, 960, 1, 1), torch.float32)],
         {
             "model_names": ["pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub"],
@@ -28682,7 +29704,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1277,
+        Reshape1268,
         [((1, 576, 1, 1), torch.float32)],
         {
             "model_names": ["pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub"],
@@ -28691,7 +29713,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1278,
+        Reshape1269,
         [((1, 1512, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
@@ -28700,7 +29722,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1279,
+        Reshape1270,
         [((1, 400, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_400mf_img_cls_torchvision"],
@@ -28709,7 +29731,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1280,
+        Reshape1271,
         [((1, 7392, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
@@ -28718,7 +29740,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1281,
+        Reshape1272,
         [((1, 888, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_1_6gf_img_cls_torchvision"],
@@ -28727,7 +29749,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1282,
+        Reshape1273,
         [((1, 1088, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_facebook_regnet_y_040_img_cls_hf"],
@@ -28736,7 +29758,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1283,
+        Reshape1274,
         [((1, 912, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_1_6gf_img_cls_torchvision"],
@@ -28745,7 +29767,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1284,
+        Reshape1275,
         [((1, 3712, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_32gf_img_cls_torchvision"],
@@ -28754,7 +29776,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1285,
+        Reshape1276,
         [((1, 3024, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_16gf_img_cls_torchvision"],
@@ -28763,7 +29785,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1286,
+        Reshape1277,
         [((1, 2016, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_8gf_img_cls_torchvision"],
@@ -28772,7 +29794,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1287,
+        Reshape1278,
         [((1, 1008, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_3_2gf_img_cls_torchvision"],
@@ -28781,7 +29803,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1288,
+        Reshape1279,
         [((1, 440, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_400mf_img_cls_torchvision"],
@@ -28790,7 +29812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1289,
+        Reshape1280,
         [((1, 2520, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
@@ -28799,7 +29821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1290,
+        Reshape1281,
         [((1, 784, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_y_800mf_img_cls_torchvision"],
@@ -28808,7 +29830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1291,
+        Reshape1282,
         [((1, 672, 1, 1), torch.float32)],
         {
             "model_names": ["pt_regnet_regnet_x_800mf_img_cls_torchvision"],
@@ -28817,91 +29839,98 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1292,
+        Reshape1283,
         [((1, 16384, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 1, 32)"},
         },
     ),
     (
-        Reshape1293,
+        Reshape1284,
         [((1, 16384, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 32)"},
         },
     ),
     (
-        Reshape715,
+        Reshape702,
         [((1, 32, 16384), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 128, 128)"},
         },
     ),
     (
-        Reshape1294,
+        Reshape1285,
         [((1, 32, 16, 16), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256)"},
         },
     ),
     (
-        Reshape1295,
+        Reshape1286,
         [((1, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 32)"},
         },
     ),
     (
-        Reshape1296,
+        Reshape1287,
         [((1, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 1, 32)"},
         },
     ),
     (
-        Reshape1297,
+        Reshape1288,
         [((256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 32)"},
         },
     ),
     (
-        Reshape1298,
+        Reshape1289,
         [((1, 16384, 256), torch.float32)],
         {
             "model_names": [
@@ -28916,13 +29945,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1, 16384, 256)"},
         },
     ),
     (
-        Reshape1299,
+        Reshape1290,
         [((1, 1, 16384, 256), torch.float32)],
         {
             "model_names": [
@@ -28937,37 +29970,43 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 256)"},
         },
     ),
     (
-        Reshape1294,
+        Reshape1285,
         [((1, 1, 32, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 256)"},
         },
     ),
     (
-        Reshape1300,
+        Reshape1291,
         [((1, 128, 16384), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 128)"},
         },
     ),
     (
-        Reshape1301,
+        Reshape1292,
         [((1, 128, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -28979,7 +30018,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1302,
+        Reshape1293,
+        [((1, 128, 128, 128), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 128, 16384)"}},
+    ),
+    (
+        Reshape1294,
         [((1, 64, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -28991,55 +30035,64 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1303,
+        Reshape1295,
+        [((1, 64, 64, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 64, 4096)"}},
+    ),
+    (
+        Reshape1296,
         [((1, 4096, 64), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 2, 32)"},
         },
     ),
     (
-        Reshape1304,
+        Reshape1297,
         [((1, 4096, 64), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 64)"},
         },
     ),
     (
-        Reshape1305,
+        Reshape1298,
         [((1, 2, 4096, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 32)"},
         },
     ),
     (
-        Reshape1304,
+        Reshape1297,
         [((1, 64, 4096), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 64)"},
         },
     ),
     (
-        Reshape1306,
+        Reshape1299,
         [((1, 64, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -29054,13 +30107,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 256)"},
         },
     ),
     (
-        Reshape1307,
+        Reshape1300,
         [((1, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -29075,25 +30132,30 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 64)"},
         },
     ),
     (
-        Reshape1308,
+        Reshape1301,
         [((1, 256, 64), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 2, 32)"},
         },
     ),
     (
-        Reshape1309,
+        Reshape1302,
         [((1, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -29106,13 +30168,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 1, 64)"},
         },
     ),
     (
-        Reshape1310,
+        Reshape1303,
         [((256, 64), torch.float32)],
         {
             "model_names": [
@@ -29127,25 +30192,30 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 64)"},
         },
     ),
     (
-        Reshape1311,
+        Reshape1304,
         [((1, 2, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 256, 32)"},
         },
     ),
     (
-        Reshape1312,
+        Reshape1305,
         [((2, 4096, 256), torch.float32)],
         {
             "model_names": [
@@ -29160,13 +30230,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 256)"},
         },
     ),
     (
-        Reshape1313,
+        Reshape1306,
         [((1, 2, 4096, 256), torch.float32)],
         {
             "model_names": [
@@ -29181,61 +30255,69 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 256)"},
         },
     ),
     (
-        Reshape1314,
+        Reshape1307,
         [((1, 2, 32, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 32, 256)"},
         },
     ),
     (
-        Reshape1315,
+        Reshape1308,
         [((2, 4096, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 2, 4096, 32)"},
         },
     ),
     (
-        Reshape1316,
+        Reshape1309,
         [((1, 4096, 2, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(4096, 64)"},
         },
     ),
     (
-        Reshape1317,
+        Reshape1310,
         [((4096, 64), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 64)"},
         },
     ),
     (
-        Reshape1318,
+        Reshape1311,
         [((1, 256, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -29247,7 +30329,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1319,
+        Reshape444,
+        [((1, 256, 64, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 4096)"}},
+    ),
+    (
+        Reshape1312,
         [((1, 160, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -29259,115 +30346,129 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1320,
+        Reshape1313,
+        [((1, 160, 32, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 160, 1024)"}},
+    ),
+    (
+        Reshape1314,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 5, 32)"},
         },
     ),
     (
-        Reshape1321,
+        Reshape1315,
         [((1, 1024, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 32, 160)"},
         },
     ),
     (
-        Reshape1322,
+        Reshape1316,
         [((1, 5, 1024, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 32)"},
         },
     ),
     (
-        Reshape1323,
+        Reshape1317,
         [((1, 160, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 160, 32, 32)"},
         },
     ),
     (
-        Reshape1324,
+        Reshape1318,
         [((1, 160, 16, 16), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 160, 256)"},
         },
     ),
     (
-        Reshape1325,
+        Reshape1319,
         [((1, 256, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 160)"},
         },
     ),
     (
-        Reshape1326,
+        Reshape1320,
         [((1, 256, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 5, 32)"},
         },
     ),
     (
-        Reshape1327,
+        Reshape1321,
         [((256, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 160)"},
         },
     ),
     (
-        Reshape1328,
+        Reshape1322,
         [((1, 5, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 256, 32)"},
         },
     ),
     (
-        Reshape1329,
+        Reshape1323,
         [((5, 1024, 256), torch.float32)],
         {
             "model_names": [
@@ -29382,13 +30483,17 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 256)"},
         },
     ),
     (
-        Reshape1330,
+        Reshape1324,
         [((1, 5, 1024, 256), torch.float32)],
         {
             "model_names": [
@@ -29403,73 +30508,82 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 256)"},
         },
     ),
     (
-        Reshape1331,
+        Reshape1325,
         [((1, 5, 32, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 32, 256)"},
         },
     ),
     (
-        Reshape1332,
+        Reshape1326,
         [((5, 1024, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 32)"},
         },
     ),
     (
-        Reshape1333,
+        Reshape1327,
         [((1, 1024, 5, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1024, 160)"},
         },
     ),
     (
-        Reshape1334,
+        Reshape1328,
         [((1024, 160), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 160)"},
         },
     ),
     (
-        Reshape1335,
+        Reshape1329,
         [((1, 640, 1024), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 640, 32, 32)"},
         },
     ),
     (
-        Reshape1336,
+        Reshape1330,
         [((640, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -29481,7 +30595,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1337,
+        Reshape1331,
         [((1, 640, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -29493,7 +30607,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1338,
+        Reshape1332,
+        [((1, 640, 32, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 640, 1024)"}},
+    ),
+    (
+        Reshape1333,
         [((1, 256, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -29505,55 +30624,64 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1339,
+        Reshape752,
+        [((1, 256, 16, 16), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 256, 256)"}},
+    ),
+    (
+        Reshape1334,
         [((1, 8, 32, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 32, 256)"},
         },
     ),
     (
-        Reshape1340,
+        Reshape1335,
         [((8, 256, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 32)"},
         },
     ),
     (
-        Reshape762,
+        Reshape749,
         [((1, 256, 8, 32), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 256)"},
         },
     ),
     (
-        Reshape1341,
+        Reshape1336,
         [((1, 1024, 256), torch.float32)],
         {
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 16, 16)"},
         },
     ),
     (
-        Reshape1342,
+        Reshape1337,
         [((1, 1024, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -29565,7 +30693,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1343,
+        Reshape1338,
+        [((1, 1024, 16, 16), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"shape": "(1, 1024, 256)"}},
+    ),
+    (
+        Reshape1339,
         [((1, 256, 16384), torch.float32)],
         {
             "model_names": [
@@ -29579,13 +30712,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 128, 128)"},
         },
     ),
     (
-        Reshape1344,
+        Reshape1340,
         [((1, 16384, 64), torch.float32)],
         {
             "model_names": [
@@ -29598,13 +30734,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 16384, 1, 64)"},
         },
     ),
     (
-        Reshape1345,
+        Reshape1341,
         [((1, 16384, 64), torch.float32)],
         {
             "model_names": [
@@ -29617,13 +30756,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 128, 64)"},
         },
     ),
     (
-        Reshape429,
+        Reshape414,
         [((1, 64, 16384), torch.float32)],
         {
             "model_names": [
@@ -29636,13 +30778,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 128, 128)"},
         },
     ),
     (
-        Reshape1306,
+        Reshape1299,
         [((1, 1, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -29655,13 +30800,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 256)"},
         },
     ),
     (
-        Reshape1346,
+        Reshape1342,
         [((1, 256, 128, 128), torch.float32)],
         {
             "model_names": [
@@ -29680,7 +30828,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1347,
+        Reshape1343,
+        [((1, 256, 128, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 16384)"},
+        },
+    ),
+    (
+        Reshape1344,
         [((1, 4096, 128), torch.float32)],
         {
             "model_names": [
@@ -29693,13 +30854,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 2, 64)"},
         },
     ),
     (
-        Reshape1348,
+        Reshape1345,
         [((1, 4096, 128), torch.float32)],
         {
             "model_names": [
@@ -29712,13 +30876,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 64, 64, 128)"},
         },
     ),
     (
-        Reshape368,
+        Reshape353,
         [((1, 2, 4096, 64), torch.float32)],
         {
             "model_names": [
@@ -29731,13 +30898,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 4096, 64)"},
         },
     ),
     (
-        Reshape1349,
+        Reshape1346,
         [((1, 128, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -29750,13 +30920,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 128, 256)"},
         },
     ),
     (
-        Reshape1350,
+        Reshape1347,
         [((1, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -29769,13 +30942,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 128)"},
         },
     ),
     (
-        Reshape1351,
+        Reshape1348,
         [((1, 256, 128), torch.float32)],
         {
             "model_names": [
@@ -29788,13 +30964,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 2, 64)"},
         },
     ),
     (
-        Reshape1352,
+        Reshape1349,
         [((256, 128), torch.float32)],
         {
             "model_names": [
@@ -29807,13 +30986,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 128)"},
         },
     ),
     (
-        Reshape1353,
+        Reshape1350,
         [((1, 2, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -29826,13 +31008,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 256, 64)"},
         },
     ),
     (
-        Reshape1354,
+        Reshape1351,
         [((1, 2, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -29845,13 +31030,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(2, 64, 256)"},
         },
     ),
     (
-        Reshape1355,
+        Reshape1352,
         [((1, 4096, 2, 64), torch.float32)],
         {
             "model_names": [
@@ -29864,13 +31052,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(4096, 128)"},
         },
     ),
     (
-        Reshape1356,
+        Reshape1353,
         [((4096, 128), torch.float32)],
         {
             "model_names": [
@@ -29883,13 +31074,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 4096, 128)"},
         },
     ),
     (
-        Reshape1357,
+        Reshape1354,
         [((1, 512, 4096), torch.float32)],
         {
             "model_names": [
@@ -29902,13 +31096,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 512, 64, 64)"},
         },
     ),
     (
-        Reshape1358,
+        Reshape1355,
         [((1, 512, 64, 64), torch.float32)],
         {
             "model_names": [
@@ -29927,7 +31124,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1359,
+        Reshape1356,
+        [((1, 512, 64, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 4096)"},
+        },
+    ),
+    (
+        Reshape1357,
         [((1, 320, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -29946,6 +31156,41 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
+        Reshape1358,
+        [((1, 320, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 320, 1024)"},
+        },
+    ),
+    (
+        Reshape1359,
+        [((1, 1024, 320), torch.float32)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1024, 5, 64)"},
+        },
+    ),
+    (
         Reshape1360,
         [((1, 1024, 320), torch.float32)],
         {
@@ -29959,32 +31204,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(1, 1024, 5, 64)"},
-        },
-    ),
-    (
-        Reshape1361,
-        [((1, 1024, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 32, 32, 320)"},
         },
     ),
     (
-        Reshape1362,
+        Reshape1361,
         [((1, 5, 1024, 64), torch.float32)],
         {
             "model_names": [
@@ -29997,13 +31226,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 1024, 64)"},
         },
     ),
     (
-        Reshape1363,
+        Reshape1362,
         [((1, 320, 1024), torch.float32)],
         {
             "model_names": [
@@ -30016,13 +31248,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 320, 32, 32)"},
         },
     ),
     (
-        Reshape1364,
+        Reshape1363,
         [((1, 320, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -30035,9 +31270,34 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 320, 256)"},
+        },
+    ),
+    (
+        Reshape1364,
+        [((1, 256, 320), torch.float32)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(256, 320)"},
         },
     ),
     (
@@ -30054,32 +31314,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(256, 320)"},
-        },
-    ),
-    (
-        Reshape1366,
-        [((1, 256, 320), torch.float32)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 5, 64)"},
         },
     ),
     (
-        Reshape1367,
+        Reshape1366,
         [((256, 320), torch.float32)],
         {
             "model_names": [
@@ -30092,13 +31336,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 256, 320)"},
         },
     ),
     (
-        Reshape1368,
+        Reshape1367,
         [((1, 5, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -30111,13 +31358,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 256, 64)"},
         },
     ),
     (
-        Reshape1369,
+        Reshape1368,
         [((1, 5, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -30130,13 +31380,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(5, 64, 256)"},
         },
     ),
     (
-        Reshape1370,
+        Reshape1369,
         [((5, 1024, 64), torch.float32)],
         {
             "model_names": [
@@ -30149,13 +31402,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 5, 1024, 64)"},
         },
     ),
     (
-        Reshape1371,
+        Reshape1370,
         [((1, 1024, 5, 64), torch.float32)],
         {
             "model_names": [
@@ -30168,13 +31424,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1024, 320)"},
         },
     ),
     (
-        Reshape1372,
+        Reshape1371,
         [((1024, 320), torch.float32)],
         {
             "model_names": [
@@ -30187,13 +31446,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1024, 320)"},
         },
     ),
     (
-        Reshape1373,
+        Reshape1372,
         [((1, 1280, 1024), torch.float32)],
         {
             "model_names": [
@@ -30206,13 +31468,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280, 32, 32)"},
         },
     ),
     (
-        Reshape1374,
+        Reshape1373,
         [((1, 1280, 32, 32), torch.float32)],
         {
             "model_names": [
@@ -30228,6 +31493,19 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 1280, 1024, 1)"},
+        },
+    ),
+    (
+        Reshape1374,
+        [((1, 1280, 32, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1280, 1024)"},
         },
     ),
     (
@@ -30251,6 +31529,19 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Reshape1376,
+        [((1, 512, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 256)"},
+        },
+    ),
+    (
+        Reshape1377,
         [((1, 8, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -30263,13 +31554,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 256, 64)"},
         },
     ),
     (
-        Reshape1377,
+        Reshape1378,
         [((1, 8, 64, 256), torch.float32)],
         {
             "model_names": [
@@ -30282,13 +31576,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(8, 64, 256)"},
         },
     ),
     (
-        Reshape1378,
+        Reshape1379,
         [((8, 256, 64), torch.float32)],
         {
             "model_names": [
@@ -30301,13 +31598,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(1, 8, 256, 64)"},
         },
     ),
     (
-        Reshape679,
+        Reshape665,
         [((1, 256, 8, 64), torch.float32)],
         {
             "model_names": [
@@ -30320,13 +31620,16 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"shape": "(256, 512)"},
         },
     ),
     (
-        Reshape1379,
+        Reshape1380,
         [((1, 2048, 16, 16), torch.float32)],
         {
             "model_names": [
@@ -30345,7 +31648,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1380,
+        Reshape755,
+        [((1, 2048, 16, 16), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 2048, 256)"},
+        },
+    ),
+    (
+        Reshape1381,
         [((1, 768, 256), torch.float32)],
         {
             "model_names": [
@@ -30358,7 +31674,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1381,
+        Reshape1382,
         [((1, 768, 1024), torch.float32)],
         {
             "model_names": [
@@ -30371,7 +31687,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1382,
+        Reshape1383,
         [((1, 768, 4096), torch.float32)],
         {
             "model_names": [
@@ -30384,7 +31700,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1383,
+        Reshape1384,
         [((1, 768, 16384), torch.float32)],
         {
             "model_names": [
@@ -30397,62 +31713,62 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1384,
+        Reshape1385,
         [((1, 16, 38, 38), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 5776)"}},
     ),
     (
-        Reshape1385,
+        Reshape1386,
         [((1, 24, 19, 19), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 2166)"}},
     ),
     (
-        Reshape1386,
+        Reshape1387,
         [((1, 24, 10, 10), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 600)"}},
     ),
     (
-        Reshape1387,
+        Reshape1388,
         [((1, 24, 5, 5), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 150)"}},
     ),
     (
-        Reshape1388,
+        Reshape1389,
         [((1, 16, 3, 3), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 4, 36)"}},
     ),
     (
-        Reshape1389,
+        Reshape1390,
         [((1, 324, 38, 38), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 5776)"}},
     ),
     (
-        Reshape1390,
+        Reshape1391,
         [((1, 486, 19, 19), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 2166)"}},
     ),
     (
-        Reshape1391,
+        Reshape1392,
         [((1, 486, 10, 10), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 600)"}},
     ),
     (
-        Reshape1392,
+        Reshape1393,
         [((1, 486, 5, 5), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 150)"}},
     ),
     (
-        Reshape1393,
+        Reshape1394,
         [((1, 324, 3, 3), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 36)"}},
     ),
     (
-        Reshape1394,
+        Reshape1395,
         [((1, 324, 1, 1), torch.float32)],
         {"model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"], "pcc": 0.99, "args": {"shape": "(1, 81, 4)"}},
     ),
     (
-        Reshape1395,
+        Reshape1396,
         [((1, 56, 56, 96), torch.float32)],
         {
             "model_names": [
@@ -30465,7 +31781,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1396,
+        Reshape1397,
         [((1, 56, 56, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30474,7 +31790,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1397,
+        Reshape1398,
         [((1, 56, 56, 96), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30483,7 +31799,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1396,
+        Reshape1397,
         [((1, 8, 8, 7, 7, 96), torch.float32)],
         {
             "model_names": [
@@ -30496,7 +31812,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1398,
+        Reshape1399,
         [((3136, 288), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30505,7 +31821,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1399,
+        Reshape1400,
         [((64, 49, 288), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30514,7 +31830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1400,
+        Reshape1401,
         [((1, 64, 3, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30523,7 +31839,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1401,
+        Reshape1402,
         [((1, 64, 3, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30532,7 +31848,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1401,
+        Reshape1402,
         [((64, 3, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -30545,7 +31861,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1402,
+        Reshape1403,
         [((192, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30558,7 +31874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1403,
+        Reshape1404,
         [((2401, 3), torch.float32)],
         {
             "model_names": [
@@ -30571,7 +31887,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1404,
+        Reshape1405,
         [((64, 3, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30584,7 +31900,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1405,
+        Reshape1406,
         [((64, 3, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30597,7 +31913,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1406,
+        Reshape1407,
         [((64, 3, 32, 49), torch.float32)],
         {
             "model_names": [
@@ -30610,7 +31926,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1400,
+        Reshape1401,
         [((192, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -30623,7 +31939,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1396,
+        Reshape1397,
         [((64, 49, 3, 32), torch.float32)],
         {
             "model_names": [
@@ -30636,7 +31952,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1407,
+        Reshape1408,
         [((3136, 96), torch.float32)],
         {
             "model_names": [
@@ -30649,7 +31965,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1408,
+        Reshape1409,
         [((3136, 96), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30658,7 +31974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1409,
+        Reshape1410,
         [((64, 49, 96), torch.float32)],
         {
             "model_names": [
@@ -30671,7 +31987,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1410,
+        Reshape1411,
         [((64, 49, 96), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30680,7 +31996,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1408,
+        Reshape1409,
         [((1, 8, 7, 8, 7, 96), torch.float32)],
         {
             "model_names": [
@@ -30693,7 +32009,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1397,
+        Reshape1398,
         [((1, 8, 7, 8, 7, 96), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30702,7 +32018,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1411,
+        Reshape1412,
         [((3136, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30711,12 +32027,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1412,
+        Reshape1413,
         [((3136, 384), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 384)"}},
     ),
     (
-        Reshape1413,
+        Reshape1414,
         [((1, 56, 56, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30725,7 +32041,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1402,
+        Reshape1403,
         [((1, 64, 3, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30738,7 +32054,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1414,
+        Reshape1415,
         [((1, 28, 28, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30747,7 +32063,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1415,
+        Reshape1416,
         [((1, 28, 28, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30756,7 +32072,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1416,
+        Reshape1417,
         [((784, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30765,7 +32081,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1417,
+        Reshape1418,
         [((784, 192), torch.float32)],
         {
             "model_names": [
@@ -30778,7 +32094,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1418,
+        Reshape1419,
         [((1, 28, 28, 192), torch.float32)],
         {
             "model_names": [
@@ -30791,7 +32107,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1419,
+        Reshape1420,
         [((1, 28, 28, 192), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30800,7 +32116,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1420,
+        Reshape1421,
         [((1, 28, 28, 192), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30809,7 +32125,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1419,
+        Reshape1420,
         [((1, 4, 4, 7, 7, 192), torch.float32)],
         {
             "model_names": [
@@ -30822,7 +32138,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1421,
+        Reshape1422,
         [((784, 576), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30831,7 +32147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1422,
+        Reshape1423,
         [((16, 49, 576), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30840,7 +32156,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1423,
+        Reshape1424,
         [((1, 16, 6, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30849,7 +32165,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1424,
+        Reshape1425,
         [((1, 16, 6, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -30858,7 +32174,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1424,
+        Reshape1425,
         [((16, 6, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -30871,7 +32187,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1425,
+        Reshape1426,
         [((96, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30884,7 +32200,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1426,
+        Reshape1427,
         [((2401, 6), torch.float32)],
         {
             "model_names": [
@@ -30897,7 +32213,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1427,
+        Reshape1428,
         [((16, 6, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30910,7 +32226,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1428,
+        Reshape1429,
         [((16, 6, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -30923,7 +32239,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1429,
+        Reshape1430,
         [((16, 6, 32, 49), torch.float32)],
         {
             "model_names": [
@@ -30936,7 +32252,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1423,
+        Reshape1424,
         [((96, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -30949,7 +32265,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1419,
+        Reshape1420,
         [((16, 49, 6, 32), torch.float32)],
         {
             "model_names": [
@@ -30962,7 +32278,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1430,
+        Reshape1431,
         [((16, 49, 192), torch.float32)],
         {
             "model_names": [
@@ -30975,7 +32291,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1431,
+        Reshape1432,
         [((16, 49, 192), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -30984,7 +32300,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1416,
+        Reshape1417,
         [((1, 4, 7, 4, 7, 192), torch.float32)],
         {
             "model_names": [
@@ -30997,7 +32313,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1420,
+        Reshape1421,
         [((1, 4, 7, 4, 7, 192), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31006,7 +32322,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1432,
+        Reshape1433,
         [((784, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31015,12 +32331,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1433,
+        Reshape1434,
         [((784, 768), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 49, 768)"}},
     ),
     (
-        Reshape1434,
+        Reshape1435,
         [((1, 28, 28, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31029,7 +32345,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1425,
+        Reshape1426,
         [((1, 16, 6, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31042,7 +32358,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1435,
+        Reshape1436,
         [((1, 14, 14, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31051,7 +32367,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1436,
+        Reshape1437,
         [((1, 14, 14, 768), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31060,7 +32376,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1437,
+        Reshape1438,
         [((196, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31069,7 +32385,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1438,
+        Reshape1439,
         [((196, 384), torch.float32)],
         {
             "model_names": [
@@ -31082,7 +32398,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1439,
+        Reshape1440,
         [((1, 14, 14, 384), torch.float32)],
         {
             "model_names": [
@@ -31095,7 +32411,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1440,
+        Reshape1441,
         [((1, 14, 14, 384), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31104,7 +32420,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1441,
+        Reshape1442,
         [((1, 14, 14, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31113,7 +32429,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1440,
+        Reshape1441,
         [((1, 2, 2, 7, 7, 384), torch.float32)],
         {
             "model_names": [
@@ -31126,7 +32442,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1442,
+        Reshape1443,
         [((196, 1152), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31135,7 +32451,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1443,
+        Reshape1444,
         [((4, 49, 1152), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31144,7 +32460,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1444,
+        Reshape1445,
         [((1, 4, 12, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31153,7 +32469,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1445,
+        Reshape1446,
         [((1, 4, 12, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31162,7 +32478,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1445,
+        Reshape1446,
         [((4, 12, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -31175,7 +32491,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1446,
+        Reshape1447,
         [((48, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31188,7 +32504,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1447,
+        Reshape1448,
         [((2401, 12), torch.float32)],
         {
             "model_names": [
@@ -31201,7 +32517,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1448,
+        Reshape1449,
         [((4, 12, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31214,7 +32530,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1449,
+        Reshape1450,
         [((4, 12, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31227,7 +32543,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1450,
+        Reshape1451,
         [((4, 12, 32, 49), torch.float32)],
         {
             "model_names": [
@@ -31240,7 +32556,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1444,
+        Reshape1445,
         [((48, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -31253,7 +32569,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1440,
+        Reshape1441,
         [((4, 49, 12, 32), torch.float32)],
         {
             "model_names": [
@@ -31266,7 +32582,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1451,
+        Reshape1452,
         [((4, 49, 384), torch.float32)],
         {
             "model_names": [
@@ -31279,7 +32595,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1452,
+        Reshape1453,
         [((4, 49, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31288,7 +32604,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1437,
+        Reshape1438,
         [((1, 2, 7, 2, 7, 384), torch.float32)],
         {
             "model_names": [
@@ -31301,7 +32617,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1441,
+        Reshape1442,
         [((1, 2, 7, 2, 7, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31310,7 +32626,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1453,
+        Reshape1454,
         [((196, 1536), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31319,12 +32635,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1454,
+        Reshape1455,
         [((196, 1536), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 49, 1536)"}},
     ),
     (
-        Reshape1455,
+        Reshape1456,
         [((1, 14, 14, 1536), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31333,7 +32649,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1446,
+        Reshape1447,
         [((1, 4, 12, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31346,7 +32662,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1456,
+        Reshape1457,
         [((1, 7, 7, 1536), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31355,7 +32671,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1457,
+        Reshape1458,
         [((1, 7, 7, 1536), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31364,7 +32680,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1458,
+        Reshape1459,
         [((49, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31373,7 +32689,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1459,
+        Reshape1460,
         [((49, 768), torch.float32)],
         {
             "model_names": [
@@ -31386,7 +32702,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1460,
+        Reshape1461,
         [((1, 7, 7, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31395,7 +32711,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1461,
+        Reshape1462,
         [((1, 7, 7, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31404,7 +32720,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1461,
+        Reshape1462,
         [((1, 1, 1, 7, 7, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31413,7 +32729,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1462,
+        Reshape1463,
         [((49, 2304), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31422,7 +32738,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1463,
+        Reshape1464,
         [((1, 49, 2304), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31431,7 +32747,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1464,
+        Reshape1465,
         [((1, 1, 24, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31440,7 +32756,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1465,
+        Reshape1466,
         [((1, 1, 24, 49, 32), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31449,7 +32765,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1465,
+        Reshape1466,
         [((1, 24, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -31462,7 +32778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1466,
+        Reshape1467,
         [((24, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31475,7 +32791,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1467,
+        Reshape1468,
         [((2401, 24), torch.float32)],
         {
             "model_names": [
@@ -31488,7 +32804,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1468,
+        Reshape1469,
         [((1, 24, 49, 49), torch.float32)],
         {
             "model_names": [
@@ -31501,7 +32817,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1469,
+        Reshape1470,
         [((1, 24, 32, 49), torch.float32)],
         {
             "model_names": [
@@ -31514,7 +32830,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1464,
+        Reshape1465,
         [((24, 49, 32), torch.float32)],
         {
             "model_names": [
@@ -31527,7 +32843,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1461,
+        Reshape1462,
         [((1, 49, 24, 32), torch.float32)],
         {
             "model_names": [
@@ -31540,7 +32856,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1470,
+        Reshape1471,
         [((1, 49, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31549,7 +32865,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1461,
+        Reshape1462,
         [((1, 49, 768), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31558,7 +32874,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1471,
+        Reshape1472,
         [((1, 49, 768), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31567,7 +32883,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1459,
+        Reshape1460,
         [((1, 49, 768), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31576,7 +32892,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1458,
+        Reshape1459,
         [((1, 1, 7, 1, 7, 768), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31585,7 +32901,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1472,
+        Reshape1473,
         [((49, 3072), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31594,12 +32910,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1473,
+        Reshape1474,
         [((49, 3072), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 49, 3072)"}},
     ),
     (
-        Reshape1474,
+        Reshape1475,
         [((1, 7, 7, 3072), torch.float32)],
         {
             "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
@@ -31608,7 +32924,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1475,
+        Reshape1476,
         [((1, 96, 56, 56), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31617,7 +32933,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1395,
+        Reshape1396,
         [((1, 3136, 96), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31626,7 +32942,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1408,
+        Reshape1409,
         [((1, 3136, 96), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31635,7 +32951,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1476,
+        Reshape1477,
         [((49, 49), torch.int64)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31644,7 +32960,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1418,
+        Reshape1419,
         [((1, 784, 192), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31653,7 +32969,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1416,
+        Reshape1417,
         [((1, 784, 192), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31662,7 +32978,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1439,
+        Reshape1440,
         [((1, 196, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31671,7 +32987,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1437,
+        Reshape1438,
         [((1, 196, 384), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31680,7 +32996,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1477,
+        Reshape1478,
         [((1, 768, 1), torch.float32)],
         {
             "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -31689,347 +33005,347 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1478,
+        Reshape1479,
         [((1, 56, 56, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 8, 7, 8, 7, 128)"}},
     ),
     (
-        Reshape1479,
+        Reshape1480,
         [((1, 56, 56, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(3136, 128)"}},
     ),
     (
-        Reshape1479,
+        Reshape1480,
         [((1, 8, 8, 7, 7, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(3136, 128)"}},
     ),
     (
-        Reshape1480,
+        Reshape1481,
         [((64, 49, 384), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 3, 4, 32)"}},
     ),
     (
-        Reshape1481,
+        Reshape1482,
         [((1, 64, 4, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 4, 49, 32)"}},
     ),
     (
-        Reshape1482,
+        Reshape1483,
         [((1, 64, 4, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(256, 49, 32)"}},
     ),
     (
-        Reshape1482,
+        Reshape1483,
         [((64, 4, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(256, 49, 32)"}},
     ),
     (
-        Reshape1483,
+        Reshape1484,
         [((256, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 4, 49, 49)"}},
     ),
     (
-        Reshape1484,
+        Reshape1485,
         [((2401, 4), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 49, 4)"}},
     ),
     (
-        Reshape1485,
+        Reshape1486,
         [((64, 4, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(256, 49, 49)"}},
     ),
     (
-        Reshape1486,
+        Reshape1487,
         [((64, 4, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 64, 4, 49, 49)"}},
     ),
     (
-        Reshape1487,
+        Reshape1488,
         [((64, 4, 32, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(256, 32, 49)"}},
     ),
     (
-        Reshape1481,
+        Reshape1482,
         [((256, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 4, 49, 32)"}},
     ),
     (
-        Reshape1479,
+        Reshape1480,
         [((64, 49, 4, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(3136, 128)"}},
     ),
     (
-        Reshape1488,
+        Reshape1489,
         [((3136, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 128)"}},
     ),
     (
-        Reshape1489,
+        Reshape1490,
         [((3136, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 56, 56, 128)"}},
     ),
     (
-        Reshape1490,
+        Reshape1491,
         [((64, 49, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 8, 8, 7, 7, 128)"}},
     ),
     (
-        Reshape1489,
+        Reshape1490,
         [((1, 8, 7, 8, 7, 128), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 56, 56, 128)"}},
     ),
     (
-        Reshape1491,
+        Reshape1492,
         [((3136, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 56, 56, 512)"}},
     ),
     (
-        Reshape1492,
+        Reshape1493,
         [((1, 56, 56, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(3136, 512)"}},
     ),
     (
-        Reshape1483,
+        Reshape1484,
         [((1, 64, 4, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 4, 49, 49)"}},
     ),
     (
-        Reshape1493,
+        Reshape1494,
         [((1, 28, 28, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(784, 512)"}},
     ),
     (
-        Reshape1494,
+        Reshape1495,
         [((784, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 28, 28, 256)"}},
     ),
     (
-        Reshape1495,
+        Reshape1496,
         [((784, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 49, 256)"}},
     ),
     (
-        Reshape1496,
+        Reshape1497,
         [((1, 28, 28, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 4, 7, 4, 7, 256)"}},
     ),
     (
-        Reshape1497,
+        Reshape1498,
         [((1, 28, 28, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(784, 256)"}},
     ),
     (
-        Reshape1497,
+        Reshape1498,
         [((1, 4, 4, 7, 7, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(784, 256)"}},
     ),
     (
-        Reshape1498,
+        Reshape1499,
         [((16, 49, 768), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 49, 3, 8, 32)"}},
     ),
     (
-        Reshape1499,
+        Reshape1500,
         [((1, 16, 8, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 8, 49, 32)"}},
     ),
     (
-        Reshape1500,
+        Reshape1501,
         [((1, 16, 8, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(128, 49, 32)"}},
     ),
     (
-        Reshape1500,
+        Reshape1501,
         [((16, 8, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(128, 49, 32)"}},
     ),
     (
-        Reshape1501,
+        Reshape1502,
         [((128, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 8, 49, 49)"}},
     ),
     (
-        Reshape1502,
+        Reshape1503,
         [((2401, 8), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 49, 8)"}},
     ),
     (
-        Reshape1503,
+        Reshape1504,
         [((16, 8, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(128, 49, 49)"}},
     ),
     (
-        Reshape1504,
+        Reshape1505,
         [((16, 8, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 8, 49, 49)"}},
     ),
     (
-        Reshape1505,
+        Reshape1506,
         [((16, 8, 32, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(128, 32, 49)"}},
     ),
     (
-        Reshape1499,
+        Reshape1500,
         [((128, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 8, 49, 32)"}},
     ),
     (
-        Reshape1497,
+        Reshape1498,
         [((16, 49, 8, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(784, 256)"}},
     ),
     (
-        Reshape1506,
+        Reshape1507,
         [((16, 49, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 4, 4, 7, 7, 256)"}},
     ),
     (
-        Reshape1494,
+        Reshape1495,
         [((1, 4, 7, 4, 7, 256), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 28, 28, 256)"}},
     ),
     (
-        Reshape1507,
+        Reshape1508,
         [((784, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 28, 28, 1024)"}},
     ),
     (
-        Reshape1508,
+        Reshape1509,
         [((1, 28, 28, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(784, 1024)"}},
     ),
     (
-        Reshape1501,
+        Reshape1502,
         [((1, 16, 8, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 8, 49, 49)"}},
     ),
     (
-        Reshape1509,
+        Reshape1510,
         [((1, 14, 14, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(196, 1024)"}},
     ),
     (
-        Reshape1510,
+        Reshape1511,
         [((196, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 14, 14, 512)"}},
     ),
     (
-        Reshape1511,
+        Reshape1512,
         [((196, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 49, 512)"}},
     ),
     (
-        Reshape1512,
+        Reshape1513,
         [((1, 14, 14, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 2, 7, 2, 7, 512)"}},
     ),
     (
-        Reshape1513,
+        Reshape1514,
         [((1, 14, 14, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(196, 512)"}},
     ),
     (
-        Reshape1513,
+        Reshape1514,
         [((1, 2, 2, 7, 7, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(196, 512)"}},
     ),
     (
-        Reshape1514,
+        Reshape1515,
         [((4, 49, 1536), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 49, 3, 16, 32)"}},
     ),
     (
-        Reshape1515,
+        Reshape1516,
         [((1, 4, 16, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 16, 49, 32)"}},
     ),
     (
-        Reshape1516,
+        Reshape1517,
         [((1, 4, 16, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 32)"}},
     ),
     (
-        Reshape1516,
+        Reshape1517,
         [((4, 16, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 32)"}},
     ),
     (
-        Reshape1517,
+        Reshape1518,
         [((64, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 16, 49, 49)"}},
     ),
     (
-        Reshape1518,
+        Reshape1519,
         [((2401, 16), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 49, 16)"}},
     ),
     (
-        Reshape1519,
+        Reshape1520,
         [((4, 16, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 49, 49)"}},
     ),
     (
-        Reshape1520,
+        Reshape1521,
         [((4, 16, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 4, 16, 49, 49)"}},
     ),
     (
-        Reshape1521,
+        Reshape1522,
         [((4, 16, 32, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(64, 32, 49)"}},
     ),
     (
-        Reshape1515,
+        Reshape1516,
         [((64, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 16, 49, 32)"}},
     ),
     (
-        Reshape1513,
+        Reshape1514,
         [((4, 49, 16, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(196, 512)"}},
     ),
     (
-        Reshape1522,
+        Reshape1523,
         [((4, 49, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 2, 2, 7, 7, 512)"}},
     ),
     (
-        Reshape1510,
+        Reshape1511,
         [((1, 2, 7, 2, 7, 512), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 14, 14, 512)"}},
     ),
     (
-        Reshape1523,
+        Reshape1524,
         [((196, 2048), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 14, 14, 2048)"}},
     ),
     (
-        Reshape1524,
+        Reshape1525,
         [((1, 14, 14, 2048), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(196, 2048)"}},
     ),
     (
-        Reshape1517,
+        Reshape1518,
         [((1, 4, 16, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(4, 16, 49, 49)"}},
     ),
     (
-        Reshape1525,
+        Reshape1526,
         [((1, 7, 7, 2048), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 2048)"}},
     ),
     (
-        Reshape1526,
+        Reshape1527,
         [((49, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 7, 7, 1024)"}},
     ),
     (
-        Reshape1527,
+        Reshape1528,
         [((49, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 49, 1024)"}},
     ),
     (
-        Reshape1528,
+        Reshape1529,
         [((1, 7, 7, 1024), torch.float32)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -32038,67 +33354,67 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1529,
+        Reshape1530,
         [((1, 7, 7, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 1024)"}},
     ),
     (
-        Reshape1529,
+        Reshape1530,
         [((1, 1, 1, 7, 7, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 1024)"}},
     ),
     (
-        Reshape1530,
+        Reshape1531,
         [((1, 49, 3072), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 49, 3, 32, 32)"}},
     ),
     (
-        Reshape1531,
+        Reshape1532,
         [((1, 1, 32, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 32, 49, 32)"}},
     ),
     (
-        Reshape1532,
+        Reshape1533,
         [((1, 1, 32, 49, 32), torch.float32)],
-        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(32, 49, 32)"}},
-    ),
-    (
-        Reshape1532,
-        [((1, 32, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(32, 49, 32)"}},
     ),
     (
         Reshape1533,
+        [((1, 32, 49, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(32, 49, 32)"}},
+    ),
+    (
+        Reshape1534,
         [((32, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 32, 49, 49)"}},
     ),
     (
-        Reshape1534,
+        Reshape1535,
         [((2401, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 49, 32)"}},
     ),
     (
-        Reshape1535,
+        Reshape1536,
         [((1, 32, 49, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(32, 49, 49)"}},
     ),
     (
-        Reshape1536,
+        Reshape1537,
         [((1, 32, 32, 49), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(32, 32, 49)"}},
     ),
     (
-        Reshape1531,
+        Reshape1532,
         [((32, 49, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 32, 49, 32)"}},
     ),
     (
-        Reshape1529,
+        Reshape1530,
         [((1, 49, 32, 32), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 1024)"}},
     ),
     (
-        Reshape1537,
+        Reshape1538,
         [((1, 49, 1024), torch.float32)],
         {
             "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
@@ -32107,22 +33423,22 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1526,
+        Reshape1527,
         [((1, 1, 7, 1, 7, 1024), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 7, 7, 1024)"}},
     ),
     (
-        Reshape1538,
+        Reshape1539,
         [((49, 4096), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 7, 7, 4096)"}},
     ),
     (
-        Reshape1539,
+        Reshape1540,
         [((1, 7, 7, 4096), torch.float32)],
         {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(49, 4096)"}},
     ),
     (
-        Reshape1540,
+        Reshape1541,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -32138,7 +33454,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1541,
+        Reshape1542,
         [((1, 512, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -32157,12 +33473,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1542,
+        Reshape1543,
+        [((1, 512, 7, 7), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"shape": "(1, 512, 49, 1)"}},
+    ),
+    (
+        Reshape1544,
         [((1, 4096, 1, 1), torch.float32)],
         {"model_names": ["pt_vgg_vgg19_bn_obj_det_timm"], "pcc": 0.99, "args": {"shape": "(1, 4096, 1, 1)"}},
     ),
     (
-        Reshape1543,
+        Reshape1545,
         [((160, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -32174,7 +33495,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1544,
+        Reshape1546,
         [((224, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -32186,7 +33507,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1545,
+        Reshape1547,
         [((728, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -32201,7 +33522,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1546,
+        Reshape1548,
         [((1536, 1, 3, 3), torch.float32)],
         {
             "model_names": [
@@ -32216,47 +33537,47 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1547,
+        Reshape1549,
         [((1, 256, 20, 20), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(1, 2, 128, 400)"}},
     ),
     (
-        Reshape1548,
+        Reshape1550,
         [((1, 2, 64, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(2, 64, 400)"}},
     ),
     (
-        Reshape1549,
+        Reshape1551,
         [((1, 2, 64, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(1, 128, 20, 20)"}},
     ),
     (
-        Reshape1550,
+        Reshape1552,
         [((1, 2, 400, 32), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(2, 400, 32)"}},
     ),
     (
-        Reshape1551,
+        Reshape1553,
         [((2, 400, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(1, 2, 400, 400)"}},
     ),
     (
-        Reshape1552,
+        Reshape1554,
         [((1, 2, 400, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(2, 400, 400)"}},
     ),
     (
-        Reshape1549,
+        Reshape1551,
         [((2, 64, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(1, 128, 20, 20)"}},
     ),
     (
-        Reshape1553,
+        Reshape1555,
         [((256, 1, 7, 7), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99, "args": {"shape": "(256, 1, 7, 7)"}},
     ),
     (
-        Reshape1554,
+        Reshape1556,
         [((1, 3, 85, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -32277,7 +33598,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1555,
+        Reshape1557,
         [((1, 255, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -32298,7 +33619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1556,
+        Reshape1558,
         [((1, 1, 255, 1600), torch.float32)],
         {
             "model_names": [
@@ -32319,7 +33640,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1557,
+        Reshape1559,
         [((1, 3, 1600, 85), torch.float32)],
         {
             "model_names": [
@@ -32340,7 +33661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1558,
+        Reshape1560,
         [((1, 3, 85, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -32360,7 +33681,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1559,
+        Reshape1561,
         [((1, 255, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -32380,7 +33701,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1560,
+        Reshape1562,
         [((1, 1, 255, 400), torch.float32)],
         {
             "model_names": [
@@ -32400,7 +33721,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1561,
+        Reshape1563,
         [((1, 3, 400, 85), torch.float32)],
         {
             "model_names": [
@@ -32420,7 +33741,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1562,
+        Reshape1564,
         [((1, 3, 85, 10, 10), torch.float32)],
         {
             "model_names": [
@@ -32435,7 +33756,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1563,
+        Reshape1565,
         [((1, 255, 10, 10), torch.float32)],
         {
             "model_names": [
@@ -32450,7 +33771,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1564,
+        Reshape1566,
         [((1, 1, 255, 100), torch.float32)],
         {
             "model_names": [
@@ -32465,7 +33786,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1565,
+        Reshape1567,
         [((1, 3, 100, 85), torch.float32)],
         {
             "model_names": [
@@ -32480,7 +33801,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1566,
+        Reshape1568,
         [((1, 3, 85, 60, 60), torch.float32)],
         {
             "model_names": [
@@ -32495,7 +33816,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1567,
+        Reshape1569,
         [((1, 255, 60, 60), torch.float32)],
         {
             "model_names": [
@@ -32510,7 +33831,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1568,
+        Reshape1570,
         [((1, 1, 255, 3600), torch.float32)],
         {
             "model_names": [
@@ -32525,7 +33846,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1569,
+        Reshape1571,
         [((1, 3, 3600, 85), torch.float32)],
         {
             "model_names": [
@@ -32540,7 +33861,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1570,
+        Reshape1572,
         [((1, 3, 85, 30, 30), torch.float32)],
         {
             "model_names": [
@@ -32555,7 +33876,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1571,
+        Reshape1573,
         [((1, 255, 30, 30), torch.float32)],
         {
             "model_names": [
@@ -32570,7 +33891,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1572,
+        Reshape1574,
         [((1, 1, 255, 900), torch.float32)],
         {
             "model_names": [
@@ -32585,7 +33906,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1573,
+        Reshape1575,
         [((1, 3, 900, 85), torch.float32)],
         {
             "model_names": [
@@ -32600,7 +33921,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1574,
+        Reshape1576,
         [((1, 3, 85, 15, 15), torch.float32)],
         {
             "model_names": [
@@ -32615,7 +33936,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1575,
+        Reshape1577,
         [((1, 255, 15, 15), torch.float32)],
         {
             "model_names": [
@@ -32630,7 +33951,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1576,
+        Reshape1578,
         [((1, 1, 255, 225), torch.float32)],
         {
             "model_names": [
@@ -32645,7 +33966,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1577,
+        Reshape1579,
         [((1, 3, 225, 85), torch.float32)],
         {
             "model_names": [
@@ -32660,7 +33981,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1578,
+        Reshape1580,
         [((1, 3, 85, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -32669,7 +33990,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1579,
+        Reshape1581,
         [((1, 255, 160, 160), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -32678,7 +33999,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1580,
+        Reshape1582,
         [((1, 1, 255, 25600), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -32687,7 +34008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1581,
+        Reshape1583,
         [((1, 3, 25600, 85), torch.float32)],
         {
             "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
@@ -32696,7 +34017,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1582,
+        Reshape1584,
         [((1, 3, 85, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -32712,7 +34033,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1583,
+        Reshape1585,
         [((1, 255, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -32728,7 +34049,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1584,
+        Reshape1586,
         [((1, 1, 255, 6400), torch.float32)],
         {
             "model_names": [
@@ -32744,7 +34065,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1585,
+        Reshape1587,
         [((1, 3, 6400, 85), torch.float32)],
         {
             "model_names": [
@@ -32760,7 +34081,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1586,
+        Reshape1588,
         [((1, 68, 56, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32769,7 +34090,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1587,
+        Reshape1589,
         [((1, 1, 4, 4480), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32778,7 +34099,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1588,
+        Reshape1590,
         [((1, 68, 28, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32787,7 +34108,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1589,
+        Reshape1591,
         [((1, 1, 4, 1120), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32796,7 +34117,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1590,
+        Reshape1592,
         [((1, 68, 14, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32805,7 +34126,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1591,
+        Reshape1593,
         [((1, 1, 4, 280), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6m_obj_det_torchhub", "pt_yolo_v6_yolov6l_obj_det_torchhub"],
@@ -32814,7 +34135,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1592,
+        Reshape1594,
         [((1, 80, 56, 80), torch.float32)],
         {
             "model_names": [
@@ -32828,7 +34149,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1593,
+        Reshape1595,
         [((1, 80, 28, 40), torch.float32)],
         {
             "model_names": [
@@ -32842,7 +34163,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1594,
+        Reshape1596,
         [((1, 80, 14, 20), torch.float32)],
         {
             "model_names": [
@@ -32856,7 +34177,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1587,
+        Reshape1589,
         [((1, 4, 56, 80), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub", "pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -32865,7 +34186,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1589,
+        Reshape1591,
         [((1, 4, 28, 40), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub", "pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -32874,7 +34195,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1591,
+        Reshape1593,
         [((1, 4, 14, 20), torch.float32)],
         {
             "model_names": ["pt_yolo_v6_yolov6n_obj_det_torchhub", "pt_yolo_v6_yolov6s_obj_det_torchhub"],
@@ -32883,7 +34204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1595,
+        Reshape1597,
         [((1, 85, 80, 80), torch.float32)],
         {
             "model_names": [
@@ -32898,7 +34219,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1596,
+        Reshape1598,
         [((1, 85, 40, 40), torch.float32)],
         {
             "model_names": [
@@ -32913,7 +34234,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1597,
+        Reshape1599,
         [((1, 85, 20, 20), torch.float32)],
         {
             "model_names": [
@@ -32928,7 +34249,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1598,
+        Reshape1600,
         [((1, 85, 52, 52), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -32937,7 +34258,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1599,
+        Reshape1601,
         [((1, 85, 26, 26), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -32946,12 +34267,651 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Reshape1600,
+        Reshape1602,
         [((1, 85, 13, 13), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
             "pcc": 0.99,
             "args": {"shape": "(1, 85, 169, 1)"},
+        },
+    ),
+    (
+        Reshape1603,
+        [((1, 1408, 1, 1), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1408)"},
+        },
+    ),
+    (
+        Reshape1604,
+        [((1, 768, 7, 7), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99, "args": {"shape": "(1, 768, 49, 1)"}},
+    ),
+    (
+        Reshape1605,
+        [((1, 768, 7, 7), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 768, 49)"}},
+    ),
+    (
+        Reshape1606,
+        [((1, 1024, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 1024, 49, 1)"},
+        },
+    ),
+    (
+        Reshape1607,
+        [((1, 1024, 7, 7), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 1024, 49)"}},
+    ),
+    (
+        Reshape1608,
+        [((1, 512, 14, 14), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 512, 196, 1)"},
+        },
+    ),
+    (
+        Reshape1609,
+        [((50, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1024)"}},
+    ),
+    (
+        Reshape1610,
+        [((50, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3072)"}},
+    ),
+    (
+        Reshape1611,
+        [((50, 1, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3, 1024)"}},
+    ),
+    (
+        Reshape1612,
+        [((1, 50, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 16, 64)"}},
+    ),
+    (
+        Reshape1613,
+        [((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 50, 64)"}},
+    ),
+    (
+        Reshape1614,
+        [((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 50, 64)"}},
+    ),
+    (
+        Reshape1615,
+        [((16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 50, 50)"}},
+    ),
+    (
+        Reshape1616,
+        [((1, 16, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 50, 50)"}},
+    ),
+    (
+        Reshape1609,
+        [((50, 1, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1024)"}},
+    ),
+    (
+        Reshape1617,
+        [((50, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 1024)"}},
+    ),
+    (
+        Reshape1618,
+        [((50, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 768)"}},
+    ),
+    (
+        Reshape1619,
+        [((50, 2304), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 2304)"}},
+    ),
+    (
+        Reshape1620,
+        [((50, 1, 2304), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 3, 768)"}},
+    ),
+    (
+        Reshape1621,
+        [((1, 50, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 12, 64)"}},
+    ),
+    (
+        Reshape1622,
+        [((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(12, 50, 64)"}},
+    ),
+    (
+        Reshape1623,
+        [((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 12, 50, 64)"}},
+    ),
+    (
+        Reshape1624,
+        [((12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 12, 50, 50)"}},
+    ),
+    (
+        Reshape1625,
+        [((1, 12, 50, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(12, 50, 50)"}},
+    ),
+    (
+        Reshape1618,
+        [((50, 1, 12, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 768)"}},
+    ),
+    (
+        Reshape1626,
+        [((50, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(50, 1, 768)"}},
+    ),
+    (
+        Reshape1062,
+        [((197, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1024)"}},
+    ),
+    (
+        Reshape1627,
+        [((197, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 3072)"}},
+    ),
+    (
+        Reshape1628,
+        [((197, 1, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1, 3, 1024)"}},
+    ),
+    (
+        Reshape1629,
+        [((1, 197, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 16, 64)"}},
+    ),
+    (
+        Reshape1062,
+        [((197, 1, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(197, 1024)"}},
+    ),
+    (
+        Reshape1630,
+        [((1, 1280, 37, 37), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 1280, 1369)"}},
+    ),
+    (
+        Reshape1631,
+        [((1370, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1280)"}},
+    ),
+    (
+        Reshape1632,
+        [((1370, 3840), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 3840)"}},
+    ),
+    (
+        Reshape1633,
+        [((1370, 1, 3840), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 3, 1280)"}},
+    ),
+    (
+        Reshape1634,
+        [((1, 1370, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 16, 80)"}},
+    ),
+    (
+        Reshape1635,
+        [((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 1370, 80)"}},
+    ),
+    (
+        Reshape1636,
+        [((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 1370, 80)"}},
+    ),
+    (
+        Reshape1637,
+        [((16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1, 16, 1370, 1370)"}},
+    ),
+    (
+        Reshape1638,
+        [((1, 16, 1370, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(16, 1370, 1370)"}},
+    ),
+    (
+        Reshape1631,
+        [((1370, 1, 16, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1280)"}},
+    ),
+    (
+        Reshape1639,
+        [((1370, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"shape": "(1370, 1, 1280)"}},
+    ),
+    (
+        Reshape1640,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 256)"},
+        },
+    ),
+    (
+        Reshape1641,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 8, 32)"},
+        },
+    ),
+    (
+        Reshape1642,
+        [((100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 256)"},
+        },
+    ),
+    (
+        Reshape1643,
+        [((1, 8, 100, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(8, 100, 32)"},
+        },
+    ),
+    (
+        Reshape1644,
+        [((8, 100, 100), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(8, 100, 100)"},
+        },
+    ),
+    (
+        Reshape1645,
+        [((8, 100, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 8, 100, 32)"},
+        },
+    ),
+    (
+        Reshape1640,
+        [((1, 100, 8, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 256)"},
+        },
+    ),
+    (
+        Reshape1646,
+        [((1, 256, 14, 20), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 280)"},
+        },
+    ),
+    (
+        Reshape1647,
+        [((1, 256, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 8, 32, 280)"},
+        },
+    ),
+    (
+        Reshape1648,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(280, 256)"},
+        },
+    ),
+    (
+        Reshape1649,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 280, 8, 32)"},
+        },
+    ),
+    (
+        Reshape1650,
+        [((280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 280, 256)"},
+        },
+    ),
+    (
+        Reshape1651,
+        [((1, 8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(8, 280, 32)"},
+        },
+    ),
+    (
+        Reshape1652,
+        [((8, 280, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 8, 280, 280)"},
+        },
+    ),
+    (
+        Reshape1653,
+        [((1, 8, 280, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(8, 280, 280)"},
+        },
+    ),
+    (
+        Reshape1654,
+        [((8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 8, 280, 32)"},
+        },
+    ),
+    (
+        Reshape1648,
+        [((1, 280, 8, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(280, 256)"},
+        },
+    ),
+    (
+        Reshape1655,
+        [((8, 100, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 8, 100, 280)"},
+        },
+    ),
+    (
+        Reshape1656,
+        [((1, 8, 100, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"shape": "(8, 100, 280)"},
+        },
+    ),
+    (
+        Reshape1657,
+        [((100, 92), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 92)"},
+        },
+    ),
+    (
+        Reshape1658,
+        [((100, 251), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 251)"},
+        },
+    ),
+    (
+        Reshape1659,
+        [((1, 100, 32, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 32, 107, 160)"},
+        },
+    ),
+    (
+        Reshape1660,
+        [((1, 100, 64, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 64, 54, 80)"},
+        },
+    ),
+    (
+        Reshape1661,
+        [((1, 100, 128, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 128, 27, 40)"},
+        },
+    ),
+    (
+        Reshape1662,
+        [((1, 100, 256, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 256, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1663,
+        [((1, 256, 280), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 256, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1664,
+        [((1, 100, 8, 280), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 8, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1665,
+        [((1, 100, 8, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 2240)"},
+        },
+    ),
+    (
+        Reshape1666,
+        [((1, 100, 2240), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1667,
+        [((100, 264, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 9240)"},
+        },
+    ),
+    (
+        Reshape1668,
+        [((100, 8, 9240), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 264, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1669,
+        [((100, 128, 14, 20), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 4480)"},
+        },
+    ),
+    (
+        Reshape1670,
+        [((100, 8, 4480), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 128, 14, 20)"},
+        },
+    ),
+    (
+        Reshape1671,
+        [((100, 64, 27, 40), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 8640)"},
+        },
+    ),
+    (
+        Reshape1672,
+        [((100, 8, 8640), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 64, 27, 40)"},
+        },
+    ),
+    (
+        Reshape1673,
+        [((100, 32, 54, 80), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 17280)"},
+        },
+    ),
+    (
+        Reshape1674,
+        [((100, 8, 17280), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 32, 54, 80)"},
+        },
+    ),
+    (
+        Reshape1675,
+        [((100, 16, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 8, 34240)"},
+        },
+    ),
+    (
+        Reshape1676,
+        [((100, 8, 34240), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(100, 16, 107, 160)"},
+        },
+    ),
+    (
+        Reshape1677,
+        [((100, 1, 107, 160), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+            "pcc": 0.99,
+            "args": {"shape": "(1, 100, 107, 160)"},
         },
     ),
 ]

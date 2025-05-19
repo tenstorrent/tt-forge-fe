@@ -2046,6 +2046,113 @@ class DecomposeEinsum(DFPatternCallback):
             assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
             return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
 
+        elif match_einsum_pattern("bhwc,hkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+
+            assert srcA_shape[-1] == srcB_shape[-1]
+
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+
+            # Extract the batch dimension
+            batch_dim = int(srcA_shape[0])
+
+            # Case 1: Batched input
+            if batch_dim > 1:
+
+                # In the batched case, we need to process each batch independently
+                # since einsum does not automatically broadcast batch dimensions.
+                # We split the input tensor A along the batch dimension.
+                a_split = tvm.relay.split(A, indices_or_sections=batch_dim, axis=0)
+
+                results = []
+
+                for batch_idx in range(batch_dim):
+                    # Extract the tensor for the current batch: shape [1, H, W, C]
+                    a_batch = a_split[batch_idx]
+
+                    # Expand A: shape becomes [1, H, W, 1, C]
+                    A_expanded = tvm.relay.expand_dims(a_batch, axis=3)
+
+                    # Expand B: shape becomes [1, H, 1, K, C]
+                    B_expanded = tvm.relay.expand_dims(B, axis=0)
+                    B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+
+                    # Element-wise multiplication: shape [1, H, W, K, C]
+                    multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+
+                    # Sum over the channel dimension (C): result shape [1, H, W, K]
+                    result = tvm.relay.sum(multiplied, axis=[-1])
+
+                    results.append(result)
+
+                # Concatenate the batch results to form final output
+                final_result = tvm.relay.concatenate(results, axis=0)
+
+            # Case 2: Single-batch input (batch_dim == 1)
+            else:
+
+                # Expand A: shape becomes [1, H, W, 1, C]
+                A_expanded = tvm.relay.expand_dims(A, axis=3)
+
+                # Expand B: shape becomes [1, H, 1, K, C]
+                B_expanded = tvm.relay.expand_dims(B, axis=0)
+                B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+
+                # Element-wise multiplication: shape [1, H, W, K, C]
+                multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+
+                # Sum over the channel dimension (C): result shape [1, H, W, K]
+                final_result = tvm.relay.sum(multiplied, axis=[-1])
+
+            return final_result
+
+        elif match_einsum_pattern("bhwc,wkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+            assert srcA_shape[-1] == srcB_shape[-1]
+
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+
+            b, h, w, c = [int(dim) for dim in srcA_shape]
+            _, k, _ = [int(dim) for dim in srcB_shape]
+
+            results = []
+
+            # Iterate over the width dimension (W) of tensor A.
+            for wi in range(w):
+                # Slice A along width at index wi: shape becomes [B, H, 1, C]
+                A_slice = tvm.relay.strided_slice(A, begin=[0, 0, wi, 0], end=[b, h, wi + 1, c])
+
+                # Remove the singleton width dimension
+                A_slice = tvm.relay.squeeze(A_slice, axis=[2])
+
+                # Slice B at position wi: shape becomes [1, K, C] → squeeze to [K, C]
+                B_slice = tvm.relay.strided_slice(B, begin=[wi, 0, 0], end=[wi + 1, k, c])
+                B_slice = tvm.relay.squeeze(B_slice, axis=[0])
+
+                # Rearrange the axes of B_slice and add a new leading dimension
+                B_transposed = tvm.relay.transpose(B_slice, axes=[1, 0])
+                B_expanded = tvm.relay.expand_dims(B_transposed, axis=0)
+
+                # Perform batched matrix multiplication
+                out_slice = tvm.relay.nn.batch_matmul(A_slice, B_expanded, transpose_b=False)
+
+                # Add back the width dimension at axis=2
+                out_slice = tvm.relay.expand_dims(out_slice, axis=2)
+
+                results.append(out_slice)
+
+            # Concatenate all the width slices to reconstruct full output tensor: [B, H, W, K]
+            final_result = tvm.relay.concatenate(results, axis=2)
+
+            return final_result
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 

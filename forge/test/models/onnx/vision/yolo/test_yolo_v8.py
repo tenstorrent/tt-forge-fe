@@ -15,7 +15,7 @@ from forge.forge_property_utils import Framework, Source, Task
 
 @pytest.mark.xfail()
 @pytest.mark.nightly
-def test_yolov8(forge_property_recorder, tmp_path):
+def test_yolov8(forge_property_recorder, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -24,8 +24,6 @@ def test_yolov8(forge_property_recorder, tmp_path):
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P2")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
@@ -34,7 +32,7 @@ def test_yolov8(forge_property_recorder, tmp_path):
     torch_model = YoloWrapper(model)
 
     # Export model to ONNX
-    onnx_path = tmp_path / "yolov8.onnx"
+    onnx_path = forge_tmp_path / "yolov8.onnx"
     torch.onnx.export(
         torch_model,
         image_tensor,

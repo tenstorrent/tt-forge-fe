@@ -38,9 +38,6 @@ def test_monodepth2(forge_property_recorder, variant):
         task=Task.DEPTH_PREDICTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # prepare model and input
     download_model(variant)
     framework_model, height, width = load_model(variant)

@@ -30,7 +30,6 @@ def test_blip_text(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BlipTextModel.from_pretrained(variant)
@@ -63,7 +62,6 @@ def test_blip_vision(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BlipVisionModel.from_pretrained(variant)
@@ -96,7 +94,6 @@ def test_blip(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.IMAGE_CAPTIONING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BlipModel.from_pretrained(variant)
