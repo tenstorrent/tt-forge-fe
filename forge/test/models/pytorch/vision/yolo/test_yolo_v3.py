@@ -10,7 +10,8 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from third_party.tt_forge_models.yolov3 import ModelLoader
+
+from third_party.tt_forge_models.yolov3 import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly

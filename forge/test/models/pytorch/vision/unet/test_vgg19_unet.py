@@ -9,7 +9,8 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
-from third_party.tt_forge_models.vgg19_unet import ModelLoader
+
+from third_party.tt_forge_models.vgg19_unet import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
