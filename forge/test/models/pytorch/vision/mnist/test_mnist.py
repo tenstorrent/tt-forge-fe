@@ -2,9 +2,14 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
@@ -22,13 +27,26 @@ def test_mnist(forge_property_recorder):
     )
 
     # Load model and input
-    framework_model = load_model()
+    framework_model = load_model().to(torch.bfloat16)
     inputs = load_input()
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+    )

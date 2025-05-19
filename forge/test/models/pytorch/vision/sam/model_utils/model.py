@@ -26,10 +26,10 @@ def get_model_inputs(variant, input_url="https://huggingface.co/ybelkada/segment
     input_points = [[[450, 600]]]
     inputs = processor(raw_image, input_points=input_points, return_tensors="pt").to("cpu")
     sample_inputs = (
-        inputs["pixel_values"],
-        inputs["input_points"],
+        inputs["pixel_values"].to(torch.bfloat16),
+        inputs["input_points"].to(torch.bfloat16),
     )
-    return framework_model, sample_inputs
+    return framework_model.to(torch.bfloat16), sample_inputs
 
 
 class SamWrapper(torch.nn.Module):
