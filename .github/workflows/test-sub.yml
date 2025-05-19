@@ -139,6 +139,11 @@ jobs:
           pip install tvm*.whl --force-reinstall
           pip install forge*.whl --force-reinstall
 
+      - name: Setup Forge Models repo
+        shell: bash
+        run: |
+          git submodule update --init --recursive -f third_party/tt_forge_models
+
       - name: Run Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
