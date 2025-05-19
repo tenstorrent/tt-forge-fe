@@ -161,15 +161,37 @@ void DecomposingContext::fuse(NodeContext operand, graphlib::PortId producer_out
     }
 }
 
-NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape tensor_shape, DataFormat df)
+NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::Shape tensor_shape)
 {
+    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
+    // Import and call forge.tensor.pytorch_dtype_to_forge_dataformat
+    static py::module_ tensor_module = py::module_::import("forge.tensor");
+
     auto new_node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
             "dc.input_tensor." + this->node_->name() + "." + std::to_string(this->op_index), tensor, tensor_shape),
         subgraph_idx);
+
     new_node->set_shape(tensor_shape);
 
-    new_node->set_output_df((df != DataFormat::Invalid) ? df : this->node_->output_df());
+    // Try to extract torch tensor dtype and map to DataFormat
+    DataFormat output_df;
+
+    py::object py_tensor = borrow_shared_py_object(tensor);
+    py::object tensor_dtype = py_tensor.attr("dtype");
+
+    try
+    {
+        output_df = py::cast<DataFormat>(tensor_module.attr("pytorch_dtype_to_forge_dataformat")(tensor_dtype));
+    }
+    catch (py::error_already_set &e)
+    {
+        throw std::runtime_error(
+            "Encountered python error while dtype to DataFormat mapping: " + std::string(e.what()));
+    }
+
+    new_node->set_output_df(output_df);
+
     new_node->set_epoch_type(this->node_->get_epoch_type());
     this->op_index++;
 
