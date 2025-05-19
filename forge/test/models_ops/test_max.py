@@ -67,13 +67,14 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Max0,
         [((1, 16, 32, 32), torch.float32)],
-        {"model_names": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
+        {"model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
     ),
     (
         Max0,
         [((1, 32, 32, 32), torch.float32)],
-        {"model_names": ["pt_opt_facebook_opt_1_3b_seq_cls_hf", "pt_opt_facebook_opt_1_3b_qa_hf"], "pcc": 0.99},
+        {"model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"], "pcc": 0.99},
     ),
+    (Max0, [((1, 32, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
     (
         Max0,
         [((1, 16, 256, 256), torch.float32)],
@@ -87,7 +88,6 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Max0, [((1, 12, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
-    (Max0, [((1, 32, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
 ]
 
 

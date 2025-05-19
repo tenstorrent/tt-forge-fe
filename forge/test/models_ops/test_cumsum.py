@@ -51,25 +51,18 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Cumsum0,
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Cumsum0,
         [((1, 11), torch.int64)],
         {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
     (
-        Cumsum0,
-        [((1, 9), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
-    ),
-    pytest.param(
-        (
-            Cumsum1,
-            [((2441216,), torch.float32)],
-            {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 9999220736 B DRAM buffer across 12 banks, where each bank needs to store 833269760 B"
-            )
-        ],
+        Cumsum1,
+        [((2441216,), torch.float32)],
+        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "args": {"dim": "0"}},
     ),
     (
         Cumsum2,
@@ -82,11 +75,11 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
                 "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -97,9 +90,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256), torch.int64)],
         {
             "model_names": [
+                "pt_opt_facebook_opt_1_3b_clm_hf",
                 "pt_opt_facebook_opt_350m_clm_hf",
                 "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},

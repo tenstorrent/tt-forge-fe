@@ -36,8 +36,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 8, 8), torch.float32)],
         {
             "model_names": [
-                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
@@ -50,8 +50,8 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pd_albert_chinese_tiny_mlm_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_bert_chinese_roberta_base_qa_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_roberta_rbt4_ch_clm_padlenlp",
             ],
             "pcc": 0.99,
@@ -63,14 +63,23 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 9, 9), torch.float32)],
         {
             "model_names": [
-                "pd_bert_bert_base_uncased_qa_padlenlp",
-                "pd_bert_bert_base_uncased_mlm_padlenlp",
                 "pd_bert_chinese_roberta_base_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_mlm_padlenlp",
+                "pd_bert_bert_base_uncased_qa_padlenlp",
                 "pd_ernie_1_0_qa_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
                 "pd_ernie_1_0_mlm_padlenlp",
+                "pd_ernie_1_0_seq_cls_padlenlp",
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
             ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "keep_dim": "True"},
+        },
+    ),
+    (
+        Reducemax0,
+        [((1, 12, 10, 10), torch.float32)],
+        {
+            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },
@@ -89,15 +98,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 14, 14), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
-    ),
-    (
-        Reducemax0,
-        [((1, 12, 10, 10), torch.float32)],
-        {
-            "model_names": ["pd_bert_bert_base_japanese_mlm_padlenlp"],
             "pcc": 0.99,
             "args": {"dim": "-1", "keep_dim": "True"},
         },

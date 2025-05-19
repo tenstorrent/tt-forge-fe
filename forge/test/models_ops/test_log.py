@@ -15,38 +15,13 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Avgpool1D0(ForgeModule):
+class Log0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
-    def forward(self, avgpool1d_input_0):
-        avgpool1d_output_1 = forge.op.AvgPool1d(
-            "",
-            avgpool1d_input_0,
-            kernel_size=[64],
-            stride=[64],
-            padding=[0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-        )
-        return avgpool1d_output_1
-
-
-class Avgpool1D1(ForgeModule):
-    def __init__(self, name):
-        super().__init__(name)
-
-    def forward(self, avgpool1d_input_0):
-        avgpool1d_output_1 = forge.op.AvgPool1d(
-            "",
-            avgpool1d_input_0,
-            kernel_size=[49],
-            stride=[49],
-            padding=[0, 0],
-            ceil_mode=False,
-            count_include_pad=True,
-        )
-        return avgpool1d_output_1
+    def forward(self, log_input_0):
+        log_output_1 = forge.op.Log("", log_input_0)
+        return log_output_1
 
 
 def ids_func(param):
@@ -57,34 +32,24 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Avgpool1D0,
-        [((1, 768, 64), torch.float32)],
-        {
-            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[64]",
-                "stride": "[64]",
-                "padding": "[0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-            },
-        },
+        Log0,
+        [((1, 6, 4096), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
     ),
     (
-        Avgpool1D1,
-        [((1, 768, 49), torch.float32)],
-        {
-            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "[49]",
-                "stride": "[49]",
-                "padding": "[0, 0]",
-                "ceil_mode": "False",
-                "count_include_pad": "True",
-            },
-        },
+        Log0,
+        [((1, 6, 2048), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Log0,
+        [((1, 6, 5120), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Log0,
+        [((1, 6, 3072), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -94,7 +59,7 @@ forge_modules_and_shapes_dtypes_list = [
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("AvgPool1d")
+    forge_property_recorder.record_forge_op_name("Log")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
