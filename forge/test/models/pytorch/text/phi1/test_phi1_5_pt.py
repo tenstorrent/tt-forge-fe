@@ -62,7 +62,6 @@ def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail
 def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -95,7 +94,6 @@ def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail
 def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
