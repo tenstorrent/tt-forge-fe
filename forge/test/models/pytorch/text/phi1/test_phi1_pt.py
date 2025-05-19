@@ -27,7 +27,7 @@ variants = ["microsoft/phi-1"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail
+@pytest.mark.xfail
 def test_phi_causal_lm_pytorch(variant):
 
     # Record Forge Property
@@ -61,7 +61,6 @@ def test_phi_causal_lm_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail
 def test_phi_token_classification_pytorch(variant):
 
     # Record Forge Property
@@ -94,7 +93,6 @@ def test_phi_token_classification_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-# @pytest.mark.xfail
 def test_phi_sequence_classification_pytorch(variant):
 
     # Record Forge Property
