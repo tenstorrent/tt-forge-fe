@@ -1,8 +1,5 @@
 # xfail_transpose_MLIR_RUNTIME ids
 
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.RawUInt8-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.RawUInt16-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.Int8-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.UInt16-HiFi4
-transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-forge.Int32-HiFi4
+transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int8-HiFi4
+transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int32-HiFi4
+transpose-FROM_HOST-{'dim0': 1, 'dim1': 2}-(1, 2, 3, 4)-torch.int64-HiFi4
