@@ -77,7 +77,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
             inputs,
             framework_model,
             compiled_model,
-            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97), verify_emitc_correctness=True),
             forge_property_handler=forge_property_recorder,
         )
         # Inference
@@ -121,7 +121,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -158,7 +158,7 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -192,4 +192,4 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

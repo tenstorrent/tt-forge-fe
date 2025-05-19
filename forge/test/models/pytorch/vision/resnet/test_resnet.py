@@ -59,7 +59,10 @@ def test_resnet_hf(variant, forge_property_recorder):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(
+            value_checker=AutomaticValueChecker(pcc=0.95),
+            verify_emitc_correctness=True
+        ),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -129,7 +132,7 @@ def test_resnet_timm(forge_property_recorder):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -169,4 +172,4 @@ def test_resnet_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

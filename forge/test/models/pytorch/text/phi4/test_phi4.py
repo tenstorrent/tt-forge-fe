@@ -12,6 +12,7 @@ from transformers import (
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.utils import download_model
 
@@ -51,7 +52,7 @@ def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -86,7 +87,7 @@ def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
     compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -128,4 +129,4 @@ def test_phi_4_sequence_classification_pytorch(forge_property_recorder, variant)
     compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

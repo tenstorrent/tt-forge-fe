@@ -7,6 +7,7 @@ import paddle
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from forge.tvm_calls.forge_utils import paddle_trace
 
 from forge.forge_property_utils import Framework, Source, Task
@@ -54,7 +55,7 @@ def test_roberta_sequence_classification(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -94,4 +95,4 @@ def test_roberta_causal_lm(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

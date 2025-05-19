@@ -9,6 +9,7 @@ from PIL import Image
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 # sys.path.append("forge/test/model_demos/models")
 # from fchardnet import get_model, fuse_bn_recursively
@@ -52,4 +53,4 @@ def test_fchardnet(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

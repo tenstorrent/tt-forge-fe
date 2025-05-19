@@ -11,6 +11,7 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from test.models.tensorflow.vision.resnet.utils.image_utils import get_sample_inputs
 
 
@@ -46,6 +47,6 @@ def test_resnet_tensorflow(forge_property_recorder):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98), verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )

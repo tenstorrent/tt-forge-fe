@@ -7,6 +7,7 @@ import torch
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
 # from mobilenetv1_ssd.vision.ssd.mobilenetv1_ssd import create_mobilenetv1_ssd
@@ -48,4 +49,4 @@ def test_mobilenet_v1_ssd_pytorch_1x1(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

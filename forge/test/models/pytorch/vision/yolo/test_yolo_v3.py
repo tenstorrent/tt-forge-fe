@@ -8,6 +8,7 @@ from PIL import Image
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 # https://github.com/holli/yolov3_pytorch
 # sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
@@ -56,7 +57,7 @@ def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV3_imgcls_holli_pytorch():
@@ -104,4 +105,4 @@ def test_yolov3_holli_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

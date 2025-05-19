@@ -11,6 +11,7 @@ import torch
 import forge
 from forge.forge_property_utils import Framework, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 # import sys
 # sys.path.append("third_party/confidential_customer_models/internal/tri_basic_2/scripts")
@@ -54,4 +55,4 @@ def test_tri_basic_2_sematic_segmentation_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

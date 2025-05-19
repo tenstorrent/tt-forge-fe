@@ -12,6 +12,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.wideresnet.utils.utils import (
     generate_model_wideresnet_imgcls_pytorch,
@@ -50,7 +51,7 @@ def test_wideresnet_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     post_processing(co_out)
@@ -100,7 +101,7 @@ def test_wideresnet_timm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     post_processing(co_out)

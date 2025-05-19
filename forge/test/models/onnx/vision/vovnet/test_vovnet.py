@@ -8,6 +8,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.vovnet.utils.model_utils import (
     get_image,
@@ -189,4 +190,4 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

@@ -8,6 +8,7 @@ import onnx
 import forge
 from transformers import ViTForImageClassification
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from forge.forge_property_utils import Framework, Source, Task
 
 
@@ -53,7 +54,7 @@ def test_vit_classify_224(forge_property_recorder, variant, forge_tmp_path):
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        onnx_model, sample_inputs=inputs, module_name=module_name, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder
     )
 
     # Model Verification

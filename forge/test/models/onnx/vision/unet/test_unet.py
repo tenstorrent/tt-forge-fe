@@ -7,6 +7,7 @@ import numpy as np
 import forge
 import onnx
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 from forge.forge_property_utils import Framework, Source, Task
 from utils import load_inputs
 
@@ -54,4 +55,4 @@ def test_unet_onnx(forge_property_recorder, forge_tmp_path):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

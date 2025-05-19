@@ -7,6 +7,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.vovnet.utils.model_utils import (
@@ -53,7 +54,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -90,7 +91,7 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -128,7 +129,7 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -169,4 +170,4 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

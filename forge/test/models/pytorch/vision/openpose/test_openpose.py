@@ -8,6 +8,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.openpose.utils.model import (
     OpenPoseBodyModel,
@@ -73,7 +74,7 @@ def test_openpose_basic(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 def generate_model_openpose_posdet_osmr_pytorch(variant):
@@ -115,4 +116,4 @@ def test_openpose_osmr(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
