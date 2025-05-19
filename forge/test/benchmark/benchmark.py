@@ -24,9 +24,11 @@ MODELS = {
     "llama": models.llama.llama_prefill_benchmark,
     "mobilenetv2_basic": models.mobilenetv2_basic.mobilenetv2_basic_benchmark,
     "efficientnet_timm": models.efficientnet_timm.efficientnet_timm_benchmark,
-    "segformer_classification": models.segformer.segformer_classification_benchmark,
+    "segformer": models.segformer.segformer_benchmark,
     "vit_base": models.vit.vit_base_benchmark,
     "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
+    "yolo_v8": models.yolo_v8.yolo_v8_benchmark,
+    "yolo_v10": models.yolo_v10.yolo_v10_benchmark,
 }
 
 

@@ -27,8 +27,6 @@ varaints = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
 def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
-    if variant != "vovnet27s":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -69,7 +67,6 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
 
 @pytest.mark.nightly
 def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     variant = "vovnet39"
 
@@ -93,7 +90,10 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def generate_model_vovnet57_imgcls_stigma_pytorch():
@@ -105,7 +105,6 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
 
 @pytest.mark.nightly
 def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     variant = "vovnet_v1_57"
 
@@ -129,7 +128,10 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def generate_model_vovnet_imgcls_timm_pytorch(variant):
@@ -138,22 +140,13 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
     return model, [image_tensor], {}
 
 
-variants = [
-    "ese_vovnet19b_dw",
-    "ese_vovnet39b",
-    "ese_vovnet99b",
-    pytest.param(
-        "ese_vovnet19b_dw.ra_in1k",
-        marks=[pytest.mark.xfail],
-    ),
-]
+variants = ["ese_vovnet19b_dw", "ese_vovnet39b", "ese_vovnet99b", "ese_vovnet19b_dw.ra_in1k"]
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_vovnet_timm_pytorch(forge_property_recorder, variant):
-    if variant != "ese_vovnet19b_dw.ra_in1k":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

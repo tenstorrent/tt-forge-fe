@@ -27,13 +27,15 @@ variants = [
         "microsoft/phi-2",
         marks=[pytest.mark.xfail],
     ),
-    "microsoft/phi-2-pytdml",
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB"),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
 def test_phi2_clm(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -87,10 +89,21 @@ def test_phi2_clm(forge_property_recorder, variant):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
+]
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -133,10 +146,21 @@ def test_phi2_token_classification(forge_property_recorder, variant):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 27 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
+]
+
+
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

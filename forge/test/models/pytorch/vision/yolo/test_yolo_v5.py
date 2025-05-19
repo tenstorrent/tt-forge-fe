@@ -34,7 +34,6 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-@pytest.mark.xfail
 def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
     if size != "s":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")
@@ -85,7 +84,6 @@ size = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
     if size != "s":
@@ -137,7 +135,6 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-@pytest.mark.xfail
 def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
     if size != "n":
         pytest.skip("Skipping due to the current CI/CD pipeline limitations")

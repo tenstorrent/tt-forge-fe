@@ -21,6 +21,7 @@ from forge.verify.verify import verify
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from forge.config import CompilerConfig, MLIRConfig
 from forge._C import DataFormat
+from test.benchmark.utils import YoloWrapper
 
 
 # Common constants
@@ -37,7 +38,7 @@ DATA_FORMAT = [
 
 # Input size configurations
 INPUT_SIZE = [
-    (512, 512),
+    (640, 640),
 ]
 
 # Channel size configurations
@@ -48,36 +49,29 @@ CHANNEL_SIZE = [
 # Loop count configurations
 LOOP_COUNT = [1, 2, 4, 8, 16, 32]
 
-# Variants for image classification
-VARIANTS = [
-    "nvidia/mit-b0",
-]
-
 
 @pytest.mark.parametrize("input_size", INPUT_SIZE, ids=[f"input_size={item}" for item in INPUT_SIZE])
 @pytest.mark.parametrize("batch_size", BATCH_SIZE, ids=[f"batch_size={item}" for item in BATCH_SIZE])
 @pytest.mark.parametrize("loop_count", LOOP_COUNT, ids=[f"loop_count={item}" for item in LOOP_COUNT])
 @pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
-@pytest.mark.parametrize("variant", VARIANTS, ids=[f"variant={item}" for item in VARIANTS])
 @pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
-def test_segformer(
+def test_yolo_v10(
     training,
     batch_size,
     input_size,
     channel_size,
     loop_count,
-    variant,
     data_format,
 ):
     """
-    This function creates a basic Segformer model for image classification task using PyTorch.
+    This function creates a basic Yolo8 model for image classification task using PyTorch.
     It is used for benchmarking purposes.
     """
 
     if training:
         pytest.skip("Training is not supported")
 
-    module_name = "Segformer"
+    module_name = "YOLOv10"
 
     # Create random inputs
     input_sample = [
@@ -93,18 +87,12 @@ def test_segformer(
         # Convert input to bfloat16
         input_sample = [input.to(torch.bfloat16) for input in input_sample]
 
-    # Set model configurations
-    config = SegformerConfig.from_pretrained(variant)
-    config_dict = config.to_dict()
-    config_dict["return_dict"] = False
-    config = SegformerConfig(**config_dict)
-
-    # Load the model from HuggingFace
-    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    # Load YOLO model weights, initialize and load model
+    url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10n.pt"
+    framework_model = YoloWrapper(url)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         framework_model = framework_model.to(torch.bfloat16)
-    framework_model.eval()
 
     # Compiler configuration
     compiler_config = CompilerConfig()
@@ -133,9 +121,9 @@ def test_segformer(
         co_out = compiled_model(*input_sample)
     end = time.time()
 
-    fw_out = framework_model(*input_sample)[0]
+    fw_out = framework_model(*input_sample)
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
+    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -143,13 +131,13 @@ def test_segformer(
     total_samples = batch_size * loop_count
 
     samples_per_sec = total_samples / total_time
-    model_name = "Segformer"
-    model_type = "Classification, Random Input Data"
-    dataset_name = "Segformer, Random Data"
-    num_layers = 54  # Number of layers in the model, in this case number of convolutional layers
+    model_name = "YOLOv10"
+    model_type = "Detection, Random Input Data"
+    dataset_name = "YOLOv10, Random Data"
+    num_layers = -1  # When this value is negative, it means it is not applicable
 
     print("====================================================================")
-    print("| Segformer Benchmark Results:                                     |")
+    print("| YOLOv10 Benchmark Results:                                       |")
     print("--------------------------------------------------------------------")
     print(f"| Model: {model_name}")
     print(f"| Model type: {model_type}")
@@ -215,9 +203,9 @@ def test_segformer(
     return result
 
 
-def segformer_benchmark(config: dict):
+def yolo_v10_benchmark(config: dict):
     """
-    Run the segformer benchmark.
+    Run the yolo10 benchmark.
     This function is a placeholder for the actual benchmark implementation.
     """
 
@@ -228,20 +216,18 @@ def segformer_benchmark(config: dict):
     channel_size = CHANNEL_SIZE[0]
     output_file = config["output"]
     loop_count = config["loop_count"]
-    variant = VARIANTS[0]
 
-    result = test_segformer(
+    result = test_yolo_v10(
         training=training,
         batch_size=batch_size,
         input_size=input_size,
         channel_size=channel_size,
         loop_count=loop_count,
-        variant=variant,
         data_format=data_format,
     )
 
     if not output_file:
-        output_file = f"forge-benchmark-e2e-segformer_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-yolo10_{result['run_type']}.json"
     result["output"] = output_file
 
     # Save the results to a file

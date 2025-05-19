@@ -8,6 +8,8 @@ from .resnet_hf_config import resnet_hf_config_benchmark
 from .llama import llama_prefill_benchmark
 from .mobilenetv2_basic import mobilenetv2_basic_benchmark
 from .efficientnet_timm import efficientnet_timm_benchmark
-from .segformer import segformer_classification_benchmark
+from .segformer import segformer_benchmark
 from .vit import vit_base_benchmark
 from .vovnet import vovnet_osmr_benchmark
+from .yolo_v8 import yolo_v8_benchmark
+from .yolo_v10 import yolo_v10_benchmark
