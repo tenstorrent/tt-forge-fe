@@ -18,7 +18,11 @@ This document walks you through how to set up to run models using tt-forge. The 
 
 ## Configuring Hardware
 
-Configure your Tenstorrent hardware before continuing. Use the [Starting Guide](https://docs.tenstorrent.com/getting-started/README.html).
+Configure your hardware with tt-installer:
+
+```bash
+TT_SKIP_INSTALL_PODMAN=0 TT_SKIP_INSTALL_METALIUM_CONTAINER=0 /bin/bash -c "$(curl -fsSL https://github.com/tenstorrent/tt-installer/releases/latest/download/install.sh)"
+```
 
 > **NOTE:** This walkthrough assumes that you use the [Quick Installation]
 > (https://docs.tenstorrent.com/getting-started/README. html#quick-installation) instructions for set up. Please ensure that after
@@ -26,7 +30,7 @@ Configure your Tenstorrent hardware before continuing. Use the [Starting Guide](
 
 ## Setting up the Docker Container
 
-The simplest way to run models is to use one of the Docker images. There are two Docker images you can use to set up your environment:
+The simplest way to run models is to use the Docker image. T
 
 * **Base Image**: This image includes all the necessary dependencies.
     * ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04
@@ -57,10 +61,17 @@ sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-4. Run the container of your choice (replace the curly braces and message inside with one of the images listed above):
+4. Run the docker container:
 
 ```bash
-sudo  docker run -it --shm-size=4g --cap-add ALL -v /dev/hugepages:/dev/hugepages --device /dev/tenstorrent/0 {INSERT DOCKER IMAGE HERE}
+sudo docker run \
+  --rm \
+  -it \
+  --privileged \
+  --device /dev/tenstorrent/0 \
+  -v /dev/hugepages-1G:/dev/hugepages-1G \
+  --mount type=bind,source=/sys/devices/system/node,target=/sys/devices/system/node \
+  ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
 ```
 
 5. If you want to check that it's running, open a new tab with the **Same Command** option and run the following:
@@ -72,11 +83,11 @@ docker ps
 ## Creating a Virtual Environment
 It is recommended that you install a virtual environment for the wheel you want to work with. Wheels from different repos may have conflicting dependencies.
 
-Create a virtual environment:
+Create a virtual environment (the environment name in the command is an example for the command, it's not required to use the same name listed):
 
 ```bash
-python3 -m venv nameofenvironment-venv
-source nameofenvironment/bin/activate
+python3 -m venv forge-venv
+source forge-venv/bin/activate
 ```
 
 ## Installing a Wheel
@@ -94,7 +105,7 @@ This section walks you through downloading and installing a wheel. You can insta
 For this walkthrough, tt-forge-fe is used. You need to install two wheels for set up:
 
 ```bash
-pip install https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250509060216/forge-0.1.0.dev20250509060216-cp310-cp310-linux_x86_64.whl
+pip install https://github.com/tenstorrent/tt-forge/releases/download/nightly-0.1.0.dev20250514060212/forge-0.1.0.dev20250514060212-cp310-cp310-linux_x86_64.whl
 ```
 
 ```bash
@@ -106,6 +117,12 @@ pip install  https://github.com/tenstorrent/tt-forge/releases/download/nightly-0
 > page.
 > If you plan to work with wheels from different repositories, make a separate
 > environment for each one. Some wheels have conflicting dependencies.
+
+3. Clone the tt-forge-fe repo:
+
+```bash
+git clone https://github.com/tenstorrent/tt-forge-fe.git
+```
 
 ## Run First Example Case
 
