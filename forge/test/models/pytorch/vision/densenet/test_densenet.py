@@ -50,9 +50,6 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
         framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet121", pretrained=True)
@@ -92,10 +89,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet161",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet161",
     ],
 )
 def test_densenet_161_pytorch(forge_property_recorder, variant):
@@ -107,9 +101,6 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
@@ -131,10 +122,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet169",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet169",
     ],
 )
 def test_densenet_169_pytorch(forge_property_recorder, variant):
@@ -146,9 +134,6 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
@@ -180,9 +165,6 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)

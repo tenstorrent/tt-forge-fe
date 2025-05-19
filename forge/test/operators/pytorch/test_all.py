@@ -26,6 +26,7 @@ from test.operators.utils import TestSuite
 from test.operators.utils import TestPlanScanner
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
+from test.operators.utils import TestSweepsFeatures
 
 
 @dataclass
@@ -146,12 +147,9 @@ query_params = RunQueryParams.from_env()
 class TestVerification:
     """Helper class for performing test verification. It allows running tests in dry-run mode."""
 
-    DRY_RUN = False
-    # DRY_RUN = True
-
     @classmethod
     def verify(cls, test_vector: TestVector, test_device):
-        if cls.DRY_RUN:
+        if TestSweepsFeatures.params.dry_run:
             # pytest.skip("Dry run")
             return
         test_vector.verify(test_device)

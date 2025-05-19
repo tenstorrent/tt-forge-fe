@@ -8,12 +8,10 @@ import pytest
 import torchvision.transforms as transforms
 from PIL import Image
 
-# TODO: These are old forge, we should update them to the currently version.
-# import forge
-# from forge import DepricatedVerifyConfig
-# from forge.verify.backend import verify_module
-# from forge.verify.config import TestKind
-# from forge._C.backend_api import BackendDevice
+from test.models.pytorch.vision.dla.utils.utils import post_processing
+import forge
+from forge.verify.verify import verify
+from forge.forge_property_utils import Framework, Source, Task
 
 
 variants = [
@@ -30,13 +28,19 @@ variants = [
 ]
 
 
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Requires restructuring")
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_dla_onnx(test_device, variant):
-    compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.default_df_override = forge._C.Float16_b
+def test_dla_onnx(forge_property_recorder, variant, tmp_path):
+    if variant != "dla34":
+        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.ONNX, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
+    )
+
+    # Record Forge Property
+    forge_property_recorder.record_group("generality")
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -52,47 +56,30 @@ def test_dla_onnx(test_device, variant):
         ]
     )
     img_tensor = transform(image).unsqueeze(0)
+    inputs = [img_tensor]
 
-    onnx_dir_path = "dla"
-    onnx_model_path = f"dla/{variant}_Opset18.onnx"
-    if not os.path.exists(onnx_model_path):
+    onnx_path = f"{tmp_path}/dla_{variant}_Opset18.onnx"
+    if not os.path.exists(onnx_path):
         if not os.path.exists("dla"):
             os.mkdir("dla")
         url = f"https://github.com/onnx/models/raw/main/Computer_Vision/{variant}_Opset18_timm/{variant}_Opset18.onnx?download="
         response = requests.get(url, stream=True)
-        with open(onnx_model_path, "wb") as f:
+        with open(onnx_path, "wb") as f:
             f.write(response.content)
 
     # Load DLA model
     model_name = f"dla_{variant}_onnx"
-    onnx_model = onnx.load(onnx_model_path)
-    tt_model = forge.OnnxModule(model_name, onnx_model)
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule(model_name, onnx_model)
 
-    pcc = 0.99
-    if test_device.arch == BackendDevice.Wormhole_B0:
-        if variant == "dla34":
-            pcc = 0.98
-        elif variant == "dla169":
-            pcc = 0.96
-    elif test_device.arch == BackendDevice.Grayskull:
-        if variant == "dla46_c":
-            pcc = 0.97
-        if variant == "dla102x2":
-            os.environ["FORGE_FORCE_CONV_MULTI_OP_FRACTURE"] = "1"
-
-    verify_module(
-        tt_model,
-        input_shapes=[img_tensor.shape],
-        inputs=[(img_tensor,)],
-        verify_cfg=DepricatedVerifyConfig(
-            arch=test_device.arch,
-            devtype=test_device.devtype,
-            devmode=test_device.devmode,
-            test_kind=TestKind.INFERENCE,
-            pcc=pcc,
-        ),
+    # Forge compile framework model
+    compiled_model = forge.compile(
+        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Cleanup model files
-    os.remove(onnx_model_path)
-    os.rmdir(onnx_dir_path)
+    # Model Verification
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # post processing
+    post_processing(co_out)

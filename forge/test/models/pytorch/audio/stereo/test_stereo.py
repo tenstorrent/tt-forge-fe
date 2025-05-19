@@ -43,9 +43,6 @@ def test_stereo(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, processor = load_model(variant)
 
     input_ids, attn_mask, decoder_input_ids = load_inputs(framework_model, processor)

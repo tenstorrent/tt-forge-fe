@@ -35,9 +35,6 @@ def test_dla_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = load_dla_model(variant)
 
@@ -72,9 +69,6 @@ def test_dla_timm(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)

@@ -19,16 +19,12 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 @pytest.mark.nightly
 @pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="phi3_5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P2")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -49,8 +45,8 @@ def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model

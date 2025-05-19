@@ -26,9 +26,9 @@ variants = [
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_retinanet(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -38,9 +38,6 @@ def test_retinanet(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Prepare model
     url = f"https://github.com/NVIDIA/retinanet-examples/releases/download/19.04/{variant}.zip"
@@ -100,9 +97,6 @@ def test_retinanet_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

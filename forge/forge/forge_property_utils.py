@@ -260,6 +260,20 @@ class Config:
     verify: Dict[str, Any] = field(default_factory=lambda: dict())
 
 
+# Model group property that is part of a model info. With current repports we are using tags: 'group' and 'tags.group'.
+# If we want to add group there too, we would need to change how reporters read this info.
+class ModelGroup(StrEnum):
+    GENERALITY = "generality"
+    RED = "red"
+
+
+# Model priority property that is part of a model info. With current repports we are using tag: 'priority'.
+# If we want to add priority in model's info too, we would need to change how reporters read this info.
+class ModelPriority(StrEnum):
+    P1 = "P1"
+    P2 = "P2"
+
+
 @dataclass_json
 @dataclass
 class ModelInfo:
@@ -430,30 +444,6 @@ class ForgePropertyHandler:
                     return field_type()
         # Fallback: return an empty dictionary if no dataclass instance can be created.
         return {}
-
-    def record_group(self, group: str):
-        """
-        Records the group property in the tags.
-
-        Args:
-            group (str): The group value to be recorded.
-        """
-        self.add("group", group)
-        self.add("tags.group", group)
-
-    def record_priority(self, priority: str):
-
-        """
-
-         Records the priority property in the tags.
-
-        Args:
-
-             priority (str): The priority value to be recorded.
-
-        """
-
-        self.add("priority", priority)
 
     def record_model_name(self, model_name: str):
         """
@@ -674,23 +664,21 @@ class ForgePropertyHandler:
 
     def record_refined_error_message(self, refined_error_message: str):
         """
-        Records the refined error message in the tags if single op details recording is enabled.
+        Records the refined error message in the tags.
 
         Args:
             refined_error_message (str): The refined error message string.
         """
-        if self.record_single_op_details:
-            self.add("tags.refined_error_message", refined_error_message)
+        self.add("tags.refined_error_message", refined_error_message)
 
     def record_failure_category(self, failure_category: str):
         """
-        Records the failure category in the tags if single op details recording is enabled.
+        Records the failure category in the tags.
 
         Args:
             failure_category (str): The failure category string.
         """
-        if self.record_single_op_details:
-            self.add("tags.failure_category", failure_category)
+        self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """
@@ -774,6 +762,8 @@ class ForgePropertyHandler:
         source: Source,
         variant: str = "base",
         suffix: str | None = None,
+        group: ModelGroup = ModelGroup.GENERALITY,
+        priority: ModelPriority = ModelPriority.P2,
     ) -> str:
         """
         Records model properties and generates a module name and stores it.
@@ -785,6 +775,8 @@ class ForgePropertyHandler:
             task: The task type (e.g., qa,mlm, etc.)
             source: The model source (e.g., hf,torchhub etc.)
             suffix: Optional suffix to append to the module name
+            group: The model group
+            priority: The model priority
 
         Returns:
             The generated module name
@@ -796,6 +788,15 @@ class ForgePropertyHandler:
         self.add("tags.model_info.variant_name", variant)
         self.add("tags.model_info.task", task.full)
         self.add("tags.model_info.source", source.full)
+
+        # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
+        # Leaving it as it is for now.
+        # self.add("tags.model_info.priority", priority.value)
+        # self.add("tags.model_info.group", group.value)
+
+        self.add("group", group.value)
+        self.add("tags.group", group.value)
+        self.add("priority", priority.value)
 
         # Build and return the module name
         module_name = build_module_name(

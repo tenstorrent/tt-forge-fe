@@ -32,8 +32,6 @@ def test_resnet(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    forge_property_recorder.record_group("generality")
-
     framework_model = download_model(FlaxResNetForImageClassification.from_pretrained, variant, return_dict=False)
 
     key = random.PRNGKey(0)

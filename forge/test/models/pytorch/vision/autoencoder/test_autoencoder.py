@@ -25,9 +25,6 @@ def test_conv_ae_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -72,9 +69,6 @@ def test_linear_ae_pytorch(forge_property_recorder):
         task=Task.IMAGE_ENCODING,
         source=Source.GITHUB,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.

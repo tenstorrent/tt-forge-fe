@@ -51,8 +51,6 @@ params = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
 def test_xception_timm(forge_property_recorder, variant):
-    if variant not in ["xception", "xception71.tf_in1k"]:
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -62,9 +60,6 @@ def test_xception_timm(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     (framework_model, inputs) = generate_model_xception_imgcls_timm(variant)
 

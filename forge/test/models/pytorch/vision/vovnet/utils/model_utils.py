@@ -55,7 +55,10 @@ def preprocess_steps(model_type):
 
 
 def preprocess_timm_model(model_name):
-    model = timm.create_model(model_name, pretrained=True)
+    use_pretrained_weights = True
+    if model_name == "ese_vovnet99b":
+        use_pretrained_weights = False
+    model = timm.create_model(model_name, pretrained=use_pretrained_weights)
     model.eval()
     config = resolve_data_config({}, model=model)
     transform = create_transform(**config)

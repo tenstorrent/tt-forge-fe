@@ -18,7 +18,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -40,10 +40,8 @@ def test_mobilenetv2_basic(forge_property_recorder):
         variant="basic",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v2")
@@ -87,9 +85,6 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -127,9 +122,6 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant)
 
@@ -170,9 +162,6 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant)
 
@@ -221,9 +210,6 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_mobilenetV2_imgcls_timm_pytorch(variant)
 
@@ -284,9 +270,6 @@ def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetV2_semseg_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -304,7 +287,6 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_mobilenetv2_torchvision(forge_property_recorder, variant):
 
@@ -316,9 +298,6 @@ def test_mobilenetv2_torchvision(forge_property_recorder, variant):
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

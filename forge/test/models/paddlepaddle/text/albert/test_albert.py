@@ -29,7 +29,6 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = AlbertForMaskedLM.from_pretrained(variant)

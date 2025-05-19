@@ -409,6 +409,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -494,6 +495,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -544,6 +546,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {
@@ -743,7 +746,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolo_v5_yolov5n_img_cls_torchhub_640x640",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {
@@ -878,6 +881,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
                 "pt_wideresnet_wide_resnet50_2_img_cls_timm",
                 "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {
@@ -2370,6 +2374,25 @@ forge_modules_and_shapes_dtypes_list = [
                 "dilation": "1",
                 "ceil_mode": "False",
                 "channel_last": "1",
+            },
+        },
+    ),
+    (
+        Maxpool2D8,
+        [((1, 64, 214, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {
+                "kernel_size": "3",
+                "stride": "2",
+                "padding": "[1, 1, 1, 1]",
+                "dilation": "1",
+                "ceil_mode": "False",
+                "channel_last": "0",
             },
         },
     ),

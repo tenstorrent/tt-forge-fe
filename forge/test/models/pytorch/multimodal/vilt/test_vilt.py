@@ -64,9 +64,6 @@ def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -119,9 +116,6 @@ def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 

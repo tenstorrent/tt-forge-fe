@@ -22,7 +22,7 @@ from test.models.pytorch.vision.sam.utils.model import get_model_inputs
     ],
 )
 @pytest.mark.nightly
-def test_sam_onnx(forge_property_recorder, variant, tmp_path):
+def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -33,19 +33,12 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
         source=Source.GITHUB,
     )
 
-    if variant == "facebook/sam-vit-base":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load  model and input
-
     framework_model, sample_inputs = get_model_inputs(variant)
     input_tensor = sample_inputs[0]
     sample_inputs = [input_tensor]
 
-    onnx_path = f"{tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
+    onnx_path = f"{forge_tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(
         framework_model,
         input_tensor,

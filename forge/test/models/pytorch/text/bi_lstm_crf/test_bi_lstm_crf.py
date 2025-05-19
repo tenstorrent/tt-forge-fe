@@ -5,7 +5,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model
@@ -21,11 +27,9 @@ def test_birnn_crf(forge_property_recorder):
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     test_sentence = ["apple", "corporation", "is", "in", "georgia"]
 

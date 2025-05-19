@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import build_optimum_cli_command
 import subprocess
 import onnx
@@ -18,7 +18,7 @@ variants = ["ministral/Ministral-3b-instruct"]
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
-def test_ministral(forge_property_recorder, variant, tmp_path):
+def test_ministral(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -27,11 +27,8 @@ def test_ministral(forge_property_recorder, variant, tmp_path):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")
@@ -44,8 +41,8 @@ def test_ministral(forge_property_recorder, variant, tmp_path):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model

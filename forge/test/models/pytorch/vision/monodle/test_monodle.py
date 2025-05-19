@@ -21,9 +21,6 @@ def test_monodle_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="monodle", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
     image = Image.open(requests.get(url, stream=True).raw)
