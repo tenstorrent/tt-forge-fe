@@ -140,6 +140,7 @@ pow-FROM_HOST-{'exponent': -2.0}-(14, 13, 89, 3)-torch.int32-HiFi4
 pow-FROM_HOST-{'exponent': 0.5}-(14, 13, 89, 3)-torch.int64-HiFi4
 pow-FROM_HOST-{'exponent': -2.0}-(14, 13, 89, 3)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 45, 17)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 45, 17)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 45, 17)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 45, 17)-torch.int32-HiFi4
@@ -147,6 +148,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 45, 17)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 45, 17)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 45, 17)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 100, 100)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 100, 100)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 100, 100)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 100, 100)-torch.int32-HiFi4
@@ -154,6 +156,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 100, 100)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 100, 100)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 100, 100)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 10000, 1)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 10000, 1)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 10000, 1)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 10000, 1)-torch.int32-HiFi4
@@ -161,6 +164,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 10000, 1)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 10000, 1)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 10000, 1)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 17, 41)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 17, 41)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 17, 41)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 17, 41)-torch.int32-HiFi4
@@ -168,6 +172,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 17, 41)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 17, 41)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 17, 41)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(11, 1, 23)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(11, 1, 23)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(11, 1, 23)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(11, 1, 23)-torch.int32-HiFi4
@@ -175,6 +180,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(11, 1, 23)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(11, 1, 23)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(11, 1, 23)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 11, 1, 23)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 11, 1, 23)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 11, 1, 23)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 11, 1, 23)-torch.int32-HiFi4
@@ -182,6 +188,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 11, 1, 23)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 11, 1, 23)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 11, 1, 23)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(1, 1, 10, 1000)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1, 10, 1000)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 1, 10, 1000)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1, 10, 1000)-torch.int32-HiFi4
@@ -189,6 +196,7 @@ pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 1, 10, 1000)-torch.int32-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(1, 1, 10, 1000)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(1, 1, 10, 1000)-torch.int64-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-torch.float32-HiFi4
+pow-CONST_EVAL_PASS-{'exponent': 0.0}-(14, 13, 89, 3)-torch.bfloat16-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(14, 13, 89, 3)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': -2.0}-(14, 13, 89, 3)-torch.int8-HiFi4
 pow-CONST_EVAL_PASS-{'exponent': 0.5}-(14, 13, 89, 3)-torch.int32-HiFi4
