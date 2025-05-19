@@ -660,7 +660,7 @@ TestParamsData.test_plan = TestPlan(
             ),
             dev_data_formats=[
                 item
-                for item in TestCollectionData.float.dev_data_formats   # no sense to test with int data formats
+                for item in TestCollectionData.float.dev_data_formats  # no sense to test with int data formats
                 if item not in TestCollectionData.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
@@ -672,7 +672,7 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionData.float.dev_data_formats   # no sense to test with int data formats
+                for item in TestCollectionData.float.dev_data_formats  # no sense to test with int data formats
                 if item not in TestCollectionData.single.dev_data_formats
             ],
             math_fidelities=TestCollectionData.single.math_fidelities,
