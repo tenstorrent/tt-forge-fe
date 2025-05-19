@@ -45,9 +45,6 @@ def test_hippynn(forge_property_recorder):
         source=Source.GITHUB,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model
     framework_model, output_key = load_model()
     framework_model.eval()

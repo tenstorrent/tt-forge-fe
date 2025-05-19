@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -150,22 +150,24 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_llama3_causal_lm(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
-    # Record Forge Property
     if variant in [
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
+        group = ModelGroup.RED
     else:
-        forge_property_recorder.record_group("generality")
+        group = ModelGroup.GENERALITY
+
+    # Record Forge Property
+    module_name = forge_property_recorder.record_model_properties(
+        framework=Framework.PYTORCH,
+        model="llama3",
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+    )
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -276,9 +278,6 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

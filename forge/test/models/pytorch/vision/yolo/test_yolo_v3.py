@@ -45,9 +45,6 @@ def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
         source=Source.TORCH_HUB,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
 
     # Forge compile framework model
@@ -92,9 +89,6 @@ def test_yolov3_holli_pytorch(forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
 

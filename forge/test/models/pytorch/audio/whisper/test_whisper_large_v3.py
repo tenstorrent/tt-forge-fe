@@ -16,7 +16,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 
@@ -48,10 +48,8 @@ def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
         variant=variant,
         task=Task.SPEECH_TRANSLATE,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     processor = WhisperProcessor.from_pretrained(variant)
     framework_model = WhisperForConditionalGeneration.from_pretrained(variant)

@@ -37,9 +37,6 @@ def test_ddrnet_pytorch(forge_property_recorder, variant):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
     if variant == "ddrnet23s":
 
@@ -102,9 +99,6 @@ def test_ddrnet_semantic_segmentation_pytorch(forge_property_recorder, variant):
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # prepare model
     if variant == "ddrnet23s_cityscapes":

@@ -9,7 +9,7 @@ import pytest
 import onnx
 import torch
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -27,6 +27,8 @@ variants_img_classification = [
 @pytest.mark.nightly
 def test_segformer_image_classification_onnx(forge_property_recorder, variant, forge_tmp_path):
 
+    priority = ModelPriority.P1 if variant == "nvidia/mit-b0" else ModelPriority.P2
+
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -34,14 +36,8 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, f
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant == "nvidia/mit-b0":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForImageClassification.from_pretrained, variant, return_dict=False)
@@ -100,9 +96,6 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model from HuggingFace
     torch_model = download_model(SegformerForSemanticSegmentation.from_pretrained, variant, return_dict=False)

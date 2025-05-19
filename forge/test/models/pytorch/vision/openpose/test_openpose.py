@@ -60,9 +60,6 @@ def test_openpose_basic(forge_property_recorder, variant):
         task=Task.POSE_ESTIMATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_openpose_posdet_custom_pytorch(
         variant,
     )
@@ -102,9 +99,6 @@ def test_openpose_osmr(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="openpose", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_openpose_posdet_osmr_pytorch(
         variant,

@@ -37,9 +37,6 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant, forge_tmp_path):
         framework=Framework.ONNX, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and inputs
     framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
 
@@ -79,9 +76,6 @@ def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
@@ -123,9 +117,6 @@ def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
     # Export model to ONNX
@@ -164,9 +155,6 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,

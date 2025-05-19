@@ -39,8 +39,6 @@ def test_resnet_hf(variant, forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
     images = random.sample(dataset["valid"]["image"], 10)
@@ -110,8 +108,6 @@ def test_resnet_timm(forge_property_recorder):
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load framework model
     framework_model = download_model(timm.create_model, "resnet50", pretrained=True)
 
@@ -155,9 +151,6 @@ def test_resnet_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]

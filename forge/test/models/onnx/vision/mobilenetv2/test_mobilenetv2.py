@@ -15,7 +15,7 @@ from utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 
 params = [
     pytest.param("mobilenetv2_050"),
@@ -29,6 +29,8 @@ params = [
 @pytest.mark.nightly
 def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
 
+    priority = ModelPriority.P1 if variant == "mobilenetv2_050" else ModelPriority.P2
+
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -36,14 +38,8 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant == "mobilenetv2_050":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load mobilenetv2 model
     model = timm.create_model(variant, pretrained=True)

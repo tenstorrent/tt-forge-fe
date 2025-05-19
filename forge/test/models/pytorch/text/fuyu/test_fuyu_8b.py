@@ -40,9 +40,6 @@ def test_fuyu8b(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

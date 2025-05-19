@@ -21,7 +21,13 @@ from torchvision.transforms import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.unet.utils.model import UNET
@@ -43,12 +49,14 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="unet", variant="cityscape", source=Source.OSMR, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.PYTORCH,
+        model="unet",
+        variant="cityscape",
+        source=Source.OSMR,
+        task=Task.IMAGE_SEGMENTATION,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
@@ -102,9 +110,6 @@ def test_unet_holocron_pytorch(forge_property_recorder):
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     from holocron.models.segmentation.unet import unet_tvvgg11
 
@@ -162,9 +167,6 @@ def test_unet_qubvel_pytorch(forge_property_recorder):
         task=Task.IMAGE_SEGMENTATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
     # Forge compile framework model
@@ -220,9 +222,6 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
         "unet",
     )
@@ -247,9 +246,6 @@ def test_unet_carvana(forge_property_recorder):
         source=Source.GITHUB,
         task=Task.IMAGE_SEGMENTATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = UNET(in_channels=3, out_channels=1)

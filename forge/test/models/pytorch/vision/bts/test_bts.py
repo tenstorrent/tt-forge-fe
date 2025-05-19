@@ -38,9 +38,6 @@ def test_bts_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load sample image
     image_path = "third_party/confidential_customer_models/internal/bts/files/samples/rgb_00315.jpg"
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
