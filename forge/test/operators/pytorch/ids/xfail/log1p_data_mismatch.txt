@@ -58,7 +58,6 @@ log1p-CONST_EVAL_PASS-None-(1, 13, 89, 3)-None-None
 log1p-CONST_EVAL_PASS-None-(2, 2, 3, 4)-None-None
 log1p-CONST_EVAL_PASS-None-(4, 11, 1, 23)-None-None
 log1p-CONST_EVAL_PASS-None-(5, 11, 64, 1)-None-None
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-LoFi
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi2
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi3
-log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.bfloat16-HiFi4
+log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
+log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
+log1p-FROM_HOST-None-(1, 2, 3, 4)-torch.int64-HiFi4
