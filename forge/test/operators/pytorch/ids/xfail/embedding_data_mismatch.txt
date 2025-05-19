@@ -947,7 +947,9 @@ embedding-CONST_EVAL_PASS-{'num_embeddings': 41, 'embedding_dim': 3200, 'weight_
 embedding-CONST_EVAL_PASS-{'num_embeddings': 10175, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt16-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 10175, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt16-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.RawUInt32-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 21, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int8-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 21, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int8-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 10175, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.UInt16-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 10175, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.UInt16-None
 embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(9920, 1)-forge.Int32-None
