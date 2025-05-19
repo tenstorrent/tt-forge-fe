@@ -6,6 +6,7 @@ import pytest
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 
@@ -38,4 +39,4 @@ def test_ssd300_vgg16(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

@@ -12,6 +12,7 @@ from forge.forge_property_utils import (
     Task,
 )
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.multimodal.oft.utils.oft_utils import (
     StableDiffusionWrapper,
@@ -47,4 +48,4 @@ def test_oft(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

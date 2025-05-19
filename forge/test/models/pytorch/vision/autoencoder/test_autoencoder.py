@@ -12,6 +12,7 @@ from datasets import load_dataset
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.autoencoder.utils.conv_autoencoder import ConvAE
 from test.models.pytorch.vision.autoencoder.utils.linear_autoencoder import LinearAE
@@ -51,7 +52,7 @@ def test_conv_ae_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 # pretrained weights are not provided in https://github.com/udacity/deep-learning-v2-pytorch,
@@ -97,7 +98,7 @@ def test_linear_ae_pytorch(forge_property_recorder):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     output_image = co_out[0].view(1, 28, 28).detach().numpy()

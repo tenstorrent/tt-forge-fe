@@ -9,6 +9,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.mobilenet.utils.utils import (
     load_mobilenet_model,
@@ -39,7 +40,7 @@ def test_mobilenetv1_basic(forge_property_recorder):
     )
 
     #  Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     post_processing(co_out)
@@ -83,7 +84,7 @@ def test_mobilenetv1_192(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
@@ -123,7 +124,7 @@ def test_mobilenetv1_224(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
@@ -152,4 +153,4 @@ def test_mobilenet_v1_timm(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

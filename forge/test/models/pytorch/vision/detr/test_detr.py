@@ -74,7 +74,7 @@ def test_detr_detection(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -116,4 +116,4 @@ def test_detr_segmentation(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

@@ -18,6 +18,7 @@ from transformers import (
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 
 class Wrapper(torch.nn.Module):
@@ -73,4 +74,4 @@ def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

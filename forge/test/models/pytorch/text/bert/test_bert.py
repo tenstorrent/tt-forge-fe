@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
     Task,
 )
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.text.bert.utils.utils import mean_pooling
 from test.utils import download_model
@@ -63,6 +64,7 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -131,6 +133,7 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -188,7 +191,7 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # post processing
     predicted_value = co_out[0].argmax(-1).item()
@@ -242,6 +245,7 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -286,7 +290,7 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])

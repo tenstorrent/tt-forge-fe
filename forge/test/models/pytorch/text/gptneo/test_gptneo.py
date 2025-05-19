@@ -14,6 +14,7 @@ from transformers import (
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.models_utils import (
     _prepare_4d_causal_attention_mask_with_cache_position,
@@ -92,7 +93,7 @@ def test_gptneo_causal_lm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 variants = [
@@ -166,4 +167,4 @@ def test_gptneo_sequence_classification(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

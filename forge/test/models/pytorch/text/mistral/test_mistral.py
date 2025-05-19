@@ -8,6 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.text.mistral.utils.utils import get_current_weather
 from test.utils import download_model
@@ -50,7 +51,7 @@ def test_mistral(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
@@ -93,4 +94,4 @@ def test_mistral_v0_3(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

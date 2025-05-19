@@ -14,6 +14,7 @@ from forge.forge_property_utils import (
     Task,
 )
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
@@ -65,7 +66,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # post processing
     logits = co_out[0]
@@ -113,7 +114,7 @@ def test_vit_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

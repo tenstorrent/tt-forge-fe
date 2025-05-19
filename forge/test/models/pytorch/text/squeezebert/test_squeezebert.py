@@ -7,6 +7,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.utils import download_model
 
@@ -47,4 +48,4 @@ def test_squeezebert_sequence_classification_pytorch(forge_property_recorder, va
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

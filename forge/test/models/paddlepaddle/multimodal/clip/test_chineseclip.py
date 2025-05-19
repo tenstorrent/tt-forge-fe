@@ -18,6 +18,7 @@ from paddlenlp.transformers import (
 from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from forge.forge_property_utils import Framework, Source, Task
 
@@ -52,7 +53,7 @@ def test_chineseclip_text(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -88,7 +89,7 @@ def test_chineseclip_vision(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -139,4 +140,4 @@ def test_chineseclip(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

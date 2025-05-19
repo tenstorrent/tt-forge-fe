@@ -66,7 +66,7 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc), verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 

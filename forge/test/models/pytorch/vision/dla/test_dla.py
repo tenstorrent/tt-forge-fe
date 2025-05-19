@@ -6,6 +6,7 @@ import pytest
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.dla.utils.utils import load_dla_model, post_processing
 from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
@@ -44,7 +45,7 @@ def test_dla_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Inference
     output = compiled_model(*inputs)
@@ -79,4 +80,4 @@ def test_dla_timm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)

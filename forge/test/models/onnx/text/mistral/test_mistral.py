@@ -7,6 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.text.mistral.utils.utils import get_current_weather
 from forge.forge_property_utils import Framework, Source, Task
@@ -68,5 +69,6 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
         inputs,
         framework_model,
         compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )

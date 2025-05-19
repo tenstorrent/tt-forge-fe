@@ -13,6 +13,7 @@ from transformers import (
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import mean_pooling
@@ -71,7 +72,7 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, forge_tmp_path, o
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -133,7 +134,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, forge_tm
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -176,7 +177,7 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
 
     # Post processing
     sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])

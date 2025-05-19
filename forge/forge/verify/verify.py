@@ -438,28 +438,30 @@ def verify(
             execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
         )
 
-    # Compile EmitC .so
-    so_path = compiled_model.export_to_shared_object()
-    # Run EmitC .so
-    all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
-    consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
-    fwd_func_name = "forward"
-    fwd_func_name_len = len(fwd_func_name)
-    fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
-    is_success = compiled_model.runtime_model_state.test_so(
-        so_path,
-        fwd_func_sym,
-        compiled_model.inputs,
-        consts_and_params,
-        all_outputs,
-    )
+    # EmitC verification
+    if verify_cfg.verify_emitc_correctness:
+        # Compile .so
+        so_path = compiled_model.export_to_shared_object()
+        # Run .so
+        all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
+        consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
+        fwd_func_name = "forward"
+        fwd_func_name_len = len(fwd_func_name)
+        fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
+        is_success = compiled_model.runtime_model_state.test_so(
+            so_path,
+            fwd_func_sym,
+            compiled_model.inputs,
+            consts_and_params,
+            all_outputs,
+        )
 
-    logger.info("SharedObject test is success: {}", is_success)
+        logger.info("SharedObject test is success: {}", is_success)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_emitc_status(is_success)
+        if forge_property_handler is not None:
+            forge_property_handler.record_emitc_status(is_success)
 
-    assert is_success
+        assert is_success
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
