@@ -31,8 +31,6 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
 def test_dla_onnx(forge_property_recorder, variant, tmp_path):
-    if variant != "dla34":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

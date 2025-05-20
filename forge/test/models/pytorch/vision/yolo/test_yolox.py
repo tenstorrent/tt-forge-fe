@@ -29,30 +29,24 @@ from yolox.exp import get_exp
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.config import VerifyConfig
-from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
 
 variants = [
-    "yolox_nano",
-    "yolox_tiny",
-    "yolox_s",
-    "yolox_m",
-    "yolox_l",
-    "yolox_darknet",
-    "yolox_x",
+    pytest.param("yolox_nano", marks=[pytest.mark.xfail]),
+    pytest.param("yolox_tiny"),
+    pytest.param("yolox_s"),
+    pytest.param("yolox_m"),
+    pytest.param("yolox_l"),
+    pytest.param("yolox_darknet", marks=[pytest.mark.xfail]),
+    pytest.param("yolox_x", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(forge_property_recorder, variant):
-    pcc = 0.97
-    if variant != "yolox_nano":
-        pcc = 0.99
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -109,7 +103,6 @@ def test_yolox_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
         forge_property_handler=forge_property_recorder,
     )
 

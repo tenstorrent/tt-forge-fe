@@ -96,37 +96,6 @@ def get_imagenet_sample():
     return img_tensor
 
 
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="Model script not found")
-@pytest.mark.nightly
-def test_unet_holocron_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
-        model="unet",
-        variant="holocron",
-        source=Source.TORCH_HUB,
-        task=Task.IMAGE_SEGMENTATION,
-    )
-
-    from holocron.models.segmentation.unet import unet_tvvgg11
-
-    framework_model = download_model(unet_tvvgg11, pretrained=True).eval()
-
-    img_tensor = get_imagenet_sample()
-    inputs = [img_tensor]
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
-
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-
 def generate_model_unet_imgseg_smp_pytorch(variant):
     # encoder_name = "vgg19"
     encoder_name = "resnet101"
