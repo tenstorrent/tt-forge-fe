@@ -8,6 +8,7 @@ from transformers import BertModel, BertTokenizer
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
@@ -58,4 +59,11 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, f
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )

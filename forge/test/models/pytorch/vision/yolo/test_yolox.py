@@ -109,7 +109,7 @@ def test_yolox_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc), verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 

@@ -8,6 +8,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.utils.utils import (
@@ -40,7 +41,13 @@ def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -68,7 +75,13 @@ def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -100,7 +113,13 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -132,7 +151,14 @@ def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -164,7 +190,13 @@ def test_resnext_26_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -196,7 +228,13 @@ def test_resnext_50_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
@@ -228,7 +266,13 @@ def test_resnext_101_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)

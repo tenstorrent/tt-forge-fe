@@ -8,6 +8,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.utils.utils import load_input
@@ -63,4 +64,10 @@ def test_phi3_5_vision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

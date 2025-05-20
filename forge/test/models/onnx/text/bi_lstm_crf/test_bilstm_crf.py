@@ -8,6 +8,7 @@ import onnx
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.onnx.text.bi_lstm_crf.utils.model import get_model
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
@@ -46,4 +47,10 @@ def test_birnn_crf(forge_property_recorder, forge_tmp_path):
     )
 
     # Model Verification
-    verify(test_input, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        test_input,
+        model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

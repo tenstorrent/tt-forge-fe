@@ -8,6 +8,7 @@ import onnx
 
 import forge
 from forge.verify.verify import verify
+from forge.verify.config import VerifyConfig
 
 from test.models.onnx.vision.yolo.utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
@@ -58,4 +59,10 @@ def test_yolov10(forge_property_recorder, forge_tmp_path):
     )
 
     # Model Verification
-    verify([image_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        [image_tensor],
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

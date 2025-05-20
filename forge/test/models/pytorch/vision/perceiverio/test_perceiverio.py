@@ -15,6 +15,7 @@ from transformers import (
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 
@@ -87,5 +88,16 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify_emitc_correctness = True
+    if variant == "deepmind/vision-perceiver-conv":
+        verify_emitc_correctness = False
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=verify_emitc_correctness),
+        forge_property_handler=forge_property_recorder,
+    )

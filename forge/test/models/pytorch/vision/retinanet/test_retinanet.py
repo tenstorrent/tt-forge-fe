@@ -10,6 +10,7 @@ import requests
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.retinanet.utils.image_utils import img_preprocess
@@ -72,7 +73,13 @@ def test_retinanet(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Delete the extracted folder and the zip file
     shutil.rmtree(extracted_path)
@@ -108,4 +115,10 @@ def test_retinanet_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

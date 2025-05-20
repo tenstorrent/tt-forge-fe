@@ -15,6 +15,7 @@ from forge.forge_property_utils import (
     Source,
     Task,
 )
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.utils.yolo_utils import (
@@ -55,4 +56,11 @@ def test_yolov10(forge_property_recorder):
     )
 
     # Model Verification
-    verify([image_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(
+        [image_tensor],
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )

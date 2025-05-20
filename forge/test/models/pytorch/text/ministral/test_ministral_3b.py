@@ -6,6 +6,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 variants = ["ministral/Ministral-3b-instruct"]
@@ -44,4 +45,10 @@ def test_ministral_3b(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

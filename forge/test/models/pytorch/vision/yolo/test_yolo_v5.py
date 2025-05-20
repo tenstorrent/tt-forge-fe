@@ -6,6 +6,7 @@ import torch
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import fetch_model, yolov5_loader
@@ -57,7 +58,14 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
@@ -103,7 +111,14 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
@@ -148,7 +163,13 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -183,4 +204,10 @@ def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, var
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

@@ -12,6 +12,7 @@ from transformers import (
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -61,7 +62,13 @@ def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -108,7 +115,13 @@ def test_distilbert_question_answering_pytorch(forge_property_recorder, variant)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -149,7 +162,13 @@ def test_distilbert_sequence_classification_pytorch(forge_property_recorder, var
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -190,4 +209,10 @@ def test_distilbert_token_classification_pytorch(forge_property_recorder, varian
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

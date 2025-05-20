@@ -8,6 +8,7 @@ from transformers import PerceiverForMaskedLM, PerceiverTokenizer
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -46,7 +47,14 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # post processing
     logits = co_out[0]
