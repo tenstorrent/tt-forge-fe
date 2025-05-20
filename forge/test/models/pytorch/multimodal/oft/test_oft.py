@@ -13,7 +13,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.oft.utils.oft_utils import (
+from test.models.pytorch.multimodal.oft.model_utils.oft_utils import (
     StableDiffusionWrapper,
     get_inputs,
 )

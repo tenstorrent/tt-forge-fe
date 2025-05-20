@@ -7,7 +7,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mnist.utils.utils import load_input, load_model
+from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
 
 
 @pytest.mark.nightly

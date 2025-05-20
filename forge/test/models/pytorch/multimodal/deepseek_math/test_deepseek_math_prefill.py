@@ -8,7 +8,7 @@ import forge
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
+from test.models.pytorch.multimodal.deepseek_math.model_utils.model_utils import (
     DeepSeekWrapper_decoder,
     download_model_and_tokenizer,
 )

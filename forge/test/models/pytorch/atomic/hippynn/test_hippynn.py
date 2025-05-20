@@ -16,7 +16,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.atomic.hippynn.utils.model import load_model
+from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
 
 
 class HippynWrapper(torch.nn.Module):

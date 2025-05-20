@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
 from test.utils import download_model
 
 variants = ["mistralai/Mistral-7B-v0.1"]

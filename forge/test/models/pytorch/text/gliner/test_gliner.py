@@ -15,7 +15,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gliner.utils.model_utils import (
+from test.models.pytorch.text.gliner.model_utils.model_utils import (
     GlinerWrapper,
     post_processing,
     pre_processing,

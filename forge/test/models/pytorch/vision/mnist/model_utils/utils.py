@@ -4,7 +4,7 @@
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from test.models.pytorch.vision.mnist.utils.model import MnistModel
+from test.models.pytorch.vision.mnist.model_utils.model import MnistModel
 
 
 def load_model():

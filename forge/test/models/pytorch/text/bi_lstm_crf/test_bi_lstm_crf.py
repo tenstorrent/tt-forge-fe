@@ -14,7 +14,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model
+from test.models.pytorch.text.bi_lstm_crf.model_utils.model import get_model
 
 
 @pytest.mark.nightly

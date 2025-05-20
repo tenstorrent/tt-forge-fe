@@ -22,7 +22,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.bert.utils.utils import mean_pooling
+from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
 from test.utils import download_model
 
 

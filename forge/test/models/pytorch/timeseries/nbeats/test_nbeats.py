@@ -7,10 +7,10 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.timeseries.nbeats.utils.dataset import (
+from test.models.pytorch.timeseries.nbeats.model_utils.dataset import (
     get_electricity_dataset_input,
 )
-from test.models.pytorch.timeseries.nbeats.utils.model import (
+from test.models.pytorch.timeseries.nbeats.model_utils.model import (
     NBeatsWithGenericBasis,
     NBeatsWithSeasonalityBasis,
     NBeatsWithTrendBasis,

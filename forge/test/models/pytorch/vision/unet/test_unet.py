@@ -30,7 +30,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.unet.utils.model import UNET
+from test.models.pytorch.vision.unet.model_utils.model import UNET
 from test.utils import download_model
 
 

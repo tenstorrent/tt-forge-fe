@@ -13,7 +13,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.densenet.utils.densenet_utils import (
+from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
 )

@@ -21,7 +21,7 @@ from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
 variants = [

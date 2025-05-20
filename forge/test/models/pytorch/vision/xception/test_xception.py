@@ -13,7 +13,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.xception.utils.utils import post_processing
+from test.models.pytorch.vision.xception.model_utils.utils import post_processing
 from test.utils import download_model
 
 

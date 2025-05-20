@@ -15,7 +15,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from test.models.pytorch.vision.monodepth2.utils.layers import (
+from test.models.pytorch.vision.monodepth2.model_utils.layers import (
     Conv3x3,
     ConvBlock,
     upsample,

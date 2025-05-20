@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from .utils import load_inputs, load_model
+from test.models.pytorch.audio.stereo.model_utils.utils import load_inputs, load_model
 
 variants = [
     pytest.param(

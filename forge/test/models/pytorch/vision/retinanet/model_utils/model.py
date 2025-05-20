@@ -41,7 +41,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from test.models.pytorch.vision.retinanet.utils import backbone as backbones_mod
+from test.models.pytorch.vision.retinanet.model_utils import backbone as backbones_mod
 
 
 class FocalLoss(nn.Module):

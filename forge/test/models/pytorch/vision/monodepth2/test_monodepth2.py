@@ -8,7 +8,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodepth2.utils.utils import (
+from test.models.pytorch.vision.monodepth2.model_utils.utils import (
     download_model,
     load_input,
     load_model,

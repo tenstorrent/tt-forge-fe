@@ -13,7 +13,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.wideresnet.utils.utils import (
+from test.models.pytorch.vision.wideresnet.model_utils.utils import (
     generate_model_wideresnet_imgcls_pytorch,
     post_processing,
 )

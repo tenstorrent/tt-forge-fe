@@ -8,7 +8,7 @@ import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gemma.utils.model_utils import (
+from test.models.pytorch.text.gemma.model_utils.model_utils import (
     generate_no_cache,
     pad_inputs,
 )

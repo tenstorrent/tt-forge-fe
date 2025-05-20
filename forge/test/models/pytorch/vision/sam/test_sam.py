@@ -8,7 +8,10 @@ import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.sam.utils.model import SamWrapper, get_model_inputs
+from test.models.pytorch.vision.sam.model_utils.model import (
+    SamWrapper,
+    get_model_inputs,
+)
 
 
 @pytest.mark.parametrize(

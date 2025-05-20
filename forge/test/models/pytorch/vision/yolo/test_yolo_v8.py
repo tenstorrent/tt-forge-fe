@@ -12,7 +12,7 @@ from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolo_utils import (
+from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
     YoloWrapper,
     load_yolo_model_and_image,
 )

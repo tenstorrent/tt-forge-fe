@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.inception.utils.model_utils import (
+from test.models.pytorch.vision.inception.model_utils.model_utils import (
     get_image,
     preprocess_timm_model,
 )

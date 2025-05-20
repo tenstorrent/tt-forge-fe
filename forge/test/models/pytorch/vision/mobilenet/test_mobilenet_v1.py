@@ -10,11 +10,11 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.utils import (
+from test.models.pytorch.vision.mobilenet.model_utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
-from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
+from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 from test.utils import download_model
 
 

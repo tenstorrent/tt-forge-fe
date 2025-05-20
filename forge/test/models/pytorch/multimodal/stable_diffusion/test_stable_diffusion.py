@@ -4,7 +4,7 @@ import pytest
 
 from forge.forge_property_utils import Framework
 
-from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
+from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     denoising_loop,
     stable_diffusion_postprocessing,
     stable_diffusion_preprocessing,

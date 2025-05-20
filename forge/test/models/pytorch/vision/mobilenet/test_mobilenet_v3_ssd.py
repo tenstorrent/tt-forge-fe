@@ -7,7 +7,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.mobilenet_v3_ssd_utils import (
+from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v3_ssd_utils import (
     load_input,
     load_model,
 )
