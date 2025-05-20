@@ -11,7 +11,7 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from test.models.tensorflow.vision.resnet.utils.image_utils import get_sample_inputs
+from test.models.tensorflow.vision.resnet.model_utils.image_utils import get_sample_inputs
 
 
 @pytest.mark.push

@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.stable_diffusion.utils.model import (
+from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_v35,
 )

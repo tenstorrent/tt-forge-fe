@@ -11,7 +11,7 @@ import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from .utils import load_inputs
+from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
 
 
 class Wrapper(torch.nn.Module):

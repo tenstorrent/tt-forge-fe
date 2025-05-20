@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.vision.sam.utils.model import get_model_inputs
+from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 
 
 @pytest.mark.parametrize(

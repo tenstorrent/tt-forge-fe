@@ -18,7 +18,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.fuyu.utils.model import (
+from test.models.pytorch.text.fuyu.model_utils.model import (
     FuyuModelWrapper,
     generate_fuyu_embedding,
 )

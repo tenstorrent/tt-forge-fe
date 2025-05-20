@@ -10,7 +10,9 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.ssd300_resnet50.utils.image_utils import prepare_input
+from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
+    prepare_input,
+)
 
 
 @pytest.mark.nightly

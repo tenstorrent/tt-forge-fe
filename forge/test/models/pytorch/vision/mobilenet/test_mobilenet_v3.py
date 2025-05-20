@@ -15,7 +15,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.utils import (
+from test.models.pytorch.vision.mobilenet.model_utils.utils import (
     load_mobilenet_model,
     post_processing,
 )

@@ -21,8 +21,8 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.swin.utils.image_utils import load_image
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 
 @pytest.mark.nightly

@@ -10,7 +10,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.clip.utils.clip_model import CLIPTextWrapper
+from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
 from test.utils import download_model
 
 

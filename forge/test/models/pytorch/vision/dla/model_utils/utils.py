@@ -9,7 +9,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 
-from test.models.pytorch.vision.dla.utils import dla_model
+from test.models.pytorch.vision.dla.model_utils import dla_model
 
 
 def load_dla_model(variant):

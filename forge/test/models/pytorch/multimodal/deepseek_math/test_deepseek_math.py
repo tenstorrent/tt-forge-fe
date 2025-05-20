@@ -6,7 +6,7 @@ import pytest
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
+from test.models.pytorch.multimodal.deepseek_math.model_utils.model_utils import (
     DeepSeekWrapper,
     download_model_and_tokenizer,
     generation,

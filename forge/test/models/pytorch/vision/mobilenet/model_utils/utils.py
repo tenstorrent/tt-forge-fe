@@ -8,7 +8,7 @@ import torch
 from PIL import Image
 from torchvision import transforms
 
-from test.models.pytorch.vision.mobilenet.utils.mobilenet_v1 import MobileNetV1
+from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v1 import MobileNetV1
 from test.utils import download_model
 
 

@@ -33,7 +33,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
+from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
 
 variants = [
     "yolox_nano",

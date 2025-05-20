@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
 from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
 import torch

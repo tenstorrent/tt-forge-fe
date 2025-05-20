@@ -8,7 +8,7 @@ import forge
 import onnx
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
-from utils import load_inputs
+from test.models.onnx.vision.unet.model_utils.utils import load_inputs
 
 
 @pytest.mark.nightly

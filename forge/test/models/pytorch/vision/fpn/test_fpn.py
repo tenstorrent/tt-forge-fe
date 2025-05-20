@@ -8,7 +8,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.fpn.utils.model import FPNWrapper
+from test.models.pytorch.vision.fpn.model_utils.model import FPNWrapper
 
 
 @pytest.mark.nightly

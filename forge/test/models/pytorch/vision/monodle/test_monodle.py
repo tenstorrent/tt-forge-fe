@@ -10,7 +10,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
+from test.models.pytorch.vision.monodle.model_utils.model import CenterNet3D
 
 
 @pytest.mark.nightly

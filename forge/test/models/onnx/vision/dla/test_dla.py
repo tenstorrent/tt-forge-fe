@@ -8,7 +8,7 @@ import pytest
 import torchvision.transforms as transforms
 from PIL import Image
 
-from test.models.pytorch.vision.dla.utils.utils import post_processing
+from test.models.pytorch.vision.dla.model_utils.utils import post_processing
 import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task

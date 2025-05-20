@@ -21,8 +21,10 @@ from PIL import Image
 from six.moves import urllib
 from torchvision import transforms
 
-from test.models.pytorch.vision.monodepth2.utils.depth_decoder import DepthDecoder
-from test.models.pytorch.vision.monodepth2.utils.resnet_encoder import ResnetEncoder
+from test.models.pytorch.vision.monodepth2.model_utils.depth_decoder import DepthDecoder
+from test.models.pytorch.vision.monodepth2.model_utils.resnet_encoder import (
+    ResnetEncoder,
+)
 
 
 def download_model(model_name):

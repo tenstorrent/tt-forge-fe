@@ -8,7 +8,7 @@ import onnx
 import torch
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
-from test.models.onnx.vision.utils import load_inputs
+from test.models.onnx.vision.vision_utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results

@@ -19,7 +19,9 @@ from forge.forge_property_utils import (
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
-from test.models.pytorch.vision.detr.utils.image_utils import preprocess_input_data
+from test.models.pytorch.vision.detr.model_utils.image_utils import (
+    preprocess_input_data,
+)
 
 
 class DetrWrapper(torch.nn.Module):

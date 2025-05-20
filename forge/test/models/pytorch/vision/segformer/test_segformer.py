@@ -19,7 +19,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sample_data
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),

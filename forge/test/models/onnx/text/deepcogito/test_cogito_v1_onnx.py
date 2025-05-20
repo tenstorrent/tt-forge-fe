@@ -13,7 +13,7 @@ import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.text.deepcogito.utils.model import get_input_model
+from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
 @pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
