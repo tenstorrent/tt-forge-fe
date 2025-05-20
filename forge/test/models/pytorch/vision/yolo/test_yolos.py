@@ -31,9 +31,6 @@ def test_yolos(forge_property_recorder, variant):
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     framework_model = load_model(variant)
     inputs = load_input(variant)

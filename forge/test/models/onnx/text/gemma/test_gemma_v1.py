@@ -29,15 +29,12 @@ import torch
         ),
     ],
 )
-def test_gemma_v1_onnx(forge_property_recorder, variant, tmp_path):
+def test_gemma_v1_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="gemma", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -48,7 +45,7 @@ def test_gemma_v1_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input["input_ids"]]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/gemma_v1.onnx"
+    onnx_path = f"{forge_tmp_path}/gemma_v1.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=17)
 
     # Load framework model

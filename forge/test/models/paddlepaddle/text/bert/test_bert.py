@@ -44,7 +44,6 @@ def test_bert_sequence_classification(forge_property_recorder, variant, input):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BertForSequenceClassification.from_pretrained(variant, num_classes=2)
@@ -75,7 +74,6 @@ def test_bert_maskedlm(forge_property_recorder, variant, input):
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BertForMaskedLM.from_pretrained(variant)
@@ -113,7 +111,6 @@ def test_bert_question_answering(forge_property_recorder, variant, input):
         task=Task.QA,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = BertForQuestionAnswering.from_pretrained(variant)

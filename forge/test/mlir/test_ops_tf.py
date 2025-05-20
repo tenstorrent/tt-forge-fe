@@ -189,3 +189,26 @@ def test_maxpool2d(
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.push
+def test_batch_norm(forge_property_recorder):
+    tf.random.set_seed(0)
+
+    class TFBatchNorm(tf.keras.Model):
+        def __init__(self):
+            super().__init__()
+            self.batch_norm = tf.keras.layers.BatchNormalization()
+
+        def call(self, x):
+            return self.batch_norm(x)
+
+    inputs = [tf.random.uniform((1, 56, 56, 32), dtype=tf.float32)]
+
+    framework_model = TFBatchNorm()
+
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -25,9 +25,6 @@ def test_conv_ae_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -73,9 +70,6 @@ def test_linear_ae_pytorch(forge_property_recorder):
         source=Source.GITHUB,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
@@ -102,14 +96,11 @@ def test_linear_ae_pytorch(forge_property_recorder):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(sample_tensor)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    output_image = output[0].view(1, 28, 28).detach().numpy()
+    output_image = co_out[0].view(1, 28, 28).detach().numpy()
     save_path = "forge/test/models/pytorch/vision/autoencoder/results"
     os.makedirs(save_path, exist_ok=True)
     reconstructed_image_path = f"{save_path}/reconstructed_image.png"

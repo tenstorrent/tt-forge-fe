@@ -2,14 +2,16 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
+import gc
 import time
 import pytest
 import psutil
-import threading
+import shutil
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
 from forge._C import ExecutionDepth
+from forge._C.verif import malloc_trim
 
 
 def pytest_addoption(parser):
@@ -19,6 +21,20 @@ def pytest_addoption(parser):
         default=False,
         help="log per-test memory usage into pytest-memory-usage.csv",
     )
+
+
+@pytest.fixture(scope="function")
+def forge_tmp_path(tmp_path):
+    """
+    Yield a temporary directory path and remove it immediately after the test execution complete.
+
+    This fixture wraps pytest's built-in tmp_path fixture to ensure that
+    the temporary directory is cleaned up as soon as the test finishes,
+    regardless of the test outcome.
+    """
+    yield tmp_path
+    # After the test, delete the entire temporary directory and its contents
+    shutil.rmtree(str(tmp_path), ignore_errors=True)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -64,11 +80,8 @@ def forge_property_recorder(request, record_property):
         # Retrieve any refined error message that might have been set during the test execution
         refined_error_message = getattr(request.node, "refined_error_message", None)
 
-        # Check if:
-        # 1. The refined error message exists.
-        # 2. The handler is configured to record single operation details (record_single_op_details flag is True).
-        # If either of these checks fail, exit without further recording.
-        if refined_error_message is None or not forge_property_handler.record_single_op_details:
+        # If refined error message doesn't exists, exit without further recording.
+        if refined_error_message is None:
             return
 
         # Record the refined error message in the handler's property store.
@@ -153,27 +166,28 @@ def memory_usage_tracker(request):
     logger.info(f"    Maximum: {max_mem:.2f} MB")
     logger.info(f"    Average: {avg_mem:.2f} MB")
 
-    record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test)
+    gc.collect()  # Force garbage collection
+    after_gc = process.memory_info().rss / (1024 * 1024)
+    logger.info(f"Memory usage after garbage collection: {after_gc:.2f} MB")
 
+    malloc_trim()
+    after_trim = process.memory_info().rss / (1024 * 1024)
+    logger.info(f"Memory usage after malloc_trim: {after_trim:.2f} MB")
 
-def record_memory_usage(request, start_mem, end_mem, min_mem, max_mem, by_test):
-    """
-    Record memory usage stats in a file (if enabled by pytest command line option `--log-memory-usage`).
-    """
-
-    # Get the current test name
-    test_name = request.node.name
-
-    # Create a CSV file to store memory usage stats
     should_log = request.config.getoption("--log-memory-usage")
     if not should_log:
         return
 
-    file_name = "pytest-memory-usage.csv"
+    # Get the current test name
+    test_name = request.node.name
 
+    # Store memory usage stats into a CSV file
+    file_name = "pytest-memory-usage.csv"
     with open(file_name, "a") as f:
         if f.tell() == 0:
             # Write header if file is empty
-            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx)\n")
+            f.write("test_name,start_mem,end_mem,min_memory,max_memory,by_test (approx), after_gc, after_trim\n")
         # NOTE: escape test_name in double quotes because some tests have commas in their parameter list...
-        f.write(f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f}\n')
+        f.write(
+            f'"{test_name}",{start_mem:.2f},{end_mem:.2f},{min_mem:.2f},{max_mem:.2f},{by_test:2f},{after_gc:2f},{after_trim:2f}\n'
+        )

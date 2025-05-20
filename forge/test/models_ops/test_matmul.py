@@ -245,12 +245,38 @@ class Matmul17(ForgeModule):
         return matmul_output_1
 
 
+class Matmul18(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul18.weight_1",
+            forge.Parameter(*(9216, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul18.weight_1"))
+        return matmul_output_1
+
+
+class Matmul19(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul19.weight_1",
+            forge.Parameter(*(4096, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul19.weight_1"))
+        return matmul_output_1
+
+
 class Matmul20(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
         self.add_parameter(
             "matmul20.weight_1",
-            forge.Parameter(*(9216, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(4096, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -263,7 +289,7 @@ class Matmul21(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul21.weight_1",
-            forge.Parameter(*(4096, 4096), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1024, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -276,7 +302,7 @@ class Matmul22(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul22.weight_1",
-            forge.Parameter(*(4096, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1152, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -289,7 +315,7 @@ class Matmul23(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul23.weight_1",
-            forge.Parameter(*(1024, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(1280, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -302,7 +328,7 @@ class Matmul24(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "matmul24.weight_1",
-            forge.Parameter(*(1152, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(512, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, matmul_input_0):
@@ -313,33 +339,27 @@ class Matmul24(ForgeModule):
 class Matmul25(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul25.weight_1",
-            forge.Parameter(*(1280, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul25_const_1", shape=(1, 1, 588), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul25.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul25_const_1"))
         return matmul_output_1
 
 
 class Matmul26(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "matmul26.weight_1",
-            forge.Parameter(*(512, 1000), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("matmul26_const_1", shape=(1, 1, 39), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul26.weight_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul26_const_1"))
         return matmul_output_1
 
 
 class Matmul27(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul27_const_1", shape=(1, 1, 588), dtype=torch.float32)
+        self.add_constant("matmul27_const_1", shape=(1, 1, 596), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul27_const_1"))
@@ -349,7 +369,7 @@ class Matmul27(ForgeModule):
 class Matmul28(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul28_const_1", shape=(1, 1, 39), dtype=torch.float32)
+        self.add_constant("matmul28_const_1", shape=(1, 1, 522), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul28_const_1"))
@@ -359,7 +379,7 @@ class Matmul28(ForgeModule):
 class Matmul29(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul29_const_1", shape=(1, 1, 596), dtype=torch.float32)
+        self.add_constant("matmul29_const_1", shape=(1, 1, 6), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul29_const_1"))
@@ -369,7 +389,7 @@ class Matmul29(ForgeModule):
 class Matmul30(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul30_const_1", shape=(1, 1, 522), dtype=torch.float32)
+        self.add_constant("matmul30_const_1", shape=(1, 1, 334), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul30_const_1"))
@@ -379,7 +399,7 @@ class Matmul30(ForgeModule):
 class Matmul31(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul31_const_1", shape=(1, 1, 6), dtype=torch.float32)
+        self.add_constant("matmul31_const_1", shape=(1, 1, 207), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul31_const_1"))
@@ -389,7 +409,7 @@ class Matmul31(ForgeModule):
 class Matmul32(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul32_const_1", shape=(1, 1, 334), dtype=torch.float32)
+        self.add_constant("matmul32_const_1", shape=(1, 1, 7), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul32_const_1"))
@@ -399,7 +419,7 @@ class Matmul32(ForgeModule):
 class Matmul33(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul33_const_1", shape=(1, 1, 207), dtype=torch.float32)
+        self.add_constant("matmul33_const_1", shape=(1, 1, 107), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul33_const_1"))
@@ -409,7 +429,7 @@ class Matmul33(ForgeModule):
 class Matmul34(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul34_const_1", shape=(1, 1, 7), dtype=torch.float32)
+        self.add_constant("matmul34_const_1", shape=(1, 1, 32), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul34_const_1"))
@@ -419,7 +439,7 @@ class Matmul34(ForgeModule):
 class Matmul35(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul35_const_1", shape=(1, 1, 107), dtype=torch.float32)
+        self.add_constant("matmul35_const_1", shape=(1, 1, 4), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul35_const_1"))
@@ -429,7 +449,7 @@ class Matmul35(ForgeModule):
 class Matmul36(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul36_const_1", shape=(1, 1, 32), dtype=torch.float32)
+        self.add_constant("matmul36_const_1", shape=(1, 1, 256), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul36_const_1"))
@@ -439,7 +459,7 @@ class Matmul36(ForgeModule):
 class Matmul37(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul37_const_1", shape=(1, 1, 4), dtype=torch.float32)
+        self.add_constant("matmul37_const_1", shape=(1, 1, 8), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul37_const_1"))
@@ -449,7 +469,7 @@ class Matmul37(ForgeModule):
 class Matmul38(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul38_const_1", shape=(1, 1, 256), dtype=torch.float32)
+        self.add_constant("matmul38_const_1", shape=(1, 1, 135), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul38_const_1"))
@@ -459,7 +479,7 @@ class Matmul38(ForgeModule):
 class Matmul39(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul39_const_1", shape=(1, 1, 8), dtype=torch.float32)
+        self.add_constant("matmul39_const_1", shape=(1, 1, 128), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul39_const_1"))
@@ -469,7 +489,7 @@ class Matmul39(ForgeModule):
 class Matmul40(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul40_const_1", shape=(1, 1, 135), dtype=torch.float32)
+        self.add_constant("matmul40_const_1", shape=(1, 1, 12), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul40_const_1"))
@@ -479,7 +499,7 @@ class Matmul40(ForgeModule):
 class Matmul41(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul41_const_1", shape=(1, 1, 128), dtype=torch.float32)
+        self.add_constant("matmul41_const_1", shape=(1, 1, 11), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul41_const_1"))
@@ -489,7 +509,7 @@ class Matmul41(ForgeModule):
 class Matmul42(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul42_const_1", shape=(1, 1, 12), dtype=torch.float32)
+        self.add_constant("matmul42_const_1", shape=(1, 1, 5), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul42_const_1"))
@@ -499,7 +519,7 @@ class Matmul42(ForgeModule):
 class Matmul43(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul43_const_1", shape=(1, 1, 11), dtype=torch.float32)
+        self.add_constant("matmul43_const_1", shape=(1, 1, 13), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul43_const_1"))
@@ -509,7 +529,7 @@ class Matmul43(ForgeModule):
 class Matmul44(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul44_const_1", shape=(1, 1, 5), dtype=torch.float32)
+        self.add_constant("matmul44_const_1", shape=(1, 1, 29), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul44_const_1"))
@@ -519,7 +539,7 @@ class Matmul44(ForgeModule):
 class Matmul45(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul45_const_1", shape=(1, 1, 13), dtype=torch.float32)
+        self.add_constant("matmul45_const_1", shape=(1, 1, 35), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul45_const_1"))
@@ -529,7 +549,7 @@ class Matmul45(ForgeModule):
 class Matmul46(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul46_const_1", shape=(1, 1, 29), dtype=torch.float32)
+        self.add_constant("matmul46_const_1", shape=(12, 24), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul46_const_1"))
@@ -539,7 +559,7 @@ class Matmul46(ForgeModule):
 class Matmul47(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul47_const_1", shape=(1, 1, 35), dtype=torch.float32)
+        self.add_constant("matmul47_const_1", shape=(12, 72), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul47_const_1"))
@@ -549,7 +569,7 @@ class Matmul47(ForgeModule):
 class Matmul48(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul48_const_1", shape=(12, 24), dtype=torch.float32)
+        self.add_constant("matmul48_const_1", shape=(4, 24), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul48_const_1"))
@@ -559,7 +579,7 @@ class Matmul48(ForgeModule):
 class Matmul49(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul49_const_1", shape=(12, 72), dtype=torch.float32)
+        self.add_constant("matmul49_const_1", shape=(4, 72), dtype=torch.float32)
 
     def forward(self, matmul_input_0):
         matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul49_const_1"))
@@ -569,20 +589,403 @@ class Matmul49(ForgeModule):
 class Matmul50(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul50_const_1", shape=(4, 24), dtype=torch.float32)
+        self.add_parameter(
+            "matmul50.weight_1",
+            forge.Parameter(*(3072, 9216), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul50_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul50.weight_1"))
         return matmul_output_1
 
 
 class Matmul51(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("matmul51_const_1", shape=(4, 72), dtype=torch.float32)
+        self.add_parameter(
+            "matmul51.weight_1",
+            forge.Parameter(*(3072, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
 
     def forward(self, matmul_input_0):
-        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_constant("matmul51_const_1"))
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul51.weight_1"))
+        return matmul_output_1
+
+
+class Matmul52(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul52.weight_1",
+            forge.Parameter(*(3072, 16384), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul52.weight_1"))
+        return matmul_output_1
+
+
+class Matmul53(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul53.weight_1",
+            forge.Parameter(*(8192, 3072), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul53.weight_1"))
+        return matmul_output_1
+
+
+class Matmul54(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul54.weight_1",
+            forge.Parameter(*(3072, 32064), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul54.weight_1"))
+        return matmul_output_1
+
+
+class Matmul55(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul55.weight_1",
+            forge.Parameter(*(64, 64), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul55.weight_1"))
+        return matmul_output_1
+
+
+class Matmul56(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul56.weight_1",
+            forge.Parameter(*(64, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul56.weight_1"))
+        return matmul_output_1
+
+
+class Matmul57(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul57.weight_1",
+            forge.Parameter(*(256, 64), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul57.weight_1"))
+        return matmul_output_1
+
+
+class Matmul58(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul58.weight_1",
+            forge.Parameter(*(128, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul58.weight_1"))
+        return matmul_output_1
+
+
+class Matmul59(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul59.weight_1",
+            forge.Parameter(*(128, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul59.weight_1"))
+        return matmul_output_1
+
+
+class Matmul60(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul60.weight_1",
+            forge.Parameter(*(512, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul60.weight_1"))
+        return matmul_output_1
+
+
+class Matmul61(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul61.weight_1",
+            forge.Parameter(*(320, 320), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul61.weight_1"))
+        return matmul_output_1
+
+
+class Matmul62(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul62.weight_1",
+            forge.Parameter(*(320, 1280), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul62.weight_1"))
+        return matmul_output_1
+
+
+class Matmul63(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul63.weight_1",
+            forge.Parameter(*(1280, 320), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul63.weight_1"))
+        return matmul_output_1
+
+
+class Matmul64(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul64.weight_1",
+            forge.Parameter(*(512, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul64.weight_1"))
+        return matmul_output_1
+
+
+class Matmul65(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul65.weight_1",
+            forge.Parameter(*(512, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul65.weight_1"))
+        return matmul_output_1
+
+
+class Matmul66(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul66.weight_1",
+            forge.Parameter(*(2048, 512), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul66.weight_1"))
+        return matmul_output_1
+
+
+class Matmul67(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul67.weight_1",
+            forge.Parameter(*(32, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul67.weight_1"))
+        return matmul_output_1
+
+
+class Matmul68(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul68.weight_1",
+            forge.Parameter(*(32, 128), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul68.weight_1"))
+        return matmul_output_1
+
+
+class Matmul69(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul69.weight_1",
+            forge.Parameter(*(128, 32), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul69.weight_1"))
+        return matmul_output_1
+
+
+class Matmul70(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul70.weight_1",
+            forge.Parameter(*(160, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul70.weight_1"))
+        return matmul_output_1
+
+
+class Matmul71(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul71.weight_1",
+            forge.Parameter(*(160, 640), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul71.weight_1"))
+        return matmul_output_1
+
+
+class Matmul72(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul72.weight_1",
+            forge.Parameter(*(640, 160), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul72.weight_1"))
+        return matmul_output_1
+
+
+class Matmul73(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul73.weight_1",
+            forge.Parameter(*(256, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul73.weight_1"))
+        return matmul_output_1
+
+
+class Matmul74(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul74.weight_1",
+            forge.Parameter(*(256, 1024), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul74.weight_1"))
+        return matmul_output_1
+
+
+class Matmul75(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul75.weight_1",
+            forge.Parameter(*(1024, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul75.weight_1"))
+        return matmul_output_1
+
+
+class Matmul76(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul76.weight_1",
+            forge.Parameter(*(256, 2048), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul76.weight_1"))
+        return matmul_output_1
+
+
+class Matmul77(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul77.weight_1",
+            forge.Parameter(*(2048, 256), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul77.weight_1"))
+        return matmul_output_1
+
+
+class Matmul78(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul78.weight_1",
+            forge.Parameter(*(256, 92), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul78.weight_1"))
+        return matmul_output_1
+
+
+class Matmul79(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul79.weight_1",
+            forge.Parameter(*(256, 4), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul79.weight_1"))
+        return matmul_output_1
+
+
+class Matmul80(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "matmul80.weight_1",
+            forge.Parameter(*(256, 251), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, matmul_input_0):
+        matmul_output_1 = forge.op.Matmul("", matmul_input_0, self.get_parameter("matmul80.weight_1"))
         return matmul_output_1
 
 
@@ -751,6 +1154,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -780,6 +1184,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -848,6 +1253,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
         },
@@ -869,6 +1279,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_vovnet_vovnet27s_img_cls_osmr",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -1257,16 +1672,16 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     pytest.param(
         (
-            Matmul20,
+            Matmul18,
             [((1, 9216), torch.float32)],
             {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99},
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (Matmul21, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
-    (Matmul22, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul19, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul20, [((1, 4096), torch.float32)], {"model_names": ["pd_alexnet_base_img_cls_paddlemodels"], "pcc": 0.99}),
     (
-        Matmul23,
+        Matmul21,
         [((1, 1024), torch.float32)],
         {
             "model_names": [
@@ -1277,14 +1692,14 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Matmul24, [((1, 1152), torch.float32)], {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99}),
+    (Matmul22, [((1, 1152), torch.float32)], {"model_names": ["pd_googlenet_base_img_cls_paddlemodels"], "pcc": 0.99}),
     (
-        Matmul25,
+        Matmul23,
         [((1, 1280), torch.float32)],
         {"model_names": ["pd_mobilenetv2_basic_img_cls_paddlemodels"], "pcc": 0.99},
     ),
     (
-        Matmul26,
+        Matmul24,
         [((1, 512), torch.float32)],
         {"model_names": ["pd_resnet_18_img_cls_paddlemodels", "pd_resnet_34_img_cls_paddlemodels"], "pcc": 0.99},
     ),
@@ -1948,7 +2363,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul27,
+        Matmul25,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"], "pcc": 0.99},
     ),
@@ -1983,7 +2398,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul28,
+        Matmul26,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -2064,7 +2479,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
     (
-        Matmul29,
+        Matmul27,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
@@ -2449,6 +2864,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -2466,6 +2882,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_distilbert_distilbert_base_uncased_mlm_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -2493,6 +2910,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -2520,6 +2938,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
         },
@@ -3193,7 +3612,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul30,
+        Matmul28,
         [((1, 128, 1), torch.float32)],
         {
             "model_names": [
@@ -3300,7 +3719,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul31,
+        Matmul29,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": [
@@ -3346,7 +3765,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 334, 4096), torch.float32), ((4096, 12288), torch.float32)],
         {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99},
     ),
-    (Matmul32, [((1, 16, 1), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
+    (Matmul30, [((1, 16, 1), torch.float32)], {"model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((64, 334, 64), torch.float32), ((64, 64, 334), torch.float32)],
@@ -3381,7 +3800,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul33,
+        Matmul31,
         [((1, 128, 1), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
     ),
@@ -3478,7 +3897,7 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (Matmul34, [((1, 128, 1), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
+    (Matmul32, [((1, 128, 1), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((7, 2048), torch.float32), ((2048, 256), torch.float32)],
@@ -3518,7 +3937,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"], "pcc": 0.99},
     ),
     (
-        Matmul35,
+        Matmul33,
         [((1, 128, 1), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf", "pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -3946,7 +4365,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul36,
+        Matmul34,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf", "pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -3993,7 +4412,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul37,
+        Matmul35,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -4149,7 +4568,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul37,
+        Matmul35,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": [
@@ -4242,7 +4661,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul38,
+        Matmul36,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -4449,7 +4868,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul38,
+        Matmul36,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": [
@@ -4565,7 +4984,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul39,
+        Matmul37,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"], "pcc": 0.99},
     ),
@@ -4608,7 +5027,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul40,
+        Matmul38,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
@@ -4646,7 +5065,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul41,
+        Matmul39,
         [((1, 64, 1), torch.float32)],
         {"model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"], "pcc": 0.99},
     ),
@@ -5036,6 +5455,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -5076,7 +5496,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_perceiverio_deepmind_language_perceiver_mlm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul38,
+        Matmul36,
         [((1, 16, 1), torch.float32)],
         {
             "model_names": [
@@ -5094,7 +5514,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_phi1_5_microsoft_phi_1_5_seq_cls_hf", "pt_phi1_microsoft_phi_1_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul34,
+        Matmul32,
         [((1, 16, 1), torch.float32)],
         {"model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"], "pcc": 0.99},
     ),
@@ -5132,7 +5552,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul42,
+        Matmul40,
         [((1, 16, 1), torch.float32)],
         {
             "model_names": [
@@ -5193,7 +5613,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul43,
+        Matmul41,
         [((1, 16, 1), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -5326,7 +5746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul38,
+        Matmul36,
         [((1, 48, 1), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf"], "pcc": 0.99},
     ),
@@ -5337,6 +5757,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -5348,6 +5770,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
         },
@@ -5369,7 +5793,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul44,
+        Matmul42,
         [((1, 48, 1), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"], "pcc": 0.99},
     ),
@@ -5409,7 +5833,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
     ),
     (
-        Matmul45,
+        Matmul43,
         [((1, 48, 1), torch.float32)],
         {"model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"], "pcc": 0.99},
     ),
@@ -5486,7 +5910,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((12, 5120), torch.float32), ((5120, 5120), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99},
     ),
-    (Matmul42, [((1, 32, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
+    (Matmul40, [((1, 32, 1), torch.float32)], {"model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((12, 5120), torch.float32), ((5120, 1280), torch.float32)],
@@ -5564,7 +5988,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul46,
+        Matmul44,
         [((1, 32, 1), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf", "pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
@@ -5638,7 +6062,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Matmul47,
+        Matmul45,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -5807,7 +6231,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul47,
+        Matmul45,
         [((1, 32, 1), torch.float32)],
         {"model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"], "pcc": 0.99},
     ),
@@ -5926,7 +6350,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((13, 3584), torch.float32), ((3584, 3584), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99},
     ),
-    (Matmul45, [((1, 64, 1), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
+    (Matmul43, [((1, 64, 1), torch.float32)], {"model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((13, 3584), torch.float32), ((3584, 512), torch.float32)],
@@ -6004,7 +6428,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul46,
+        Matmul44,
         [((1, 64, 1), torch.float32)],
         {
             "model_names": [
@@ -6130,7 +6554,7 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
     (
-        Matmul28,
+        Matmul26,
         [((1, 32, 1), torch.float32)],
         {"model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"], "pcc": 0.99},
     ),
@@ -6536,8 +6960,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1024, 2048), torch.float32), ((2048, 48), torch.float32)],
         {"model_names": ["pt_nbeats_seasionality_basis_clm_hf"], "pcc": 0.99},
     ),
-    (Matmul48, [((1024, 12), torch.float32)], {"model_names": ["pt_nbeats_seasionality_basis_clm_hf"], "pcc": 0.99}),
-    (Matmul49, [((1024, 12), torch.float32)], {"model_names": ["pt_nbeats_seasionality_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul46, [((1024, 12), torch.float32)], {"model_names": ["pt_nbeats_seasionality_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul47, [((1024, 12), torch.float32)], {"model_names": ["pt_nbeats_seasionality_basis_clm_hf"], "pcc": 0.99}),
     (
         Matmul2,
         [((1024, 72), torch.float32), ((72, 512), torch.float32)],
@@ -6568,8 +6992,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1024, 256), torch.float32), ((256, 8), torch.float32)],
         {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99},
     ),
-    (Matmul50, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
-    (Matmul51, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul48, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
+    (Matmul49, [((1024, 4), torch.float32)], {"model_names": ["pt_nbeats_trend_basis_clm_hf"], "pcc": 0.99}),
     pytest.param(
         (
             Matmul2,
@@ -6686,6 +7110,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6697,6 +7122,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6708,6 +7135,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6719,6 +7148,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6730,6 +7160,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6756,6 +7187,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -6769,6 +7201,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -6814,6 +7247,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6924,6 +7360,13 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+                "pt_vit_vit_h_14_img_cls_torchvision",
             ],
             "pcc": 0.99,
         },
@@ -6935,6 +7378,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -7108,6 +7553,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_xception_xception65_img_cls_timm",
                 "pt_xception_xception41_img_cls_timm",
                 "pt_xception_xception_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7120,6 +7567,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_inception_v4_img_cls_osmr",
                 "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
             ],
             "pcc": 0.99,
         },
@@ -7400,6 +7849,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7411,6 +7861,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7475,6 +7926,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7486,6 +7938,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7552,6 +8005,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7563,6 +8017,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7618,6 +8073,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7691,6 +8147,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7709,6 +8168,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7799,6 +8261,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7817,6 +8282,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7925,6 +8393,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -7943,6 +8414,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -8033,6 +8507,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -8051,6 +8528,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
         },
@@ -8152,7 +8632,10 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Matmul2,
         [((1, 256), torch.float32), ((256, 1000), torch.float32)],
-        {"model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul2,
@@ -8421,12 +8904,24 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Matmul2,
         [((1, 49, 768), torch.float32), ((768, 3072), torch.float32)],
-        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul2,
         [((1, 49, 3072), torch.float32), ((3072, 768), torch.float32)],
-        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99},
+        {
+            "model_names": [
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
     ),
     (
         Matmul2,
@@ -8599,6 +9094,739 @@ forge_modules_and_shapes_dtypes_list = [
         Matmul2,
         [((2, 64, 400), torch.float32), ((2, 400, 400), torch.float32)],
         {"model_names": ["pt_yolov10_default_obj_det_github"], "pcc": 0.99},
+    ),
+    (
+        Matmul50,
+        [((1, 256, 3072), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul51,
+        [((256, 3072), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul52,
+        [((1, 256, 3072), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul53,
+        [((1, 256, 8192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul54,
+        [((1, 256, 3072), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((1, 1408), torch.float32), ((1408, 1000), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul5,
+        [((197, 768), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul6,
+        [((1, 197, 768), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul7,
+        [((1, 197, 3072), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_base_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul1,
+        [((197, 1024), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul3,
+        [((1, 197, 1024), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul4,
+        [((1, 197, 4096), torch.float32)],
+        {"model_names": ["onnx_vit_base_google_vit_large_patch16_224_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul55,
+        [((1, 16384, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul55,
+        [((256, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul56,
+        [((1, 16384, 64), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul57,
+        [((1, 16384, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul58,
+        [((1, 4096, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul58,
+        [((256, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul58,
+        [((4096, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul59,
+        [((1, 4096, 128), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul60,
+        [((1, 4096, 512), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul61,
+        [((1, 1024, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul61,
+        [((256, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul61,
+        [((1024, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul62,
+        [((1, 1024, 320), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul63,
+        [((1, 1024, 1280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul64,
+        [((256, 512), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul65,
+        [((1, 256, 512), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul66,
+        [((1, 256, 2048), torch.float32)],
+        {
+            "model_names": [
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul67,
+        [((1, 16384, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (Matmul67, [((256, 32), torch.float32)], {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99}),
+    (
+        Matmul68,
+        [((1, 16384, 32), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul69,
+        [((1, 16384, 128), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul55,
+        [((1, 4096, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul55,
+        [((4096, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul56,
+        [((1, 4096, 64), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul57,
+        [((1, 4096, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul70,
+        [((1, 1024, 160), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul70,
+        [((256, 160), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul70,
+        [((1024, 160), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul71,
+        [((1, 1024, 160), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul72,
+        [((1, 1024, 640), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul73,
+        [((256, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul74,
+        [((1, 256, 256), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul75,
+        [((1, 256, 1024), torch.float32)],
+        {"model_names": ["onnx_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 128, 768), torch.float32), ((768, 28996), torch.float32)],
+        {"model_names": ["pt_distilbert_distilbert_base_cased_mlm_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 768, 49), torch.float32), ((49, 384), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 768, 384), torch.float32), ((384, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 512, 49), torch.float32), ((49, 256), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 512, 256), torch.float32), ((256, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 49, 512), torch.float32), ((512, 2048), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 49, 2048), torch.float32), ((2048, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1024, 49), torch.float32), ((49, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1024, 512), torch.float32), ((512, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 49, 1024), torch.float32), ((1024, 4096), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 49, 4096), torch.float32), ((4096, 1024), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 512, 196), torch.float32), ((196, 256), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 512, 256), torch.float32), ((256, 196), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 196, 512), torch.float32), ((512, 2048), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 196, 2048), torch.float32), ((2048, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((50, 1024), torch.float32), ((1024, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((16, 50, 64), torch.float32), ((16, 64, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((16, 50, 50), torch.float32), ((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((50, 1024), torch.float32), ((1024, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 50, 1024), torch.float32), ((1024, 4096), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 50, 4096), torch.float32), ((4096, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((50, 768), torch.float32), ((768, 2304), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 50, 64), torch.float32), ((12, 64, 50), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((12, 50, 50), torch.float32), ((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((50, 768), torch.float32), ((768, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 50, 768), torch.float32), ((768, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 50, 3072), torch.float32), ((3072, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((197, 1024), torch.float32), ((1024, 3072), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1370, 1280), torch.float32), ((1280, 3840), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((16, 1370, 80), torch.float32), ((16, 80, 1370), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((16, 1370, 1370), torch.float32), ((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1370, 1280), torch.float32), ((1280, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1370, 1280), torch.float32), ((1280, 5120), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul2,
+        [((1, 1370, 5120), torch.float32), ((5120, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    ),
+    (
+        Matmul73,
+        [((100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 100, 32), torch.float32), ((8, 32, 100), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((100, 256), torch.float32), ((256, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 100, 100), torch.float32), ((8, 100, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul73,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul73,
+        [((280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 280, 32), torch.float32), ((8, 32, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul73,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 280, 280), torch.float32), ((8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul76,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul77,
+        [((1, 280, 2048), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 100, 32), torch.float32), ((8, 32, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul2,
+        [((8, 100, 280), torch.float32), ((8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul76,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul77,
+        [((1, 100, 2048), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul78,
+        [((100, 256), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_obj_det_hf"], "pcc": 0.99},
+    ),
+    (
+        Matmul79,
+        [((1, 100, 256), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+        },
+    ),
+    (
+        Matmul80,
+        [((100, 256), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
 ]
 

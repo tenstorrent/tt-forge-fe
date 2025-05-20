@@ -1467,8 +1467,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     method = node["attrs"]["method"][0][0]
 
     assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest neighbor and linear for now"
+        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
+    ), "Only support nearest neighbor, linear and cubic for now"
     assert int(node["attrs"]["num_inputs"]) == 1
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
@@ -2737,7 +2737,7 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if (framework in ["pytorch", "paddle", "onnx"] and compiler_cfg.extract_tvm_unique_ops_config) or (
+        if compiler_cfg.extract_tvm_unique_ops_config or (
             framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
         ):
 

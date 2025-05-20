@@ -20,18 +20,30 @@ variants = [
         "openai/whisper-tiny",
         marks=[pytest.mark.xfail],
     ),
-    "openai/whisper-base",
-    "openai/whisper-small",
-    "openai/whisper-medium",
-    "openai/whisper-large",
+    pytest.param(
+        "openai/whisper-base",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-small",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-medium",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-large",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_whisper(forge_property_recorder, variant):
-    if variant != "openai/whisper-tiny":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -41,9 +53,6 @@ def test_whisper(forge_property_recorder, variant):
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

@@ -28,8 +28,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_wideresnet_pytorch(forge_property_recorder, variant):
-    if variant != "wide_resnet50_2":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -40,9 +38,6 @@ def test_wideresnet_pytorch(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     (framework_model, inputs) = generate_model_wideresnet_imgcls_pytorch(variant)
 
@@ -51,14 +46,11 @@ def test_wideresnet_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    post_processing(output)
+    post_processing(co_out)
 
 
 def generate_model_wideresnet_imgcls_timm(variant):
@@ -84,7 +76,6 @@ variants = ["wide_resnet50_2", "wide_resnet101_2"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_wideresnet_timm(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -95,9 +86,6 @@ def test_wideresnet_timm(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     (framework_model, inputs) = generate_model_wideresnet_imgcls_timm(variant)
 
     # Forge compile framework model
@@ -106,4 +94,7 @@ def test_wideresnet_timm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Post processing
+    post_processing(co_out)

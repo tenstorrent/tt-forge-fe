@@ -21,7 +21,7 @@ opset_versions = [9, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, tmp_path, opset_version):
+def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -30,7 +30,6 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, t
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load MiniLM tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -45,7 +44,7 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, t
 
     # Export model to ONNX
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
-    onnx_path = f"{tmp_path}/minilm.onnx"
+    onnx_path = f"{forge_tmp_path}/minilm.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
 
     # Load ONNX model

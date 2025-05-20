@@ -32,7 +32,6 @@ def test_roberta_sequence_classification(variant, forge_property_recorder):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     tokenizer = RobertaChineseTokenizer.from_pretrained(variant)
@@ -69,7 +68,6 @@ def test_roberta_causal_lm(variant, forge_property_recorder):
         task=Task.CAUSAL_LM,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     tokenizer = RobertaChineseTokenizer.from_pretrained(variant)

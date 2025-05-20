@@ -1,0 +1,111 @@
+name: Failure Inspector
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: On nightly
+    branches:
+      - main
+    types:
+      - completed
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.inspect.outputs.matrix }}
+      nightly_workflow_id: ${{ steps.inspect.outputs.nightly_workflow_id }}
+      nightly_attempt: ${{ steps.inspect.outputs.nightly_attempt }}
+      docker-tag: ${{ steps.get-docker-tag.outputs.docker-tag }}
+    steps:
+      - name: Perform inspection
+        id: inspect
+        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-inspect@main
+        with:
+          workflow: "on-nightly.yml"
+          token: ${{ secrets.GH_TOKEN }}
+          slack_webhook_url: ${{ secrets.SLACK_NIGHTLY_INSPECT }}
+          test_job_names: " run-tests "
+          test_step_names: "Run Test"
+
+      - name: Get docker tag
+        id: get-docker-tag
+        run: |
+          dt=$(.github/get-docker-tag.sh)
+          echo "docker-tag=$dt" >> "$GITHUB_OUTPUT"
+          echo "Docker tag: $dt"
+
+  test:
+    needs: inspect
+    strategy:
+      fail-fast: false
+      matrix:
+        build: ${{ fromJSON(needs.inspect.outputs.matrix) }}
+    name: "Test ${{matrix.build.runs-on}}-${{ matrix.build.c }}-${{ matrix.build.commit }}"
+    container:
+      image: "ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ci-ubuntu-22-04:${{ needs.inspect.outputs.docker-tag }}"
+      options: --device /dev/tenstorrent/0
+      volumes:
+        - /dev/hugepages:/dev/hugepages
+        - /dev/hugepages-1G:/dev/hugepages-1G
+        - /etc/udev/rules.d:/etc/udev/rules.d
+        - /lib/modules:/lib/modules
+        - /opt/tt_metal_infra/provisioning/provisioning_env:/opt/tt_metal_infra/provisioning/provisioning_env
+        - /mnt/dockercache:/mnt/dockercache
+    runs-on:
+      - ${{ matrix.build.runs-on }}
+      - in-service
+      - runner
+
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            ref: ${{ matrix.build.commit }}
+
+        - name: Download wheels
+          uses: dawidd6/action-download-artifact@v9
+          with:
+            github_token: ${{secrets.GH_TOKEN}}
+            commit: ${{ matrix.build.commit }}
+            workflow_conclusion: completed
+            workflow: on-push.yml
+            name: forge-wheel
+            check_artifacts: true
+
+        # Test
+        - name: Install wheels
+          shell: bash
+          run: |
+            source env/activate
+            pip install tvm*.whl --force-reinstall
+            pip install forge*.whl --force-reinstall
+
+        - name: Run Test
+          env:
+            HF_TOKEN: ${{ secrets.HF_TOKEN }}
+            HF_HOME: /mnt/dockercache/huggingface
+            FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+            HF_HUB_DISABLE_PROGRESS_BARS: 1
+            FORGE_DISABLE_REPORTIFY_DUMP: 1
+          uses: tenstorrent/tt-forge/.github/actions/fail-inspector-test@main
+          with:
+            runs-on: ${{ matrix.build.runs-on }}
+            c: ${{ matrix.build.c }}
+            commit: ${{ matrix.build.commit }}
+
+  deduct:
+    needs: [ inspect, test ]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find all test runs
+        uses: tenstorrent/tt-forge/.github/actions/fail-inspector-deduct@main
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          slack_webhook_url: ${{ secrets.SLACK_NIGHTLY_INSPECT }}
+          nightly_workflow_id: ${{ needs.inspect.outputs.nightly_workflow_id }}
+          nightly_attempt: ${{ needs.inspect.outputs.nightly_attempt }}

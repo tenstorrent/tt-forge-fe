@@ -74,7 +74,7 @@ class Transpose6(ForgeModule):
         super().__init__(name)
 
     def forward(self, transpose_input_0):
-        transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-5, dim1=-4)
+        transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-4, dim1=-2)
         return transpose_output_1
 
 
@@ -83,7 +83,7 @@ class Transpose7(ForgeModule):
         super().__init__(name)
 
     def forward(self, transpose_input_0):
-        transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-4, dim1=-2)
+        transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-5, dim1=-4)
         return transpose_output_1
 
 
@@ -93,6 +93,15 @@ class Transpose8(ForgeModule):
 
     def forward(self, transpose_input_0):
         transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-5, dim1=-3)
+        return transpose_output_1
+
+
+class Transpose9(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, transpose_input_0):
+        transpose_output_1 = forge.op.Transpose("", transpose_input_0, dim0=-5, dim1=-2)
         return transpose_output_1
 
 
@@ -236,6 +245,28 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
             "pcc": 0.99,
             "args": {"dim0": "-4", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 1, 256, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
     (
@@ -479,6 +510,19 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["jax_resnet_50_img_cls_hf", "tf_resnet_resnet50_img_cls_keras"],
             "pcc": 0.99,
             "args": {"dim0": "-4", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 1, 512, 1024), torch.float32)],
+        {
+            "model_names": [
+                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
+                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
     (
@@ -889,6 +933,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
+                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -918,6 +967,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -948,6 +998,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -977,6 +1028,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -1007,6 +1059,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1037,6 +1090,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_roberta_xlm_roberta_base_mlm_hf",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1130,6 +1184,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_vovnet39_img_cls_osmr",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1152,6 +1211,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_vovnet_vovnet27s_img_cls_osmr",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1164,7 +1228,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -1823,6 +1887,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1878,6 +1945,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -1997,6 +2067,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf",
                 "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2084,6 +2155,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2096,6 +2168,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2254,6 +2327,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_swin_swin_b_img_cls_torchvision",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2282,6 +2357,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
                 "pt_swin_swin_b_img_cls_torchvision",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2304,6 +2381,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_whisper_openai_whisper_large_speech_recognition_hf",
                 "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
+                "pt_vit_vit_h_14_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2427,6 +2505,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_whisper_openai_whisper_large_speech_recognition_hf",
                 "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
+                "pt_vit_vit_h_14_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2442,6 +2521,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi4_microsoft_phi_4_seq_cls_hf",
                 "pt_phi4_microsoft_phi_4_token_cls_hf",
                 "pt_phi4_microsoft_phi_4_clm_hf",
+                "pt_vit_vit_h_14_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2616,6 +2696,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_swin_swin_b_img_cls_torchvision",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2768,6 +2850,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
                 "pt_swin_swin_b_img_cls_torchvision",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -2812,6 +2897,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
                 "pt_swin_swin_b_img_cls_torchvision",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -3630,15 +3718,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Transpose1,
-        [((1536, 1536), torch.float32)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
         [((1536, 2048), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3725,24 +3804,6 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
-        },
-    ),
-    (
-        Transpose1,
-        [((6144, 1536), torch.float32)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((1536, 6144), torch.float32)],
-        {
-            "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
     (
@@ -4145,6 +4206,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -4408,19 +4472,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Transpose1,
-        [((1024, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
         [((51200, 1024), torch.float32)],
         {
             "model_names": [
@@ -4491,18 +4542,6 @@ forge_modules_and_shapes_dtypes_list = [
         [((12, 64, 384), torch.float32)],
         {
             "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((1, 768), torch.float32)],
-        {
-            "model_names": [
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
-                "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
-            ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
@@ -4975,17 +5014,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((3584, 14336), torch.float32)],
         {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    pytest.param(
-        (
-            Transpose1,
-            [((256000, 3584), torch.float32)],
-            {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 3670016000 B DRAM buffer across 12 banks, where each bank needs to store 305836032 B"
-            )
-        ],
+    (
+        Transpose1,
+        [((256000, 3584), torch.float32)],
+        {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
         Transpose0,
@@ -5157,19 +5189,6 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Transpose1,
         [((768, 2304), torch.float32)],
-        {
-            "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((768, 768), torch.float32)],
         {
             "model_names": [
                 "pt_gpt2_gpt2_text_gen_hf",
@@ -5791,6 +5810,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -6022,6 +6045,10 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -6234,6 +6261,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_phi4_microsoft_phi_4_seq_cls_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -6255,6 +6283,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -6576,6 +6607,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mistral_mistralai_mistral_7b_v0_1_clm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -6876,19 +6908,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Transpose1,
-        [((1, 1, 512, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_perceiverio_deepmind_vision_perceiver_learned_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_conv_img_cls_hf",
-                "pt_perceiverio_deepmind_vision_perceiver_fourier_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
         [((1, 1024, 512), torch.float32)],
         {
             "model_names": [
@@ -7079,6 +7098,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -7155,6 +7175,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_perceiverio_deepmind_language_perceiver_mlm_hf",
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -7501,6 +7522,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -7522,6 +7545,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -7534,6 +7559,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -7546,6 +7573,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -7558,20 +7587,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
-        },
-    ),
-    (
-        Transpose1,
-        [((8192, 3072), torch.float32)],
-        {
-            "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -7840,17 +7857,10 @@ forge_modules_and_shapes_dtypes_list = [
         [((40, 128, 6), torch.float32)],
         {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
-    pytest.param(
-        (
-            Transpose1,
-            [((100352, 5120), torch.float32)],
-            {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 2055208960 B DRAM buffer across 12 banks, where each bank needs to store 171270144 B"
-            )
-        ],
+    (
+        Transpose1,
+        [((100352, 5120), torch.float32)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_clm_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
     ),
     (
         Transpose0,
@@ -9360,6 +9370,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9372,6 +9384,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -9384,6 +9397,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9450,6 +9465,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9462,10 +9478,16 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
         },
+    ),
+    (
+        Transpose6,
+        [((1, 16, 197, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-4", "dim1": "-2"}},
     ),
     (
         Transpose1,
@@ -9474,6 +9496,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9493,6 +9516,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9507,6 +9531,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -9521,6 +9546,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9589,6 +9615,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9603,6 +9630,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -9617,6 +9645,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
                 "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9637,6 +9666,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
                 "pt_swin_swin_t_img_cls_torchvision",
                 "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+                "pt_vit_vit_b_32_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9869,6 +9901,13 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mobilenetv2_mobilenetv2_100_img_cls_timm",
                 "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
                 "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_lite0_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b1_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_110d_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_100_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_050_img_cls_timm",
+                "pt_vit_vit_h_14_img_cls_torchvision",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -9881,6 +9920,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_efficientnet_efficientnet_b4_img_cls_timm",
                 "pt_efficientnet_efficientnet_b4_img_cls_torchvision",
+                "onnx_efficientnet_efficientnet_b4_img_cls_timm",
+                "onnx_mobilenetv2_mobilenetv2_140_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10533,6 +10574,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_xception_xception65_img_cls_timm",
                 "pt_xception_xception41_img_cls_timm",
                 "pt_xception_xception_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b5_img_cls_timm",
+                "onnx_resnet_50_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10546,6 +10589,8 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_inception_v4_img_cls_osmr",
                 "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b3a_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10624,12 +10669,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Transpose6,
+        Transpose7,
         [((1, 3, 16, 16, 16, 16), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"dim0": "-5", "dim1": "-4"}},
     ),
     (
-        Transpose7,
+        Transpose6,
         [((1, 16, 3, 16, 16, 16), torch.float32)],
         {"model_names": ["pt_mlp_mixer_base_img_cls_github"], "pcc": 0.99, "args": {"dim0": "-4", "dim1": "-2"}},
     ),
@@ -10876,6 +10921,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10900,6 +10946,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10912,6 +10959,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10924,6 +10972,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -10936,6 +10985,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10960,6 +11010,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10972,6 +11023,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -10996,6 +11048,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -11008,6 +11061,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11020,6 +11074,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11032,6 +11087,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11044,6 +11100,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11056,6 +11113,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11068,6 +11126,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11080,6 +11139,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11092,6 +11152,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11105,6 +11166,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11117,6 +11179,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11129,6 +11192,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -11141,6 +11205,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11153,6 +11218,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11177,6 +11243,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11189,6 +11256,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11201,6 +11269,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11213,6 +11282,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11225,6 +11295,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11237,6 +11308,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11249,6 +11321,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11261,6 +11334,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11285,6 +11359,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11297,6 +11372,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11321,6 +11397,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -11333,6 +11410,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11346,6 +11424,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11358,6 +11437,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11370,6 +11450,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11382,6 +11463,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11407,6 +11489,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11420,6 +11503,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11489,6 +11573,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11508,6 +11595,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11527,6 +11617,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11546,6 +11639,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11565,28 +11661,12 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
-        },
-    ),
-    (
-        Transpose1,
-        [((1, 1, 256, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim0": "-2", "dim1": "-1"},
         },
     ),
     (
@@ -11603,6 +11683,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11622,6 +11705,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -11641,6 +11727,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11660,6 +11749,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11679,6 +11771,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11698,6 +11793,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11717,6 +11815,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11736,6 +11837,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11755,6 +11859,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11774,6 +11881,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11793,6 +11903,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11812,6 +11925,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11831,6 +11947,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11850,6 +11969,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11869,6 +11991,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -11888,6 +12013,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11907,6 +12035,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11926,6 +12057,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11945,6 +12079,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -11964,6 +12101,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -11983,6 +12123,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12002,6 +12145,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12021,6 +12167,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12040,6 +12189,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -12059,6 +12211,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12078,6 +12233,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12097,6 +12255,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-1"},
@@ -12116,6 +12277,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12135,6 +12299,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12154,6 +12321,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12173,6 +12343,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12192,6 +12365,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-3", "dim1": "-2"},
@@ -12211,6 +12387,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12230,6 +12409,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12249,6 +12431,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
@@ -12394,7 +12579,11 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Transpose1,
         [((1000, 256), torch.float32)],
-        {"model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+        {
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
     ),
     (
         Transpose0,
@@ -12925,7 +13114,11 @@ forge_modules_and_shapes_dtypes_list = [
         Transpose1,
         [((2304, 768), torch.float32)],
         {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
+            "model_names": [
+                "pt_swin_swin_s_img_cls_torchvision",
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_vit_vit_b_32_img_cls_torchvision",
+            ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
@@ -13111,7 +13304,10 @@ forge_modules_and_shapes_dtypes_list = [
         Transpose1,
         [((1, 49, 768), torch.float32)],
         {
-            "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
+            "model_names": [
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },
@@ -13314,7 +13510,15 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Transpose1,
         [((3072, 1024), torch.float32)],
-        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+        {
+            "model_names": [
+                "pt_swin_swin_b_img_cls_torchvision",
+                "pt_vit_vit_l_32_img_cls_torchvision",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
     ),
     (
         Transpose8,
@@ -13617,6 +13821,367 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 85, 3549), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1000, 1408), torch.float32)],
+        {
+            "model_names": [
+                "onnx_efficientnet_efficientnet_b2a_img_cls_timm",
+                "onnx_efficientnet_efficientnet_b2_img_cls_timm",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((28996, 768), torch.float32)],
+        {
+            "model_names": ["pt_distilbert_distilbert_base_cased_mlm_hf"],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 768, 49), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm", "pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((384, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((49, 384), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((1, 512, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((1, 49, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((256, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((49, 256), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((1, 1024, 49), torch.float32)],
+        {
+            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm", "pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 49, 1024), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((512, 49), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((49, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((1, 512, 196), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((1, 196, 512), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((256, 196), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose1,
+        [((196, 256), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose0,
+        [((1, 50, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose9,
+        [((1, 50, 1, 3, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-5", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose1,
+        [((16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose6,
+        [((1, 16, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-4", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 16, 1, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1, 50, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose9,
+        [((1, 50, 1, 3, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-5", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 12, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose1,
+        [((12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose6,
+        [((1, 12, 50, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-4", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 12, 1, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((50, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1, 197, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose9,
+        [((1, 197, 1, 3, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-5", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((197, 16, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((197, 16, 1, 64), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((197, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose1,
+        [((1, 1280, 1369), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose0,
+        [((1, 1370, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose1,
+        [((3840, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose9,
+        [((1, 1370, 1, 3, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-5", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1370, 16, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose1,
+        [((16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-2", "dim1": "-1"}},
+    ),
+    (
+        Transpose6,
+        [((1, 16, 1370, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-4", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1370, 16, 1, 80), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1370, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim0": "-3", "dim1": "-2"}},
+    ),
+    (
+        Transpose0,
+        [((1, 100, 8, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-3", "dim1": "-2"},
+        },
+    ),
+    (
+        Transpose1,
+        [((8, 100, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((8, 32, 100), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose0,
+        [((1, 8, 100, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-3", "dim1": "-2"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 256, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose0,
+        [((1, 280, 8, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-3", "dim1": "-2"},
+        },
+    ),
+    (
+        Transpose1,
+        [((8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose1,
+        [((8, 32, 280), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-2", "dim1": "-1"},
+        },
+    ),
+    (
+        Transpose0,
+        [((1, 8, 280, 32), torch.float32)],
+        {
+            "model_names": [
+                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim0": "-3", "dim1": "-2"},
+        },
+    ),
+    (
+        Transpose1,
+        [((1, 280, 256), torch.float32)],
+        {
+            "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
             "pcc": 0.99,
             "args": {"dim0": "-2", "dim1": "-1"},
         },

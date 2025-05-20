@@ -31,10 +31,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "gpt2",
-            marks=[pytest.mark.xfail],
-        ),
+        "gpt2",
     ],
 )
 def test_gpt2_text_gen(forge_property_recorder, variant):
@@ -42,9 +39,6 @@ def test_gpt2_text_gen(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     config = GPT2Config.from_pretrained(variant)
@@ -91,9 +85,6 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")

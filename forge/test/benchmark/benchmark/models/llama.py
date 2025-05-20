@@ -21,6 +21,7 @@ import forge
 from forge._C.runtime.experimental import configure_devices, DeviceSettings
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
+from forge.config import CompilerConfig, MLIRConfig
 
 
 # Common constants
@@ -66,9 +67,15 @@ def test_llama_prefill(
     prompt = "Q: What is the largest animal?\nA:"
     input_ids = tokenizer(prompt, return_tensors="pt").input_ids
 
+    # Compiler configuration
+    compiler_config = CompilerConfig()
+    # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
+    # Turn on MLIR optimizations.
+    # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     model_decoder = model.get_decoder()
-    compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids)
+    compiled_decoder = forge.compile(model_decoder, sample_inputs=input_ids, compiler_cfg=compiler_config)
 
     # Enable program cache on all devices
     settings = DeviceSettings()

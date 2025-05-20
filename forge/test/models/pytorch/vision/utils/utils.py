@@ -39,4 +39,8 @@ def load_vision_model_and_input(variant, task, weight_name):
     img_t = preprocess(image)
     batch_t = torch.unsqueeze(img_t, 0)
 
+    # Make the tensor contiguous.
+    # Current limitation of compiler/runtime is that it does not support non-contiguous tensors properly.
+    batch_t = batch_t.contiguous()
+
     return model, [batch_t]

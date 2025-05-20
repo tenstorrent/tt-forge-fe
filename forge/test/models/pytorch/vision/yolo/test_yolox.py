@@ -59,9 +59,6 @@ def test_yolox_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="yolox", variant=variant, source=Source.TORCH_HUB, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # prepare model
     weight_name = f"{variant}.pth"
     url = f"https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/{weight_name}"

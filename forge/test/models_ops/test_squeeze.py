@@ -69,6 +69,15 @@ class Squeeze5(ForgeModule):
         return squeeze_output_1
 
 
+class Squeeze6(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, squeeze_input_0):
+        squeeze_output_1 = forge.op.Squeeze("", squeeze_input_0, dim=3)
+        return squeeze_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -118,6 +127,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
                 "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_b32_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -187,6 +197,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -209,6 +220,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
                 "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1"},
@@ -713,6 +725,7 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
                 "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
                 "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                "pt_mlp_mixer_mixer_l32_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -1104,6 +1117,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -1116,6 +1130,7 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -1238,6 +1253,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -1257,6 +1275,9 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2"},
@@ -1386,6 +1407,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_segformer_nvidia_mit_b1_img_cls_hf",
                 "pt_segformer_nvidia_mit_b3_img_cls_hf",
                 "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                "pt_mlp_mixer_mixer_s32_224_img_cls_timm",
+                "pt_mlp_mixer_mixer_s16_224_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -1394,7 +1420,11 @@ forge_modules_and_shapes_dtypes_list = [
     (
         Squeeze2,
         [((1, 1, 256), torch.float32)],
-        {"model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf"], "pcc": 0.99, "args": {"dim": "1"}},
+        {
+            "model_names": ["pt_segformer_nvidia_mit_b0_img_cls_hf", "onnx_segformer_nvidia_mit_b0_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "1"},
+        },
     ),
     (
         Squeeze0,
@@ -1534,6 +1564,51 @@ forge_modules_and_shapes_dtypes_list = [
         Squeeze2,
         [((1, 1, 2048), torch.float32)],
         {"model_names": ["tf_resnet_resnet50_img_cls_keras"], "pcc": 0.99, "args": {"dim": "1"}},
+    ),
+    (
+        Squeeze0,
+        [((1, 768, 49, 1), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze0,
+        [((1, 512, 49, 1), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze0,
+        [((1, 1024, 49, 1), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze0,
+        [((1, 512, 196, 1), torch.float32)],
+        {"model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"], "pcc": 0.99, "args": {"dim": "-1"}},
+    ),
+    (
+        Squeeze1,
+        [((3, 50, 1, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze1,
+        [((3, 50, 1, 1, 768), torch.float32)],
+        {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze1,
+        [((3, 197, 1, 1, 1024), torch.float32)],
+        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze1,
+        [((3, 1370, 1, 1, 1280), torch.float32)],
+        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99, "args": {"dim": "-2"}},
+    ),
+    (
+        Squeeze6,
+        [((1, 100, 8, 1, 280), torch.float32)],
+        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99, "args": {"dim": "3"}},
     ),
 ]
 

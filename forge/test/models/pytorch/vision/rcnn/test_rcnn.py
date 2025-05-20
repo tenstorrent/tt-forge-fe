@@ -22,9 +22,6 @@ def test_rcnn_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load Alexnet Model
     framework_model = torchvision.models.alexnet(pretrained=True)
     num_classes = 2

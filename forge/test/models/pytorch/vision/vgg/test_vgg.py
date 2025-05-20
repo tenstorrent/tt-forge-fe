@@ -16,34 +16,32 @@ from vgg_pytorch import VGG
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
 variants = [
-    "vgg11",
-    "vgg13",
-    "vgg16",
-    "vgg19",
-    "bn_vgg19",
-    "bn_vgg19b",
+    pytest.param("vgg11"),
+    pytest.param("vgg13"),
+    pytest.param("vgg16"),
+    pytest.param("vgg19", marks=pytest.mark.xfail),
+    pytest.param("bn_vgg19"),
+    pytest.param("bn_vgg19b", marks=pytest.mark.xfail),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vgg_osmr_pytorch(forge_property_recorder, variant):
-    if variant != "vgg11":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True)
     framework_model.eval()
@@ -76,20 +74,19 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
 def test_vgg_19_hf_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     """
     # https://pypi.org/project/vgg-pytorch/
@@ -130,7 +127,10 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 def preprocess_timm_model(model_name):
@@ -154,7 +154,6 @@ def preprocess_timm_model(model_name):
 
 @pytest.mark.nightly
 def test_vgg_bn19_timm_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     variant = "vgg19_bn"
 
@@ -162,9 +161,6 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
@@ -177,12 +173,14 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
 def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -192,9 +190,6 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
     framework_model.eval()
@@ -227,7 +222,10 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
 
 
 variants_with_weights = {
@@ -241,10 +239,7 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param(
-        "vgg11",
-        marks=[pytest.mark.xfail],
-    ),
+    "vgg11",
     "vgg11_bn",
     "vgg13",
     "vgg13_bn",
@@ -258,9 +253,6 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_vgg_torchvision(forge_property_recorder, variant):
 
-    if variant != "vgg11":
-        pytest.skip("Skipping this variant; only testing the small variant(vgg11) for now.")
-
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
@@ -269,9 +261,6 @@ def test_vgg_torchvision(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     weight_name = variants_with_weights[variant]
@@ -282,5 +271,11 @@ def test_vgg_torchvision(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "vgg16_bn":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
+    )

@@ -30,7 +30,6 @@ def test_t5_conditional_generation(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
         source=Source.PADDLENLP,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = T5ForConditionalGeneration.from_pretrained(variant)

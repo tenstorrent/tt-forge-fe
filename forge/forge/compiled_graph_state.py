@@ -448,6 +448,20 @@ class CompiledModel:
 
         self.gradient_outputs = []
 
+    def save(self, output_path: str) -> None:
+        """
+        Save the model to a flatbuffer file.
+
+        Parameters
+        ----------
+        output_path: str
+            Path to the file where the flatbuffer will be saved.
+        """
+        if not output_path.endswith(".ttnn"):
+            raise ValueError("The flatbuffer file must have a '.ttnn' extension.")
+        self.compiled_binary.store(output_path)
+        logger.info(f"Saved model as flatbuffer file to {output_path}")
+
     def export_to_cpp(self, export_path: str) -> None:
         """
         Export the model to a cpp file.

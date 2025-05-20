@@ -45,10 +45,68 @@ class MatchingExceptionRule:
 
 compiler_exception_rules = [
     MatchingExceptionRule(
+        "TVM Relay Paddle Frontend Conversion",
+        [
+            "tvm._ffi.base.TVMError",
+            "relay.concatenate requires all tensors have the same shape on non-concatenating axes",
+        ],
+    ),
+    MatchingExceptionRule(
+        "TVM Relay Paddle Frontend Conversion",
+        [
+            "tvm.error.OpNotImplemented",
+            "The following operators are not supported for frontend Paddle",
+        ],
+    ),
+    MatchingExceptionRule(
+        "TVM Relay PyTorch Frontend Conversion",
+        [
+            "NotImplementedError",
+            "The following operators are not implemented",
+        ],
+    ),
+    MatchingExceptionRule(
         "Framework vs Compiled Model Output Data mismatch",
         [
             "ValueError",
             "Data mismatch -> AutomaticValueChecker (compare_with_golden)",
+        ],
+    ),
+    MatchingExceptionRule(
+        "Framework vs Compiled Model Output Data mismatch",
+        [
+            "AssertionError",
+            "PCC is nan, but tensors are not equal",
+        ],
+    ),
+    MatchingExceptionRule(
+        "TVM to Forge Op Mapping",
+        [
+            "AssertionError",
+            "Encountered unsupported op types. Check error logs for more details",
+        ],
+    ),
+    MatchingExceptionRule(
+        "Resize2d TVM to Forge Op Mapping",
+        [
+            "AssertionError",
+            "Only support nearest neighbor and linear for now",
+        ],
+    ),
+    MatchingExceptionRule(
+        "Forge ElementWise Binary Op Shape Calculation",
+        [
+            "AssertionError",
+            "Eltwise binary ops must have the same shape in both inputs, or one operand must be 1 wide to broadcast",
+        ],
+    ),
+    MatchingExceptionRule(
+        "Forge Graph Shape",
+        [
+            "RuntimeError",
+            "forge/csrc/graph_lib/shape.cpp",
+            "(i >= 0) && (i < (int)dims_.size())",
+            "Trying to access element outside of dimensions",
         ],
     ),
     MatchingExceptionRule("Forge Module Evaluation", ["AssertionError", "Setting a tensor value of incorrect shape"]),
@@ -229,7 +287,7 @@ compiler_exception_rules = [
         [
             "RuntimeError",
             "tt-metal/ttnn/cpp/ttnn/operations/data_movement/sharded/interleaved_to_sharded/device/interleaved_to_sharded_op.cpp",
-            "(*this->output_mem_config.shard_spec).shape[1] * input_tensor.element_size() % hal::get_l1_alignment() == 0",
+            "(*this->output_mem_config.shard_spec()).shape[1] * input_tensor.element_size() % hal::get_l1_alignment() == 0",
             "Shard page size must currently have L1 aligned page size",
         ],
     ),
@@ -258,6 +316,14 @@ compiler_exception_rules = [
             "RuntimeError",
             "tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/device/conv2d_op_sharded_program_factory.cpp",
             "act_block_w_datums == round_up(conv_act_size_c * filter_w, TILE_WIDTH)",
+        ],
+    ),
+    MatchingExceptionRule(
+        "ttnn conv2d",
+        [
+            "RuntimeError",
+            "tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/device/conv2d_op_sharded_program_factory.cpp",
+            "bias_ntiles == weight_matrix_width_ntiles",
         ],
     ),
     MatchingExceptionRule(

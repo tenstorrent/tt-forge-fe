@@ -42,9 +42,6 @@ def test_speecht5_tts(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and Processer
     processor = download_model(SpeechT5Processor.from_pretrained, variant)
     model = download_model(SpeechT5ForTextToSpeech.from_pretrained, variant, return_dict=False, use_cache=False)

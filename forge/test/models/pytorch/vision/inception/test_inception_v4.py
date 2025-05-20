@@ -34,9 +34,6 @@ def test_inception_v4_osmr_pytorch(forge_property_recorder):
         framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
     # Forge compile framework model
@@ -77,9 +74,6 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
 

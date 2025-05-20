@@ -28,7 +28,6 @@ def test_glm(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.CONDITIONAL_GENERATION,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = GLMForConditionalGeneration.from_pretrained(variant)
