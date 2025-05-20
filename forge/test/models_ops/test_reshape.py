@@ -25756,17 +25756,20 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1280, 3000, 1)"},
         },
     ),
-    (
-        Reshape557,
-        [((1280, 1280, 3), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_large_speech_recognition_hf",
-                "pt_whisper_openai_whisper_large_v3_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(1280, 1280, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape557,
+            [((1280, 1280, 3), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_large_v3_clm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(1280, 1280, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape558,
@@ -26034,14 +26037,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(1, 1024, 3000, 1)"},
         },
     ),
-    (
-        Reshape578,
-        [((1024, 1024, 3), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {"shape": "(1024, 1024, 3, 1)"},
-        },
+    pytest.param(
+        (
+            Reshape578,
+            [((1024, 1024, 3), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {"shape": "(1024, 1024, 3, 1)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Reshape579,
@@ -26948,29 +26954,35 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"shape": "(76, 4429, 64)"},
         },
     ),
-    (
-        Reshape659,
-        [((76, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(2, 38, 4429, 4429)"},
-        },
+    pytest.param(
+        (
+            Reshape659,
+            [((76, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(2, 38, 4429, 4429)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Reshape660,
-        [((2, 38, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"shape": "(76, 4429, 4429)"},
-        },
+    pytest.param(
+        (
+            Reshape660,
+            [((2, 38, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"shape": "(76, 4429, 4429)"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reshape661,

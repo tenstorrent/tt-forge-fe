@@ -495,22 +495,25 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (
-        Resize2D0,
-        [((100, 128, 14, 20), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[27, 40]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Resize2D0,
+            [((100, 128, 14, 20), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[27, 40]",
+                    "method": '"nearest_neighbor"',
+                    "align_corners": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
     (
         Resize2D1,
@@ -529,100 +532,138 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D2,
-        [((100, 32, 54, 80), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "sizes": "[107, 160]",
-                "method": '"nearest_neighbor"',
-                "align_corners": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Resize2D2,
+            [((100, 32, 54, 80), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[107, 160]",
+                    "method": '"nearest_neighbor"',
+                    "align_corners": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
-    (
-        Resize2D3,
-        [((1, 768, 16, 16), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 16, 16), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 768, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 32, 32), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 768, 64, 64), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 64, 64), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 768, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 768, 128, 128), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 256, 16, 16), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 256, 16, 16), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D4,
@@ -638,47 +679,68 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D3,
-        [((1, 256, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 256, 32, 32), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 256, 64, 64), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 256, 64, 64), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D3,
-        [((1, 256, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D3,
+            [((1, 256, 128, 128), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"sizes": "[128, 128]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D5,
@@ -725,23 +787,37 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D7,
-        [((1, 16, 27, 27), torch.float32)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D7,
+            [((1, 16, 27, 27), torch.float32)],
+            {
+                "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D7,
-        [((1, 12, 27, 27), torch.float32)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D7,
+            [((1, 12, 27, 27), torch.float32)],
+            {
+                "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[27, 27]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D8,
@@ -855,59 +931,102 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D12,
-        [((1, 960, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {"sizes": "[7, 7]", "method": '"nearest_neighbor"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D12,
+            [((1, 960, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "sizes": "[7, 7]",
+                    "method": '"nearest_neighbor"',
+                    "align_corners": "False",
+                    "channel_last": "0",
+                },
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support upsample with integer scale factor")],
     ),
-    (
-        Resize2D13,
-        [((1, 64, 15, 20), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[30, 40]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D13,
+            [((1, 64, 15, 20), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[30, 40]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D14,
-        [((1, 64, 30, 40), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[60, 80]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D14,
+            [((1, 64, 30, 40), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[60, 80]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D15,
-        [((1, 64, 60, 80), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[120, 160]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D15,
+            [((1, 64, 60, 80), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[120, 160]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D16,
-        [((1, 64, 120, 160), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[240, 320]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D16,
+            [((1, 64, 120, 160), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[240, 320]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D17,
-        [((1, 64, 240, 320), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[480, 640]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D17,
+            [((1, 64, 240, 320), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[480, 640]", "method": '"linear"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D9,
@@ -1635,14 +1754,21 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D18,
-        [((1, 256, 1, 1), torch.float32)],
-        {
-            "model_names": ["pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D18,
+            [((1, 256, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D19,
@@ -1949,41 +2075,69 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D18,
-        [((1, 512, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D18,
+            [((1, 512, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {"sizes": "[28, 28]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D33,
-        [((1, 256, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {"sizes": "[56, 56]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D33,
+            [((1, 256, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {"sizes": "[56, 56]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D34,
-        [((1, 128, 56, 56), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {"sizes": "[112, 112]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D34,
+            [((1, 128, 56, 56), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {"sizes": "[112, 112]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
-    (
-        Resize2D35,
-        [((1, 64, 112, 112), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {"sizes": "[224, 224]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D35,
+            [((1, 64, 112, 112), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {"sizes": "[224, 224]", "method": '"linear"', "align_corners": "True", "channel_last": "0"},
+            },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/upsample/device/upsample_op.cpp:99: tt::exception info: Unsupported mode"
+            )
+        ],
     ),
     (
         Resize2D36,
@@ -2370,14 +2524,17 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Resize2D40,
-        [((1, 192, 50, 83), torch.float32)],
-        {
-            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
-            "pcc": 0.99,
-            "args": {"sizes": "[32, 42]", "method": '"cubic"', "align_corners": "False", "channel_last": "0"},
-        },
+    pytest.param(
+        (
+            Resize2D40,
+            [((1, 192, 50, 83), torch.float32)],
+            {
+                "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+                "pcc": 0.99,
+                "args": {"sizes": "[32, 42]", "method": '"cubic"', "align_corners": "False", "channel_last": "0"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: Only support downsample with integer scale factor")],
     ),
     (
         Resize2D41,

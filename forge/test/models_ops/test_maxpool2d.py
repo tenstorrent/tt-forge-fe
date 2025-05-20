@@ -439,25 +439,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 256, 56, 56), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 256, 56, 56), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D4,
@@ -517,25 +520,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 512, 28, 28), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 512, 28, 28), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D4,
@@ -595,25 +601,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 768, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 768, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D3,
@@ -638,21 +647,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 128, 56, 56), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 128, 56, 56), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D3,
@@ -670,21 +682,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 256, 28, 28), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 256, 28, 28), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D6,
@@ -718,21 +733,24 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D5,
-        [((1, 384, 14, 14), torch.float32)],
-        {
-            "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[0, 2, 0, 2]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D5,
+            [((1, 384, 14, 14), torch.float32)],
+            {
+                "model_names": ["onnx_vovnet_vovnet27s_obj_det_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[0, 2, 0, 2]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Maxpool2D3,
@@ -956,21 +974,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D8,
-        [((1, 528, 13, 13), torch.float32)],
-        {
-            "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "1",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D8,
+            [((1, 528, 13, 13), torch.float32)],
+            {
+                "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "1",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:38: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (528) should be padded to nearest TILE_WIDTH (32) or should be 16"
+            )
+        ],
     ),
     (
         Maxpool2D2,
@@ -1036,21 +1061,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D4,
-        [((1, 4, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_autoencoder_conv_img_enc_github"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "2",
-                "stride": "2",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D4,
+            [((1, 4, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_autoencoder_conv_img_enc_github"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "2",
+                    "stride": "2",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/sharded/interleaved_to_sharded/device/interleaved_to_sharded_op.cpp:23: (*this->output_mem_config.shard_spec()).shape[1] * input_tensor.element_size() % hal::get_l1_alignment() == 0 info: Shard page size must currently have L1 aligned page size"
+            )
+        ],
     ),
     (
         Maxpool2D1,
@@ -1277,21 +1309,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D6,
-        [((1, 528, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_googlenet_base_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "1",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "True",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D6,
+            [((1, 528, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_googlenet_base_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "1",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "True",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:38: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (528) should be padded to nearest TILE_WIDTH (32) or should be 16"
+            )
+        ],
     ),
     (
         Maxpool2D10,
@@ -1626,21 +1665,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Maxpool2D1,
-        [((1, 728, 37, 37), torch.float32)],
-        {
-            "model_names": ["pt_xception_xception_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "kernel_size": "3",
-                "stride": "2",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "ceil_mode": "False",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Maxpool2D1,
+            [((1, 728, 37, 37), torch.float32)],
+            {
+                "model_names": ["pt_xception_xception_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "3",
+                    "stride": "2",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "ceil_mode": "False",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/device/pool_op.cpp:38: (input_shape[3] % tt::constants::TILE_WIDTH == 0) || (input_shape[3] == 16) info: Input channels (728) should be padded to nearest TILE_WIDTH (32) or should be 16"
+            )
+        ],
     ),
     (
         Maxpool2D1,

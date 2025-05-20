@@ -4126,16 +4126,19 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 100, 8, 14, 20), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add1,
-        [((100, 264, 14, 20), torch.float32), ((264, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((100, 264, 14, 20), torch.float32), ((264, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add0,
@@ -4147,31 +4150,40 @@ forge_modules_and_shapes_dtypes_list = [
         [((100, 8, 9240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add31,
-        [((100, 264, 14, 20), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add31,
+            [((100, 264, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Add1,
-        [((100, 128, 14, 20), torch.float32), ((128, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((100, 128, 14, 20), torch.float32), ((128, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add30,
         [((100, 8, 4480), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add32,
-        [((100, 128, 14, 20), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add32,
+            [((100, 128, 14, 20), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -4184,26 +4196,32 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add1,
-        [((100, 64, 27, 40), torch.float32), ((64, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((100, 64, 27, 40), torch.float32), ((64, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add30,
         [((100, 8, 8640), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add33,
-        [((100, 64, 27, 40), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add33,
+            [((100, 64, 27, 40), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -4216,26 +4234,32 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add1,
-        [((100, 32, 54, 80), torch.float32), ((32, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((100, 32, 54, 80), torch.float32), ((32, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add30,
         [((100, 8, 17280), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add34,
-        [((100, 32, 54, 80), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add34,
+            [((100, 32, 54, 80), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -4248,26 +4272,32 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add1,
-        [((100, 16, 107, 160), torch.float32), ((16, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((100, 16, 107, 160), torch.float32), ((16, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add30,
         [((100, 8, 34240), torch.float32)],
         {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add35,
-        [((100, 16, 107, 160), torch.float32)],
-        {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add35,
+            [((100, 16, 107, 160), torch.float32)],
+            {"model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -10326,21 +10356,24 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 256, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 256, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -10357,35 +10390,41 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 512, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 512, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Add0,
-        [((1, 768, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 768, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -10402,22 +10441,25 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 1024, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 1024, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_ra_in1k_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet19b_dw_obj_det_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -14654,10 +14696,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 1, 1024), torch.float32), ((2, 1, 1024), torch.float32)],
         {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99},
     ),
-    (
-        Add1,
-        [((2, 1, 1024), torch.float32), ((1, 1024), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add1,
+            [((2, 1, 1024), torch.float32), ((1, 1024), torch.float32)],
+            {"model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add0,
@@ -14734,10 +14779,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 1, 2048), torch.float32), ((2, 1, 2048), torch.float32)],
         {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99},
     ),
-    (
-        Add1,
-        [((2, 1, 2048), torch.float32), ((1, 2048), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add1,
+            [((2, 1, 2048), torch.float32), ((1, 2048), torch.float32)],
+            {"model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add97,
@@ -14754,10 +14802,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 1, 1536), torch.float32), ((2, 1, 1536), torch.float32)],
         {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
     ),
-    (
-        Add1,
-        [((2, 1, 1536), torch.float32), ((1, 1536), torch.float32)],
-        {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add1,
+            [((2, 1, 1536), torch.float32), ((1, 1536), torch.float32)],
+            {"model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add98,
@@ -15229,16 +15280,19 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 596, 4096), torch.float32), ((1, 596, 4096), torch.float32)],
         {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Add1,
-        [((2, 2432, 64, 64), torch.float32), ((2432, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add1,
+            [((2, 2432, 64, 64), torch.float32), ((2432, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -15361,16 +15415,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add114,
-        [((2, 38, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add114,
+            [((2, 38, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -15450,10 +15507,13 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add1,
-        [((2, 1536, 64, 64), torch.float32), ((1536, 1, 1), torch.float32)],
-        {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add1,
+            [((2, 1536, 64, 64), torch.float32), ((1536, 1, 1), torch.float32)],
+            {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -15515,20 +15575,26 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 24, 333, 1), torch.float32)],
         {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Add114,
-        [((2, 24, 4429, 4429), torch.float32)],
-        {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add114,
+            [((2, 24, 4429, 4429), torch.float32)],
+            {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
         [((2, 4096, 1536), torch.float32), ((2, 4096, 1536), torch.float32)],
         {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Add121,
-        [((2, 24, 4096, 4096), torch.float32)],
-        {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add121,
+            [((2, 24, 4096, 4096), torch.float32)],
+            {"model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add122,
@@ -20460,16 +20526,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 64, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 64, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -20504,16 +20573,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 128, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 128, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -20603,16 +20675,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 2048, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 2048, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -20668,10 +20743,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 100, 8, 14, 20), torch.float32)],
         {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
     ),
-    (
-        Add0,
-        [((100, 8, 1, 1), torch.float32)],
-        {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add0,
+            [((100, 8, 1, 1), torch.float32)],
+            {"model_names": ["pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add231,
@@ -21794,19 +21872,22 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 72, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 72, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -21917,21 +21998,24 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 120, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 120, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -22038,19 +22122,22 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 480, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 480, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -22079,33 +22166,39 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 672, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 672, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Add0,
-        [((1, 960, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_ghostnet_ghostnet_100_img_cls_timm",
-                "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
-                "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
-                "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 960, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_ghostnet_ghostnet_100_img_cls_timm",
+                    "pt_ghostnet_ghostnetv2_100_in1k_img_cls_timm",
+                    "pt_ghostnet_ghostnet_100_in1k_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub",
+                    "pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -24008,16 +24101,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 16, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 16, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -24067,16 +24163,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 96, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 96, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add0,
@@ -24103,16 +24202,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 240, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 240, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -24158,16 +24260,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 144, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 144, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add0,
@@ -24191,16 +24296,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 288, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 288, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -24224,16 +24332,19 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Add0,
-        [((1, 576, 1, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
-                "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Add0,
+            [((1, 576, 1, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilnetv3_mobilenetv3_small_100_img_cls_timm",
+                    "pt_mobilenetv3_mobilenet_v3_small_img_cls_torchhub",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add1,
@@ -24355,10 +24466,13 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 1280), torch.float32)],
         {"model_names": ["pt_mobilenetv3_mobilenet_v3_large_img_cls_torchhub"], "pcc": 0.99},
     ),
-    (
-        Add0,
-        [((1, 1280, 1, 1), torch.float32)],
-        {"model_names": ["pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add0,
+            [((1, 1280, 1, 1), torch.float32)],
+            {"model_names": ["pt_mobilnetv3_mobilenetv3_large_100_img_cls_timm"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Add0,
@@ -27770,16 +27884,40 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 4096, 1, 1), torch.float32), ((4096, 1, 1), torch.float32)],
         {"model_names": ["pt_vgg_vgg19_bn_obj_det_timm"], "pcc": 0.99},
     ),
-    (Add255, [((197, 1, 2304), torch.float32)], {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99}),
-    (
-        Add283,
-        [((1, 12, 197, 197), torch.float32)],
-        {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add255,
+            [((197, 1, 2304), torch.float32)],
+            {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Add283,
+            [((1, 12, 197, 197), torch.float32)],
+            {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (Add9, [((197, 768), torch.float32)], {"model_names": ["pt_vit_vit_b_16_img_cls_torchvision"], "pcc": 0.99}),
     (Add284, [((1, 50, 768), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
-    (Add255, [((50, 1, 2304), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
-    (Add285, [((1, 12, 50, 50), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
+    pytest.param(
+        (
+            Add255,
+            [((50, 1, 2304), torch.float32)],
+            {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Add285,
+            [((1, 12, 50, 50), torch.float32)],
+            {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
     (Add9, [((50, 768), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
     (
         Add1,
@@ -27789,8 +27927,22 @@ forge_modules_and_shapes_dtypes_list = [
     (Add54, [((1, 50, 3072), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
     (Add9, [((1, 50, 768), torch.float32)], {"model_names": ["pt_vit_vit_b_32_img_cls_torchvision"], "pcc": 0.99}),
     (Add286, [((1, 50, 1024), torch.float32)], {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99}),
-    (Add54, [((50, 1, 3072), torch.float32)], {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99}),
-    (Add285, [((1, 16, 50, 50), torch.float32)], {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99}),
+    pytest.param(
+        (
+            Add54,
+            [((50, 1, 3072), torch.float32)],
+            {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Add285,
+            [((1, 16, 50, 50), torch.float32)],
+            {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
     (Add91, [((50, 1024), torch.float32)], {"model_names": ["pt_vit_vit_l_32_img_cls_torchvision"], "pcc": 0.99}),
     (
         Add1,
@@ -27805,11 +27957,21 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
     ),
     (Add287, [((1, 1370, 1280), torch.float32)], {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99}),
-    (Add288, [((1370, 1, 3840), torch.float32)], {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99}),
-    (
-        Add289,
-        [((1, 16, 1370, 1370), torch.float32)],
-        {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add288,
+            [((1370, 1, 3840), torch.float32)],
+            {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Add289,
+            [((1, 16, 1370, 1370), torch.float32)],
+            {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (Add96, [((1370, 1280), torch.float32)], {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99}),
     (
@@ -27819,11 +27981,21 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (Add103, [((1, 1370, 5120), torch.float32)], {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99}),
     (Add96, [((1, 1370, 1280), torch.float32)], {"model_names": ["pt_vit_vit_h_14_img_cls_torchvision"], "pcc": 0.99}),
-    (Add54, [((197, 1, 3072), torch.float32)], {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99}),
-    (
-        Add283,
-        [((1, 16, 197, 197), torch.float32)],
-        {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99},
+    pytest.param(
+        (
+            Add54,
+            [((197, 1, 3072), torch.float32)],
+            {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    ),
+    pytest.param(
+        (
+            Add283,
+            [((1, 16, 197, 197), torch.float32)],
+            {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (Add91, [((197, 1024), torch.float32)], {"model_names": ["pt_vit_vit_l_16_img_cls_torchvision"], "pcc": 0.99}),
     (

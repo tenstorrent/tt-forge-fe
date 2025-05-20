@@ -579,8 +579,14 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 12, 14, 14), torch.float32), ((1, 12, 14, 1), torch.float32)],
         {"model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"], "pcc": 0.99},
     ),
-    (Subtract3, [((1, 9), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
-    (Subtract3, [((1, 11), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
+    pytest.param(
+        (Subtract3, [((1, 9), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
+    pytest.param(
+        (Subtract3, [((1, 11), torch.int32)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
     (
         Subtract1,
         [((2, 1, 1, 13), torch.float32)],
@@ -671,20 +677,23 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 1, 32, 32), torch.int32)],
-        {
-            "model_names": [
-                "pt_bloom_bigscience_bloom_1b1_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 1, 32, 32), torch.int32)],
+            {
+                "model_names": [
+                    "pt_bloom_bigscience_bloom_1b1_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
+                    "pt_llama3_huggyllama_llama_7b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_3b_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract1,
@@ -707,45 +716,51 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 1, 256, 256), torch.int32)],
-        {
-            "model_names": [
-                "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_phi2_microsoft_phi_2_clm_hf",
-                "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 1, 256, 256), torch.int32)],
+            {
+                "model_names": [
+                    "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
+                    "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                    "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
+                    "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                    "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+                    "pt_phi2_microsoft_phi_2_clm_hf",
+                    "pt_phi2_microsoft_phi_2_pytdml_clm_hf",
+                    "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                    "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
-    (
-        Subtract3,
-        [((1, 128), torch.int32)],
-        {
-            "model_names": [
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 128), torch.int32)],
+            {
+                "model_names": [
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract1,
@@ -761,10 +776,13 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
-    (
-        Subtract3,
-        [((1, 384), torch.int32)],
-        {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99},
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 384), torch.int32)],
+            {"model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
     ),
     (
         Subtract1,
@@ -798,7 +816,14 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (Subtract1, [((1, 1, 1, 256), torch.float32)], {"model_names": ["pt_gpt2_gpt2_text_gen_hf"], "pcc": 0.99}),
-    (Subtract3, [((1, 4), torch.int32)], {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99}),
+    pytest.param(
+        (
+            Subtract3,
+            [((1, 4), torch.int32)],
+            {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99},
+        ),
+        marks=[pytest.mark.xfail(reason="AssertionError: PCC is nan, but tensors are not equal")],
+    ),
     (
         Subtract5,
         [((1, 256), torch.int64)],

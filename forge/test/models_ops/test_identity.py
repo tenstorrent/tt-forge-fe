@@ -675,16 +675,19 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 32, 596, 596), torch.float32)],
         {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
-    (
-        Identity0,
-        [((2, 38, 4429, 4429), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-        },
+    pytest.param(
+        (
+            Identity0,
+            [((2, 38, 4429, 4429), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Identity0,

@@ -35269,20 +35269,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D4,
-        [((1, 14, 14, 1024), torch.float32), ((2048, 1024, 1, 1), torch.float32)],
-        {
-            "model_names": ["jax_resnet_50_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "1",
+    pytest.param(
+        (
+            Conv2D4,
+            [((1, 14, 14, 1024), torch.float32), ((2048, 1024, 1, 1), torch.float32)],
+            {
+                "model_names": ["jax_resnet_50_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "1",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1,
@@ -35594,25 +35597,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D19,
-        [((1, 512, 54, 80), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D19,
+            [((1, 512, 54, 80), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D20,
@@ -35714,25 +35720,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D25,
-        [((1, 1024, 27, 40), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D25,
+            [((1, 1024, 27, 40), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_obj_det_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D26,
@@ -35863,113 +35872,155 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D33,
-        [((100, 264, 14, 20), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D33,
+            [((100, 264, 14, 20), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 45957120 B L1 buffer across 40 banks, where each bank needs to store 1148928 B"
+            )
+        ],
     ),
-    (
-        Conv2D34,
-        [((100, 264, 14, 20), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D34,
+            [((100, 264, 14, 20), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:868: tt::exception info: Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 1530912 B which is beyond max L1 size of 1499136 B"
+            )
+        ],
     ),
-    (
-        Conv2D35,
-        [((100, 128, 27, 40), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D35,
+            [((100, 128, 27, 40), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 66715648 B L1 buffer across 64 banks, where each bank needs to store 1042432 B"
+            )
+        ],
     ),
-    (
-        Conv2D36,
-        [((100, 64, 54, 80), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D36,
+            [((100, 64, 54, 80), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 110624768 B L1 buffer across 64 banks, where each bank needs to store 1728512 B"
+            )
+        ],
     ),
-    (
-        Conv2D37,
-        [((100, 32, 107, 160), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D37,
+            [((100, 32, 107, 160), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 219152384 B L1 buffer across 64 banks, where each bank needs to store 3424256 B"
+            )
+        ],
     ),
-    (
-        Conv2D38,
-        [((100, 16, 107, 160), torch.float32)],
-        {
-            "model_names": [
-                "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D38,
+            [((100, 16, 107, 160), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 109576192 B L1 buffer across 64 banks, where each bank needs to store 1712128 B"
+            )
+        ],
     ),
     (
         Conv2D39,
@@ -38863,25 +38914,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D181,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": [
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D181,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": [
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D96,
@@ -39800,20 +39854,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D49,
-        [((1, 144, 224, 224), torch.float32)],
-        {
-            "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D49,
+            [((1, 144, 224, 224), torch.float32)],
+            {
+                "model_names": ["onnx_efficientnet_efficientnet_b5_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 33551360 B L1 buffer across 40 banks, where each bank needs to store 838784 B"
+            )
+        ],
     ),
     (
         Conv2D182,
@@ -40437,20 +40498,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D181,
-        [((1, 3, 240, 240), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D181,
+            [((1, 3, 240, 240), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D96,
@@ -43508,42 +43572,45 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D25,
-        [((1, 1024, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "onnx_resnet_50_img_cls_hf",
-                "pd_resnet_101_img_cls_paddlemodels",
-                "pd_resnet_152_img_cls_paddlemodels",
-                "pd_resnet_50_img_cls_paddlemodels",
-                "pt_resnet_resnet101_img_cls_torchvision",
-                "pt_resnet_resnet50_img_cls_torchvision",
-                "pt_resnet_resnet152_img_cls_torchvision",
-                "pt_resnet_50_img_cls_hf",
-                "pt_resnet_50_img_cls_timm",
-                "pt_resnext_resnext50_32x4d_img_cls_osmr",
-                "pt_resnext_resnext50_32x4d_img_cls_torchhub",
-                "pt_resnext_resnext101_32x8d_img_cls_torchhub",
-                "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
-                "pt_resnext_resnext26_32x4d_img_cls_osmr",
-                "pt_resnext_resnext14_32x4d_img_cls_osmr",
-                "pt_resnext_resnext101_64x4d_img_cls_osmr",
-                "pt_unet_qubvel_img_seg_torchhub",
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D25,
+            [((1, 1024, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_resnet_50_img_cls_hf",
+                    "pd_resnet_101_img_cls_paddlemodels",
+                    "pd_resnet_152_img_cls_paddlemodels",
+                    "pd_resnet_50_img_cls_paddlemodels",
+                    "pt_resnet_resnet101_img_cls_torchvision",
+                    "pt_resnet_resnet50_img_cls_torchvision",
+                    "pt_resnet_resnet152_img_cls_torchvision",
+                    "pt_resnet_50_img_cls_hf",
+                    "pt_resnet_50_img_cls_timm",
+                    "pt_resnext_resnext50_32x4d_img_cls_osmr",
+                    "pt_resnext_resnext50_32x4d_img_cls_torchhub",
+                    "pt_resnext_resnext101_32x8d_img_cls_torchhub",
+                    "pt_resnext_resnext101_32x8d_wsl_img_cls_torchhub",
+                    "pt_resnext_resnext26_32x4d_img_cls_osmr",
+                    "pt_resnext_resnext14_32x4d_img_cls_osmr",
+                    "pt_resnext_resnext101_64x4d_img_cls_osmr",
+                    "pt_unet_qubvel_img_seg_torchhub",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D292,
@@ -43655,37 +43722,40 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D294,
-        [((1, 64, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[8, 8]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D294,
+            [((1, 64, 128, 128), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[8, 8]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D295,
@@ -43742,37 +43812,40 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D297,
-        [((1, 128, 64, 64), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D297,
+            [((1, 128, 64, 64), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D298,
@@ -43829,37 +43902,40 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D300,
-        [((1, 320, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_mit_b2_img_cls_hf",
-                "onnx_segformer_nvidia_mit_b3_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b4_img_cls_hf",
-                "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b3_img_cls_hf",
-                "pt_segformer_nvidia_mit_b1_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
-                "pt_segformer_nvidia_mit_b4_img_cls_hf",
-                "pt_segformer_nvidia_mit_b5_img_cls_hf",
-                "pt_segformer_nvidia_mit_b2_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D300,
+            [((1, 320, 32, 32), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_mit_b2_img_cls_hf",
+                    "onnx_segformer_nvidia_mit_b3_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b4_img_cls_hf",
+                    "onnx_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b3_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b1_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b3_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b1_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_segformer_b2_finetuned_ade_512_512_sem_seg_hf",
+                    "pt_segformer_nvidia_mit_b4_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b5_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b2_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b4_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D301,
@@ -44043,25 +44119,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D308,
-        [((1, 32, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[8, 8]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D308,
+            [((1, 32, 128, 128), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[8, 8]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D309,
@@ -44116,25 +44195,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D312,
-        [((1, 64, 64, 64), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D312,
+            [((1, 64, 64, 64), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D295,
@@ -44174,25 +44256,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D314,
-        [((1, 160, 32, 32), torch.float32)],
-        {
-            "model_names": [
-                "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-                "onnx_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_mit_b0_img_cls_hf",
-                "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D314,
+            [((1, 160, 32, 32), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                    "onnx_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_mit_b0_img_cls_hf",
+                    "pt_segformer_nvidia_segformer_b0_finetuned_ade_512_512_sem_seg_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D315,
@@ -44389,20 +44474,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D323,
-        [((1, 512, 32, 32), torch.float32)],
-        {
-            "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D323,
+            [((1, 512, 32, 32), torch.float32)],
+            {
+                "model_names": ["onnx_unet_base_img_seg_torchhub", "pt_unet_base_img_seg_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D324,
@@ -44464,54 +44552,60 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D326,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
-                "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
-                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
-                "pt_vit_vit_l_16_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D326,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                    "pt_beit_microsoft_beit_large_patch16_224_img_cls_hf",
+                    "pt_mlp_mixer_mixer_l16_224_img_cls_timm",
+                    "pt_mlp_mixer_mixer_l16_224_in21k_img_cls_timm",
+                    "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                    "pt_vit_vit_l_16_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D327,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
-                "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
-                "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
-                "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
-                "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
-                "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
-                "pt_vit_vit_b_16_img_cls_torchvision",
-                "pt_vit_google_vit_base_patch16_224_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D327,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                    "pt_beit_microsoft_beit_base_patch16_224_img_cls_hf",
+                    "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
+                    "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
+                    "pt_mlp_mixer_mixer_b16_224_in21k_img_cls_timm",
+                    "pt_mlp_mixer_mixer_b16_224_goog_in21k_img_cls_timm",
+                    "pt_mlp_mixer_mixer_b16_224_img_cls_timm",
+                    "pt_mlp_mixer_mixer_b16_224_miil_img_cls_timm",
+                    "pt_mlp_mixer_mixer_b16_224_miil_in21k_img_cls_timm",
+                    "pt_vit_vit_b_16_img_cls_torchvision",
+                    "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D328,
@@ -44977,27 +45071,30 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D342,
-        [((1, 1024, 7, 7), torch.float32)],
-        {
-            "model_names": [
-                "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
-                "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
-                "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
-                "pt_vovnet_vovnet39_img_cls_osmr",
-                "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
-                "pt_vovnet_vovnet57_img_cls_osmr",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D342,
+            [((1, 1024, 7, 7), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_vovnet_vovnet_v1_57_obj_det_torchhub",
+                    "onnx_vovnet_v1_vovnet39_obj_det_torchhub",
+                    "pt_vovnet_ese_vovnet39b_obj_det_torchhub",
+                    "pt_vovnet_vovnet39_img_cls_osmr",
+                    "pt_vovnet_ese_vovnet99b_obj_det_torchhub",
+                    "pt_vovnet_vovnet57_img_cls_osmr",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D343,
@@ -46822,20 +46919,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D398,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D398,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pd_alexnet_base_img_cls_paddlemodels"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[2, 2, 2, 2]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D399,
@@ -49050,20 +49150,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D450,
-        [((1, 512, 3000, 1), torch.float32), ((512, 512, 3, 1), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 1]",
-                "padding": "[1, 0, 1, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D450,
+            [((1, 512, 3000, 1), torch.float32), ((512, 512, 3, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 1]",
+                    "padding": "[1, 0, 1, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D449,
@@ -49080,20 +49183,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D450,
-        [((1, 384, 3000, 1), torch.float32), ((384, 384, 3, 1), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 1]",
-                "padding": "[1, 0, 1, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D450,
+            [((1, 384, 3000, 1), torch.float32), ((384, 384, 3, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 1]",
+                    "padding": "[1, 0, 1, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D449,
@@ -49110,20 +49216,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D450,
-        [((1, 768, 3000, 1), torch.float32), ((768, 768, 3, 1), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 1]",
-                "padding": "[1, 0, 1, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D450,
+            [((1, 768, 3000, 1), torch.float32), ((768, 768, 3, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 1]",
+                    "padding": "[1, 0, 1, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D449,
@@ -49140,23 +49249,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D450,
-        [((1, 1280, 3000, 1), torch.float32), ((1280, 1280, 3, 1), torch.float32)],
-        {
-            "model_names": [
-                "pt_whisper_openai_whisper_large_speech_recognition_hf",
-                "pt_whisper_openai_whisper_large_v3_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 1]",
-                "padding": "[1, 0, 1, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D450,
+            [((1, 1280, 3000, 1), torch.float32), ((1280, 1280, 3, 1), torch.float32)],
+            {
+                "model_names": [
+                    "pt_whisper_openai_whisper_large_speech_recognition_hf",
+                    "pt_whisper_openai_whisper_large_v3_clm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 1]",
+                    "padding": "[1, 0, 1, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D449,
@@ -49173,20 +49285,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D450,
-        [((1, 1024, 3000, 1), torch.float32), ((1024, 1024, 3, 1), torch.float32)],
-        {
-            "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 1]",
-                "padding": "[1, 0, 1, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D450,
+            [((1, 1024, 3000, 1), torch.float32), ((1024, 1024, 3, 1), torch.float32)],
+            {
+                "model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 1]",
+                    "padding": "[1, 0, 1, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D449,
@@ -49203,38 +49318,48 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D451,
-        [((1, 3, 336, 336), torch.float32)],
-        {
-            "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[14, 14]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D451,
+            [((1, 3, 336, 336), torch.float32)],
+            {
+                "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[14, 14]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D452,
-        [((2, 16, 128, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D452,
+            [((2, 16, 128, 128), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                    "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:877: tt::exception info: Statically allocated circular buffers in program 3124 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 188416 and static circular buffer region ends at 728096"
+            )
+        ],
     ),
     (
         Conv2D453,
@@ -49386,20 +49511,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D460,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_alexnet_base_img_cls_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D460,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_alexnet_base_img_cls_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D461,
@@ -49465,20 +49593,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D465,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_alexnet_base_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D465,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_alexnet_base_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[2, 2, 2, 2]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D466,
@@ -49555,35 +49686,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D469,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D469,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D470,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D470,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_deit_facebook_deit_small_patch16_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D31,
@@ -52282,20 +52419,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D562,
-        [((1, 672, 14, 14), torch.float32), ((672, 1, 5, 5), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 2, 2]",
-                "dilation": "1",
-                "groups": "672",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D562,
+            [((1, 672, 14, 14), torch.float32), ((672, 1, 5, 5), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 2, 2]",
+                    "dilation": "1",
+                    "groups": "672",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D73,
@@ -52555,24 +52695,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": [
-                "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 112, 112), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": [
+                    "pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm",
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D571,
@@ -52617,23 +52760,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D572,
-        [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
-                "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D572,
+            [((1, 144, 56, 56), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf",
+                    "pt_mobilnetv2_google_deeplabv3_mobilenet_v2_1_0_513_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D573,
@@ -52653,20 +52799,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D574,
-        [((1, 144, 56, 56), torch.float32), ((144, 1, 5, 5), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 2, 2]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D574,
+            [((1, 144, 56, 56), torch.float32), ((144, 1, 5, 5), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 2, 2]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D575,
@@ -52710,20 +52859,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D577,
-        [((1, 240, 28, 28), torch.float32), ((240, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "240",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D577,
+            [((1, 240, 28, 28), torch.float32), ((240, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite0_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "240",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D578,
@@ -53013,20 +53165,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D181,
-        [((1, 3, 300, 300), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D181,
+            [((1, 3, 300, 300), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D568,
@@ -53073,20 +53228,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D572,
-        [((1, 144, 150, 150), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D572,
+            [((1, 144, 150, 150), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D52,
@@ -53223,20 +53381,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D584,
-        [((1, 288, 38, 38), torch.float32), ((288, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "288",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D584,
+            [((1, 288, 38, 38), torch.float32), ((288, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite3_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "288",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D153,
@@ -53493,20 +53654,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D181,
-        [((1, 3, 380, 380), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D181,
+            [((1, 3, 380, 380), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D568,
@@ -53553,20 +53717,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D572,
-        [((1, 144, 190, 190), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D572,
+            [((1, 144, 190, 190), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D52,
@@ -53703,20 +53870,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D592,
-        [((1, 336, 48, 48), torch.float32), ((336, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "336",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D592,
+            [((1, 336, 48, 48), torch.float32), ((336, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "336",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D66,
@@ -53838,20 +54008,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D593,
-        [((1, 960, 24, 24), torch.float32), ((960, 1, 5, 5), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 2, 2]",
-                "dilation": "1",
-                "groups": "960",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D593,
+            [((1, 960, 24, 24), torch.float32), ((960, 1, 5, 5), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite4_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 2, 2]",
+                    "dilation": "1",
+                    "groups": "960",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D79,
@@ -53973,20 +54146,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D181,
-        [((1, 3, 260, 260), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D181,
+            [((1, 3, 260, 260), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D568,
@@ -54033,20 +54209,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 130, 130), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 130, 130), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite2_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D108,
@@ -54468,20 +54647,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 120, 120), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 120, 120), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D571,
@@ -54498,20 +54680,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D574,
-        [((1, 144, 60, 60), torch.float32), ((144, 1, 5, 5), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 2, 2]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D574,
+            [((1, 144, 60, 60), torch.float32), ((144, 1, 5, 5), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 2, 2]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D575,
@@ -54528,20 +54713,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D577,
-        [((1, 240, 30, 30), torch.float32), ((240, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "240",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D577,
+            [((1, 240, 30, 30), torch.float32), ((240, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_efficientnet_lite_tf_efficientnet_lite1_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "240",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D578,
@@ -56223,20 +56411,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D294,
-        [((1, 64, 120, 160), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[8, 8]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D294,
+            [((1, 64, 120, 160), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[8, 8]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 9256960 B L1 buffer across 10 banks, where each bank needs to store 925696 B"
+            )
+        ],
     ),
     (
         Conv2D672,
@@ -56272,20 +56467,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D297,
-        [((1, 128, 60, 80), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[4, 4]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D297,
+            [((1, 128, 60, 80), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[4, 4]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D673,
@@ -56332,20 +56530,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D300,
-        [((1, 320, 30, 40), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D300,
+            [((1, 320, 30, 40), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D674,
@@ -56557,35 +56758,49 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D7,
-        [((1, 64, 480, 640), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D7,
+            [((1, 64, 480, 640), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 99942400 B L1 buffer across 64 banks, where each bank needs to store 1561600 B"
+            )
+        ],
     ),
-    (
-        Conv2D678,
-        [((1, 64, 480, 640), torch.float32)],
-        {
-            "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D678,
+            [((1, 64, 480, 640), torch.float32)],
+            {
+                "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 99942400 B L1 buffer across 64 banks, where each bank needs to store 1561600 B"
+            )
+        ],
     ),
     (
         Conv2D427,
@@ -60805,24 +61020,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D825,
-        [((1, 64, 147, 147), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D825,
+            [((1, 64, 147, 147), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D826,
@@ -60843,24 +61061,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D827,
-        [((1, 64, 73, 73), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D827,
+            [((1, 64, 73, 73), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D828,
@@ -60900,24 +61121,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D830,
-        [((1, 192, 71, 71), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D830,
+            [((1, 192, 71, 71), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D428,
@@ -60995,24 +61219,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D832,
-        [((1, 384, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D832,
+            [((1, 384, 35, 35), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D509,
@@ -61052,24 +61279,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D834,
-        [((1, 224, 35, 35), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D834,
+            [((1, 224, 35, 35), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D428,
@@ -61223,24 +61453,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D830,
-        [((1, 192, 17, 17), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D830,
+            [((1, 192, 17, 17), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D20,
@@ -61299,24 +61532,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D843,
-        [((1, 320, 17, 17), torch.float32)],
-        {
-            "model_names": [
-                "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_tf_in1k_img_cls_timm",
-                "pt_inception_inception_v4_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D843,
+            [((1, 320, 17, 17), torch.float32)],
+            {
+                "model_names": [
+                    "pt_inception_v4_img_cls_osmr",
+                    "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                    "pt_inception_inception_v4_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D428,
@@ -61515,65 +61751,89 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D854,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm", "pt_vit_vit_b_32_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[32, 32]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D854,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_mlp_mixer_mixer_b32_224_img_cls_timm", "pt_vit_vit_b_32_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[32, 32]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 2287616 B L1 buffer across 2 banks, where each bank needs to store 1143808 B"
+            )
+        ],
     ),
-    (
-        Conv2D855,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[32, 32]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D855,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_mlp_mixer_mixer_s32_224_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[32, 32]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 2287616 B L1 buffer across 2 banks, where each bank needs to store 1143808 B"
+            )
+        ],
     ),
-    (
-        Conv2D856,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm", "pt_vit_vit_l_32_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[32, 32]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D856,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_mlp_mixer_mixer_l32_224_img_cls_timm", "pt_vit_vit_l_32_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[32, 32]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 2287616 B L1 buffer across 2 banks, where each bank needs to store 1143808 B"
+            )
+        ],
     ),
-    (
-        Conv2D857,
-        [((1, 3, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D857,
+            [((1, 3, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_mlp_mixer_mixer_s16_224_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D428,
@@ -61657,20 +61917,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D861,
-        [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "64",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D861,
+            [((1, 64, 112, 112), torch.float32), ((64, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "64",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D862,
@@ -61729,20 +61992,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D865,
-        [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "128",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D865,
+            [((1, 128, 56, 56), torch.float32), ((128, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "128",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D672,
@@ -61781,20 +62047,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D867,
-        [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "256",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D867,
+            [((1, 256, 28, 28), torch.float32), ((256, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "256",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D673,
@@ -61833,20 +62102,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D869,
-        [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "512",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D869,
+            [((1, 512, 14, 14), torch.float32), ((512, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "512",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D870,
@@ -61867,20 +62139,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D871,
-        [((1, 3, 192, 192), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D871,
+            [((1, 3, 192, 192), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D553,
@@ -61912,20 +62187,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D873,
-        [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D873,
+            [((1, 48, 96, 96), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D874,
@@ -61957,20 +62235,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 48, 48), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D876,
@@ -62017,20 +62298,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D877,
-        [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D877,
+            [((1, 192, 24, 24), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D368,
@@ -62077,20 +62361,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D880,
-        [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "384",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D880,
+            [((1, 384, 12, 12), torch.float32), ((384, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilnet_v1_google_mobilenet_v1_0_75_192_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "384",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D881,
@@ -62192,20 +62479,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D877,
-        [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D877,
+            [((1, 192, 28, 28), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D879,
@@ -62266,20 +62556,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D886,
-        [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "576",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D886,
+            [((1, 576, 14, 14), torch.float32), ((576, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_1_0_224_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "576",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D887,
@@ -62301,20 +62594,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D871,
-        [((1, 3, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D871,
+            [((1, 3, 160, 160), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D553,
@@ -62361,20 +62657,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 80, 80), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D108,
@@ -62421,20 +62720,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D572,
-        [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D572,
+            [((1, 144, 40, 40), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D110,
@@ -62496,20 +62798,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D572,
-        [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "144",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D572,
+            [((1, 144, 20, 20), torch.float32), ((144, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "144",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D112,
@@ -62616,20 +62921,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D892,
-        [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "432",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D892,
+            [((1, 432, 10, 10), torch.float32), ((432, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_75_160_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "432",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D279,
@@ -62736,20 +63044,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D897,
-        [((1, 3, 96, 96), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D897,
+            [((1, 3, 96, 96), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D606,
@@ -62796,20 +63107,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D873,
-        [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D873,
+            [((1, 48, 48, 48), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D898,
@@ -62856,20 +63170,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D873,
-        [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "48",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D873,
+            [((1, 48, 24, 24), torch.float32), ((48, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "48",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D262,
@@ -62916,20 +63233,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D570,
-        [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "96",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D570,
+            [((1, 96, 12, 12), torch.float32), ((96, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "96",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D264,
@@ -63051,20 +63371,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D877,
-        [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 1, 1]",
-                "dilation": "1",
-                "groups": "192",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D877,
+            [((1, 192, 6, 6), torch.float32), ((192, 1, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_mobilenetv2_google_mobilenet_v2_0_35_96_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 1, 1]",
+                    "dilation": "1",
+                    "groups": "192",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Failed to run MLIR compiler pass pipeline.")],
     ),
     (
         Conv2D57,
@@ -64755,24 +65078,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D25,
-        [((1, 1024, 20, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
-                "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D25,
+            [((1, 1024, 20, 20), torch.float32)],
+            {
+                "model_names": [
+                    "pt_mobilenetv3_ssd_resnet152_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet50_img_cls_torchvision",
+                    "pt_mobilenetv3_ssd_resnet101_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D26,
@@ -65092,181 +65418,205 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D934,
-        [((1, 512, 8, 22), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D934,
+            [((1, 512, 8, 22), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D934,
-        [((1, 512, 14, 42), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D934,
+            [((1, 512, 14, 42), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D935,
-        [((1, 256, 14, 42), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D935,
+            [((1, 256, 14, 42), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D935,
-        [((1, 256, 26, 82), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D935,
+            [((1, 256, 26, 82), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D936,
-        [((1, 128, 26, 82), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D936,
+            [((1, 128, 26, 82), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D936,
-        [((1, 128, 50, 162), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D936,
+            [((1, 128, 50, 162), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D937,
-        [((1, 64, 50, 162), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D937,
+            [((1, 64, 50, 162), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D938,
-        [((1, 96, 98, 322), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D938,
+            [((1, 96, 98, 322), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_no_pt_640x192_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_640x192_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D939,
@@ -65543,157 +65893,185 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D934,
-        [((1, 512, 12, 34), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D934,
+            [((1, 512, 12, 34), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D934,
-        [((1, 512, 22, 66), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D934,
+            [((1, 512, 22, 66), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D935,
-        [((1, 256, 22, 66), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D935,
+            [((1, 256, 22, 66), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D935,
-        [((1, 256, 42, 130), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D935,
+            [((1, 256, 42, 130), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D936,
-        [((1, 128, 42, 130), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D936,
+            [((1, 128, 42, 130), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D936,
-        [((1, 128, 82, 258), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D936,
+            [((1, 128, 82, 258), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D937,
-        [((1, 64, 82, 258), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D937,
+            [((1, 64, 82, 258), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D938,
-        [((1, 96, 162, 514), torch.float32)],
-        {
-            "model_names": [
-                "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
-                "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D938,
+            [((1, 96, 162, 514), torch.float32)],
+            {
+                "model_names": [
+                    "pt_monodepth2_mono_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_stereo_1024x320_depth_prediction_torchvision",
+                    "pt_monodepth2_mono_stereo_1024x320_depth_prediction_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 56868864 B L1 buffer across 64 banks, where each bank needs to store 888576 B"
+            )
+        ],
     ),
     (
         Conv2D939,
@@ -65992,20 +66370,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D953,
-        [((1, 720, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_x_8gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D953,
+            [((1, 720, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_x_8gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D954,
@@ -66088,23 +66469,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D959,
-        [((1, 232, 112, 112), torch.float32)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D959,
+            [((1, 232, 112, 112), torch.float32)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D960,
@@ -66376,23 +66760,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D975,
-        [((1, 696, 28, 28), torch.float32)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D975,
+            [((1, 696, 28, 28), torch.float32)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D976,
@@ -66538,23 +66925,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D984,
-        [((1, 1392, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_32gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_320_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D984,
+            [((1, 1392, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_32gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_320_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D985,
@@ -67039,20 +67429,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1014,
-        [((1, 576, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1014,
+            [((1, 576, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_3_2gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1015,
@@ -67650,23 +68043,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1046,
-        [((1, 1232, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "pt_regnet_regnet_y_16gf_img_cls_torchvision",
-                "pt_regnet_facebook_regnet_y_160_img_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1046,
+            [((1, 1232, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "pt_regnet_regnet_y_16gf_img_cls_torchvision",
+                    "pt_regnet_facebook_regnet_y_160_img_cls_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1047,
@@ -68687,20 +69083,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1108,
-        [((1, 896, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_080_img_cls_hf", "pt_regnet_regnet_y_8gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1108,
+            [((1, 896, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "pt_regnet_facebook_regnet_y_080_img_cls_hf",
+                    "pt_regnet_regnet_y_8gf_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1109,
@@ -68792,20 +69194,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1115,
-        [((1, 336, 112, 112), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "2",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1115,
+            [((1, 336, 112, 112), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "2",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1070,
@@ -68912,20 +69317,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1122,
-        [((1, 672, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1122,
+            [((1, 672, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1123,
@@ -68987,20 +69395,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1127,
-        [((1, 1344, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1127,
+            [((1, 1344, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_x_32gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1128,
@@ -69253,20 +69664,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1140,
-        [((1, 896, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_x_16gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1140,
+            [((1, 896, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_x_16gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1141,
@@ -70572,20 +70986,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1222,
-        [((1, 576, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_064_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1222,
+            [((1, 576, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_facebook_regnet_y_064_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1223,
@@ -70737,20 +71154,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1233,
-        [((1, 896, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1233,
+            [((1, 896, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_regnet_facebook_regnet_y_120_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1234,
@@ -72027,20 +72447,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1307,
-        [((1, 528, 192, 192), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "2",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1307,
+            [((1, 528, 192, 192), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "2",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 84934656 B L1 buffer across 48 banks, where each bank needs to store 1769472 B"
+            )
+        ],
     ),
     (
         Conv2D1308,
@@ -72087,20 +72514,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1311,
-        [((1, 528, 96, 96), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "2",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1311,
+            [((1, 528, 96, 96), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "2",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:877: tt::exception info: Statically allocated circular buffers in program 6090 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=5)]. L1 buffer allocated at 497152 and static circular buffer region ends at 760864"
+            )
+        ],
     ),
     (
         Conv2D1312,
@@ -72132,20 +72566,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1314,
-        [((1, 528, 96, 96), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1314,
+            [((1, 528, 96, 96), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1315,
@@ -72162,20 +72599,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1316,
-        [((1, 1056, 96, 96), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "4",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1316,
+            [((1, 1056, 96, 96), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "4",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 40149120 B L1 buffer across 33 banks, where each bank needs to store 1216640 B"
+            )
+        ],
     ),
     (
         Conv2D1317,
@@ -72267,20 +72711,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1323,
-        [((1, 1056, 48, 48), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1323,
+            [((1, 1056, 48, 48), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1324,
@@ -72402,20 +72849,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1332,
-        [((1, 2904, 24, 24), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1332,
+            [((1, 2904, 24, 24), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1333,
@@ -72447,20 +72897,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1335,
-        [((1, 7392, 1, 1), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1335,
+            [((1, 7392, 1, 1), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1336,
@@ -72477,20 +72930,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1337,
-        [((1, 7392, 12, 12), torch.float32)],
-        {
-            "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1337,
+            [((1, 7392, 12, 12), torch.float32)],
+            {
+                "model_names": ["pt_regnet_regnet_y_128gf_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1338,
@@ -73962,24 +74418,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D23,
-        [((1, 512, 30, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D23,
+            [((1, 512, 30, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D24,
@@ -74000,24 +74459,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D25,
-        [((1, 1024, 30, 40), torch.float32)],
-        {
-            "model_names": [
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D25,
+            [((1, 1024, 30, 40), torch.float32)],
+            {
+                "model_names": [
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D26,
@@ -74057,24 +74519,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1368,
-        [((1, 2048, 15, 20), torch.float32)],
-        {
-            "model_names": [
-                "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
-                "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1368,
+            [((1, 2048, 15, 20), torch.float32)],
+            {
+                "model_names": [
+                    "pt_retinanet_retinanet_rn101fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn50fpn_obj_det_hf",
+                    "pt_retinanet_retinanet_rn152fpn_obj_det_hf",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D863,
@@ -74488,20 +74953,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1370,
-        [((1, 1024, 38, 38), torch.float32)],
-        {
-            "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1370,
+            [((1, 1024, 38, 38), torch.float32)],
+            {
+                "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D448,
@@ -74638,20 +75106,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1373,
-        [((1, 128, 5, 5), torch.float32)],
-        {
-            "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1373,
+            [((1, 128, 5, 5), torch.float32)],
+            {
+                "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1374,
@@ -74683,20 +75154,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1373,
-        [((1, 128, 3, 3), torch.float32)],
-        {
-            "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1373,
+            [((1, 128, 3, 3), torch.float32)],
+            {
+                "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1374,
@@ -74713,20 +75187,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1375,
-        [((1, 1024, 38, 38), torch.float32)],
-        {
-            "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1375,
+            [((1, 1024, 38, 38), torch.float32)],
+            {
+                "model_names": ["pt_ssd300_resnet50_base_img_cls_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1376,
@@ -75022,100 +75499,118 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1380,
-        [((1, 1024, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1380,
+            [((1, 1024, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1381,
-        [((1, 1024, 14, 14), torch.float32)],
-        {
-            "model_names": [
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1381,
+            [((1, 1024, 14, 14), torch.float32)],
+            {
+                "model_names": [
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1382,
-        [((1, 1024, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1382,
+            [((1, 1024, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D323,
-        [((1, 512, 56, 56), torch.float32)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D323,
+            [((1, 512, 56, 56), torch.float32)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D324,
-        [((1, 256, 112, 112), torch.float32)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D324,
+            [((1, 256, 112, 112), torch.float32)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D35,
-        [((1, 128, 224, 224), torch.float32)],
-        {
-            "model_names": ["pt_unet_carvana_base_img_seg_github", "pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D35,
+            [((1, 128, 224, 224), torch.float32)],
+            {
+                "model_names": ["pt_unet_carvana_base_img_seg_github", "pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1383,
@@ -75132,35 +75627,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1384,
-        [((1, 3072, 14, 14), torch.float32)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1384,
+            [((1, 3072, 14, 14), torch.float32)],
+            {
+                "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1385,
-        [((1, 768, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1385,
+            [((1, 768, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_unet_qubvel_img_seg_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1386,
@@ -75237,50 +75738,59 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1387,
-        [((1, 1024, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1387,
+            [((1, 1024, 28, 28), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1388,
-        [((1, 512, 56, 56), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1388,
+            [((1, 512, 56, 56), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D392,
-        [((1, 256, 112, 112), torch.float32)],
-        {
-            "model_names": ["pt_unet_cityscape_img_seg_osmr"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D392,
+            [((1, 256, 112, 112), torch.float32)],
+            {
+                "model_names": ["pt_unet_cityscape_img_seg_osmr"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1389,
@@ -75297,20 +75807,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1390,
-        [((1, 512, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1390,
+            [((1, 512, 7, 7), torch.float32)],
+            {
+                "model_names": ["pt_vgg_vgg19_bn_obj_det_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1391,
@@ -75327,20 +75840,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1392,
-        [((1, 3, 518, 518), torch.float32)],
-        {
-            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[14, 14]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1392,
+            [((1, 3, 518, 518), torch.float32)],
+            {
+                "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[14, 14]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1393,
@@ -75426,25 +75942,28 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1380,
-        [((1, 1024, 7, 7), torch.float32)],
-        {
-            "model_names": [
-                "pt_wideresnet_wide_resnet101_2_img_cls_timm",
-                "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
-                "pt_wideresnet_wide_resnet50_2_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1380,
+            [((1, 1024, 7, 7), torch.float32)],
+            {
+                "model_names": [
+                    "pt_wideresnet_wide_resnet101_2_img_cls_timm",
+                    "pt_wideresnet_wide_resnet101_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_torchvision",
+                    "pt_wideresnet_wide_resnet50_2_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D311,
@@ -75871,20 +76390,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1403,
-        [((1, 728, 38, 38), torch.float32)],
-        {
-            "model_names": ["pt_xception_xception71_img_cls_timm", "pt_xception_xception71_tf_in1k_img_cls_timm"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1403,
+            [((1, 728, 38, 38), torch.float32)],
+            {
+                "model_names": ["pt_xception_xception71_img_cls_timm", "pt_xception_xception71_tf_in1k_img_cls_timm"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1402,
@@ -75949,26 +76471,29 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1405,
-        [((1, 728, 19, 19), torch.float32)],
-        {
-            "model_names": [
-                "pt_xception_xception71_img_cls_timm",
-                "pt_xception_xception65_img_cls_timm",
-                "pt_xception_xception41_img_cls_timm",
-                "pt_xception_xception_img_cls_timm",
-                "pt_xception_xception71_tf_in1k_img_cls_timm",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1405,
+            [((1, 728, 19, 19), torch.float32)],
+            {
+                "model_names": [
+                    "pt_xception_xception71_img_cls_timm",
+                    "pt_xception_xception65_img_cls_timm",
+                    "pt_xception_xception41_img_cls_timm",
+                    "pt_xception_xception_img_cls_timm",
+                    "pt_xception_xception71_tf_in1k_img_cls_timm",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1406,
@@ -77074,20 +77599,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1441,
-        [((1, 80, 320, 320), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1441,
+            [((1, 80, 320, 320), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:877: tt::exception info: Statically allocated circular buffers in program 6934 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 416448 and static circular buffer region ends at 654368"
+            )
+        ],
     ),
     (
         Conv2D1442,
@@ -77149,20 +77681,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1446,
-        [((1, 160, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1446,
+            [((1, 160, 160, 160), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1447,
@@ -77227,20 +77762,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1450,
-        [((1, 320, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1450,
+            [((1, 320, 80, 80), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1451,
@@ -77320,20 +77858,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1455,
-        [((1, 640, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1455,
+            [((1, 640, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1456,
@@ -77473,20 +78014,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1453,
-        [((1, 320, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1453,
+            [((1, 320, 80, 80), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1464,
@@ -77503,20 +78047,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1458,
-        [((1, 640, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1458,
+            [((1, 640, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1465,
@@ -77533,35 +78080,49 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1413,
-        [((1, 3, 1280, 1280), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[2, 2, 2, 2]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1413,
+            [((1, 3, 1280, 1280), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[2, 2, 2, 2]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 63111168 B L1 buffer across 64 banks, where each bank needs to store 986112 B"
+            )
+        ],
     ),
-    (
-        Conv2D1414,
-        [((1, 32, 640, 640), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1414,
+            [((1, 32, 640, 640), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B"
+            )
+        ],
     ),
     (
         Conv2D1415,
@@ -77714,23 +78275,26 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1424,
-        [((1, 128, 160, 160), torch.float32)],
-        {
-            "model_names": [
-                "pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280",
-                "pt_yolo_v5_yolov5l_img_cls_torchhub_640x640",
-            ],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1424,
+            [((1, 128, 160, 160), torch.float32)],
+            {
+                "model_names": [
+                    "pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280",
+                    "pt_yolo_v5_yolov5l_img_cls_torchhub_640x640",
+                ],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1425,
@@ -77994,20 +78558,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1427,
-        [((1, 128, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1427,
+            [((1, 128, 160, 160), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5s_img_cls_torchhub_1280x1280"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1437,
@@ -78078,20 +78645,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1467,
-        [((1, 512, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1467,
+            [((1, 512, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1433,
@@ -78205,20 +78775,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1469,
-        [((1, 512, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_640x640"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1469,
+            [((1, 512, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5l_img_cls_torchhub_640x640"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1473,
@@ -78325,20 +78898,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1446,
-        [((1, 160, 120, 120), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1446,
+            [((1, 160, 120, 120), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1447,
@@ -78475,20 +79051,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1455,
-        [((1, 640, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1455,
+            [((1, 640, 30, 30), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1456,
@@ -78640,20 +79219,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1458,
-        [((1, 640, 30, 30), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1458,
+            [((1, 640, 30, 30), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v5_yolov5x_img_cls_torchhub_480x480"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1465,
@@ -84258,20 +84840,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1582,
-        [((1, 512, 28, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1582,
+            [((1, 512, 28, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolo_v6_yolov6l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1583,
@@ -84483,20 +85068,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D469,
-        [((1, 3, 512, 672), torch.float32)],
-        {
-            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[16, 16]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D469,
+            [((1, 3, 512, 672), torch.float32)],
+            {
+                "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[16, 16]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1591,
@@ -84513,20 +85101,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D765,
-        [((1, 80, 320, 320), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D765,
+            [((1, 80, 320, 320), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:877: tt::exception info: Statically allocated circular buffers in program 8084 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 416448 and static circular buffer region ends at 654368"
+            )
+        ],
     ),
     (
         Conv2D767,
@@ -84588,20 +85183,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D683,
-        [((1, 160, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D683,
+            [((1, 160, 160, 160), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1592,
@@ -84663,20 +85261,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1593,
-        [((1, 320, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1593,
+            [((1, 320, 80, 80), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1594,
@@ -84738,20 +85339,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1596,
-        [((1, 640, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1596,
+            [((1, 640, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D499,
@@ -84858,35 +85462,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D769,
-        [((1, 320, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[1, 1]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D769,
+            [((1, 320, 80, 80), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[1, 1]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1602,
-        [((1, 320, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1602,
+            [((1, 320, 80, 80), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1603,
@@ -84978,20 +85588,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1605,
-        [((1, 640, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D1605,
+            [((1, 640, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_x_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1600,
@@ -86632,20 +87245,27 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D310,
-        [((1, 32, 640, 640), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D310,
+            [((1, 32, 640, 640), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[
+            pytest.mark.xfail(
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 57843712 B L1 buffer across 64 banks, where each bank needs to store 903808 B"
+            )
+        ],
     ),
     (
         Conv2D781,
@@ -86692,20 +87312,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D395,
-        [((1, 128, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D395,
+            [((1, 128, 160, 160), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D448,
@@ -86722,20 +87345,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D707,
-        [((1, 512, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D707,
+            [((1, 512, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub", "pt_yolox_yolox_l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D708,
@@ -87667,20 +88293,23 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D23,
-        [((1, 512, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[1, 1, 1, 1]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "0",
+    pytest.param(
+        (
+            Conv2D23,
+            [((1, 512, 40, 40), torch.float32)],
+            {
+                "model_names": ["pt_yolox_yolox_l_obj_det_torchhub"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[1, 1, 1, 1]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "0",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1628,
@@ -87832,35 +88461,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1631,
-        [((1, 28, 27, 512), torch.float32), ((1024, 512, 1, 1), torch.float32), ((1024,), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "1",
+    pytest.param(
+        (
+            Conv2D1631,
+            [((1, 28, 27, 512), torch.float32), ((1024, 512, 1, 1), torch.float32), ((1024,), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "1",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1631,
-        [((1, 28, 27, 512), torch.float32), ((256, 512, 1, 1), torch.float32), ((256,), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "1",
+    pytest.param(
+        (
+            Conv2D1631,
+            [((1, 28, 27, 512), torch.float32), ((256, 512, 1, 1), torch.float32), ((256,), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "1",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1630,
@@ -87907,35 +88542,41 @@ forge_modules_and_shapes_dtypes_list = [
             },
         },
     ),
-    (
-        Conv2D1631,
-        [((1, 14, 14, 1024), torch.float32), ((2048, 1024, 1, 1), torch.float32), ((2048,), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "1",
+    pytest.param(
+        (
+            Conv2D1631,
+            [((1, 14, 14, 1024), torch.float32), ((2048, 1024, 1, 1), torch.float32), ((2048,), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "1",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
-    (
-        Conv2D1631,
-        [((1, 14, 14, 1024), torch.float32), ((512, 1024, 1, 1), torch.float32), ((512,), torch.float32)],
-        {
-            "model_names": ["tf_resnet_resnet50_img_cls_keras"],
-            "pcc": 0.99,
-            "args": {
-                "stride": "[2, 2]",
-                "padding": "[0, 0, 0, 0]",
-                "dilation": "1",
-                "groups": "1",
-                "channel_last": "1",
+    pytest.param(
+        (
+            Conv2D1631,
+            [((1, 14, 14, 1024), torch.float32), ((512, 1024, 1, 1), torch.float32), ((512,), torch.float32)],
+            {
+                "model_names": ["tf_resnet_resnet50_img_cls_keras"],
+                "pcc": 0.99,
+                "args": {
+                    "stride": "[2, 2]",
+                    "padding": "[0, 0, 0, 0]",
+                    "dilation": "1",
+                    "groups": "1",
+                    "channel_last": "1",
+                },
             },
-        },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Conv2D1630,

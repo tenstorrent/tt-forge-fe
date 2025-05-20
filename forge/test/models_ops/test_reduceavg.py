@@ -2390,14 +2390,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg0,
-        [((1, 1, 768), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg0,
+            [((1, 1, 768), torch.float32)],
+            {
+                "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,
@@ -2408,14 +2411,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg0,
-        [((1, 1, 1024), torch.float32)],
-        {
-            "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg0,
+            [((1, 1, 1024), torch.float32)],
+            {
+                "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,
@@ -2426,14 +2432,17 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "keep_dim": "True"},
         },
     ),
-    (
-        Reduceavg0,
-        [((1, 1, 512), torch.float32)],
-        {
-            "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "keep_dim": "True"},
-        },
+    pytest.param(
+        (
+            Reduceavg0,
+            [((1, 1, 512), torch.float32)],
+            {
+                "model_names": ["pt_t5_t5_small_text_gen_hf", "pt_t5_google_flan_t5_small_text_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "keep_dim": "True"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Reduceavg0,

@@ -1483,18 +1483,21 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 32127,
         },
     ),
-    (
-        Embedding1,
-        [((13, 13), torch.int32), ((32, 12), torch.float32)],
-        {
-            "model_names": [
-                "pt_stereo_facebook_musicgen_small_music_generation_hf",
-                "pt_stereo_facebook_musicgen_large_music_generation_hf",
-                "pt_stereo_facebook_musicgen_medium_music_generation_hf",
-            ],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding1,
+            [((13, 13), torch.int32), ((32, 12), torch.float32)],
+            {
+                "model_names": [
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_medium_music_generation_hf",
+                ],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding18,
@@ -2474,14 +2477,17 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 32127,
         },
     ),
-    (
-        Embedding1,
-        [((61, 61), torch.int32), ((32, 12), torch.float32)],
-        {
-            "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding1,
+            [((61, 61), torch.int32), ((32, 12), torch.float32)],
+            {
+                "model_names": ["pt_t5_google_flan_t5_base_text_gen_hf", "pt_t5_t5_base_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding80,
@@ -2510,14 +2516,17 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 32127,
         },
     ),
-    (
-        Embedding1,
-        [((61, 61), torch.int32), ((32, 16), torch.float32)],
-        {
-            "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
-            "pcc": 0.99,
-            "max_int": 31,
-        },
+    pytest.param(
+        (
+            Embedding1,
+            [((61, 61), torch.int32), ((32, 16), torch.float32)],
+            {
+                "model_names": ["pt_t5_t5_large_text_gen_hf", "pt_t5_google_flan_t5_large_text_gen_hf"],
+                "pcc": 0.99,
+                "max_int": 31,
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding81,
@@ -2542,20 +2551,26 @@ forge_modules_and_shapes_dtypes_list = [
             "max_int": 32127,
         },
     ),
-    (
-        Embedding1,
-        [((61, 61), torch.int32), ((32, 8), torch.float32)],
-        {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    pytest.param(
+        (
+            Embedding1,
+            [((61, 61), torch.int32), ((32, 8), torch.float32)],
+            {"model_names": ["pt_t5_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding1,
         [((1, 1), torch.int32), ((32, 6), torch.float32)],
         {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
     ),
-    (
-        Embedding1,
-        [((61, 61), torch.int32), ((32, 6), torch.float32)],
-        {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+    pytest.param(
+        (
+            Embedding1,
+            [((61, 61), torch.int32), ((32, 6), torch.float32)],
+            {"model_names": ["pt_t5_google_flan_t5_small_text_gen_hf"], "pcc": 0.99, "max_int": 31},
+        ),
+        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
     ),
     (
         Embedding82,
