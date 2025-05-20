@@ -37,10 +37,10 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
-                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
                 "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
                 "pd_ernie_1_0_seq_cls_padlenlp",
                 "pd_roberta_rbt4_ch_seq_cls_padlenlp",
                 "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",

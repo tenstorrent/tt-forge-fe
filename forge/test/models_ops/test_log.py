@@ -15,14 +15,13 @@ from forge.verify.config import VerifyConfig
 import pytest
 
 
-class Remainder0(ForgeModule):
+class Log0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("remainder0_const_1", shape=(1,), dtype=torch.int32)
 
-    def forward(self, remainder_input_0):
-        remainder_output_1 = forge.op.Remainder("", remainder_input_0, self.get_constant("remainder0_const_1"))
-        return remainder_output_1
+    def forward(self, log_input_0):
+        log_output_1 = forge.op.Log("", log_input_0)
+        return log_output_1
 
 
 def ids_func(param):
@@ -33,19 +32,24 @@ def ids_func(param):
 
 forge_modules_and_shapes_dtypes_list = [
     (
-        Remainder0,
-        [((1,), torch.int32)],
-        {
-            "model_names": [
-                "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
-                "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
-                "pt_opt_facebook_opt_125m_seq_cls_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_phi4_microsoft_phi_4_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-        },
+        Log0,
+        [((1, 6, 4096), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Log0,
+        [((1, 6, 2048), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Log0,
+        [((1, 6, 5120), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
+    ),
+    (
+        Log0,
+        [((1, 6, 3072), torch.float32)],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -55,7 +59,7 @@ forge_modules_and_shapes_dtypes_list = [
 def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Remainder")
+    forge_property_recorder.record_forge_op_name("Log")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
