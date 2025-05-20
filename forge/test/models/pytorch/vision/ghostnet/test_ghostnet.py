@@ -6,8 +6,8 @@ import pytest
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.ghostnet.utils.utils import (
     load_ghostnet_model,
@@ -45,7 +45,13 @@ def test_ghostnet_timm(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)

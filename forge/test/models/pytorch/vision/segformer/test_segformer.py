@@ -17,8 +17,8 @@ from forge.forge_property_utils import (
     Source,
     Task,
 )
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
 
@@ -74,7 +74,13 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     logits = co_out[0]
@@ -118,4 +124,10 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

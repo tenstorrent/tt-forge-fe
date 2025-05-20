@@ -63,4 +63,10 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
 
     # Verify
     # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )

@@ -7,8 +7,8 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.inception.utils.model_utils import (
     get_image,
@@ -43,7 +43,13 @@ def test_inception_v4_osmr_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -84,4 +90,10 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

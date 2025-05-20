@@ -54,7 +54,13 @@ def test_chineseclip_text(variant, forge_property_recorder):
 
     # Verify
     # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -90,7 +96,13 @@ def test_chineseclip_vision(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -141,4 +153,10 @@ def test_chineseclip(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

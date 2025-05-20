@@ -5,8 +5,8 @@ import pytest
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.utils.mobilenet_v3_ssd_utils import (
     load_input,
@@ -46,4 +46,10 @@ def test_mobilenetv3_ssd(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

@@ -12,8 +12,8 @@ from transformers import (
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.utils import download_model
 
@@ -64,7 +64,13 @@ def test_gpt2_text_gen(forge_property_recorder, variant):
 
     # Model Verification
     # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -105,4 +111,10 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

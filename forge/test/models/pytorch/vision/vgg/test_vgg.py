@@ -19,7 +19,6 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
@@ -75,7 +74,13 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -128,7 +133,13 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -175,7 +186,13 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
 
     # Model Verification
     # https://github.com/tenstorrent/tt-mlir/issues/3397
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -224,7 +241,13 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -275,7 +298,7 @@ def test_vgg_torchvision(forge_property_recorder, variant):
 
     verify_cfg = VerifyConfig(verify_emitc_correctness=True)
     if variant == "vgg16_bn":
-        verify_cfg.value_checker=AutomaticValueChecker(pcc=0.98)
+        verify_cfg.value_checker = AutomaticValueChecker(pcc=0.98)
 
     # Model Verification
     verify(

@@ -5,8 +5,8 @@ import pytest
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
 from test.models.pytorch.multimodal.deepseek_coder.utils.model_utils import (
@@ -42,7 +42,13 @@ def test_deepseek_inference_no_cache(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        [padded_inputs],
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     generated_text = generate_no_cache(
         max_new_tokens=512, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer

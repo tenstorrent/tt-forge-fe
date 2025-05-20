@@ -6,8 +6,8 @@ from transformers import RegNetForImageClassification
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.vision.regnet.utils.image_utils import preprocess_input_data
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
@@ -48,7 +48,13 @@ def test_regnet_img_classification(forge_property_recorder, variant):
     )
 
     # Model Verification and inference
-    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # post processing
     logits = co_out[0]
@@ -116,4 +122,10 @@ def test_regnet_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

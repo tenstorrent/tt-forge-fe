@@ -6,8 +6,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 from test.models.pytorch.text.gemma.utils.model_utils import (
     generate_no_cache,
@@ -64,7 +64,13 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        [padded_inputs],
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(

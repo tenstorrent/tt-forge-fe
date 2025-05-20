@@ -47,4 +47,10 @@ def test_birnn_crf(forge_property_recorder, forge_tmp_path):
     )
 
     # Model Verification
-    verify(test_input, model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        test_input,
+        model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

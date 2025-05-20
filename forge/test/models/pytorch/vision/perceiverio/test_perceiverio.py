@@ -15,8 +15,8 @@ from transformers import (
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 def get_sample_data(model_name):
@@ -94,4 +94,10 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
         verify_emitc_correctness = False
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=verify_emitc_correctness), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=verify_emitc_correctness),
+        forge_property_handler=forge_property_recorder,
+    )

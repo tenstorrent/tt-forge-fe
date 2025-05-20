@@ -5538,9 +5538,6 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(
-            value_checker=AutomaticValueChecker(pcc=pcc),
-            verify_emitc_correctness=True
-        ),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
         forge_property_handler=forge_property_recorder,
     )

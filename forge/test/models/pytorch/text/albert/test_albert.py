@@ -207,7 +207,13 @@ def test_albert_question_answering_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -243,7 +249,13 @@ def test_albert_sequence_classification_pytorch(forge_property_recorder, variant
 
     # Model Verification and Inference
     # https://github.com/tenstorrent/tt-mlir/issues/3397
-    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=False),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # post processing
     predicted_class_id = co_out[0].argmax().item()

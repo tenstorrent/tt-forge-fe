@@ -8,8 +8,8 @@ from transformers import AutoModel, AutoTokenizer
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 # Wrapper to get around attention mask
@@ -76,4 +76,10 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
         verify_emitc_correctness = False
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=verify_emitc_correctness), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=verify_emitc_correctness),
+        forge_property_handler=forge_property_recorder,
+    )

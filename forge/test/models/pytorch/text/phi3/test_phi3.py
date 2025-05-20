@@ -22,8 +22,8 @@ from forge.forge_property_utils import (
     Source,
     Task,
 )
-from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify.verify import verify
 
 
 def _prepare_4d_causal_attention_mask_with_cache_position(
@@ -140,7 +140,13 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -185,7 +191,13 @@ def test_phi3_token_classification(forge_property_recorder, variant):
     compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
 
 
 @pytest.mark.nightly
@@ -226,4 +238,10 @@ def test_phi3_sequence_classification(forge_property_recorder, variant):
     compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )

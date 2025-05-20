@@ -32,7 +32,6 @@ from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 from test.models.pytorch.vision.yolo.utils.yolox_utils import preprocess
 

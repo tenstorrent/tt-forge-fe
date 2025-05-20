@@ -62,4 +62,10 @@ def test_llama(variant, forge_property_recorder):
     )
 
     # Verify
-    verify(inputs, model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        model,
+        compiled_model,
+        VerifyConfig(verify_emitc_correctness=True),
+        forge_property_handler=forge_property_recorder,
+    )
