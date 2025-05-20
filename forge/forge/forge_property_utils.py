@@ -314,6 +314,7 @@ class ModelInfo:
 @dataclass
 class Tags:
     model_name: Optional[str] = None
+    bringup_status: str = ""
     execution_stage: str = ""
     pcc: Optional[float] = None
     atol: Optional[float] = None
