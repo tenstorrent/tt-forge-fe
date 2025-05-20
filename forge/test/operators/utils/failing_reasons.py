@@ -300,13 +300,6 @@ class FailingReasons(Enum):
             ),
             ExceptionCheck(
                 class_name="RuntimeError",
-                component=ComponentChecker.NONE.value,
-                message=[
-                    M.equals("Tensor 2 - data type mismatch: expected UInt32, got Float32"),
-                ],
-            ),
-            ExceptionCheck(
-                class_name="RuntimeError",
                 component=ComponentChecker.FORGE.value,
                 # bitwise_and	RuntimeError: "bitwise_and_cpu" not implemented for 'Float'
                 # bitwise_left_shift	RuntimeError: "lshift_cpu" not implemented for 'Float'
@@ -423,20 +416,6 @@ class FailingReasons(Enum):
                     M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
                 ],
             ),
-            # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: Tensor 2 - data type mismatch: expected Int32, got Float32
-            # forge/forge/compiled_graph_state.py:310: RuntimeError
-            ExceptionCheck(
-                class_name="RuntimeError",
-                component=ComponentChecker.FORGE.value,
-                message=[
-                    M.contains("data type mismatch"),
-                ],
-                error_log=[
-                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:")),
-                ],
-            ),
-            # and "Tensor 1 - data type mismatch: expected BFloat16, got Float32" in ex.message,
         ],
     )
 
@@ -548,6 +527,23 @@ class FailingReasons(Enum):
                             "../ttforge-toolchain/venv/lib/python3.10/site-packages/torch/nn/modules/conv.py:"
                         )
                     ),
+                ],
+            ),
+            # Tensor 1 - data type mismatch: expected BFloat16, got Float32
+            # Tensor 1 - data type mismatch: expected Float32, got BFloat16
+            # Tensor 2 - data type mismatch: expected UInt32, got Float32
+            # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
+            # E       RuntimeError: Tensor 2 - data type mismatch: expected Int32, got Float32
+            # forge/forge/compiled_graph_state.py:310: RuntimeError
+            ExceptionCheck(
+                class_name="RuntimeError",
+                component=ComponentChecker.FORGE.value,
+                message=[
+                    # M.contains("data type mismatch"),
+                    M.regex("Tensor .* - data type mismatch: expected .*, got .*"),
+                ],
+                error_log=[
+                    M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -913,13 +909,6 @@ class FailingReasons(Enum):
                 # component=TODO
                 message=[
                     M.contains("mat1 and mat2 must have the same dtype, but got Int and Float"),
-                ],
-            ),
-            ExceptionCheck(
-                class_name="RuntimeError",
-                # component=TODO
-                message=[
-                    M.starts_with("Tensor 1 - data type mismatch: expected BFloat16, got Float32"),
                 ],
             ),
         ],
