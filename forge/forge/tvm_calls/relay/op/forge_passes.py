@@ -2153,6 +2153,78 @@ class DecomposeEinsum(DFPatternCallback):
             final_result = tvm.relay.concatenate(results, axis=2)
 
             return final_result
+
+        elif match_einsum_pattern("bmchw,bnmc->bmhwn", equation):
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]  # shape: (b, m, c, h, w)
+            srcB = node_map[self.act][0][1]  # shape: (b, n, m, c)
+
+            # Transpose A to (b, m, h, w, c)
+            A_perm = tvm.relay.transpose(srcA, axes=(0, 1, 3, 4, 2))
+
+            # Transpose B to (b, m, c, n)
+            B_perm = tvm.relay.transpose(srcB, axes=(0, 2, 3, 1))
+
+            # Expand dimensions for broadcasting
+            A_exp = tvm.relay.expand_dims(A_perm, axis=-1)  # (b, m, h, w, c, 1)
+            B_exp = tvm.relay.expand_dims(B_perm, axis=2)  # (b, m, 1, c, n)
+            B_exp = tvm.relay.expand_dims(B_exp, axis=2)  # (b, m, 1, 1, c, n)
+
+            # Multiply and reduce over 'c'
+            multiplied = tvm.relay.multiply(A_exp, B_exp)  # (b, m, h, w, c, n)
+            result = tvm.relay.sum(multiplied, axis=4)  # (b, m, h, w, n)
+            return result
+
+        elif match_einsum_pattern("bchw,bkc->bkhw", equation):
+            assert len(node_map[self.act][0]) == 2
+            A = node_map[self.act][0][0]  # (b, c, h, w)
+            B = node_map[self.act][0][1]  # (b, k, c)
+
+            A_shape = pre.args[0][0].checked_type.shape  # (b, c, h, w)
+            B_shape = pre.args[0][1].checked_type.shape  # (b, k, c)
+
+            b, c, h, w = A_shape
+            _, k, _ = B_shape
+
+            # Transpose A: (b, c, h, w) → (b, h, w, c)
+            A_perm = tvm.relay.transpose(A, axes=(0, 2, 3, 1))  # (b, h, w, c)
+            A_exp = tvm.relay.expand_dims(A_perm, axis=1)  # (b, 1, h, w, c)
+
+            # Expand B to match (b, k, 1, 1, c)
+            B_exp = tvm.relay.expand_dims(B, axis=2)  # (b, k, 1, c)
+            B_exp = tvm.relay.expand_dims(B_exp, axis=2)  # (b, k, 1, 1, c)
+
+            # Reshape B explicitly using known dimensions (avoids symbolic broadcast_to)
+            reshape_shape = (b, k, h, w, c)
+            B_reshaped = tvm.relay.reshape(B_exp, newshape=reshape_shape)
+
+            # Multiply and reduce over c
+            multiplied = tvm.relay.multiply(A_exp, B_reshaped)
+            result = tvm.relay.sum(multiplied, axis=4)  # (b, k, h, w)
+
+            return result
+
+        elif match_einsum_pattern("bmnk,bkmc->bnmc", equation):
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]  # shape: (b, m, n, k)
+            srcB = node_map[self.act][0][1]  # shape: (b, k, m, c)
+
+            # Transpose A to align (b, n, m, k)
+            A_perm = tvm.relay.transpose(srcA, axes=(0, 2, 1, 3))  # (b, n, m, k)
+
+            # Transpose B to align (b, m, k, c)
+            B_perm = tvm.relay.transpose(srcB, axes=(0, 2, 1, 3))  # (b, m, k, c)
+
+            # Expand dimensions for broadcasting
+            A_exp = tvm.relay.expand_dims(A_perm, axis=-1)  # (b, n, m, k, 1)
+            B_exp = tvm.relay.expand_dims(B_perm, axis=1)  # (b, 1, m, k, c)
+
+            # Element-wise multiply and reduce over k
+            multiplied = tvm.relay.multiply(A_exp, B_exp)  # (b, n, m, k, c)
+            result = tvm.relay.sum(multiplied, axis=3)  # (b, n, m, c)
+
+            return result
+
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 

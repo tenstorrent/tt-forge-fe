@@ -840,6 +840,9 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+import pytest
+
+
 @pytest.mark.parametrize(
     "pattern, input_shape",
     [
@@ -859,6 +862,32 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
         ("bhwc,wkc->bhwk", [(2, 16, 16, 32), (16, 64, 32)]),
         ("bhwc,wkc->bhwk", [(5, 10, 10, 20), (10, 40, 20)]),
         ("bhwc,wkc->bhwk", [(6, 12, 12, 128), (12, 256, 128)]),
+        ("bchw,bkc->bkhw", [(2, 4, 1, 1), (2, 1, 4)]),
+        ("bchw,bkc->bkhw", [(1, 4, 1, 1), (1, 2, 4)]),
+        pytest.param(
+            "bmchw,bnmc->bmhwn",
+            [(1, 2, 3, 4, 5), (1, 6, 2, 3)],
+            marks=pytest.mark.xfail(
+                reason="ValueError: Einsum pattern 'bmchw,bnmc->bmhwn' has broadcast/reduction mismatch in decomposition"
+            ),
+        ),
+        pytest.param(
+            "bmchw,bnmc->bmhwn",
+            [(3, 4, 5, 6, 7), (3, 8, 4, 5)],
+            marks=pytest.mark.xfail(
+                reason="ValueError: Einsum pattern 'bmchw,bnmc->bmhwn' has broadcast/reduction mismatch in decomposition"
+            ),
+        ),
+        pytest.param(
+            "bmnk,bkmc->bnmc",
+            [(1, 4, 6, 8), (1, 8, 4, 16)],
+            marks=pytest.mark.xfail(reason="ValueError: Einsum pattern 'bmnk,bkmc->bnmc' decomposition mismatch"),
+        ),
+        pytest.param(
+            "bmnk,bkmc->bnmc",
+            [(2, 6, 8, 16), (2, 16, 6, 32)],
+            marks=pytest.mark.xfail(reason="ValueError: Einsum pattern 'bmnk,bkmc->bnmc' decomposition mismatch"),
+        ),
     ],
 )
 @pytest.mark.push
