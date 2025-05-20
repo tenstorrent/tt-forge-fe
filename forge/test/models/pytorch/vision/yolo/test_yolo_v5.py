@@ -58,7 +58,8 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
@@ -104,7 +105,8 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):

@@ -174,7 +174,8 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

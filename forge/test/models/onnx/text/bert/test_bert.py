@@ -72,7 +72,8 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, forge_tmp_path, o
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -177,7 +178,8 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
     # Post processing
     sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])

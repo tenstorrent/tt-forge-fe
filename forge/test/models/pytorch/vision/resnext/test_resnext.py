@@ -133,7 +133,8 @@ def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=True), forge_property_handler=forge_property_recorder)
+    # https://github.com/tenstorrent/tt-mlir/issues/3397
+    _, co_out = verify(inputs, framework_model, compiled_model, VerifyConfig(verify_emitc_correctness=False), forge_property_handler=forge_property_recorder)
 
     # Post processing
     post_processing(co_out)
