@@ -28,7 +28,6 @@ def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     sample_inputs, framework_model = get_input_model(variant)

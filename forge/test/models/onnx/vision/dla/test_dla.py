@@ -39,9 +39,6 @@ def test_dla_onnx(forge_property_recorder, variant, tmp_path):
         framework=Framework.ONNX, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
     image = Image.open(requests.get(url, stream=True).raw)
