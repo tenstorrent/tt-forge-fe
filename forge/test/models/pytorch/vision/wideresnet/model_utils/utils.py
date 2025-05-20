@@ -31,7 +31,7 @@ def generate_model_wideresnet_imgcls_pytorch(variant):
     input_tensor = preprocess(input_image)
     img_tensor = input_tensor.unsqueeze(0)
 
-    return framework_model, [img_tensor]
+    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
 
 
 url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"

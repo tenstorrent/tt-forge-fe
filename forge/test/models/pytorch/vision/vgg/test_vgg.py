@@ -15,6 +15,8 @@ from torchvision import transforms
 from vgg_pytorch import VGG
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -43,7 +45,7 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
-    framework_model = download_model(ptcv_get_model, variant, pretrained=True)
+    framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
     framework_model.eval()
 
     # Image preprocessing
@@ -66,15 +68,37 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
+    pcc = 0.99
+
+    if variant == "vgg16":
+        pcc = 0.98
+    elif variant == "vgg19":
+        pcc = 0.97
+    elif variant == "bn_vgg19b":
+        pcc = 0.96
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

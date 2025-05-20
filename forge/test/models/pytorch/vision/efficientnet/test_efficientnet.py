@@ -20,6 +20,8 @@ from torchvision.models import (
 from torchvision.models._api import WeightsEnum
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
@@ -75,7 +77,7 @@ def test_efficientnet_timm(forge_property_recorder, variant):
     )
 
     # Load model
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model = download_model(timm.create_model, variant, pretrained=True).to(torch.bfloat16)
     framework_model.eval()
 
     # Load and pre-process image
@@ -95,11 +97,18 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -148,6 +157,7 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
 
     framework_model.eval()
+    framework_model = framework_model.to(torch.bfloat16)
 
     # Load and pre-process image
     try:
@@ -166,11 +176,18 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

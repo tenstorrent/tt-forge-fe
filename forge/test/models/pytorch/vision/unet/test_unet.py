@@ -21,6 +21,8 @@ from torchvision.transforms import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
@@ -41,7 +43,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 
     img_tensor = x = torch.randn(1, 3, 224, 224)
 
-    return model, [img_tensor], {}
+    return model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.xfail
@@ -60,9 +62,16 @@ def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
 
     framework_model, inputs, _ = generate_model_unet_imgseg_osmr_pytorch("unet_cityscapes")
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -151,7 +160,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
     img_tensor = (img_tensor - mean) / std
     print(img_tensor.shape)
 
-    return model, [img_tensor], {}
+    return model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -169,9 +178,16 @@ def test_unet_qubvel_pytorch(forge_property_recorder):
 
     framework_model, inputs, _ = generate_model_unet_imgseg_smp_pytorch(None)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -210,7 +226,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     input_tensor = preprocess(input_image)
     img_batch = input_tensor.unsqueeze(0)
 
-    return model, [img_batch], {}
+    return model.to(torch.bfloat16), [img_batch.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -226,9 +242,16 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
         "unet",
     )
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -248,13 +271,20 @@ def test_unet_carvana(forge_property_recorder):
     )
 
     # Load model and input
-    framework_model = UNET(in_channels=3, out_channels=1)
+    framework_model = UNET(in_channels=3, out_channels=1).to(torch.bfloat16)
     framework_model.eval()
-    inputs = [torch.rand((1, 3, 224, 224))]
+    inputs = [torch.rand((1, 3, 224, 224)).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

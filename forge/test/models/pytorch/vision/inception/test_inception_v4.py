@@ -3,9 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 ## Inception V4
 import pytest
+import torch
 from pytorchcv.model_provider import get_model as ptcv_get_model
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -23,7 +26,7 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
     # Load and pre-process image
     img_tensor = get_image()
 
-    return framework_model, [img_tensor]
+    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
 
 
 @pytest.mark.nightly
@@ -36,9 +39,16 @@ def test_inception_v4_osmr_pytorch(forge_property_recorder):
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -48,7 +58,7 @@ def test_inception_v4_osmr_pytorch(forge_property_recorder):
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
     # Load model & Preprocess image
     framework_model, img_tensor = download_model(preprocess_timm_model, variant)
-    return framework_model, [img_tensor]
+    return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
 
 
 variants = [
@@ -77,9 +87,16 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_timm_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

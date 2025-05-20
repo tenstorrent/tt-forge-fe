@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import requests
+import torch
 from PIL import Image
 from torchvision import transforms
 from transformers import AutoModelForImageSegmentation
@@ -25,4 +26,4 @@ def load_input():
         ]
     )
     inputs = transform_image(image).unsqueeze(0)
-    return [inputs]
+    return [inputs.to(torch.bfloat16)]

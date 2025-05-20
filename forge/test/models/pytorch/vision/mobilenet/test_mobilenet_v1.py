@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import requests
+import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -33,9 +36,16 @@ def test_mobilenetv1_basic(forge_property_recorder):
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v1")
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     #  Model Verification and Inference
@@ -58,7 +68,7 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -77,9 +87,16 @@ def test_mobilenetv1_192(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -98,7 +115,7 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
@@ -117,9 +134,16 @@ def test_mobilenetv1_224(forge_property_recorder, variant):
 
     framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -145,11 +169,20 @@ def test_mobilenet_v1_timm(forge_property_recorder, variant):
 
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
+    framework_model = framework_model.to(torch.bfloat16)
+    inputs = inputs.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=[inputs],
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify([inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
