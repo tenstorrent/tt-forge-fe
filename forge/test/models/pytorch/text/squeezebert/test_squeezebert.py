@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -13,9 +13,9 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["squeezebert/squeezebert-mnli"])
-def test_squeezebert_sequence_classification_pytorch(forge_property_recorder, variant):
+def test_squeezebert_sequence_classification_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="squeezebert",
         variant=variant,
@@ -42,9 +42,7 @@ def test_squeezebert_sequence_classification_pytorch(forge_property_recorder, va
     inputs = [input_tokens]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

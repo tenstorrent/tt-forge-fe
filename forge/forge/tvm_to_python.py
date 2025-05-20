@@ -2022,7 +2022,6 @@ def generate_forge_module(
     verify_cfg=None,
     clean_later=False,
     input_names=[],
-    forge_property_handler=None,
 ):
     global counter
 
@@ -2056,7 +2055,6 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2119,7 +2117,6 @@ def compile_tvm_to_python(
     compiler_cfg=None,
     verify_cfg=None,
     input_names=[],
-    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2154,7 +2151,6 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
-        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):

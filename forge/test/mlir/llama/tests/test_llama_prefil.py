@@ -9,7 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup
+from forge.forge_property_utils import Framework, Source, Task, ModelGroup, record_model_properties
 
 
 class LlamaPrefillModel(torch.nn.Module):
@@ -53,7 +53,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.nightly
-def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_path):
+def test_llama_prefil_on_device_decode_on_cpu(model_path):
     """
     This function tests the inference of the Llama models split into two parts:
     - The first part is the prefilling of the model on the device.
@@ -77,7 +77,7 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
         group = ModelGroup.GENERALITY
 
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=model_name,
         variant=variant,
@@ -96,15 +96,11 @@ def test_llama_prefil_on_device_decode_on_cpu(forge_property_recorder, model_pat
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     framework_model = LlamaPrefillModel(model)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     # Prefill Phase - Process the initial prompt on device
     # Validate prefill outputs between TT and CPU
-    framework_output, compiled_output = verify(
-        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder
-    )
+    framework_output, compiled_output = verify(inputs, framework_model, compiled_model)
 
     # Get hidden states for all tokens from the last "transformer layer" on both TT and CPU.
     hidden_states_compiled = compiled_output[0]

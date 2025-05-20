@@ -19,9 +19,9 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
 
 
 @pytest.mark.nightly
-def test_yolov8(forge_property_recorder):
+def test_yolov8():
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="Yolov8",
         variant="default",
@@ -45,9 +45,8 @@ def test_yolov8(forge_property_recorder):
         framework_model,
         sample_inputs=input,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(input, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(input, framework_model, compiled_model)

@@ -33,7 +33,7 @@ variants_img_classification = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(forge_property_recorder, variant):
+def test_segformer_image_classification_pytorch(variant):
 
     if variant in ["nvidia/mit-b0"]:
         group = ModelGroup.RED
@@ -43,7 +43,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -68,12 +68,10 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     logits = co_out[0]
@@ -92,10 +90,10 @@ variants_semseg = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, variant):
+def test_segformer_semantic_segmentation_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -112,9 +110,7 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     inputs = [pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

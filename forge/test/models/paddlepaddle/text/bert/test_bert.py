@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 from paddlenlp.transformers import (
     BertForSequenceClassification,
@@ -35,9 +35,9 @@ inputs_map = {
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant, input", [(key, value["sequence"]) for key, value in inputs_map.items()])
-def test_bert_sequence_classification(forge_property_recorder, variant, input):
+def test_bert_sequence_classification(variant, input):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="bert",
         variant=variant.split("/")[-1] if "/" in variant else variant,
@@ -55,19 +55,17 @@ def test_bert_sequence_classification(forge_property_recorder, variant, input):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant, input", [(key, value["mask"]) for key, value in inputs_map.items()])
-def test_bert_maskedlm(forge_property_recorder, variant, input):
+def test_bert_maskedlm(variant, input):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="bert",
         variant=variant.split("/")[-1] if "/" in variant else variant,
@@ -85,12 +83,10 @@ def test_bert_maskedlm(forge_property_recorder, variant, input):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     # Inference
     outputs = compiled_model(*inputs)
@@ -102,9 +98,9 @@ def test_bert_maskedlm(forge_property_recorder, variant, input):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant, input", [(key, value["question"]) for key, value in inputs_map.items()])
-def test_bert_question_answering(forge_property_recorder, variant, input):
+def test_bert_question_answering(variant, input):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="bert",
         variant=variant.split("/")[-1] if "/" in variant else variant,
@@ -122,12 +118,10 @@ def test_bert_question_answering(forge_property_recorder, variant, input):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     # Inference
     outputs = compiled_model(*inputs)

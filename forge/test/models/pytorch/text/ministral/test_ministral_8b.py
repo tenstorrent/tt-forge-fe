@@ -16,10 +16,10 @@ variants = ["mistralai/Ministral-8B-Instruct-2410"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
-def test_ministral_8b(forge_property_recorder, variant):
+def test_ministral_8b(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="ministral",
         variant=variant,
@@ -41,9 +41,7 @@ def test_ministral_8b(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 
 variants = [
@@ -29,11 +29,11 @@ opset_versions = [7, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
+def test_resnet_onnx(variant, forge_tmp_path, opset_version):
     random.seed(0)
 
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="resnet",
         variant="50",
@@ -55,9 +55,7 @@ def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_ver
 
     # Compile model
     input_sample = [input_sample]
-    compiled_model = forge.compile(
-        onnx_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, input_sample, module_name=module_name)
 
     # Verify data on sample input
     verify(
@@ -65,5 +63,4 @@ def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_ver
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )

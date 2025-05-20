@@ -9,7 +9,7 @@ from transformers import BertModel, BertTokenizer
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.utils import download_model
 
 
@@ -21,9 +21,9 @@ opset_versions = [9, 17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
+def test_minilm_sequence_classification_onnx(variant, forge_tmp_path, opset_version):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="minilm",
         variant=variant,
@@ -53,9 +53,7 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, f
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

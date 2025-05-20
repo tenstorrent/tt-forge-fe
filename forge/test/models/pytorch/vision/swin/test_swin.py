@@ -38,9 +38,9 @@ from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_
         ),
     ],
 )
-def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
+def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -65,12 +65,11 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -84,9 +83,9 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
         ),
     ],
 )
-def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
+def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -103,12 +102,10 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -122,10 +119,10 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
         ),
     ],
 )
-def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
+def test_swin_v2_tiny_image_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -140,22 +137,20 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_masked(forge_property_recorder, variant):
+def test_swin_v2_tiny_masked(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -170,12 +165,10 @@ def test_swin_v2_tiny_masked(forge_property_recorder, variant):
     inputs = load_image(url, feature_extractor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants_with_weights = {
@@ -200,10 +193,10 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_swin_torchvision(forge_property_recorder, variant):
+def test_swin_torchvision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -216,9 +209,7 @@ def test_swin_torchvision(forge_property_recorder, variant):
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

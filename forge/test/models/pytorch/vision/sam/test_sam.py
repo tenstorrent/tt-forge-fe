@@ -25,11 +25,11 @@ from test.models.pytorch.vision.sam.model_utils.model import (
     ],
 )
 @pytest.mark.nightly
-def test_sam(forge_property_recorder, variant):
+def test_sam(variant):
     group = ModelGroup.RED if variant == "facebook/sam-vit-base" else ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="sam",
         variant=variant,
@@ -51,9 +51,8 @@ def test_sam(forge_property_recorder, variant):
         framework_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model)

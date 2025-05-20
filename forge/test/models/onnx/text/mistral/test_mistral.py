@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.utils import download_model
 import torch
 import onnx
@@ -20,10 +20,10 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Segmentation Fault")
-def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_mistral_v0_3_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="mistral",
         variant=variant,
@@ -59,14 +59,11 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

@@ -44,7 +44,7 @@ import torch.nn.functional as F
     ],
 )
 @pytest.mark.push
-def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
+def test_pixel_shuffle(input_shape, scale_factor):
     class PixelShuffleModel(nn.Module):
         def __init__(self, scale_factor):
             super().__init__()
@@ -56,10 +56,8 @@ def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
     inputs = [torch.randn(*input_shape)]
     framework_model = PixelShuffleModel(scale_factor)
     framework_model.eval()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -114,7 +112,7 @@ def test_pixel_shuffle(forge_property_recorder, input_shape, scale_factor):
     ],
 )
 @pytest.mark.push
-def test_nan_to_num(forge_property_recorder, shape, dtype):
+def test_nan_to_num(shape, dtype):
     class nan_to_num(nn.Module):
         def __init__(self):
             super().__init__()
@@ -139,11 +137,9 @@ def test_nan_to_num(forge_property_recorder, shape, dtype):
     inputs[0][mask_neginf] = float("-inf")
 
     framework_model = nan_to_num()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
     if dtype == torch.float32:
-        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+        verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -208,7 +204,7 @@ def test_nan_to_num(forge_property_recorder, shape, dtype):
     ],
 )
 @pytest.mark.push
-def test_isnan(forge_property_recorder, shape, dtype):
+def test_isnan(shape, dtype):
     class isnan(nn.Module):
         def __init__(self):
             super().__init__()
@@ -221,10 +217,8 @@ def test_isnan(forge_property_recorder, shape, dtype):
     inputs[0][mask_nan] = float("nan")
 
     framework_model = isnan()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -235,7 +229,7 @@ def test_isnan(forge_property_recorder, shape, dtype):
     [(888), (1, 7, 256), (3, 128, 128), (1, 10), (2, 2, 2), (5, 5), (1, 3, 224, 224), (8, 16, 32), (1, 3, 2, 544, 544)],
 )
 @pytest.mark.push
-def test_atan(forge_property_recorder, shape):
+def test_atan(shape):
     class Atan(nn.Module):
         def __init__(self):
             super().__init__()
@@ -246,11 +240,9 @@ def test_atan(forge_property_recorder, shape):
     inputs = [torch.randn(shape)]
 
     framework_model = Atan()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -269,7 +261,7 @@ def test_atan(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_power(forge_property_recorder, shape):
+def test_power(shape):
     class power(nn.Module):
         def __init__(self):
             super().__init__()
@@ -280,11 +272,9 @@ def test_power(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = power()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -294,7 +284,7 @@ def test_power(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_sin(forge_property_recorder, shape):
+def test_sin(shape):
     class Sin(nn.Module):
         def __init__(self):
             super().__init__()
@@ -305,11 +295,9 @@ def test_sin(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Sin()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -319,7 +307,7 @@ def test_sin(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_cosine(forge_property_recorder, shape):
+def test_cosine(shape):
     class Cosine(nn.Module):
         def __init__(self):
             super().__init__()
@@ -330,11 +318,9 @@ def test_cosine(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Cosine()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -345,7 +331,7 @@ def test_cosine(forge_property_recorder, shape):
 )
 @pytest.mark.xfail(reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph")
 @pytest.mark.push
-def test_tanh(forge_property_recorder, shape):
+def test_tanh(shape):
     class Tanh(nn.Module):
         def __init__(self):
             super().__init__()
@@ -357,11 +343,9 @@ def test_tanh(forge_property_recorder, shape):
 
     framework_model = Tanh()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -371,17 +355,15 @@ def test_tanh(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_leakyrelu(forge_property_recorder, shape):
+def test_leakyrelu(shape):
 
     inputs = [torch.rand(shape)]
 
     framework_model = nn.LeakyReLU(negative_slope=0.1)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -391,16 +373,14 @@ def test_leakyrelu(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_gelu(forge_property_recorder, shape):
+def test_gelu(shape):
 
     inputs = [torch.rand(shape)]
 
     framework_model = nn.GELU()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -421,7 +401,7 @@ def test_gelu(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_clip(forge_property_recorder, shape, min_val, max_val):
+def test_clip(shape, min_val, max_val):
     class Clip(nn.Module):
         def __init__(self, min_val, max_val):
             super().__init__()
@@ -434,11 +414,9 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     inputs = [torch.rand(shape)]
 
     framework_model = Clip(min_val, max_val)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -459,7 +437,7 @@ def test_clip(forge_property_recorder, shape, min_val, max_val):
     ],
 )
 @pytest.mark.push
-def test_cumsum(forge_property_recorder, shape, dim):
+def test_cumsum(shape, dim):
     class CumSum(nn.Module):
         def __init__(self, dim):
             super().__init__()
@@ -471,18 +449,16 @@ def test_cumsum(forge_property_recorder, shape, dim):
     inputs = [torch.rand(shape)]
 
     framework_model = CumSum(dim)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
     "shape", [(1, 1, 256, 256), (1, 1, 1, 128), (1, 1, 1, 384), (1, 1, 32, 32), (1, 1, 6, 6), (1, 1, 29, 29)]
 )
 @pytest.mark.push
-def test_abs(forge_property_recorder, shape):
+def test_abs(shape):
     class Abs(nn.Module):
         def __init__(self):
             super().__init__()
@@ -493,11 +469,9 @@ def test_abs(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Abs()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -513,7 +487,7 @@ def test_abs(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_exp(forge_property_recorder, shape):
+def test_exp(shape):
     class Exp(nn.Module):
         def __init__(self):
             super().__init__()
@@ -524,11 +498,9 @@ def test_exp(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Exp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -561,7 +533,7 @@ def test_exp(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_log(forge_property_recorder, shape):
+def test_log(shape):
     class Log(nn.Module):
         def __init__(self):
             super().__init__()
@@ -572,11 +544,9 @@ def test_log(forge_property_recorder, shape):
     inputs = [torch.rand(shape)]
 
     framework_model = Log()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -591,7 +561,7 @@ def test_log(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_maximum(forge_property_recorder, shape_x, shape_y):
+def test_maximum(shape_x, shape_y):
     class Maximum(nn.Module):
         def __init__(self):
             super().__init__()
@@ -605,15 +575,13 @@ def test_maximum(forge_property_recorder, shape_x, shape_y):
     inputs = [x, y]
 
     framework_model = Maximum()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_relu(forge_property_recorder):
+def test_relu():
     class ReLU(nn.Module):
         def __init__(self):
             super().__init__()
@@ -625,17 +593,15 @@ def test_relu(forge_property_recorder):
     inputs = [torch.rand(1, 32)]
 
     framework_model = ReLU()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("x_shape", [7, 32, 41])
 @pytest.mark.parametrize("y_shape", [7, 32, 41])
 @pytest.mark.push
-def test_sqrt(forge_property_recorder, x_shape, y_shape):
+def test_sqrt(x_shape, y_shape):
     class Sqrt(nn.Module):
         def __init__(self):
             super().__init__()
@@ -648,11 +614,9 @@ def test_sqrt(forge_property_recorder, x_shape, y_shape):
     ]
 
     framework_model = Sqrt()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -669,7 +633,7 @@ def test_sqrt(forge_property_recorder, x_shape, y_shape):
     ],
 )
 @pytest.mark.push
-def test_reciprocal(forge_property_recorder, shape):
+def test_reciprocal(shape):
     class Reciprocal(nn.Module):
         def __init__(self):
             super().__init__()
@@ -682,11 +646,9 @@ def test_reciprocal(forge_property_recorder, shape):
     ]
 
     framework_model = Reciprocal()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -703,7 +665,7 @@ def test_reciprocal(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_sigmoid(forge_property_recorder, shape):
+def test_sigmoid(shape):
     class Sigmoid(nn.Module):
         def __init__(self):
             super().__init__()
@@ -715,11 +677,9 @@ def test_sigmoid(forge_property_recorder, shape):
         torch.rand(*shape),
     ]
     framework_model = Sigmoid()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -729,7 +689,7 @@ def test_sigmoid(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_tanh(forge_property_recorder, input_shape):
+def test_tanh(input_shape):
     class Tanh(nn.Module):
         def __init__(self):
             super().__init__()
@@ -740,11 +700,9 @@ def test_tanh(forge_property_recorder, input_shape):
     inputs = [torch.rand(input_shape)]
 
     framework_model = Tanh()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(reason="RuntimeError: BinaryOpType cannot be mapped to BcastOpMath")
@@ -757,7 +715,7 @@ def test_tanh(forge_property_recorder, input_shape):
         torch.tensor([-12345.678, 12345.678, -0.999, 0.999, 3.14159, -3.14159]),
     ],
 )
-def test_floor(forge_property_recorder, input_data):
+def test_floor(input_data):
     class Floor(nn.Module):
         def __init__(self):
             super().__init__()
@@ -766,11 +724,9 @@ def test_floor(forge_property_recorder, input_data):
             return torch.floor(a)
 
     framework_model = Floor()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=[input_data], module_name="floor", forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=[input_data], module_name="floor")
 
-    verify([input_data], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([input_data], framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -820,7 +776,7 @@ def test_floor(forge_property_recorder, input_data):
     ],
 )
 @pytest.mark.push
-def test_argmax(forge_property_recorder, shape, dim, keepdim):
+def test_argmax(shape, dim, keepdim):
     class ArgMax(nn.Module):
         def __init__(self, dim, keepdim):
             super().__init__()
@@ -833,11 +789,9 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     inputs = [torch.rand(shape)]
 
     framework_model = ArgMax(dim, keepdim)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -862,7 +816,7 @@ def test_argmax(forge_property_recorder, shape, dim, keepdim):
     ],
 )
 @pytest.mark.push
-def test_einsum(forge_property_recorder, pattern, input_shape):
+def test_einsum(pattern, input_shape):
     class EinsumModel(torch.nn.Module):
         def __init__(self, pattern):
             super().__init__()
@@ -876,9 +830,9 @@ def test_einsum(forge_property_recorder, pattern, input_shape):
     model = EinsumModel(pattern)
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(8,), (4, 4), (3, 5, 7), (2, 6, 4, 8), (2, 3, 5, 7, 9)])
@@ -936,7 +890,7 @@ def test_res_neg(shape):
     ],
 )
 @pytest.mark.push
-def test_unflatten(forge_property_recorder, input_shape, dim, unflattened_size):
+def test_unflatten(input_shape, dim, unflattened_size):
     class UnflattenModel(torch.nn.Module):
         def __init__(self):
             super().__init__()
@@ -950,13 +904,13 @@ def test_unflatten(forge_property_recorder, input_shape, dim, unflattened_size):
     model = UnflattenModel()
     model.eval()
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.parametrize("hidden_dim", [96, 128, 160, 192])
-def test_zero(forge_property_recorder, hidden_dim):
+def test_zero(hidden_dim):
     class ZeroModel(nn.Module):
         def __init__(self):
             super().__init__()
@@ -976,9 +930,9 @@ def test_zero(forge_property_recorder, hidden_dim):
 
     inputs = [x, qkv_weight, qkv_bias]
 
-    compiled_model = forge.compile(model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(model, sample_inputs=inputs)
 
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -991,7 +945,7 @@ def test_zero(forge_property_recorder, hidden_dim):
     ],
 )
 @pytest.mark.xfail
-def test_zeros_like(forge_property_recorder, input_shape):
+def test_zeros_like(input_shape):
     class ZerosLikeModel(torch.nn.Module):
         def forward(self, x):
             z = torch.zeros_like(x)
@@ -1007,10 +961,9 @@ def test_zeros_like(forge_property_recorder, input_shape):
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        forge_property_handler=forge_property_recorder,
     )
 
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -1030,7 +983,7 @@ def test_zeros_like(forge_property_recorder, input_shape):
     ],
 )
 @pytest.mark.xfail
-def test_bernoulli(forge_property_recorder, input_shape):
+def test_bernoulli(input_shape):
     class BernoulliNet(nn.Module):
         def __init__(self, in_features):
             super(BernoulliNet, self).__init__()
@@ -1050,7 +1003,7 @@ def test_bernoulli(forge_property_recorder, input_shape):
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        forge_property_handler=forge_property_recorder,
+        
     )
 
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)

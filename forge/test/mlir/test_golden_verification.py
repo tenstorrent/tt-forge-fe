@@ -93,7 +93,7 @@ compile_depths_to_test = [
     ],
 )
 @pytest.mark.push
-def test_matmuls(forge_property_recorder, shapes, train, verify_stage):
+def test_matmuls(shapes, train, verify_stage):
     shape1, shape2, shape3 = shapes
 
     class Matmul(nn.Module):
@@ -124,6 +124,6 @@ def test_matmuls(forge_property_recorder, shapes, train, verify_stage):
         framework_model,
         sample_inputs=inputs,
         training=train,
-        forge_property_handler=forge_property_recorder,
+        
         verify_cfg=verify_cfg,
     )

@@ -3,18 +3,22 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum, auto
+from pytest import FixtureRequest
 import json
 import re
+import contextvars
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
+from forge.verify.compare import determine_consistency_limits
 from forge.config import CompilerConfig
 from forge._C import DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
 import forge
+from torch import Tensor as TorchTensor
 
 
 class StrEnum(str, Enum):
@@ -361,30 +365,16 @@ class ForgePropertyHandler:
     several utility methods for recording specific property values (such as group, model name,
     and configuration data).
 
+    Default initial execution stage (FAILED_BEFORE_FORGE_COMPILATION_INITIATION) is set.
+
     Attributes:
         store (ForgePropertyStore): The underlying store containing the property data.
-        record_single_op_details (bool): Flag indicating whether single operation details
         should be recorded.
     """
 
-    def __init__(self, store: ForgePropertyStore):
+    def __init__(self, store: ForgePropertyStore = ForgePropertyStore()):
         self.store = store
-        self.record_single_op_details = False
-
-    def enable_single_op_details_recording(self):
-        """
-        Enables recording for single operation details.
-
-        When enabled, additional details such as op name, op arguments, operands information,
-        model names, refined error messages, and failure categories will be recorded.
-        """
-        self.record_single_op_details = True
-
-    def disable_single_op_details_recording(self):
-        """
-        Disables recording for single operation details.
-        """
-        self.record_single_op_details = False
+        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
 
     def add(self, key: str, value: Any):
         """
@@ -486,44 +476,6 @@ class ForgePropertyHandler:
         # Fallback: return an empty dictionary if no dataclass instance can be created.
         return {}
 
-    def record_model_name(self, model_name: str):
-        """
-        Records the model name in the tags.
-
-        Args:
-            model_name (str): The model name to record.
-        """
-        self.add("tags.model_name", model_name)
-
-    def record_pcc(self, pcc: float):
-        """
-        Records the PCC metric in the tags.
-
-        Args:
-            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-        """
-        self.add("tags.pcc", pcc)
-
-    def record_atol(self, atol: float):
-        """
-        Records the atol (absolute tolerance) values in the tags.
-
-        Args:
-            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-        """
-        self.add("tags.atol", atol)
-
-    def record_pcc_and_atol(self, pcc: float, atol: float):
-        """
-        Records both PCC and atol values in the tags.
-
-        Args:
-            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-        """
-        self.record_pcc(pcc)
-        self.record_atol(atol)
-
     def record_execution_depth(self, execution_depth: ExecutionDepth):
         """
         Records the execution depth (as bringup_status) in the tags.
@@ -552,101 +504,6 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
-    def record_compiler_config(self, compiler_config: CompilerConfig):
-        """
-        Records the compiler configuration under config.compiler.
-
-        Args:
-            compiler_config (CompilerConfig): The compiler configuration object.
-        """
-        self.add("config.compiler", compiler_config.to_dict())
-
-    def record_verify_config(self, verify_config: VerifyConfig):
-        """
-        Records the verify configuration under config.verify.
-
-        Converts the verify configuration to a dictionary, and ensures that the value
-        for the 'value_checker' key is also represented as a dictionary.
-
-        Args:
-            verify_config (VerifyConfig): The verify configuration object.
-        """
-        verify_config = verify_config.to_dict()
-        verify_config["value_checker"] = verify_config["value_checker"].__dict__
-        self.add("config.verify", verify_config)
-
-    def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
-        """
-        Records forward program inputs tensor description extracted from a flatbuffer binary.
-
-        Args:
-            inputs (List[TensorDesc]): A list of TensorDesc objects for inputs.
-        """
-        self.add("tags.inputs", inputs)
-
-    def record_flatbuffer_outputs(self, outputs: List[TensorDesc]):
-        """
-        Records forward program outputs tensor description extracted from a flatbuffer binary.
-
-        Args:
-            outputs (List[TensorDesc]): A list of TensorDesc objects for outputs.
-        """
-        self.add("tags.outputs", outputs)
-
-    def record_flatbuffer_details(self, binary_json_str: str):
-        """
-        Records details from a flatbuffer binary JSON string.
-
-        This method convert provided JSON string into a dictionary, and uses the
-        FlatbufferDetailsExtractor to extract details and record it.
-
-        Args:
-            binary_json_str (str): The JSON string representation of the flatbuffer binary.
-        """
-
-        if self.get("tags.model_name"):
-            # For model tests, we don't want to record the flatbuffer details, since this
-            # results in a lot of data being recorded.
-            return
-
-        binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
-        binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
-        binary_json = json.loads(binary_json_str)
-
-        flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
-        inputs, outputs = flatbuffer_details_extractor.extract_program_io_details(program_filter=["forward"])
-        if inputs is not None and outputs is not None:
-            if len(inputs) != len(outputs):
-                logger.error(
-                    f"Mismatch in program count: inputs have {len(inputs)} programs, while outputs have {len(outputs)} programs."
-                )
-            if sorted(inputs.keys()) != sorted(outputs.keys()):
-                logger.error(
-                    f"Mismatch in program names: inputs contain {sorted(inputs.keys())}, while outputs contain {sorted(outputs.keys())}."
-                )
-            self.record_flatbuffer_inputs(inputs["forward"])
-            self.record_flatbuffer_outputs(outputs["forward"])
-
-    def record_forge_op_name(self, forge_op_name: str):
-        """
-        Records the Forge op name in the op information tags if single op details recording is enabled.
-
-        Args:
-            forge_op_name (str): The Forge operation name.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.forge_op_name", forge_op_name)
-
-    def record_forge_op_args(self, op_args: Dict[str, Any]):
-        """
-        Records the arguments for the Forge operation in the op information tags if single op details recording is enabled.
-
-        Args:
-            op_args (Dict[str, Any]): A dictionary of operation arguments.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.args", op_args)
-
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):
             return "Parameter"
@@ -654,71 +511,6 @@ class ForgePropertyHandler:
             return "Constant"
         else:
             return "Activation"
-
-    def record_single_op_operands_info(self, forge_module: ForgeModule, inputs: List[Tensor]):
-        """
-        Records details about operation operands in the op information tags if single op details recording is enabled.
-
-        For each operand, the function records the node type, shape, dataformat,
-        and the corresponding PyTorch data type.
-
-        forge_module (List[str]): ForgeModule to extract the operands details
-        inputs (List[str]): List of forge tensor inputs for the module
-        """
-        if self.record_single_op_details:
-            assert isinstance(
-                forge_module, ForgeModule
-            ), f"Operands details can be extracted only from the ForgeModule but you have provided {forge_module}"
-            output = forge_module(*inputs)
-            assert isinstance(output, Tensor), "ForgeModule should have only one output tensor"
-            if output.src_op is not None:
-                assert all(
-                    True if isinstance(operand, forge.Parameter) or operand.src_op is None else False
-                    for operand in output.src_op.operands
-                ), "ForgeModule should contains single forge op"
-                operands_list = []
-                for operand in output.src_op.operands:
-                    node_type = self.extract_node_type(operand)
-                    shape = tuple(operand.shape.get_pytorch_shape())
-                    dataformat = DataFormat.to_json(operand.data_format)
-                    torch_dtype = str(operand.pt_data_format)
-                    operands_list.append(
-                        Operand(
-                            node_type=node_type,
-                            shape=shape,
-                            dataformat=dataformat,
-                            torch_dtype=str(torch_dtype),
-                        )
-                    )
-                self.add("tags.op_info.operands", operands_list)
-
-    def record_op_model_names(self, model_names: List[str]):
-        """
-        Records the model names associated with the operation in the op information tags if single op details recording is enabled.
-
-        Args:
-            model_names (List[str]): A list of model names.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.model_names", model_names)
-
-    def record_refined_error_message(self, refined_error_message: str):
-        """
-        Records the refined error message in the tags.
-
-        Args:
-            refined_error_message (str): The refined error message string.
-        """
-        self.add("tags.refined_error_message", refined_error_message)
-
-    def record_failure_category(self, failure_category: str):
-        """
-        Records the failure category in the tags.
-
-        Args:
-            failure_category (str): The failure category string.
-        """
-        self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """
@@ -782,7 +574,28 @@ class ForgePropertyHandler:
         store_dict = self.store.to_dict()
         return recursive_clean(store_dict)
 
-    def store_property(self, record_property):
+    def record_error(self, request: FixtureRequest):
+        """
+        Records refined error message and failure category if they exist.
+
+        Parameters:
+            request: Fixture request for current test.
+        """
+        # Retrieve any refined error message that might have been set during the test execution
+        refined_error_message = getattr(request.node, "refined_error_message", None)
+        if refined_error_message is None:
+            return
+
+        self.add("tags.refined_error_message", refined_error_message)
+
+        # Add failure_category if it exist.
+        failure_category = getattr(request.node, "failure_category", None)
+        if failure_category is None:
+            return
+
+        self.add("tags.failure_category", failure_category)
+
+    def record_all_properties(self, record_property):
         """
         Stores the cleaned properties using a provided recording function.
 
@@ -794,55 +607,282 @@ class ForgePropertyHandler:
         for property_name, property_value in cleaned_property_store.items():
             record_property(property_name, property_value)
 
-    def record_model_properties(
-        self,
-        framework: Framework,
-        model: str,
-        task: Task,
-        source: Source,
-        variant: str = "base",
-        suffix: str | None = None,
-        group: ModelGroup = ModelGroup.GENERALITY,
-        priority: ModelPriority = ModelPriority.P2,
-    ) -> str:
-        """
-        Records model properties and generates a module name and stores it.
 
-        Args:
-            framework: The framework used (e.g., pt,tf, etc.)
-            model: The model name (e.g., bert)
-            variant: The model variant (e.g., bert-base-uncased)
-            task: The task type (e.g., qa,mlm, etc.)
-            source: The model source (e.g., hf,torchhub etc.)
-            suffix: Optional suffix to append to the module name
-            group: The model group
-            priority: The model priority
+# Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
+forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var", default=None)
 
-        Returns:
-            The generated module name
-        """
+# Next section contains global recording functions. They all use forge_property_handler context variable to
+# record various properties.
 
-        # Record individual properties
-        self.add("tags.model_info.framework", framework.full)
-        self.add("tags.model_info.model_arch", model)
-        self.add("tags.model_info.variant_name", variant)
-        self.add("tags.model_info.task", task.full)
-        self.add("tags.model_info.source", source.full)
 
-        # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
-        # Leaving it as it is for now.
-        # self.add("tags.model_info.priority", priority.value)
-        # self.add("tags.model_info.group", group.value)
+def record_execution(execution_stage: ExecutionStage):
+    """
+    Records the execution depth and stage in the tags.
 
-        self.add("group", group.value)
-        self.add("tags.group", group.value)
-        self.add("priority", priority.value)
+    Args:
+        execution_stage (ExecutionStage): The execution stage value.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
 
-        # Build and return the module name
-        module_name = build_module_name(
-            framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
-        )
+    fph.record_execution(execution_stage)
 
-        # Record model_name
-        self.record_model_name(module_name)
-        return module_name
+
+def record_compiler_config(compiler_config: CompilerConfig):
+    """
+    Records the compiler configuration under config.compiler.
+
+    Args:
+        compiler_config (CompilerConfig): The compiler configuration object.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("config.compiler", compiler_config.to_dict())
+
+
+def record_verify_config(verify_config: VerifyConfig):
+    """
+    Records the verify configuration under config.verify.
+
+    Converts the verify configuration to a dictionary, and ensures that the value
+    for the 'value_checker' key is also represented as a dictionary.
+
+    Args:
+        verify_config (VerifyConfig): The verify configuration object.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    verify_config = verify_config.to_dict()
+    verify_config["value_checker"] = verify_config["value_checker"].__dict__
+
+    fph.add("config.verify", verify_config)
+
+
+def record_flatbuffer_details(binary_json_str: str):
+    """
+    Records details (forward program inputs/outputs tensor description) from a flatbuffer binary JSON string.
+
+    This method convert provided JSON string into a dictionary, and uses the
+    FlatbufferDetailsExtractor to extract details and record it.
+
+    Args:
+        binary_json_str (str): The JSON string representation of the flatbuffer binary.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    if fph.get("tags.model_name"):
+        # For model tests, we don't want to record the flatbuffer details, since this
+        # results in a lot of data being recorded.
+        return
+
+    binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
+    binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
+    binary_json = json.loads(binary_json_str)
+
+    flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
+    inputs, outputs = flatbuffer_details_extractor.extract_program_io_details(program_filter=["forward"])
+    if inputs is not None and outputs is not None:
+        if len(inputs) != len(outputs):
+            logger.error(
+                f"Mismatch in program count: inputs have {len(inputs)} programs, while outputs have {len(outputs)} programs."
+            )
+        if sorted(inputs.keys()) != sorted(outputs.keys()):
+            logger.error(
+                f"Mismatch in program names: inputs contain {sorted(inputs.keys())}, while outputs contain {sorted(outputs.keys())}."
+            )
+
+        fph.add("tags.inputs", inputs["forward"])
+        fph.add("tags.outputs", outputs["forward"])
+
+
+def record_model_properties(
+    framework: Framework,
+    model: str,
+    task: Task,
+    source: Source,
+    variant: str = "base",
+    suffix: str | None = None,
+    group: ModelGroup = ModelGroup.GENERALITY,
+    priority: ModelPriority = ModelPriority.P2,
+) -> str:
+    """
+    Records model properties and generates a module name and stores it.
+
+    Args:
+        framework: The framework used (e.g., pt,tf, etc.)
+        model: The model name (e.g., bert)
+        variant: The model variant (e.g., bert-base-uncased)
+        task: The task type (e.g., qa,mlm, etc.)
+        source: The model source (e.g., hf,torchhub etc.)
+        suffix: Optional suffix to append to the module name
+        group: The model group
+        priority: The model priority
+
+    Returns:
+        The generated module name
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    # Record individual properties
+    fph.add("tags.model_info.framework", framework.full)
+    fph.add("tags.model_info.model_arch", model)
+    fph.add("tags.model_info.variant_name", variant)
+    fph.add("tags.model_info.task", task.full)
+    fph.add("tags.model_info.source", source.full)
+
+    # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
+    # Leaving it as it is for now.
+    # self.add("tags.model_info.priority", priority.value)
+    # self.add("tags.model_info.group", group.value)
+
+    fph.add("group", group.value)
+    fph.add("tags.group", group.value)
+    fph.add("priority", priority.value)
+
+    # Build and return the module name
+    module_name = build_module_name(
+        framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+    )
+
+    # Record model_name
+    fph.add("tags.model_name", module_name)
+    return module_name
+
+
+def record_consistency_limits(
+    framework_outputs: Union[Tuple[TorchTensor, ...], List[TorchTensor]], compiled_outputs: List[TorchTensor]
+):
+    """
+    Records consistency limits (PCC and ATOL).
+
+    Parameters:
+        framework_outputs: Tuple or list of torch.Tensor representing the expected (golden) outputs.
+        compiled_outputs: List of torch.Tensor representing the computed outputs.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    pcc, atol = determine_consistency_limits(framework_outputs=framework_outputs, compiled_outputs=compiled_outputs)
+    if pcc is not None:
+        fph.add("tags.pcc", pcc)
+    if atol is not None:
+        fph.add("tags.atol", atol)
+
+
+def record_error(request: FixtureRequest):
+    """
+    Records refined error message and failure category if they exist.
+
+    Parameters:
+        request: Fixture request for current test.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    # Retrieve any refined error message that might have been set during the test execution
+    refined_error_message = getattr(request.node, "refined_error_message", None)
+    if refined_error_message is None:
+        return
+
+    fph.add("tags.refined_error_message", refined_error_message)
+
+    # Add failure_category if it exist.
+    failure_category = getattr(request.node, "failure_category", None)
+    if failure_category is None:
+        return
+
+    fph.add("tags.failure_category", failure_category)
+
+
+def record_forge_op_name(forge_op_name: str):
+    """
+    Records the Forge op name in the op information tags if single op details recording is enabled.
+
+    Args:
+        forge_op_name (str): The Forge operation name.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.forge_op_name", forge_op_name)
+
+
+def record_forge_op_args(op_args: Dict[str, Any]):
+    """
+    Records the arguments for the Forge operation in the op information tags if single op details recording is enabled.
+
+    Args:
+        op_args (Dict[str, Any]): A dictionary of operation arguments.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.args", op_args)
+
+
+def record_single_op_operands_info(forge_module: ForgeModule, inputs: List[Tensor]):
+    """
+    Records details about operation operands in the op information tags if single op details recording is enabled.
+
+    For each operand, the function records the node type, shape, dataformat,
+    and the corresponding PyTorch data type.
+
+    forge_module (List[str]): ForgeModule to extract the operands details
+    inputs (List[str]): List of forge tensor inputs for the module
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    assert isinstance(
+        forge_module, ForgeModule
+    ), f"Operands details can be extracted only from the ForgeModule but you have provided {forge_module}"
+    output = forge_module(*inputs)
+    assert isinstance(output, Tensor), "ForgeModule should have only one output tensor"
+    if output.src_op is not None:
+        assert all(
+            True if isinstance(operand, forge.Parameter) or operand.src_op is None else False
+            for operand in output.src_op.operands
+        ), "ForgeModule should contains single forge op"
+        operands_list = []
+        for operand in output.src_op.operands:
+            node_type = fph.extract_node_type(operand)
+            shape = tuple(operand.shape.get_pytorch_shape())
+            dataformat = DataFormat.to_json(operand.data_format)
+            torch_dtype = str(operand.pt_data_format)
+            operands_list.append(
+                Operand(
+                    node_type=node_type,
+                    shape=shape,
+                    dataformat=dataformat,
+                    torch_dtype=str(torch_dtype),
+                )
+            )
+        fph.add("tags.op_info.operands", operands_list)
+
+
+def record_op_model_names(model_names: List[str]):
+    """
+    Records the model names associated with the operation in the op information tags if single op details recording is enabled.
+
+    Args:
+        model_names (List[str]): A list of model names.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.model_names", model_names)
