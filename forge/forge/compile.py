@@ -38,7 +38,7 @@ from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage, record_execution
 
 
 LAST_SUCCESSFUL_STAGE = None
@@ -236,9 +236,9 @@ def compile_main(
     modules = [wrap_module(module, module_name)]
     training = training or optimizer is not None
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_compiler_config(compiler_cfg)
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
+    # forge_property_handler.record_compiler_config(compiler_cfg)
+    # forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
         modules=modules,

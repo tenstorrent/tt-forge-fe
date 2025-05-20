@@ -5,6 +5,7 @@
 from enum import Enum, auto
 import json
 import re
+import contextvars
 from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
@@ -360,15 +361,18 @@ class ForgePropertyHandler:
     several utility methods for recording specific property values (such as group, model name,
     and configuration data).
 
+    Default initial execution stage (FAILED_BEFORE_FORGE_COMPILATION_INITIATION) is set.
+
     Attributes:
         store (ForgePropertyStore): The underlying store containing the property data.
         record_single_op_details (bool): Flag indicating whether single operation details
         should be recorded.
     """
 
-    def __init__(self, store: ForgePropertyStore):
+    def __init__(self, store: ForgePropertyStore = ForgePropertyStore()):
         self.store = store
         self.record_single_op_details = False
+        self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
 
     def enable_single_op_details_recording(self):
         """
@@ -845,3 +849,22 @@ class ForgePropertyHandler:
         # Record model_name
         self.record_model_name(module_name)
         return module_name
+
+
+# Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
+forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var")
+
+
+def record_execution(execution_stage: ExecutionStage):
+    """
+    Records the execution depth and stage in the tags.
+
+    Args:
+        execution_stage (ExecutionStage): The execution stage value.
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    fph.record_execution_stage(execution_stage)
+    fph.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
