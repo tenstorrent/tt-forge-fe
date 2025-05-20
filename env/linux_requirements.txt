@@ -1,4 +1,5 @@
 # First include all requirements from the Distribution build
+--extra-index-url https://download.pytorch.org/whl/cpu
 -r core_requirements.txt
 
 bitarray==2.5.1
@@ -27,8 +28,8 @@ yolov5==7.0.9
 # The CPU versions of torch and torch visions are used due to their size being
 # several GB smaller which made a large impact on the performance of CI
 # (through build artifacts and caching)
-torch==2.7.0 ; python_version=='3.10'
-torch==2.7.0 ; python_version=='3.11'
+torch==2.7.0+cpu ; python_version == "3.10"
+torch==2.7.0+cpu ; python_version == "3.11"
 torchxrayvision==0.0.39
 vgg_pytorch==0.3.0
 librosa==0.10.0.post2
