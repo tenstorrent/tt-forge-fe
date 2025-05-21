@@ -686,7 +686,7 @@ class ForgePropertyHandler:
 
 
 # Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
-forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var")
+forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var", default=None)
 
 # Global functions that uses forge_property_handler context variable to record various properties.
 
@@ -698,7 +698,7 @@ def record_execution(execution_stage: ExecutionStage):
     Args:
         execution_stage (ExecutionStage): The execution stage value.
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -712,7 +712,7 @@ def record_compiler_config(compiler_config: CompilerConfig):
     Args:
         compiler_config (CompilerConfig): The compiler configuration object.
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -729,7 +729,7 @@ def record_verify_config(verify_config: VerifyConfig):
     Args:
         verify_config (VerifyConfig): The verify configuration object.
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -749,7 +749,7 @@ def record_flatbuffer_details(binary_json_str: str):
     Args:
         binary_json_str (str): The JSON string representation of the flatbuffer binary.
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -785,7 +785,7 @@ def record_pcc(self, pcc: float):
     Args:
         pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -799,7 +799,7 @@ def record_atol(self, atol: float):
     Args:
         atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -814,7 +814,7 @@ def record_pcc_and_atol(self, pcc: float, atol: float):
         pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
         atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 
@@ -848,7 +848,7 @@ def record_model_properties(
     Returns:
         The generated module name
     """
-    fph = forge_property_handler_var.get("forge_property_handler_var")
+    fph = forge_property_handler_var.get()
     if fph is None:
         return
 

@@ -64,9 +64,7 @@ def test_stack_and_view(forge_property_recorder, shape, dim):
     inputs = [x, y]
 
     framework_model = stack_and_view(dim)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
