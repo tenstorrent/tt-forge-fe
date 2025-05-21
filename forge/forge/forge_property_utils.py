@@ -555,29 +555,6 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
-    def record_compiler_config(self, compiler_config: CompilerConfig):
-        """
-        Records the compiler configuration under config.compiler.
-
-        Args:
-            compiler_config (CompilerConfig): The compiler configuration object.
-        """
-        self.add("config.compiler", compiler_config.to_dict())
-
-    def record_verify_config(self, verify_config: VerifyConfig):
-        """
-        Records the verify configuration under config.verify.
-
-        Converts the verify configuration to a dictionary, and ensures that the value
-        for the 'value_checker' key is also represented as a dictionary.
-
-        Args:
-            verify_config (VerifyConfig): The verify configuration object.
-        """
-        verify_config = verify_config.to_dict()
-        verify_config["value_checker"] = verify_config["value_checker"].__dict__
-        self.add("config.verify", verify_config)
-
     def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
         """
         Records forward program inputs tensor description extracted from a flatbuffer binary.
@@ -854,6 +831,8 @@ class ForgePropertyHandler:
 # Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
 forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var")
 
+# Global functions that uses forge_property_handler context variable to record various properties.
+
 
 def record_execution(execution_stage: ExecutionStage):
     """
@@ -866,5 +845,37 @@ def record_execution(execution_stage: ExecutionStage):
     if fph is None:
         return
 
-    fph.record_execution_stage(execution_stage)
-    fph.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
+    fph.record_execution(execution_stage)
+
+
+def record_compiler_config(compiler_config: CompilerConfig):
+    """
+    Records the compiler configuration under config.compiler.
+
+    Args:
+        compiler_config (CompilerConfig): The compiler configuration object.
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    fph.add("config.compiler", compiler_config.to_dict())
+
+
+def record_verify_config(verify_config: VerifyConfig):
+    """
+    Records the verify configuration under config.verify.
+
+    Converts the verify configuration to a dictionary, and ensures that the value
+    for the 'value_checker' key is also represented as a dictionary.
+
+    Args:
+        verify_config (VerifyConfig): The verify configuration object.
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    verify_config = verify_config.to_dict()
+    verify_config["value_checker"] = verify_config["value_checker"].__dict__
+    fph.add("config.verify", verify_config)

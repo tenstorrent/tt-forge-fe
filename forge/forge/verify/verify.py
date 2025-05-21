@@ -30,7 +30,7 @@ from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage, record_execution, record_verify_config
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -402,8 +402,7 @@ def verify(
                Returns (None, None) if verification is disabled
     """
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_verify_config(verify_cfg)
+    record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -428,11 +427,9 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_VERIFICATION)
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
@@ -478,8 +475,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.PASSED)
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out
