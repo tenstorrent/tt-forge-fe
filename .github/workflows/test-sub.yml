@@ -103,6 +103,11 @@ jobs:
             conftest.py
             .test_durations
 
+      - name: Setup Forge Models repo
+        shell: bash
+        run: |
+          git submodule update --init --recursive -f third_party/tt_forge_models
+
         # Clean everything from submodules (needed to avoid issues
         # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
