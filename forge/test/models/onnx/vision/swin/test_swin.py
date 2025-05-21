@@ -80,6 +80,7 @@ def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, forge_tmp_pa
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
+    inputs = [inputs[0].to(torch.float32)]
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/swin_v2_tiny_masked.onnx"
@@ -118,6 +119,8 @@ def test_swin_torchvision(forge_property_recorder, variant, forge_tmp_path):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.float32)
+    inputs = [inputs[0].to(torch.float32)]
 
     # Export model to ONNX
     onnx_path = f"{forge_tmp_path}/swin_v2_torchvision.onnx"

@@ -35,7 +35,8 @@ def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Load  model and input
     framework_model, sample_inputs = get_model_inputs(variant)
-    input_tensor = sample_inputs[0]
+    framework_model.to(torch.float32)
+    input_tensor = sample_inputs[0].to(torch.float32)
     sample_inputs = [input_tensor]
 
     onnx_path = f"{forge_tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"

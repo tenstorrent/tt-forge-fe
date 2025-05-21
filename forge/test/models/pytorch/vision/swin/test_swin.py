@@ -215,6 +215,9 @@ def test_swin_torchvision(forge_property_recorder, variant):
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
+    framework_model.to(torch.float32)
+    inputs = [inputs[0].to(torch.float32)]
+
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
