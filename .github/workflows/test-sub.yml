@@ -156,13 +156,23 @@ jobs:
           access_log /tmp/squid-access.log
           cache_log /tmp/squid-cache.log
           cache_store_log /tmp/squid-store.log
+          # Add ACL to allow all traffic
+          acl all src all
+          http_access allow all
+          # Disable IPv6 to avoid issues
+          dns_v4_first on
           EOF
-          # Start squid service
-          squid -f /tmp/squid.conf -N &
+          # Start squid as a service instead of a background process
+          service squid stop || true  # Stop any running instance first
+          squid -f /tmp/squid.conf   # Start as foreground/service
+          # Verify squid is running
+          pgrep -l squid || echo "WARNING: Squid not running!"
           # Set HTTP_PROXY environment variable for the following steps
           echo "HTTP_PROXY=http://localhost:3128" >> $GITHUB_ENV
           echo "HTTPS_PROXY=http://localhost:3128" >> $GITHUB_ENV
+          # Verify proxy is working
           sleep 2 # Give squid a moment to start
+          curl -I -x http://localhost:3128 https://www.example.com/ || echo "WARNING: Proxy test failed!"
 
       - name: Run Test
         env:
@@ -189,10 +199,10 @@ jobs:
         if: success() || failure()
         run: |
           echo "Squid Cache Statistics:"
-          squidclient -h localhost cache info | grep 'Hit\|Miss'
-          cat /tmp/squid-cache.log
+          squidclient -h localhost cache info | grep 'Hit\|Miss' || echo "Unable to get squid stats"
+          cat /tmp/squid-cache.log || echo "No cache log found"
           # Stop the squid service
-          pkill squid || true
+          service squid stop || pkill squid || true
           # Remove proxy environment variables
           echo "HTTP_PROXY=" >> $GITHUB_ENV
           echo "HTTPS_PROXY=" >> $GITHUB_ENV
