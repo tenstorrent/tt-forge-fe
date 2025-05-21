@@ -26,6 +26,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -186,14 +187,16 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
         TestCollection(
             operators=TestParamsData.operator,
             input_sources=TestCollectionCommon.all.input_sources,
             input_shapes=TestCollectionCommon.all.input_shapes,
             criteria=lambda test_vector: test_vector.kwargs is None,
             failing_reason=FailingReasons.COMPILATION_FAILED,
-            skip_reason="This test is expected to fail because the max operator is not supported for 'torch.max(input)' way of usage",
-        )
+            # skip_reason="This test is expected to fail because the max operator is not supported for 'torch.max(input)' way of usage",
+            skip_reason=FailingReasons.COMPILATION_FAILED,
+        ),
     ],
 )
 

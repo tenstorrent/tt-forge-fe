@@ -222,6 +222,7 @@ class TestCollectionData:
             "add",  #                   #00
             "div",  #                   #01
             # "divide",  #              #02     - Alias for div.
+            "remainder",  #             #12
             "mul",  #                   #03
             # "multiply",  #            #04     - Alias for mul.
             "sub",  #                   #05
@@ -254,7 +255,7 @@ class TestCollectionData:
             "logaddexp",  #             #09                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp']
             "logaddexp2",  #            #10                         - NotImplementedError: The following operators are not implemented: ['aten::logaddexp2']
             "nextafter",  #             #11                         - NotImplementedError: The following operators are not implemented: ['aten::nextafter']
-            "remainder",  #             #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const
+            # "remainder",  #             #12                         - AssertionError: Encountered unsupported op types. Check error logs for more details         # working with model const
             "fmax",  #                  #13                         - NotImplementedError: The following operators are not implemented: ['aten::fmax']
             "fmin",  #                  #14                         - NotImplementedError: The following operators are not implemented: ['aten::fmin']
             "eq",  #                    #15                         E       RuntimeError: Unsupported operation for lowering from TTForge to TTIR: equal          # working with model const
@@ -265,9 +266,11 @@ class TestCollectionData:
 
     implemented_const_eval = TestCollection(
         operators=[
+            "atan2",
+            "arctan2",
             "floor_divide",
             "fmod",
-            "remainder",
+            # "remainder",
             "eq",
             "ne",
             "le",
@@ -453,6 +456,10 @@ class TestPlansData:
         VerifyUtils=DivVerifyUtils,
     )
 
+    remainder: TestPlan = BinaryTestPlanBuilder.build_test_plan(
+        "remainder", value_range=ValueRanges.SMALL, quick_mix=False
+    )
+
     ge: TestPlan = BinaryTestPlanBuilder.build_test_plan("ge", value_range=ValueRanges.SMALL, quick_mix=False)
 
     ne: TestPlan = BinaryTestPlanBuilder.build_test_plan("ne", value_range=ValueRanges.SMALL, quick_mix=False)
@@ -483,6 +490,17 @@ class TestPlansData:
                 operators=TestCollectionData.not_implemented.operators,
                 failing_reason=FailingReasons.NOT_IMPLEMENTED,
             ),
+            TestCollection(
+                operators=TestCollectionData.bitwise.operators,
+                failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+            ),
+            TestCollection(
+                operators=[
+                    "eq",
+                ],
+                # Raises different exception than other operators
+                failing_reason=FailingReasons.DTYPE_MISMATCH,
+            ),
             # Not implemented operators for CONST_EVAL_PASS
             # 10 operators are implemented for CONST_EVAL_PASS the are not for other input sources
             TestCollection(
@@ -508,5 +526,6 @@ def get_test_plans() -> List[Union[TestPlan, TestSuite]]:
         TestPlansData.mul,
         TestPlansData.div,
         TestPlansData.ge,
+        TestPlansData.remainder,
         TestPlansData.not_implemented,
     ]

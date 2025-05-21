@@ -26,6 +26,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -157,32 +158,33 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        # Failed automatic value checker:
-        TestCollection(
-            input_sources=[InputSource.FROM_HOST],
-            kwargs=[
-                {"repeats": 7, "dim": 3},
-            ],
-            dev_data_formats=[
-                forge.DataFormat.Int8,
-                forge.DataFormat.Int32,
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # Unsupported special cases when dim = 0:
-        TestCollection(
-            criteria=lambda test_vector: test_vector.kwargs is not None
-            and "dim" in test_vector.kwargs
-            and test_vector.kwargs["dim"] is None,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # To large repeats inference failed:
-        TestCollection(
-            kwargs=[
-                {"repeats": 58, "dim": 2},
-            ],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operator),
+        # # Failed automatic value checker:
+        # TestCollection(
+        #     input_sources=[InputSource.FROM_HOST],
+        #     kwargs=[
+        #         {"repeats": 7, "dim": 3},
+        #     ],
+        #     dev_data_formats=[
+        #         forge.DataFormat.Int8,
+        #         forge.DataFormat.Int32,
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # Unsupported special cases when dim = 0:
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.kwargs is not None
+        #     and "dim" in test_vector.kwargs
+        #     and test_vector.kwargs["dim"] is None,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # To large repeats inference failed:
+        # TestCollection(
+        #     kwargs=[
+        #         {"repeats": 58, "dim": 2},
+        #     ],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
     ],
 )
 
