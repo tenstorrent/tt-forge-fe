@@ -2,6 +2,8 @@ name: Model Analysis
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "pchandrasekaran/update_model_analysis_workflow" ]
 
 jobs:
 
@@ -9,8 +11,18 @@ jobs:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
 
-  model-analysis:
+  build:
     needs: docker-build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      build: "Release"
+
+  model-analysis:
+    needs:
+      - docker-build
+      - build
     runs-on: tt-beta-ubuntu-2204-n150-large-stable
     timeout-minutes: 5760 # Set job execution time to 4 days(default: 6 hours)
 
@@ -46,9 +58,12 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-            submodules: recursive
-            fetch-depth: 0 # Fetch all history and tags
-            token: ${{ env.GITHUB_TOKEN }}
+          sparse-checkout: |
+            env/
+            forge/test
+            pytest.ini
+            conftest.py
+            .test_durations
 
       # Clean everything from submodules (needed to avoid issues
       # with cmake generated files leftover from previous builds)
@@ -57,11 +72,24 @@ jobs:
             git submodule foreach --recursive git clean -ffdx
             git submodule foreach --recursive git reset --hard
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+      - name: Find and download forge wheel
+        uses: dawidd6/action-download-artifact@v9
         with:
-          create-symlink: true
-          key: model-analysis-${{ runner.os }}
+          github_token: ${{ env.GITHUB_TOKEN }}
+          workflow_conclusion: success
+          workflow_search: true
+          workflow: on-nightly.yml
+          name: forge-wheel
+          repo: tenstorrent/tt-forge-fe
+          check_artifacts: true
+          search_artifacts: true
+
+      - name: Install wheel
+        shell: bash
+        run: |
+          source env/activate
+          pip install tvm*.whl --force-reinstall
+          pip install forge*.whl --force-reinstall
 
       - name: Set environment variables
         shell: bash
@@ -72,25 +100,10 @@ jobs:
               echo "$line" >> $GITHUB_ENV
             done
 
-      - name: Build
-        shell: bash
-        run: |
-          source env/activate
-          cmake -G Ninja \
-          -B ${{ steps.strings.outputs.build-output-dir }} \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_C_COMPILER=clang \
-          -DCMAKE_CXX_COMPILER=clang++ \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-          cmake --build ${{ steps.strings.outputs.build-output-dir }}
-
       - name: Generate Models Ops test
         shell: bash
         run: |
           source env/activate
-          apt-get update
-          apt install -y libgl1 libglx-mesa0
           set -o pipefail # Ensures that the exit code reflects the first command that fails
           python scripts/model_analysis/generate_models_ops_test.py \
             --test_directory_or_file_path ${{ env.TEST_DIR_OR_FILE_PATH }} \
