@@ -10,7 +10,7 @@ import forge
 from forge.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 from test.utils import download_model
 
@@ -24,7 +24,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet(forge_property_recorder, variant):
 
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.JAX,
         model="resnet",
         variant="50",

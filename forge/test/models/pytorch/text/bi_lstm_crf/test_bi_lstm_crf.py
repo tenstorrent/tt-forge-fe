@@ -22,7 +22,7 @@ from test.models.pytorch.text.bi_lstm_crf.model_utils.model import get_model
 def test_birnn_crf(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,

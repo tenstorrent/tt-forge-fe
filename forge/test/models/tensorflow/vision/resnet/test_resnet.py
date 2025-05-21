@@ -7,7 +7,7 @@ import pytest
 from tensorflow.keras.applications import ResNet50
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -19,7 +19,7 @@ from test.models.tensorflow.vision.resnet.model_utils.image_utils import get_sam
 def test_resnet_tensorflow(forge_property_recorder):
 
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.TENSORFLOW,
         model="resnet",
         variant="resnet50",

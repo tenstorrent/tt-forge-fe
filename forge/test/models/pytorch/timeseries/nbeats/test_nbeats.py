@@ -4,7 +4,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.timeseries.nbeats.model_utils.dataset import (
@@ -22,7 +22,7 @@ from test.models.pytorch.timeseries.nbeats.model_utils.model import (
 @pytest.mark.parametrize("variant", ["seasionality_basis"])
 def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -55,7 +55,7 @@ def test_nbeats_with_seasonality_basis(forge_property_recorder, variant):
 def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -81,7 +81,7 @@ def test_nbeats_with_generic_basis(forge_property_recorder, variant):
 def test_nbeats_with_trend_basis(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="nbeats", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 

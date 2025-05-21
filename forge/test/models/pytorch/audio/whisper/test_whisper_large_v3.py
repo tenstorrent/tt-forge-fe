@@ -42,7 +42,7 @@ class Wrapper(torch.nn.Module):
 def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="whisper",
         variant=variant,

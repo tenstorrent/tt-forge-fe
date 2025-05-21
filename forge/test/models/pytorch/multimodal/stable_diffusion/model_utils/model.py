@@ -405,7 +405,7 @@ def denoising_loop(
             # noise_pred_0 = pipeline(latent_model_input.detach()[0:1],timestep_.detach()[0:1],prompt_embeds.detach()[0:1],)
 
             inputs = [latent_model_input.detach()[0:1], timestep_.detach()[0:1], prompt_embeds.detach()[0:1]]
-            module_name = forge_property_recorder.record_model_properties(
+            module_name = record_model_properties(
                 framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"1_{i}"
             )
             compiled_model = forge.compile(
@@ -416,7 +416,7 @@ def denoising_loop(
             # sanity
             # noise_pred_1 = pipeline(latent_model_input.detach()[1:2],timestep_.detach()[1:2],prompt_embeds.detach()[1:2],)
             inputs = [latent_model_input.detach()[1:2], timestep_.detach()[1:2], prompt_embeds.detach()[1:2]]
-            module_name = forge_property_recorder.record_model_properties(
+            module_name = record_model_properties(
                 framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"2_{i}"
             )
             compiled_model = forge.compile(

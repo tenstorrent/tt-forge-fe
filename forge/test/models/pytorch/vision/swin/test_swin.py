@@ -40,7 +40,7 @@ from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_
 )
 def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -86,7 +86,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
 )
 def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -125,7 +125,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
 def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -155,7 +155,7 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
 def test_swin_v2_tiny_masked(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,
@@ -203,7 +203,7 @@ variants = [
 def test_swin_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="swin",
         variant=variant,

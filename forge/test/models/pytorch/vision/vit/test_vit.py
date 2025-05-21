@@ -42,7 +42,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,
@@ -95,7 +95,7 @@ variants = [
 def test_vit_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vit",
         variant=variant,

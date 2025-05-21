@@ -684,60 +684,6 @@ class ForgePropertyHandler:
         for property_name, property_value in cleaned_property_store.items():
             record_property(property_name, property_value)
 
-    def record_model_properties(
-        self,
-        framework: Framework,
-        model: str,
-        task: Task,
-        source: Source,
-        variant: str = "base",
-        suffix: str | None = None,
-        group: ModelGroup = ModelGroup.GENERALITY,
-        priority: ModelPriority = ModelPriority.P2,
-    ) -> str:
-        """
-        Records model properties and generates a module name and stores it.
-
-        Args:
-            framework: The framework used (e.g., pt,tf, etc.)
-            model: The model name (e.g., bert)
-            variant: The model variant (e.g., bert-base-uncased)
-            task: The task type (e.g., qa,mlm, etc.)
-            source: The model source (e.g., hf,torchhub etc.)
-            suffix: Optional suffix to append to the module name
-            group: The model group
-            priority: The model priority
-
-        Returns:
-            The generated module name
-        """
-
-        # Record individual properties
-        self.add("tags.model_info.framework", framework.full)
-        self.add("tags.model_info.model_arch", model)
-        self.add("tags.model_info.variant_name", variant)
-        self.add("tags.model_info.task", task.full)
-        self.add("tags.model_info.source", source.full)
-
-        # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
-        # Leaving it as it is for now.
-        # self.add("tags.model_info.priority", priority.value)
-        # self.add("tags.model_info.group", group.value)
-
-        self.add("group", group.value)
-        self.add("tags.group", group.value)
-        self.add("priority", priority.value)
-
-        # Build and return the module name
-        module_name = build_module_name(
-            framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
-        )
-
-        # Record model_name
-        self.add("tags.model_name", module_name)
-
-        return module_name
-
 
 # Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
 forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var")
@@ -874,3 +820,60 @@ def record_pcc_and_atol(self, pcc: float, atol: float):
 
     fph.add("tags.pcc", pcc)
     fph.add("tags.atol", atol)
+
+
+def record_model_properties(
+    framework: Framework,
+    model: str,
+    task: Task,
+    source: Source,
+    variant: str = "base",
+    suffix: str | None = None,
+    group: ModelGroup = ModelGroup.GENERALITY,
+    priority: ModelPriority = ModelPriority.P2,
+) -> str:
+    """
+    Records model properties and generates a module name and stores it.
+
+    Args:
+        framework: The framework used (e.g., pt,tf, etc.)
+        model: The model name (e.g., bert)
+        variant: The model variant (e.g., bert-base-uncased)
+        task: The task type (e.g., qa,mlm, etc.)
+        source: The model source (e.g., hf,torchhub etc.)
+        suffix: Optional suffix to append to the module name
+        group: The model group
+        priority: The model priority
+
+    Returns:
+        The generated module name
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    # Record individual properties
+    fph.add("tags.model_info.framework", framework.full)
+    fph.add("tags.model_info.model_arch", model)
+    fph.add("tags.model_info.variant_name", variant)
+    fph.add("tags.model_info.task", task.full)
+    fph.add("tags.model_info.source", source.full)
+
+    # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
+    # Leaving it as it is for now.
+    # self.add("tags.model_info.priority", priority.value)
+    # self.add("tags.model_info.group", group.value)
+
+    fph.add("group", group.value)
+    fph.add("tags.group", group.value)
+    fph.add("priority", priority.value)
+
+    # Build and return the module name
+    module_name = build_module_name(
+        framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+    )
+
+    # Record model_name
+    fph.add("tags.model_name", module_name)
+
+    return module_name

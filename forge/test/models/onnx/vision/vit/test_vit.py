@@ -8,7 +8,7 @@ import onnx
 import forge
 from transformers import ViTForImageClassification
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 
 
 variants = [
@@ -26,7 +26,7 @@ def test_vit_classify_224(forge_property_recorder, variant, forge_tmp_path):
     priority = ModelPriority.P1 if variant in ["google/vit-base-patch16-224"] else ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="vit_base",
         variant=variant,

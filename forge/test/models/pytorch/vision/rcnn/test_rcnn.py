@@ -9,7 +9,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 
@@ -18,7 +18,7 @@ from forge.verify.verify import verify
 @pytest.mark.nightly
 def test_rcnn_pytorch(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
 
@@ -73,7 +73,7 @@ def test_rcnn_pytorch(forge_property_recorder):
         inputs = [rect_transform.unsqueeze(0)]
 
         # Record Forge Property
-        module_name = forge_property_recorder.record_model_properties(
+        module_name = record_model_properties(
             framework=Framework.PYTORCH,
             model="rcnn",
             suffix=f"rect_{idx}",

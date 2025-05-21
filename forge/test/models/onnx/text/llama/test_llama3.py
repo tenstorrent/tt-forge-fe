@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 import subprocess
@@ -152,7 +152,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
 def test_llama3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 

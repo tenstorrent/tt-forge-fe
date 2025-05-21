@@ -30,7 +30,7 @@ variants = ["urchade/gliner_multi-v2.1"]
 def test_gliner(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="Gliner",
         variant=variant,

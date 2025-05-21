@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["densenet121"]
 
@@ -23,7 +23,7 @@ variants = ["densenet121"]
 @pytest.mark.nightly
 def test_densenet_pd(variant, forge_property_recorder):
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="densenet",
         variant=variant[8:],

@@ -41,7 +41,7 @@ def test_llava(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="llava",
         variant=variant,

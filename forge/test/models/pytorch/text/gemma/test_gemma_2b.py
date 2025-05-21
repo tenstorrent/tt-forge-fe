@@ -32,7 +32,7 @@ def test_gemma_2b(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 48 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,
@@ -99,7 +99,7 @@ def test_gemma_2b(forge_property_recorder, variant):
 def test_gemma_pytorch_v2(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,

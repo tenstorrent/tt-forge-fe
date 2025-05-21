@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = [
     "t5-small",
@@ -23,7 +23,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_t5_conditional_generation(forge_property_recorder, variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="t5",
         variant=variant[3:],

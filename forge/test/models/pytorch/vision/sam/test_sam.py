@@ -29,7 +29,7 @@ def test_sam(forge_property_recorder, variant):
     group = ModelGroup.RED if variant == "facebook/sam-vit-base" else ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="sam",
         variant=variant,

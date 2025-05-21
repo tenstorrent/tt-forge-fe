@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 
@@ -27,7 +27,7 @@ variants = ["microsoft/phi-1"]
 def test_phi_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="phi1",
         variant=variant,

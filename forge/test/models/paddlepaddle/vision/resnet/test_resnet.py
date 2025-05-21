@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = [
     "resnet18",
@@ -29,7 +29,7 @@ variants = [
 @pytest.mark.nightly
 def test_resnet_pd(variant, forge_property_recorder):
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="resnet",
         variant=variant[6:],

@@ -9,7 +9,7 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
@@ -21,7 +21,7 @@ from test.models.pytorch.vision.ssd300_resnet50.model_utils.image_utils import (
 @pytest.mark.xfail
 def test_pytorch_ssd300_resnet50(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="ssd300_resnet50", source=Source.TORCH_HUB, task=Task.IMAGE_CLASSIFICATION
     )
 

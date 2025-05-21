@@ -36,7 +36,7 @@ from test.utils import download_model
 @pytest.mark.push
 def test_mobilenetv2_basic(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant="basic",
@@ -86,7 +86,7 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -131,7 +131,7 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -178,7 +178,7 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -233,7 +233,7 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 def test_mobilenetv2_timm(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,
@@ -299,7 +299,7 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnetv2",
         variant=variant,
@@ -335,7 +335,7 @@ variants_with_weights = {
 def test_mobilenetv2_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv2",
         variant=variant,

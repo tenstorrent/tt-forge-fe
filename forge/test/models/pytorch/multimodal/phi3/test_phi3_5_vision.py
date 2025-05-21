@@ -32,7 +32,7 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 def test_phi3_5_vision(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3_5_vision",
         variant=variant,

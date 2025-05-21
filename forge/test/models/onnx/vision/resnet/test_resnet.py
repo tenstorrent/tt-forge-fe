@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 
 variants = [
@@ -33,7 +33,7 @@ def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_ver
     random.seed(0)
 
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="resnet",
         variant="50",

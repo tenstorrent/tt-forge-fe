@@ -5,7 +5,7 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.utils import fetch_model, yolov5_loader
@@ -37,7 +37,7 @@ size = [
 def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
@@ -83,7 +83,7 @@ size = [
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
@@ -128,7 +128,7 @@ size = [
 def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant="yolov5" + size,
@@ -157,7 +157,7 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
 def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_v5",
         variant=variant,

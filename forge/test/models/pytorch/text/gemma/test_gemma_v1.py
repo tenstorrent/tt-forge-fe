@@ -35,7 +35,7 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
 def test_gemma_pytorch_v1(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,

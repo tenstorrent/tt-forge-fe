@@ -5,7 +5,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.monodepth2.model_utils.utils import (
@@ -30,7 +30,7 @@ variants = [
 @pytest.mark.parametrize("variant", variants)
 def test_monodepth2(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="monodepth2",
         variant=variant,

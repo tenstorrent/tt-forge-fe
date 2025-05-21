@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 from paddlenlp.transformers import AlbertForMaskedLM, AlbertTokenizer
 
@@ -22,7 +22,7 @@ inputs = [["一，[MASK]，三，四"]]
 @pytest.mark.parametrize("input", inputs)
 def test_albert_maskedlm(forge_property_recorder, variant, input):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="albert",
         variant=variant[7:],

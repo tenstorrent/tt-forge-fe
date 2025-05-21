@@ -13,7 +13,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["openai/clip-vit-base-patch16"]
 
@@ -23,7 +23,7 @@ variants = ["openai/clip-vit-base-patch16"]
 @pytest.mark.parametrize("variant", variants)
 def test_clip_text(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="clip_text",
         variant=variant,
@@ -55,7 +55,7 @@ def test_clip_text(variant, forge_property_recorder):
 @pytest.mark.parametrize("variant", variants)
 def test_clip_vision(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="clip_vision",
         variant=variant,
@@ -87,7 +87,7 @@ def test_clip_vision(variant, forge_property_recorder):
 @pytest.mark.xfail()
 def test_clip(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="clip",
         variant=variant,

@@ -15,7 +15,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["microsoft/speecht5_asr"]
 
@@ -25,7 +25,7 @@ variants = ["microsoft/speecht5_asr"]
 @pytest.mark.parametrize("variant", variants)
 def test_speecht5_text_to_speech(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="speecht5",
         variant=variant,

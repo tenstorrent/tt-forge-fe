@@ -13,7 +13,7 @@ from datasets import load_dataset
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.autoencoder.model_utils.conv_autoencoder import ConvAE
@@ -26,7 +26,7 @@ from test.models.pytorch.vision.autoencoder.model_utils.linear_autoencoder impor
 @pytest.mark.xfail
 def test_conv_ae_pytorch(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
     )
 
@@ -74,7 +74,7 @@ def test_conv_ae_pytorch(forge_property_recorder):
 @pytest.mark.nightly
 def test_linear_ae_pytorch(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="autoencoder",
         variant="linear",

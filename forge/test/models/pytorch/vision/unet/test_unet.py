@@ -50,7 +50,7 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 @pytest.mark.nightly
 def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="cityscape",
@@ -137,7 +137,7 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 def test_unet_qubvel_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="qubvel",
@@ -203,7 +203,7 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 def test_unet_torchhub_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
@@ -232,7 +232,7 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
 def test_unet_carvana(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet_carvana",
         source=Source.GITHUB,

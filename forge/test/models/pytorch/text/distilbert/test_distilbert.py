@@ -11,7 +11,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -29,7 +29,7 @@ variants = [
 def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
@@ -70,7 +70,7 @@ def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
 def test_distilbert_question_answering_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
@@ -117,7 +117,7 @@ def test_distilbert_question_answering_pytorch(forge_property_recorder, variant)
 def test_distilbert_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="distilbert",
         variant=variant,
@@ -158,7 +158,7 @@ def test_distilbert_sequence_classification_pytorch(forge_property_recorder, var
 def test_distilbert_token_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="distilbert",
         variant=variant,

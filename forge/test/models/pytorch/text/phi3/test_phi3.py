@@ -92,7 +92,7 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3",
         variant=variant,
@@ -151,7 +151,7 @@ def test_phi3_token_classification(forge_property_recorder, variant):
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3",
         variant=variant,
@@ -193,7 +193,7 @@ def test_phi3_token_classification(forge_property_recorder, variant):
 def test_phi3_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi3",
         variant=variant,

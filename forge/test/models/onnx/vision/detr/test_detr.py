@@ -12,7 +12,7 @@ import torch
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 from test.models.models_utils import preprocess_input_data
 
 
@@ -21,7 +21,7 @@ from test.models.models_utils import preprocess_input_data
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50"])
 def test_detr_detection_onnx(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="detr",
         variant=variant,
@@ -62,7 +62,7 @@ def test_detr_detection_onnx(forge_property_recorder, variant, forge_tmp_path):
 @pytest.mark.parametrize("variant", ["facebook/detr-resnet-50-panoptic"])
 def test_detr_segmentation_onnx(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="detr",
         variant=variant,

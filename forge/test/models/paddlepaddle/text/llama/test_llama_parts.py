@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["facebook/llama-7b"]
 

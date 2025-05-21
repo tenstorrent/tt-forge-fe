@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
@@ -29,7 +29,7 @@ opset_versions = [17]
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_bert_masked_lm_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,
@@ -81,7 +81,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, forge_tm
     pytest.skip("Transient failure - Out of memory due to other tests in CI pipeline")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,
@@ -142,7 +142,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, forge_tm
 def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="bert",
         variant=variant,

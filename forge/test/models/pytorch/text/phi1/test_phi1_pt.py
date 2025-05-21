@@ -30,7 +30,7 @@ variants = ["microsoft/phi-1"]
 def test_phi_causal_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1",
         variant=variant,
@@ -66,7 +66,7 @@ def test_phi_causal_lm_pytorch(forge_property_recorder, variant):
 def test_phi_token_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1",
         variant=variant,
@@ -99,7 +99,7 @@ def test_phi_token_classification_pytorch(forge_property_recorder, variant):
 def test_phi_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1",
         variant=variant,

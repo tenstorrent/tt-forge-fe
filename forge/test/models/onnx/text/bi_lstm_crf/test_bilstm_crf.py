@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.text.bi_lstm_crf.model_utils.model import get_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 
 
 @pytest.mark.nightly

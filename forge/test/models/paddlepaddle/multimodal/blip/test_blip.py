@@ -14,7 +14,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["Salesforce/blip-image-captioning-base"]
 
@@ -23,7 +23,7 @@ variants = ["Salesforce/blip-image-captioning-base"]
 @pytest.mark.parametrize("variant", variants)
 def test_blip_text(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="blip_text",
         variant=variant,
@@ -55,7 +55,7 @@ def test_blip_text(variant, forge_property_recorder):
 @pytest.mark.parametrize("variant", variants)
 def test_blip_vision(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="blip_vision",
         variant=variant,
@@ -87,7 +87,7 @@ def test_blip_vision(variant, forge_property_recorder):
 @pytest.mark.parametrize("variant", variants)
 def test_blip(variant, forge_property_recorder):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="blip",
         variant=variant,

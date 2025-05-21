@@ -48,7 +48,7 @@ class DetrWrapper(torch.nn.Module):
 )
 def test_detr_detection(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,
@@ -96,7 +96,7 @@ def test_detr_detection(forge_property_recorder, variant):
 def test_detr_segmentation(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,

@@ -8,7 +8,7 @@ import onnx
 
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 
@@ -25,7 +25,7 @@ from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="sam",
         variant=variant,

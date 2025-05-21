@@ -8,7 +8,7 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -46,7 +46,7 @@ class densenet_xray_wrapper(nn.Module):
 def test_densenet_121_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -94,7 +94,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
 )
 def test_densenet_161_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -127,7 +127,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
 )
 def test_densenet_169_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,
@@ -158,7 +158,7 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="densenet",
         variant=variant,

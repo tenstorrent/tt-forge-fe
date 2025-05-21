@@ -14,7 +14,7 @@ import forge
 
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 
 
 @pytest.mark.skip(reason="Segmentation Fault at run_mlir_compiler compilation stage")
@@ -23,7 +23,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
@@ -64,7 +64,7 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
 def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,
@@ -107,7 +107,7 @@ variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
 def test_swin_torchvision(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="swin",
         variant=variant,

@@ -15,7 +15,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["ernie-1.0"]
 
@@ -24,7 +24,7 @@ variants = ["ernie-1.0"]
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_for_sequence_classification(forge_property_recorder, variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],
@@ -57,7 +57,7 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_maskedlm(forge_property_recorder, variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],
@@ -95,7 +95,7 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", variants)
 def test_ernie_question_answering(forge_property_recorder, variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="ernie",
         variant=variant[6:],

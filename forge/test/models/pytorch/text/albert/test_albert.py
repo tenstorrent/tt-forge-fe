@@ -13,7 +13,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
@@ -40,7 +40,7 @@ params = [
 def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="albert",
         variant=f"{size}_{variant}",
@@ -112,7 +112,7 @@ params = [
 def test_albert_token_classification_pytorch(forge_property_recorder, size, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="albert",
         variant=f"{size}_{variant}",
@@ -179,7 +179,7 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
 def test_albert_question_answering_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="albert",
         variant=variant,
@@ -214,7 +214,7 @@ def test_albert_question_answering_pytorch(forge_property_recorder, variant):
 def test_albert_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="albert",
         variant=variant,

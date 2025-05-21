@@ -51,7 +51,7 @@ def test_phi2_clm(forge_property_recorder, variant):
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi2",
         variant=variant,
@@ -117,7 +117,7 @@ variants = [
 def test_phi2_token_classification(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi2",
         variant=variant,
@@ -171,7 +171,7 @@ variants = [
 def test_phi2_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi2",
         variant=variant,

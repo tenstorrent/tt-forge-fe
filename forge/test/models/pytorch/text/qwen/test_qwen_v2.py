@@ -63,7 +63,7 @@ def test_qwen_clm(forge_property_recorder, variant):
         group = ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="qwen_v2",
         variant=variant,
@@ -103,7 +103,7 @@ def test_qwen2_token_classification(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="qwen_v2",
         variant=variant,

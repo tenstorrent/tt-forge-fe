@@ -11,14 +11,14 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import mobilenet_v1
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient failure: Causing seg faults while building Metal kernels")
 def test_mobilenetv1_basic(forge_property_recorder):
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="mobilenetv1",
         variant="basic",

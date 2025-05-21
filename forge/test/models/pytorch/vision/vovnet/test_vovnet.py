@@ -50,7 +50,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,
@@ -108,7 +108,7 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
     variant = "vovnet39"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet_v1",
         variant=variant,
@@ -150,7 +150,7 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
     variant = "vovnet_v1_57"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,
@@ -202,7 +202,7 @@ variants = [
 def test_vovnet_timm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,

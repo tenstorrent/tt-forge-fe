@@ -30,7 +30,7 @@ def test_yolo_world_inference(forge_property_recorder):
     model_url = "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-worldv2.pt"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="yolo_world",
         variant="default",

@@ -17,7 +17,7 @@ from vgg_pytorch import VGG
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -41,7 +41,7 @@ variants = [
 def test_vgg_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
@@ -108,7 +108,7 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
 def test_vgg_19_hf_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
     )
 
@@ -182,7 +182,7 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     variant = "vgg19_bn"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
     )
 
@@ -207,7 +207,7 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
 def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vgg",
         variant="vgg19_bn",
@@ -278,7 +278,7 @@ variants = [
 def test_vgg_torchvision(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vgg",
         variant=variant,

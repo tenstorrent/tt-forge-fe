@@ -7,7 +7,7 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import DepricatedVerifyConfig, verify
 
 from test.models.pytorch.vision.mgp_str_base.model_utils.utils import (
@@ -35,7 +35,7 @@ class Wrapper(torch.nn.Module):
 def test_mgp_scene_text_recognition(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mgp",
         variant=variant,

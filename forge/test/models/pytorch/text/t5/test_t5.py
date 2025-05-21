@@ -6,7 +6,7 @@ import torch
 from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -46,7 +46,7 @@ def test_t5_generation(forge_property_recorder, variant):
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 

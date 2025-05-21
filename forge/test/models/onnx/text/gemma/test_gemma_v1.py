@@ -8,7 +8,7 @@ import forge
 from forge.verify.verify import verify
 from test.utils import download_model
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 import onnx
 import torch
 
@@ -32,7 +32,7 @@ import torch
 def test_gemma_v1_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX, model="gemma", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 

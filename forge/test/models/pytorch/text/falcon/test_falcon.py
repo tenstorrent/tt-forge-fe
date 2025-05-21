@@ -19,7 +19,7 @@ def test_falcon(forge_property_recorder, variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
@@ -86,7 +86,7 @@ def test_falcon_3(forge_property_recorder, variant):
         group = ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="falcon3",
         variant=variant,

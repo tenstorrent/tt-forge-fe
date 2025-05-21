@@ -160,7 +160,7 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         group = ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="llama3",
         variant=variant,
@@ -271,7 +271,7 @@ variants = [
 def test_llama3_sequence_classification(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="llama3",
         variant=variant,

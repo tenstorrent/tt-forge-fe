@@ -9,7 +9,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.model_utils.utils import (
@@ -25,7 +25,7 @@ from test.utils import download_model
 @pytest.mark.parametrize("variant", ["resnext50_32x4d"])
 def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.TORCH_HUB,
@@ -60,7 +60,7 @@ def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
 @pytest.mark.parametrize("variant", ["resnext101_32x8d"])
 def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.TORCH_HUB,
@@ -95,7 +95,7 @@ def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
 def test_resnext_101_32x8d_fb_wsl_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.TORCH_HUB,
@@ -135,7 +135,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(forge_property_recorder, variant):
 def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.OSMR,
@@ -174,7 +174,7 @@ def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
 def test_resnext_26_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.OSMR,
@@ -213,7 +213,7 @@ def test_resnext_26_osmr_pytorch(forge_property_recorder, variant):
 def test_resnext_50_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.OSMR,
@@ -252,7 +252,7 @@ def test_resnext_50_osmr_pytorch(forge_property_recorder, variant):
 def test_resnext_101_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="resnext",
         source=Source.OSMR,

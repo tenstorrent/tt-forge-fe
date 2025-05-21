@@ -10,7 +10,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.model_utils.utils import (
@@ -25,7 +25,7 @@ from test.utils import download_model
 @pytest.mark.push
 def test_mobilenetv1_basic(forge_property_recorder):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenet_v1",
         variant="basic",
@@ -77,7 +77,7 @@ def test_mobilenetv1_192(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnet_v1",
         variant=variant,
@@ -124,7 +124,7 @@ def test_mobilenetv1_224(forge_property_recorder, variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilnet_v1",
         variant=variant,
@@ -159,7 +159,7 @@ variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
 def test_mobilenet_v1_timm(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenet_v1",
         variant=variant,

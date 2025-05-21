@@ -31,7 +31,7 @@ from test.utils import download_model
 @pytest.mark.push
 def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
@@ -114,7 +114,7 @@ variants = [
 def test_bert_question_answering_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
@@ -172,7 +172,7 @@ def generate_model_bert_seqcls_hf_pytorch(variant):
 def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,
@@ -222,7 +222,7 @@ def generate_model_bert_tkcls_hf_pytorch(variant):
 def test_bert_token_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,
@@ -260,7 +260,7 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
 def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="bert",
         variant=variant,

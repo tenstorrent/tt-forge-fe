@@ -30,7 +30,7 @@ from yolox.exp import get_exp
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
@@ -51,7 +51,7 @@ variants = [
 def test_yolox_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="yolox", variant=variant, source=Source.TORCH_HUB, task=Task.OBJECT_DETECTION
     )
 
