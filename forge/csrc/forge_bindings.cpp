@@ -55,15 +55,6 @@ PYBIND11_MODULE(_C, m)
 
     m.attr("k_dim") = py::int_(passes::k_dim);
 
-    py::enum_<tt::ARCH>(m, "Arch")
-        .value("JAWBRIDGE", tt::ARCH::JAWBRIDGE)
-        .value("GRAYSKULL", tt::ARCH::GRAYSKULL)
-        .value("WORMHOLE", tt::ARCH::WORMHOLE)
-        .value("WORMHOLE_B0", tt::ARCH::WORMHOLE_B0)
-        .value("BLACKHOLE", tt::ARCH::BLACKHOLE)
-        .value("Invalid", tt::ARCH::Invalid)
-        .export_values();
-
     py::enum_<tt::DataFormat>(m, "DataFormat")
         .value("Float32", tt::DataFormat::Float32)
         .value("Float16", tt::DataFormat::Float16)

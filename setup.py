@@ -41,11 +41,12 @@ class CMakeBuild(build_ext):
             str(build_dir),
             "-DCMAKE_BUILD_TYPE=Release",
             "-DCMAKE_INSTALL_PREFIX=" + str(install_dir),
-            "-DCMAKE_C_COMPILER=clang",
-            "-DCMAKE_CXX_COMPILER=clang++",
+            "-DCMAKE_C_COMPILER=clang-17",
+            "-DCMAKE_CXX_COMPILER=clang++-17",
             "-DTTMLIR_RUNTIME_DEBUG=OFF",
             "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
             "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+            "-DTTFORGE_ENABLE_DEVICE_PROFILING=ON",
         ]
 
         self.spawn(["cmake", *cmake_args])
@@ -76,8 +77,24 @@ version = "0.1." + date + "+dev." + short_hash
 
 forge_c = TTExtension("forge")
 
-# Find packages as before
+# Find all python packages that we want to install - skip test packages.
 packages = [p for p in find_packages("forge") if not p.startswith("test")]
+print(f"Found forge packages: {packages}")
+
+# Find all python packages in ttnn - skip test packages.
+ttnn_packages = find_packages(
+    where="../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn",
+    exclude=["ttnn.examples", "ttnn.examples.*", "test"],
+)
+print(f"Found ttnn packages: {ttnn_packages}")
+
+# Find all python packages in tt_metal - skip test packages.
+ttmetal_packages = find_packages(
+    where="../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal", exclude=["test"]
+)
+print(f"Found tt_metal packages: {ttmetal_packages}")
+
+packages = packages + ttnn_packages + ttmetal_packages
 
 
 setup(
@@ -85,7 +102,13 @@ setup(
     version=version,
     install_requires=requirements,
     packages=packages,
-    package_dir={"forge": "forge/forge"},
+    package_dir={
+        "forge": "forge/forge",
+        "ttnn": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/ttnn",
+        "tracy": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/tracy",
+        "tt_lib": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/tt_lib",
+        "tools": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/tools",
+    },
     ext_modules=[forge_c],
     cmdclass={"build_ext": CMakeBuild},
     long_description=long_description,
