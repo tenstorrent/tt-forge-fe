@@ -705,7 +705,6 @@ def test_avg_pool2d(forge_property_recorder):
 
 @pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
 @pytest.mark.parametrize("padding", [0, 1])
-@pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
 @pytest.mark.push
 def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     class AvgPool2d(nn.Module):
