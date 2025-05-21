@@ -42,7 +42,7 @@ class StableDiffusionXLWrapper(torch.nn.Module):
 def test_stable_diffusion_generation(variant, forge_tmp_path):
     # Build Module Name
     module_name = record_model_properties(
-        framework=Framework.PYTORCH,
+        framework=Framework.ONNX,
         model=ModelArch.STABLEDIFFUSION,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
