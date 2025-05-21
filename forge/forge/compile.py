@@ -39,7 +39,7 @@ import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
 from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
-
+from forge.tensor import TensorFromPytorch
 
 LAST_SUCCESSFUL_STAGE = None
 
@@ -165,13 +165,11 @@ def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Di
             run_backward = True
             break
 
-    if not losses or run_backward:
+    if losses is None:
+        losses = _generate_random_losses(outputs)
 
-        if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs)
-
-        if run_backward:
-            _run_pytorch_backward(outputs, device, losses)
+    if run_backward:
+        _run_pytorch_backward(outputs, losses)
 
     return losses
 
@@ -307,14 +305,11 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
             and current_stage != CompileDepth.PRE_LOWERING_PASS
             and current_stage != CompileDepth.POST_PATTERN_MATCHER
         )
-
         if (
             verify_cfg.verify_all or (verify_cfg.verify_last and should_early_stop_compilation) or should_verify
         ) and can_verify:
-            in_training = context.compiler_cfg.enable_training and current_stage.value >= CompileDepth.AUTOGRAD.value
             do_verify(
                 current_stage.name.lower(),
-                in_training,
                 context.graph,
                 context.inputs,
                 context.parameter_dict,
@@ -325,6 +320,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 False,
                 losses=context.losses,
                 targets=context.targets,
+                optimizer=context.optimizer,
             )
 
         if should_early_stop_compilation:
@@ -719,7 +715,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     context.input_grads = []
 
     context.parameter_dict = {}
-    for module in context.modules:
+    for module in modules_:
         if isinstance(module, forge.module.Module):
             for p in module.get_parameters():
                 context.parameter_dict[p.get_name()] = p.value(is_forge=False)
@@ -860,6 +856,21 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     return next_stage
 
 
+def append_losses_to_inputs(
+    inputs: Union[TensorFromPytorch, List[TensorFromPytorch]], losses: List[torch.Tensor]
+) -> List[torch.Tensor]:
+    # Ensure inputs is a list
+    if isinstance(inputs, TensorFromPytorch):
+        inputs = [inputs]
+    inputs = [input.value() for input in inputs]
+
+    # Append losses if they exist
+    if losses is not None:
+        inputs.extend(losses)
+
+    return inputs
+
+
 def run_autograd_pass(context: CompileContext) -> CompileDepth:
     """
     Runs autograd pass.
@@ -884,6 +895,9 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
 
     optimizer = None
     if context.optimizer_on_device():
+        #  Set optimizer parameters from module, because we need optimizer parameters in intermediate verification.
+        module_params = context.modules[0].get_parameters()
+        context.optimizer.set_parameters_to_optimize(module_params)
         # If we should run the optimizer on the device, pass it so that the autograd engine can create the optimizer graph.
         optimizer = context.optimizer
 
@@ -895,13 +909,13 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     # GOLDEN:
-    # context.losses = calculate_grads(outputs, dev, intermediate_tensors, False, context.losses)
+    context.losses = calculate_grads(outputs, intermediate_tensors, False, context.losses)
+    # Append losses to inputs, because we need losses for calculating backward gradients.
+    # Loss is one of the inputs of backward graph.
+    context.inputs = append_losses_to_inputs(context.inputs, context.losses)
 
-    # Record calculated input grads from the previous do_verify call and save so that we don't keep re-calculating and
-    # accumulating on each verification call
-    context.input_grads = [
-        i.value().grad for i in context.inputs if i.value().requires_grad and i.value().grad is not None
-    ]
+    # Gradients of input activations, if they are trainable (require grad)
+    context.input_grads = [i.grad for i in context.inputs if i.requires_grad and i.grad is not None]
 
     return CompileDepth.POST_AUTOGRAD_PASS
 
@@ -937,9 +951,6 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
 
     dump_graph(graph, graph_name, "post_autograd_passes")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
-    # TODO: training is dependent on TTDevice.py which is removed
-    if compiler_cfg.enable_training:
-        calculate_grads(outputs, dev, intermediate_tensors, False, losses)
 
     if compiler_cfg.enable_consteval:
         return CompileDepth.CONSTEVAL_GRAPH
