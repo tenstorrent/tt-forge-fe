@@ -498,35 +498,6 @@ class ForgePropertyHandler:
         """
         self.add("tags.model_name", model_name)
 
-    def record_pcc(self, pcc: float):
-        """
-        Records the PCC metric in the tags.
-
-        Args:
-            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-        """
-        self.add("tags.pcc", pcc)
-
-    def record_atol(self, atol: float):
-        """
-        Records the atol (absolute tolerance) values in the tags.
-
-        Args:
-            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-        """
-        self.add("tags.atol", atol)
-
-    def record_pcc_and_atol(self, pcc: float, atol: float):
-        """
-        Records both PCC and atol values in the tags.
-
-        Args:
-            pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-            atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-        """
-        self.record_pcc(pcc)
-        self.record_atol(atol)
-
     def record_execution_depth(self, execution_depth: ExecutionDepth):
         """
         Records the execution depth (as bringup_status) in the tags.
@@ -867,3 +838,47 @@ def record_flatbuffer_details(binary_json_str: str):
 
         fph.add("tags.inputs", inputs["forward"])
         fph.add("tags.outputs", outputs["forward"])
+
+
+def record_pcc(self, pcc: float):
+    """
+    Records the PCC metric in the tags.
+
+    Args:
+        pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    fph.add("tags.pcc", pcc)
+
+
+def record_atol(self, atol: float):
+    """
+    Records the atol (absolute tolerance) values in the tags.
+
+    Args:
+        atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    fph.add("tags.atol", atol)
+
+
+def record_pcc_and_atol(self, pcc: float, atol: float):
+    """
+    Records both PCC and atol values in the tags.
+
+    Args:
+        pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
+        atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    fph.add("tags.pcc", pcc)
+    fph.add("tags.atol", atol)

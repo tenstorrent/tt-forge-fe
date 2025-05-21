@@ -30,7 +30,14 @@ from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage, record_execution, record_verify_config
+from forge.forge_property_utils import (
+    ForgePropertyHandler,
+    ExecutionStage,
+    record_execution,
+    record_verify_config,
+    record_pcc,
+    record_atol,
+)
 
 
 def _generate_random_losses(outputs, is_forge):
@@ -445,9 +452,9 @@ def verify(
     if forge_property_handler is not None:
         pcc, atol = determine_consistency_limits(fw_out, co_out)
         if pcc is not None:
-            forge_property_handler.record_pcc(pcc=pcc)
+            record_pcc(pcc=pcc)
         if atol is not None:
-            forge_property_handler.record_atol(atol=atol)
+            record_atol(atol=atol)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
