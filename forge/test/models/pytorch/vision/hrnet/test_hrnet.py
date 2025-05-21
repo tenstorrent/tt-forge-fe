@@ -14,6 +14,8 @@ from timm.data.transforms_factory import create_transform
 from torchvision import transforms
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
@@ -60,7 +62,7 @@ def generate_model_hrnet_imgcls_osmr_pytorch(variant):
         input_batch = torch.rand(1, 3, 224, 224)
     print(input_batch.shape)
 
-    return model, [input_batch], {}
+    return model.to(torch.bfloat16), [input_batch.to(torch.bfloat16)], {}
 
 
 variants = [
@@ -100,15 +102,20 @@ def test_hrnet_osmr_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
         variant,
     )
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
@@ -154,7 +161,7 @@ def generate_model_hrnet_imgcls_timm_pytorch(variant):
         input_tensor = torch.rand(1, 3, 224, 224)
     print(input_tensor.shape)
 
-    return model, [input_tensor], {}
+    return model.to(torch.bfloat16), [input_tensor.to(torch.bfloat16)], {}
 
 
 variants = [
@@ -163,23 +170,23 @@ variants = [
     pytest.param("hrnet_w18"),
     pytest.param("hrnet_w30"),
     pytest.param(
-        "hrnetv2_w32",
+        "hrnet_w32",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w40",
+        "hrnet_w40",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w44",
+        "hrnet_w44",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w48",
+        "hrnet_w48",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
-        "hrnetv2_w64",
+        "hrnet_w64",
         marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
     pytest.param(
@@ -198,15 +205,20 @@ def test_hrnet_timm_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(
         variant,
     )
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

@@ -5,10 +5,9 @@ Following page describes how to build the project on your local machine.
 ## Prerequisites
 Main project dependencies are:
 1. Clang 17
-1. Ninja
-1. CMake 3.20 or higher
-1. Git LFS
-1. Python 3.10 or higher
+2. Ninja
+3. CMake 3.20 or higher
+4. Python 3.10 or higher
 
 On Ubuntu 22.04 systems, you can install these dependencies using the following commands:
 ```sh
@@ -27,14 +26,11 @@ sudo apt remove cmake -y
 pip3 install cmake --upgrade
 cmake --version
 
-# Install Git LFS
-sudo apt install git-lfs
-
 # Check Python version
 python3 --version
 ```
 
-## Build environment
+## Building the Environment
 This is one off step to build the toolchain and create virtual environment for `tt-forge-fe`.Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
 
 First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see [Useful build environment variables](#useful-build-environment-flags) section below).
@@ -94,7 +90,7 @@ cmake --build build
 > - `-DCMAKE_CXX_COMPILER_LAUNCHER=ccache`  - Use [`ccache`](https://ccache.dev/) to speed up re-builds
 > - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`         - Build runtime debug tools (more logging, debug environment flags)
 
-### Incremental build
+### Incremental Building
 If you have made changes to the C++ sources (of the `tt-forge-fe` compiler, `tt-mlir` or `tt-metal`), you might want to do an incremental build to save time. This can be done by running the following command:
 ```sh
 # If you are not already inside the virtual environment, activate it
@@ -105,7 +101,7 @@ cmake --build build -- install_ttforge
 
 This will build `tt-forge-fe` C++ sources and the dependencies (`tt-mlir`, `tt-metal`) and install them in the virtual environment.
 
-## Build docs
+## Building the Docs
 
 To build documentation `mdbook` is required, see the installation guide [here](./tools.md#mdbook).
 
@@ -155,7 +151,7 @@ To ensure a clean build environment, follow these steps to remove existing build
 4. `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
 5. `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
 
-## Run tt-forge-fe using Docker image
+## Run tt-forge-fe Using a Docker Image
 
 We provide two Docker images for tt-forge-fe:
 

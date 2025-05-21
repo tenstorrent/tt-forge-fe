@@ -30,12 +30,11 @@ def test_chineseclip_text(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip",
+        model="chineseclip_text",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPTextModel.from_pretrained(variant)
@@ -63,12 +62,11 @@ def test_chineseclip_vision(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip",
+        model="chineseclip_vision",
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPVisionModel.from_pretrained(variant)
@@ -103,9 +101,8 @@ def test_chineseclip(variant, forge_property_recorder):
         model="chineseclip",
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.IMAGE_TEXT_PAIRING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPModel.from_pretrained(variant)

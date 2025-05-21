@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
@@ -27,7 +27,7 @@ opset_versions = [17]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_version):
+def test_bert_masked_lm_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -36,7 +36,6 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -58,7 +57,7 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
 
     # Export model to ONNX
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
-    onnx_path = f"{tmp_path}/bert_masked_lm.onnx"
+    onnx_path = f"{forge_tmp_path}/bert_masked_lm.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
 
     # Load ONNX model
@@ -78,7 +77,7 @@ def test_bert_masked_lm_onnx(forge_property_recorder, variant, tmp_path, opset_v
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["phiyodr/bert-large-finetuned-squad2"])
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path, opset_version):
+def test_bert_question_answering_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
     pytest.skip("Transient failure - Out of memory due to other tests in CI pipeline")
 
     # Record Forge Property
@@ -89,7 +88,6 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -121,7 +119,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
 
     # Export model to ONNX
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
-    onnx_path = f"{tmp_path}/bert_qa.onnx"
+    onnx_path = f"{forge_tmp_path}/bert_qa.onnx"
     torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
 
     # Load ONNX model
@@ -141,7 +139,7 @@ def test_bert_question_answering_onnx(forge_property_recorder, variant, tmp_path
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
-def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, tmp_path):
+def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -150,11 +148,8 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)
@@ -167,7 +162,7 @@ def test_bert_sentence_embedding_generation_onnx(forge_property_recorder, varian
     inputs = [encoded_input["input_ids"], encoded_input["attention_mask"], encoded_input["token_type_ids"]]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/bert_sentence_emb_gen.onnx"
+    onnx_path = f"{forge_tmp_path}/bert_sentence_emb_gen.onnx"
     torch.onnx.export(framework_model, (inputs[0], inputs[1], inputs[2]), onnx_path, opset_version=17)
 
     # Load ONNX model

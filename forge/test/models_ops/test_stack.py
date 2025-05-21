@@ -33,6 +33,17 @@ class Stack1(ForgeModule):
         return stack_output_1
 
 
+class Stack2(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5):
+        stack_output_1 = forge.op.Stack(
+            "", stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5, axis=-1
+        )
+        return stack_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -50,13 +61,13 @@ forge_modules_and_shapes_dtypes_list = [
                 ((2, 1, 2048), torch.float32),
             ],
             {
-                "model_name": [
-                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
+                "model_names": [
                     "pt_stereo_facebook_musicgen_small_music_generation_hf",
+                    "pt_stereo_facebook_musicgen_large_music_generation_hf",
                     "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 ],
                 "pcc": 0.99,
-                "op_params": {"axis": "-3"},
+                "args": {"axis": "-3"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -65,14 +76,62 @@ forge_modules_and_shapes_dtypes_list = [
         Stack1,
         [((1, 256, 16, 16), torch.float32), ((1, 256, 16, 16), torch.float32)],
         {
-            "model_name": [
-                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
+            "model_names": [
                 "pt_codegen_salesforce_codegen_350m_nl_clm_hf",
                 "pt_codegen_salesforce_codegen_350m_mono_clm_hf",
+                "pt_codegen_salesforce_codegen_350m_multi_clm_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"axis": "-1"},
+            "args": {"axis": "-1"},
         },
+    ),
+    (
+        Stack2,
+        [
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
     ),
 ]
 
@@ -89,12 +148,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

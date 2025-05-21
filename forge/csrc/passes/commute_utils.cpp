@@ -188,9 +188,6 @@ bool are_compatible_ops(
     graphlib::Shape *updated_shape,
     bool check_inverse)
 {
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function is_tm = eval_module.attr("is_tm");
-
     if (a == b)
         return (not check_inverse);
 
@@ -206,10 +203,9 @@ bool are_compatible_ops(
     }
 
     // Inverse tms have to be the same op, except for unsqueeze/squeeze case
-    bool are_compatible_tms =
-        is_tm(a->op_type()).cast<bool>() and
-        ((a->op_name() == b->op_name()) or ((a->op_name() == "unsqueeze" and b->op_name() == "squeeze") or
-                                            (a->op_name() == "squeeze" and b->op_name() == "unsqueeze")));
+    bool are_compatible_tms = a->is_tm() and ((a->op_name() == b->op_name()) or
+                                              ((a->op_name() == "unsqueeze" and b->op_name() == "squeeze") or
+                                               (a->op_name() == "squeeze" and b->op_name() == "unsqueeze")));
 
     if (not are_compatible_tms)
         return false;
@@ -858,7 +854,7 @@ bool can_commute_through_reduce(
 
 bool commute_through_eltwise(graphlib::OpNode *op, graphlib::Shape *commute_shape, graphlib::OpType *golden_transform)
 {
-    TT_ASSERT(is_elementwise(op), "op must be an eltwise op");
+    TT_ASSERT(op->is_eltwise(), "op must be an eltwise op");
     op->set_shape(*commute_shape);
     op->add_golden_transform(*golden_transform);
     return true;
@@ -871,13 +867,6 @@ bool commute_through_quantization(
     op->set_shape(*commute_shape);
     op->add_golden_transform(*golden_transform);
     return true;
-}
-
-bool is_elementwise(graphlib::OpNode *op)
-{
-    py::object eval_module = py::module_::import("forge.op.eval.forge");
-    py::function is_eltwise = eval_module.attr("is_eltwise");
-    return is_eltwise(op->op_type()).cast<bool>();
 }
 
 bool is_quantization_ops(graphlib::OpNode *op)
@@ -915,7 +904,7 @@ bool can_commute_past_op(
         return can_commute;
     }
 
-    return (is_elementwise(op) and op->op_name() != "interleave") or is_quantization_ops(op);
+    return (op->is_eltwise() and op->op_name() != "interleave") or is_quantization_ops(op);
 }
 
 /**

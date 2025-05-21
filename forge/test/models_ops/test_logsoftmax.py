@@ -31,12 +31,10 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Logsoftmax0,
-            [((1, 10), torch.float32)],
-            {"model_name": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "op_params": {"dim": "1"}},
-        ),
+    (
+        Logsoftmax0,
+        [((1, 10), torch.float32)],
+        {"model_names": ["pt_mnist_base_img_cls_github"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
 ]
 
@@ -53,12 +51,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

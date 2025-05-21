@@ -8,7 +8,7 @@ import forge
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.deepseek_math.utils.model_utils import (
+from test.models.pytorch.multimodal.deepseek_math.model_utils.model_utils import (
     DeepSeekWrapper_decoder,
     download_model_and_tokenizer,
 )
@@ -43,6 +43,7 @@ def decode_on_cpu(model, tokenizer, input_ids, hidden_states, max_new_tokens):
     return input_ids, output_logits
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
 @pytest.mark.xfail
 def test_deepseek_prefil_on_device_decode_on_cpu(variant):

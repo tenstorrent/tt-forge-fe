@@ -8,6 +8,7 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
+from forge.verify import DepricatedVerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -446,6 +447,68 @@ def test_remainder(forge_property_recorder):
     inputs = [torch.rand(2, 32, 32), torch.rand(2, 32, 32)]
 
     framework_model = Remainder()
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@torch.jit.script
+def make_log_bucket_position(relative_pos, bucket_size: int):
+    mid = bucket_size // 2
+    abs_pos = relative_pos * mid
+    return abs_pos
+
+
+@pytest.mark.push
+@pytest.mark.parametrize("bucket_size", [5, 16, 127, 256, 513])
+def test_floordiv(bucket_size, forge_property_recorder):
+    class floordiv(nn.Module):
+        def __init__(self, bucket_size):
+            super().__init__()
+            self.bucket_size = bucket_size
+
+        def forward(self, x):
+            op = make_log_bucket_position(x, self.bucket_size)
+            return op
+
+    x = torch.randn(41, 41)
+    inputs = [x]
+
+    framework_model = floordiv(bucket_size)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        forge_property_handler=forge_property_recorder,
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (2, 2),
+        (3, 3),
+        (10, 10),
+        (2, 41, 41),
+        (8, 96, 96),
+    ],
+)
+@pytest.mark.xfail(
+    reason="NotImplementedError: The following operators are not implemented: ['aten::linalg_solve']"
+)  # https://github.com/tenstorrent/tt-forge-fe/issues/1991
+def test_linalg_solve(forge_property_recorder, shape):
+    class linalg_solve(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, a, b):
+            return torch.linalg.solve(a, b)
+
+    inputs = [torch.randn(*shape), torch.randn(*shape)]
+    framework_model = linalg_solve()
     compiled_model = forge.compile(
         framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )

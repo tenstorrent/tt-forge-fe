@@ -28,16 +28,13 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x"),
+    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-@pytest.mark.xfail
 def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
-    if size != "s":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -48,9 +45,6 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
         source=Source.TORCH_HUB,
         suffix="320x320",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -80,16 +74,13 @@ size = [
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
-    pytest.param("x", id="yolov5x"),
+    pytest.param("x", id="yolov5x", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("size", size)
 def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
-    if size != "s":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -100,9 +91,6 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
         source=Source.TORCH_HUB,
         suffix="640x640",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_yoloV5I640_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -137,10 +125,7 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-@pytest.mark.xfail
 def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
-    if size != "n":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -151,9 +136,6 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
         source=Source.TORCH_HUB,
         suffix="480x480",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_yoloV5I480_imgcls_torchhub_pytorch(
         "ultralytics/yolov5",
@@ -171,8 +153,8 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
+@pytest.mark.xfail
 def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -183,9 +165,6 @@ def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, var
         source=Source.TORCH_HUB,
         suffix="1280x1280",
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model = fetch_model(
         variant,

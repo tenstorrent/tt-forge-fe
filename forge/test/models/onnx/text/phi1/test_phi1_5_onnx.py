@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, PhiForCausalLM
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import build_optimum_cli_command
 
 from test.utils import download_model
@@ -20,7 +20,7 @@ variants = ["microsoft/phi-1_5"]
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
-def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
+def test_phi1_5_clm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -29,11 +29,8 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
+        priority=ModelPriority.P1,
     )
-
-    # Record model details
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, return_tensors="pt")
@@ -54,8 +51,8 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
     attn_mask = inputs["attention_mask"]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model
@@ -63,12 +60,12 @@ def test_phi1_5_clm_onnx(forge_property_recorder, variant, tmp_path):
 
     # passing model file instead of model proto due to size of the model(>2GB) - #https://github.com/onnx/onnx/issues/3775#issuecomment-943416925
     onnx.checker.check_model(onnx_path)
-    framework_model = forge.OnnxModule(module_name, onnx_model)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
     inputs = [input_ids, attn_mask]
     compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
+        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
     )
 
     # Model Verification

@@ -208,19 +208,19 @@ def test_take(forge_property_recorder, input_tensor_indices):
         pytest.param(
             (torch.tensor([0.0, 1.1, 0.0, 2.2, 0.0, 3.3], dtype=torch.float32), True),
             marks=pytest.mark.xfail(
-                reason=" AttributeError: <class 'tvm.relay.expr.Call'> has no attribute type_annotation"
+                reason="InternalError: Check failed: (pval != nullptr) is false: Cannot allocate memory symbolic tensor shape [T.Any()]"
             ),
         ),
         pytest.param(
             (torch.tensor([[0.0, 1.1], [2.2, 0.0], [0.0, 3.3]], dtype=torch.float32), True),
             marks=pytest.mark.xfail(
-                reason=" AttributeError: <class 'tvm.relay.expr.Call'> has no attribute type_annotation"
+                reason="InternalError: Check failed: (pval != nullptr) is false: Cannot allocate memory symbolic tensor shape [T.Any()]"
             ),
         ),
         pytest.param(
             (torch.tensor([[[0.0], [1.1]], [[2.2], [0.0]], [[0.0], [3.3]]], dtype=torch.float32), True),
             marks=pytest.mark.xfail(
-                reason=" AttributeError: <class 'tvm.relay.expr.Call'> has no attribute type_annotation"
+                reason="InternalError: Check failed: (pval != nullptr) is false: Cannot allocate memory symbolic tensor shape [T.Any()]"
             ),
         ),
         pytest.param(

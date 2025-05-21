@@ -8,7 +8,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodepth2.utils.utils import (
+from test.models.pytorch.vision.monodepth2.model_utils.utils import (
     download_model,
     load_input,
     load_model,
@@ -37,9 +37,6 @@ def test_monodepth2(forge_property_recorder, variant):
         source=Source.TORCHVISION,
         task=Task.DEPTH_PREDICTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # prepare model and input
     download_model(variant)

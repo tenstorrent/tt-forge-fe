@@ -26,7 +26,7 @@ from forge._C import (
     dump_graph,
     extract_unique_op_configuration,
 )
-from forge._C import ForgeGraphModule, GraphType, ExecutionDepth
+from forge._C import ForgeGraphModule, GraphType
 import forge._C.autograd as pyautograd
 import forge._C.graph as pygraph
 from forge._C.graph import Graph
@@ -238,10 +238,7 @@ def compile_main(
 
     if forge_property_handler is not None:
         forge_property_handler.record_compiler_config(compiler_cfg)
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.FAILED_FE_COMPILATION,
-            execution_stage=ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION,
-        )
+        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
         modules=modules,
@@ -415,7 +412,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         context.optimizer.link_module(compiled_module)
 
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
 
     logger.info("Compilation completed.")
 
@@ -692,7 +689,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
             modules_.append(module)
 
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
@@ -751,7 +748,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS)
 
     inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
         graph, compiler_cfg, compiler_cfg.fracture_groups
@@ -789,7 +786,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     graph = context.graph
     graph_name = context.graph_name
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_CONSTEVAL)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_CONSTEVAL)
 
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
@@ -841,13 +838,13 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS)
 
     run_optimization_graph_passes(graph)
     dump_graph(graph, graph_name, "optimized_graph")
 
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP)
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
     dump_graph(graph, graph_name, "decomposed_optimized_graph")
@@ -881,7 +878,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     graph, intermediate_tensors, outputs = context.graph, context.intermediate_tensors, context.outputs
 
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS)
 
     graph.set_training(True)
 
@@ -931,7 +928,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
         context.outputs,
     )
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP)
 
     inserted_node_id_mapping = run_post_autograd_graph_passes(graph, compiler_cfg)
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
@@ -967,7 +964,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph = context.graph
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_PRE_LOWERING)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_PRE_LOWERING)
 
     graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
@@ -992,7 +989,7 @@ def split_graph(context: CompileContext) -> CompileDepth:
     CompileDepth - next compile stage
     """
     if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
+        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
 
     assert context.graph is not None
     context.forge_module = forge._C.split_graph(context.graph)
@@ -1001,11 +998,21 @@ def split_graph(context: CompileContext) -> CompileDepth:
 
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    assert context.forge_module is not None
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution_stage(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+    forge_module, compiler_cfg, forge_property_handler = (
+        context.forge_module,
+        context.compiler_cfg,
+        context.forge_property_handler,
+    )
+    assert forge_module is not None
+    assert compiler_cfg is not None
 
-    context.compiled_binary = forge._C.run_mlir_compiler(context.forge_module, context.forge_property_handler)
+    if forge_property_handler is not None:
+        forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+
+    context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config)
+
+    if forge_property_handler is not None:
+        forge_property_handler.record_flatbuffer_details(context.compiled_binary.as_json())
 
     return CompileDepth.FINISH_COMPILE
 

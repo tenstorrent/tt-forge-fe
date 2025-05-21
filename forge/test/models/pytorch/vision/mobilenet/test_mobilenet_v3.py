@@ -12,10 +12,12 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.utils import (
+from test.models.pytorch.vision.mobilenet.model_utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
@@ -40,25 +42,26 @@ def test_mobilenetv3_basic(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model(variant)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-    # Inference
-    output = compiled_model(*inputs)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Post processing
-    post_processing(output)
+    post_processing(co_out)
 
 
 def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
@@ -86,7 +89,7 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
         )
         image_tensor = torch.rand(1, 3, 224, 224)
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
@@ -106,16 +109,20 @@ def test_mobilenetv3_timm(forge_property_recorder, variant):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetV3_imgcls_timm_pytorch(
         variant,
     )
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification

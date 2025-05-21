@@ -20,7 +20,7 @@ class Broadcast0(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=4096)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=256)
         return broadcast_output_1
 
 
@@ -29,7 +29,7 @@ class Broadcast1(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=12)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=32)
         return broadcast_output_1
 
 
@@ -38,7 +38,7 @@ class Broadcast2(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-4, shape=1)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-1, shape=4096)
         return broadcast_output_1
 
 
@@ -47,7 +47,7 @@ class Broadcast3(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
-        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=384)
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-3, shape=12)
         return broadcast_output_1
 
 
@@ -56,7 +56,25 @@ class Broadcast4(ForgeModule):
         super().__init__(name)
 
     def forward(self, broadcast_input_0):
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-4, shape=1)
+        return broadcast_output_1
+
+
+class Broadcast5(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, broadcast_input_0):
         broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=128)
+        return broadcast_output_1
+
+
+class Broadcast6(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, broadcast_input_0):
+        broadcast_output_1 = forge.op.Broadcast("", broadcast_input_0, dim=-2, shape=384)
         return broadcast_output_1
 
 
@@ -70,11 +88,14 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast0,
-            [((1, 596, 1), torch.bool)],
+            [((1, 1, 1, 256), torch.int64)],
             {
-                "model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "model_names": [
+                    "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                    "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"dim": "-1", "shape": "4096"},
+                "args": {"dim": "-2", "shape": "256"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
@@ -82,32 +103,159 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast1,
-            [((1, 1, 1, 384), torch.bool)],
+            [((64, 3, 64, 1), torch.float32)],
             {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "model_names": [
+                    "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                    "pt_swin_swin_v2_s_img_cls_torchvision",
+                    "pt_swin_swin_v2_t_img_cls_torchvision",
+                ],
                 "pcc": 0.99,
-                "op_params": {"dim": "-3", "shape": "12"},
+                "args": {"dim": "-1", "shape": "32"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Broadcast2,
-        [((1, 1, 1, 384), torch.bool)],
-        {
-            "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
-            "pcc": 0.99,
-            "op_params": {"dim": "-4", "shape": "1"},
-        },
+    pytest.param(
+        (
+            Broadcast1,
+            [((16, 6, 64, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                    "pt_swin_swin_v2_s_img_cls_torchvision",
+                    "pt_swin_swin_v2_t_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "32"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Broadcast1,
+            [((4, 12, 64, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                    "pt_swin_swin_v2_s_img_cls_torchvision",
+                    "pt_swin_swin_v2_t_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "32"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Broadcast1,
+            [((1, 24, 64, 1), torch.float32)],
+            {
+                "model_names": [
+                    "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                    "pt_swin_swin_v2_s_img_cls_torchvision",
+                    "pt_swin_swin_v2_t_img_cls_torchvision",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "32"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Broadcast2,
+            [((1, 596, 1), torch.bool)],
+            {
+                "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "4096"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     pytest.param(
         (
             Broadcast3,
+            [((1, 1, 1, 128), torch.bool)],
+            {
+                "model_names": [
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-3", "shape": "12"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    (
+        Broadcast4,
+        [((1, 1, 1, 128), torch.bool)],
+        {
+            "model_names": [
+                "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "shape": "1"},
+        },
+    ),
+    pytest.param(
+        (
+            Broadcast5,
+            [((1, 12, 1, 128), torch.bool)],
+            {
+                "model_names": [
+                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                    "pt_distilbert_distilbert_base_cased_mlm_hf",
+                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
+                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
+                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
+                ],
+                "pcc": 0.99,
+                "args": {"dim": "-2", "shape": "128"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Broadcast3,
+            [((1, 1, 1, 384), torch.bool)],
+            {
+                "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "pcc": 0.99,
+                "args": {"dim": "-3", "shape": "12"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    (
+        Broadcast4,
+        [((1, 1, 1, 384), torch.bool)],
+        {
+            "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "shape": "1"},
+        },
+    ),
+    pytest.param(
+        (
+            Broadcast6,
             [((1, 12, 1, 384), torch.bool)],
             {
-                "model_name": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
+                "model_names": ["pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-2", "shape": "384"},
+                "args": {"dim": "-2", "shape": "384"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
@@ -115,50 +263,47 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Broadcast1,
-            [((1, 1, 1, 128), torch.bool)],
+            [((64, 4, 64, 1), torch.float32)],
             {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                ],
+                "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-3", "shape": "12"},
+                "args": {"dim": "-1", "shape": "32"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
-    (
-        Broadcast2,
-        [((1, 1, 1, 128), torch.bool)],
-        {
-            "model_name": [
-                "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_distilbert_distilbert_base_cased_mlm_hf",
-                "pt_distilbert_distilbert_base_uncased_mlm_hf",
-            ],
-            "pcc": 0.99,
-            "op_params": {"dim": "-4", "shape": "1"},
-        },
+    pytest.param(
+        (
+            Broadcast1,
+            [((16, 8, 64, 1), torch.float32)],
+            {
+                "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "32"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
     ),
     pytest.param(
         (
-            Broadcast4,
-            [((1, 12, 1, 128), torch.bool)],
+            Broadcast1,
+            [((4, 16, 64, 1), torch.float32)],
             {
-                "model_name": [
-                    "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                    "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                    "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                    "pt_distilbert_distilbert_base_cased_mlm_hf",
-                    "pt_distilbert_distilbert_base_uncased_mlm_hf",
-                ],
+                "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
                 "pcc": 0.99,
-                "op_params": {"dim": "-2", "shape": "128"},
+                "args": {"dim": "-1", "shape": "32"},
+            },
+        ),
+        marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
+    ),
+    pytest.param(
+        (
+            Broadcast1,
+            [((1, 32, 64, 1), torch.float32)],
+            {
+                "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+                "pcc": 0.99,
+                "args": {"dim": "-1", "shape": "32"},
             },
         ),
         marks=[pytest.mark.xfail(reason="RuntimeError: Generated MLIR module failed verification.")],
@@ -178,12 +323,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

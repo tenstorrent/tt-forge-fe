@@ -28,26 +28,29 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         auto attrs = op->named_attrs();
         auto padding_variant = attrs["padding"];
 
-        if (std::get<std::string>(attrs["mode"]) != "constant")
+        if (std::get<int>(attrs["mode"]) != 0)  // "constant" mode
         {
             continue;
         }
 
         // Check if padding is already a vector of ints
+        // They should be in format [left, right] or [left, right, top, bottom]
         std::vector<int> *padding_vec = std::get_if<std::vector<int>>(&padding_variant);
         if (!padding_vec)
         {
-            // If not, make it a vector and populate with default padding values
-            padding_vec = new std::vector<int>(std::get<int>(attrs["pad_len"]), 0);
-            attrs["padding"] = *padding_vec;  // Update the "padding" in the attributes map
+            throw std::runtime_error("Padding is not a vector of ints");
         }
 
-        // Extract padding values, assuming the padding vector has at least 4 values
+        // Extract padding values
+        int left_pad = (*padding_vec)[0];
+        int right_pad = (*padding_vec)[1];
+        int top_pad = 0, bottom_pad = 0;
 
-        int top_pad = (*padding_vec)[-4];     // Top padding (index -4)
-        int bottom_pad = (*padding_vec)[-3];  // Bottom padding (index -3)
-        int left_pad = (*padding_vec)[-2];    // Left padding (index -2)
-        int right_pad = (*padding_vec)[-1];   // Right padding (index -1)
+        if (padding_vec->size() == 4)
+        {
+            top_pad = (*padding_vec)[2];
+            bottom_pad = (*padding_vec)[3];
+        }
 
         auto users = graph->users(node);
         bool all_users_are_conv2d = true;
@@ -83,7 +86,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
                 conv_padding_vec = new std::vector<int>(4, 0);  // Assuming 4 padding values (top, left, bottom, right)
                 conv_attrs["padding"] = *conv_padding_vec;      // Update the padding attribute
             }
-            // Adding up the pad values with the existing conv2d pad va;ues
+            // Adding up the pad values with the existing conv2d pad values
             (*conv_padding_vec)[0] += top_pad;     // Top
             (*conv_padding_vec)[1] += left_pad;    // Left
             (*conv_padding_vec)[2] += bottom_pad;  // Bottom

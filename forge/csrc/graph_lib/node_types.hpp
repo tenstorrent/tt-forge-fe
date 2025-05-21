@@ -599,6 +599,8 @@ class OpNode : public TaggedNode
     std::vector<OpType> const &get_golden_transforms() const { return golden_transforms; }
     std::vector<OpType> &get_golden_transforms() { return golden_transforms; }
 
+    bool is_eltwise() const;
+
     void set_golden_id(std::uint32_t golden_id)
     {
         has_golden_id_ = true;

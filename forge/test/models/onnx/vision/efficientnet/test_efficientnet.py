@@ -8,7 +8,7 @@ import onnx
 import torch
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
-from test.models.onnx.vision.utils import load_inputs
+from test.models.onnx.vision.vision_utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
@@ -34,7 +34,7 @@ params = [
 
 @pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
-def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
+def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -45,12 +45,6 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    if variant == "efficientnet_b0":
-        forge_property_recorder.record_group("red")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load efficientnet model
     model = timm.create_model(variant, pretrained=True)
 
@@ -60,7 +54,7 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     )
 
     inputs = load_inputs(img, model)
-    onnx_path = f"{tmp_path}/efficientnet.onnx"
+    onnx_path = f"{forge_tmp_path}/efficientnet.onnx"
     torch.onnx.export(model, inputs[0], onnx_path)
 
     # Load onnx model
@@ -69,7 +63,9 @@ def test_efficientnet_onnx(variant, forge_property_recorder, tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(onnx_model, inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(
+        onnx_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+    )
 
     pcc = 0.99
 

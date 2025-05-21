@@ -2,10 +2,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-from transformers import AutoTokenizer, PhiForCausalLM, PhiForTokenClassification
+from transformers import (
+    AutoModelForCausalLM,
+    AutoModelForSequenceClassification,
+    AutoModelForTokenClassification,
+    AutoTokenizer,
+)
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
+from forge.verify.verify import verify
 
 from test.utils import download_model
 
@@ -14,9 +26,7 @@ variants = ["microsoft/phi-4"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
-)
+@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
 def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -26,13 +36,12 @@ def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
 
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
-
     # Load tokenizer and model from HuggingFace
-    framework_model = download_model(PhiForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
+    framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, return_dict=False, use_cache=False)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model.eval()
 
@@ -52,9 +61,7 @@ def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
-)
+@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
 def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -66,11 +73,9 @@ def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     framework_model = download_model(
-        PhiForTokenClassification.from_pretrained, variant, return_dict=False, use_cache=False
+        AutoModelForTokenClassification.from_pretrained, variant, return_dict=False, use_cache=False
     )
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     framework_model.eval()
@@ -89,9 +94,7 @@ def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
-)
+@pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
 def test_phi_4_sequence_classification_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
@@ -103,13 +106,11 @@ def test_phi_4_sequence_classification_pytorch(forge_property_recorder, variant)
         source=Source.HUGGINGFACE,
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
     framework_model = download_model(
-        PhiForTokenClassification.from_pretrained, variant, return_dict=False, use_cache=False
+        AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False, use_cache=False
     )
     framework_model.eval()
 

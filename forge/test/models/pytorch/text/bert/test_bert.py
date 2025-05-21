@@ -13,10 +13,16 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.bert.utils.utils import mean_pooling
+from test.models.pytorch.text.bert.model_utils.utils import mean_pooling
 from test.utils import download_model
 
 
@@ -28,9 +34,6 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Bert tokenizer and model from HuggingFace
     tokenizer = BertTokenizer.from_pretrained(variant)
@@ -55,19 +58,16 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    output = compiled_model(*inputs)
-
     # post processing
-    logits = output[0]
+    logits = co_out[0]
     mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
@@ -118,9 +118,6 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
     framework_model.eval()
 
@@ -129,20 +126,17 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    output = compiled_model(*inputs)
-
     # post processing
-    start_logits = output[0]
-    end_logits = output[1]
+    start_logits = co_out[0]
+    end_logits = co_out[1]
 
     answer_start_index = start_logits.argmax()
     answer_end_index = end_logits.argmax()
@@ -186,9 +180,6 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_bert_seqcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -196,10 +187,10 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
-    co_out = compiled_model(*inputs)
+    # post processing
     predicted_value = co_out[0].argmax(-1).item()
 
     # Answer - "positive"
@@ -239,9 +230,6 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, sample_text, inputs, input_tokens = generate_model_bert_tkcls_hf_pytorch(variant)
 
     # Forge compile framework model
@@ -278,11 +266,9 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and tokenizer
     tokenizer = download_model(BertTokenizer.from_pretrained, variant)

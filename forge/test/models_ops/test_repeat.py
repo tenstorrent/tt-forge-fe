@@ -44,12 +44,14 @@ forge_modules_and_shapes_dtypes_list = [
         Repeat0,
         [((1, 100, 256), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
                 "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
                 "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
             ],
             "pcc": 0.99,
-            "op_params": {"repeats": "[1, 1, 1]"},
+            "args": {"repeats": "[1, 1, 1]"},
         },
     ),
     pytest.param(
@@ -57,9 +59,12 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 32, 107, 160), torch.float32)],
             {
-                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -69,9 +74,12 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 64, 54, 80), torch.float32)],
             {
-                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -81,9 +89,12 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 128, 27, 40), torch.float32)],
             {
-                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -93,9 +104,12 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 256, 14, 20), torch.float32)],
             {
-                "model_name": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
-                "op_params": {"repeats": "[1, 100, 1, 1, 1]"},
+                "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
         ),
         marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
@@ -115,12 +129,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [

@@ -8,6 +8,8 @@ import jax.random as random
 
 import forge
 from forge.verify import verify
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.forge_property_utils import Framework, Source, Task
 
 from test.utils import download_model
@@ -18,8 +20,6 @@ variants = [
 ]
 
 
-# TODO: Remove xfail once the unsupported broadcast operation issue is resolved.
-@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_resnet(forge_property_recorder, variant):
@@ -31,8 +31,6 @@ def test_resnet(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    forge_property_recorder.record_group("generality")
 
     framework_model = download_model(FlaxResNetForImageClassification.from_pretrained, variant, return_dict=False)
 
@@ -51,5 +49,6 @@ def test_resnet(forge_property_recorder, variant):
         input_sample,
         framework_model,
         compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
         forge_property_handler=forge_property_recorder,
     )

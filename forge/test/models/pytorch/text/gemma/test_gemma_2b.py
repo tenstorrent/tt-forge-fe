@@ -12,10 +12,10 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gemma.utils.model_utils import (
+from test.models.pytorch.text.gemma.model_utils.model_utils import (
     generate_no_cache,
     pad_inputs,
 )
@@ -39,9 +39,6 @@ def test_gemma_2b(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Random see for reproducibility
     torch.manual_seed(42)
@@ -103,12 +100,13 @@ def test_gemma_pytorch_v2(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)

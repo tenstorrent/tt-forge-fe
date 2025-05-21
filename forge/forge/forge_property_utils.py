@@ -10,7 +10,7 @@ from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
 from forge.config import CompilerConfig
-from forge._C import ExecutionDepth, DataFormat
+from forge._C import DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
@@ -57,6 +57,9 @@ class Task(BaseEnum):
     MASKED_IMAGE_MODELING = ("masked_img", "Masked Image Modeling")
     CONDITIONAL_GENERATION = ("cond_gen", "Conditional Generation")
     IMAGE_ENCODING = ("img_enc", "Image Encoding")
+    TEXT_ENCODING = ("text_enc", "Text Encoding")
+    IMAGE_TEXT_PAIRING = ("img_text_pairing", "Image Text Pairing")
+    IMAGE_CAPTIONING = ("img_captioning", "Image Captioning")
     VISUAL_BACKBONE = ("visual_bb", "Visual Backbone")
     DEPTH_ESTIMATION = ("depth_estimation", "Depth Estimation")
     SCENE_TEXT_RECOGNITION = ("scene_text_recognition", "Scene Text Recognition")
@@ -76,6 +79,7 @@ class Source(BaseEnum):
     GITHUB = ("github", "GitHub")
     PADDLE = ("paddlemodels", "Paddle Models")
     PADDLENLP = ("padlenlp", "PaddleNLP")
+    KERAS = ("keras", "Keras")
 
 
 def build_module_name(
@@ -124,6 +128,46 @@ class ExecutionStage(Enum):
     @classmethod
     def from_str(cls, value):
         return cls[value.upper()]
+
+
+class ExecutionDepth(Enum):
+    CI_FAILURE = auto()
+    FAILED_FE_COMPILATION = auto()
+    FAILED_TTMLIR_COMPILATION = auto()
+    FAILED_RUNTIME = auto()
+    INCORRECT_RESULT = auto()
+    PASSED = auto()
+
+    @classmethod
+    def to_str(cls, value):
+        return value.name
+
+    @classmethod
+    def from_str(cls, value):
+        return cls[value.upper()]
+
+    # fmt: off
+    @staticmethod
+    def from_exec_stage(exec_stage: ExecutionStage):
+        match exec_stage:
+            case ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION:
+                return ExecutionDepth.CI_FAILURE
+            case ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION | ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING | ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION | ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS \
+                | ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING | ExecutionStage.FAILED_FORGE_MODULE_GENERATION | ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS | ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS \
+                | ExecutionStage.FAILED_FORGE_CONSTEVAL | ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS | ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP | ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS \
+                | ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP | ExecutionStage.FAILED_FORGE_PRE_LOWERING | ExecutionStage.FAILED_FORGE_GRAPH_SPLIT:
+                return ExecutionDepth.FAILED_FE_COMPILATION
+            case ExecutionStage.FAILED_FORGE_MLIR_COMPILATION:
+                return ExecutionDepth.FAILED_TTMLIR_COMPILATION
+            case ExecutionStage.FAILED_TTNN_BINARY_EXECUTION:
+                return ExecutionDepth.FAILED_RUNTIME
+            case ExecutionStage.FAILED_VERIFICATION:
+                return ExecutionDepth.INCORRECT_RESULT
+            case ExecutionStage.PASSED:
+                return ExecutionDepth.PASSED
+            case _:
+                raise ValueError("Invalid ExecutionStage passed.")
+    # fmt: on
 
 
 @dataclass_json
@@ -257,6 +301,20 @@ class Config:
     verify: Dict[str, Any] = field(default_factory=lambda: dict())
 
 
+# Model group property that is part of a model info. With current repports we are using tags: 'group' and 'tags.group'.
+# If we want to add group there too, we would need to change how reporters read this info.
+class ModelGroup(StrEnum):
+    GENERALITY = "generality"
+    RED = "red"
+
+
+# Model priority property that is part of a model info. With current repports we are using tag: 'priority'.
+# If we want to add priority in model's info too, we would need to change how reporters read this info.
+class ModelPriority(StrEnum):
+    P1 = "P1"
+    P2 = "P2"
+
+
 @dataclass_json
 @dataclass
 class ModelInfo:
@@ -270,7 +328,7 @@ class ModelInfo:
 @dataclass_json
 @dataclass
 class Tags:
-    model_name: str = ""
+    model_name: Optional[str] = None
     bringup_status: str = ""
     execution_stage: str = ""
     pcc: Optional[float] = None
@@ -281,15 +339,15 @@ class Tags:
     model_info: Optional[ModelInfo] = None
     failure_category: str = ""
     refined_error_message: str = ""
-    group: str = ""
+    group: Optional[str] = None
 
 
 @dataclass_json
 @dataclass
 class ForgePropertyStore:
     owner: str = "tt-forge-fe"
-    group: str = ""
-    priority: str = ""
+    group: Optional[str] = None
+    priority: Optional[str] = None
     tags: Optional[Tags] = None
     config: Optional[Config] = None
 
@@ -428,30 +486,6 @@ class ForgePropertyHandler:
         # Fallback: return an empty dictionary if no dataclass instance can be created.
         return {}
 
-    def record_group(self, group: str):
-        """
-        Records the group property in the tags.
-
-        Args:
-            group (str): The group value to be recorded.
-        """
-        self.add("group", group)
-        self.add("tags.group", group)
-
-    def record_priority(self, priority: str):
-
-        """
-
-         Records the priority property in the tags.
-
-        Args:
-
-             priority (str): The priority value to be recorded.
-
-        """
-
-        self.add("priority", priority)
-
     def record_model_name(self, model_name: str):
         """
         Records the model name in the tags.
@@ -508,16 +542,15 @@ class ForgePropertyHandler:
         """
         self.add("tags.execution_stage", ExecutionStage.to_str(execution_stage))
 
-    def record_execution(self, execution_depth: ExecutionDepth, execution_stage: ExecutionStage):
+    def record_execution(self, execution_stage: ExecutionStage):
         """
         Records the execution depth and stage in the tags.
 
         Args:
-            execution_depth (ExecutionDepth): The execution depth value.
             execution_stage (ExecutionStage): The execution stage value.
         """
-        self.record_execution_depth(execution_depth)
         self.record_execution_stage(execution_stage)
+        self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
     def record_compiler_config(self, compiler_config: CompilerConfig):
         """
@@ -570,6 +603,12 @@ class ForgePropertyHandler:
         Args:
             binary_json_str (str): The JSON string representation of the flatbuffer binary.
         """
+
+        if self.get("tags.model_name"):
+            # For model tests, we don't want to record the flatbuffer details, since this
+            # results in a lot of data being recorded.
+            return
+
         binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
         binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
         binary_json = json.loads(binary_json_str)
@@ -665,23 +704,21 @@ class ForgePropertyHandler:
 
     def record_refined_error_message(self, refined_error_message: str):
         """
-        Records the refined error message in the tags if single op details recording is enabled.
+        Records the refined error message in the tags.
 
         Args:
             refined_error_message (str): The refined error message string.
         """
-        if self.record_single_op_details:
-            self.add("tags.refined_error_message", refined_error_message)
+        self.add("tags.refined_error_message", refined_error_message)
 
     def record_failure_category(self, failure_category: str):
         """
-        Records the failure category in the tags if single op details recording is enabled.
+        Records the failure category in the tags.
 
         Args:
             failure_category (str): The failure category string.
         """
-        if self.record_single_op_details:
-            self.add("tags.failure_category", failure_category)
+        self.add("tags.failure_category", failure_category)
 
     def to_dict(self):
         """
@@ -765,6 +802,8 @@ class ForgePropertyHandler:
         source: Source,
         variant: str = "base",
         suffix: str | None = None,
+        group: ModelGroup = ModelGroup.GENERALITY,
+        priority: ModelPriority = ModelPriority.P2,
     ) -> str:
         """
         Records model properties and generates a module name and stores it.
@@ -776,6 +815,8 @@ class ForgePropertyHandler:
             task: The task type (e.g., qa,mlm, etc.)
             source: The model source (e.g., hf,torchhub etc.)
             suffix: Optional suffix to append to the module name
+            group: The model group
+            priority: The model priority
 
         Returns:
             The generated module name
@@ -787,6 +828,15 @@ class ForgePropertyHandler:
         self.add("tags.model_info.variant_name", variant)
         self.add("tags.model_info.task", task.full)
         self.add("tags.model_info.source", source.full)
+
+        # This should also be tagged with: tags.model_info.<priority/group>, but it requires changes in reporter too.
+        # Leaving it as it is for now.
+        # self.add("tags.model_info.priority", priority.value)
+        # self.add("tags.model_info.group", group.value)
+
+        self.add("group", group.value)
+        self.add("tags.group", group.value)
+        self.add("priority", priority.value)
 
         # Build and return the module name
         module_name = build_module_name(

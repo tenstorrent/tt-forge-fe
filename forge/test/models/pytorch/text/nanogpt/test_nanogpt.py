@@ -25,10 +25,7 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "FinancialSupport/NanoGPT",
-            marks=pytest.mark.xfail,
-        ),
+        "FinancialSupport/NanoGPT",
     ],
 )
 def test_nanogpt_text_generation(forge_property_recorder, variant):
@@ -41,9 +38,6 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load the model
     tokenizer = AutoTokenizer.from_pretrained(variant)

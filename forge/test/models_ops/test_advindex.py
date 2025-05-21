@@ -18,26 +18,26 @@ import pytest
 class Advindex0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
+        self.add_constant("advindex0_const_1", shape=(4096,), dtype=torch.int64)
 
-    def forward(self, advindex_input_0, advindex_input_1):
-        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, advindex_input_1)
+    def forward(self, advindex_input_0):
+        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, self.get_constant("advindex0_const_1"))
         return advindex_output_1
 
 
 class Advindex1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("advindex1_const_1", shape=(1,), dtype=torch.int64)
 
-    def forward(self, advindex_input_0):
-        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, self.get_constant("advindex1_const_1"))
+    def forward(self, advindex_input_0, advindex_input_1):
+        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, advindex_input_1)
         return advindex_output_1
 
 
 class Advindex2(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("advindex2_const_1", shape=(38809,), dtype=torch.int64)
+        self.add_constant("advindex2_const_1", shape=(1,), dtype=torch.int64)
 
     def forward(self, advindex_input_0):
         advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, self.get_constant("advindex2_const_1"))
@@ -47,13 +47,10 @@ class Advindex2(ForgeModule):
 class Advindex3(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_parameter(
-            "advindex3.weight_0",
-            forge.Parameter(*(169, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
-        )
+        self.add_constant("advindex3_const_1", shape=(38809,), dtype=torch.int64)
 
-    def forward(self, advindex_input_1):
-        advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex3.weight_0"), advindex_input_1)
+    def forward(self, advindex_input_0):
+        advindex_output_1 = forge.op.AdvIndex("", advindex_input_0, self.get_constant("advindex3_const_1"))
         return advindex_output_1
 
 
@@ -62,7 +59,7 @@ class Advindex4(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex4.weight_0",
-            forge.Parameter(*(169, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 3), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
@@ -75,7 +72,7 @@ class Advindex5(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex5.weight_0",
-            forge.Parameter(*(169, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 6), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
@@ -88,11 +85,24 @@ class Advindex6(ForgeModule):
         super().__init__(name)
         self.add_parameter(
             "advindex6.weight_0",
-            forge.Parameter(*(169, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+            forge.Parameter(*(169, 12), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
         )
 
     def forward(self, advindex_input_1):
         advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex6.weight_0"), advindex_input_1)
+        return advindex_output_1
+
+
+class Advindex7(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+        self.add_parameter(
+            "advindex7.weight_0",
+            forge.Parameter(*(169, 24), requires_grad=True, dev_data_format=forge.DataFormat.Float32),
+        )
+
+    def forward(self, advindex_input_1):
+        advindex_output_1 = forge.op.AdvIndex("", self.get_parameter("advindex7.weight_0"), advindex_input_1)
         return advindex_output_1
 
 
@@ -105,64 +115,124 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Advindex0,
-        [((448, 384), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+        [((225, 3), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "max_int": 224,
+        },
     ),
     (
         Advindex0,
-        [((448, 1280), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+        [((225, 6), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "max_int": 224,
+        },
     ),
     (
         Advindex0,
-        [((448, 768), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+        [((225, 12), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "max_int": 224,
+        },
     ),
     (
         Advindex0,
-        [((448, 1024), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
-    ),
-    (
-        Advindex0,
-        [((448, 512), torch.float32), ((1, 1), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
-    ),
-    (
-        Advindex0,
-        [((448, 1280), torch.float32), ((1, 2), torch.int64)],
-        {"model_name": ["pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf"], "pcc": 0.99, "max_int": 447},
-    ),
-    pytest.param(
-        (
-            Advindex0,
-            [((2359296,), torch.float32), ((2441216,), torch.int32)],
-            {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
-        ),
-        marks=[pytest.mark.xfail(reason="RuntimeError: circular buffers grow beyond max L1 size")],
-    ),
-    (
-        Advindex0,
-        [((7, 2), torch.float32), ((1,), torch.int64)],
-        {"model_name": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99, "max_int": 6},
+        [((225, 24), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "max_int": 224,
+        },
     ),
     (
         Advindex1,
+        [((448, 512), torch.float32), ((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_base_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex1,
+        [((448, 384), torch.float32), ((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_tiny_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex1,
+        [((448, 768), torch.float32), ((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_small_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex1,
+        [((448, 1280), torch.float32), ((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_large_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex1,
+        [((448, 1024), torch.float32), ((1, 1), torch.int64)],
+        {"model_names": ["pt_whisper_openai_whisper_medium_speech_recognition_hf"], "pcc": 0.99, "max_int": 447},
+    ),
+    (
+        Advindex1,
+        [((448, 1280), torch.float32), ((1, 2), torch.int64)],
+        {
+            "model_names": [
+                "pt_whisper_openai_whisper_large_v3_clm_hf",
+                "pt_whisper_openai_whisper_large_v3_turbo_speech_translate_hf",
+            ],
+            "pcc": 0.99,
+            "max_int": 447,
+        },
+    ),
+    (
+        Advindex1,
+        [((2359296,), torch.float32), ((2441216,), torch.int32)],
+        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99, "max_int": 2359295},
+    ),
+    (
+        Advindex1,
+        [((7, 2), torch.float32), ((1,), torch.int64)],
+        {"model_names": ["pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf"], "pcc": 0.99, "max_int": 6},
+    ),
+    (
+        Advindex2,
         [((1, 2), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
                 "pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf",
                 "pt_phi2_microsoft_phi_2_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -170,17 +240,17 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Advindex0,
+        Advindex1,
         [((4, 2), torch.float32), ((1,), torch.int64)],
-        {"model_name": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 3},
+        {"model_names": ["pt_llama3_huggyllama_llama_7b_seq_cls_hf"], "pcc": 0.99, "max_int": 3},
     ),
     (
-        Advindex0,
+        Advindex1,
         [((32, 2), torch.float32), ((1,), torch.int64)],
         {
-            "model_name": [
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
+            "model_names": [
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
                 "pt_opt_facebook_opt_1_3b_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -189,102 +259,127 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Advindex1,
+        [((256, 2), torch.float32), ((1,), torch.int64)],
+        {"model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"], "pcc": 0.99, "max_int": 255},
+    ),
+    (
+        Advindex2,
         [((1, 1, 1024, 72), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
+                "pt_nbeats_seasionality_basis_clm_hf",
                 "pt_nbeats_generic_basis_clm_hf",
                 "pt_nbeats_trend_basis_clm_hf",
-                "pt_nbeats_seasionality_basis_clm_hf",
             ],
             "pcc": 0.99,
             "max_int": 0,
         },
     ),
     (
-        Advindex2,
-        [((732, 12), torch.float32)],
-        {"model_name": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
-    ),
-    (
-        Advindex2,
+        Advindex3,
         [((732, 16), torch.float32)],
-        {"model_name": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
-    ),
-    (
-        Advindex0,
-        [((169, 3), torch.float32), ((2401,), torch.int64)],
-        {
-            "model_name": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "max_int": 168,
-        },
-    ),
-    (
-        Advindex0,
-        [((169, 6), torch.float32), ((2401,), torch.int64)],
-        {
-            "model_name": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "max_int": 168,
-        },
-    ),
-    (
-        Advindex0,
-        [((169, 12), torch.float32), ((2401,), torch.int64)],
-        {
-            "model_name": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "max_int": 168,
-        },
-    ),
-    (
-        Advindex0,
-        [((169, 24), torch.float32), ((2401,), torch.int64)],
-        {
-            "model_name": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "max_int": 168,
-        },
-    ),
-    (
-        Advindex0,
-        [((169, 4), torch.float32), ((2401,), torch.int64)],
-        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
-    ),
-    (
-        Advindex0,
-        [((169, 8), torch.float32), ((2401,), torch.int64)],
-        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
-    ),
-    (
-        Advindex0,
-        [((169, 16), torch.float32), ((2401,), torch.int64)],
-        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
-    ),
-    (
-        Advindex0,
-        [((169, 32), torch.float32), ((2401,), torch.int64)],
-        {"model_name": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+        {"model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
     ),
     (
         Advindex3,
-        [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+        [((732, 12), torch.float32)],
+        {"model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"], "pcc": 0.99, "max_int": 731},
+    ),
+    (
+        Advindex1,
+        [((169, 3), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex1,
+        [((169, 6), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex1,
+        [((169, 12), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
+    ),
+    (
+        Advindex1,
+        [((169, 24), torch.float32), ((2401,), torch.int64)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "max_int": 168,
+        },
     ),
     (
         Advindex4,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
     (
         Advindex5,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
     ),
     (
         Advindex6,
         [((2401,), torch.int64)],
-        {"model_name": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex7,
+        [((2401,), torch.int64)],
+        {"model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex0,
+        [((225, 4), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 224},
+    ),
+    (
+        Advindex0,
+        [((225, 8), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 224},
+    ),
+    (
+        Advindex0,
+        [((225, 16), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 224},
+    ),
+    (
+        Advindex0,
+        [((225, 32), torch.float32)],
+        {"model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 224},
+    ),
+    (
+        Advindex1,
+        [((169, 4), torch.float32), ((2401,), torch.int64)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex1,
+        [((169, 8), torch.float32), ((2401,), torch.int64)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex1,
+        [((169, 16), torch.float32), ((2401,), torch.int64)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
+    ),
+    (
+        Advindex1,
+        [((169, 32), torch.float32), ((2401,), torch.int64)],
+        {"model_names": ["pt_swin_swin_b_img_cls_torchvision"], "pcc": 0.99, "max_int": 168},
     ),
 ]
 
@@ -302,12 +397,14 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
     max_int = metadata.pop("max_int")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
+        if metadata_name == "model_names":
             forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
+        elif metadata_name == "args":
             forge_property_recorder.record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     inputs = [
         Tensor.create_from_shape(operand_shape, operand_dtype, max_int=max_int)

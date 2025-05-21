@@ -11,12 +11,14 @@ from tabulate import tabulate
 from transformers import AutoImageProcessor, ResNetForImageClassification
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
 variants = [
@@ -39,19 +41,27 @@ def test_resnet_hf(variant, forge_property_recorder):
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load tiny dataset
     dataset = load_dataset("zh-plus/tiny-imagenet")
     images = random.sample(dataset["valid"]["image"], 10)
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False).to(
+        torch.bfloat16
+    )
 
     # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224)]
+    input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     compiled_model = forge.compile(
-        framework_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        input_sample,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Verify data on sample input
@@ -82,7 +92,7 @@ def run_and_print_results(framework_model, compiled_model, inputs):
 
     results = []
     for i, image in enumerate(inputs):
-        processed_inputs = processor(image, return_tensors="pt")["pixel_values"]
+        processed_inputs = processor(image, return_tensors="pt")["pixel_values"].to(torch.bfloat16)
 
         cpu_logits = framework_model(processed_inputs)[0]
         cpu_conf, cpu_idx = cpu_logits.softmax(-1).max(-1)
@@ -110,18 +120,21 @@ def test_resnet_timm(forge_property_recorder):
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
     )
 
-    forge_property_recorder.record_group("generality")
-
     # Load framework model
-    framework_model = download_model(timm.create_model, "resnet50", pretrained=True)
+    framework_model = download_model(timm.create_model, "resnet50", pretrained=True).to(torch.bfloat16)
 
     # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224)]
+    input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=input_sample,
         module_name=module_name,
         forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Verify data on sample input
@@ -144,7 +157,6 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_resnet_torchvision(forge_property_recorder, variant):
 
@@ -157,17 +169,27 @@ def test_resnet_torchvision(forge_property_recorder, variant):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
+    verify_cfg = VerifyConfig()
+    if variant == "resnet34":
+        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
+    )

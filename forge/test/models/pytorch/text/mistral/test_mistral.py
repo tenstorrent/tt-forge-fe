@@ -6,10 +6,10 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
 from test.utils import download_model
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -24,9 +24,6 @@ def test_mistral(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -71,11 +68,8 @@ def test_mistral_v0_3(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
