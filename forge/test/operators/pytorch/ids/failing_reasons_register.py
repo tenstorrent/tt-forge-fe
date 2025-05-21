@@ -86,7 +86,6 @@ class FailingReasonsRegister:
         ("sqrt", FailingReasons.SPECIAL_VALUES),
         ("squeeze", FailingReasons.COMPILATION_FAILED),
         ("squeeze", FailingReasons.INTERNAL_TVM_ERROR),
-        ("squeeze", FailingReasons.TVM_RUNTIME),
         ("sub", FailingReasons.DATA_MISMATCH),
         ("sub", FailingReasons.DTYPE_MISMATCH),
         ("sum", FailingReasons.DATA_MISMATCH),
