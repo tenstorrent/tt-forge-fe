@@ -13,13 +13,13 @@ import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.text.deepcogito.utils.model import get_input_model
+from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
 @pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
-def test_cogito_generation_onnx(forge_property_recorder, tmp_path, variant):
+def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
@@ -28,15 +28,14 @@ def test_cogito_generation_onnx(forge_property_recorder, tmp_path, variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     sample_inputs, framework_model = get_input_model(variant)
 
     # Export paths
-    temp_onnx = tmp_path / "temp_model.onnx"
-    final_onnx = tmp_path / "cogito.onnx"
-    external_data_file = tmp_path / "cogito.onnx.data"
+    temp_onnx = forge_tmp_path / "temp_model.onnx"
+    final_onnx = forge_tmp_path / "cogito.onnx"
+    external_data_file = forge_tmp_path / "cogito.onnx.data"
 
     # Export to ONNX
     torch.onnx.export(

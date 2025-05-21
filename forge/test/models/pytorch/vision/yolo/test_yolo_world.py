@@ -8,10 +8,10 @@ import torch
 from ultralytics import YOLO
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.utils.yolovx_utils import get_test_input
+from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import get_test_input
 
 
 class YoloWorldWrapper(torch.nn.Module):
@@ -36,14 +36,10 @@ def test_yolo_world_inference(forge_property_recorder):
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
     )
 
-    # Record Forge property
-
-    forge_property_recorder.record_group("red")
-
     # Load framework_model and input
-
     framework_model = YoloWorldWrapper(model_url)
     inputs = [get_test_input()]
 

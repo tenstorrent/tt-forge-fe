@@ -7,7 +7,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.deepcogito.utils.model import get_input_model
+from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
 @pytest.mark.skip("Skipping due to Out of Memory issue")
@@ -23,7 +23,6 @@ def test_cogito_generation(forge_property_recorder, variant):
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     input_tensor_list, framework_model = get_input_model(variant)

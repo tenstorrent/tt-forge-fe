@@ -6,10 +6,16 @@ import pytest
 from gliner import GLiNER
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gliner.utils.model_utils import (
+from test.models.pytorch.text.gliner.model_utils.model_utils import (
     GlinerWrapper,
     post_processing,
     pre_processing,
@@ -30,11 +36,9 @@ def test_gliner(forge_property_recorder, variant):
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model
     model = GLiNER.from_pretrained(variant)

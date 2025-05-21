@@ -19,7 +19,7 @@ def load_model(model_path="openlm-research/open_llama_3b", **kwargs):
         config.num_hidden_layers = kwargs["num_hidden_layers"]
 
     # Load the model
-    framework_model = LlamaForCausalLM.from_pretrained(model_path, device_map="auto", config=config)
+    framework_model = LlamaForCausalLM.from_pretrained(model_path, config=config)
     framework_model.eval()
 
     use_lora = kwargs.get("use_lora", False)

@@ -7,6 +7,7 @@ import torch.nn.functional
 from ..interface import PyTM
 from forge._C import DataFormat
 from forge.tensor import forge_dataformat_to_pytorch_dtype
+from .nop import Nop
 
 
 class Pad(PyTM):
@@ -242,7 +243,7 @@ def extract_and_mirror(dc, input, dim_axis, start, stop):
 
     # Mirror patch
     indices = torch.arange(stop - start - 1, -1, -1)
-    indices_tensor = dc.tensor(indices, DataFormat.Int32)
+    indices_tensor = dc.tensor(indices)
     patch_mirrored = dc.op("adv_index", [patch, indices_tensor], (dim_axis,))
 
     return patch_mirrored
@@ -275,7 +276,7 @@ def create_pad(dc, shape, value, data_format):
     shape = list(shape)
     torch_tensor = torch.full(shape, value, dtype=torch_dtype)
 
-    forge_tensor = dc.tensor(torch_tensor, data_format)
+    forge_tensor = dc.tensor(torch_tensor)
     return forge_tensor
 
 

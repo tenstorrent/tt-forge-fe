@@ -10,7 +10,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.clip.utils.clip_model import CLIPTextWrapper
+from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
 from test.utils import download_model
 
 
@@ -34,9 +34,6 @@ def test_clip_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load processor and model from HuggingFace
     model = download_model(CLIPModel.from_pretrained, variant, torchscript=True)

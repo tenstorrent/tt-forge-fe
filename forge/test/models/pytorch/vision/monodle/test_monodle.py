@@ -10,7 +10,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
+from test.models.pytorch.vision.monodle.model_utils.model import CenterNet3D
 
 
 @pytest.mark.nightly
@@ -20,9 +20,6 @@ def test_monodle_pytorch(forge_property_recorder):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="monodle", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"

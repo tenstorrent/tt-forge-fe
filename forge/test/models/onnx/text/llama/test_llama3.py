@@ -149,23 +149,12 @@ LlamaModel._update_causal_mask = _update_causal_mask
         ),
     ],
 )
-def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
+def test_llama3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    if variant in [
-        "meta-llama/Llama-3.1-8B-Instruct",
-        "meta-llama/Llama-3.2-1B-Instruct",
-        "meta-llama/Llama-3.2-3B-Instruct",
-    ]:
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = download_model(AutoModelForCausalLM.from_pretrained, variant, use_cache=False, return_dict=False)
@@ -196,8 +185,8 @@ def test_llama3_causal_lm_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input_ids, attn_mask]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
-    command = build_optimum_cli_command(variant, tmp_path)
+    onnx_path = f"{forge_tmp_path}/model.onnx"
+    command = build_optimum_cli_command(variant, forge_tmp_path)
     subprocess.run(command, check=True)
 
     # Load framework model

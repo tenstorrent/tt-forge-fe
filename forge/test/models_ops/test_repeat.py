@@ -47,6 +47,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "onnx_detr_facebook_detr_resnet_50_obj_det_hf",
                 "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                "pt_detr_facebook_detr_resnet_50_obj_det_hf",
             ],
             "pcc": 0.99,
             "args": {"repeats": "[1, 1, 1]"},
@@ -57,7 +59,10 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 32, 107, 160), torch.float32)],
             {
-                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
                 "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
@@ -69,7 +74,10 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 64, 54, 80), torch.float32)],
             {
-                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
                 "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
@@ -81,7 +89,10 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 128, 27, 40), torch.float32)],
             {
-                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
                 "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },
@@ -93,7 +104,10 @@ forge_modules_and_shapes_dtypes_list = [
             Repeat1,
             [((1, 1, 256, 14, 20), torch.float32)],
             {
-                "model_names": ["onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf"],
+                "model_names": [
+                    "onnx_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                    "pt_detr_facebook_detr_resnet_50_panoptic_sem_seg_hf",
+                ],
                 "pcc": 0.99,
                 "args": {"repeats": "[1, 100, 1, 1, 1]"},
             },

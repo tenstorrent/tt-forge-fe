@@ -60,7 +60,7 @@ VARIANTS = [
 @pytest.mark.parametrize("channel_size", CHANNEL_SIZE, ids=[f"channel_size={item}" for item in CHANNEL_SIZE])
 @pytest.mark.parametrize("variant", VARIANTS, ids=[f"variant={item}" for item in VARIANTS])
 @pytest.mark.parametrize("data_format", DATA_FORMAT, ids=[f"data_format={item}" for item in DATA_FORMAT])
-def test_segformer_classification(
+def test_segformer(
     training,
     batch_size,
     input_size,
@@ -77,7 +77,7 @@ def test_segformer_classification(
     if training:
         pytest.skip("Training is not supported")
 
-    module_name = "SegformerClassification"
+    module_name = "Segformer"
 
     # Create random inputs
     input_sample = [
@@ -105,13 +105,12 @@ def test_segformer_classification(
         # Convert model to bfloat16
         framework_model = framework_model.to(torch.bfloat16)
     framework_model.eval()
-    fw_out = framework_model(*input_sample)
 
     # Compiler configuration
     compiler_config = CompilerConfig()
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # Turn on MLIR optimizations.
-    # compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
@@ -134,8 +133,9 @@ def test_segformer_classification(
         co_out = compiled_model(*input_sample)
     end = time.time()
 
+    fw_out = framework_model(*input_sample)[0]
     co_out = [co.to("cpu") for co in co_out]
-    AutomaticValueChecker().check(fw_out=fw_out[0], co_out=co_out[0])
+    AutomaticValueChecker().check(fw_out=fw_out, co_out=co_out[0])
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -215,7 +215,7 @@ def test_segformer_classification(
     return result
 
 
-def segformer_classification_benchmark(config: dict):
+def segformer_benchmark(config: dict):
     """
     Run the segformer benchmark.
     This function is a placeholder for the actual benchmark implementation.
@@ -230,7 +230,7 @@ def segformer_classification_benchmark(config: dict):
     loop_count = config["loop_count"]
     variant = VARIANTS[0]
 
-    result = test_segformer_classification(
+    result = test_segformer(
         training=training,
         batch_size=batch_size,
         input_size=input_size,
@@ -241,7 +241,7 @@ def segformer_classification_benchmark(config: dict):
     )
 
     if not output_file:
-        output_file = f"forge-benchmark-e2e-segformer_classification_{result['run_type']}.json"
+        output_file = f"forge-benchmark-e2e-segformer_{result['run_type']}.json"
     result["output"] = output_file
 
     # Save the results to a file
