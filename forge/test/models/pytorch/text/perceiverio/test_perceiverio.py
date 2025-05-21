@@ -7,7 +7,7 @@ import pytest
 from transformers import PerceiverForMaskedLM, PerceiverTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -21,7 +21,7 @@ def test_perceiverio_masked_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="perceiverio",
+        model=ModelArch.PERCEIVERIO,
         variant=variant,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,

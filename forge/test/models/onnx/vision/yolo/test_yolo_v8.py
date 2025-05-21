@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.vision.yolo.model_utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 
 
 @pytest.mark.xfail()
@@ -19,7 +19,7 @@ def test_yolov8(forge_property_recorder, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="Yolov8",
+        model=ModelArch.YOLOV8,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,

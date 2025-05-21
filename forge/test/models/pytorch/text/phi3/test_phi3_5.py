@@ -11,6 +11,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -27,7 +28,7 @@ def test_phi3_5_causal_lm(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3_5",
+        model=ModelArch.PHI35,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

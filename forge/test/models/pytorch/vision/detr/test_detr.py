@@ -17,6 +17,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
@@ -50,7 +51,7 @@ def test_detr_detection(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="detr",
+        model=ModelArch.DETR,
         variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.HUGGINGFACE,
@@ -98,7 +99,7 @@ def test_detr_segmentation(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="detr",
+        model=ModelArch.DETR,
         variant=variant,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,

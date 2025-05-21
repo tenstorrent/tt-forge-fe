@@ -13,7 +13,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
@@ -32,7 +32,7 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="context_encoder",
         source=Source.HUGGINGFACE,
@@ -86,7 +86,7 @@ def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="question_encoder",
         source=Source.HUGGINGFACE,
@@ -150,7 +150,7 @@ def test_dpr_reader_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="reader",
         source=Source.HUGGINGFACE,

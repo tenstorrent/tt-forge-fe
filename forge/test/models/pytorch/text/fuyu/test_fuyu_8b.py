@@ -15,7 +15,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.fuyu.model_utils.model import (
@@ -37,7 +37,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
 def test_fuyu8b(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.FUYU, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     config = FuyuConfig.from_pretrained(variant)

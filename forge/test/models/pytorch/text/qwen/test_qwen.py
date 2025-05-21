@@ -6,7 +6,7 @@ import torch
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 
@@ -23,7 +23,7 @@ from forge.verify.verify import verify
 def test_qwen1_5_causal_lm(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.QWEN15, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Setup model configuration
@@ -67,7 +67,7 @@ def test_qwen1_5_chat(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.QWEN15, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Setup model configuration

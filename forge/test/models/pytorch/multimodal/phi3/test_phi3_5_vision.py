@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.phi3.model_utils.utils import load_input
@@ -34,7 +34,7 @@ def test_phi3_5_vision(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3_5_vision",
+        model=ModelArch.PHI35VISION,
         variant=variant,
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,

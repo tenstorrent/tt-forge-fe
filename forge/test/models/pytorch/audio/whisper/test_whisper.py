@@ -10,7 +10,7 @@ import torch
 from transformers import AutoProcessor, WhisperConfig, WhisperForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -48,7 +48,7 @@ def test_whisper(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="whisper",
+        model=ModelArch.WHISPER,
         variant=variant,
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,

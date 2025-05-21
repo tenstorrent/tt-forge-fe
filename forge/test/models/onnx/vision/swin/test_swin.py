@@ -14,7 +14,7 @@ import forge
 
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch
 
 
 @pytest.mark.skip(reason="Segmentation Fault at run_mlir_compiler compilation stage")
@@ -25,7 +25,7 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -66,7 +66,7 @@ def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, forge_tmp_pa
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
@@ -109,7 +109,7 @@ def test_swin_torchvision(forge_property_recorder, variant, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

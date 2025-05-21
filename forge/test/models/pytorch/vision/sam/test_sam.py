@@ -7,7 +7,7 @@ import pytest
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.sam.model_utils.model import (
@@ -31,7 +31,7 @@ def test_sam(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="sam",
+        model=ModelArch.SAM,
         variant=variant,
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,

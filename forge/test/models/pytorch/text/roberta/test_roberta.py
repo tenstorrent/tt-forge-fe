@@ -10,7 +10,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -26,7 +26,7 @@ from test.utils import download_model
 def test_roberta_masked_lm(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="roberta", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.ROBERTA, variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Load Albert tokenizer and model from HuggingFace
@@ -64,7 +64,7 @@ def test_roberta_sentiment_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="roberta",
+        model=ModelArch.ROBERTA,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

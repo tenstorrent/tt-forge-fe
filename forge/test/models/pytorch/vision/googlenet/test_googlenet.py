@@ -8,7 +8,7 @@ from PIL import Image
 from torchvision import models, transforms
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -21,7 +21,7 @@ def test_googlenet_pytorch(forge_property_recorder):
     # Record Forge Property
 
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="googlenet", source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH, model=ModelArch.GOOGLENET, source=Source.TORCHVISION, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Create Forge module from PyTorch model

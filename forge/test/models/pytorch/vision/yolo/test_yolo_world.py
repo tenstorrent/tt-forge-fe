@@ -8,7 +8,7 @@ import torch
 from ultralytics import YOLO
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import get_test_input
@@ -32,7 +32,7 @@ def test_yolo_world_inference(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_world",
+        model=ModelArch.YOLOWORLD,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,

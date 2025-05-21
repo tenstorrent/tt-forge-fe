@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gemma.model_utils.model_utils import (
@@ -37,7 +37,7 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="gemma",
+        model=ModelArch.GEMMA,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,

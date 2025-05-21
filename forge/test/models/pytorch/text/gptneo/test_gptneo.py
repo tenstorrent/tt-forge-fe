@@ -12,7 +12,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.models_utils import (
@@ -48,7 +48,7 @@ def test_gptneo_causal_lm(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gptneo", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.GPTNEO, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Set random seed for repeatability
@@ -122,7 +122,7 @@ def test_gptneo_sequence_classification(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="gptneo",
+        model=ModelArch.GPTNEO,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

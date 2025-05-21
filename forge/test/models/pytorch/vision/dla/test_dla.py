@@ -4,7 +4,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.dla.model_utils.utils import load_dla_model
@@ -30,7 +30,7 @@ def test_dla_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
+        framework=Framework.PYTORCH, model=ModelArch.DLA, variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
     )
 
     # Load the model and prepare input data
@@ -56,7 +56,7 @@ def test_dla_timm(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="dla",
+        model=ModelArch.DLA
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,

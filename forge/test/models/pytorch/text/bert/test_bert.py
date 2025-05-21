@@ -19,6 +19,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -32,7 +33,7 @@ from test.utils import download_model
 def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.BERT, variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     # Load Bert tokenizer and model from HuggingFace
@@ -115,7 +116,7 @@ def test_bert_question_answering_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="bert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.BERT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, tokenizer = generate_model_bert_qa_hf_pytorch(variant)
@@ -174,7 +175,7 @@ def test_bert_sequence_classification_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -224,7 +225,7 @@ def test_bert_token_classification_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -262,7 +263,7 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,

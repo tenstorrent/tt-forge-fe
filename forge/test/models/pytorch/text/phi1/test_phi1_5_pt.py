@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -32,7 +33,7 @@ def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI15,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -68,7 +69,7 @@ def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI15,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -101,7 +102,7 @@ def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, varian
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI15,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

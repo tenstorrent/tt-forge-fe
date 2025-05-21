@@ -8,7 +8,7 @@ import torch
 from transformers import AutoTokenizer, MambaForCausalLM
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import DepricatedVerifyConfig, verify
 
 from test.utils import download_model
@@ -55,7 +55,7 @@ def test_mamba(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="mamba", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.MAMBA, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Load tokenizer and model from HuggingFace

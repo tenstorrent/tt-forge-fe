@@ -7,7 +7,7 @@ import numpy as np
 import forge
 import onnx
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch
 from test.models.onnx.vision.unet.model_utils.utils import load_inputs
 
 
@@ -18,7 +18,7 @@ def test_unet_onnx(forge_property_recorder, forge_tmp_path):
     # Build Module Name
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="unet",
+        model=ModelArch.UNET,
         variant="base",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,

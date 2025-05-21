@@ -4,7 +4,7 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
@@ -18,7 +18,7 @@ def test_cogito_generation(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="cogito",
+        model=ModelArch.COGITO,
         variant=variant,
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,

@@ -9,7 +9,7 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.resnext.model_utils.utils import (
@@ -27,7 +27,7 @@ def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -62,7 +62,7 @@ def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -97,7 +97,7 @@ def test_resnext_101_32x8d_fb_wsl_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.TORCH_HUB,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -137,7 +137,7 @@ def test_resnext_14_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -176,7 +176,7 @@ def test_resnext_26_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -215,7 +215,7 @@ def test_resnext_50_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
@@ -254,7 +254,7 @@ def test_resnext_101_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnext",
+        model=ModelArch.RESNEXT,
         source=Source.OSMR,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,

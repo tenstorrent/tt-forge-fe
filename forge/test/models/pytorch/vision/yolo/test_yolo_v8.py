@@ -9,7 +9,7 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
@@ -23,7 +23,7 @@ def test_yolov8(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="Yolov8",
+        model=ModelArch.YOLOV8,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,

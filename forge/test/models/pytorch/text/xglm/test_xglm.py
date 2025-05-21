@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -23,7 +23,7 @@ def test_xglm_causal_lm(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.XGLM, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     config = XGLMConfig.from_pretrained(variant)

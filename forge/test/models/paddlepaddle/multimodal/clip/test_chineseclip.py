@@ -19,7 +19,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 
 variants = ["OFA-Sys/chinese-clip-vit-base-patch16"]
 
@@ -30,7 +30,7 @@ def test_chineseclip_text(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip_text",
+        model=ModelArch.CHINESECLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
@@ -62,7 +62,7 @@ def test_chineseclip_vision(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip_vision",
+        model=ModelArch.CHINESECLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
@@ -98,7 +98,7 @@ def test_chineseclip(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip",
+        model=ModelArch.CHINESECLIP,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_TEXT_PAIRING,

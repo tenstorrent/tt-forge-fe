@@ -14,6 +14,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -52,7 +53,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
@@ -110,7 +111,7 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet_v1",
+        model=ModelArch.VOVNETV1,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -152,7 +153,7 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -204,7 +205,7 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,

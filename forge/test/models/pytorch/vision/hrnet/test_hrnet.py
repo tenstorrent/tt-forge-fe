@@ -16,7 +16,7 @@ from torchvision import transforms
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -99,7 +99,7 @@ def test_hrnet_osmr_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
+        framework=Framework.PYTORCH, model=ModelArch.HRNET, variant=variant, source=Source.OSMR, task=Task.POSE_ESTIMATION
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_osmr_pytorch(
@@ -202,7 +202,7 @@ def test_hrnet_timm_pytorch(forge_property_recorder, variant):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="hrnet", variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
+        framework=Framework.PYTORCH, model=ModelArch.HRNET, variant=variant, source=Source.TIMM, task=Task.POSE_ESTIMATION
     )
 
     framework_model, inputs, _ = generate_model_hrnet_imgcls_timm_pytorch(

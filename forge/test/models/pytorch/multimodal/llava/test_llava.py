@@ -8,7 +8,7 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
@@ -43,7 +43,7 @@ def test_llava(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="llava",
+        model=ModelArch.LLAVA,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,

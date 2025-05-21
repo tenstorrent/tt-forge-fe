@@ -20,7 +20,7 @@ from transformers import (
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -38,7 +38,7 @@ def test_mobilenetv2_basic(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
@@ -88,7 +88,7 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -133,7 +133,7 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -180,7 +180,7 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -235,7 +235,7 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
@@ -301,7 +301,7 @@ def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilnetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -337,7 +337,7 @@ def test_mobilenetv2_torchvision(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,

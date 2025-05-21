@@ -11,6 +11,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -24,7 +25,7 @@ def test_birnn_crf(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="BiRnnCrf",
+        model=ModelArch.BIRNNCRF,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
         group=ModelGroup.RED,

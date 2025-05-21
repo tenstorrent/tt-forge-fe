@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -42,7 +43,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -88,7 +89,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -127,7 +128,7 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -157,7 +158,7 @@ def test_swin_v2_tiny_masked(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
@@ -205,7 +206,7 @@ def test_swin_torchvision(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

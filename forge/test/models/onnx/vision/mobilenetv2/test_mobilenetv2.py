@@ -15,7 +15,7 @@ from test.models.onnx.vision.mobilenetv2.model_utils.utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch
 
 params = [
     pytest.param("mobilenetv2_050"),
@@ -34,7 +34,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,

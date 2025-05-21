@@ -11,7 +11,7 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import alexnet
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 
 
 @pytest.mark.nightly
@@ -19,7 +19,7 @@ def test_alexnet(forge_property_recorder):
     # Record model details
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="alexnet",
+        model=ModelArch.ALEXNET,
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )

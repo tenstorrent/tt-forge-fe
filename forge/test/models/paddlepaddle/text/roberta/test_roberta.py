@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 
 from paddlenlp.transformers import (
     RobertaForSequenceClassification,
@@ -27,7 +27,7 @@ def test_roberta_sequence_classification(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="roberta",
+        model=ModelArch.ROBERTA,
         variant="rbt4-ch",
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
@@ -63,7 +63,7 @@ def test_roberta_causal_lm(variant, forge_property_recorder):
     # Record Forge properties
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PADDLE,
-        model="roberta",
+        model=ModelArch.ROBERTA,
         variant="rbt4-ch",
         task=Task.CAUSAL_LM,
         source=Source.PADDLENLP,

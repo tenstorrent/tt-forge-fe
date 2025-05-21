@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -45,7 +46,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -97,7 +98,7 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,

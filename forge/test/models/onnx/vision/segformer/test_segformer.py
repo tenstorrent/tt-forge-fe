@@ -9,7 +9,7 @@ import pytest
 import onnx
 import torch
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -32,7 +32,7 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, f
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -91,7 +91,7 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,

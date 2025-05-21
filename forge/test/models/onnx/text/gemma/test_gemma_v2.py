@@ -10,7 +10,7 @@ from transformers import (
 )
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from test.utils import download_model
 import onnx
 from transformers.models.gemma2.modeling_gemma2 import Gemma2DecoderLayer
@@ -37,7 +37,7 @@ def test_gemma_v2_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="gemma", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.ONNX, model=ModelArch.GEMMA, variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
     # Load tokenizer and model

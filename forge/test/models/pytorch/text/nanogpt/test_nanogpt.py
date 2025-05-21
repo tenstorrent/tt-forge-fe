@@ -7,7 +7,7 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 
@@ -33,7 +33,7 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="nanogpt",
+        model=ModelArch.NANOGPT,
         variant=variant,
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,

@@ -7,7 +7,7 @@ from datasets import load_dataset
 from transformers import AutoFeatureExtractor, WhisperModel
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -23,7 +23,7 @@ def test_whisper_large_v3(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="whisper",
+        model=ModelArch.WHISPER,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

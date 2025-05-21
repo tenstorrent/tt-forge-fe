@@ -7,7 +7,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.multimodal.oft.model_utils.oft_utils import get_inputs, get_models
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch
 
 
 @pytest.mark.skip(reason="Segmentation Fault")
@@ -17,7 +17,7 @@ def test_oft(forge_property_recorder, forge_tmp_path, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX,
-        model="oft",
+        model=ModelArch.OFT,
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,

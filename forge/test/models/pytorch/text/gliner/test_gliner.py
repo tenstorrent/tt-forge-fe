@@ -12,6 +12,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -32,7 +33,7 @@ def test_gliner(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="Gliner",
+        model=ModelArch.GLINER,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
