@@ -140,6 +140,30 @@ jobs:
           pip install tvm*.whl --force-reinstall
           pip install forge*.whl --force-reinstall
 
+      - name: Setup Squid HTTP Cache
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y squid squidclient
+          # Create squid cache directory
+          mkdir -p /tmp/squid-cache
+          # Setup squid configuration
+          cat > /tmp/squid.conf << EOF
+          http_port 3128
+          cache_dir ufs /tmp/squid-cache 1000 16 256
+          maximum_object_size 1024 MB
+          cache_mem 256 MB
+          access_log /tmp/squid-access.log
+          cache_log /tmp/squid-cache.log
+          cache_store_log /tmp/squid-store.log
+          EOF
+          # Start squid service
+          squid -f /tmp/squid.conf -N &
+          # Set HTTP_PROXY environment variable for the following steps
+          echo "HTTP_PROXY=http://localhost:3128" >> $GITHUB_ENV
+          echo "HTTPS_PROXY=http://localhost:3128" >> $GITHUB_ENV
+          sleep 2 # Give squid a moment to start
+
       - name: Run Test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -159,6 +183,28 @@ jobs:
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                  --log-memory-usage \
                  2>&1 | tee pytest.log
+
+      - name: Stop Squid Proxy
+        shell: bash
+        if: success() || failure()
+        run: |
+          echo "Squid Cache Statistics:"
+          squidclient -h localhost cache info | grep 'Hit\|Miss'
+          cat /tmp/squid-cache.log
+          # Stop the squid service
+          pkill squid || true
+          # Remove proxy environment variables
+          echo "HTTP_PROXY=" >> $GITHUB_ENV
+          echo "HTTPS_PROXY=" >> $GITHUB_ENV
+
+      - name: Upload Squid Cache
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: squid-cache-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ inputs.test_mark }}-${{ steps.fetch-job-id.outputs.job_id }}
+          path: |
+            /tmp/squid-cache
+            /tmp/squid-*.log
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
