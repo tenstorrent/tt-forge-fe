@@ -112,7 +112,7 @@ jobs:
       uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
       with:
         name: forge-wheel
-        run-id: ${{ inputs.run_id }}
+        run_id: ${{ inputs.run_id }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Find and download forge wheel
