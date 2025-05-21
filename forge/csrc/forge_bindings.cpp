@@ -192,6 +192,10 @@ PYBIND11_MODULE(_C, m)
             [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_memory_layout_analysis(enable); },
             py::arg("enable"))
         .def(
+            "set_enable_fusing",
+            [](tt::passes::MLIRConfig &self, bool enable) { return self.set_enable_fusing(enable); },
+            py::arg("enable"))
+        .def(
             "set_custom_config",
             [](tt::passes::MLIRConfig &self, const std::string &config) { return self.set_custom_config(config); },
             py::arg("config"))

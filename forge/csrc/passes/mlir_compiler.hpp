@@ -29,6 +29,7 @@ struct MLIRConfig
     std::optional<bool> enable_consteval = std::nullopt;
     std::optional<bool> enable_optimizer = std::nullopt;
     std::optional<bool> enable_memory_layout_analysis = std::nullopt;
+    std::optional<bool> enable_fusing = std::nullopt;
 
     // Custom configuration string for the MLIR compiler.
     std::string custom_config = "";
@@ -48,6 +49,12 @@ struct MLIRConfig
     MLIRConfig& set_enable_memory_layout_analysis(bool enable)
     {
         enable_memory_layout_analysis = enable;
+        return *this;
+    }
+
+    MLIRConfig& set_enable_fusing(bool enable)
+    {
+        enable_fusing = enable;
         return *this;
     }
 
