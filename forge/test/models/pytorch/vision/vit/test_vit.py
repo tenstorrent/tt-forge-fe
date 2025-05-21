@@ -13,6 +13,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    ModelArch,
 )
 from forge.verify.verify import verify
 
@@ -45,7 +46,7 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vit",
+        model=ModelArch.VIT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -98,7 +99,7 @@ def test_vit_torchvision(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="vit",
+        model=ModelArch.ViT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

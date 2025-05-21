@@ -81,6 +81,15 @@ class Source(BaseEnum):
     KERAS = ("keras", "Keras")
 
 
+class ModelArch(BaseEnum):
+    RESNET = ("resnet", "ResNet")
+    BERT = ("bert", "BERT")
+    VIT = ("vit", "ViT")
+    GPT = ("gpt", "GPT")
+    STABLEDIFFUSION = ("stable_diffusion", "Stable Diffusion")
+    LLAMA = ("llama", "LLaMA")
+
+
 def build_module_name(
     framework: Framework,
     model: str,
@@ -796,7 +805,7 @@ class ForgePropertyHandler:
     def record_model_properties(
         self,
         framework: Framework,
-        model: str,
+        model: ModelArch,
         task: Task,
         source: Source,
         variant: str = "base",
@@ -823,7 +832,7 @@ class ForgePropertyHandler:
 
         # Record individual properties
         self.add("tags.model_info.framework", framework.full)
-        self.add("tags.model_info.model_arch", model)
+        self.add("tags.model_info.model_arch", model.full)
         self.add("tags.model_info.variant_name", variant)
         self.add("tags.model_info.task", task.full)
         self.add("tags.model_info.source", source.full)
@@ -839,7 +848,7 @@ class ForgePropertyHandler:
 
         # Build and return the module name
         module_name = build_module_name(
-            framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+            framework=framework.short, model=model.short, variant=variant, task=task.short, source=source.short, suffix=suffix
         )
 
         # Record model_name
