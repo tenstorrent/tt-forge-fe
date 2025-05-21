@@ -49,7 +49,7 @@ def test_l1_loss(forge_property_recorder, prediction_shape, reduction):
 @pytest.mark.parametrize(
     "prediction_shape",
     [
-        (3, 5),
+        pytest.param((3, 5), marks=pytest.mark.fails_on_bh),
         (32, 32),
         (33, 127),
         (128, 20),

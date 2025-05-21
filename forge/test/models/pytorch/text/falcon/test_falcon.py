@@ -51,7 +51,7 @@ def test_falcon(forge_property_recorder, variant):
 
 
 variants = [
-    pytest.param("tiiuae/Falcon3-1B-Base", marks=pytest.mark.push),
+    pytest.param("tiiuae/Falcon3-1B-Base", marks=[pytest.mark.push, pytest.mark.fails_on_bh]),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
         marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB)"),

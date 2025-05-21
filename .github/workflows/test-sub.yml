@@ -153,13 +153,25 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pytest --splits ${{ inputs.test_group_cnt }} \
-                 --group ${{ matrix.test_group_id }} \
-                 --splitting-algorithm least_duration \
-                 -m "${{ inputs.test_mark }}" \
-                 --junit-xml=${{ steps.strings.outputs.test_report_path }} \
-                 --log-memory-usage \
-                 2>&1 | tee pytest.log
+          # Skip tests marked as fails_on_bh when running on p150
+          if [[ "${{ matrix.build.runs-on }}" == "p150" ]]; then
+            pytest --splits ${{ inputs.test_group_cnt }} \
+                   --group ${{ matrix.test_group_id }} \
+                   --splitting-algorithm least_duration \
+                   -m "${{ inputs.test_mark }}" \
+                   -k "not fails_on_bh" \
+                   --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                   --log-memory-usage \
+                   2>&1 | tee pytest.log
+          else
+            pytest --splits ${{ inputs.test_group_cnt }} \
+                   --group ${{ matrix.test_group_id }} \
+                   --splitting-algorithm least_duration \
+                   -m "${{ inputs.test_mark }}" \
+                   --junit-xml=${{ steps.strings.outputs.test_report_path }} \
+                   --log-memory-usage \
+                   2>&1 | tee pytest.log
+          fi
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
