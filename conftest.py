@@ -8,6 +8,7 @@ import pytest
 import psutil
 import shutil
 import contextvars
+import requests_cache
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import (
@@ -15,7 +16,6 @@ from forge.forge_property_utils import (
     forge_property_handler_var,
 )
 from forge._C.verif import malloc_trim
-import requests_cache
 
 
 def pytest_sessionstart(session):
