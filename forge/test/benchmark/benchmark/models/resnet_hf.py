@@ -109,7 +109,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    compiler_cfg.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True)
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
 

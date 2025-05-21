@@ -136,7 +136,8 @@ void to_json(::nlohmann::json& j, const MLIRConfig& p)
     j = nlohmann::json{
         {"enable_consteval", p.enable_consteval},
         {"enable_optimizer", p.enable_optimizer},
-        {"enable_consteval", p.enable_consteval},
+        {"enable_memory_layout_analysis", p.enable_memory_layout_analysis},
+        {"enable_fusing", p.enable_fusing},
         {"custom_config", p.custom_config}};
 }
 
@@ -144,7 +145,8 @@ void from_json(const ::nlohmann::json& j, MLIRConfig& p)
 {
     j.at("enable_consteval").get_to(p.enable_consteval);
     j.at("enable_optimizer").get_to(p.enable_optimizer);
-    j.at("enable_consteval").get_to(p.enable_consteval);
+    j.at("enable_memory_layout_analysis").get_to(p.enable_memory_layout_analysis);
+    j.at("enable_fusing").get_to(p.enable_fusing);
     j.at("custom_config").get_to(p.custom_config);
 }
 }  // namespace tt::passes
