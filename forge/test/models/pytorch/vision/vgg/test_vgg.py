@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
-
 import pytest
+import requests
 import timm
 import torch
 from loguru import logger
@@ -50,8 +49,9 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
 
     # Image preprocessing
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        input_image = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        )
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),
@@ -125,8 +125,9 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
 
     # Image preprocessing
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        input_image = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        )
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),
@@ -163,9 +164,9 @@ def preprocess_timm_model(model_name):
     try:
         config = resolve_data_config({}, model=model)
         transform = create_transform(**config)
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
         img_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -220,8 +221,9 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
 
     # Image preprocessing
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        input_image = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        )
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),

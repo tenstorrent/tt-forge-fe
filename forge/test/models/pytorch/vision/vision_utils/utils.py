@@ -1,7 +1,5 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 # SPDX-License-Identifier: Apache-2.0
-from urllib.request import urlopen
-
 import requests
 import timm
 import torch
@@ -14,7 +12,10 @@ def load_timm_model_and_input(model_name):
     model = timm.create_model(model_name, pretrained=True)
     model.eval()
     img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
+        requests.get(
+            "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png",
+            stream=True,
+        ).raw
     )
     data_config = timm.data.resolve_model_data_config(model)
     transforms = timm.data.create_transform(**data_config, is_training=False)

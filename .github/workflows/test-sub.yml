@@ -139,6 +139,7 @@ jobs:
           source env/activate
           pip install tvm*.whl --force-reinstall
           pip install forge*.whl --force-reinstall
+          pip install requests-cache
 
       - name: Run Test
         env:
@@ -159,6 +160,9 @@ jobs:
                  --junit-xml=${{ steps.strings.outputs.test_report_path }} \
                  --log-memory-usage \
                  2>&1 | tee pytest.log
+
+          echo "------- request cache -------"
+          ls -lR http_cache
 
       - name: Upload Test Log
         uses: actions/upload-artifact@v4

@@ -1,10 +1,9 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
-
 import numpy as np
 import pytest
+import requests
 import segmentation_models_pytorch as smp
 import torch
 from loguru import logger
@@ -80,9 +79,9 @@ def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
 
 def get_imagenet_sample():
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
 
         # Preprocessing
         transform = Compose(
@@ -176,15 +175,8 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
     model.eval()
 
     # Download an example input image
-    url, filename = (
-        "https://github.com/mateuszbuda/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png",
-        "TCGA_CS_4944.png",
-    )
-    try:
-        urllib.URLopener().retrieve(url, filename)
-    except:
-        urllib.request.urlretrieve(url, filename)
-    input_image = Image.open(filename)
+    url = "https://github.com/mateuszbuda/brain-segmentation-pytorch/raw/master/assets/TCGA_CS_4944.png"
+    input_image = Image.open(requests.get(url, stream=True).raw)
     m, s = np.mean(input_image, axis=(0, 1)), np.std(input_image, axis=(0, 1))
     preprocess = transforms.Compose(
         [
