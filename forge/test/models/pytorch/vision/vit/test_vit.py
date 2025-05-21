@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
@@ -106,6 +107,8 @@ def test_vit_torchvision(forge_property_recorder, variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.float32)
+    inputs = [inputs[0].to(torch.float32)]
 
     # Forge compile framework model
     compiled_model = forge.compile(

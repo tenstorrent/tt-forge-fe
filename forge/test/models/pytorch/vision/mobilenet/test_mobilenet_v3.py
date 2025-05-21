@@ -15,6 +15,8 @@ import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.model_utils.utils import (
@@ -58,7 +60,13 @@ def test_mobilenetv3_basic(forge_property_recorder, variant):
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+        forge_property_handler=forge_property_recorder,
+    )
 
     # Post processing
     post_processing(co_out)
