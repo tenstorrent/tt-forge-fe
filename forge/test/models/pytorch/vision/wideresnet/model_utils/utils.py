@@ -1,9 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
-import urllib
-
+import requests
 import torch
 from PIL import Image
 from torchvision import transforms
@@ -17,9 +15,7 @@ def generate_model_wideresnet_imgcls_pytorch(variant):
     framework_model.eval()
 
     # STEP 3: Prepare input
-    url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-    urllib.request.urlretrieve(url, filename)
-    input_image = Image.open(filename)
+    input_image = Image.open(requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw)
     preprocess = transforms.Compose(
         [
             transforms.Resize(256),
@@ -40,14 +36,8 @@ url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt
 def post_processing(output, top_k=5):
 
     probabilities = torch.nn.functional.softmax(output[0][0], dim=0)
-    urllib.request.urlretrieve(url, "imagenet_classes.txt")
-
-    with open("imagenet_classes.txt", "r") as f:
-        categories = [s.strip() for s in f.readlines()]
+    r = requests.get(url, allow_redirects=True)
+    categories = [s.strip() for s in r.content.decode("utf-8").splitlines()]
     topk_prob, topk_catid = torch.topk(probabilities, top_k)
     for i in range(topk_prob.size(0)):
         print(categories[topk_catid[i]], topk_prob[i].item())
-
-    # Cleanup
-    os.remove("imagenet_classes.txt")
-    os.remove("dog.jpg")

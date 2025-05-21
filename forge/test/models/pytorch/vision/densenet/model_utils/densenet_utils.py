@@ -2,9 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 
-import urllib
-import urllib.request
-
+import requests
 import skimage
 import torch
 import torchvision
@@ -23,9 +21,9 @@ from torchvision.transforms import (
 
 def get_input_img():
     try:
-        url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
 
         transform = Compose(
             [
@@ -56,7 +54,8 @@ def get_input_img_hf_xray():
     try:
         img_url = "https://huggingface.co/spaces/torchxrayvision/torchxrayvision-classifier/resolve/main/16747_3_1.jpg"
         img_path = "xray.jpg"
-        urllib.request.urlretrieve(img_url, img_path)
+        r = requests.get(img_url, allow_redirects=True)
+        open(img_path, "wb").write(r.content)
         img = skimage.io.imread(img_path)
         img = xrv.datasets.normalize(img, 255)
         # Check that images are 2D arrays

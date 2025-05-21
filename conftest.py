@@ -15,6 +15,16 @@ from forge.forge_property_utils import (
     forge_property_handler_var,
 )
 from forge._C.verif import malloc_trim
+import requests_cache
+
+
+def pytest_sessionstart(session):
+    """
+    This hook is called before any tests are run. It sets up a cache for HTTP requests
+    to speed up tests that make network calls.
+    """
+    # Set up a cache for HTTP requests to speed up tests that make network calls
+    requests_cache.install_cache("http_cache", backend="filesystem", cache_control=True)
 
 
 def pytest_addoption(parser):

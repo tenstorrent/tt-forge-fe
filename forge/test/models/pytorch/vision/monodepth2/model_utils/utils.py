@@ -12,13 +12,11 @@
 import hashlib
 import os
 import zipfile
-from io import BytesIO
 
 import PIL.Image as pil
 import requests
 import torch
 from PIL import Image
-from six.moves import urllib
 from torchvision import transforms
 
 from test.models.pytorch.vision.monodepth2.model_utils.depth_decoder import DepthDecoder
@@ -88,7 +86,8 @@ def download_model(model_name):
 
         if not check_file_matches_md5(required_md5checksum, model_path + ".zip"):
             print("-> Downloading pretrained model to {}".format(model_path + ".zip"))
-            urllib.request.urlretrieve(model_url, model_path + ".zip")
+            r = requests.get(model_url, allow_redirects=True)
+            open(model_path + ".zip", "wb").write(r.content)
 
         if not check_file_matches_md5(required_md5checksum, model_path + ".zip"):
             print("   Failed to download a file which matches the checksum - quitting")
@@ -139,8 +138,7 @@ def load_model(variant):
 def load_input(feed_height, feed_width):
 
     image_url = "https://raw.githubusercontent.com/nianticlabs/monodepth2/master/assets/test_image.jpg"
-    response = requests.get(image_url)
-    input_image = Image.open(BytesIO(response.content)).convert("RGB")
+    input_image = Image.open(requests.get(image_url, stream=True).raw).convert("RGB")
     input_image_resized = input_image.resize((feed_width, feed_height), pil.LANCZOS)
     input_tensor = transforms.ToTensor()(input_image_resized).unsqueeze(0)
 

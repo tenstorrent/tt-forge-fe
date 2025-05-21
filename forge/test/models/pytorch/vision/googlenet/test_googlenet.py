@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import requests
 import torch
 from loguru import logger
 from PIL import Image
@@ -43,8 +44,10 @@ def test_googlenet_pytorch():
 
     # Image preprocessing
     try:
-        torch.hub.download_url_to_file("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-        input_image = Image.open("dog.jpg")
+        input_image = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        )
+
         preprocess = transforms.Compose(
             [
                 transforms.Resize(256),

@@ -6,10 +6,10 @@ import timm
 import forge
 import onnx
 import torch
+import requests
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
 from test.models.onnx.vision.vision_utils import load_inputs
-from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
@@ -50,7 +50,10 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
 
     # Load the inputs
     img = Image.open(
-        urlopen("https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png")
+        requests.get(
+            "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/beignets-task-guide.png",
+            stream=True,
+        ).raw
     )
 
     inputs = load_inputs(img, model)

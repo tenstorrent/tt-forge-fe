@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
-
 import pytest
+import requests
 import timm
 import torch
 from loguru import logger
@@ -84,12 +83,9 @@ def test_efficientnet_timm(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)
@@ -162,12 +158,9 @@ def test_efficientnet_torchvision(variant):
 
     # Load and pre-process image
     try:
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
         img_tensor = transform(img).unsqueeze(0)

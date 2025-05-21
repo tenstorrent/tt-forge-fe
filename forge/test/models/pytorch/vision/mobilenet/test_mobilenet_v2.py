@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
-
 import pytest
 import requests
 import timm
@@ -217,12 +215,9 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
     try:
         config = resolve_data_config({}, model=model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
         image_tensor = transform(img).unsqueeze(0)  # transform and add batch dimension
     except:
         logger.warning(
@@ -278,12 +273,9 @@ def generate_model_mobilenetV2_semseg_hf_pytorch(variant):
     try:
         config = resolve_data_config({}, model=framework_model)
         transform = create_transform(**config)
-        url, filename = (
-            "https://github.com/pytorch/hub/raw/master/images/dog.jpg",
-            "dog.jpg",
-        )
-        urllib.request.urlretrieve(url, filename)
-        img = Image.open(filename).convert("RGB")
+        img = Image.open(
+            requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw
+        ).convert("RGB")
         img_tensor = transform(img).unsqueeze(0)
     except:
         logger.warning(

@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
-import urllib
-
 import pytest
+import requests
 import timm
 import torch
 from PIL import Image
@@ -79,9 +78,9 @@ def generate_model_wideresnet_imgcls_timm(variant):
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
-    url, filename = ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", "dog.jpg")
-    urllib.request.urlretrieve(url, filename)
-    img = Image.open(filename).convert("RGB")
+    img = Image.open(requests.get("https://github.com/pytorch/hub/raw/master/images/dog.jpg", stream=True).raw).convert(
+        "RGB"
+    )
     img_tensor = transform(img).unsqueeze(0)
 
     return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
