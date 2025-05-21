@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.text.bi_lstm_crf.model_utils.model import get_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 @pytest.mark.nightly
@@ -20,7 +20,7 @@ def test_birnn_crf(forge_tmp_path):
     # Build Module Name
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="BiRnnCrf",
+        model=ModelArch.BIRNNCRF,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
         priority=ModelPriority.P1,

@@ -11,7 +11,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -30,7 +36,11 @@ def test_distilbert_masked_lm_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.DISTILBERT,
+        variant=variant,
+        task=Task.MASKED_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Load DistilBert tokenizer and model from HuggingFace
@@ -69,7 +79,11 @@ def test_distilbert_question_answering_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="distilbert", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.DISTILBERT,
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
     )
 
     # Load Bert tokenizer and model from HuggingFace
@@ -115,7 +129,7 @@ def test_distilbert_sequence_classification_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="distilbert",
+        model=ModelArch.DISTILBERT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -154,7 +168,7 @@ def test_distilbert_token_classification_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="distilbert",
+        model=ModelArch.DISTILBERT,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,

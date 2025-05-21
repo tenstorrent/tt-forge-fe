@@ -10,6 +10,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -29,7 +30,7 @@ def test_yolov10():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="Yolov10",
+        model=ModelArch.YOLOV10,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,

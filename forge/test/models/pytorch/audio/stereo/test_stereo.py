@@ -6,7 +6,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.audio.stereo.model_utils.utils import load_inputs, load_model
@@ -36,7 +42,7 @@ def test_stereo(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="stereo",
+        model=ModelArch.STEREO,
         variant=variant,
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,

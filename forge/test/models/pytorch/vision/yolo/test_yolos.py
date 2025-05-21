@@ -7,7 +7,13 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolos_utils import (
@@ -31,7 +37,7 @@ def test_yolos(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolos",
+        model=ModelArch.YOLOS,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.OBJECT_DETECTION,

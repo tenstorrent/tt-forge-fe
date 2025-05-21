@@ -15,7 +15,7 @@ from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
     preprocess_timm_model,
 )
 from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import vovnet39, vovnet57
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.utils import download_model
 
 
@@ -34,7 +34,11 @@ def test_vovnet_osmr_pytorch(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
+        framework=Framework.ONNX,
+        model=ModelArch.VOVNET,
+        variant=variant,
+        source=Source.OSMR,
+        task=Task.OBJECT_DETECTION,
     )
 
     # Load model and inputs
@@ -69,7 +73,7 @@ def test_vovnet_v1_39_stigma_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="vovnet_v1",
+        model=ModelArch.VOVNETV1,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -107,7 +111,7 @@ def test_vovnet_v1_57_stigma_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -144,7 +148,7 @@ def test_vovnet_timm_pytorch(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,

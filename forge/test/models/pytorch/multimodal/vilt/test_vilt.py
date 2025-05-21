@@ -15,7 +15,13 @@ from transformers import (
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
 
@@ -64,7 +70,7 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
@@ -127,7 +133,11 @@ def test_vilt_maskedlm_hf_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.VILT,
+        variant=variant,
+        task=Task.MASKED_LM,
+        source=Source.HUGGINGFACE,
     )
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)

@@ -7,6 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -43,7 +44,7 @@ def test_gemma_pytorch_v1(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="gemma",
+        model=ModelArch.GEMMA,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,

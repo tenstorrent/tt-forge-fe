@@ -25,6 +25,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -53,7 +54,7 @@ def test_unet_osmr_cityscape_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="unet",
+        model=ModelArch.UNET,
         variant="cityscape",
         source=Source.OSMR,
         task=Task.IMAGE_SEGMENTATION,
@@ -139,7 +140,7 @@ def test_unet_qubvel_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="unet",
+        model=ModelArch.UNET,
         variant="qubvel",
         source=Source.TORCH_HUB,
         task=Task.IMAGE_SEGMENTATION,
@@ -203,7 +204,7 @@ def test_unet_torchhub_pytorch():
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.PYTORCH, model=ModelArch.UNET, source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
     framework_model, inputs, _ = generate_model_unet_imgseg_torchhub_pytorch(
@@ -232,7 +233,7 @@ def test_unet_carvana():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="unet_carvana",
+        model=ModelArch.UNETCARVANA,
         source=Source.GITHUB,
         task=Task.IMAGE_SEGMENTATION,
     )

@@ -86,6 +86,128 @@ class Source(BaseEnum):
     KERAS = ("keras", "Keras")
 
 
+class ModelArch(BaseEnum):
+    RESNET = ("resnet", "ResNet")
+    BERT = ("bert", "BERT")
+    VIT = ("vit", "ViT")
+    VITBASE = ("vit_base", "ViT Base")
+    GPT = ("gpt", "GPT")
+    STABLEDIFFUSION = ("stable_diffusion", "Stable Diffusion")
+    LLAMA = ("llama", "LLaMA")
+    OFT = ("oft", "OFT")
+    BIRNNCRF = ("BiRnnCrf", "BiRNN-CRF ")
+    COGITO = ("cogito", "Cogito")
+    GEMMA = ("gemma", "Gemma")
+    LLAMA3 = ("llama3", "Llama 3")
+    MINILM = ("minilm", "MiniLM")
+    MINISTRAL = ("ministral", "Ministral")
+    MISTRAL = ("mistral", "Mistral")
+    PHI1 = ("phi1", "Phi 1")
+    PHI1_5 = ("phi_1.5", "Phi-1.5")
+    PHI2 = ("phi2", "Phi 2")
+    PHI3 = ("phi3", "Phi 3")
+    PHI3_5 = ("phi3.5", "Phi-3.5")
+    PHI35VISION = ("phi3_5_vision", "Phi-3.5 Vision")
+    PHI4 = ("phi4", "Phi 4")
+    DETR = ("detr", "DETR")
+    DLA = ("dla", "DLA")
+    EFFICIENTNET = ("efficientnet", "EfficientNet")
+    EFFICIENTNETLITE = ("efficientnet_lite", "EfficientNet Lite")
+    FALCON3 = ("falcon3", "Falcon 3")
+    MOBILENETV1 = ("mobilenetv1", "MobileNetV1")
+    MOBILENETV2 = ("mobilenetv2", "MobileNetV2")
+    MOBILENETV2SSD = ("mobilenetv2_ssd", "MobileNetV2 SSD")
+    MOBILENETV3 = ("mobilenetv3", "MobileNetV3")
+    MOBILENETV3SSD = ("mobilenetv3_ssd", "MobileNetV3 SSD")
+    SAM = ("sam", "SAM")
+    SEGFORMER = ("segformer", "SegFormer")
+    SWIN = ("swin", "Swin Transformer")
+    UNET = ("unet", "UNet")
+    UNETCARVANA = ("unet_carvana", "UNet Carvana")
+    VOVNET = ("vovnet", "VoVNet")
+    VILT = ("vilt", "ViLT")
+    VOVNETV1 = ("vovnet_v1", "VoVNet V1")
+    YOLOV3 = ("Yolo v3", "YOLOv3")
+    YOLOV4 = ("Yolo v4", "YOLOv4")
+    YOLOV5 = ("yolo_v5", "YOLOv5")
+    YOLOV6 = ("yolo_v6", "YOLOv6")
+    YOLOV8 = ("Yolov8", "YOLOv8")
+    YOLOV9 = ("Yolov9", "YOLOv9")
+    YOLOV10 = ("Yolov10", "YOLOv10")
+    YOLOWORLD = ("yolo_world", "YOLO World")
+    YOLOS = ("yolos", "YOLOS")
+    YOLOX = ("yolox", "YOLOX")
+    SPEECHT5 = ("speecht5", "SpeechT5")
+    BLIP = ("blip", "BLIP")
+    BLIPTEXT = ("blip_text", "BLIP Text")
+    BLIPVISION = ("blip_vision", "BLIP Vision")
+    CLIP = ("clip", "CLIP")
+    CLIPTEXT = ("clip_text", "CLIP Text")
+    CLIPVISION = ("clip_vision", "CLIP Vision")
+    CHINESECLIP = ("chineseclip", "Chinese-CLIP")
+    CHINESECLIPTEXT = ("chineseclip_text", "Chinese-CLIP Text")
+    CHINESECLIPVISION = ("chineseclip_vision", "Chinese-CLIP Vision")
+    PADDLEOCR = ("paddleocr", "Paddle OCR")
+    ALBERT = ("albert", "ALBERT")
+    BLOOM = ("bloom", "BLOOM")
+    CODEGEN = ("codegen", "CodeGen")
+    DISTILBERT = ("distilbert", "DistilBERT")
+    DPR = ("dpr", "DPR")
+    BART = ("bart", "BART")
+    LLAVA = ("llava", "LLaVA")
+    DEEPSEEK = ("deepseek", "DeepSeek")
+    ERNIE = ("ernie", "ERNIE")
+    FALCON = ("falcon", "Falcon")
+    FUYU = ("fuyu", "Fuyu")
+    GLINER = ("Gliner", "GLiNER")
+    GPTNEO = ("gptneo", "GPT Neo")
+    HIPPYNN = ("hippynn", "Hippynn")
+    MAMBA = ("mamba", "Mamba")
+    STEREO = ("stereo", "Stereo")
+    WHISPER = ("whisper", "Whisper")
+    NANOGPT = ("nanogpt", "NanoGPT")
+    OPT = ("opt", "OPT")
+    PERCEIVERIO = ("perceiverio", "Perceiver IO")
+    QWENCODER = ("qwen_coder", "Qwen2.5-Coder")
+    QWENV2 = ("qwen_v2", "Qwen2.5")
+    QWEN15 = ("qwen1.5", "Qwen1.5")
+    ROBERTA = ("roberta", "RoBERTa")
+    SPEECHT5TTS = ("speecht5_tts", "SpeechT5 TTS")
+    SQUEEZEBERT = ("squeezebert", "SqueezeBERT")
+    T5 = ("t5", "T5")
+    GLM = ("glm", "GLM")
+    XGLM = ("xglm", "XGLM")
+    NBEATS = ("nbeats", "N-BEATS")
+    ALEXNET = ("alexnet", "AlexNet")
+    AUTOENCODER = ("autoencoder", "Autoencoder")
+    BEIT = ("beit", "BEiT")
+    DEIT = ("deit", "DeiT")
+    DENSENET = ("densenet", "DenseNet")
+    FPN = ("fpn", "FPN")
+    GHOSTNET = ("ghostnet", "GhostNet")
+    HRNET = ("hrnet", "HRNet")
+    GLPNKITTI = ("glpn_kitti", "GLPN KITTI")
+    GOOGLENET = ("googlenet", "GoogLeNet")
+    INCEPTION = ("inception", "Inception")
+    MGP = ("mgp", "MGP-STR")
+    MLPMIXER = ("mlp_mixer", "MLP-Mixer")
+    MNIST = ("mnist", "MNIST")
+    MONODEPTH2 = ("monodepth2", "Monodepth2")
+    MONODLE = ("monodle", "MonoDLE")
+    RCNN = ("rcnn", "R-CNN")
+    REGNET = ("regnet", "RegNet")
+    RESNEXT = ("resnext", "ResNeXt")
+    RETINANET = ("retinanet", "RetinaNet")
+    RMBG20 = ("rmbg_2_0", "RMBG-2.0")
+    SSD300RESNET50 = ("ssd300_resnet50", "SSD300 ResNet50")
+    SSD300VGG16 = ("ssd300_vgg16", "SSD300 VGG16")
+    SSDLITE320MOBILENETV3 = ("ssdlite320_mobilenetv3", "SSD Lite MobileNetV3")
+    VGG = ("vgg", "VGG")
+    VGG19UNET = ("VGG19 UNet", "VGG19 UNet")
+    WIDERESNET = ("wideresnet", "Wide ResNet")
+    XCEPTION = ("xception", "Xception")
+
+
 def build_module_name(
     framework: Framework,
     model: str,
@@ -704,7 +826,7 @@ def record_flatbuffer_details(binary_json_str: str):
 
 def record_model_properties(
     framework: Framework,
-    model: str,
+    model: ModelArch,
     task: Task,
     source: Source,
     variant: str = "base",
@@ -734,7 +856,7 @@ def record_model_properties(
 
     # Record individual properties
     fph.add("tags.model_info.framework", framework.full)
-    fph.add("tags.model_info.model_arch", model)
+    fph.add("tags.model_info.model_arch", model.full)
     fph.add("tags.model_info.variant_name", variant)
     fph.add("tags.model_info.task", task.full)
     fph.add("tags.model_info.source", source.full)
@@ -750,7 +872,12 @@ def record_model_properties(
 
     # Build and return the module name
     module_name = build_module_name(
-        framework=framework.short, model=model, variant=variant, task=task.short, source=source.short, suffix=suffix
+        framework=framework.short,
+        model=model.short,
+        variant=variant,
+        task=task.short,
+        source=source.short,
+        suffix=suffix,
     )
 
     # Record model_name

@@ -8,7 +8,13 @@ from transformers import BartForSequenceClassification, BartTokenizer
 from transformers.models.bart.modeling_bart import shift_tokens_right
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -38,7 +44,7 @@ def test_pt_bart_classifier(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="bart",
+        model=ModelArch.BART,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

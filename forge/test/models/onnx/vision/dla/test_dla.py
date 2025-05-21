@@ -11,7 +11,7 @@ from PIL import Image
 from test.models.pytorch.vision.dla.model_utils.utils import post_processing
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 variants = [
@@ -34,7 +34,11 @@ def test_dla_onnx(variant, tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
+        framework=Framework.ONNX,
+        model=ModelArch.DLA,
+        variant=variant,
+        task=Task.VISUAL_BACKBONE,
+        source=Source.TORCHVISION,
     )
 
     # Load data sample

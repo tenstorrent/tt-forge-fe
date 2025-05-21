@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = [
     "resnet18",
@@ -31,7 +31,7 @@ def test_resnet_pd(variant):
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="resnet",
+        model=ModelArch.RESNET,
         variant=variant[6:],
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,

@@ -10,6 +10,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -38,7 +39,7 @@ def test_sam(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="sam",
+        model=ModelArch.SAM,
         variant=variant,
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,

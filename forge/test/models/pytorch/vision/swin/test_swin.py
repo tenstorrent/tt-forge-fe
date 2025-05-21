@@ -17,6 +17,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -45,7 +46,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -91,7 +92,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -128,7 +129,7 @@ def test_swin_v2_tiny_image_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -156,7 +157,7 @@ def test_swin_v2_tiny_masked(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
@@ -201,7 +202,7 @@ def test_swin_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

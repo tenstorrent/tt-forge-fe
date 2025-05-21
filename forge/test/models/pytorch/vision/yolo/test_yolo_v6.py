@@ -11,7 +11,13 @@ from yolov6.layers.common import DetectBackend
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolov6_utils import (
@@ -47,7 +53,7 @@ def test_yolo_v6_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v6",
+        model=ModelArch.YOLOV6,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,

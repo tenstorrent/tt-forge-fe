@@ -12,7 +12,13 @@ from torchvision import transforms
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -23,7 +29,7 @@ def test_alexnet_torchhub():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="alexnet",
+        model=ModelArch.ALEXNET,
         source=Source.TORCH_HUB,
         task=Task.IMAGE_CLASSIFICATION,
     )
@@ -76,7 +82,7 @@ def test_alexnet_osmr():
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="alexnet", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH, model=ModelArch.ALEXNET, source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
     )
 
     # Load model

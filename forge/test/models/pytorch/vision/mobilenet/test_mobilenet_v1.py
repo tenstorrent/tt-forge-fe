@@ -10,7 +10,13 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.model_utils.utils import (
@@ -27,7 +33,7 @@ def test_mobilenetv1_basic():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenet_v1",
+        model=ModelArch.MOBILENETV1,
         variant="basic",
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
@@ -80,7 +86,7 @@ def test_mobilenetv1_192(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilnet_v1",
+        model=ModelArch.MOBILENET_V1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -126,7 +132,7 @@ def test_mobilenetv1_224(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilnet_v1",
+        model=ModelArch.MOBILENET_V1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -160,7 +166,7 @@ def test_mobilenet_v1_timm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenet_v1",
+        model=ModelArch.MOBILENET_V1,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,

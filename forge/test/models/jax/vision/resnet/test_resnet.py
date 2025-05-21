@@ -10,7 +10,7 @@ import forge
 from forge.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 from test.utils import download_model
 
@@ -26,7 +26,7 @@ def test_resnet(variant):
 
     module_name = record_model_properties(
         framework=Framework.JAX,
-        model="resnet",
+        model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,

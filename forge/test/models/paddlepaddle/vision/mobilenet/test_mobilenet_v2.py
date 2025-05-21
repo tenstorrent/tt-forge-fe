@@ -11,7 +11,7 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import mobilenet_v2
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.nightly
@@ -19,7 +19,7 @@ def test_mobilenetv2_basic():
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,

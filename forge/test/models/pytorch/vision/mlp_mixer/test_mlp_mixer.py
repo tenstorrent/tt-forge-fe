@@ -14,7 +14,13 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -60,7 +66,7 @@ def test_mlp_mixer_timm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mlp_mixer",
+        model=ModelArch.MLPMIXER,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
@@ -111,7 +117,7 @@ def test_mlp_mixer_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mlp_mixer",
+        model=ModelArch.MLPMIXER,
         source=Source.GITHUB,
         task=Task.IMAGE_CLASSIFICATION,
     )

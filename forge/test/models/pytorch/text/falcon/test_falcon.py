@@ -8,6 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -26,7 +27,11 @@ def test_falcon(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.FALCON,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -92,7 +97,7 @@ def test_falcon_3(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="falcon3",
+        model=ModelArch.FALCON3,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

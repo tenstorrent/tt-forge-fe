@@ -13,7 +13,13 @@ from transformers import AutoImageProcessor, ResNetForImageClassification
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -35,7 +41,7 @@ def test_resnet_hf(variant):
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnet",
+        model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -115,7 +121,11 @@ def run_and_print_results(framework_model, compiled_model, inputs):
 def test_resnet_timm():
     # Record model details
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model=ModelArch.ResNet,
+        source=Source.TIMM,
+        variant="50",
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     # Load framework model
@@ -159,7 +169,7 @@ def test_resnet_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="resnet",
+        model=ModelArch.ResNet,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

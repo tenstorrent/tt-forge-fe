@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 from paddlenlp.transformers import GLMTokenizer, GLMForConditionalGeneration
 
@@ -23,7 +23,7 @@ def test_glm(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="glm",
+        model=ModelArch.GLM,
         variant=variant[10:],
         source=Source.PADDLENLP,
         task=Task.CONDITIONAL_GENERATION,

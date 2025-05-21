@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["facebook/llama-7b"]
 
@@ -21,7 +21,7 @@ def test_llama(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="llama",
+        model=ModelArch.LLAMA,
         variant=variant[9:],
         source=Source.PADDLENLP,
         task=Task.CAUSAL_LM,

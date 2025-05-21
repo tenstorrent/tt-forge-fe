@@ -4,7 +4,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 
 from test.models.pytorch.multimodal.deepseek_math.model_utils.model_utils import (
     DeepSeekWrapper,
@@ -32,7 +38,7 @@ def test_deepseek_inference_no_cache_cpu(variant):
 def test_deepseek_inference(variant):
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="deepseek", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     model_name = f"deepseek-ai/{variant}"
