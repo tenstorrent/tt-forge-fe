@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
-from forge.forge_property_utils import Framework
+from forge.forge_property_utils import Framework, ModelArch
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     denoising_loop,
@@ -18,7 +18,7 @@ from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
 def test_stable_diffusion_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="stable_diffusion", variant=variant
+        framework=Framework.PYTORCH, model=ModelArch.STABLEDIFFUSION, variant=variant
     )
 
     batch_size = 1

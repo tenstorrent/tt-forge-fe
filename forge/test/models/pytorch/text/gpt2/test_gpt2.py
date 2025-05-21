@@ -11,7 +11,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -37,7 +37,7 @@ class Wrapper(torch.nn.Module):
 def test_gpt2_text_gen(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH, model=ModelArch.GPT, variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
     )
 
     # Load tokenizer and model from HuggingFace
@@ -80,7 +80,7 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="gpt2",
+        model=ModelArch.GPT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

@@ -6,7 +6,7 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task, ModelArch
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
@@ -50,7 +50,7 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="stable_diffusion",
+        model=ModelArch.STABLEDIFFUSION,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
