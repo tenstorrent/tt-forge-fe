@@ -31,7 +31,7 @@ def load_dla_model(variant):
     )
     img_tensor = transform(image).unsqueeze(0)
 
-    framework_model = func(pretrained="imagenet")
+    framework_model = func(pretrained=None)
     framework_model.eval()
 
     inputs = [img_tensor]

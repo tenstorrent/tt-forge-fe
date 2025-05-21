@@ -62,7 +62,10 @@ def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
 
 
 variants = [
-    "inception_v4",
+    pytest.param(
+        "inception_v4",
+        marks=[pytest.mark.xfail],
+    ),
     pytest.param(
         "inception_v4.tf_in1k",
         marks=[pytest.mark.xfail],
@@ -73,8 +76,6 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
-    if variant != "inception_v4.tf_in1k":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(

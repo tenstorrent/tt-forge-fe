@@ -19,7 +19,13 @@ from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
 )
 from test.utils import download_model
 
-variants = ["densenet121", "densenet121_hf_xray"]
+variants = [
+    pytest.param(
+        "densenet121",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param("densenet121_hf_xray"),
+]
 
 
 class densenet_xray_wrapper(nn.Module):
@@ -36,10 +42,8 @@ class densenet_xray_wrapper(nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
+@pytest.mark.parametrize("variant", variants)
 def test_densenet_121_pytorch(forge_property_recorder, variant):
-    if variant == "densenet121":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -69,20 +73,16 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    if variant == "densenet121_hf_xray":
-        verify(
-            inputs,
-            framework_model,
-            compiled_model,
-            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
-            forge_property_handler=forge_property_recorder,
-        )
-        # Inference
-        output = compiled_model(*inputs)
-        # post processing
-        outputs = op_norm(output[0], model.op_threshs)
-    else:
-        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+        forge_property_handler=forge_property_recorder,
+    )
+
+    # post processing
+    outputs = op_norm(co_out[0], model.op_threshs)
 
 
 @pytest.mark.nightly

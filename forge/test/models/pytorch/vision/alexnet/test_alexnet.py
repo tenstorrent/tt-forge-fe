@@ -61,8 +61,8 @@ def test_alexnet_torchhub(forge_property_recorder):
 
 
 @pytest.mark.nightly
+@pytest.mark.xfail
 def test_alexnet_osmr(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
