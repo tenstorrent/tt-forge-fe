@@ -727,6 +727,29 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
+@pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
+@pytest.mark.parametrize("padding", [0, 1])
+@pytest.mark.push
+def test_avgpool2d_decompose_to_conv2d_const(forge_property_recorder, shape, padding):
+    class AvgPool2d(nn.Module):
+        def __init__(self, padding):
+            super().__init__()
+            self.pool = nn.AvgPool2d(kernel_size=[7, 7], stride=[7, 7], padding=padding)
+            const_input_pool = torch.rand(shape)
+            self.register_buffer("const_input_pool", const_input_pool)
+
+        def forward(self, x):
+            return self.pool(self.const_input_pool) + x
+
+    inputs = [torch.rand((1, 3, 32, 32)).to(torch.bfloat16)]
+    framework_model = AvgPool2d(padding=padding)
+    framework_model = framework_model.to(torch.bfloat16)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
+    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
 @pytest.mark.parametrize(
     "padding",
