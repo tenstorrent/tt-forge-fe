@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import logging
 import torch
-from forge.forge_property_utils import ExecutionStage
+from forge.forge_property_utils import ExecutionStage, record_execution
 
 import tvm
 from tvm import relay
@@ -1144,7 +1144,6 @@ def compile_for_forge(
     params=None,
     inputs=None,
     framework_outputs=None,
-    forge_property_handler=None,
     verify_cfg=None,
 ):
 
@@ -1169,15 +1168,13 @@ def compile_for_forge(
 
         relay_module = run_relay_compile_passes(relay_module)
         dump_graph(relay_module, graph_name, "after_relay_passes")
-        if forge_property_handler is not None:
-            forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS)
+        record_execution(ExecutionStage.FAILED_TVM_PATTERN_CALLBACKS)
 
         compiled_relay_module = run_forge_compile_passes(
             relay_module, params, inputs, target, framework_outputs, verify_cfg
         )
         dump_graph(compiled_relay_module, graph_name, "after_forge_passes")
-        if forge_property_handler is not None:
-            forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING)
+        record_execution(ExecutionStage.FAILED_TVM_GRAPH_PARTITIONING)
 
         # Integer comparisons may lead to incorrect results on HW
         warn_of_int_comparisons(compiled_relay_module)

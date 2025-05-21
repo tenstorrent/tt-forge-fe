@@ -38,7 +38,12 @@ from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
 from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage, record_execution, record_compiler_config
+from forge.forge_property_utils import (
+    ExecutionStage,
+    record_execution,
+    record_compiler_config,
+    record_flatbuffer_details,
+)
 
 
 LAST_SUCCESSFUL_STAGE = None
@@ -140,7 +145,6 @@ class CompileContext:
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
     attach_to: Optional[CompiledModel] = None
-    forge_property_handler: Optional[ForgePropertyHandler] = None
 
     def optimizer_on_device(self):
         # For now we support only Forge optimizer on device.
@@ -184,7 +188,6 @@ def compile_main(
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
     compiler_cfg: CompilerConfig = CompilerConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
     verify_cfg: DepricatedVerifyConfig = DepricatedVerifyConfig(),
 ) -> CompiledModel:
     """
@@ -250,7 +253,6 @@ def compile_main(
         optimizer=optimizer,
         training=training,
         attach_to=attach_to,
-        forge_property_handler=forge_property_handler,
     )
 
     return forge_compile_from_context(compile_context)
@@ -677,7 +679,6 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
                     module_inputs,
                     context.compiler_cfg,
                     context.verify_cfg,
-                    forge_property_handler=context.forge_property_handler,
                 )
                 assert isinstance(module, ForgeModule)
 
@@ -986,10 +987,9 @@ def split_graph(context: CompileContext) -> CompileDepth:
 
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    forge_module, compiler_cfg, forge_property_handler = (
+    forge_module, compiler_cfg = (
         context.forge_module,
         context.compiler_cfg,
-        context.forge_property_handler,
     )
     assert forge_module is not None
     assert compiler_cfg is not None
@@ -998,8 +998,7 @@ def run_mlir_compiler(context: CompileContext) -> CompileDepth:
 
     context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_flatbuffer_details(context.compiled_binary.as_json())
+    record_flatbuffer_details(context.compiled_binary.as_json())
 
     return CompileDepth.FINISH_COMPILE
 
@@ -1027,7 +1026,6 @@ def convert_to_forge_module(
     module_inputs: Union[AnyTensor, List[AnyTensor]],
     compiler_cfg: CompilerConfig,
     verify_cfg: DepricatedVerifyConfig,
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ) -> ForgeModule:
     """
     Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).
@@ -1051,7 +1049,6 @@ def convert_to_forge_module(
         compiler_cfg,
         module.name,
         verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
     assert len(forge_module) == 1, "Attemping to load split model onto single devices"
 

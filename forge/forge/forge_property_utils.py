@@ -555,58 +555,6 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
-    def record_flatbuffer_inputs(self, inputs: List[TensorDesc]):
-        """
-        Records forward program inputs tensor description extracted from a flatbuffer binary.
-
-        Args:
-            inputs (List[TensorDesc]): A list of TensorDesc objects for inputs.
-        """
-        self.add("tags.inputs", inputs)
-
-    def record_flatbuffer_outputs(self, outputs: List[TensorDesc]):
-        """
-        Records forward program outputs tensor description extracted from a flatbuffer binary.
-
-        Args:
-            outputs (List[TensorDesc]): A list of TensorDesc objects for outputs.
-        """
-        self.add("tags.outputs", outputs)
-
-    def record_flatbuffer_details(self, binary_json_str: str):
-        """
-        Records details from a flatbuffer binary JSON string.
-
-        This method convert provided JSON string into a dictionary, and uses the
-        FlatbufferDetailsExtractor to extract details and record it.
-
-        Args:
-            binary_json_str (str): The JSON string representation of the flatbuffer binary.
-        """
-
-        if self.get("tags.model_name"):
-            # For model tests, we don't want to record the flatbuffer details, since this
-            # results in a lot of data being recorded.
-            return
-
-        binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
-        binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
-        binary_json = json.loads(binary_json_str)
-
-        flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
-        inputs, outputs = flatbuffer_details_extractor.extract_program_io_details(program_filter=["forward"])
-        if inputs is not None and outputs is not None:
-            if len(inputs) != len(outputs):
-                logger.error(
-                    f"Mismatch in program count: inputs have {len(inputs)} programs, while outputs have {len(outputs)} programs."
-                )
-            if sorted(inputs.keys()) != sorted(outputs.keys()):
-                logger.error(
-                    f"Mismatch in program names: inputs contain {sorted(inputs.keys())}, while outputs contain {sorted(outputs.keys())}."
-                )
-            self.record_flatbuffer_inputs(inputs["forward"])
-            self.record_flatbuffer_outputs(outputs["forward"])
-
     def record_forge_op_name(self, forge_op_name: str):
         """
         Records the Forge op name in the op information tags if single op details recording is enabled.
@@ -878,4 +826,44 @@ def record_verify_config(verify_config: VerifyConfig):
 
     verify_config = verify_config.to_dict()
     verify_config["value_checker"] = verify_config["value_checker"].__dict__
+
     fph.add("config.verify", verify_config)
+
+
+def record_flatbuffer_details(binary_json_str: str):
+    """
+    Records details (forward program inputs/outputs tensor description) from a flatbuffer binary JSON string.
+
+    This method convert provided JSON string into a dictionary, and uses the
+    FlatbufferDetailsExtractor to extract details and record it.
+
+    Args:
+        binary_json_str (str): The JSON string representation of the flatbuffer binary.
+    """
+    fph = forge_property_handler_var.get("forge_property_handler_var")
+    if fph is None:
+        return
+
+    if fph.get("tags.model_name"):
+        # For model tests, we don't want to record the flatbuffer details, since this
+        # results in a lot of data being recorded.
+        return
+
+    binary_json_str = re.sub(r":\s*-inf\s*([,}])", r': "-inf"\1', binary_json_str)
+    binary_json_str = re.sub(r":\s*inf\s*([,}])", r': "inf"\1', binary_json_str)
+    binary_json = json.loads(binary_json_str)
+
+    flatbuffer_details_extractor = FlatbufferDetailsExtractor(binary_json)
+    inputs, outputs = flatbuffer_details_extractor.extract_program_io_details(program_filter=["forward"])
+    if inputs is not None and outputs is not None:
+        if len(inputs) != len(outputs):
+            logger.error(
+                f"Mismatch in program count: inputs have {len(inputs)} programs, while outputs have {len(outputs)} programs."
+            )
+        if sorted(inputs.keys()) != sorted(outputs.keys()):
+            logger.error(
+                f"Mismatch in program names: inputs contain {sorted(inputs.keys())}, while outputs contain {sorted(outputs.keys())}."
+            )
+
+        fph.add("tags.inputs", inputs["forward"])
+        fph.add("tags.outputs", outputs["forward"])

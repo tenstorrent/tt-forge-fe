@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from forge.tensor import to_tf_tensors, to_pt_tensor, to_pt_tensors, to_pd_tensors
 from forge.tvm_utils import flatten_inputs, flatten_structured_output
-from forge.forge_property_utils import ExecutionStage
+from forge.forge_property_utils import ExecutionStage, record_execution
 import torch
 import paddle
 import flax
@@ -87,7 +87,6 @@ def load_tvm_graph(
     path=None,
     verify_cfg=None,
     input_names=[],
-    forge_property_handler=None,
 ):
     """
     Loads TVM graph ported to the Forge from other frameworks (TensorFlow, Pytorch). Can eather
@@ -126,7 +125,6 @@ def load_tvm_graph(
         path=path,
         verify_cfg=verify_cfg,
         framework=framework,
-        forge_property_handler=forge_property_handler,
     )
 
     flattened_pytorch_inputs, weights = format_tvm_graph_weights(
@@ -147,7 +145,6 @@ def compile_tvm_graph(
     path=None,
     verify_cfg=None,
     framework=None,
-    forge_property_handler=None,
 ):
     """
     Compiles TVM graph ported to the Forge from other frameworks (TensorFlow, Pytorch). Can eather
@@ -186,7 +183,6 @@ def compile_tvm_graph(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
     elif framework == "paddle":
         json_graphs, inputs = compile_paddle_for_forge(
@@ -196,7 +192,6 @@ def compile_tvm_graph(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
 
     elif framework == "tensorflow":
@@ -208,7 +203,6 @@ def compile_tvm_graph(
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
-            forge_property_handler=forge_property_handler,
         )
     elif framework == "tf_graphdef":
         if len(inputs) > 0 and isinstance(inputs[0], torch.Tensor):
@@ -220,7 +214,6 @@ def compile_tvm_graph(
             *tf_inputs,
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
-            forge_property_handler=forge_property_handler,
         )
     elif framework == "onnx":
         assert all([isinstance(x, torch.Tensor) for x in inputs])
@@ -232,7 +225,6 @@ def compile_tvm_graph(
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
-            forge_property_handler=forge_property_handler,
         )
     elif framework == "jax":
         tf_inputs = to_tf_tensors(inputs, force_float32=True)
@@ -242,7 +234,6 @@ def compile_tvm_graph(
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
-            forge_property_handler=forge_property_handler,
         )
     elif framework == "tflite":
         tf_inputs = to_tf_tensors(inputs, force_float32=True)
@@ -253,7 +244,6 @@ def compile_tvm_graph(
             graph_name=graph_name,
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
-            forge_property_handler=forge_property_handler,
         )
     else:
         raise RuntimeError(f"Unsupported module type {type(module)}")
@@ -478,9 +468,7 @@ class ConvertEmulatedDtypes:
             inp.data = inp.data.to(df)
 
 
-def compile_pytorch_for_forge(
-    torchmod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[], forge_property_handler=None
-):
+def compile_pytorch_for_forge(torchmod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
     training_mode = torchmod.training
 
     with ConvertEmulatedDtypes(torchmod, inputs):
@@ -523,14 +511,12 @@ def compile_pytorch_for_forge(
         if cached_graphs is not None:
             return cached_graphs, flattened_inputs
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
     logger.trace("From PyTorch")
     logger.trace(mod.functions)
 
     mod = flatten_IO(mod, flattened_name_map)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, _ = construct_tvm_ir(
@@ -556,7 +542,6 @@ def compile_pytorch_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     if training_mode:
@@ -574,9 +559,7 @@ def compile_pytorch_for_forge(
     return json_graphs, flattened_inputs
 
 
-def compile_paddle_for_forge(
-    paddlemod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[], forge_property_handler=None
-):
+def compile_paddle_for_forge(paddlemod, *inputs, graph_name, compiler_cfg, verify_cfg=None, input_names=[]):
 
     paddle_inputs = to_pd_tensors(inputs)
 
@@ -606,16 +589,14 @@ def compile_paddle_for_forge(
     # Generate TVM module
     mod, params = tvm.relay.frontend.from_paddle(traced_model, named_inputs)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IO_FLATTENING)
 
     logger.trace("From Paddle")
     logger.trace(mod.functions)
 
     mod = flatten_IO(mod, flattened_name_map)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, _ = construct_tvm_ir(
@@ -641,7 +622,6 @@ def compile_paddle_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -667,7 +647,6 @@ def compile_tvm_for_forge(
     return_params=False,
     compiler_cfg=None,
     verify_cfg=None,
-    forge_property_handler=None,
 ):
     target = "llvm"
     verify_args = {"inputs": inputs, "framework_outputs": golden_outputs, "verify_cfg": verify_cfg}
@@ -676,7 +655,6 @@ def compile_tvm_for_forge(
         target=target,
         params=params,
         graph_name=graph_name,
-        forge_property_handler=forge_property_handler,
         **verify_args,
     )
 
@@ -696,8 +674,7 @@ def compile_tvm_for_forge(
         mod, graph_name=graph_name, compiler_cfg=compiler_cfg, input_names=input_names
     )
     tvm.relay.build_module.build(mod, target=target, params=params)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
+    record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
     if return_params:
         return mod, forge_params
@@ -746,9 +723,7 @@ def clean_names(json_graph, forge_params, param_name_lookup={}):
     return json_graph
 
 
-def compile_onnx_for_forge(
-    onnx_mod, onnx_path, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None
-):
+def compile_onnx_for_forge(onnx_mod, onnx_path, *inputs, graph_name, compiler_cfg, verify_cfg=None):
     import onnxruntime as ort
 
     # Set default num threads to 2, hangs on some hosts otherwise https://github.com/microsoft/onnxruntime/issues/10166
@@ -798,8 +773,7 @@ def compile_onnx_for_forge(
 
     mod, params = relay.frontend.from_onnx(onnx_mod, input_shape_dict, freeze_params=False)
     mod = relay.transform.DynamicToStatic()(mod)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     if not compiler_cfg.enable_tvm_constant_prop:
         mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], {}))
@@ -820,7 +794,6 @@ def compile_onnx_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     weight_names = [weight.name for weight in onnx_mod.graph.initializer]
@@ -831,9 +804,7 @@ def compile_onnx_for_forge(
     return json_graphs, inputs
 
 
-def compile_tflite_for_forge(
-    module, path, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None
-):
+def compile_tflite_for_forge(module, path, *inputs, graph_name, compiler_cfg, verify_cfg=None):
 
     assert path != None, "TFLite compile needs path to .tflite file on disk."
     tflite_model_buf = open(path, "rb").read()
@@ -878,8 +849,7 @@ def compile_tflite_for_forge(
         tflite_model,
         shape_dict=input_shape_dict,
     )
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     assert len(input_names) == len(inputs), "Number of input names must match number of inputs"
 
@@ -902,7 +872,6 @@ def compile_tflite_for_forge(
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=graph_hash.hexdigest())
@@ -979,7 +948,7 @@ def get_frozen_graph_for_large_jax_model(
     return graph_def, tf_func
 
 
-def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None):
+def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cfg=None):
     # Extract framework model outputs
     framework_outputs = extract_framework_model_outputs(
         framework="jax",
@@ -1019,8 +988,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
     outputs = [output.name for output in tf_func.outputs]
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=outputs)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Write Graph to the TensorBoard
     # writer = tf.summary.create_file_writer("generated_modules/tensorboard/jax")
@@ -1049,7 +1017,6 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -1084,7 +1051,7 @@ def compile_jax_for_forge(jaxmodel, *inputs, graph_name, compiler_cfg, verify_cf
     return json_graphs, flattened_inputs
 
 
-def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=None, forge_property_handler=None):
+def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=None):
     # Extract framework model outputs
     framework_outputs = extract_framework_model_outputs(
         framework="tensorflow",
@@ -1130,8 +1097,7 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
     outputs = [x.name for x in flattened_outputs]
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, outputs=outputs)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     # Construct TVM IR
     mod, param_name_lookup = construct_tvm_ir(
@@ -1156,7 +1122,6 @@ def compile_tf_for_forge(tfmod, *inputs, graph_name, compiler_cfg, verify_cfg=No
         return_params=True,
         compiler_cfg=compiler_cfg,
         verify_cfg=verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
 
     # Extract Graphs (TT, CPU, ...)
@@ -1179,7 +1144,6 @@ def compile_tf_graphdef_for_forge(
     *inputs,
     graph_name,
     compiler_cfg,
-    forge_property_handler=None,
 ):
     output_list_ = compiler_cfg.framework_model_output_names
     # framework_outputs = tfmod(*inputs)
@@ -1211,8 +1175,7 @@ def compile_tf_graphdef_for_forge(
 
     mod, params = tvm.relay.frontend.from_tensorflow(graph_def, layout="NCHW", outputs=output_list_)
     mod = tvm.transform.Sequential([tvm.relay.transform.Inline()])(mod)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IR_TRANSFORMATION)
 
     assert (
         compiler_cfg.enable_tvm_constant_prop == True
@@ -1234,9 +1197,7 @@ def compile_tf_graphdef_for_forge(
         mod = tvm.IRModule.from_expr(tvm.relay.build_module.bind_params_by_name(mod["main"], propped_params))
 
     target = "llvm"
-    mod, params = compile_for_forge(
-        mod, target=target, params=params, graph_name=graph_name, forge_property_handler=forge_property_handler
-    )
+    mod, params = compile_for_forge(mod, target=target, params=params, graph_name=graph_name)
 
     # Reconstruct Ops + export forge graph
     partitioned_mod, forge_params = tvm.relay.op.contrib.forge.partition_for_forge(
@@ -1244,8 +1205,7 @@ def compile_tf_graphdef_for_forge(
     )
 
     tvm.relay.build_module.build(partitioned_mod, target=target, params=params)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
+    record_execution(ExecutionStage.FAILED_FORGE_MODULE_GENERATION)
 
     json_graphs = extract_graphs(partitioned_mod, forge_params, input_names, [], graph_hash=graph_hash.hexdigest())
 
