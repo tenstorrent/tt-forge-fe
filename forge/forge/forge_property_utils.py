@@ -489,15 +489,6 @@ class ForgePropertyHandler:
         # Fallback: return an empty dictionary if no dataclass instance can be created.
         return {}
 
-    def record_model_name(self, model_name: str):
-        """
-        Records the model name in the tags.
-
-        Args:
-            model_name (str): The model name to record.
-        """
-        self.add("tags.model_name", model_name)
-
     def record_execution_depth(self, execution_depth: ExecutionDepth):
         """
         Records the execution depth (as bringup_status) in the tags.
@@ -743,7 +734,8 @@ class ForgePropertyHandler:
         )
 
         # Record model_name
-        self.record_model_name(module_name)
+        self.add("tags.model_name", module_name)
+
         return module_name
 
 
