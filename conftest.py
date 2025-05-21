@@ -7,11 +7,11 @@ import time
 import pytest
 import psutil
 import shutil
+import requests_cache
 from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
 from forge._C.verif import malloc_trim
-import requests_cache
 
 
 def pytest_sessionstart(session):
