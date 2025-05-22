@@ -1003,7 +1003,6 @@ def test_bernoulli(input_shape):
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        
     )
 
     verify(inputs, model, compiled_model)

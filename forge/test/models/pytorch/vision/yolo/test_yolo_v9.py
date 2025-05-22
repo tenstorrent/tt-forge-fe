@@ -44,7 +44,6 @@ def test_yolov9():
         framework_model,
         sample_inputs=input,
         module_name=module_name,
-        
         compiler_cfg=compiler_cfg,
     )
 

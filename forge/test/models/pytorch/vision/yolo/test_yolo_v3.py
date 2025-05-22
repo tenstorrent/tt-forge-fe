@@ -38,7 +38,6 @@ def test_yolo_v3():
         framework_model,
         sample_inputs=[input_sample],
         module_name=module_name,
-        
         compiler_cfg=compiler_cfg,
     )
 
@@ -47,6 +46,5 @@ def test_yolo_v3():
         [input_sample],
         framework_model,
         compiled_model,
-        
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )

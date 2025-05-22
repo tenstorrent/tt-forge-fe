@@ -124,6 +124,5 @@ def test_matmuls(shapes, train, verify_stage):
         framework_model,
         sample_inputs=inputs,
         training=train,
-        
         verify_cfg=verify_cfg,
     )

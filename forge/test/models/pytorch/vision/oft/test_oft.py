@@ -38,7 +38,6 @@ def test_oft():
         framework_model,
         sample_inputs=input_sample,
         module_name=module_name,
-        
         compiler_cfg=compiler_cfg,
     )
 
