@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
 #
 # SPDX-License-Identifier: Apache-2.0
+#
+# This file is modified version of postprocessing from PaddleOCR
+# reference: https://github.com/PaddlePaddle/PaddleOCR/blob/main/ppocr/postprocess/db_postprocess.py
+
 import os
 import cv2
 import numpy as np

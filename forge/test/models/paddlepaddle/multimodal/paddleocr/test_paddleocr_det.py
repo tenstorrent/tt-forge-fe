@@ -21,12 +21,8 @@ from test.utils import fetch_paddle_model
 model_urls = {
     "v4": {
         "ch": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar",
-        # "en": "https://paddleocr.bj.bcebos.com/PP-OCRv3/english/en_PP-OCRv3_det_infer.tar",
-    },
-    # "v0": {
-    #     "ch": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_det_infer.tar",
-    #     "en": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/multilingual/en_ppocr_mobile_v2.0_det_infer.tar",
-    # },
+    }
+
 }
 
 cache_dir = os.path.join("forge/test/models/paddlepaddle/multimodal/paddleocr", "cached_models")
@@ -34,7 +30,6 @@ os.makedirs(cache_dir, exist_ok=True)
 
 
 @pytest.mark.nightly
-# @pytest.mark.xfail()
 @pytest.mark.parametrize(
     "variant,url",
     [(f"{variant}_det_{lang}", url) for variant, urls in model_urls.items() for lang, url in urls.items()],
