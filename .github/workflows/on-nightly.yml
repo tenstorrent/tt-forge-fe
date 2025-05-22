@@ -54,6 +54,8 @@ jobs:
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
           if [ -z "${{ inputs.rebuild }}" ]; then
             echo "rebuild=All" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == 'schedule' ]; then
+            echo "rebuild=All" >> $GITHUB_OUTPUT
           else
             echo "rebuild=$(if [ ${{ inputs.rebuild }} == 'true' ]; then echo Release; else echo None; fi)" >> $GITHUB_OUTPUT
           fi
