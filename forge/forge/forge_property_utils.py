@@ -368,29 +368,12 @@ class ForgePropertyHandler:
 
     Attributes:
         store (ForgePropertyStore): The underlying store containing the property data.
-        record_single_op_details (bool): Flag indicating whether single operation details
         should be recorded.
     """
 
     def __init__(self, store: ForgePropertyStore = ForgePropertyStore()):
         self.store = store
-        self.record_single_op_details = False
         self.record_execution(ExecutionStage.FAILED_BEFORE_FORGE_COMPILATION_INITIATION)
-
-    def enable_single_op_details_recording(self):
-        """
-        Enables recording for single operation details.
-
-        When enabled, additional details such as op name, op arguments, operands information,
-        model names, refined error messages, and failure categories will be recorded.
-        """
-        self.record_single_op_details = True
-
-    def disable_single_op_details_recording(self):
-        """
-        Disables recording for single operation details.
-        """
-        self.record_single_op_details = False
 
     def add(self, key: str, value: Any):
         """
@@ -520,26 +503,6 @@ class ForgePropertyHandler:
         self.record_execution_stage(execution_stage)
         self.record_execution_depth(ExecutionDepth.from_exec_stage(execution_stage))
 
-    def record_forge_op_name(self, forge_op_name: str):
-        """
-        Records the Forge op name in the op information tags if single op details recording is enabled.
-
-        Args:
-            forge_op_name (str): The Forge operation name.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.forge_op_name", forge_op_name)
-
-    def record_forge_op_args(self, op_args: Dict[str, Any]):
-        """
-        Records the arguments for the Forge operation in the op information tags if single op details recording is enabled.
-
-        Args:
-            op_args (Dict[str, Any]): A dictionary of operation arguments.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.args", op_args)
-
     def extract_node_type(self, operand):
         if isinstance(operand, forge.Parameter):
             return "Parameter"
@@ -547,53 +510,6 @@ class ForgePropertyHandler:
             return "Constant"
         else:
             return "Activation"
-
-    def record_single_op_operands_info(self, forge_module: ForgeModule, inputs: List[Tensor]):
-        """
-        Records details about operation operands in the op information tags if single op details recording is enabled.
-
-        For each operand, the function records the node type, shape, dataformat,
-        and the corresponding PyTorch data type.
-
-        forge_module (List[str]): ForgeModule to extract the operands details
-        inputs (List[str]): List of forge tensor inputs for the module
-        """
-        if self.record_single_op_details:
-            assert isinstance(
-                forge_module, ForgeModule
-            ), f"Operands details can be extracted only from the ForgeModule but you have provided {forge_module}"
-            output = forge_module(*inputs)
-            assert isinstance(output, Tensor), "ForgeModule should have only one output tensor"
-            if output.src_op is not None:
-                assert all(
-                    True if isinstance(operand, forge.Parameter) or operand.src_op is None else False
-                    for operand in output.src_op.operands
-                ), "ForgeModule should contains single forge op"
-                operands_list = []
-                for operand in output.src_op.operands:
-                    node_type = self.extract_node_type(operand)
-                    shape = tuple(operand.shape.get_pytorch_shape())
-                    dataformat = DataFormat.to_json(operand.data_format)
-                    torch_dtype = str(operand.pt_data_format)
-                    operands_list.append(
-                        Operand(
-                            node_type=node_type,
-                            shape=shape,
-                            dataformat=dataformat,
-                            torch_dtype=str(torch_dtype),
-                        )
-                    )
-                self.add("tags.op_info.operands", operands_list)
-
-    def record_op_model_names(self, model_names: List[str]):
-        """
-        Records the model names associated with the operation in the op information tags if single op details recording is enabled.
-
-        Args:
-            model_names (List[str]): A list of model names.
-        """
-        if self.record_single_op_details:
-            self.add("tags.op_info.model_names", model_names)
 
     def to_dict(self):
         """
@@ -886,3 +802,86 @@ def record_error(request: FixtureRequest):
         return
 
     fph.add("tags.failure_category", failure_category)
+
+
+def record_forge_op_name(forge_op_name: str):
+    """
+    Records the Forge op name in the op information tags if single op details recording is enabled.
+
+    Args:
+        forge_op_name (str): The Forge operation name.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.forge_op_name", forge_op_name)
+
+
+def record_forge_op_args(op_args: Dict[str, Any]):
+    """
+    Records the arguments for the Forge operation in the op information tags if single op details recording is enabled.
+
+    Args:
+        op_args (Dict[str, Any]): A dictionary of operation arguments.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.args", op_args)
+
+
+def record_single_op_operands_info(forge_module: ForgeModule, inputs: List[Tensor]):
+    """
+    Records details about operation operands in the op information tags if single op details recording is enabled.
+
+    For each operand, the function records the node type, shape, dataformat,
+    and the corresponding PyTorch data type.
+
+    forge_module (List[str]): ForgeModule to extract the operands details
+    inputs (List[str]): List of forge tensor inputs for the module
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    assert isinstance(
+        forge_module, ForgeModule
+    ), f"Operands details can be extracted only from the ForgeModule but you have provided {forge_module}"
+    output = forge_module(*inputs)
+    assert isinstance(output, Tensor), "ForgeModule should have only one output tensor"
+    if output.src_op is not None:
+        assert all(
+            True if isinstance(operand, forge.Parameter) or operand.src_op is None else False
+            for operand in output.src_op.operands
+        ), "ForgeModule should contains single forge op"
+        operands_list = []
+        for operand in output.src_op.operands:
+            node_type = fph.extract_node_type(operand)
+            shape = tuple(operand.shape.get_pytorch_shape())
+            dataformat = DataFormat.to_json(operand.data_format)
+            torch_dtype = str(operand.pt_data_format)
+            operands_list.append(
+                Operand(
+                    node_type=node_type,
+                    shape=shape,
+                    dataformat=dataformat,
+                    torch_dtype=str(torch_dtype),
+                )
+            )
+        fph.add("tags.op_info.operands", operands_list)
+
+
+def record_op_model_names(self, model_names: List[str]):
+    """
+    Records the model names associated with the operation in the op information tags if single op details recording is enabled.
+
+    Args:
+        model_names (List[str]): A list of model names.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.add("tags.op_info.model_names", model_names)
