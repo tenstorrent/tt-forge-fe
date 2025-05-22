@@ -131,7 +131,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_conclusion: success
           workflow_search: true
-          workflow: on-nightly.yml
+          workflow: on-push.yml
           name: forge-wheel
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
