@@ -107,7 +107,7 @@ variants = [
     pytest.param(
         "EleutherAI/gpt-neo-2.7B",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
         ),
     ),
 ]

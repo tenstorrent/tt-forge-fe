@@ -62,7 +62,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 60 GB)")
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_v0_3(variant):
 

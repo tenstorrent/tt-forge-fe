@@ -27,13 +27,13 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
         pytest.param(
             "google/gemma-1.1-2b-it",
             marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
+                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
             ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
             marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
             ),
         ),
     ],

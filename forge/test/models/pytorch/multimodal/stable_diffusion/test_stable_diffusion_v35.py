@@ -41,15 +41,27 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
-)
 @pytest.mark.parametrize(
     "variant",
     [
-        "stable-diffusion-3.5-medium",
-        "stable-diffusion-3.5-large",
-        "stable-diffusion-3.5-large-turbo",
+        pytest.param(
+            "stable-diffusion-3.5-medium",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+        ),
+        pytest.param(
+            "stable-diffusion-3.5-large",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
+            ),
+        ),
+        pytest.param(
+            "stable-diffusion-3.5-large-turbo",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
+            ),
+        ),
     ],
 )
 def test_stable_diffusion_v35(variant):

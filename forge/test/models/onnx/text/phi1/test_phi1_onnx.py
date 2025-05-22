@@ -22,7 +22,7 @@ variants = ["microsoft/phi-1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)")
+@pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)")
 @pytest.mark.parametrize("variant", variants)
 def test_phi_causal_lm_onnx(variant, forge_tmp_path):
 

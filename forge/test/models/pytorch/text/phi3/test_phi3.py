@@ -88,7 +88,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instr
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(variant):
     if variant == "microsoft/phi-3-mini-4k-instruct":
-        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
     elif variant == "microsoft/phi-3-mini-128k-instruct":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 

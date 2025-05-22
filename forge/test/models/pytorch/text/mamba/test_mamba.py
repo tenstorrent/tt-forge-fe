@@ -30,20 +30,17 @@ variants = [
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
         ),
     ),
     pytest.param(
         "state-spaces/mamba-1.4b-hf",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
         ),
     ),
     pytest.param(
         "state-spaces/mamba-370m-hf",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
-        ),
     ),
 ]
 

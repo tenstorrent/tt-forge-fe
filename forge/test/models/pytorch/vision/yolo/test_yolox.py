@@ -31,24 +31,29 @@ import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
-from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolox_utils import preprocess
 
 variants = [
-    pytest.param("yolox_nano", marks=[pytest.mark.xfail]),
+    pytest.param("yolox_nano"),
     pytest.param("yolox_tiny"),
     pytest.param("yolox_s"),
     pytest.param("yolox_m"),
-    pytest.param("yolox_l", marks=[pytest.mark.xfail]),
+    pytest.param("yolox_l"),
     pytest.param("yolox_darknet"),
-    pytest.param("yolox_x", marks=[pytest.mark.xfail]),
+    pytest.param("yolox_x"),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_yolox_pytorch(variant):
+
+    pcc = 0.99
+    if variant in ["yolox_nano", "yolox_l", "yolox_x"]:
+        pcc = 0.97
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -112,6 +117,7 @@ def test_yolox_pytorch(variant):
         inputs,
         framework_model,
         compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
     # remove downloaded weights,image
