@@ -197,8 +197,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
                         M.last_line(M.starts_with("forge/forge/verify/verify.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/interface.py:112")),
-                        M.last_line(M.starts_with("forge/forge/compile.py:756")),
-                        M.last_line(M.starts_with("forge/forge/compile.py:1015: RuntimeError")),
+                        M.last_line(M.starts_with("forge/forge/compile.py:")),
                         M.last_line(M.starts_with("forge/forge/compiled_graph_state.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/forge/clip.py:32")),
                         M.last_line(M.starts_with("forge/forge/op/eval/forge/convolution.py:")),
@@ -234,7 +233,7 @@ class ComponentChecker(Enum):
                         M.last_line(M.starts_with("forge/forge/verify/compare.py:202")),
                         M.last_line(M.starts_with("forge/forge/verify/value_checkers.py:")),
                         M.last_line(M.starts_with("forge/forge/op/eval/interface.py:112")),
-                        M.last_line(M.starts_with("forge/forge/compile.py:756")),
+                        M.last_line(M.starts_with("forge/forge/compile.py:")),
                     ),
                 ],
             ),
@@ -707,7 +706,7 @@ class FailingReasons(Enum):
                     M.starts_with("Found Unsupported operations while lowering from TTForge to TTIR in forward graph"),
                 ],
                 error_log=[
-                    M.last_line(M.starts_with("forge/forge/compile.py:1015")),
+                    M.last_line(M.starts_with("forge/forge/compile.py:")),
                 ],
             ),
             ExceptionCheck(
@@ -946,7 +945,7 @@ class FailingReasons(Enum):
                     M.starts_with("Generated MLIR module failed verification"),
                 ],
                 error_log=[
-                    M.last_line(M.starts_with("forge/forge/compile.py:1015")),
+                    M.last_line(M.starts_with("forge/forge/compile.py:")),
                 ],
             ),
             # clamp	RuntimeError: Fatal error
@@ -1562,7 +1561,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("Cannot squeeze a non-zero dim"),
-                    M.last_line(M.starts_with("forge/forge/compile.py:756")),
+                    M.last_line(M.starts_with("forge/forge/compile.py:")),
                 ],
             ),
             # clamp	RuntimeError: value cannot be converted to type at::BFloat16 without overflow
