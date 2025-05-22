@@ -153,10 +153,9 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("LeakyRelu")
+    record_forge_op_name("LeakyRelu")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -164,9 +163,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -193,14 +192,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

@@ -16,7 +16,7 @@ from forge.forge_property_utils import Framework, Source, Task, record_model_pro
 
 @pytest.mark.xfail()
 @pytest.mark.nightly
-def test_googlenet(forge_property_recorder):
+def test_googlenet():
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PADDLE,
@@ -34,7 +34,6 @@ def test_googlenet(forge_property_recorder):
         framework_model,
         sample_inputs=input_sample,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Verify data on sample input
@@ -43,5 +42,4 @@ def test_googlenet(forge_property_recorder):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )

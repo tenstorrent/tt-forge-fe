@@ -85,7 +85,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instr
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_causal_lm(forge_property_recorder, variant):
+def test_phi3_causal_lm(variant):
     if variant == "microsoft/phi-3-mini-4k-instruct":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
     elif variant == "microsoft/phi-3-mini-128k-instruct":
@@ -134,17 +134,15 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_token_classification(forge_property_recorder, variant):
+def test_phi3_token_classification(variant):
     if variant == "microsoft/phi-3-mini-4k-instruct":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 29 GB)")
     elif variant == "microsoft/phi-3-mini-128k-instruct":
@@ -181,16 +179,16 @@ def test_phi3_token_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_sequence_classification(forge_property_recorder, variant):
+def test_phi3_sequence_classification(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -222,7 +220,7 @@ def test_phi3_sequence_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

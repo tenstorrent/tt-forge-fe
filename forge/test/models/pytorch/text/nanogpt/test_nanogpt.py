@@ -28,7 +28,7 @@ class Wrapper(torch.nn.Module):
         "FinancialSupport/NanoGPT",
     ],
 )
-def test_nanogpt_text_generation(forge_property_recorder, variant):
+def test_nanogpt_text_generation(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -66,8 +66,7 @@ def test_nanogpt_text_generation(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

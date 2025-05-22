@@ -27,7 +27,7 @@ params = [
 
 @pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
-def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
+def test_mobilenetv2_onnx(variant, forge_tmp_path):
 
     priority = ModelPriority.P1 if variant == "mobilenetv2_050" else ModelPriority.P2
 
@@ -59,9 +59,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     pcc = 0.99
     if variant == "mobilenetv2_050":
@@ -72,7 +70,6 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )
 
     # # Run model on sample data and print results

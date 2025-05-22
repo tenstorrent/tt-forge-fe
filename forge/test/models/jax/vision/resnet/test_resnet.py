@@ -22,7 +22,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_resnet(forge_property_recorder, variant):
+def test_resnet(variant):
 
     module_name = record_model_properties(
         framework=Framework.JAX,
@@ -41,14 +41,11 @@ def test_resnet(forge_property_recorder, variant):
     # Therefore, this pass is skipped until the issue is resolved.
     # ref: https://github.com/tenstorrent/tt-forge-fe/issues/1709
     os.environ["FORGE_DISABLE_CONSTANT_FOLDING"] = "1"
-    compiled_model = forge.compile(
-        framework_model, input_sample, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, input_sample, module_name=module_name)
 
     verify(
         input_sample,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )

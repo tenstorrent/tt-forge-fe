@@ -26,7 +26,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_dla_pytorch(forge_property_recorder, variant):
+def test_dla_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -37,12 +37,10 @@ def test_dla_pytorch(forge_property_recorder, variant):
     framework_model, inputs = load_dla_model(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["dla34.in1k"]
@@ -51,7 +49,7 @@ variants = ["dla34.in1k"]
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_dla_timm(forge_property_recorder, variant):
+def test_dla_timm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -66,9 +64,7 @@ def test_dla_timm(forge_property_recorder, variant):
     framework_model, inputs = load_timm_model_and_input(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

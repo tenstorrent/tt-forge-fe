@@ -26,7 +26,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
+def test_distilbert_masked_lm_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -56,18 +56,16 @@ def test_distilbert_masked_lm_pytorch(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["distilbert-base-cased-distilled-squad"])
-def test_distilbert_question_answering_pytorch(forge_property_recorder, variant):
+def test_distilbert_question_answering_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -103,18 +101,16 @@ def test_distilbert_question_answering_pytorch(forge_property_recorder, variant)
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["distilbert-base-uncased-finetuned-sst-2-english"])
-def test_distilbert_sequence_classification_pytorch(forge_property_recorder, variant):
+def test_distilbert_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -144,18 +140,16 @@ def test_distilbert_sequence_classification_pytorch(forge_property_recorder, var
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["Davlan/distilbert-base-multilingual-cased-ner-hrl"])
-def test_distilbert_token_classification_pytorch(forge_property_recorder, variant):
+def test_distilbert_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -185,9 +179,7 @@ def test_distilbert_token_classification_pytorch(forge_property_recorder, varian
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

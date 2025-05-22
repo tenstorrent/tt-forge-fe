@@ -993,7 +993,7 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl("def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):")
+        self.wl("def test_module(forge_module_and_shapes_dtypes):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():

@@ -21,7 +21,7 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instr
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
-def test_phi3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
     priority = ModelPriority.P1 if variant == "microsoft/phi-3-mini-4k-instruct" else ModelPriority.P2
 
     # Record Forge Property
@@ -68,14 +68,11 @@ def test_phi3_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Compile model
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

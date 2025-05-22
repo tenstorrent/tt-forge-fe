@@ -38,7 +38,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
+def test_deit_imgcls_hf_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -53,9 +53,7 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
         variant,
     )
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     pcc = 0.99
     if variant == "facebook/deit-base-patch16-224":
@@ -67,7 +65,6 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )
 
     # Post processing

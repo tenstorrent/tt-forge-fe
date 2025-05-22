@@ -13,7 +13,7 @@ from test.mlir.utils import prepare_jax_test
 
 
 @pytest.mark.push
-def test_add(forge_property_recorder):
+def test_add():
     class Add(nn.Module):
         @nn.compact
         def __call__(self, x, y):
@@ -23,15 +23,13 @@ def test_add(forge_property_recorder):
     framework_model, inputs = prepare_jax_test(
         framework_model, [(random.uniform, (2, 32, 32), jnp.float32), (random.uniform, (2, 32, 32), jnp.float32)]
     )
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_arithmetic(forge_property_recorder):
+def test_arithmetic():
     class Arithmetic(nn.Module):
         @nn.compact
         def __call__(self, x, y):
@@ -42,15 +40,13 @@ def test_arithmetic(forge_property_recorder):
         framework_model, [(random.uniform, (2, 32, 32), jnp.float32), (random.uniform, (2, 32, 32), jnp.float32)]
     )
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_matmul(forge_property_recorder):
+def test_matmul():
     class Matmul(nn.Module):
         @nn.compact
         def __call__(self, x, y):
@@ -61,15 +57,13 @@ def test_matmul(forge_property_recorder):
         framework_model, [(random.uniform, (32, 64), jnp.float32), (random.uniform, (64, 32), jnp.float32)]
     )
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_squeeze(forge_property_recorder):
+def test_squeeze():
     class Squeeze(nn.Module):
         @nn.compact
         def __call__(self, x, y):
@@ -82,15 +76,13 @@ def test_squeeze(forge_property_recorder):
         framework_model, [(random.uniform, (1, 32, 32), jnp.float32), (random.uniform, (1, 32, 32), jnp.float32)]
     )
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_flatten(forge_property_recorder):
+def test_flatten():
     class Flatten(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -99,15 +91,13 @@ def test_flatten(forge_property_recorder):
     framework_model = Flatten()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (2, 32, 32), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_linear_layer(forge_property_recorder):
+def test_linear_layer():
     class Linear(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -117,15 +107,13 @@ def test_linear_layer(forge_property_recorder):
     framework_model = Linear()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 784), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_multiple_layers(forge_property_recorder):
+def test_multiple_layers():
     class CNNClassifier(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -150,15 +138,13 @@ def test_multiple_layers(forge_property_recorder):
     framework_model = CNNClassifier()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 3, 32, 32), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_mnist_linear(forge_property_recorder):
+def test_mnist_linear():
     class MNISTLinear(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -172,15 +158,13 @@ def test_mnist_linear(forge_property_recorder):
     framework_model = MNISTLinear()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 784), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_batchnorm(forge_property_recorder):
+def test_batchnorm():
     class BatchNorm(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -190,15 +174,13 @@ def test_batchnorm(forge_property_recorder):
     framework_model = BatchNorm()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.uniform, (1, 32, 56, 56), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_convbn(forge_property_recorder):
+def test_convbn():
     class ConvBNLayer(nn.Module):
         @nn.compact
         def __call__(self, x):
@@ -213,8 +195,6 @@ def test_convbn(forge_property_recorder):
     framework_model = ConvBNLayer()
     framework_model, inputs = prepare_jax_test(framework_model, [(random.normal, (1, 64, 64, 3), jnp.float32)])
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

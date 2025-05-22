@@ -28,7 +28,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_regnet_img_classification(forge_property_recorder, variant):
+def test_regnet_img_classification(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -54,12 +54,11 @@ def test_regnet_img_classification(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
     logits = co_out[0]
@@ -106,7 +105,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_regnet_torchvision(forge_property_recorder, variant):
+def test_regnet_torchvision(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -129,9 +128,8 @@ def test_regnet_torchvision(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

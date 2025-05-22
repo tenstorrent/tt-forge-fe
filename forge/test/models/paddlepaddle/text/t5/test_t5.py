@@ -21,7 +21,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_t5_conditional_generation(forge_property_recorder, variant):
+def test_t5_conditional_generation(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
@@ -59,9 +59,7 @@ def test_t5_conditional_generation(forge_property_recorder, variant):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -53,7 +53,7 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_qwen_clm(forge_property_recorder, variant):
+def test_qwen_clm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -80,9 +80,7 @@ def test_qwen_clm(forge_property_recorder, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

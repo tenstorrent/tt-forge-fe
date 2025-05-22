@@ -20,7 +20,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
-def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_mistral_v0_3_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -59,14 +59,11 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

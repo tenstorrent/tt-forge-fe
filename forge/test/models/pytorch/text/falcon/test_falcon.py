@@ -15,7 +15,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
-def test_falcon(forge_property_recorder, variant):
+def test_falcon(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Record Forge Property
@@ -42,12 +42,10 @@ def test_falcon(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
@@ -73,7 +71,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_falcon_3(forge_property_recorder, variant):
+def test_falcon_3(variant):
     # Record Forge Property
     if variant in [
         "tiiuae/Falcon3-1B-Base",
@@ -110,11 +108,10 @@ def test_falcon_3(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # post processing
     generated_text = generate_no_cache(

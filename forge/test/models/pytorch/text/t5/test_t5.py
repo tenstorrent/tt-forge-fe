@@ -41,7 +41,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(forge_property_recorder, variant):
+def test_t5_generation(variant):
     if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
@@ -87,12 +87,10 @@ def test_t5_generation(forge_property_recorder, variant):
     framework_model = Wrapper(model)
 
     # Forge compile
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

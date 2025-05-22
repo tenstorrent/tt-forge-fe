@@ -31,7 +31,7 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_inception_v4_osmr_pytorch(forge_property_recorder):
+def test_inception_v4_osmr_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
@@ -47,12 +47,11 @@ def test_inception_v4_osmr_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_inceptionV4_imgcls_timm_pytorch(variant):
@@ -75,7 +74,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
+def test_inception_v4_timm_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -96,9 +95,8 @@ def test_inception_v4_timm_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

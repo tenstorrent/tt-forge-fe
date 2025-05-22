@@ -16,7 +16,7 @@ from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_
 
 
 @pytest.mark.nightly
-def test_mnist(forge_property_recorder):
+def test_mnist():
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -38,7 +38,6 @@ def test_mnist(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -47,6 +46,5 @@ def test_mnist(forge_property_recorder):
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
     )

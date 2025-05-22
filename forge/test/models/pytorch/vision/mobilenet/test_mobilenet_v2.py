@@ -20,7 +20,13 @@ from transformers import (
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -34,7 +40,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.push
-def test_mobilenetv2_basic(forge_property_recorder):
+def test_mobilenetv2_basic():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -56,12 +62,11 @@ def test_mobilenetv2_basic(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     post_processing(co_out)
@@ -82,7 +87,7 @@ def generate_model_mobilenetV2I96_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.35_96"])
-def test_mobilenetv2_96(forge_property_recorder, variant):
+def test_mobilenetv2_96(variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
@@ -104,12 +109,11 @@ def test_mobilenetv2_96(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
@@ -127,7 +131,7 @@ def generate_model_mobilenetV2I160_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_0.75_160"])
-def test_mobilenetv2_160(forge_property_recorder, variant):
+def test_mobilenetv2_160(variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
@@ -149,12 +153,11 @@ def test_mobilenetv2_160(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
@@ -174,7 +177,7 @@ def generate_model_mobilenetV2I244_imgcls_hf_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v2_1.0_224"])
-def test_mobilenetv2_224(forge_property_recorder, variant):
+def test_mobilenetv2_224(variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
@@ -196,12 +199,11 @@ def test_mobilenetv2_224(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
@@ -230,7 +232,7 @@ def generate_model_mobilenetV2_imgcls_timm_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["mobilenetv2_100"])
-def test_mobilenetv2_timm(forge_property_recorder, variant):
+def test_mobilenetv2_timm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -251,12 +253,11 @@ def test_mobilenetv2_timm(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -296,7 +297,7 @@ variants = ["google/deeplabv3_mobilenet_v2_1.0_513"]
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
+def test_mobilenetv2_deeplabv3(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -317,12 +318,11 @@ def test_mobilenetv2_deeplabv3(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants_with_weights = {
@@ -332,7 +332,7 @@ variants_with_weights = {
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_mobilenetv2_torchvision(forge_property_recorder, variant):
+def test_mobilenetv2_torchvision(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -357,9 +357,8 @@ def test_mobilenetv2_torchvision(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

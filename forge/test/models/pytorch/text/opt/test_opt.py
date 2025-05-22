@@ -26,7 +26,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_opt_causal_lm(forge_property_recorder, variant):
+def test_opt_causal_lm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -64,17 +64,16 @@ def test_opt_causal_lm(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_opt_qa(forge_property_recorder, variant):
+def test_opt_qa(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -108,17 +107,16 @@ def test_opt_qa(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_opt_sequence_classification(forge_property_recorder, variant):
+def test_opt_sequence_classification(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -156,8 +154,7 @@ def test_opt_sequence_classification(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

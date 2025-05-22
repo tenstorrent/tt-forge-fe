@@ -23,7 +23,7 @@ from test.models.pytorch.vision.glpn_kitti.model_utils.utils import (
         ),
     ],
 )
-def test_glpn_kitti(forge_property_recorder, variant):
+def test_glpn_kitti(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -39,9 +39,7 @@ def test_glpn_kitti(forge_property_recorder, variant):
     inputs = load_input(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

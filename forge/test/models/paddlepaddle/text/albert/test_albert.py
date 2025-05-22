@@ -20,7 +20,7 @@ inputs = [["一，[MASK]，三，四"]]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.parametrize("input", inputs)
-def test_albert_maskedlm(forge_property_recorder, variant, input):
+def test_albert_maskedlm(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
@@ -56,9 +56,7 @@ def test_albert_maskedlm(forge_property_recorder, variant, input):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

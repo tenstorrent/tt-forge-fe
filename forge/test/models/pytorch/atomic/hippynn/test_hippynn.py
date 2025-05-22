@@ -34,7 +34,7 @@ class HippynWrapper(torch.nn.Module):
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_hippynn(forge_property_recorder):
+def test_hippynn():
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -60,7 +60,6 @@ def test_hippynn(forge_property_recorder):
         framework_model,
         sample_inputs=(sp, pos),
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

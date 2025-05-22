@@ -34,7 +34,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
         ),
     ],
 )
-def test_fuyu8b(forge_property_recorder, variant):
+def test_fuyu8b(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
@@ -78,11 +78,9 @@ def test_fuyu8b(forge_property_recorder, variant):
     inputs = [inputs_embeds]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     os.remove("bus.png")

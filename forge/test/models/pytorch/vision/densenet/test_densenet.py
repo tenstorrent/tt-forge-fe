@@ -43,7 +43,7 @@ class densenet_xray_wrapper(nn.Module):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_densenet_121_pytorch(forge_property_recorder, variant):
+def test_densenet_121_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -68,9 +68,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     _, co_out = verify(
@@ -78,7 +76,6 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
-        forge_property_handler=forge_property_recorder,
     )
 
     # post processing
@@ -92,7 +89,7 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
         "densenet161",
     ],
 )
-def test_densenet_161_pytorch(forge_property_recorder, variant):
+def test_densenet_161_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -110,12 +107,10 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -125,7 +120,7 @@ def test_densenet_161_pytorch(forge_property_recorder, variant):
         "densenet169",
     ],
 )
-def test_densenet_169_pytorch(forge_property_recorder, variant):
+def test_densenet_169_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -144,17 +139,15 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
-def test_densenet_201_pytorch(forge_property_recorder, variant):
+def test_densenet_201_pytorch(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Record Forge Property
@@ -175,9 +168,7 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

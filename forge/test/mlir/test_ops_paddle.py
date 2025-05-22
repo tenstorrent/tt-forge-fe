@@ -22,7 +22,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_equal_pp(forge_property_recorder, shape):
+def test_equal_pp(shape):
     class Equal_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -36,11 +36,11 @@ def test_equal_pp(forge_property_recorder, shape):
     inputs = [x, y]
 
     framework_model = Equal_pp()
-    forge.compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    forge.compile(framework_model, sample_inputs=inputs)
 
 
 @pytest.mark.push
-def test_add_pp(forge_property_recorder):
+def test_add_pp():
     class Add_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -51,18 +51,16 @@ def test_add_pp(forge_property_recorder):
     inputs = [torch.rand([2, 32, 32]), torch.rand([2, 32, 32])]
 
     framework_model = Add_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
     # After setting input_spec in compile function, the framework_model is changed and can no longer have torch tensor inputs.
     framework_model_clean = Add_pp()
 
-    verify(inputs, framework_model_clean, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model_clean, compiled_model)
 
 
 @pytest.mark.push
-def test_arithmetic_pp(forge_property_recorder):
+def test_arithmetic_pp():
     class Arithmetic_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -73,15 +71,13 @@ def test_arithmetic_pp(forge_property_recorder):
     inputs = [paddle.rand([2, 32, 32]), paddle.rand([2, 32, 32])]
 
     framework_model = Arithmetic_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_matmul_pp(forge_property_recorder):
+def test_matmul_pp():
     class Matmul_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -92,15 +88,13 @@ def test_matmul_pp(forge_property_recorder):
     inputs = [paddle.rand([32, 64]), paddle.rand([64, 32])]
 
     framework_model = Matmul_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_squeeze_pp(forge_property_recorder):
+def test_squeeze_pp():
     class Squeeze_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -113,15 +107,13 @@ def test_squeeze_pp(forge_property_recorder):
     inputs = [paddle.rand([1, 32, 32]), paddle.rand([1, 32, 32])]
 
     framework_model = Squeeze_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_flatten_pp(forge_property_recorder):
+def test_flatten_pp():
     class Flatten_pp(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -134,15 +126,13 @@ def test_flatten_pp(forge_property_recorder):
     inputs = [paddle.rand([2, 32, 32])]
 
     framework_model = Flatten_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_linear_layer_pp(forge_property_recorder):
+def test_linear_layer_pp():
     input_features, output_dim = (784, 10)
 
     class Linear_pp(paddle.nn.Layer):
@@ -156,15 +146,13 @@ def test_linear_layer_pp(forge_property_recorder):
     inputs = [paddle.rand([1, input_features])]
 
     framework_model = Linear_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_multiple_layers_pp(forge_property_recorder):
+def test_multiple_layers_pp():
     class CNNClassifier_pp(paddle.nn.Layer):
         def __init__(self, num_classes=10):
             super().__init__()
@@ -185,15 +173,13 @@ def test_multiple_layers_pp(forge_property_recorder):
     inputs = [paddle.rand([1, 3, 32, 32])]
 
     framework_model = CNNClassifier_pp()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_mnist_linear_pp(forge_property_recorder):
+def test_mnist_linear_pp():
     class PaddleMNISTLinear(paddle.nn.Layer):
         def __init__(self, input_size=784, output_size=10, hidden_size=512, bias=True):
             super(PaddleMNISTLinear, self).__init__()
@@ -212,15 +198,13 @@ def test_mnist_linear_pp(forge_property_recorder):
     inputs = [paddle.rand([1, 784])]
 
     framework_model = PaddleMNISTLinear()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_loaded_model(forge_property_recorder):
+def test_loaded_model():
     input_features, output_dim = (784, 10)
 
     class Linear_pp(paddle.nn.Layer):
@@ -236,14 +220,12 @@ def test_loaded_model(forge_property_recorder):
     input_spec = [paddle.static.InputSpec(shape=[1, input_features], dtype="float32")]
     framework_model, _ = paddle_trace(Linear_pp(), input_spec)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_batchnorm_pp(forge_property_recorder):
+def test_batchnorm_pp():
     class BatchNorm_pp(paddle.nn.Layer):
         def __init__(self, num_features):
             super().__init__()
@@ -255,15 +237,13 @@ def test_batchnorm_pp(forge_property_recorder):
     inputs = [paddle.rand((1, 32, 56, 56))]
 
     framework_model = BatchNorm_pp(num_features=32)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_convbn_pp(forge_property_recorder):
+def test_convbn_pp():
     class ConvBNLayer(paddle.nn.Layer):
         def __init__(self, in_c, out_c, filter_size, stride, padding, num_groups=1, if_act=True, act=None):
             super(ConvBNLayer, self).__init__()
@@ -297,18 +277,16 @@ def test_convbn_pp(forge_property_recorder):
     inputs = [paddle.randn([1, 3, 64, 64])]
 
     framework_model = ConvBNLayer(in_c=3, out_c=64, filter_size=3, stride=1, padding=1, if_act=True, act="relu")
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("vocab_size", [32000])
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
-def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_dim):
+def test_embedding_pp(vocab_size, token_num, embedding_dim):
     class Embedding(paddle.nn.Layer):
         def __init__(self):
             super().__init__()
@@ -324,4 +302,4 @@ def test_embedding_pp(forge_property_recorder, vocab_size, token_num, embedding_
     framework_model = Embedding()
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

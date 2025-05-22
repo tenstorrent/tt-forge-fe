@@ -31,7 +31,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
+def test_vit_classify_224_hf_pytorch(variant):
 
     # Record Forge Property
     if variant in ["google/vit-base-patch16-224"]:
@@ -60,12 +60,10 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
     inputs = [image_processor(image_1, return_tensors="pt").pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
     logits = co_out[0]
@@ -92,7 +90,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vit_torchvision(forge_property_recorder, variant):
+def test_vit_torchvision(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -108,12 +106,10 @@ def test_vit_torchvision(forge_property_recorder, variant):
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

@@ -19,7 +19,7 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 @pytest.mark.nightly
 @pytest.mark.skip("Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_phi3_5_causal_lm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -57,14 +57,11 @@ def test_phi3_5_causal_lm_onnx(forge_property_recorder, variant, forge_tmp_path)
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

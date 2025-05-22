@@ -16,7 +16,7 @@ from forge.verify.verify import verify
 # Paper - https://arxiv.org/abs/1311.2524
 # Repo - https://github.com/object-detection-algorithm/R-CNN
 @pytest.mark.nightly
-def test_rcnn_pytorch(forge_property_recorder):
+def test_rcnn_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model="rcnn", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
@@ -86,9 +86,8 @@ def test_rcnn_pytorch(forge_property_recorder):
             framework_model,
             sample_inputs=inputs,
             module_name=module_name,
-            forge_property_handler=forge_property_recorder,
         )
 
-        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+        verify(inputs, framework_model, compiled_model)
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.

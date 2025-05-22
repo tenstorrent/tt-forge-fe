@@ -34,7 +34,7 @@ params = [
 
 @pytest.mark.parametrize("variant", params)
 @pytest.mark.nightly
-def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
+def test_efficientnet_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -63,9 +63,7 @@ def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     pcc = 0.99
 
@@ -79,7 +77,6 @@ def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
         verify_cfg=VerifyConfig(
             value_checker=AutomaticValueChecker(pcc=pcc),
         ),
-        forge_property_handler=forge_property_recorder,
     )
 
     # Run model on sample data and print results

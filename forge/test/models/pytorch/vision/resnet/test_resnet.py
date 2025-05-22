@@ -29,7 +29,7 @@ variants = [
 @pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_resnet_hf(variant, forge_property_recorder):
+def test_resnet_hf(variant):
     random.seed(0)
 
     # Record model details
@@ -60,7 +60,6 @@ def test_resnet_hf(variant, forge_property_recorder):
         framework_model,
         input_sample,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -70,7 +69,6 @@ def test_resnet_hf(variant, forge_property_recorder):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )
 
     # Run model on sample data and print results
@@ -114,7 +112,7 @@ def run_and_print_results(framework_model, compiled_model, inputs):
 
 
 @pytest.mark.nightly
-def test_resnet_timm(forge_property_recorder):
+def test_resnet_timm():
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model="resnet", source=Source.TIMM, variant="50", task=Task.IMAGE_CLASSIFICATION
@@ -133,7 +131,6 @@ def test_resnet_timm(forge_property_recorder):
         framework_model,
         sample_inputs=input_sample,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -143,7 +140,6 @@ def test_resnet_timm(forge_property_recorder):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )
 
 
@@ -158,7 +154,7 @@ variants_with_weights = {
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_resnet_torchvision(forge_property_recorder, variant):
+def test_resnet_torchvision(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -181,7 +177,6 @@ def test_resnet_torchvision(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -190,6 +185,4 @@ def test_resnet_torchvision(forge_property_recorder, variant):
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification
-    verify(
-        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
-    )
+    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)

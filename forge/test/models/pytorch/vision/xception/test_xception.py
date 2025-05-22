@@ -53,7 +53,7 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
-def test_xception_timm(forge_property_recorder, variant):
+def test_xception_timm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -74,12 +74,11 @@ def test_xception_timm(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post Processing
     if variant == "xception71.tf_in1k":

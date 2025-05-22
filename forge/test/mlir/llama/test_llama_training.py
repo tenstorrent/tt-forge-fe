@@ -14,7 +14,7 @@ from test.mlir.llama.utils.utils import load_model
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
 @pytest.mark.push
-def test_llama_lora_fwd_pass(forge_property_recorder, model_path):
+def test_llama_lora_fwd_pass(model_path):
     if model_path == "openlm-research/open_llama_3b":
         pytest.skip("Insufficient host DRAM to run this model")
 
@@ -32,15 +32,15 @@ def test_llama_lora_fwd_pass(forge_property_recorder, model_path):
     input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
 
     # Compile the model for forward pass
-    compiled_model = forge.compile(framework_model, input_ids, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, input_ids)
 
-    verify([input_ids], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([input_ids], framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("model_path", ["meta-llama/Llama-3.2-1B", "openlm-research/open_llama_3b"])
 @pytest.mark.xfail(reason="Tensor mismatch. Low PCC")
 @pytest.mark.push
-def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
+def test_llama_lora_bwd_pass(model_path):
     if model_path == "openlm-research/open_llama_3b":
         pytest.skip("Insufficient host DRAM to run this model")
 
@@ -63,13 +63,9 @@ def test_llama_lora_bwd_pass(forge_property_recorder, model_path):
     input_ids = input_ids.repeat(batch_size, 1)
 
     # Compile the model for training
-    compiled_model = forge.compile(
-        framework_model, input_ids, training=True, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, input_ids, training=True)
 
-    fw_out, co_out = verify(
-        [input_ids], framework_model, compiled_model, forge_property_handler=forge_property_recorder
-    )
+    fw_out, co_out = verify([input_ids], framework_model, compiled_model)
 
     # Run bwd pass
     grad = torch.rand_like(fw_out[0])

@@ -13,7 +13,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelPriority, r
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
-def test_oft(forge_property_recorder, forge_tmp_path, variant):
+def test_oft(forge_tmp_path, variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -33,8 +33,7 @@ def test_oft(forge_property_recorder, forge_tmp_path, variant):
         onnx_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_recorder=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_recorder=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

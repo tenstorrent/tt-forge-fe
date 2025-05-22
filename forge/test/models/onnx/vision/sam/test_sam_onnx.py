@@ -22,7 +22,7 @@ from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
     ],
 )
 @pytest.mark.nightly
-def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_sam_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -58,7 +58,6 @@ def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
         onnx_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
@@ -66,5 +65,4 @@ def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
         sample_inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

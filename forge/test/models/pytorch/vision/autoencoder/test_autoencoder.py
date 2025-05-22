@@ -24,7 +24,7 @@ from test.models.pytorch.vision.autoencoder.model_utils.linear_autoencoder impor
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_conv_ae_pytorch(forge_property_recorder):
+def test_conv_ae_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH, model="autoencoder", variant="conv", task=Task.IMAGE_ENCODING, source=Source.GITHUB
@@ -58,12 +58,11 @@ def test_conv_ae_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 # pretrained weights are not provided in https://github.com/udacity/deep-learning-v2-pytorch,
@@ -72,7 +71,7 @@ def test_conv_ae_pytorch(forge_property_recorder):
 
 @pytest.mark.push
 @pytest.mark.nightly
-def test_linear_ae_pytorch(forge_property_recorder):
+def test_linear_ae_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
@@ -111,12 +110,11 @@ def test_linear_ae_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     output_image = co_out[0].to(torch.float32).view(1, 28, 28).detach().numpy()

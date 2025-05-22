@@ -44,7 +44,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_gptneo_causal_lm(forge_property_recorder, variant):
+def test_gptneo_causal_lm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -87,12 +87,10 @@ def test_gptneo_causal_lm(forge_property_recorder, variant):
     inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
@@ -117,7 +115,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_gptneo_sequence_classification(forge_property_recorder, variant):
+def test_gptneo_sequence_classification(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -161,9 +159,7 @@ def test_gptneo_sequence_classification(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

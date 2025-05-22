@@ -16,7 +16,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_googlenet_pytorch(forge_property_recorder):
+def test_googlenet_pytorch():
 
     # Record Forge Property
 
@@ -53,9 +53,7 @@ def test_googlenet_pytorch(forge_property_recorder):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

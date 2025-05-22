@@ -32,7 +32,7 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_stereo(forge_property_recorder, variant):
+def test_stereo(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -50,9 +50,7 @@ def test_stereo(forge_property_recorder, variant):
 
     # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

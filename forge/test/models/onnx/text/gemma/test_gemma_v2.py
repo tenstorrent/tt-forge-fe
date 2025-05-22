@@ -33,7 +33,7 @@ Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
         ),
     ],
 )
-def test_gemma_v2_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_gemma_v2_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -60,14 +60,11 @@ def test_gemma_v2_onnx(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
