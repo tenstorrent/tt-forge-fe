@@ -84,7 +84,7 @@ def test_linear_ae_pytorch():
     # Instantiate model
     # NOTE: The model has not been pre-trained or fine-tuned.
     # This is for demonstration purposes only.
-    framework_model = LinearAE().to(torch.bfloat16)
+    framework_model = LinearAE()
 
     # Define transform to normalize data
     transform = transforms.Compose(
@@ -100,24 +100,16 @@ def test_linear_ae_pytorch():
     sample = dataset["train"][0]["image"]
     sample_tensor = transform(sample).squeeze(0)
 
-    inputs = [sample_tensor.to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    inputs = [sample_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    output_image = co_out[0].to(torch.float32).view(1, 28, 28).detach().numpy()
+    output_image = co_out[0].view(1, 28, 28).detach().numpy()
     save_path = "forge/test/models/pytorch/vision/autoencoder/results"
     os.makedirs(save_path, exist_ok=True)
     reconstructed_image_path = f"{save_path}/reconstructed_image.png"
