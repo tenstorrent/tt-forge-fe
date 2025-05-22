@@ -19,7 +19,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Segmentation Fault")
 def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Record Forge Property

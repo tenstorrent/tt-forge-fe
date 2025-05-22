@@ -30,9 +30,9 @@ variants = [
     pytest.param("vgg11"),
     pytest.param("vgg13"),
     pytest.param("vgg16"),
-    pytest.param("vgg19", marks=pytest.mark.xfail),
+    pytest.param("vgg19"),
     pytest.param("bn_vgg19"),
-    pytest.param("bn_vgg19b", marks=pytest.mark.xfail),
+    pytest.param("bn_vgg19b"),
 ]
 
 
