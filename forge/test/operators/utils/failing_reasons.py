@@ -94,7 +94,7 @@ class FailingReason:
         return f"FailingReason(description={self.description!r})"
 
 
-class MessageChecker:
+class MessageCheckerEvaluator:
     @staticmethod
     def contains(message: str) -> bool:
         return lambda ex_message: message in ex_message
@@ -124,6 +124,39 @@ class MessageChecker:
     @staticmethod
     def last_line(checker: MessageCheckerType) -> str:
         return lambda ex_message: checker(ex_message.splitlines()[-1] if ex_message else ex_message)
+
+
+class MessageChecker:
+
+    Eval = MessageCheckerEvaluator
+
+    @staticmethod
+    def contains(message: str) -> bool:
+        return lambda ex_message: __class__.Eval.contains(message)(ex_message)
+
+    @staticmethod
+    def starts_with(message: str) -> bool:
+        return lambda ex_message: __class__.Eval.starts_with(message)(ex_message)
+
+    @staticmethod
+    def equals(message: str) -> bool:
+        return lambda ex_message: __class__.Eval.equals(message)(ex_message)
+
+    @staticmethod
+    def regex(pattern: str) -> bool:
+        return lambda ex_message: __class__.Eval.regex(pattern)(ex_message)
+
+    @staticmethod
+    def any(*checkers: MessageCheckerType) -> bool:
+        return lambda ex_message: __class__.Eval.any(*checkers)(ex_message)
+
+    @staticmethod
+    def neg(checker: MessageCheckerType) -> bool:
+        return lambda ex_message: __class__.Eval.neg(checker)(ex_message)
+
+    @staticmethod
+    def last_line(checker: MessageCheckerType) -> str:
+        return lambda ex_message: __class__.Eval.last_line(checker)(ex_message)
 
 
 M = MessageChecker
