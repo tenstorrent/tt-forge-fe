@@ -4766,6 +4766,107 @@ class DecomposeGridSample(DFPatternCallback):
         return final_output
 
 
+class DecomposeResize1DLinear(DFPatternCallback):
+    def __init__(self):
+        super().__init__(rewrite_once=True, require_type=True)
+
+        # Match a pattern: a 1D image resize operation with any input data
+        self.data = wildcard()
+        self.resize = is_op("image.resize1d")(self.data)
+        self.pattern = self.resize
+
+    def callback(self, pre, post, node_map):
+        from tvm.relay.frontend.common import infer_shape
+
+        data = node_map[self.data][0]
+        attrs = post.attrs
+
+        output_size = attrs.size[0]
+        align_corners = attrs["coordinate_transformation_mode"] == "align_corners"
+
+        ishape = infer_shape(data)
+        N, C, W_in = ishape
+        W_out = output_size
+        W_in = int(W_in)
+        W_out = int(W_out)
+
+        if align_corners:
+            start = tvm.relay.const(0, "float32")
+            stop = tvm.relay.const(W_in - 1, "float32")
+            num = tvm.relay.const(W_out, "float32")
+
+            # step = (stop - start) / (num - 1)
+            step = tvm.relay.divide(
+                tvm.relay.subtract(stop, start), tvm.relay.subtract(num, tvm.relay.const(1.0, "float32"))
+            )
+
+            # idx = [0, 1, ..., W_out-1]
+            idx = tvm.relay.arange(tvm.relay.const(0.0, "float32"), num, tvm.relay.const(1.0, "float32"))
+
+            # Compute floating-point sampling indices
+            index_float = tvm.relay.add(start, tvm.relay.multiply(idx, step))
+
+        else:
+            start = tvm.relay.const(0.0, "float32")
+            stop = tvm.relay.const(W_out, "float32")
+            step = tvm.relay.const(1.0, "float32")
+
+            idx = tvm.relay.arange(start, stop, step, dtype="float32")
+
+            # scale = W_in / W_out
+            scale = tvm.relay.divide(tvm.relay.const(W_in, "float32"), tvm.relay.const(W_out, "float32"))
+            half = tvm.relay.const(0.5, "float32")
+
+            # Compute floating-point sampling indices
+            index_float = tvm.relay.subtract(tvm.relay.multiply(tvm.relay.add(idx, half), scale), half)
+
+        index_float_const = index_float
+
+        # Get floor of floating indices and cast to int32
+        index0 = tvm.relay.floor(index_float_const).astype("int32")
+
+        # index1 = min(index0 + 1, W_in - 1)
+        index1 = tvm.relay.clip(index0 + tvm.relay.const(1, "int32"), 0, W_in - 1)
+
+        # Clip index0 to be within bounds
+        index0 = tvm.relay.clip(index0, 0, W_in - 1)
+
+        # Compute linear interpolation weights
+        weight1 = tvm.relay.reshape(index_float_const - tvm.relay.cast(index0, "float32"), (1, 1, W_out))
+        weight0 = tvm.relay.const(1.0, "float32") - weight1
+
+        # Flatten input data for easy index-based access
+        flat_data = tvm.relay.reshape(data, (N * C * W_in,))
+
+        # Build flattened indices for the gather operation
+        def build_flat_index(index_w):
+            # base = [0, 1, ..., N*C - 1]
+            base = tvm.relay.arange(tvm.relay.const(0), tvm.relay.const(N * C), dtype="int32")
+            base = tvm.relay.expand_dims(base, axis=1)
+            base = tvm.relay.tile(base, [1, W_out])
+
+            # offset = base * W_in + index_w
+            offset = base * tvm.relay.const(W_in) + tvm.relay.expand_dims(index_w, 0)
+            idx = tvm.relay.reshape(offset, (-1,))
+            return idx
+
+        # Get indices for two neighboring pixels for each sampling position
+        idx0 = build_flat_index(index0)
+        idx1 = build_flat_index(index1)
+
+        # Gather pixel values at idx0 and idx1
+        flat_x0 = tvm.relay.take(flat_data, idx0, axis=0)
+        flat_x1 = tvm.relay.take(flat_data, idx1, axis=0)
+
+        # Reshape gathered values back to original output shape
+        x0 = tvm.relay.reshape(flat_x0, (N, C, W_out))
+        x1 = tvm.relay.reshape(flat_x1, (N, C, W_out))
+
+        # Apply linear interpolation: output = weight0 * x0 + weight1 * x1
+        out = weight0 * x0 + weight1 * x1
+        return out
+
+
 class DecomposeFloor(DFPatternCallback):
     def __init__(self):
         super().__init__(rewrite_once=True, require_type=True)
@@ -4900,6 +5001,7 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeResize1DLinear(),
             DecomposeZerosToFull(),
             DecomposeMeshgrid(),
             DecomposeGridSample(),
