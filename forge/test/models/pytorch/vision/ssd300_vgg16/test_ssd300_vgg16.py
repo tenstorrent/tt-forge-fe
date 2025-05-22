@@ -1,17 +1,52 @@
 # SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
 
 # SPDX-License-Identifier: Apache-2.0
+from collections import OrderedDict
+from typing import Optional
+
 import pytest
+import torch
+from torch import Tensor
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
+from test.models.pytorch.vision.ssd300_vgg16.model_utils.model_utils import (
+    Postprocessor,
+)
 from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
 
 variants_with_weights = {
     "ssd300_vgg16": "SSD300_VGG16_Weights",
 }
+
+
+class SSDWrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        model.eval()
+        self.model = model
+
+    def forward(
+        self, images: list[Tensor], targets: Optional[list[dict[str, Tensor]]] = None
+    ) -> tuple[dict[str, Tensor], list[dict[str, Tensor]]]:
+
+        # transform the input
+        images, targets = self.model.transform(images, targets)
+
+        # get the features from the backbone
+        features = self.model.backbone(images.tensors)
+        if isinstance(features, torch.Tensor):
+            features = OrderedDict([("0", features)])
+
+        features = list(features.values())
+
+        # compute the ssd heads outputs using the features
+        head_outputs = self.model.head(features)
+        output = [head_outputs["bbox_regression"], head_outputs["cls_logits"], features[0]]
+
+        return output
 
 
 @pytest.mark.nightly
@@ -34,11 +69,16 @@ def test_ssd300_vgg16(forge_property_recorder, variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
+    model = SSDWrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Post Processing
+    postprocessor = Postprocessor(model)
+    detection_fw, detection_co = postprocessor.process(fw_out, co_out, inputs)
