@@ -873,7 +873,7 @@ def record_single_op_operands_info(forge_module: ForgeModule, inputs: List[Tenso
         fph.add("tags.op_info.operands", operands_list)
 
 
-def record_op_model_names(self, model_names: List[str]):
+def record_op_model_names(model_names: List[str]):
     """
     Records the model names associated with the operation in the op information tags if single op details recording is enabled.
 
