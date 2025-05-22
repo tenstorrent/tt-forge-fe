@@ -35,7 +35,7 @@ variants = [
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
     ),
 ]
 
@@ -103,11 +103,11 @@ def test_phi2_clm(forge_property_recorder, variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
     ),
 ]
 
@@ -157,11 +157,11 @@ def test_phi2_token_classification(forge_property_recorder, variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 27 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB"),
     ),
 ]
 

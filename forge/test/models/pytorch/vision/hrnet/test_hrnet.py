@@ -72,24 +72,15 @@ variants = [
     pytest.param("hrnetv2_w30"),
     pytest.param(
         "hrnetv2_w32",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 28 GB)")],
     ),
     pytest.param(
         "hrnetv2_w40",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
-    pytest.param(
-        "hrnetv2_w44",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
-    ),
+    pytest.param("hrnetv2_w44", marks=pytest.mark.xfail),
     pytest.param(
         "hrnetv2_w48",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
-    pytest.param(
-        "hrnetv2_w64",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
-    ),
+    pytest.param("hrnetv2_w64", marks=pytest.mark.xfail),
 ]
 
 
@@ -171,27 +162,27 @@ variants = [
     pytest.param("hrnet_w30"),
     pytest.param(
         "hrnet_w32",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 22 GB)")],
     ),
     pytest.param(
         "hrnet_w40",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 24 GB)")],
     ),
     pytest.param(
         "hrnet_w44",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 26 GB)")],
     ),
     pytest.param(
         "hrnet_w48",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
     ),
     pytest.param(
         "hrnet_w64",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     pytest.param(
         "hrnet_w18.ms_aug_in1k",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 29 GB)")],
     ),
 ]
 

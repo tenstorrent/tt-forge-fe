@@ -13,7 +13,7 @@ variants = ["ministral/Ministral-3b-instruct"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB)")
 def test_ministral_3b(forge_property_recorder, variant):
 
     # Record Forge Property
