@@ -12,8 +12,6 @@ from loguru import logger
 from datetime import datetime
 from forge.forge_property_utils import (
     ForgePropertyHandler,
-    ForgePropertyStore,
-    ExecutionStage,
     forge_property_handler_var,
 )
 from forge._C.verif import malloc_trim
@@ -69,26 +67,9 @@ def forge_property_recorder(request, record_property):
 
     yield
 
-    try:
-        # Retrieve any refined error message that might have been set during the test execution
-        refined_error_message = getattr(request.node, "refined_error_message", None)
-
-        # If refined error message doesn't exists, exit without further recording.
-        if refined_error_message is None:
-            return
-
-        # Record the refined error message in the handler's property store.
-        forge_property_handler.record_refined_error_message(refined_error_message)
-
-        # Retrieve and record failure category if failure category exists
-        failure_category = getattr(request.node, "failure_category", None)
-        if failure_category is not None:
-            forge_property_handler.record_failure_category(failure_category)
-
-    finally:
-        # Store the recorded properties using the 'record_property' function from pytest.
-        forge_property_handler.store_property(record_property)
-        forge_property_handler_var.reset(token)
+    forge_property_handler.record_error(request)
+    forge_property_handler.record_all_properties(record_property)
+    forge_property_handler_var.reset(token)
 
 
 @pytest.fixture(autouse=True)

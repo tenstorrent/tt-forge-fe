@@ -35,8 +35,7 @@ from forge.forge_property_utils import (
     ExecutionStage,
     record_execution,
     record_verify_config,
-    record_pcc,
-    record_atol,
+    record_consistency_limits,
 )
 
 
@@ -389,7 +388,6 @@ def verify(
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -449,12 +447,7 @@ def verify(
 
     co_out = [co.to("cpu") for co in co_out]
 
-    if forge_property_handler is not None:
-        pcc, atol = determine_consistency_limits(fw_out, co_out)
-        if pcc is not None:
-            record_pcc(pcc=pcc)
-        if atol is not None:
-            record_atol(atol=atol)
+    record_consistency_limits(fw_out, co_out)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")

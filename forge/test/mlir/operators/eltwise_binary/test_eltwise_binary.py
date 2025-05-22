@@ -66,7 +66,7 @@ def test_stack_and_view(forge_property_recorder, shape, dim):
     framework_model = stack_and_view(dim)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(

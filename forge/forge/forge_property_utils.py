@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum, auto
+from pytest import FixtureRequest
 import json
 import re
 import contextvars
@@ -10,12 +11,14 @@ from dataclasses import dataclass, is_dataclass, field
 from dataclasses_json import dataclass_json
 from typing import Union, List, Optional, Any, get_origin, get_args, Dict, Tuple
 from forge.verify.config import VerifyConfig
+from forge.verify.compare import determine_consistency_limits
 from forge.config import CompilerConfig
 from forge._C import DataFormat
 from forge.tensor import Tensor, forge_dataformat_to_pytorch_dtype
 from loguru import logger
 from forge.module import ForgeModule
 import forge
+from torch import Tensor as TorchTensor
 
 
 class StrEnum(str, Enum):
@@ -592,24 +595,6 @@ class ForgePropertyHandler:
         if self.record_single_op_details:
             self.add("tags.op_info.model_names", model_names)
 
-    def record_refined_error_message(self, refined_error_message: str):
-        """
-        Records the refined error message in the tags.
-
-        Args:
-            refined_error_message (str): The refined error message string.
-        """
-        self.add("tags.refined_error_message", refined_error_message)
-
-    def record_failure_category(self, failure_category: str):
-        """
-        Records the failure category in the tags.
-
-        Args:
-            failure_category (str): The failure category string.
-        """
-        self.add("tags.failure_category", failure_category)
-
     def to_dict(self):
         """
         Converts the entire property store to a dictionary.
@@ -672,7 +657,28 @@ class ForgePropertyHandler:
         store_dict = self.store.to_dict()
         return recursive_clean(store_dict)
 
-    def store_property(self, record_property):
+    def record_error(self, request: FixtureRequest):
+        """
+        Records refined error message and failure category if they exist.
+
+        Parameters:
+            request: Fixture request for current test.
+        """
+        # Retrieve any refined error message that might have been set during the test execution
+        refined_error_message = getattr(request.node, "refined_error_message", None)
+        if refined_error_message is None:
+            return
+
+        self.add("tags.refined_error_message", refined_error_message)
+
+        # Add failure_category if it exist.
+        failure_category = getattr(request.node, "failure_category", None)
+        if failure_category is None:
+            return
+
+        self.add("tags.failure_category", failure_category)
+
+    def record_all_properties(self, record_property):
         """
         Stores the cleaned properties using a provided recording function.
 
@@ -688,7 +694,8 @@ class ForgePropertyHandler:
 # Context var used for storing test properties without passing forge_property_handler as a parameter to all functions.
 forge_property_handler_var = contextvars.ContextVar("forge_property_handler_var", default=None)
 
-# Global functions that uses forge_property_handler context variable to record various properties.
+# Next section contains global recording functions. They all use forge_property_handler context variable to
+# record various properties.
 
 
 def record_execution(execution_stage: ExecutionStage):
@@ -778,50 +785,6 @@ def record_flatbuffer_details(binary_json_str: str):
         fph.add("tags.outputs", outputs["forward"])
 
 
-def record_pcc(self, pcc: float):
-    """
-    Records the PCC metric in the tags.
-
-    Args:
-        pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-    """
-    fph = forge_property_handler_var.get()
-    if fph is None:
-        return
-
-    fph.add("tags.pcc", pcc)
-
-
-def record_atol(self, atol: float):
-    """
-    Records the atol (absolute tolerance) values in the tags.
-
-    Args:
-        atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-    """
-    fph = forge_property_handler_var.get()
-    if fph is None:
-        return
-
-    fph.add("tags.atol", atol)
-
-
-def record_pcc_and_atol(self, pcc: float, atol: float):
-    """
-    Records both PCC and atol values in the tags.
-
-    Args:
-        pcc (float): PCC; correlation accuracy (measured and recorded agains compiled model)
-        atol (float): Absolute tolerance; numerical stability (measured and recorded agains compiled model)
-    """
-    fph = forge_property_handler_var.get()
-    if fph is None:
-        return
-
-    fph.add("tags.pcc", pcc)
-    fph.add("tags.atol", atol)
-
-
 def record_model_properties(
     framework: Framework,
     model: str,
@@ -875,5 +838,51 @@ def record_model_properties(
 
     # Record model_name
     fph.add("tags.model_name", module_name)
-
     return module_name
+
+
+def record_consistency_limits(
+    framework_outputs: Union[Tuple[TorchTensor, ...], List[TorchTensor]], compiled_outputs: List[TorchTensor]
+):
+    """
+    Records consistency limits (PCC and ATOL).
+
+    Parameters:
+        framework_outputs: Tuple or list of torch.Tensor representing the expected (golden) outputs.
+        compiled_outputs: List of torch.Tensor representing the computed outputs.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    pcc, atol = determine_consistency_limits(framework_outputs=framework_outputs, compiled_outputs=compiled_outputs)
+    if pcc is not None:
+        fph.add("tags.pcc", pcc)
+    if atol is not None:
+        fph.add("tags.atol", atol)
+
+
+def record_error(request: FixtureRequest):
+    """
+    Records refined error message and failure category if they exist.
+
+    Parameters:
+        request: Fixture request for current test.
+    """
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    # Retrieve any refined error message that might have been set during the test execution
+    refined_error_message = getattr(request.node, "refined_error_message", None)
+    if refined_error_message is None:
+        return
+
+    fph.add("tags.refined_error_message", refined_error_message)
+
+    # Add failure_category if it exist.
+    failure_category = getattr(request.node, "failure_category", None)
+    if failure_category is None:
+        return
+
+    fph.add("tags.failure_category", failure_category)
