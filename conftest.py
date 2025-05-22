@@ -27,6 +27,23 @@ def pytest_sessionstart(session):
     requests_cache.install_cache("http_cache", backend="filesystem", cache_control=True)
 
 
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Print some cache stats
+    """
+    session = CachedSession()
+    print("------------- Cache urls:")
+    print(session.cache.urls)
+    print("------------- All cache keys for redirects and responses combined:")
+    print(list(session.cache.keys()))
+    print("------------- All responses:")
+    for response in session.cache.values():
+        print(response)
+    # Clear the cache for HTTP requests to ensure that the cache is fresh for the next test run
+    requests_cache.clear()
+    logger.info("Cleared HTTP request cache.")
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--log-memory-usage",
