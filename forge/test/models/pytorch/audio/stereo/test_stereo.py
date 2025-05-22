@@ -22,9 +22,6 @@ variants = [
     ),
     pytest.param(
         "facebook/musicgen-large",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
-        ),
     ),
 ]
 
