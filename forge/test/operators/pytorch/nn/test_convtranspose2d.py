@@ -155,7 +155,6 @@ class TestVerification:
             deprecated_verification=False,
             verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
             value_range=ValueRanges.SMALL,
-            skip_forge_verification=False,
         )
 
 
@@ -170,6 +169,7 @@ class ConvTranspose2DParams:
     groups: int = 1
     bias: bool = True
     dilation: int = 1
+    dtype: torch.dtype = None
 
     max_kernel_height = 100
     max_kernel_width = 100
@@ -341,6 +341,7 @@ class TestParamsData:
             out_channels=rng.randint(1, C_in + 10),  # it can be less, equal or greater than in_channels
             kernel_size=ConvTranspose2DParams.get_kernel_param(rng, H_in, W_in),
             bias=bias,
+            dtype=test_vector.dev_data_format,
         )
         # create kwargs
         return conv2DParams.to_kwargs_list()
@@ -557,22 +558,20 @@ class TestCollectionData:
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
 
+    float = TestCollection(
+        dev_data_formats=TestCollectionTorch.float.dev_data_formats,
+    )
+
 
 class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    failed_inference_froze = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_inference_froze.txt"
-    )
     failed_killed = TestPlanUtils.load_test_ids_from_file(
         f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_killed.txt"
     )
     failed_fatal_python_error = TestPlanUtils.load_test_ids_from_file(
         f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_fatal_python_error.txt"
-    )
-    failed_not_supported_groups = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_convtranspose2d_ids_failed_not_supported_groups.txt"
     )
 
 
@@ -661,8 +660,8 @@ TestParamsData.test_plan = TestPlan(
             ),
             dev_data_formats=[
                 item
-                for item in TestCollectionTorch.all.dev_data_formats
-                if item not in TestCollectionTorch.single.dev_data_formats
+                for item in TestCollectionData.float.dev_data_formats  # no sense to test with int data formats
+                if item not in TestCollectionData.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -673,8 +672,8 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_kwargs_no_zero_padding_unit_strides(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionTorch.all.dev_data_formats
-                if item not in TestCollectionTorch.single.dev_data_formats
+                for item in TestCollectionData.float.dev_data_formats  # no sense to test with int data formats
+                if item not in TestCollectionData.single.dev_data_formats
             ],
             math_fidelities=TestCollectionData.single.math_fidelities,
         ),
@@ -698,10 +697,6 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_fatal_python_error,
             skip_reason=FailingReasons.FATAL_ERROR,
         ),
-        # TestCollection(
-        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_not_supported_groups,
-        #     failing_reason=FailingReasons.NOT_IMPLEMENTED,
-        # ),
         *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )

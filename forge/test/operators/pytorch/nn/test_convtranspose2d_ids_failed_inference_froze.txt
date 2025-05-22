@@ -1,4 +1,0 @@
-conv_transpose_2d-FROM_HOST-{'in_channels': 2, 'out_channels': 74, 'kernel_size': 3, 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'bias': False}-(1, 2, 3, 4)-forge.Bfp2_b-HiFi4
-conv_transpose_2d-FROM_HOST-{'in_channels': 2, 'out_channels': 74, 'kernel_size': (3, 3), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'bias': False}-(1, 2, 3, 4)-forge.Bfp4-HiFi4
-conv_transpose_2d-FROM_HOST-{'in_channels': 2, 'out_channels': 74, 'kernel_size': 3, 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'bias': False}-(1, 2, 3, 4)-forge.Float16-HiFi4
-conv_transpose_2d-FROM_HOST-{'in_channels': 2, 'out_channels': 74, 'kernel_size': (3, 3), 'stride': (2, 2), 'padding': 0, 'dilation': 1, 'bias': False}-(1, 2, 3, 4)-forge.Lf8-HiFi4
