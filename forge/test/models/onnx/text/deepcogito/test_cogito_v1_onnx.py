@@ -13,7 +13,7 @@ import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.text.deepcogito.utils.model import get_input_model
+from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
 @pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
@@ -28,7 +28,6 @@ def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     sample_inputs, framework_model = get_input_model(variant)

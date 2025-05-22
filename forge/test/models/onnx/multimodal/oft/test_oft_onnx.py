@@ -6,8 +6,8 @@ import pytest
 import forge
 from forge.verify.verify import verify
 
-from test.models.onnx.multimodal.oft.utils.oft_utils import get_inputs, get_models
-from forge.forge_property_utils import Framework, Source, Task
+from test.models.onnx.multimodal.oft.model_utils.oft_utils import get_inputs, get_models
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 
 
 @pytest.mark.skip(reason="Segmentation Fault")
@@ -21,9 +21,8 @@ def test_oft(forge_property_recorder, forge_tmp_path, variant):
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        priority=ModelPriority.P1,
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

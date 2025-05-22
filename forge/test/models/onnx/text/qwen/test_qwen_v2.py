@@ -51,13 +51,6 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, forge_tmp_path):
         framework=Framework.ONNX, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    if variant in ["Qwen/Qwen2.5-0.5B-Instruct", "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-3B-Instruct"]:
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False)
     framework_model.eval()

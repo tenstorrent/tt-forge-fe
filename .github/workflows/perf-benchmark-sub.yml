@@ -76,17 +76,7 @@ jobs:
             pytest.ini
             conftest.py
             .test_durations
-          fetch-depth: 0 # Fetch all history and tags
-
-    # Clean everything from submodules (needed to avoid issues
-    # with cmake generated files leftover from previous builds)
-    # Get tt-mlir commit hash
-    - name: Cleanup submodules
-      id: sumbmodules
-      run: |
-          git submodule foreach --recursive git clean -ffdx
-          git submodule foreach --recursive git reset --hard
-          echo "ttmlir=$(git submodule status third_party/tt-mlir | awk '{gsub(/^-/, \"\"); print $1}')" >> $GITHUB_OUTPUT
+          fetch-depth: 1
 
     - name: Download ttrt wheel
       uses: dawidd6/action-download-artifact@v6
@@ -119,10 +109,11 @@ jobs:
     - name: Download built artifacts
       if: ${{ inputs.run_id }}
       continue-on-error: true
-      uses: actions/download-artifact@v4
+      uses: tenstorrent/tt-forge/.github/actions/download-artifact@main
       with:
         name: forge-wheel
-        run-id: ${{ inputs.run_id }}
+        run_id: ${{ inputs.run_id }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Find and download forge wheel
       if: ${{ !inputs.run_id }}
@@ -159,10 +150,9 @@ jobs:
     - name: Install and run TTRT
       shell: bash
       run: |
-        cd third_party/tt-mlir
         source env/activate
-        cd ../..
         pip install ttrt*.whl --force-reinstall
+        pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
         echo "save artifacts"
         ttrt query --save-artifacts
         if [ -z "${{ matrix.build.allow-fail }}" ]; then

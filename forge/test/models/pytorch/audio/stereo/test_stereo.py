@@ -9,7 +9,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from .utils import load_inputs, load_model
+from test.models.pytorch.audio.stereo.model_utils.utils import load_inputs, load_model
 
 variants = [
     pytest.param(
@@ -42,9 +42,6 @@ def test_stereo(forge_property_recorder, variant):
         task=Task.MUSIC_GENERATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, processor = load_model(variant)
 

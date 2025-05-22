@@ -8,7 +8,7 @@ import onnx
 import torch
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig, AutomaticValueChecker
-from test.models.onnx.vision.utils import load_inputs
+from test.models.onnx.vision.vision_utils import load_inputs
 from urllib.request import urlopen
 from PIL import Image
 from test.models.models_utils import print_cls_results
@@ -44,12 +44,6 @@ def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    if variant == "efficientnet_b0":
-        forge_property_recorder.record_group("generality")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load efficientnet model
     model = timm.create_model(variant, pretrained=True)

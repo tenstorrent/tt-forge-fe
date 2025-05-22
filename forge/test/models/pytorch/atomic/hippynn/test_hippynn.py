@@ -4,6 +4,8 @@
 
 import os
 
+os.environ["HIPPYNN_USE_CUSTOM_KERNELS"] = "False"
+
 import ase.build
 import ase.units
 import pytest
@@ -14,9 +16,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.atomic.hippynn.utils.model import load_model
-
-os.environ["HIPPYNN_USE_CUSTOM_KERNELS"] = "False"
+from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
 
 
 class HippynWrapper(torch.nn.Module):
@@ -44,9 +44,6 @@ def test_hippynn(forge_property_recorder):
         task=Task.ATOMIC_ML,
         source=Source.GITHUB,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model
     framework_model, output_key = load_model()

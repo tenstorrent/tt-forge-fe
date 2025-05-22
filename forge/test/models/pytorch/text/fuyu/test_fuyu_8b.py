@@ -18,7 +18,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.fuyu.utils.model import (
+from test.models.pytorch.text.fuyu.model_utils.model import (
     FuyuModelWrapper,
     generate_fuyu_embedding,
 )
@@ -39,9 +39,6 @@ def test_fuyu8b(forge_property_recorder, variant):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH, model="fuyu", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     config = FuyuConfig.from_pretrained(variant)
     config_dict = config.to_dict()

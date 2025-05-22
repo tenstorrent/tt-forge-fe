@@ -26,9 +26,6 @@ def test_xglm_causal_lm(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="xglm", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     config = XGLMConfig.from_pretrained(variant)
     config_dict = config.to_dict()
     config_dict["return_dict"] = False

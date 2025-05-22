@@ -4,10 +4,16 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.oft.utils.oft_utils import (
+from test.models.pytorch.multimodal.oft.model_utils.oft_utils import (
     StableDiffusionWrapper,
     get_inputs,
 )
@@ -24,10 +30,9 @@ def test_oft(forge_property_recorder, variant):
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)

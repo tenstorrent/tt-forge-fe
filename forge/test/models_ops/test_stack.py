@@ -33,6 +33,17 @@ class Stack1(ForgeModule):
         return stack_output_1
 
 
+class Stack2(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5):
+        stack_output_1 = forge.op.Stack(
+            "", stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5, axis=-1
+        )
+        return stack_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -51,6 +62,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             {
                 "model_names": [
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
                     "pt_stereo_facebook_musicgen_large_music_generation_hf",
                     "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 ],
@@ -72,6 +84,54 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
             "args": {"axis": "-1"},
         },
+    ),
+    (
+        Stack2,
+        [
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
     ),
 ]
 

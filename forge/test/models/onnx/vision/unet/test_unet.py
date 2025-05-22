@@ -7,22 +7,23 @@ import numpy as np
 import forge
 import onnx
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
-from utils import load_inputs
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from test.models.onnx.vision.unet.model_utils.utils import load_inputs
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
+@pytest.mark.xfail
 def test_unet_onnx(forge_property_recorder, forge_tmp_path):
 
     # Build Module Name
     module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="unet", variant="base", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+        framework=Framework.ONNX,
+        model="unet",
+        variant="base",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_SEGMENTATION,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P1")
 
     # Load the torch model
     torch_model = torch.hub.load(

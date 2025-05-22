@@ -1,107 +1,54 @@
-# SPDX-FileCopyrightText: © 2024 Tenstorrent AI ULC
-
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
-from PIL import Image
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-# https://github.com/holli/yolov3_pytorch
-# sys.path = list(set(sys.path + ["third_party/confidential_customer_models/model_2/pytorch/"]))
-
-# from yolo_v3.holli_src import utils
-# from yolo_v3.holli_src.yolo_layer import *
-# from yolo_v3.holli_src.yolov3_tiny import *
-# from yolo_v3.holli_src.yolov3 import *
+from third_party.tt_forge_models.yolov3 import ModelLoader  # isort:skip
 
 
-def generate_model_yolotinyV3_imgcls_holli_pytorch():
-    model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
-    model.load_state_dict(torch.load("weights/yolov3_tiny_coco_01.h5"))
-    model.eval()
-
-    sz = 512
-    imgfile = "person.jpg"
-    img_org = Image.open(imgfile).convert("RGB")
-    img_resized = img_org.resize((sz, sz))
-    img_tensor = utils.image2torch(img_resized)
-
-    return model, [img_tensor], {}
-
-
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="dependent on CCM repo")
 @pytest.mark.nightly
-def test_yolov3_tiny_holli_pytorch(forge_property_recorder):
+def test_yolo_v3(forge_property_recorder):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolov_3",
-        variant="tiny_holli_pytorch",
-        task=Task.IMAGE_CLASSIFICATION,
-        source=Source.TORCH_HUB,
+        model="Yolo v3",
+        variant="default",
+        task=Task.OBJECT_DETECTION,
+        source=Source.GITHUB,
     )
+    forge_property_recorder.record_group("red")
+    forge_property_recorder.record_priority("P1")
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
+    # Load model and input
+    framework_model = ModelLoader.load_model()
+    input_sample = ModelLoader.load_inputs()
 
-    framework_model, inputs, _ = generate_model_yolotinyV3_imgcls_holli_pytorch()
+    # Configurations
+    compiler_cfg = CompilerConfig()
+    compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=[input_sample],
+        module_name=module_name,
+        forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
-
-
-def generate_model_yoloV3_imgcls_holli_pytorch():
-    model = Yolov3(num_classes=80)
-    model.load_state_dict(
-        torch.load(
-            "weights/yolov3_coco_01.h5",
-            map_location=torch.device("cpu"),
-        )
+    verify(
+        [input_sample],
+        framework_model,
+        compiled_model,
+        forge_property_handler=forge_property_recorder,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
-    model.eval()
-
-    sz = 512
-    imgfile = "person.jpg"
-    img_org = Image.open(imgfile).convert("RGB")
-    img_resized = img_org.resize((sz, sz))
-    img_tensor = utils.image2torch(img_resized)
-
-    return model, [img_tensor], {"pcc": pcc}
-
-
-@pytest.mark.skip_model_analysis
-@pytest.mark.skip(reason="dependent on CCM repo")
-@pytest.mark.nightly
-def test_yolov3_holli_pytorch(forge_property_recorder):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH,
-        model="yolo_v3",
-        variant="holli_pytorch",
-        task=Task.IMAGE_CLASSIFICATION,
-        source=Source.TORCH_HUB,
-    )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
-    framework_model, inputs, _ = generate_model_yoloV3_imgcls_holli_pytorch()
-
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
-
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

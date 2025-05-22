@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
 from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
 import torch
@@ -30,10 +30,6 @@ def test_mistral_v0_3_onnx(forge_property_recorder, variant, forge_tmp_path):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

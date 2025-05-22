@@ -49,9 +49,6 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
@@ -64,11 +61,16 @@ def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
     if variant == "facebook/deit-base-patch16-224":
         pcc = 0.96
 
-    # Model Verification
-    verify(
+    # Model Verification and inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
         forge_property_handler=forge_property_recorder,
     )
+
+    # Post processing
+    logits = co_out[0]
+    predicted_class_idx = logits.argmax(-1).item()
+    print("Predicted class:", framework_model.config.id2label[predicted_class_idx])

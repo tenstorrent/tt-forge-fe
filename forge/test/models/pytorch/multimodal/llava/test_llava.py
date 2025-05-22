@@ -8,10 +8,10 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from .utils import load_inputs
+from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
 
 
 class Wrapper(torch.nn.Module):
@@ -47,10 +47,8 @@ def test_llava(forge_property_recorder, variant):
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"

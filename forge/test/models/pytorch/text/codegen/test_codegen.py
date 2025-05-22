@@ -38,9 +38,6 @@ def test_codegen(forge_property_recorder, variant):
         framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.add_special_tokens({"pad_token": "[PAD]"})

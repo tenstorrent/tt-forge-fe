@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task
 
-from test.models.pytorch.vision.sam.utils.model import get_model_inputs
+from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 
 
 @pytest.mark.parametrize(
@@ -33,14 +33,7 @@ def test_sam_onnx(forge_property_recorder, variant, forge_tmp_path):
         source=Source.GITHUB,
     )
 
-    if variant == "facebook/sam-vit-base":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load  model and input
-
     framework_model, sample_inputs = get_model_inputs(variant)
     input_tensor = sample_inputs[0]
     sample_inputs = [input_tensor]

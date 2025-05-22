@@ -9,12 +9,12 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.vovnet.utils.model_utils import (
+from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
     get_image,
     preprocess_steps,
     preprocess_timm_model,
 )
-from test.models.pytorch.vision.vovnet.utils.src_vovnet_stigma import vovnet39, vovnet57
+from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import vovnet39, vovnet57
 from forge.forge_property_utils import Framework, Source, Task
 from test.utils import download_model
 
@@ -36,9 +36,6 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant, forge_tmp_path):
     module_name = forge_property_recorder.record_model_properties(
         framework=Framework.ONNX, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and inputs
     framework_model, inputs, _ = generate_model_vovnet_imgcls_osmr_pytorch(variant)
@@ -80,9 +77,6 @@ def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_vovnet39_imgcls_stigma_pytorch()
 
     # Export model to ONNX
@@ -123,9 +117,6 @@ def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
         task=Task.OBJECT_DETECTION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_vovnet57_imgcls_stigma_pytorch()
 
     # Export model to ONNX
@@ -164,9 +155,6 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vovnet_imgcls_timm_pytorch(
         variant,

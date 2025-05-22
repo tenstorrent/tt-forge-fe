@@ -26,7 +26,6 @@ def test_llama(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.CAUSAL_LM,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = LlamaForCausalLM.from_pretrained(variant)

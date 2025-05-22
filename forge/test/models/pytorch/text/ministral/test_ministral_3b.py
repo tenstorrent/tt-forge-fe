@@ -5,7 +5,7 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
 variants = ["ministral/Ministral-3b-instruct"]
@@ -23,9 +23,8 @@ def test_ministral_3b(forge_property_recorder, variant):
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    forge_property_recorder.record_group("red")
 
     # Load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(variant)

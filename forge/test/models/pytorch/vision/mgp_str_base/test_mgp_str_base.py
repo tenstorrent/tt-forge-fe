@@ -10,7 +10,10 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import DepricatedVerifyConfig, verify
 
-from test.models.pytorch.vision.mgp_str_base.utils.utils import load_input, load_model
+from test.models.pytorch.vision.mgp_str_base.model_utils.utils import (
+    load_input,
+    load_model,
+)
 
 
 class Wrapper(torch.nn.Module):
@@ -39,9 +42,6 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
         source=Source.HUGGINGFACE,
         task=Task.SCENE_TEXT_RECOGNITION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and input
     framework_model = load_model(variant)

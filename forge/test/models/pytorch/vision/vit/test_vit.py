@@ -2,14 +2,22 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.utils.utils import load_vision_model_and_input
+from test.models.models_utils import print_cls_results
+from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
 dataset = load_dataset("huggingface/cats-image")
@@ -25,8 +33,14 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
-    if variant != "google/vit-base-patch16-224":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+
+    # Record Forge Property
+    if variant in ["google/vit-base-patch16-224"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -35,14 +49,9 @@ def test_vit_classify_224_hf_pytorch(forge_property_recorder, variant):
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant in ["google/vit-base-patch16-224"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load processor and model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
@@ -74,20 +83,17 @@ variants_with_weights = {
 }
 
 variants = [
-    "vit_b_16",
-    "vit_b_32",
-    "vit_l_16",
-    "vit_l_32",
-    "vit_h_14",
+    pytest.param("vit_b_16"),
+    pytest.param("vit_b_32", marks=[pytest.mark.xfail]),
+    pytest.param("vit_l_16"),
+    pytest.param("vit_l_32", marks=[pytest.mark.xfail]),
+    pytest.param("vit_h_14", marks=[pytest.mark.xfail]),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_vit_torchvision(forge_property_recorder, variant):
-
-    if variant != "vit_b_16":
-        pytest.skip("Skipping this variant; only testing the small variant(vit_b_16) for now.")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -98,12 +104,11 @@ def test_vit_torchvision(forge_property_recorder, variant):
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.float32)
+    inputs = [inputs[0].to(torch.float32)]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -111,4 +116,7 @@ def test_vit_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

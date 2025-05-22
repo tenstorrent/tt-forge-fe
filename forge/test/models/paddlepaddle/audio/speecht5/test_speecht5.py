@@ -32,7 +32,6 @@ def test_speecht5_text_to_speech(variant, forge_property_recorder):
         source=Source.PADDLENLP,
         task=Task.TEXT_TO_SPEECH,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = SpeechT5ForTextToSpeech.from_pretrained(variant)
