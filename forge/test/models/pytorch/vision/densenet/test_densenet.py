@@ -13,6 +13,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
@@ -155,7 +156,6 @@ def test_densenet_169_pytorch(forge_property_recorder, variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -180,4 +180,7 @@ def test_densenet_201_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])
