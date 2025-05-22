@@ -29,6 +29,7 @@ def test_mnist():
     # Load model and input
     framework_model = load_model().to(torch.bfloat16)
     inputs = load_input()
+    inputs = [inputs.to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

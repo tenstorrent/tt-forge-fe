@@ -39,7 +39,7 @@ def get_resnext_model_and_input(repo_or_dir, model_name):
 
     input_batch = get_image_tensor()
 
-    return model.to(torch.bfloat16), [input_batch.to(torch.bfloat16)]
+    return model, [input_batch]
 
 
 url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"

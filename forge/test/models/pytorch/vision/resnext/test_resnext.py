@@ -35,6 +35,8 @@ def test_resnext_50_torchhub_pytorch(variant):
 
     # Load the model and prepare input data
     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -69,6 +71,8 @@ def test_resnext_101_torchhub_pytorch(variant):
 
     # Load the model and prepare input data
     framework_model, inputs = get_resnext_model_and_input("pytorch/vision:v0.10.0", variant)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

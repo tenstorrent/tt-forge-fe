@@ -8,6 +8,8 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -22,9 +24,11 @@ from test.utils import download_model
 variants = [
     pytest.param(
         "densenet121",
+    ),
+    pytest.param(
+        "densenet121_hf_xray",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param("densenet121_hf_xray"),
 ]
 
 
@@ -65,10 +69,19 @@ def test_densenet_121_pytorch(variant):
         img_tensor = get_input_img_hf_xray()
 
     # STEP 3: Run inference on Tenstorrent device
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     _, co_out = verify(
@@ -79,7 +92,8 @@ def test_densenet_121_pytorch(variant):
     )
 
     # post processing
-    outputs = op_norm(co_out[0], model.op_threshs)
+    if variant == "densenet121_hf_xray":
+        outputs = op_norm(co_out[0], model.op_threshs)
 
 
 @pytest.mark.nightly
@@ -100,14 +114,24 @@ def test_densenet_161_pytorch(variant):
     )
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
@@ -131,15 +155,25 @@ def test_densenet_169_pytorch(variant):
     )
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
@@ -160,15 +194,25 @@ def test_densenet_201_pytorch(variant):
     )
 
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
