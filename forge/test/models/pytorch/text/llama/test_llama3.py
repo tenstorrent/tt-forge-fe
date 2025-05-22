@@ -18,7 +18,13 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
