@@ -41,11 +41,11 @@ def test_add_bfloat16_pytorch(forge_property_recorder, shape):
     framework_model = Add()
     framework_model = framework_model.to(torch.bfloat16)
 
-    data_format_override = DataFormat.Float16_b
+    # data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    # compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(
@@ -81,11 +81,11 @@ def test_add_constant_bfloat16_pytorch(forge_property_recorder, shape):
     framework_model = Add()
     framework_model = framework_model.to(torch.bfloat16)
 
-    data_format_override = DataFormat.Float16_b
+    # data_format_override = DataFormat.Float16_b
 
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    # compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(
@@ -121,7 +121,7 @@ def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
         framework_model,
         sample_inputs=inputs,
         forge_property_handler=forge_property_recorder,
-        compiler_cfg=compiler_cfg,
+        # compiler_cfg=compiler_cfg,
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
@@ -173,9 +173,9 @@ def test_convtranspose2d_bfloat16_pytorch(
         padding_mode=padding_mode,
     ).to(torch.bfloat16)
 
-    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    # compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
@@ -212,9 +212,9 @@ def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padd
     inputs = [torch.rand(shape).to(torch.bfloat16)]
 
     framework_model = PaddingAndConv2d(padding=padding).to(torch.bfloat16)
-    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    # compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

@@ -2043,8 +2043,8 @@ def generate_forge_module(
         if not os.path.exists(metadata_path(graph_name)):
             reload = False
 
-    if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
-        framework_outputs = framework_mod.cpu_eval_forward(*pytorch_inputs)
+    # if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
+    framework_outputs = framework_mod.cpu_eval_forward(*pytorch_inputs)
 
     if not reload:
         module_name = graph_name if counter == 0 else f"{graph_name}_{counter}"
@@ -2104,9 +2104,9 @@ def generate_forge_module(
     else:
         forge_inputs = forge.tensor.to_forge_tensors(flattened_inputs)
 
-    if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
-        forge_outputs = get_forge_outputs(forge_mods, devices, forge_inputs)
-        verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
+    # if verify_cfg is not None and verify_cfg.verify_forge_codegen_vs_framework:
+    forge_outputs = get_forge_outputs(forge_mods, devices, forge_inputs)
+    verify_framework_vs_forge_codegen(framework_outputs, forge_outputs, verify_cfg=verify_cfg)
 
     return forge_mods, devices, forge_inputs
 
@@ -2305,7 +2305,10 @@ def compile_tvm_to_python(
 
             elif node["op"] == "const":
                 if isinstance(json_graph["params"][node["name"]], np.ndarray):
-                    tensor = torch.from_numpy(json_graph["params"][node["name"]])
+                    if json_graph["params"][node["name"]].dtype == np.uint16:
+                        tensor = torch.from_numpy(json_graph["params"][node["name"]].astype(np.int32))
+                    else:
+                        tensor = torch.from_numpy(json_graph["params"][node["name"]])
                 else:
                     tensor = torch.tensor(json_graph["params"][node["name"]])
 

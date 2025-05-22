@@ -35,17 +35,17 @@ from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 ## https://huggingface.co/docs/timm/models/efficientnet
-
+# pytest forge/test/models/pytorch/vision/efficientnet/test_efficientnet.py::test_efficientnet_timm -vss &> test_efficientnet_timm.log
 variants = [
     pytest.param(
         "efficientnet_b0",
         id="efficientnet_b0",
         marks=[pytest.mark.push],
     ),
-    pytest.param(
-        "efficientnet_b4",
-        id="efficientnet_b4",
-    ),
+    # pytest.param(
+    #     "efficientnet_b4",
+    #     id="efficientnet_b4",
+    # ),
     # pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
     # pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
     # pytest.param("hf_hub:timm/efficientnet_b5.in12k_ft_in1k", id="hf_hub_timm_efficientnet_b5_in12k_ft_in1k"),

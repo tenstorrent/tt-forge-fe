@@ -35,7 +35,7 @@ def extract_framework_model_outputs(
 ):
     framework_outputs = []
 
-    if verify_tvm_compile:
+    if not verify_tvm_compile:
         return framework_outputs
 
     if framework == "pytorch" or framework == "paddle":
@@ -65,7 +65,12 @@ def extract_framework_model_outputs(
 
             framework_outputs = flatten_outputs(framework_outputs)
 
-        framework_outputs = [x.detach().numpy() for x in framework_outputs]
+        import ml_dtypes
+
+        framework_outputs = [
+            x.float().detach().numpy().astype(ml_dtypes.bfloat16) if x.dtype == torch.bfloat16 else x.detach().numpy()
+            for x in framework_outputs
+        ]
 
     elif framework == "tensorflow":
         kwargs = {}
