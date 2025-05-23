@@ -777,16 +777,15 @@ struct CommuteTransposeThroughReduce : testing::Test
         // Add a transpose that swaps the first two dimensions (after which dims are [64, 32, 128])
         auto transpose_node = add_node<graphlib::PyOpNode>(
             *graph, "transpose", graphlib::OpType("transpose", {}, {}, {{"dim0", 0}, {"dim1", 1}}), {input_node});
-        
+
         // Add a reshape to increase dimensionality (3D -> 5D)
         // Reshape to [64, 4, 8, 16, 8] (same volume as [64, 32, 128])
-        auto reshape_node = add_node<graphlib::PyOpNode>(
-            *graph, "reshape", "reshape", {64, 4, 8, 16, 8}, {transpose_node});
-        
+        auto reshape_node =
+            add_node<graphlib::PyOpNode>(*graph, "reshape", "reshape", {64, 4, 8, 16, 8}, {transpose_node});
+
         // Add a reduce_avg on the last dimension (-1)
-        auto reduce_node = add_node<graphlib::PyOpNode>(
-            *graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
-        
+        auto reduce_node = add_node<graphlib::PyOpNode>(*graph, "reduce", "reduce_avg", {-1, true}, {reshape_node});
+
         create_output(*graph, "out", reduce_node);
     }
 };
@@ -800,17 +799,11 @@ TEST_F(CommuteTransposeThroughReduce, commute_transpose_through_higher_dim_reduc
     graphlib::Shape commute_shape = input_shape;
 
     // shape after transposing
-    graphlib::Shape clone_shape = transpose_op->shape(); 
-        
+    graphlib::Shape clone_shape = transpose_op->shape();
+
     bool result = passes::can_commute_through_reduce(
-        graph,
-        reduce_op,
-        transpose_op,
-        nullptr,
-        &commute_shape,
-        &clone_shape,
-        false);
-    
+        graph, reduce_op, transpose_op, nullptr, &commute_shape, &clone_shape, false);
+
     // we are expecting false here since transpose has less dimensions than reduce
     // so we can't commute transpose through reduce
     EXPECT_FALSE(result);
