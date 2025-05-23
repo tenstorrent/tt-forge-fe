@@ -5,9 +5,12 @@ import os
 
 import pytest
 import requests
-from yolov6 import YOLOV6
+import torch
+from yolov6.layers.common import DetectBackend
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
@@ -18,11 +21,23 @@ from test.models.pytorch.vision.yolo.model_utils.yolov6_utils import (
 
 # Didn't dealt with yolov6n6,yolov6s6,yolov6m6,yolov6l6 variants because of its higher input size(1280)
 variants = [
-    pytest.param("yolov6n"),
-    pytest.param("yolov6s"),
-    pytest.param("yolov6m", marks=[pytest.mark.xfail]),
-    pytest.param("yolov6l", marks=[pytest.mark.xfail]),
+    "yolov6n",
+    "yolov6s",
+    "yolov6m",
+    "yolov6l",
 ]
+
+
+class YoloV6Wrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, x):
+        y, _ = self.model(x)
+        # The model outputs float32, even if the input is bfloat16
+        # Cast the output back to the input dtype
+        return y.to(x.dtype)
 
 
 @pytest.mark.nightly
@@ -50,9 +65,10 @@ def test_yolo_v6_pytorch(variant):
     except Exception as e:
         print(f"Error downloading {url}: {e}")
 
-    model = YOLOV6(weights)
+    model = DetectBackend(weights)
     framework_model = model.model
-    framework_model.eval()
+    framework_model.to(torch.bfloat16)
+    framework_model = YoloV6Wrapper(framework_model)
 
     # STEP 3 : prepare input
     url = "http://images.cocodataset.org/val2017/000000397133.jpg"
@@ -62,10 +78,15 @@ def test_yolo_v6_pytorch(variant):
     img, img_src = process_image(url, img_size, stride, half=False)
     input_batch = img.unsqueeze(0)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
