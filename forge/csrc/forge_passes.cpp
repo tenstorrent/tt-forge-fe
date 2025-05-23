@@ -29,6 +29,7 @@
 #include "passes/link_past_cache_ios.hpp"
 #include "passes/lower_concat_to_runtime_transform.hpp"
 #include "passes/lowering_context.hpp"
+#include "passes/materialize_unary_broadcasts.hpp"
 #include "passes/mlir_compiler.hpp"
 #include "passes/move_requantize.hpp"
 #include "passes/pad_output_buffer.hpp"
@@ -217,6 +218,9 @@ graphlib::Graph *run_pre_lowering_passes(graphlib::Graph *graph, const std::opti
 
     // Recalculate shapes before lowering to MLIR
     recalculate_shapes(graph);
+
+    // Make all input_tms that cant be implicitly broadcasted into actual tms
+    passes::materialize_unary_broadcasts(graph);
 
     return graph;
 }
