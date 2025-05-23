@@ -9,7 +9,6 @@ import pytest
 import cv2
 
 import forge
-from forge.config import CompilerConfig
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -46,9 +45,6 @@ def test_paddleocr_rec(forge_property_recorder, variant, url):
         source=Source.PADDLE,
         task=Task.SCENE_TEXT_RECOGNITION,
     )
-
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
