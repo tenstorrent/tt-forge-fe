@@ -41,6 +41,7 @@ def test_mobilenetv3_ssd(variant):
     weight_name = variants_with_weights[variant]
     framework_model = load_model(variant, weight_name).to(torch.bfloat16)
     inputs = load_input()
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

@@ -35,6 +35,8 @@ def test_mobilenetv1_basic():
 
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v1")
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

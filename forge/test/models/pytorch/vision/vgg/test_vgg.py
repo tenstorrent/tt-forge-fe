@@ -118,7 +118,7 @@ def test_vgg_19_hf_pytorch():
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    framework_model = download_model(VGG.from_pretrained, "vgg19")
+    framework_model = download_model(VGG.from_pretrained, "vgg19").to(torch.bfloat16)
     framework_model.eval()
 
     # Image preprocessing
@@ -141,10 +141,18 @@ def test_vgg_19_hf_pytorch():
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
@@ -185,10 +193,19 @@ def test_vgg_bn19_timm_pytorch():
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    inputs = [image_tensor]
+    inputs = [image_tensor.to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
@@ -209,7 +226,9 @@ def test_vgg_bn19_torchhub_pytorch():
         task=Task.OBJECT_DETECTION,
     )
 
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True).to(
+        torch.bfloat16
+    )
     framework_model.eval()
 
     # Image preprocessing
@@ -232,10 +251,18 @@ def test_vgg_bn19_torchhub_pytorch():
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
@@ -281,12 +308,19 @@ def test_vgg_torchvision(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
-    framework_model.to(torch.float32)
-    inputs = [inputs[0].to(torch.float32)]
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     verify_cfg = VerifyConfig()
     if variant == "vgg16_bn":

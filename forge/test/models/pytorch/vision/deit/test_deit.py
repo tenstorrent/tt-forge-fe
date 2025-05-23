@@ -2,10 +2,13 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from datasets import load_dataset
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -52,8 +55,19 @@ def test_deit_imgcls_hf_pytorch(variant):
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
+    inputs = [inputs[0].to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     pcc = 0.99
     if variant == "facebook/deit-base-patch16-224":

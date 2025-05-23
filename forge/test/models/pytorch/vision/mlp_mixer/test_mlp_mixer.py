@@ -34,10 +34,7 @@ varaints = [
         "mixer_b16_224_miil_in21k",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "mixer_b32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_b32_224"),
     pytest.param(
         "mixer_l16_224",
         marks=[pytest.mark.xfail],
@@ -46,15 +43,9 @@ varaints = [
         "mixer_l16_224_in21k",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "mixer_l32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_l32_224"),
     pytest.param("mixer_s16_224"),
-    pytest.param(
-        "mixer_s32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_s32_224"),
     pytest.param(
         "mixer_b16_224.goog_in21k",
         marks=[pytest.mark.xfail],
@@ -79,7 +70,7 @@ def test_mlp_mixer_timm_pytorch(variant):
     if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
         load_pretrained_weights = False
 
-    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights)
+    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights).to(torch.bfloat16)
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
@@ -93,10 +84,18 @@ def test_mlp_mixer_timm_pytorch(variant):
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
 
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     fw_out, co_out = verify(inputs, framework_model, compiled_model)

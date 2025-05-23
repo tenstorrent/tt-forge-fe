@@ -7,6 +7,8 @@ from datasets import load_dataset
 from transformers import AutoImageProcessor, ViTForImageClassification
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
@@ -15,6 +17,8 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -56,13 +60,23 @@ def test_vit_classify_224_hf_pytorch(variant):
 
     # Load processor and model
     image_processor = download_model(AutoImageProcessor.from_pretrained, variant)
-    framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
+    framework_model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False).to(
+        torch.bfloat16
+    )
 
     # prepare input
-    inputs = [image_processor(image_1, return_tensors="pt").pixel_values]
+    inputs = [image_processor(image_1, return_tensors="pt").pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     _, co_out = verify(inputs, framework_model, compiled_model)
@@ -82,11 +96,11 @@ variants_with_weights = {
 }
 
 variants = [
-    pytest.param("vit_b_16"),
-    pytest.param("vit_b_32", marks=[pytest.mark.xfail]),
-    pytest.param("vit_l_16"),
-    pytest.param("vit_l_32", marks=[pytest.mark.xfail]),
-    pytest.param("vit_h_14", marks=[pytest.mark.xfail]),
+    "vit_b_16",
+    "vit_b_32",
+    "vit_l_16",
+    "vit_l_32",
+    "vit_h_14",
 ]
 
 
@@ -106,14 +120,34 @@ def test_vit_torchvision(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
-    framework_model.to(torch.float32)
-    inputs = [inputs[0].to(torch.float32)]
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
+    pcc = 0.99
+
+    if variant in ["vit_b_32", "vit_l_32"]:
+        pcc = 0.98
+    elif variant == "vit_h_14":
+        pcc = 0.93
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

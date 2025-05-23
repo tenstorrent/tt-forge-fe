@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -40,9 +41,10 @@ def test_sam(variant):
 
     # Load  model and input
     framework_model, sample_inputs = get_model_inputs(variant)
+    sample_inputs = [sample_inputs[0].to(torch.bfloat16), sample_inputs[1].to(torch.bfloat16)]
 
     # Forge compile framework model
-    framework_model = SamWrapper(framework_model)
+    framework_model = SamWrapper(framework_model).to(torch.bfloat16)
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

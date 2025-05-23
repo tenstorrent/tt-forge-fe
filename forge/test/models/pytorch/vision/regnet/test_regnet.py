@@ -45,6 +45,7 @@ def test_regnet_img_classification(variant):
     # Preprocess the image
     image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = preprocess_input_data(image_url, variant)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -119,6 +120,8 @@ def test_regnet_torchvision(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)

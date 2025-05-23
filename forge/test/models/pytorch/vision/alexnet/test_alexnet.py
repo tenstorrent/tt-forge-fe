@@ -10,6 +10,8 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 from torchvision import transforms
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
@@ -27,7 +29,9 @@ def test_alexnet_torchhub():
     )
 
     # Load model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "alexnet", pretrained=True).to(
+        torch.bfloat16
+    )
     framework_model.eval()
 
     # Load and pre-process image
@@ -49,10 +53,18 @@ def test_alexnet_torchhub():
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
