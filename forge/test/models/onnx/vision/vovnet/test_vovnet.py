@@ -15,7 +15,7 @@ from test.models.pytorch.vision.vovnet.model_utils.model_utils import (
     preprocess_timm_model,
 )
 from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import vovnet39, vovnet57
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.utils import download_model
 
 
@@ -30,10 +30,10 @@ def generate_model_vovnet_imgcls_osmr_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet27s"])
-def test_vovnet_osmr_pytorch(forge_property_recorder, variant, forge_tmp_path):
+def test_vovnet_osmr_pytorch(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX, model="vovnet", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
@@ -52,9 +52,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_vovnet39_imgcls_stigma_pytorch():
@@ -66,10 +64,10 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet39"])
-def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_vovnet_v1_39_stigma_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="vovnet_v1",
         variant=variant,
@@ -91,9 +89,7 @@ def test_vovnet_v1_39_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_vovnet57_imgcls_stigma_pytorch():
@@ -106,10 +102,10 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Segmentation Fault")
 @pytest.mark.parametrize("variant", ["vovnet_v1_57"])
-def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_vovnet_v1_57_stigma_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="vovnet",
         variant=variant,
@@ -131,9 +127,7 @@ def test_vovnet_v1_57_stigma_onnx(forge_property_recorder, variant, forge_tmp_pa
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
 
 def generate_model_vovnet_imgcls_timm_pytorch(variant):
@@ -145,10 +139,10 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["ese_vovnet19b_dw.ra_in1k"])
-def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
+def test_vovnet_timm_pytorch(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="vovnet",
         variant=variant,
@@ -172,9 +166,7 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

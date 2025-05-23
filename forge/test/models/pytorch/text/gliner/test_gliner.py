@@ -27,10 +27,10 @@ variants = ["urchade/gliner_multi-v2.1"]
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_gliner(forge_property_recorder, variant):
+def test_gliner(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="Gliner",
         variant=variant,
@@ -53,12 +53,10 @@ def test_gliner(forge_property_recorder, variant):
     # Forge compile framework model
     framework_model = GlinerWrapper(model)
     framework_model.eval()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     entities = post_processing(model, co_out, [text], raw_batch)

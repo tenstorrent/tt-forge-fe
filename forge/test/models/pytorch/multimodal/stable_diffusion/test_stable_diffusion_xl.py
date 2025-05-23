@@ -47,9 +47,9 @@ class StableDiffusionXLWrapper(torch.nn.Module):
         ),
     ],
 )
-def test_stable_diffusion_generation(forge_property_recorder, variant):
+def test_stable_diffusion_generation(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="stable_diffusion",
         variant=variant,
@@ -90,9 +90,8 @@ def test_stable_diffusion_generation(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.utils import fetch_paddle_model
 
 
@@ -33,18 +33,15 @@ os.makedirs(cache_dir, exist_ok=True)
     "variant,url",
     [(f"{variant}_det_{lang}", url) for variant, urls in model_urls.items() for lang, url in urls.items()],
 )
-def test_paddleocr_det(forge_property_recorder, variant, url):
+def test_paddleocr_det(variant, url):
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
         model="paddleocr",
         variant=variant,
         source=Source.PADDLE,
         task=Task.SCENE_TEXT_DETECTION,
     )
-
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_model_name(module_name)
 
     # Fetch model
     framework_model = fetch_paddle_model(url, cache_dir)
@@ -59,7 +56,6 @@ def test_paddleocr_det(forge_property_recorder, variant, url):
     compiled_model = forge.compile(
         framework_model,
         inputs,
-        forge_property_handler=forge_property_recorder,
         module_name=module_name,
     )
 
@@ -69,5 +65,4 @@ def test_paddleocr_det(forge_property_recorder, variant, url):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.8)),
-        forge_property_handler=forge_property_recorder,
     )

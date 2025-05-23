@@ -9,7 +9,7 @@ import pytest
 import onnx
 import torch
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -25,12 +25,12 @@ variants_img_classification = [
 
 @pytest.mark.parametrize("variant", variants_img_classification)
 @pytest.mark.nightly
-def test_segformer_image_classification_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_segformer_image_classification_onnx(variant, forge_tmp_path):
 
     priority = ModelPriority.P1 if variant == "nvidia/mit-b0" else ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="segformer",
         variant=variant,
@@ -56,16 +56,13 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, f
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     # Model Verification and Inference
     _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Post processing
@@ -86,10 +83,10 @@ variants_semseg = [
 @pytest.mark.parametrize("variant", variants_semseg)
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_segformer_semantic_segmentation_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="segformer",
         variant=variant,
@@ -114,14 +111,11 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Compile model
-    compiled_model = forge.compile(
-        onnx_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(onnx_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

@@ -6,7 +6,7 @@ import pytest
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
@@ -19,10 +19,10 @@ variants_with_weights = {
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_ssdlite320_mobilenetv3(forge_property_recorder, variant):
+def test_ssdlite320_mobilenetv3(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="ssdlite320_mobilenetv3",
         variant=variant,
@@ -42,9 +42,8 @@ def test_ssdlite320_mobilenetv3(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

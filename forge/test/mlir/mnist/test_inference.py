@@ -10,13 +10,11 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.push
-def test_mnist_inference(forge_property_recorder):
+def test_mnist_inference():
     inputs = [torch.rand(1, 784)]
 
     framework_model = MNISTLinear()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

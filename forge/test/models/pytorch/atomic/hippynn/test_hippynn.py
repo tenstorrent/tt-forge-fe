@@ -13,7 +13,7 @@ import torch
 from hippynn.graphs import inputs
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
@@ -34,10 +34,10 @@ class HippynWrapper(torch.nn.Module):
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_hippynn(forge_property_recorder):
+def test_hippynn():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="Hippyn",
         variant="default",
@@ -60,7 +60,6 @@ def test_hippynn(forge_property_recorder):
         framework_model,
         sample_inputs=(sp, pos),
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

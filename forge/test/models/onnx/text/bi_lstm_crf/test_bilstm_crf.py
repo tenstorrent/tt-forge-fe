@@ -10,15 +10,15 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.text.bi_lstm_crf.model_utils.model import get_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
-def test_birnn_crf(forge_property_recorder, forge_tmp_path):
+def test_birnn_crf(forge_tmp_path):
 
     # Build Module Name
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
@@ -41,9 +41,7 @@ def test_birnn_crf(forge_property_recorder, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        model, sample_inputs=(test_input,), module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(model, sample_inputs=(test_input,), module_name=module_name)
 
     # Model Verification
-    verify(test_input, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(test_input, model, compiled_model)

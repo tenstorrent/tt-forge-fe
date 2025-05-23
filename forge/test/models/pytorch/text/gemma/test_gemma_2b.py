@@ -28,11 +28,11 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_gemma_2b(forge_property_recorder, variant):
+def test_gemma_2b(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 48 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,
@@ -72,12 +72,10 @@ def test_gemma_2b(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
@@ -96,10 +94,10 @@ def test_gemma_2b(forge_property_recorder, variant):
         ),
     ],
 )
-def test_gemma_pytorch_v2(forge_property_recorder, variant):
+def test_gemma_pytorch_v2(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,
@@ -123,11 +121,10 @@ def test_gemma_pytorch_v2(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(

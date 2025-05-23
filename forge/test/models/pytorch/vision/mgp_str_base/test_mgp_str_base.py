@@ -7,7 +7,7 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import DepricatedVerifyConfig, verify
 
 from test.models.pytorch.vision.mgp_str_base.model_utils.utils import (
@@ -32,10 +32,10 @@ class Wrapper(torch.nn.Module):
         pytest.param("alibaba-damo/mgp-str-base", marks=[pytest.mark.xfail]),
     ],
 )
-def test_mgp_scene_text_recognition(forge_property_recorder, variant):
+def test_mgp_scene_text_recognition(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mgp",
         variant=variant,
@@ -54,8 +54,7 @@ def test_mgp_scene_text_recognition(forge_property_recorder, variant):
         sample_inputs=inputs,
         verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -32,10 +32,10 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
         ),
     ],
 )
-def test_gemma_pytorch_v1(forge_property_recorder, variant):
+def test_gemma_pytorch_v1(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="gemma",
         variant=variant,
@@ -59,11 +59,10 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(

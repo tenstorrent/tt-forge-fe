@@ -11,6 +11,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -19,10 +20,10 @@ from test.models.pytorch.text.bi_lstm_crf.model_utils.model import get_model
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_birnn_crf(forge_property_recorder):
+def test_birnn_crf():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="BiRnnCrf",
         task=Task.TOKEN_CLASSIFICATION,
@@ -38,9 +39,7 @@ def test_birnn_crf(forge_property_recorder):
     model.eval()
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        model, sample_inputs=(test_input,), module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(model, sample_inputs=(test_input,), module_name=module_name)
 
     # Model Verification
-    verify(test_input, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(test_input, model, compiled_model)

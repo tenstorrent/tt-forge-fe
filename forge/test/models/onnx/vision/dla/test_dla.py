@@ -11,7 +11,7 @@ from PIL import Image
 from test.models.pytorch.vision.dla.model_utils.utils import post_processing
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 
 variants = [
@@ -30,10 +30,10 @@ variants = [
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_dla_onnx(forge_property_recorder, variant, tmp_path):
+def test_dla_onnx(variant, tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX, model="dla", variant=variant, task=Task.VISUAL_BACKBONE, source=Source.TORCHVISION
     )
 
@@ -69,12 +69,10 @@ def test_dla_onnx(forge_property_recorder, variant, tmp_path):
     framework_model = forge.OnnxModule(model_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
     post_processing(co_out)

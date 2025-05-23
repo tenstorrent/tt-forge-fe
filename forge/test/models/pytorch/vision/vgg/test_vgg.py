@@ -17,7 +17,7 @@ from vgg_pytorch import VGG
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -38,10 +38,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_osmr_pytorch(forge_property_recorder, variant):
+def test_vgg_osmr_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
     )
 
@@ -87,7 +87,6 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -96,7 +95,6 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
@@ -105,10 +103,10 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-def test_vgg_19_hf_pytorch(forge_property_recorder):
+def test_vgg_19_hf_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
     )
 
@@ -146,12 +144,10 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -177,12 +173,12 @@ def preprocess_timm_model(model_name):
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_timm_pytorch(forge_property_recorder):
+def test_vgg_bn19_timm_pytorch():
 
     variant = "vgg19_bn"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
     )
 
@@ -192,22 +188,20 @@ def test_vgg_bn19_timm_pytorch(forge_property_recorder):
     inputs = [image_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
+def test_vgg_bn19_torchhub_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vgg",
         variant="vgg19_bn",
@@ -241,12 +235,10 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -275,10 +267,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_torchvision(forge_property_recorder, variant):
+def test_vgg_torchvision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vgg",
         variant=variant,
@@ -294,15 +286,11 @@ def test_vgg_torchvision(forge_property_recorder, variant):
     inputs = [inputs[0].to(torch.float32)]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify_cfg = VerifyConfig()
     if variant == "vgg16_bn":
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
     # Model Verification
-    verify(
-        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
-    )
+    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
