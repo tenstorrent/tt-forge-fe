@@ -31,7 +31,6 @@ from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
 from forge.forge_property_utils import (
-    ForgePropertyHandler,
     ExecutionStage,
     record_execution,
     record_verify_config,
