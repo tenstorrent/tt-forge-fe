@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
