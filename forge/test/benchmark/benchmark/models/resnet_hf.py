@@ -35,6 +35,8 @@ TASK = [
     "classification",
 ]
 
+EVALUATION_SCORE_TARGET = 0.75
+
 # Batch size configurations
 BATCH_SIZE = [
     1,
@@ -120,23 +122,7 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     # Run for the first time to warm up the model, it will be done by verify function.
     # This is required to get accurate performance numbers.
-
-    # If the task is classification, we don't need verification with PCC, accuracy is stronger metric.
-    if task == "classification":
-        # Run the model
-        compiled_model(inputs[0])
-    elif task == "na":
-        verify(
-            [
-                inputs[0],
-            ],
-            framework_model,
-            compiled_model,
-            verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        )
-    else:
-        raise ValueError(f"Unsupported task: {task}.")
-
+    compiled_model(inputs[0])
     if task == "classification":
         predictions = []
         start = time.time()
@@ -153,15 +139,6 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
             co_out = compiled_model(inputs[0])[0]
         end = time.time()
         evaluation_score = 0.0
-    else:
-        raise ValueError(f"Unsupported task: {task}.")
-
-    if task == "classification":
-        pass
-    elif task == "na":
-        fw_out = framework_model(inputs[-1])[0]
-        co_out = co_out.to("cpu")
-        AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out)
     else:
         raise ValueError(f"Unsupported task: {task}.")
 
@@ -200,6 +177,16 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print(f"| Input size: {input_size}")
     print(f"| Channel size: {channel_size}")
     print("====================================================================")
+
+    if task == "classification":
+        if evaluation_score <= EVALUATION_SCORE_TARGET:
+            raise ValueError(f"Evaluation score {evaluation_score} is less than the target {EVALUATION_SCORE_TARGET}.")
+    elif task == "na":
+        fw_out = framework_model(inputs[-1])[0]
+        co_out = co_out.to("cpu")
+        AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out)
+    else:
+        raise ValueError(f"Unsupported task: {task}.")
 
     result = {
         "model": model_name,
