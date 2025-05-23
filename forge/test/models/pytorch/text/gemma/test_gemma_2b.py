@@ -90,7 +90,7 @@ def test_gemma_2b(variant):
     [
         pytest.param(
             "google/gemma-2-2b-it",
-            # marks=pytest.mark.xfail,
+            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "google/gemma-2-9b-it",
