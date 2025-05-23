@@ -779,32 +779,6 @@ def record_consistency_limits(
         fph.add("tags.atol", atol)
 
 
-def record_error(request: FixtureRequest):
-    """
-    Records refined error message and failure category if they exist.
-
-    Parameters:
-        request: Fixture request for current test.
-    """
-    fph = forge_property_handler_var.get()
-    if fph is None:
-        return
-
-    # Retrieve any refined error message that might have been set during the test execution
-    refined_error_message = getattr(request.node, "refined_error_message", None)
-    if refined_error_message is None:
-        return
-
-    fph.add("tags.refined_error_message", refined_error_message)
-
-    # Add failure_category if it exist.
-    failure_category = getattr(request.node, "failure_category", None)
-    if failure_category is None:
-        return
-
-    fph.add("tags.failure_category", failure_category)
-
-
 def record_forge_op_name(forge_op_name: str):
     """
     Records the Forge op name in the op information tags if single op details recording is enabled.
