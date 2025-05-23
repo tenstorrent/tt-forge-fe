@@ -45,8 +45,14 @@ python forge/test/benchmark/benchmark.py -m vit_base -ts classification -bs 1 -d
 # Vovnet OSMR
 python forge/test/benchmark/benchmark.py -m vovnet_osmr -ts classification -bs 16 -df bfloat16 -lp 32 -o forge-benchmark-e2e-vovnet_osmr.json
 
+# Yolo4
+python forge/test/benchmark/benchmark.py -m yolo_v4 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v4.json
+
 # Yolo8
 python forge/test/benchmark/benchmark.py -m yolo_v8 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v8.json
+
+# Yolo9
+python forge/test/benchmark/benchmark.py -m yolo_v9 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v9.json
 
 # Yolo10
 python forge/test/benchmark/benchmark.py -m yolo_v10 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v10.json
