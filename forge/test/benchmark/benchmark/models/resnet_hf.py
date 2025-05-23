@@ -111,7 +111,9 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True)
+    compiler_cfg.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
+    )
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
 
@@ -120,9 +122,9 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model, it will be done by verify function.
-    # This is required to get accurate performance numbers.
+    # Run for the first time to warm up the model. This is required to get accurate performance numbers.
     compiled_model(inputs[0])
+
     if task == "classification":
         predictions = []
         start = time.time()
