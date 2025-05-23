@@ -16,6 +16,7 @@ from test.models.tensorflow.vision.resnet.model_utils.image_utils import get_sam
 
 @pytest.mark.push
 @pytest.mark.nightly
+@pytest.mark.fails_on_bh
 def test_resnet_tensorflow(forge_property_recorder):
 
     # Record model details

@@ -32,7 +32,7 @@ from test.models.pytorch.vision.vovnet.model_utils.src_vovnet_stigma import (
 from test.utils import download_model
 
 varaints = [
-    pytest.param("vovnet27s", marks=pytest.mark.push),
+    pytest.param("vovnet27s", marks=[pytest.mark.push, pytest.mark.fails_on_bh]),
     "vovnet39",
     "vovnet57",
 ]

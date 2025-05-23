@@ -27,6 +27,7 @@ opset_versions = [7, 17]
 
 @pytest.mark.push
 @pytest.mark.nightly
+@pytest.mark.fails_on_bh
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
 def test_resnet_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):

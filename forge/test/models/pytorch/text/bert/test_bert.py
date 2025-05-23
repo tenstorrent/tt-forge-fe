@@ -29,6 +29,7 @@ from test.utils import download_model
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
 @pytest.mark.push
+@pytest.mark.fails_on_bh
 def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     # Record Forge Property
     module_name = forge_property_recorder.record_model_properties(
@@ -104,7 +105,7 @@ def generate_model_bert_qa_hf_pytorch(variant):
 
 
 variants = [
-    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push]),
+    pytest.param("phiyodr/bert-large-finetuned-squad2", marks=[pytest.mark.push, pytest.mark.fails_on_bh]),
     pytest.param("bert-large-cased-whole-word-masking-finetuned-squad"),
 ]
 

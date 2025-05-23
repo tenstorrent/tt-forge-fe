@@ -22,6 +22,7 @@ from test.utils import download_model
 
 @pytest.mark.push
 @pytest.mark.nightly
+@pytest.mark.fails_on_bh
 @pytest.mark.parametrize("variant", ["resnext50_32x4d"])
 def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
@@ -57,6 +58,7 @@ def test_resnext_50_torchhub_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.push
 @pytest.mark.nightly
+@pytest.mark.fails_on_bh
 @pytest.mark.parametrize("variant", ["resnext101_32x8d"])
 def test_resnext_101_torchhub_pytorch(forge_property_recorder, variant):
     # Record Forge Property
