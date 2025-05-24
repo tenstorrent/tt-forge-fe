@@ -1,9 +1,9 @@
 # Building
 
-Following page describes how to build the project on your local machine.
+This document describes how to build the tt-forge-fe project on your local machine.
 
 ## Prerequisites
-Main project dependencies are:
+The main project dependencies are:
 1. Clang 17
 2. Ninja
 3. CMake 3.20 or higher
@@ -31,9 +31,9 @@ python3 --version
 ```
 
 ## Building the Environment
-This is one off step to build the toolchain and create virtual environment for `tt-forge-fe`.Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
+This is a one off step to build the toolchain and create a virtual environment for `tt-forge-fe`. Generally, you need to run this step only once, unless you want to update the toolchain. Since `tt-forge-fe` is using `tt-mlir`, this step also builds the `tt-mlir` environment (toolchain).
 
-First, it's required to create toolchain directories. Proposed example creates directories in default paths. You can change the paths if you want to use different locations (see [Useful build environment variables](#useful-build-environment-flags) section below).
+First, it's required to create toolchain directories. The proposed example creates directories using the default paths. You can change the paths if you want to use different locations (see the [Useful Build Environment Variables](#useful-build-environment-flags) section below).
 ```sh
 # FFE related toolchain (dafault path)
 sudo mkdir -p /opt/ttforge-toolchain
@@ -57,7 +57,7 @@ cmake -B env/build env
 cmake --build env/build
 ```
 
-> **Expert tip:** If you already have the `tt-mlir` toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the `tt-mlir` environment (toolchain) to save time.
+> **Expert Tip:** If you already have the `tt-mlir` toolchain built, you can use the `TTFORGE_SKIP_BUILD_TTMLIR_ENV` option to skip rebuilding the `tt-mlir` environment (toolchain) to save time.
 > ```sh
 > cmake -B env/build env -DTTFORGE_SKIP_BUILD_TTMLIR_ENV=ON
 > cmake --build env/build
@@ -75,7 +75,7 @@ cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang
 cmake --build build
 ```
 
-> **NOTE:** our official compiler is `clang-17`, i.e. building with other compilers is at the moment not tested.
+> **NOTE:** our official compiler is `clang-17`, building with other compilers is at the moment not tested.
 >
 > If you want to try other compilers, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
 
@@ -117,34 +117,34 @@ mdbook serve build/docs
 
 > **Note:** `mdbook serve` will by default create a local server at `http://localhost:3000`.
 
-> **Note:** For custom port, just specify `-p` attribute. <br><br> E.g. `mdbook serve build/docs -p 5005`, and visit `http://localhost:5005`.
+> **Note:** For a custom port, specify the `-p` attribute. <br><br> E.g. `mdbook serve build/docs -p 5005`, and visit `http://localhost:5005`.
 
 ## Build Cleanup
 
 To ensure a clean build environment, follow these steps to remove existing build artifacts:
 
-1. **Clean only Forge FE build artifacts**:
+1. Remove tt-forge-fe build artifacts:
     ```sh
     rm -rf build
     ```
-   Note: This command removes the `build` directory and all its contents, effectively cleaning up the build artifacts specific to Forge FE.
+    > **Note:** This command removes the `build` directory and all its contents, effectively cleaning up the build artifacts specific to tt-forge-fe.
 
-2. **Clean all Forge build artifacts**:
+2. Clean all tt-forge-fe build artifacts:
      ```sh
      ./clean_build.sh
      ```
    > **Note:** This script executes a comprehensive cleanup, removing all build artifacts across the entire Forge project, ensuring a clean slate for subsequent builds.
 
-   > **Note:** `clean_build.sh` script will not clean toolchain (LLVM) build artifacts and dependencies.
+   > **Note:** The `clean_build.sh` script will not clean toolchain (LLVM) build artifacts and dependencies.
 
-3. **Clean everything (including environment):**
+3. Clean everything (including the environment):
     ```sh
     ./clean_build.sh
     rm -rf env/build third_party/tt-mlir/env/build
     ```
     > **Note:** This should rarely be needed, as it removes the entire build and environment (consequently entire toolchain will need to be rebuilt).
 
-## Useful build environment variables
+## Useful Build Environment Variables
 1. `TTMLIR_TOOLCHAIN_DIR` - Specifies the directory where TTMLIR dependencies will be installed. Defaults to `/opt/ttmlir-toolchain` if not defined.
 2. `TTMLIR_VENV_DIR` - Specifies the virtual environment directory for TTMLIR. Defaults to `/opt/ttmlir-toolchain/venv` if not defined.
 3. `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
@@ -163,7 +163,7 @@ ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04
 ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
 ```
 
-_Note: To be able to build tt-forge-fe inside the docker containers, make sure to set yourself as the owner of tt-forge-fe and tt-mlir toolchain directories:_
+> **Note:** To be able to build tt-forge-fe inside the docker containers, make sure to set yourself as the owner of the tt-forge-fe and tt-mlir toolchain directories -
 ```sh
 sudo chown -R $USER /opt/ttforge-toolchain
 sudo chown -R $USER /opt/ttmlir-toolchain
