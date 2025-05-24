@@ -77,6 +77,7 @@ from test.operators.utils import TestPlanUtils
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -333,26 +334,28 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: len(test_vector.input_shape) == 2,
             skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_mlir_verif_error,
-            failing_reason=FailingReasons.COMPILATION_FAILED,
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_mlir_verif_error,
+        #     failing_reason=FailingReasons.COMPILATION_FAILED,
+        # ),
+        *TestIdsDataLoader.build_failing_rules(
+            operators=[
+                "sum",
+                "mean",
+            ],
         ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pcc_error,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_dtype_error,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_error,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.unsupported_dim_error,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_dtype_error,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tilize_error,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.unsupported_dim_error,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
     ],
 )
 
