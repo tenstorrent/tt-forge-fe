@@ -332,8 +332,8 @@ class OutputNode : public QueueNode
     OutputType output_type_;
 
    public:
-    OutputNode(std::string name) :
-        QueueNode(name, QueueNodeType::Output, NodeType::kOutput),
+    OutputNode(std::string name, QueueNodeType queue_type = QueueNodeType::Output) :
+        QueueNode(name, queue_type, NodeType::kOutput),
         requires_grad_(false),
         aliased_tensor_(false),
         is_loss_output_(false),
