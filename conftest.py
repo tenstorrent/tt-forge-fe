@@ -20,7 +20,7 @@ from sys import getsizeof
 from requests_cache import DO_NOT_CACHE, NEVER_EXPIRE, Response, CachedSession
 
 
-def pytest_configure(conf):
+def pytest_configure():
     """
     This hook is called before any tests are run. It sets up a cache for HTTP requests
     to speed up tests that make network calls.
@@ -42,7 +42,7 @@ def pytest_configure(conf):
     )
 
 
-def pytest_unconfigure(conf):
+def pytest_unconfigure():
     """
     Print some cache stats
     """
