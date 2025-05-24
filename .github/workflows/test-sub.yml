@@ -141,8 +141,8 @@ jobs:
         shell: bash
         run: |
           source env/activate
-          pip install tvm*.whl --force-reinstall
-          pip install forge*.whl --force-reinstall
+          pip install tvm*.whl
+          pip install forge*.whl
           pip install requests-cache
 
       - name: Run Test
