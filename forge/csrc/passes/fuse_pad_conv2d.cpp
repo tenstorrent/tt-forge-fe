@@ -40,16 +40,24 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         {
             throw std::runtime_error("Padding is not a vector of ints");
         }
-
-        // Extract padding values
-        int left_pad = (*padding_vec)[0];
-        int right_pad = (*padding_vec)[1];
-        int top_pad = 0, bottom_pad = 0;
-
+        int top_pad = 0, bottom_pad = 0, left_pad = 0, right_pad = 0;
+        // Extract padding values for conv2d
         if (padding_vec->size() == 4)
         {
-            top_pad = (*padding_vec)[2];
-            bottom_pad = (*padding_vec)[3];
+            top_pad = (*padding_vec)[-4];
+            bottom_pad = (*padding_vec)[-3];
+            left_pad = (*padding_vec)[-2];
+            right_pad = (*padding_vec)[-1];
+        }
+        else
+        {
+            left_pad = (*padding_vec)[0];
+            right_pad = (*padding_vec)[1];
+        }
+        // Assymetric Pad check
+        if (top_pad != bottom_pad || left_pad != right_pad)
+        {
+            continue;
         }
 
         auto users = graph->users(node);
@@ -73,8 +81,7 @@ void fuse_pad_conv2d(graphlib::Graph *graph)
         {
             graphlib::OpNode *user_op = dynamic_cast<graphlib::OpNode *>(user);
             graphlib::OpType::Attrs conv_attrs = user_op->named_attrs();
-            TT_ASSERT(conv_attrs.size() == 7 && "Expected 7 attributes in conv2d op but got {}", conv_attrs.size());
-
+            TT_ASSERT(conv_attrs.size() == 5 && "Expected 5 attributes in conv2d op but got {}", conv_attrs.size());
             // Conv2d attributes [stride, dilation, groups, padding]
             auto &conv_padding_variant = conv_attrs["padding"];
 
