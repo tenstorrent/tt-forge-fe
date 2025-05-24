@@ -13,6 +13,7 @@ from datetime import datetime
 from forge.forge_property_utils import ForgePropertyHandler, ForgePropertyStore, ExecutionStage
 from forge._C.verif import malloc_trim
 from sys import getsizeof
+from requests_cache import DO_NOT_CACHE, NEVER_EXPIRE
 
 
 def pytest_sessionstart(session):
