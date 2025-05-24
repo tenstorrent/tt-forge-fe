@@ -16,7 +16,7 @@ from sys import getsizeof
 from requests_cache import DO_NOT_CACHE, NEVER_EXPIRE, Response, CachedSession
 
 
-def pytest_sessionstart(session):
+def pytest_configure(conf):
     """
     This hook is called before any tests are run. It sets up a cache for HTTP requests
     to speed up tests that make network calls.
@@ -38,11 +38,11 @@ def pytest_sessionstart(session):
     )
 
 
-def pytest_sessionfinish(session, exitstatus):
+def pytest_unconfigure(conf):
     """
     Print some cache stats
     """
-    session = CachedSession()
+    session = requests_cache.get_cache()
     print("------------- Cache urls:")
     print(session.cache.urls)
     print("------------- All cache keys for redirects and responses combined:")
