@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     forge_property_handler_var,
 )
 from forge._C.verif import malloc_trim
+from sys import getsizeof
 
 
 def pytest_sessionstart(session):
@@ -23,8 +24,21 @@ def pytest_sessionstart(session):
     This hook is called before any tests are run. It sets up a cache for HTTP requests
     to speed up tests that make network calls.
     """
+    # Set the expiration time for cached URLs
+    urls_expire_after = {
+        # '*.site_1.com': DO_NOT_CACHE,
+        # '*.github.com': NEVER_EXPIRE,
+        "*": NEVER_EXPIRE,
+    }
+
+    def filter_by_size(response: Response) -> bool:
+        """Don't cache responses with a body over 5 MB"""
+        return getsizeof(response.content) <= 5 * 1024 * 1024
+
     # Set up a cache for HTTP requests to speed up tests that make network calls
-    requests_cache.install_cache("http_cache", backend="filesystem", cache_control=True)
+    requests_cache.install_cache(
+        "http_cache", backend="filesystem", urls_expire_after=urls_expire_after, filter_fn=filter_by_size
+    )
 
 
 def pytest_sessionfinish(session, exitstatus):
