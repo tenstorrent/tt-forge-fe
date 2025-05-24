@@ -72,6 +72,7 @@ from test.operators.utils.compat import TestDevice
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -267,36 +268,37 @@ TestParamsData.test_plan = TestPlan(
             criteria=lambda test_vector: len(test_vector.input_shape) == 2,
             skip_reason=FailingReasons.NOT_IMPLEMENTED,
         ),
-        # E       RuntimeError: TT_FATAL @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:32: input_tensor.get_dtype() == DataType::FLOAT32 || input_tensor.get_dtype() == DataType::BFLOAT16
-        # E       info:
-        # E       Cannot pad tilized tensor with specified format
-        TestCollection(
-            kwargs=[
-                # {"dim0": 0, "dim1": 1}, # those are passing
-                {"dim0": 0, "dim1": 2},
-                {"dim0": 0, "dim1": 3},
-                {"dim0": 1, "dim1": 2},
-                {"dim0": 1, "dim1": 3},
-                # {"dim0": 2, "dim1": 3}, # those are failing with different error
-            ],
-            dev_data_formats=TestCollectionCommon.int.dev_data_formats,
-            math_fidelities=TestCollectionData.single.math_fidelities,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        # E       AssertionError: PCC check failed
-        TestCollection(
-            kwargs=[
-                # {"dim0": 0, "dim1": 1}, # those are passing
-                # {"dim0": 0, "dim1": 2}, # those are failing with different error
-                # {"dim0": 0, "dim1": 3}, # those are failing with different error
-                # {"dim0": 1, "dim1": 2}, # those are failing with different error
-                # {"dim0": 1, "dim1": 3}, # those are failing with different error
-                {"dim0": 2, "dim1": 3},
-            ],
-            dev_data_formats=TestCollectionCommon.int.dev_data_formats,
-            math_fidelities=TestCollectionData.single.math_fidelities,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # E       RuntimeError: TT_FATAL @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/pad/device/pad_op.cpp:32: input_tensor.get_dtype() == DataType::FLOAT32 || input_tensor.get_dtype() == DataType::BFLOAT16
+        # # E       info:
+        # # E       Cannot pad tilized tensor with specified format
+        # TestCollection(
+        #     kwargs=[
+        #         # {"dim0": 0, "dim1": 1}, # those are passing
+        #         {"dim0": 0, "dim1": 2},
+        #         {"dim0": 0, "dim1": 3},
+        #         {"dim0": 1, "dim1": 2},
+        #         {"dim0": 1, "dim1": 3},
+        #         # {"dim0": 2, "dim1": 3}, # those are failing with different error
+        #     ],
+        #     dev_data_formats=TestCollectionCommon.int.dev_data_formats,
+        #     math_fidelities=TestCollectionData.single.math_fidelities,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # # E       AssertionError: PCC check failed
+        # TestCollection(
+        #     kwargs=[
+        #         # {"dim0": 0, "dim1": 1}, # those are passing
+        #         # {"dim0": 0, "dim1": 2}, # those are failing with different error
+        #         # {"dim0": 0, "dim1": 3}, # those are failing with different error
+        #         # {"dim0": 1, "dim1": 2}, # those are failing with different error
+        #         # {"dim0": 1, "dim1": 3}, # those are failing with different error
+        #         {"dim0": 2, "dim1": 3},
+        #     ],
+        #     dev_data_formats=TestCollectionCommon.int.dev_data_formats,
+        #     math_fidelities=TestCollectionData.single.math_fidelities,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
     ],
 )
 
