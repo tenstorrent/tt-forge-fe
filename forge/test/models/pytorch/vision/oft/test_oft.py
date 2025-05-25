@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -27,7 +28,10 @@ def test_oft():
 
     # Load model and input
     framework_model = ModelLoader.load_model()
+    framework_model.to(torch.bfloat16)
     input_sample = ModelLoader.load_inputs()
+    input_sample_1, input_sample_2, input_sample_3 = input_sample
+    inputs = [input_sample_1.to(torch.bfloat16), input_sample_2.to(torch.bfloat16), input_sample_3.to(torch.bfloat16)]
 
     # Configurations
     compiler_cfg = CompilerConfig()
@@ -36,7 +40,7 @@ def test_oft():
     # Forge compile framework model
     compiled_model = forge.compile(
         framework_model,
-        sample_inputs=input_sample,
+        sample_inputs=inputs,
         module_name=module_name,
         compiler_cfg=compiler_cfg,
     )

@@ -13,8 +13,11 @@ from transformers import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
-from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
 from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
@@ -66,11 +69,24 @@ def test_vilt_question_answering_hf_pytorch(variant):
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
 
     # Post processing
     logits = co_out[0]
@@ -106,7 +122,6 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_vilt_maskedlm_hf_pytorch(variant):
 
@@ -117,8 +132,21 @@ def test_vilt_maskedlm_hf_pytorch(variant):
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+    )
