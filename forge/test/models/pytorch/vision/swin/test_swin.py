@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
