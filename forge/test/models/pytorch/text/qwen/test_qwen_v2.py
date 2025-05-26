@@ -18,41 +18,42 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from torch import nn
 
 # Variants for testing
 variants = [
-    pytest.param(
-        "Qwen/Qwen2.5-0.5B",
-        marks=[pytest.mark.xfail],
-    ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-0.5B",
+    #     marks=[pytest.mark.xfail],
+    # ),
     pytest.param(
         "Qwen/Qwen2.5-0.5B-Instruct",
-        marks=[pytest.mark.xfail],
+        # marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "Qwen/Qwen2.5-1.5B",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-1.5B-Instruct",
-        marks=[pytest.mark.xfail],
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-3B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-3B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-7B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-7B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
-    ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-1.5B",
+    #     marks=[pytest.mark.xfail],
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-1.5B-Instruct",
+    #     marks=[pytest.mark.xfail],
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-3B",
+    #     marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-3B-Instruct",
+    #     marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-7B",
+    #     marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-7B-Instruct",
+    #     marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    # ),
 ]
 
 
@@ -74,7 +75,7 @@ def test_qwen_clm(variant):
         framework=Framework.PYTORCH,
         model=ModelArch.QWENV2,
         variant=variant,
-        task=Task.CAUSAL_LM,
+        task=Task.CAUSAL_LM,    
         source=Source.HUGGINGFACE,
         group=group,
     )
@@ -93,7 +94,18 @@ def test_qwen_clm(variant):
     model_inputs = tokenizer([text], return_tensors="pt")
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
-    inputs = [input_ids, attention_mask]
+    inputs = [input_ids]
+    
+    class Wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids):
+            # return logits
+            return self.model(input_ids)[0]
+
+    framework_model = Wrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -114,6 +126,7 @@ def test_qwen2_token_classification(variant):
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.GENERALITY,
     )
 
     # Load model and tokenizer

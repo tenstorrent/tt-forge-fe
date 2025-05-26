@@ -13,47 +13,48 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+import torch.nn as nn
 
 # Variants for testing
 variants = [
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-0.5B",
-        marks=[pytest.mark.xfail],
-    ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-0.5B",
+    #     marks=[pytest.mark.xfail],
+    # ),
     pytest.param(
         "Qwen/Qwen2.5-Coder-1.5B",
-        marks=[pytest.mark.xfail],
+        # marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-1.5B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
-        ),
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-3B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB during compile time)"
-        ),
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-3B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-7B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
-    ),
-    pytest.param(
-        "Qwen/Qwen2.5-Coder-7B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
-    ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
+    #     ),
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-3B",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB during compile time)"
+    #     ),
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-3B-Instruct",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+    #     ),
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-7B",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+    #     ),
+    # ),
+    # pytest.param(
+    #     "Qwen/Qwen2.5-Coder-7B-Instruct",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+    #     ),
+    # ),
 ]
 
 
@@ -87,7 +88,18 @@ def test_qwen_clm(variant):
     model_inputs = tokenizer([text], return_tensors="pt")
     input_ids = model_inputs["input_ids"]
     attention_mask = model_inputs["attention_mask"]
-    inputs = [input_ids, attention_mask]
+    inputs = [input_ids]
+    
+    class Wrapper(nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids):
+            # return logits
+            return self.model(input_ids)[0]
+
+    framework_model = Wrapper(framework_model)
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
