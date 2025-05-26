@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
@@ -56,7 +62,7 @@ class Index4(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=3072, stride=1)
         return index_output_1
 
 
@@ -65,7 +71,7 @@ class Index5(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=16, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=6144, stride=1)
         return index_output_1
 
 
@@ -74,7 +80,7 @@ class Index6(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=9216, stride=1)
         return index_output_1
 
 
@@ -83,7 +89,7 @@ class Index7(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=48, stop=96, stride=1)
         return index_output_1
 
 
@@ -92,7 +98,7 @@ class Index8(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=48, stride=1)
         return index_output_1
 
 
@@ -101,7 +107,7 @@ class Index9(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=8192, stop=16384, stride=1)
         return index_output_1
 
 
@@ -110,7 +116,7 @@ class Index10(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8192, stride=1)
         return index_output_1
 
 
@@ -119,7 +125,7 @@ class Index11(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=64, stride=1)
         return index_output_1
 
 
@@ -128,7 +134,7 @@ class Index12(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -137,7 +143,7 @@ class Index13(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=64, stride=1)
         return index_output_1
 
 
@@ -146,7 +152,7 @@ class Index14(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -155,7 +161,7 @@ class Index15(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=64, stride=1)
         return index_output_1
 
 
@@ -164,7 +170,7 @@ class Index16(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=-4, stride=1)
         return index_output_1
 
 
@@ -173,7 +179,7 @@ class Index17(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=64, stride=1)
         return index_output_1
 
 
@@ -182,7 +188,7 @@ class Index18(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=9, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-4, stride=1)
         return index_output_1
 
 
@@ -191,7 +197,7 @@ class Index19(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=64, stride=2)
         return index_output_1
 
 
@@ -200,7 +206,7 @@ class Index20(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=64, stride=2)
         return index_output_1
 
 
@@ -209,7 +215,7 @@ class Index21(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=6, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=64, stride=1)
         return index_output_1
 
 
@@ -218,7 +224,7 @@ class Index22(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=1, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=60, stride=1)
         return index_output_1
 
 
@@ -227,7 +233,7 @@ class Index23(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=60, stop=64, stride=1)
         return index_output_1
 
 
@@ -236,7 +242,7 @@ class Index24(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=60, stride=1)
         return index_output_1
 
 
@@ -245,7 +251,7 @@ class Index25(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=2)
         return index_output_1
 
 
@@ -254,7 +260,7 @@ class Index26(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=288, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=64, stride=2)
         return index_output_1
 
 
@@ -263,7 +269,7 @@ class Index27(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=32, stride=1)
         return index_output_1
 
 
@@ -272,7 +278,7 @@ class Index28(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=288, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=32, stride=1)
         return index_output_1
 
 
@@ -281,7 +287,7 @@ class Index29(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=32, stride=1)
         return index_output_1
 
 
@@ -290,7 +296,7 @@ class Index30(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=32, stride=1)
         return index_output_1
 
 
@@ -299,7 +305,7 @@ class Index31(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=272, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -308,7 +314,7 @@ class Index32(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=272, stop=296, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -317,7 +323,7 @@ class Index33(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=28, stop=32, stride=1)
         return index_output_1
 
 
@@ -326,7 +332,7 @@ class Index34(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=112, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=1)
         return index_output_1
 
 
@@ -335,7 +341,7 @@ class Index35(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=112, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=28, stop=32, stride=1)
         return index_output_1
 
 
@@ -344,7 +350,7 @@ class Index36(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=1)
         return index_output_1
 
 
@@ -353,7 +359,7 @@ class Index37(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=416, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -362,7 +368,7 @@ class Index38(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=416, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -371,7 +377,7 @@ class Index39(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=4, stop=16, stride=1)
         return index_output_1
 
 
@@ -380,7 +386,7 @@ class Index40(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=576, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=16, stride=1)
         return index_output_1
 
 
@@ -389,7 +395,7 @@ class Index41(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=624, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=-4, stop=16, stride=1)
         return index_output_1
 
 
@@ -398,7 +404,7 @@ class Index42(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-4, stop=16, stride=1)
         return index_output_1
 
 
@@ -407,7 +413,7 @@ class Index43(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=16, stride=2)
         return index_output_1
 
 
@@ -416,7 +422,7 @@ class Index44(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=7, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=16, stride=2)
         return index_output_1
 
 
@@ -425,7 +431,7 @@ class Index45(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=64, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=12, stop=16, stride=1)
         return index_output_1
 
 
@@ -434,7 +440,7 @@ class Index46(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=12, stride=1)
         return index_output_1
 
 
@@ -443,7 +449,7 @@ class Index47(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=577, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=12, stop=16, stride=1)
         return index_output_1
 
 
@@ -452,7 +458,7 @@ class Index48(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=12, stride=1)
         return index_output_1
 
 
@@ -461,7 +467,7 @@ class Index49(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=128, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=16, stride=2)
         return index_output_1
 
 
@@ -470,7 +476,7 @@ class Index50(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4864, stop=7296, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=16, stride=2)
         return index_output_1
 
 
@@ -479,7 +485,7 @@ class Index51(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=2432, stop=4864, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=197, stride=1)
         return index_output_1
 
 
@@ -488,7 +494,7 @@ class Index52(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=2432, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=16, stride=1)
         return index_output_1
 
 
@@ -497,7 +503,7 @@ class Index53(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12160, stop=14592, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=16, stop=32, stride=1)
         return index_output_1
 
 
@@ -506,7 +512,7 @@ class Index54(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=9728, stop=12160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=32, stride=1)
         return index_output_1
 
 
@@ -515,7 +521,7 @@ class Index55(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=7296, stop=9728, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=64, stride=1)
         return index_output_1
 
 
@@ -524,7 +530,7 @@ class Index56(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4096, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=64, stride=1)
         return index_output_1
 
 
@@ -533,7 +539,7 @@ class Index57(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4096, stop=4429, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=128, stride=1)
         return index_output_1
 
 
@@ -542,7 +548,7 @@ class Index58(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=128, stride=1)
         return index_output_1
 
 
@@ -551,7 +557,7 @@ class Index59(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=160, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=256, stride=1)
         return index_output_1
 
 
@@ -560,7 +566,7 @@ class Index60(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=4608, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=128, stride=1)
         return index_output_1
 
 
@@ -569,7 +575,7 @@ class Index61(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1536, stop=3072, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=1)
         return index_output_1
 
 
@@ -578,7 +584,7 @@ class Index62(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=32, stop=64, stride=1)
         return index_output_1
 
 
@@ -587,7 +593,7 @@ class Index63(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12288, stop=13824, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=64, stride=1)
         return index_output_1
 
 
@@ -596,7 +602,7 @@ class Index64(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=10752, stop=12288, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=144, stride=1)
         return index_output_1
 
 
@@ -605,7 +611,7 @@ class Index65(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=9216, stop=10752, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2, stride=1)
         return index_output_1
 
 
@@ -614,7 +620,7 @@ class Index66(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=7680, stop=9216, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=4, stride=1)
         return index_output_1
 
 
@@ -623,7 +629,7 @@ class Index67(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=7680, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=8, stride=1)
         return index_output_1
 
 
@@ -632,7 +638,7 @@ class Index68(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4608, stop=6144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=128, stride=1)
         return index_output_1
 
 
@@ -641,7 +647,7 @@ class Index69(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=9, stride=1)
         return index_output_1
 
 
@@ -650,7 +656,7 @@ class Index70(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1024, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=14, stride=1)
         return index_output_1
 
 
@@ -659,7 +665,7 @@ class Index71(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=1792, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=384, stride=1)
         return index_output_1
 
 
@@ -668,7 +674,7 @@ class Index72(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2304, stop=2560, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=6, stride=1)
         return index_output_1
 
 
@@ -677,7 +683,7 @@ class Index73(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=512, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=1, stride=1)
         return index_output_1
 
 
@@ -686,7 +692,7 @@ class Index74(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1280, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=2, stride=1)
         return index_output_1
 
 
@@ -695,7 +701,7 @@ class Index75(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=2304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=160, stride=1)
         return index_output_1
 
 
@@ -704,7 +710,7 @@ class Index76(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2816, stop=3072, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=176, stride=1)
         return index_output_1
 
 
@@ -713,7 +719,7 @@ class Index77(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=256, stop=512, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=288, stride=1)
         return index_output_1
 
 
@@ -722,7 +728,7 @@ class Index78(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1024, stop=1280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=192, stride=1)
         return index_output_1
 
 
@@ -731,7 +737,7 @@ class Index79(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1792, stop=2048, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=288, stride=1)
         return index_output_1
 
 
@@ -740,7 +746,7 @@ class Index80(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2560, stop=2816, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=304, stride=1)
         return index_output_1
 
 
@@ -749,7 +755,7 @@ class Index81(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=160, stride=1)
         return index_output_1
 
 
@@ -758,7 +764,7 @@ class Index82(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=32, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=272, stride=1)
         return index_output_1
 
 
@@ -767,7 +773,7 @@ class Index83(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=272, stop=296, stride=1)
         return index_output_1
 
 
@@ -776,7 +782,7 @@ class Index84(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=280, stride=1)
         return index_output_1
 
 
@@ -785,7 +791,7 @@ class Index85(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=112, stride=1)
         return index_output_1
 
 
@@ -794,7 +800,7 @@ class Index86(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-2, stop=-1, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=112, stop=256, stride=1)
         return index_output_1
 
 
@@ -803,7 +809,7 @@ class Index87(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=72, stop=73, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=256, stride=1)
         return index_output_1
 
 
@@ -812,7 +818,7 @@ class Index88(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=16, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=416, stride=1)
         return index_output_1
 
 
@@ -821,7 +827,7 @@ class Index89(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=16, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=416, stop=448, stride=1)
         return index_output_1
 
 
@@ -830,7 +836,7 @@ class Index90(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=384, stride=1)
         return index_output_1
 
 
@@ -839,7 +845,7 @@ class Index91(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=576, stride=1)
         return index_output_1
 
 
@@ -848,7 +854,7 @@ class Index92(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=2304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=624, stride=1)
         return index_output_1
 
 
@@ -857,7 +863,7 @@ class Index93(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=3, stride=1)
         return index_output_1
 
 
@@ -866,7 +872,7 @@ class Index94(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=768, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=4, stride=1)
         return index_output_1
 
 
@@ -875,7 +881,7 @@ class Index95(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1536, stop=2304, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=7, stride=1)
         return index_output_1
 
 
@@ -884,7 +890,7 @@ class Index96(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=7, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=64, stop=128, stride=1)
         return index_output_1
 
 
@@ -893,7 +899,7 @@ class Index97(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=64, stride=1)
         return index_output_1
 
 
@@ -902,7 +908,7 @@ class Index98(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=577, stride=1)
         return index_output_1
 
 
@@ -911,7 +917,7 @@ class Index99(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=31, stop=32, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=128, stop=256, stride=1)
         return index_output_1
 
 
@@ -920,7 +926,7 @@ class Index100(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=255, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4864, stop=7296, stride=1)
         return index_output_1
 
 
@@ -929,7 +935,7 @@ class Index101(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=32, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=2432, stop=4864, stride=1)
         return index_output_1
 
 
@@ -938,7 +944,7 @@ class Index102(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=10, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=2432, stride=1)
         return index_output_1
 
 
@@ -947,7 +953,7 @@ class Index103(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=3072, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12160, stop=14592, stride=1)
         return index_output_1
 
 
@@ -956,7 +962,7 @@ class Index104(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=6144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=9728, stop=12160, stride=1)
         return index_output_1
 
 
@@ -965,7 +971,7 @@ class Index105(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=9216, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=7296, stop=9728, stride=1)
         return index_output_1
 
 
@@ -974,7 +980,7 @@ class Index106(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=48, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=4096, stride=1)
         return index_output_1
 
 
@@ -983,7 +989,7 @@ class Index107(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=48, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4096, stop=4429, stride=1)
         return index_output_1
 
 
@@ -992,7 +998,7 @@ class Index108(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=8192, stop=16384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=224, stride=1)
         return index_output_1
 
 
@@ -1001,7 +1007,7 @@ class Index109(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=8192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=160, stop=224, stride=1)
         return index_output_1
 
 
@@ -1010,7 +1016,7 @@ class Index110(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=5, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=3072, stop=4608, stride=1)
         return index_output_1
 
 
@@ -1019,7 +1025,7 @@ class Index111(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=258, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1536, stop=3072, stride=1)
         return index_output_1
 
 
@@ -1028,7 +1034,7 @@ class Index112(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-1, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=1536, stride=1)
         return index_output_1
 
 
@@ -1037,7 +1043,7 @@ class Index113(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12, stop=24, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12288, stop=13824, stride=1)
         return index_output_1
 
 
@@ -1046,7 +1052,7 @@ class Index114(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=12, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=10752, stop=12288, stride=1)
         return index_output_1
 
 
@@ -1055,7 +1061,7 @@ class Index115(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=36, stop=48, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=9216, stop=10752, stride=1)
         return index_output_1
 
 
@@ -1064,7 +1070,7 @@ class Index116(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=24, stop=36, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=7680, stop=9216, stride=1)
         return index_output_1
 
 
@@ -1073,7 +1079,7 @@ class Index117(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-24, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6144, stop=7680, stride=1)
         return index_output_1
 
 
@@ -1082,7 +1088,7 @@ class Index118(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4608, stop=6144, stride=1)
         return index_output_1
 
 
@@ -1091,7 +1097,7 @@ class Index119(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=256, stride=1)
         return index_output_1
 
 
@@ -1100,7 +1106,7 @@ class Index120(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4, stop=8, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1024, stride=1)
         return index_output_1
 
 
@@ -1109,7 +1115,7 @@ class Index121(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=729, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=1792, stride=1)
         return index_output_1
 
 
@@ -1118,7 +1124,7 @@ class Index122(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=729, stop=732, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2304, stop=2560, stride=1)
         return index_output_1
 
 
@@ -1127,7 +1133,7 @@ class Index123(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=197, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=512, stop=768, stride=1)
         return index_output_1
 
 
@@ -1136,7 +1142,7 @@ class Index124(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=2, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1280, stop=1536, stride=1)
         return index_output_1
 
 
@@ -1145,7 +1151,7 @@ class Index125(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=88, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=2304, stride=1)
         return index_output_1
 
 
@@ -1154,7 +1160,7 @@ class Index126(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=132, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2816, stop=3072, stride=1)
         return index_output_1
 
 
@@ -1163,7 +1169,7 @@ class Index127(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=256, stop=512, stride=1)
         return index_output_1
 
 
@@ -1172,7 +1178,7 @@ class Index128(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=44, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1024, stop=1280, stride=1)
         return index_output_1
 
 
@@ -1181,7 +1187,7 @@ class Index129(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=88, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1792, stop=2048, stride=1)
         return index_output_1
 
 
@@ -1190,7 +1196,7 @@ class Index130(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2560, stop=2816, stride=1)
         return index_output_1
 
 
@@ -1199,7 +1205,7 @@ class Index131(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=1)
         return index_output_1
 
 
@@ -1208,7 +1214,7 @@ class Index132(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=32, stop=64, stride=1)
         return index_output_1
 
 
@@ -1217,7 +1223,7 @@ class Index133(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=384, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=32, stride=2)
         return index_output_1
 
 
@@ -1226,7 +1232,7 @@ class Index134(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=448, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=32, stride=2)
         return index_output_1
 
 
@@ -1235,7 +1241,7 @@ class Index135(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=18, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=-2, stride=1)
         return index_output_1
 
 
@@ -1244,7 +1250,7 @@ class Index136(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=54, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-2, stop=-1, stride=1)
         return index_output_1
 
 
@@ -1253,7 +1259,7 @@ class Index137(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=126, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=72, stop=73, stride=1)
         return index_output_1
 
 
@@ -1262,7 +1268,7 @@ class Index138(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=16, stop=32, stride=1)
         return index_output_1
 
 
@@ -1271,7 +1277,7 @@ class Index139(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=72, stop=108, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=16, stride=1)
         return index_output_1
 
 
@@ -1280,7 +1286,7 @@ class Index140(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=108, stop=126, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=768, stride=1)
         return index_output_1
 
 
@@ -1289,7 +1295,7 @@ class Index141(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=36, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=768, stop=1536, stride=1)
         return index_output_1
 
 
@@ -1298,7 +1304,7 @@ class Index142(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=54, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1536, stop=2304, stride=1)
         return index_output_1
 
 
@@ -1307,7 +1313,7 @@ class Index143(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=768, stride=1)
         return index_output_1
 
 
@@ -1316,7 +1322,7 @@ class Index144(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=36, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=768, stop=1536, stride=1)
         return index_output_1
 
 
@@ -1325,7 +1331,7 @@ class Index145(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=72, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1536, stop=2304, stride=1)
         return index_output_1
 
 
@@ -1334,7 +1340,7 @@ class Index146(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=40, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=7, stride=1)
         return index_output_1
 
 
@@ -1343,7 +1349,7 @@ class Index147(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=256, stride=1)
         return index_output_1
 
 
@@ -1352,7 +1358,7 @@ class Index148(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=31, stop=32, stride=1)
         return index_output_1
 
 
@@ -1361,7 +1367,7 @@ class Index149(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=240, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4096, stop=8192, stride=1)
         return index_output_1
 
 
@@ -1370,7 +1376,7 @@ class Index150(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=240, stop=280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=128, stride=1)
         return index_output_1
 
 
@@ -1379,7 +1385,7 @@ class Index151(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=128, stop=144, stride=1)
         return index_output_1
 
 
@@ -1388,7 +1394,7 @@ class Index152(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=144, stop=160, stride=1)
         return index_output_1
 
 
@@ -1397,7 +1403,7 @@ class Index153(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=4, stop=5, stride=1)
         return index_output_1
 
 
@@ -1406,7 +1412,7 @@ class Index154(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=80, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=5, stop=6, stride=1)
         return index_output_1
 
 
@@ -1415,7 +1421,7 @@ class Index155(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=2048, stride=1)
         return index_output_1
 
 
@@ -1424,7 +1430,7 @@ class Index156(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=132, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2048, stop=4096, stride=1)
         return index_output_1
 
 
@@ -1433,7 +1439,7 @@ class Index157(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=308, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=64, stop=80, stride=1)
         return index_output_1
 
 
@@ -1442,7 +1448,7 @@ class Index158(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=176, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=80, stop=96, stride=1)
         return index_output_1
 
 
@@ -1451,7 +1457,7 @@ class Index159(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=176, stop=264, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=5120, stride=1)
         return index_output_1
 
 
@@ -1460,7 +1466,7 @@ class Index160(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=264, stop=308, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=5120, stop=10240, stride=1)
         return index_output_1
 
 
@@ -1469,7 +1475,7 @@ class Index161(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=30, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=160, stride=1)
         return index_output_1
 
 
@@ -1478,7 +1484,7 @@ class Index162(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=90, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=160, stop=176, stride=1)
         return index_output_1
 
 
@@ -1487,7 +1493,7 @@ class Index163(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=210, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=176, stop=192, stride=1)
         return index_output_1
 
 
@@ -1496,7 +1502,7 @@ class Index164(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=3072, stride=1)
         return index_output_1
 
 
@@ -1505,7 +1511,7 @@ class Index165(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=180, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3072, stop=6144, stride=1)
         return index_output_1
 
 
@@ -1514,7 +1520,7 @@ class Index166(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=180, stop=210, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=96, stride=1)
         return index_output_1
 
 
@@ -1523,7 +1529,7 @@ class Index167(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=60, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=96, stop=112, stride=1)
         return index_output_1
 
 
@@ -1532,7 +1538,7 @@ class Index168(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=90, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=112, stop=128, stride=1)
         return index_output_1
 
 
@@ -1541,7 +1547,7 @@ class Index169(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=255, stop=256, stride=1)
         return index_output_1
 
 
@@ -1550,7 +1556,7 @@ class Index170(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=60, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=32, stop=80, stride=1)
         return index_output_1
 
 
@@ -1559,7 +1565,7 @@ class Index171(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=120, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=10, stop=11, stride=1)
         return index_output_1
 
 
@@ -1568,7 +1574,7 @@ class Index172(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=8192, stop=16384, stride=1)
         return index_output_1
 
 
@@ -1577,7 +1583,7 @@ class Index173(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=8192, stride=1)
         return index_output_1
 
 
@@ -1586,7 +1592,7 @@ class Index174(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=5120, stride=1)
         return index_output_1
 
 
@@ -1595,7 +1601,7 @@ class Index175(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=224, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=5120, stop=6400, stride=1)
         return index_output_1
 
 
@@ -1604,7 +1610,7 @@ class Index176(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=6400, stop=7680, stride=1)
         return index_output_1
 
 
@@ -1613,7 +1619,7 @@ class Index177(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=128, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=17920, stop=35840, stride=1)
         return index_output_1
 
 
@@ -1622,7 +1628,7 @@ class Index178(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=256, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=17920, stride=1)
         return index_output_1
 
 
@@ -1631,7 +1637,7 @@ class Index179(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=48, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=2, stop=258, stride=1)
         return index_output_1
 
 
@@ -1640,7 +1646,7 @@ class Index180(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-1, stop=72, stride=1)
         return index_output_1
 
 
@@ -1649,7 +1655,7 @@ class Index181(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=336, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=12, stop=24, stride=1)
         return index_output_1
 
 
@@ -1658,7 +1664,7 @@ class Index182(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=336, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=12, stride=1)
         return index_output_1
 
 
@@ -1667,7 +1673,7 @@ class Index183(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=36, stop=48, stride=1)
         return index_output_1
 
 
@@ -1676,7 +1682,7 @@ class Index184(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=144, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=24, stop=36, stride=1)
         return index_output_1
 
 
@@ -1685,7 +1691,7 @@ class Index185(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=-24, stop=96, stride=1)
         return index_output_1
 
 
@@ -1694,7 +1700,7 @@ class Index186(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=96, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=72, stride=1)
         return index_output_1
 
 
@@ -1703,7 +1709,7 @@ class Index187(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=192, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=4, stride=1)
         return index_output_1
 
 
@@ -1712,7 +1718,7 @@ class Index188(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=112, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=4, stop=8, stride=1)
         return index_output_1
 
 
@@ -1721,7 +1727,7 @@ class Index189(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=160, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=729, stride=1)
         return index_output_1
 
 
@@ -1730,7 +1736,7 @@ class Index190(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=729, stop=732, stride=1)
         return index_output_1
 
 
@@ -1739,7 +1745,7 @@ class Index191(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=640, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=2, stop=3, stride=1)
         return index_output_1
 
 
@@ -1748,7 +1754,7 @@ class Index192(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=640, stop=1024, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=88, stride=1)
         return index_output_1
 
 
@@ -1757,7 +1763,7 @@ class Index193(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=512, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=132, stride=1)
         return index_output_1
 
 
@@ -1766,7 +1772,7 @@ class Index194(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=512, stop=768, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=176, stride=1)
         return index_output_1
 
 
@@ -1775,7 +1781,7 @@ class Index195(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=768, stop=1024, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=44, stride=1)
         return index_output_1
 
 
@@ -1784,7 +1790,7 @@ class Index196(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1024, stop=1280, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=88, stride=1)
         return index_output_1
 
 
@@ -1793,7 +1799,7 @@ class Index197(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1280, stop=1536, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=88, stop=176, stride=1)
         return index_output_1
 
 
@@ -1802,7 +1808,7 @@ class Index198(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1536, stop=1792, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=192, stride=1)
         return index_output_1
 
 
@@ -1811,7 +1817,7 @@ class Index199(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=0, stop=1, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=448, stride=1)
         return index_output_1
 
 
@@ -1820,7 +1826,7 @@ class Index200(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=1, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=384, stride=1)
         return index_output_1
 
 
@@ -1829,7 +1835,7 @@ class Index201(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=2, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=384, stop=448, stride=1)
         return index_output_1
 
 
@@ -1838,7 +1844,7 @@ class Index202(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=48, stride=1)
         return index_output_1
 
 
@@ -1847,7 +1853,7 @@ class Index203(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=144, stride=1)
         return index_output_1
 
 
@@ -1856,7 +1862,7 @@ class Index204(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=336, stride=1)
         return index_output_1
 
 
@@ -1865,7 +1871,7 @@ class Index205(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=3, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=288, stop=336, stride=1)
         return index_output_1
 
 
@@ -1874,7 +1880,7 @@ class Index206(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=53, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=96, stride=1)
         return index_output_1
 
 
@@ -1883,7 +1889,7 @@ class Index207(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=53, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=144, stride=1)
         return index_output_1
 
 
@@ -1892,7 +1898,7 @@ class Index208(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=53, stop=56, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=144, stop=192, stride=1)
         return index_output_1
 
 
@@ -1901,7 +1907,7 @@ class Index209(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=53, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=48, stop=96, stride=1)
         return index_output_1
 
 
@@ -1910,7 +1916,7 @@ class Index210(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=192, stride=1)
         return index_output_1
 
 
@@ -1919,7 +1925,7 @@ class Index211(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=18, stride=1)
         return index_output_1
 
 
@@ -1928,7 +1934,7 @@ class Index212(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=54, stride=1)
         return index_output_1
 
 
@@ -1937,7 +1943,7 @@ class Index213(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=56, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=126, stride=1)
         return index_output_1
 
 
@@ -1946,7 +1952,7 @@ class Index214(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=72, stride=1)
         return index_output_1
 
 
@@ -1955,7 +1961,7 @@ class Index215(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=72, stop=108, stride=1)
         return index_output_1
 
 
@@ -1964,7 +1970,7 @@ class Index216(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=25, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=108, stop=126, stride=1)
         return index_output_1
 
 
@@ -1973,7 +1979,7 @@ class Index217(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=36, stride=1)
         return index_output_1
 
 
@@ -1982,7 +1988,7 @@ class Index218(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=25, stop=28, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=54, stride=1)
         return index_output_1
 
 
@@ -1991,7 +1997,7 @@ class Index219(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=25, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=54, stop=72, stride=1)
         return index_output_1
 
 
@@ -2000,7 +2006,7 @@ class Index220(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=18, stop=36, stride=1)
         return index_output_1
 
 
@@ -2009,7 +2015,7 @@ class Index221(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=36, stop=72, stride=1)
         return index_output_1
 
 
@@ -2018,7 +2024,7 @@ class Index222(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=44, stop=132, stride=1)
         return index_output_1
 
 
@@ -2027,7 +2033,7 @@ class Index223(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=28, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=132, stop=308, stride=1)
         return index_output_1
 
 
@@ -2036,7 +2042,7 @@ class Index224(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=176, stride=1)
         return index_output_1
 
 
@@ -2045,7 +2051,7 @@ class Index225(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=176, stop=264, stride=1)
         return index_output_1
 
 
@@ -2054,7 +2060,7 @@ class Index226(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=264, stop=308, stride=1)
         return index_output_1
 
 
@@ -2063,7 +2069,7 @@ class Index227(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=40, stride=1)
         return index_output_1
 
 
@@ -2072,7 +2078,7 @@ class Index228(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=11, stop=14, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=120, stride=1)
         return index_output_1
 
 
@@ -2081,7 +2087,7 @@ class Index229(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=11, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=280, stride=1)
         return index_output_1
 
 
@@ -2090,7 +2096,7 @@ class Index230(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=160, stop=240, stride=1)
         return index_output_1
 
 
@@ -2099,7 +2105,7 @@ class Index231(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=240, stop=280, stride=1)
         return index_output_1
 
 
@@ -2108,7 +2114,7 @@ class Index232(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=80, stride=1)
         return index_output_1
 
 
@@ -2117,7 +2123,7 @@ class Index233(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=14, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=120, stride=1)
         return index_output_1
 
 
@@ -2126,7 +2132,7 @@ class Index234(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=32, stop=64, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=160, stride=1)
         return index_output_1
 
 
@@ -2135,7 +2141,7 @@ class Index235(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=2, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=40, stop=80, stride=1)
         return index_output_1
 
 
@@ -2144,7 +2150,7 @@ class Index236(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=2, stop=4, stride=1)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=80, stop=160, stride=1)
         return index_output_1
 
 
@@ -2153,7 +2159,7 @@ class Index237(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=32, stop=96, stride=1)
         return index_output_1
 
 
@@ -2162,7 +2168,7 @@ class Index238(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=224, stride=1)
         return index_output_1
 
 
@@ -2171,7 +2177,7 @@ class Index239(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=128, stop=192, stride=1)
         return index_output_1
 
 
@@ -2180,7 +2186,7 @@ class Index240(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=640, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=224, stride=1)
         return index_output_1
 
 
@@ -2189,7 +2195,7 @@ class Index241(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=64, stop=96, stride=1)
         return index_output_1
 
 
@@ -2198,7 +2204,7 @@ class Index242(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=128, stride=1)
         return index_output_1
 
 
@@ -2207,11 +2213,596 @@ class Index243(ForgeModule):
         super().__init__(name)
 
     def forward(self, index_input_0):
-        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=416, stride=2)
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=192, stop=256, stride=1)
         return index_output_1
 
 
 class Index244(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=112, stride=1)
+        return index_output_1
+
+
+class Index245(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=30, stride=1)
+        return index_output_1
+
+
+class Index246(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=90, stride=1)
+        return index_output_1
+
+
+class Index247(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=210, stride=1)
+        return index_output_1
+
+
+class Index248(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=120, stride=1)
+        return index_output_1
+
+
+class Index249(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=120, stop=180, stride=1)
+        return index_output_1
+
+
+class Index250(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=180, stop=210, stride=1)
+        return index_output_1
+
+
+class Index251(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=90, stride=1)
+        return index_output_1
+
+
+class Index252(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=90, stop=120, stride=1)
+        return index_output_1
+
+
+class Index253(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=30, stop=60, stride=1)
+        return index_output_1
+
+
+class Index254(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=60, stop=120, stride=1)
+        return index_output_1
+
+
+class Index255(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=96, stop=160, stride=1)
+        return index_output_1
+
+
+class Index256(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=576, stop=768, stride=1)
+        return index_output_1
+
+
+class Index257(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=256, stop=640, stride=1)
+        return index_output_1
+
+
+class Index258(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=640, stop=1024, stride=1)
+        return index_output_1
+
+
+class Index259(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=0, stop=1, stride=1)
+        return index_output_1
+
+
+class Index260(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=1, stop=2, stride=1)
+        return index_output_1
+
+
+class Index261(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-5, start=2, stop=3, stride=1)
+        return index_output_1
+
+
+class Index262(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=56, stride=1)
+        return index_output_1
+
+
+class Index263(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=3, stride=1)
+        return index_output_1
+
+
+class Index264(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=56, stride=1)
+        return index_output_1
+
+
+class Index265(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=3, stride=1)
+        return index_output_1
+
+
+class Index266(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=53, stop=56, stride=1)
+        return index_output_1
+
+
+class Index267(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=53, stride=1)
+        return index_output_1
+
+
+class Index268(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=53, stop=56, stride=1)
+        return index_output_1
+
+
+class Index269(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=53, stride=1)
+        return index_output_1
+
+
+class Index270(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=56, stride=2)
+        return index_output_1
+
+
+class Index271(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=56, stride=2)
+        return index_output_1
+
+
+class Index272(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=56, stride=2)
+        return index_output_1
+
+
+class Index273(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=56, stride=2)
+        return index_output_1
+
+
+class Index274(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=28, stride=1)
+        return index_output_1
+
+
+class Index275(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=28, stride=1)
+        return index_output_1
+
+
+class Index276(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=25, stop=28, stride=1)
+        return index_output_1
+
+
+class Index277(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=25, stride=1)
+        return index_output_1
+
+
+class Index278(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=25, stop=28, stride=1)
+        return index_output_1
+
+
+class Index279(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=25, stride=1)
+        return index_output_1
+
+
+class Index280(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=28, stride=2)
+        return index_output_1
+
+
+class Index281(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=28, stride=2)
+        return index_output_1
+
+
+class Index282(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=28, stride=2)
+        return index_output_1
+
+
+class Index283(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=28, stride=2)
+        return index_output_1
+
+
+class Index284(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=3, stop=14, stride=1)
+        return index_output_1
+
+
+class Index285(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=3, stop=14, stride=1)
+        return index_output_1
+
+
+class Index286(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=11, stop=14, stride=1)
+        return index_output_1
+
+
+class Index287(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=11, stride=1)
+        return index_output_1
+
+
+class Index288(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=11, stop=14, stride=1)
+        return index_output_1
+
+
+class Index289(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=11, stride=1)
+        return index_output_1
+
+
+class Index290(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=0, stop=14, stride=2)
+        return index_output_1
+
+
+class Index291(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-3, start=1, stop=14, stride=2)
+        return index_output_1
+
+
+class Index292(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=14, stride=2)
+        return index_output_1
+
+
+class Index293(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=14, stride=2)
+        return index_output_1
+
+
+class Index294(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=0, stop=1, stride=1)
+        return index_output_1
+
+
+class Index295(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=1, stop=2, stride=1)
+        return index_output_1
+
+
+class Index296(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-4, start=2, stop=3, stride=1)
+        return index_output_1
+
+
+class Index297(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=2, stride=1)
+        return index_output_1
+
+
+class Index298(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=2, stop=4, stride=1)
+        return index_output_1
+
+
+class Index299(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=-100, stride=1)
+        return index_output_1
+
+
+class Index300(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=4251, stride=1)
+        return index_output_1
+
+
+class Index301(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=-100, stop=1445, stride=1)
+        return index_output_1
+
+
+class Index302(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=640, stride=2)
+        return index_output_1
+
+
+class Index303(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=640, stride=2)
+        return index_output_1
+
+
+class Index304(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=640, stride=2)
+        return index_output_1
+
+
+class Index305(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=1, stop=640, stride=2)
+        return index_output_1
+
+
+class Index306(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=0, stop=416, stride=2)
+        return index_output_1
+
+
+class Index307(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-2, start=1, stop=416, stride=2)
+        return index_output_1
+
+
+class Index308(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, index_input_0):
+        index_output_1 = forge.op.Index("", index_input_0, dim=-1, start=0, stop=416, stride=2)
+        return index_output_1
+
+
+class Index309(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -2231,7 +2822,11 @@ forge_modules_and_shapes_dtypes_list = [
         Index0,
         [((2, 1024), torch.float32)],
         {
-            "model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"],
+            "model_names": [
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
@@ -2240,7 +2835,11 @@ forge_modules_and_shapes_dtypes_list = [
         Index1,
         [((2, 1024), torch.float32)],
         {
-            "model_names": ["onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf"],
+            "model_names": [
+                "onnx_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
+                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
         },
@@ -2256,11 +2855,11 @@ forge_modules_and_shapes_dtypes_list = [
                     "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
                     "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
                     "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                     "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                    "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                     "pt_opt_facebook_opt_125m_qa_hf",
-                    "pt_opt_facebook_opt_1_3b_qa_hf",
                     "pt_opt_facebook_opt_350m_qa_hf",
+                    "pt_opt_facebook_opt_1_3b_qa_hf",
                 ],
                 "pcc": 0.99,
                 "args": {"dim": "-1", "start": "0", "stop": "1", "stride": "1"},
@@ -2278,11 +2877,11 @@ forge_modules_and_shapes_dtypes_list = [
                 "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
                 "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
                 "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
                 "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "1", "stop": "2", "stride": "1"},
@@ -2311,10 +2910,684 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Index4,
+        [((1, 256, 9216), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "3072", "stride": "1"},
+        },
+    ),
+    (
+        Index5,
+        [((1, 256, 9216), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "3072", "stop": "6144", "stride": "1"},
+        },
+    ),
+    (
+        Index6,
+        [((1, 256, 9216), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "6144", "stop": "9216", "stride": "1"},
+        },
+    ),
+    (
+        Index7,
+        [((1, 32, 256, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "48", "stop": "96", "stride": "1"},
+        },
+    ),
+    (
+        Index8,
+        [((1, 32, 256, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "48", "stride": "1"},
+        },
+    ),
+    (
+        Index9,
+        [((1, 256, 16384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "8192", "stop": "16384", "stride": "1"},
+        },
+    ),
+    (
+        Index10,
+        [((1, 256, 16384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
+                "onnx_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "8192", "stride": "1"},
+        },
+    ),
+    (
+        Index11,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index12,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index13,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index14,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index15,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "-4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index16,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index17,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "-4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index18,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index19,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index20,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index21,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "60", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index22,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index23,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "60", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index24,
+        [((1, 64, 64, 96), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index25,
+        [((1, 32, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index26,
+        [((1, 32, 64, 96), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index27,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index12,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index28,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index14,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index29,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "-4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index16,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index30,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "-4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index18,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index31,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "2"},
+        },
+    ),
+    (
+        Index32,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "32", "stride": "2"},
+        },
+    ),
+    (
+        Index33,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "28", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index34,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index35,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "28", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index36,
+        [((1, 32, 32, 192), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index37,
+        [((1, 16, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "2"},
+        },
+    ),
+    (
+        Index38,
+        [((1, 16, 32, 192), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "32", "stride": "2"},
+        },
+    ),
+    (
+        Index39,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "4", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index12,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index40,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index14,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index41,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "-4", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index16,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index42,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "-4", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index18,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "-4", "stride": "1"},
+        },
+    ),
+    (
+        Index43,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index44,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index45,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "12", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index46,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "12", "stride": "1"},
+        },
+    ),
+    (
+        Index47,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "12", "stop": "16", "stride": "1"},
+        },
+    ),
+    (
+        Index48,
+        [((1, 16, 16, 384), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "12", "stride": "1"},
+        },
+    ),
+    (
+        Index49,
+        [((1, 8, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index50,
+        [((1, 8, 16, 384), torch.float32)],
+        {
+            "model_names": [
+                "onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf",
+                "pt_swin_swin_v2_s_img_cls_torchvision",
+                "pt_swin_swin_v2_t_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 197, 1024), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vit_base_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_google_vit_large_patch16_224_img_cls_hf",
+                "pt_vit_vit_l_16_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index51,
+        [((1, 197, 1024), torch.float32)],
+        {
+            "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "197", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 197, 768), torch.float32)],
+        {
+            "model_names": [
+                "onnx_vit_base_google_vit_base_patch16_224_img_cls_hf",
+                "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
+                "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
+                "pt_vit_vit_b_16_img_cls_torchvision",
+                "pt_vit_google_vit_base_patch16_224_img_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index51,
+        [((1, 197, 768), torch.float32)],
+        {
+            "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "197", "stride": "1"},
+        },
+    ),
+    (
+        Index52,
         [((1, 32, 160, 160), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2323,11 +3596,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index5,
+        Index53,
         [((1, 32, 160, 160), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2336,11 +3610,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index6,
+        Index54,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2349,11 +3624,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index7,
+        Index55,
         [((1, 64, 80, 80), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2362,11 +3638,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2375,11 +3652,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index9,
+        Index57,
         [((1, 128, 40, 40), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2388,11 +3666,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 256, 20, 20), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2401,11 +3680,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 256, 20, 20), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2414,11 +3694,39 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index12,
+        Index60,
+        [((1, 2, 128, 400), torch.float32)],
+        {
+            "model_names": ["onnx_yolov10_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index61,
+        [((1, 2, 128, 400), torch.float32)],
+        {
+            "model_names": ["onnx_yolov10_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index62,
+        [((1, 2, 128, 400), torch.float32)],
+        {
+            "model_names": ["onnx_yolov10_default_obj_det_github", "pt_yolov10_default_obj_det_github"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index63,
         [((1, 144, 8400), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2427,11 +3735,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index13,
+        Index64,
         [((1, 144, 8400), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2440,11 +3749,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index14,
+        Index65,
         [((1, 4, 8400), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2453,11 +3763,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index15,
+        Index66,
         [((1, 4, 8400), torch.float32)],
         {
             "model_names": [
-                "pt_yolov8_default_obj_det_github",
+                "onnx_yolov10_default_obj_det_github",
+                "onnx_yolov8_default_obj_det_github",
                 "pt_yolov10_default_obj_det_github",
                 "pt_yolov8_default_obj_det_github",
             ],
@@ -2466,48 +3777,49 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index16,
+        Index67,
         [((1, 512), torch.int64)],
         {
-            "model_names": ["pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp"],
+            "model_names": ["pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "8", "stride": "1"},
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 512), torch.int64)],
         {
             "model_names": [
+                "pt_albert_xxlarge_v1_token_cls_hf",
                 "pt_albert_base_v1_token_cls_hf",
-                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_xxlarge_v2_token_cls_hf",
+                "pt_albert_base_v2_token_cls_hf",
+                "pt_albert_xxlarge_v2_mlm_hf",
                 "pt_albert_xlarge_v2_token_cls_hf",
+                "pt_albert_xxlarge_v1_mlm_hf",
+                "pt_albert_large_v2_mlm_hf",
+                "pt_albert_xlarge_v1_mlm_hf",
+                "pt_albert_base_v2_mlm_hf",
                 "pt_albert_large_v2_token_cls_hf",
                 "pt_albert_large_v1_token_cls_hf",
-                "pt_albert_base_v2_mlm_hf",
-                "pt_albert_xxlarge_v1_token_cls_hf",
-                "pt_albert_xxlarge_v2_token_cls_hf",
-                "pt_albert_xxlarge_v2_mlm_hf",
-                "pt_albert_xxlarge_v1_mlm_hf",
-                "pt_albert_xlarge_v2_mlm_hf",
-                "pt_albert_xlarge_v1_token_cls_hf",
                 "pt_albert_large_v1_mlm_hf",
-                "pt_albert_base_v2_token_cls_hf",
-                "pt_albert_xlarge_v1_mlm_hf",
                 "pt_albert_base_v1_mlm_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
+                "pt_albert_xlarge_v1_token_cls_hf",
+                "pt_albert_xlarge_v2_mlm_hf",
                 "pt_bert_bert_base_uncased_mlm_hf",
                 "pt_bert_dbmdz_bert_large_cased_finetuned_conll03_english_token_cls_hf",
+                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_distilbert_distilbert_base_uncased_mlm_hf",
+                "pt_distilbert_distilbert_base_cased_mlm_hf",
+                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
                 "pt_distilbert_distilbert_base_multilingual_cased_mlm_hf",
-                "pt_distilbert_davlan_distilbert_base_multilingual_cased_ner_hrl_token_cls_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
             ],
             "pcc": 0.99,
@@ -2515,7 +3827,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index18,
+        Index69,
         [((1, 512), torch.int64)],
         {
             "model_names": ["pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf"],
@@ -2524,7 +3836,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index19,
+        Index70,
         [((1, 512), torch.int64)],
         {
             "model_names": ["pt_albert_twmkn9_albert_base_v2_squad2_qa_hf"],
@@ -2533,7 +3845,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index20,
+        Index71,
         [((1, 512), torch.int64)],
         {
             "model_names": [
@@ -2546,7 +3858,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index21,
+        Index72,
         [((1, 512), torch.int64)],
         {
             "model_names": ["pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf"],
@@ -2559,8 +3871,8 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 8, 768), torch.float32)],
         {
             "model_names": [
-                "pd_blip_salesforce_blip_image_captioning_base_img_enc_padlenlp",
-                "pd_chineseclip_ofa_sys_chinese_clip_vit_base_patch16_img_enc_padlenlp",
+                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
+                "pd_chineseclip_text_ofa_sys_chinese_clip_vit_base_patch16_text_enc_padlenlp",
                 "pd_bert_bert_base_uncased_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
@@ -2568,7 +3880,34 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index22,
+        Index73,
+        [((2, 1, 11), torch.float32)],
+        {
+            "model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index74,
+        [((2, 1, 11), torch.float32)],
+        {
+            "model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 11, 768), torch.float32)],
+        {
+            "model_names": ["pd_bert_chinese_roberta_base_seq_cls_padlenlp"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index73,
         [((2, 1, 9), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_uncased_qa_padlenlp", "pd_ernie_1_0_qa_padlenlp"],
@@ -2577,7 +3916,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((2, 1, 9), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_uncased_qa_padlenlp", "pd_ernie_1_0_qa_padlenlp"],
@@ -2595,34 +3934,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index0,
-        [((1, 11, 768), torch.float32)],
-        {
-            "model_names": ["pd_bert_chinese_roberta_base_seq_cls_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index22,
-        [((2, 1, 11), torch.float32)],
-        {
-            "model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index23,
-        [((2, 1, 11), torch.float32)],
-        {
-            "model_names": ["pd_bert_chinese_roberta_base_qa_padlenlp"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index22,
+        Index73,
         [((2, 1, 14), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
@@ -2631,7 +3943,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((2, 1, 14), torch.float32)],
         {
             "model_names": ["pd_bert_bert_base_japanese_qa_padlenlp"],
@@ -2653,7 +3965,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 176, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2662,7 +3974,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index24,
+        Index75,
         [((1, 176, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2671,7 +3983,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index25,
+        Index76,
         [((1, 176, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2680,7 +3992,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2689,7 +4001,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2698,7 +4010,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index26,
+        Index77,
         [((1, 288, 27, 27), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2707,7 +4019,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index27,
+        Index78,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2716,7 +4028,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index28,
+        Index79,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2725,7 +4037,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index29,
+        Index80,
         [((1, 304, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2734,7 +4046,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index30,
+        Index81,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2743,7 +4055,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index31,
+        Index82,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2752,7 +4064,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index32,
+        Index83,
         [((1, 296, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2761,7 +4073,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2770,7 +4082,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2779,7 +4091,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index33,
+        Index84,
         [((1, 280, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2788,7 +4100,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index34,
+        Index85,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2797,7 +4109,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index35,
+        Index86,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2806,7 +4118,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index26,
+        Index77,
         [((1, 288, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2815,7 +4127,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index36,
+        Index87,
         [((1, 448, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2824,7 +4136,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index37,
+        Index88,
         [((1, 448, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2833,7 +4145,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index38,
+        Index89,
         [((1, 448, 13, 13), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2842,7 +4154,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index36,
+        Index87,
         [((1, 448, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2851,7 +4163,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index37,
+        Index88,
         [((1, 448, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2860,7 +4172,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index38,
+        Index89,
         [((1, 448, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2869,7 +4181,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index39,
+        Index90,
         [((1, 624, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2878,7 +4190,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index40,
+        Index91,
         [((1, 624, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2887,7 +4199,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index41,
+        Index92,
         [((1, 624, 6, 6), torch.float32)],
         {
             "model_names": ["pd_googlenet_base_img_cls_paddlemodels"],
@@ -2900,6 +4212,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 4, 1), torch.int64)],
         {
             "model_names": [
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
@@ -2912,6 +4225,7 @@ forge_modules_and_shapes_dtypes_list = [
         [((2, 4, 1), torch.int64)],
         {
             "model_names": [
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
@@ -2920,10 +4234,11 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index42,
+        Index93,
         [((2, 4, 1), torch.int64)],
         {
             "model_names": [
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
@@ -2932,15 +4247,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index43,
+        Index94,
         [((2, 4, 1), torch.int64)],
         {
             "model_names": [
+                "pt_stereo_facebook_musicgen_small_music_generation_hf",
                 "pt_stereo_facebook_musicgen_large_music_generation_hf",
                 "pt_stereo_facebook_musicgen_medium_music_generation_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((2048, 1024), torch.float32)],
+        {
+            "model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
     ),
     (
@@ -2962,7 +4287,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index44,
+        Index95,
         [((1, 77), torch.int64)],
         {
             "model_names": ["pt_clip_openai_clip_vit_base_patch32_text_gen_hf_text"],
@@ -2971,7 +4296,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 16, 588, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -2980,7 +4305,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 16, 588, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_coder_1_3b_instruct_qa_hf"],
@@ -2989,7 +4314,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 32, 39, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -2998,7 +4323,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 32, 39, 128), torch.float32)],
         {
             "model_names": ["pt_deepseek_deepseek_math_7b_instruct_qa_hf"],
@@ -3007,7 +4332,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index47,
+        Index98,
         [((1, 577, 1024), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -3016,7 +4341,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 32, 596, 128), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -3025,7 +4350,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 32, 596, 128), torch.float32)],
         {
             "model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"],
@@ -3034,177 +4359,177 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index9,
+        Index57,
         [((1, 192, 192, 2432), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index48,
+        Index60,
         [((1, 64, 192, 2432), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index49,
+        Index99,
         [((2, 256), torch.float32)],
         {
             "model_names": [
+                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index17,
+        Index68,
         [((2, 256), torch.float32)],
         {
             "model_names": [
+                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf",
-                "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index50,
+        Index100,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "4864", "stop": "7296", "stride": "1"},
         },
     ),
     (
-        Index51,
+        Index101,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "2432", "stop": "4864", "stride": "1"},
         },
     ),
     (
-        Index52,
+        Index102,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "2432", "stride": "1"},
         },
     ),
     (
-        Index53,
+        Index103,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "12160", "stop": "14592", "stride": "1"},
         },
     ),
     (
-        Index54,
+        Index104,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "9728", "stop": "12160", "stride": "1"},
         },
     ),
     (
-        Index55,
+        Index105,
         [((2, 14592), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "7296", "stop": "9728", "stride": "1"},
         },
     ),
     (
-        Index56,
+        Index106,
         [((2, 4429, 2432), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "4096", "stride": "1"},
         },
     ),
     (
-        Index57,
+        Index107,
         [((2, 4429, 2432), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "4096", "stop": "4429", "stride": "1"},
         },
     ),
     (
-        Index52,
+        Index102,
         [((2, 4864), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "2432", "stride": "1"},
         },
     ),
     (
-        Index51,
+        Index101,
         [((2, 4864), torch.float32)],
         {
             "model_names": [
-                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
                 "pt_stable_diffusion_stable_diffusion_3_5_large_cond_gen_hf",
+                "pt_stable_diffusion_stable_diffusion_3_5_large_turbo_cond_gen_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "2432", "stop": "4864", "stride": "1"},
         },
     ),
     (
-        Index58,
+        Index108,
         [((1, 384, 384, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3213,7 +4538,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index59,
+        Index109,
         [((1, 64, 384, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3222,7 +4547,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index60,
+        Index110,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3231,7 +4556,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index111,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3240,7 +4565,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index62,
+        Index112,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3249,7 +4574,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index63,
+        Index113,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3258,7 +4583,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index64,
+        Index114,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3267,7 +4592,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index65,
+        Index115,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3276,7 +4601,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index66,
+        Index116,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3285,7 +4610,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index67,
+        Index117,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3294,7 +4619,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index68,
+        Index118,
         [((2, 13824), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3303,7 +4628,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index111,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3312,7 +4637,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index62,
+        Index112,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3321,7 +4646,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index60,
+        Index110,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3330,7 +4655,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index66,
+        Index116,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3339,7 +4664,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index67,
+        Index117,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3348,7 +4673,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index68,
+        Index118,
         [((2, 9216), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3357,7 +4682,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index56,
+        Index106,
         [((2, 4429, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3366,7 +4691,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index57,
+        Index107,
         [((2, 4429, 1536), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3375,7 +4700,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index62,
+        Index112,
         [((2, 3072), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3384,7 +4709,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index61,
+        Index111,
         [((2, 3072), torch.float32)],
         {
             "model_names": ["pt_stable_diffusion_stable_diffusion_3_5_medium_cond_gen_hf"],
@@ -3417,8 +4742,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_albert_twmkn9_albert_base_v2_squad2_qa_hf",
                 "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_opt_facebook_opt_125m_qa_hf",
             ],
             "pcc": 0.99,
@@ -3432,8 +4757,8 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_albert_twmkn9_albert_base_v2_squad2_qa_hf",
                 "pt_distilbert_distilbert_base_cased_distilled_squad_qa_hf",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_opt_facebook_opt_125m_qa_hf",
             ],
             "pcc": 0.99,
@@ -3447,12 +4772,12 @@ forge_modules_and_shapes_dtypes_list = [
             "model_names": [
                 "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_distilbert_distilbert_base_uncased_finetuned_sst_2_english_seq_cls_hf",
-                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
-                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
                 "pt_dpr_facebook_dpr_reader_multiset_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_ctx_encoder_single_nq_base_qa_hf_context_encoder",
                 "pt_dpr_facebook_dpr_ctx_encoder_multiset_base_qa_hf_context_encoder",
+                "pt_dpr_facebook_dpr_question_encoder_multiset_base_qa_hf_question_encoder",
+                "pt_dpr_facebook_dpr_reader_single_nq_base_qa_hf_reader",
+                "pt_dpr_facebook_dpr_question_encoder_single_nq_base_qa_hf_question_encoder",
                 "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
                 "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
             ],
@@ -3462,30 +4787,6 @@ forge_modules_and_shapes_dtypes_list = [
     ),
     (
         Index0,
-        [((2, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index1,
-        [((2, 1024), torch.float32)],
-        {
-            "model_names": [
-                "pt_bert_bert_large_cased_whole_word_masking_finetuned_squad_qa_hf",
-                "pt_bert_phiyodr_bert_large_finetuned_squad2_qa_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index0,
         [((1, 32, 16, 3, 96), torch.float32)],
         {
             "model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"],
@@ -3503,7 +4804,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index42,
+        Index93,
         [((1, 32, 16, 3, 96), torch.float32)],
         {
             "model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"],
@@ -3512,7 +4813,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index69,
+        Index119,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3525,7 +4826,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index70,
+        Index120,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3538,7 +4839,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index71,
+        Index121,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3551,7 +4852,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index72,
+        Index122,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3564,7 +4865,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index73,
+        Index123,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3577,7 +4878,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index74,
+        Index124,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3590,7 +4891,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index75,
+        Index125,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3603,7 +4904,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index76,
+        Index126,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3616,7 +4917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index77,
+        Index127,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3629,7 +4930,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index78,
+        Index128,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3642,7 +4943,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index79,
+        Index129,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3655,7 +4956,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index80,
+        Index130,
         [((3072, 1024), torch.float32)],
         {
             "model_names": [
@@ -3668,7 +4969,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 256, 16, 64), torch.float32)],
         {
             "model_names": [
@@ -3681,7 +4982,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 256, 16, 64), torch.float32)],
         {
             "model_names": [
@@ -3694,7 +4995,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index83,
+        Index133,
         [((1, 256, 16, 32), torch.float32)],
         {
             "model_names": [
@@ -3707,7 +5008,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index84,
+        Index134,
         [((1, 256, 16, 32), torch.float32)],
         {
             "model_names": [
@@ -3720,69 +5021,97 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
-        [((1, 12, 522, 256), torch.float32)],
+        Index96,
+        [((1, 24, 44, 128), torch.float32)],
         {
-            "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
+            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index17,
-        [((1, 12, 522, 256), torch.float32)],
+        Index97,
+        [((1, 24, 44, 128), torch.float32)],
         {
-            "model_names": ["pt_falcon3_tiiuae_falcon3_7b_base_clm_hf", "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf"],
+            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index49,
-        [((1, 4, 522, 256), torch.float32)],
+        Index96,
+        [((1, 8, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 8, 44, 128), torch.float32)],
+        {
+            "model_names": ["pt_cogito_deepcogito_cogito_v1_preview_llama_3b_text_gen_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index99,
+        [((1, 12, 522, 256), torch.float32)],
         {
             "model_names": [
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
                 "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index17,
-        [((1, 4, 522, 256), torch.float32)],
+        Index68,
+        [((1, 12, 522, 256), torch.float32)],
         {
             "model_names": [
-                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
-                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
                 "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index49,
-        [((1, 8, 522, 256), torch.float32)],
+        Index99,
+        [((1, 4, 522, 256), torch.float32)],
         {
-            "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
+            "model_names": [
+                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index17,
-        [((1, 8, 522, 256), torch.float32)],
+        Index68,
+        [((1, 4, 522, 256), torch.float32)],
         {
-            "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
+            "model_names": [
+                "pt_falcon3_tiiuae_falcon3_3b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_10b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_7b_base_clm_hf",
+                "pt_falcon3_tiiuae_falcon3_1b_base_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index85,
+        Index135,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3791,7 +5120,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index86,
+        Index136,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3800,7 +5129,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index87,
+        Index137,
         [((1, 6, 73, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3809,7 +5138,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 71, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3818,7 +5147,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 71, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3827,7 +5156,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 1, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
@@ -3836,12 +5165,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 1, 6, 64), torch.float32)],
         {
             "model_names": ["pt_falcon_tiiuae_falcon_7b_instruct_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index99,
+        [((1, 8, 522, 256), torch.float32)],
+        {
+            "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
+        },
+    ),
+    (
+        Index68,
+        [((1, 8, 522, 256), torch.float32)],
+        {
+            "model_names": ["pt_falcon3_tiiuae_falcon3_1b_base_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
@@ -3863,7 +5210,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index42,
+        Index93,
         [((1, 334, 64, 3, 64), torch.float32)],
         {
             "model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"],
@@ -3872,7 +5219,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 64, 334, 64), torch.float32)],
         {
             "model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"],
@@ -3881,7 +5228,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 64, 334, 64), torch.float32)],
         {
             "model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"],
@@ -3890,7 +5237,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index138,
         [((1, 64, 334, 32), torch.float32)],
         {
             "model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"],
@@ -3899,7 +5246,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index139,
         [((1, 64, 334, 32), torch.float32)],
         {
             "model_names": ["pt_fuyu_adept_fuyu_8b_qa_hf"],
@@ -3908,7 +5255,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
+        Index99,
         [((1, 8, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"],
@@ -3917,7 +5264,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 8, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"],
@@ -3926,7 +5273,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
+        Index99,
         [((1, 4, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"],
@@ -3935,7 +5282,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 4, 207, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"],
@@ -3944,25 +5291,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
-        [((1, 16, 207, 256), torch.float32)],
-        {
-            "model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
-        },
-    ),
-    (
-        Index17,
-        [((1, 16, 207, 256), torch.float32)],
-        {
-            "model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index49,
+        Index99,
         [((1, 8, 7, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"],
@@ -3971,7 +5300,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 8, 7, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"],
@@ -3980,7 +5309,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
+        Index99,
         [((1, 1, 7, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"],
@@ -3989,7 +5318,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 1, 7, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_2b_text_gen_hf"],
@@ -3998,25 +5327,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
-        [((1, 16, 107, 256), torch.float32)],
+        Index99,
+        [((1, 16, 207, 256), torch.float32)],
         {
-            "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index17,
-        [((1, 16, 107, 256), torch.float32)],
+        Index68,
+        [((1, 16, 207, 256), torch.float32)],
         {
-            "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index49,
+        Index99,
         [((1, 8, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -4025,7 +5354,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 8, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -4034,7 +5363,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index49,
+        Index99,
         [((1, 1, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -4043,7 +5372,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index17,
+        Index68,
         [((1, 1, 107, 256), torch.float32)],
         {
             "model_names": ["pt_gemma_google_gemma_1_1_2b_it_qa_hf"],
@@ -4052,12 +5381,30 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index90,
+        Index99,
+        [((1, 16, 107, 256), torch.float32)],
+        {
+            "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "128", "stop": "256", "stride": "1"},
+        },
+    ),
+    (
+        Index68,
+        [((1, 16, 107, 256), torch.float32)],
+        {
+            "model_names": ["pt_gemma_google_gemma_1_1_7b_it_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index140,
         [((2304, 768), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4065,12 +5412,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index91,
+        Index141,
         [((2304, 768), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4078,12 +5425,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index92,
+        Index142,
         [((2304, 768), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4091,12 +5438,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index93,
+        Index143,
         [((2304,), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4104,12 +5451,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index94,
+        Index144,
         [((2304,), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4117,12 +5464,12 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index95,
+        Index145,
         [((2304,), torch.float32)],
         {
             "model_names": [
-                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_gpt2_mnoukhov_gpt2_imdb_sentiment_classifier_seq_cls_hf",
+                "pt_gpt2_gpt2_text_gen_hf",
                 "pt_nanogpt_financialsupport_nanogpt_text_gen_hf",
             ],
             "pcc": 0.99,
@@ -4130,16 +5477,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index69,
-        [((1, 1, 1024, 1024), torch.bool)],
-        {
-            "model_names": ["pt_gpt2_gpt2_text_gen_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "256", "stride": "1"},
-        },
-    ),
-    (
-        Index96,
+        Index146,
         [((1, 1, 1024, 1024), torch.bool)],
         {
             "model_names": [
@@ -4151,16 +5489,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index97,
-        [((1, 1, 256, 1024), torch.bool)],
+        Index119,
+        [((1, 1, 1024, 1024), torch.bool)],
         {
             "model_names": ["pt_gpt2_gpt2_text_gen_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "256", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index44,
+        Index95,
         [((1, 1, 7, 1024), torch.bool)],
         {
             "model_names": [
@@ -4172,370 +5510,195 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index98,
-        [((1, 1, 2048, 2048), torch.bool)],
+        Index147,
+        [((1, 1, 256, 1024), torch.bool)],
         {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-            ],
+            "model_names": ["pt_gpt2_gpt2_text_gen_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index69,
+        Index119,
         [((1, 1, 2048, 2048), torch.bool)],
         {
             "model_names": [
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
                 "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index81,
-        [((1, 1, 32, 2048), torch.bool)],
+        Index61,
+        [((1, 1, 2048, 2048), torch.bool)],
         {
             "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
                 "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index99,
-        [((1, 32, 2), torch.float32)],
-        {
-            "model_names": [
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
-                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "31", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index97,
+        Index147,
         [((1, 1, 256, 2048), torch.bool)],
         {
             "model_names": [
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
                 "pt_gptneo_eleutherai_gpt_neo_125m_clm_hf",
                 "pt_gptneo_eleutherai_gpt_neo_1_3b_clm_hf",
-                "pt_gptneo_eleutherai_gpt_neo_2_7b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 32, 32, 128), torch.float32)],
-        {
-            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 32, 32, 128), torch.float32)],
-        {
-            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 24, 4, 128), torch.float32)],
+        Index131,
+        [((1, 1, 32, 2048), torch.bool)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 24, 4, 128), torch.float32)],
+        Index148,
+        [((1, 32, 2), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_1_3b_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_125m_seq_cls_hf",
+                "pt_gptneo_eleutherai_gpt_neo_2_7b_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+            "args": {"dim": "-2", "start": "31", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 8, 4, 128), torch.float32)],
+        Index132,
+        [((1, 32, 4, 64), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 8, 4, 128), torch.float32)],
+        Index131,
+        [((1, 32, 4, 64), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
             ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index43,
+        Index132,
+        [((1, 8, 4, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 8, 4, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
         [((1, 4, 2), torch.float32)],
         {
             "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
         },
     ),
     (
-        Index45,
+        Index96,
+        [((1, 32, 32, 128), torch.float32)],
+        {
+            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 32, 32, 128), torch.float32)],
+        {
+            "model_names": ["pt_llama3_huggyllama_llama_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
         [((1, 32, 4, 128), torch.float32)],
         {
             "model_names": [
                 "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 32, 4, 128), torch.float32)],
         {
             "model_names": [
                 "pt_llama3_huggyllama_llama_7b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
                 "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
                 "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index82,
-        [((1, 32, 4, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 32, 4, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 8, 4, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 8, 4, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_seq_cls_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 32, 256, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 32, 256, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 8, 256, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 8, 256, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
-                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 24, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 24, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 32, 256, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
-                "pt_phi1_microsoft_phi_1_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 32, 256, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
-                "pt_phi1_microsoft_phi_1_seq_cls_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 8, 256, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 8, 256, 64), torch.float32)],
-        {
-            "model_names": [
-                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
-                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
+        Index96,
         [((1, 24, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -4544,7 +5707,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 24, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -4553,7 +5716,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 8, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -4562,7 +5725,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 8, 32, 128), torch.float32)],
         {
             "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_clm_hf"],
@@ -4571,129 +5734,847 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
-        [((1, 32, 8, 128), torch.float32)],
+        Index96,
+        [((1, 32, 256, 128), torch.float32)],
         {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 32, 8, 128), torch.float32)],
+        Index97,
+        [((1, 32, 256, 128), torch.float32)],
         {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 8, 8, 128), torch.float32)],
+        Index96,
+        [((1, 8, 256, 128), torch.float32)],
         {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 8, 8, 128), torch.float32)],
+        Index97,
+        [((1, 8, 256, 128), torch.float32)],
         {
-            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_meta_llama_3_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_clm_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_clm_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 32, 135, 128), torch.float32)],
+        Index96,
+        [((1, 24, 4, 128), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 32, 135, 128), torch.float32)],
+        Index97,
+        [((1, 24, 4, 128), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 8, 135, 128), torch.float32)],
+        Index96,
+        [((1, 8, 4, 128), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 8, 135, 128), torch.float32)],
+        Index97,
+        [((1, 8, 4, 128), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_3b_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_1_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_meta_llama_3_8b_instruct_seq_cls_hf",
+                "pt_llama3_meta_llama_llama_3_2_3b_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 32, 128, 128), torch.float32)],
+        Index132,
+        [((1, 32, 256, 64), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 32, 256, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+                "pt_phi1_5_microsoft_phi_1_5_seq_cls_hf",
+                "pt_phi1_microsoft_phi_1_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 8, 256, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 8, 256, 64), torch.float32)],
+        {
+            "model_names": [
+                "pt_llama3_meta_llama_llama_3_2_1b_clm_hf",
+                "pt_llama3_meta_llama_llama_3_2_1b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 24, 256, 128), torch.float32)],
+        {
+            "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 32, 128, 128), torch.float32)],
+        Index97,
+        [((1, 24, 256, 128), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "model_names": ["pt_llama3_meta_llama_llama_3_2_3b_instruct_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index45,
-        [((1, 8, 128, 128), torch.float32)],
+        Index106,
+        [((1, 8192, 6), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "4096", "stride": "1"},
         },
     ),
     (
-        Index46,
-        [((1, 8, 128, 128), torch.float32)],
+        Index149,
+        [((1, 8192, 6), torch.float32)],
         {
-            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+            "args": {"dim": "-2", "start": "4096", "stop": "8192", "stride": "1"},
+        },
+    ),
+    (
+        Index72,
+        [((1, 4096, 9), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index150,
+        [((160, 4096), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index151,
+        [((160, 4096), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "128", "stop": "144", "stride": "1"},
+        },
+    ),
+    (
+        Index152,
+        [((160, 4096), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "144", "stop": "160", "stride": "1"},
         },
     ),
     (
         Index0,
-        [((2, 2048), torch.float32)],
+        [((1, 4096, 6, 16), torch.float32)],
         {
-            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf"],
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
     ),
     (
         Index1,
-        [((2, 2048), torch.float32)],
+        [((1, 4096, 6, 16), torch.float32)],
         {
-            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf"],
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index93,
+        [((1, 4096, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
+        [((1, 4096, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index153,
+        [((1, 4096, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
+        },
+    ),
+    (
+        Index154,
+        [((1, 4096, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index1,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index93,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index153,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
+        },
+    ),
+    (
+        Index154,
+        [((1, 6, 16), torch.float32)],
+        {
+            "model_names": [
+                "pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_370m_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf",
+                "pt_mamba_state_spaces_mamba_790m_hf_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index155,
+        [((1, 4096, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "2048", "stride": "1"},
+        },
+    ),
+    (
+        Index156,
+        [((1, 4096, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2048", "stop": "4096", "stride": "1"},
+        },
+    ),
+    (
+        Index72,
+        [((1, 2048, 9), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index63,
+        [((96, 2048), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index157,
+        [((96, 2048), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "64", "stop": "80", "stride": "1"},
+        },
+    ),
+    (
+        Index158,
+        [((96, 2048), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "80", "stop": "96", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index1,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index93,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index153,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
+        },
+    ),
+    (
+        Index154,
+        [((1, 2048, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index159,
+        [((1, 10240, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "5120", "stride": "1"},
+        },
+    ),
+    (
+        Index160,
+        [((1, 10240, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5120", "stop": "10240", "stride": "1"},
+        },
+    ),
+    (
+        Index72,
+        [((1, 5120, 9), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index161,
+        [((192, 5120), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "160", "stride": "1"},
+        },
+    ),
+    (
+        Index162,
+        [((192, 5120), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "160", "stop": "176", "stride": "1"},
+        },
+    ),
+    (
+        Index163,
+        [((192, 5120), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "176", "stop": "192", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index1,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index93,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index153,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
+        },
+    ),
+    (
+        Index154,
+        [((1, 5120, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index164,
+        [((1, 6144, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3072", "stride": "1"},
+        },
+    ),
+    (
+        Index165,
+        [((1, 6144, 6), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3072", "stop": "6144", "stride": "1"},
+        },
+    ),
+    (
+        Index72,
+        [((1, 3072, 9), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index166,
+        [((128, 3072), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "96", "stride": "1"},
+        },
+    ),
+    (
+        Index167,
+        [((128, 3072), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "96", "stop": "112", "stride": "1"},
+        },
+    ),
+    (
+        Index168,
+        [((128, 3072), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "112", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index1,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index93,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index94,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index153,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
+        },
+    ),
+    (
+        Index154,
+        [((1, 3072, 6, 16), torch.float32)],
+        {
+            "model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "5", "stop": "6", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 32, 10, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 32, 10, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 8, 10, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 8, 10, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_ministral_ministral_3b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 32, 8, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 32, 8, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 8, 8, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 8, 8, 128), torch.float32)],
+        {
+            "model_names": ["pt_ministral_mistralai_ministral_8b_instruct_2410_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 32, 135, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 32, 135, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 8, 135, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 8, 135, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_instruct_v0_3_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 32, 128, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 8, 128, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 8, 128, 128), torch.float32)],
+        {
+            "model_names": ["pt_mistral_mistralai_mistral_7b_v0_1_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
@@ -4715,7 +6596,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index0,
+        [((2, 2048), torch.float32)],
+        {
+            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index1,
+        [((2, 2048), torch.float32)],
+        {
+            "model_names": ["pt_opt_facebook_opt_1_3b_qa_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index138,
         [((1, 32, 256, 32), torch.float32)],
         {
             "model_names": [
@@ -4729,7 +6628,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index139,
         [((1, 32, 256, 32), torch.float32)],
         {
             "model_names": [
@@ -4743,7 +6642,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index100,
+        Index169,
         [((1, 256, 2), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_seq_cls_hf", "pt_phi1_microsoft_phi_1_seq_cls_hf"],
@@ -4752,7 +6651,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 32, 7, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -4761,7 +6660,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 32, 7, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -4770,7 +6669,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index138,
         [((1, 32, 7, 32), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -4779,7 +6678,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index139,
         [((1, 32, 7, 32), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_clm_hf", "pt_phi1_microsoft_phi_1_clm_hf"],
@@ -4788,7 +6687,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 32, 12, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -4797,7 +6696,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
+        Index132,
         [((1, 32, 12, 64), torch.float32)],
         {
             "model_names": ["pt_phi1_5_microsoft_phi_1_5_token_cls_hf", "pt_phi1_microsoft_phi_1_token_cls_hf"],
@@ -4806,7 +6705,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index138,
         [((1, 32, 12, 32), torch.float32)],
         {
             "model_names": [
@@ -4820,7 +6719,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index139,
         [((1, 32, 12, 32), torch.float32)],
         {
             "model_names": [
@@ -4834,7 +6733,43 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
+        [((1, 32, 12, 80), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index170,
+        [((1, 32, 12, 80), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "80", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 32, 256, 80), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index170,
+        [((1, 32, 256, 80), torch.float32)],
+        {
+            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "80", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
         [((1, 32, 11, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -4843,7 +6778,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index101,
+        Index170,
         [((1, 32, 11, 80), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -4852,7 +6787,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index88,
+        Index138,
         [((1, 32, 11, 32), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -4861,7 +6796,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index89,
+        Index139,
         [((1, 32, 11, 32), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -4870,7 +6805,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index102,
+        Index171,
         [((1, 11, 2), torch.float32)],
         {
             "model_names": ["pt_phi2_microsoft_phi_2_pytdml_seq_cls_hf", "pt_phi2_microsoft_phi_2_seq_cls_hf"],
@@ -4879,109 +6814,76 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
-        [((1, 32, 12, 80), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index101,
-        [((1, 32, 12, 80), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_pytdml_token_cls_hf", "pt_phi2_microsoft_phi_2_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "80", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 32, 256, 80), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index101,
-        [((1, 32, 256, 80), torch.float32)],
-        {
-            "model_names": ["pt_phi2_microsoft_phi_2_clm_hf", "pt_phi2_microsoft_phi_2_pytdml_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "80", "stride": "1"},
-        },
-    ),
-    (
-        Index103,
-        [((1, 256, 9216), torch.float32)],
+        Index4,
+        [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "3072", "stride": "1"},
         },
     ),
     (
-        Index104,
-        [((1, 256, 9216), torch.float32)],
+        Index5,
+        [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "3072", "stop": "6144", "stride": "1"},
         },
     ),
     (
-        Index105,
-        [((1, 256, 9216), torch.float32)],
+        Index6,
+        [((1, 13, 9216), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "6144", "stop": "9216", "stride": "1"},
         },
     ),
     (
-        Index106,
-        [((1, 32, 256, 96), torch.float32)],
+        Index7,
+        [((1, 32, 13, 96), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "48", "stop": "96", "stride": "1"},
         },
     ),
     (
-        Index107,
-        [((1, 32, 256, 96), torch.float32)],
+        Index8,
+        [((1, 32, 13, 96), torch.float32)],
         {
             "model_names": [
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "48", "stride": "1"},
         },
     ),
     (
-        Index108,
+        Index172,
         [((16384, 3072), torch.float32)],
         {
             "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
             ],
             "pcc": 0.99,
@@ -4989,13 +6891,16 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index109,
+        Index173,
         [((16384, 3072), torch.float32)],
         {
             "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_clm_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_clm_hf",
-                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
                 "pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
                 "pt_phi3_5_microsoft_phi_3_5_mini_instruct_clm_hf",
             ],
             "pcc": 0.99,
@@ -5003,187 +6908,106 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index103,
+        Index4,
         [((1, 5, 9216), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "3072", "stride": "1"},
         },
     ),
     (
-        Index104,
+        Index5,
         [((1, 5, 9216), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "3072", "stop": "6144", "stride": "1"},
         },
     ),
     (
-        Index105,
+        Index6,
         [((1, 5, 9216), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "6144", "stop": "9216", "stride": "1"},
         },
     ),
     (
-        Index106,
+        Index7,
         [((1, 32, 5, 96), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "48", "stop": "96", "stride": "1"},
         },
     ),
     (
-        Index107,
+        Index8,
         [((1, 32, 5, 96), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "48", "stride": "1"},
         },
     ),
     (
-        Index110,
+        Index153,
         [((1, 5, 2), torch.float32)],
         {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf"],
+            "model_names": [
+                "pt_phi3_microsoft_phi_3_mini_128k_instruct_seq_cls_hf",
+                "pt_phi3_microsoft_phi_3_mini_4k_instruct_seq_cls_hf",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "4", "stop": "5", "stride": "1"},
         },
     ),
     (
-        Index103,
-        [((1, 13, 9216), torch.float32)],
-        {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "3072", "stride": "1"},
-        },
-    ),
-    (
-        Index104,
-        [((1, 13, 9216), torch.float32)],
-        {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "3072", "stop": "6144", "stride": "1"},
-        },
-    ),
-    (
-        Index105,
-        [((1, 13, 9216), torch.float32)],
-        {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "6144", "stop": "9216", "stride": "1"},
-        },
-    ),
-    (
-        Index106,
-        [((1, 32, 13, 96), torch.float32)],
-        {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "48", "stop": "96", "stride": "1"},
-        },
-    ),
-    (
-        Index107,
-        [((1, 32, 13, 96), torch.float32)],
-        {
-            "model_names": ["pt_phi3_microsoft_phi_3_mini_4k_instruct_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "48", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 40, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 40, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 40, 256, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 40, 256, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 10, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 10, 256, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 10, 256, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 10, 256, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 40, 12, 128), torch.float32)],
+        Index174,
+        [((1, 12, 7680), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "5120", "stride": "1"},
         },
     ),
     (
-        Index45,
+        Index175,
+        [((1, 12, 7680), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "5120", "stop": "6400", "stride": "1"},
+        },
+    ),
+    (
+        Index176,
+        [((1, 12, 7680), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "6400", "stop": "7680", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
         [((1, 40, 12, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
@@ -5192,26 +7016,8 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
-        [((1, 40, 12, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 40, 12, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 10, 12, 128), torch.float32)],
+        Index97,
+        [((1, 40, 12, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
             "pcc": 0.99,
@@ -5219,7 +7025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 10, 12, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
@@ -5228,25 +7034,78 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
-        [((1, 10, 12, 64), torch.float32)],
+        Index97,
+        [((1, 10, 12, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index81,
-        [((1, 10, 12, 64), torch.float32)],
+        Index177,
+        [((35840, 5120), torch.float32)],
         {
-            "model_names": ["pt_phi4_microsoft_phi_4_token_cls_hf"],
+            "model_names": [
+                "pt_phi4_microsoft_phi_4_token_cls_hf",
+                "pt_phi4_microsoft_phi_4_clm_hf",
+                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+            ],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-2", "start": "17920", "stop": "35840", "stride": "1"},
         },
     ),
     (
-        Index46,
+        Index178,
+        [((35840, 5120), torch.float32)],
+        {
+            "model_names": [
+                "pt_phi4_microsoft_phi_4_token_cls_hf",
+                "pt_phi4_microsoft_phi_4_clm_hf",
+                "pt_phi4_microsoft_phi_4_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "17920", "stride": "1"},
+        },
+    ),
+    (
+        Index174,
+        [((1, 6, 7680), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "5120", "stride": "1"},
+        },
+    ),
+    (
+        Index175,
+        [((1, 6, 7680), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "5120", "stop": "6400", "stride": "1"},
+        },
+    ),
+    (
+        Index176,
+        [((1, 6, 7680), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "6400", "stop": "7680", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 40, 6, 128), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
         [((1, 40, 6, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
@@ -5255,43 +7114,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
-        [((1, 40, 6, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 40, 6, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 40, 6, 64), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 10, 6, 128), torch.float32)],
-        {
-            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
+        Index96,
         [((1, 10, 6, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
@@ -5300,43 +7123,79 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
-        [((1, 10, 6, 64), torch.float32)],
+        Index97,
+        [((1, 10, 6, 128), torch.float32)],
         {
             "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index81,
-        [((1, 10, 6, 64), torch.float32)],
+        Index174,
+        [((1, 256, 7680), torch.float32)],
         {
-            "model_names": ["pt_phi4_microsoft_phi_4_clm_hf"],
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-1", "start": "0", "stop": "5120", "stride": "1"},
         },
     ),
     (
-        Index82,
-        [((1, 16, 29, 64), torch.float32)],
+        Index175,
+        [((1, 256, 7680), torch.float32)],
         {
-            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+            "args": {"dim": "-1", "start": "5120", "stop": "6400", "stride": "1"},
         },
     ),
     (
-        Index81,
-        [((1, 16, 29, 64), torch.float32)],
+        Index176,
+        [((1, 256, 7680), torch.float32)],
         {
-            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
             "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-1", "start": "6400", "stop": "7680", "stride": "1"},
         },
     ),
     (
-        Index82,
+        Index96,
+        [((1, 40, 256, 128), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 40, 256, 128), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 10, 256, 128), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 10, 256, 128), torch.float32)],
+        {
+            "model_names": ["pt_phi4_microsoft_phi_4_seq_cls_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
         [((1, 16, 6, 64), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
@@ -5345,7 +7204,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index81,
+        Index131,
         [((1, 16, 6, 64), torch.float32)],
         {
             "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_clm_hf"],
@@ -5354,143 +7213,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
-        [((1, 28, 35, 128), torch.float32)],
+        Index132,
+        [((1, 16, 29, 64), torch.float32)],
         {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 28, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 4, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 4, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 12, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 12, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 2, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 2, 35, 128), torch.float32)],
-        {
-            "model_names": [
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
-                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 14, 35, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index81,
-        [((1, 14, 35, 64), torch.float32)],
+        Index131,
+        [((1, 16, 29, 64), torch.float32)],
         {
-            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "model_names": ["pt_qwen1_5_qwen_qwen1_5_0_5b_chat_clm_hf"],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index82,
-        [((1, 2, 35, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 2, 35, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
+        Index96,
         [((1, 16, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -5502,7 +7243,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 16, 35, 128), torch.float32)],
         {
             "model_names": [
@@ -5514,7 +7255,323 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
+        [((1, 2, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 2, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_3b_instruct_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 14, 35, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 14, 35, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 2, 35, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 2, 35, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_coder_qwen_qwen2_5_coder_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 28, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 28, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 4, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 4, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_7b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 12, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 12, 35, 128), torch.float32)],
+        {
+            "model_names": [
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_instruct_clm_hf",
+                "pt_qwen_coder_qwen_qwen2_5_coder_1_5b_clm_hf",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 28, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 28, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 4, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 4, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 14, 39, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 14, 39, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 2, 39, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 2, 39, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 28, 39, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 28, 39, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 4, 39, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 4, 39, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 16, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 16, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
+        [((1, 2, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 2, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 14, 29, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 14, 29, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index132,
+        [((1, 2, 29, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index131,
+        [((1, 2, 29, 64), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
         [((1, 28, 13, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
@@ -5523,7 +7580,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 28, 13, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
@@ -5532,7 +7589,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 4, 13, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
@@ -5541,7 +7598,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 4, 13, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_7b_token_cls_hf"],
@@ -5550,7 +7607,25 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
+        [((1, 12, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
+        },
+    ),
+    (
+        Index97,
+        [((1, 12, 29, 128), torch.float32)],
+        {
+            "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index96,
         [((1, 16, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -5559,7 +7634,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 16, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_instruct_clm_hf"],
@@ -5568,7 +7643,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
+        Index96,
         [((1, 2, 39, 128), torch.float32)],
         {
             "model_names": [
@@ -5580,7 +7655,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 2, 39, 128), torch.float32)],
         {
             "model_names": [
@@ -5592,79 +7667,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index45,
-        [((1, 16, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 16, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 2, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 2, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_3b_clm_hf", "pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 28, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 28, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 4, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 4, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
+        Index96,
         [((1, 12, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -5673,7 +7676,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index46,
+        Index97,
         [((1, 12, 39, 128), torch.float32)],
         {
             "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_instruct_clm_hf"],
@@ -5682,133 +7685,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index82,
-        [((1, 14, 39, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 14, 39, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 2, 39, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 2, 39, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 14, 29, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 14, 29, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index82,
-        [((1, 2, 29, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "32", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index81,
-        [((1, 2, 29, 64), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_0_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "32", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 12, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 12, 29, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_1_5b_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 28, 39, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 28, 39, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index45,
-        [((1, 4, 39, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "64", "stop": "128", "stride": "1"},
-        },
-    ),
-    (
-        Index46,
-        [((1, 4, 39, 128), torch.float32)],
-        {
-            "model_names": ["pt_qwen_v2_qwen_qwen2_5_7b_instruct_clm_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-1", "start": "0", "stop": "64", "stride": "1"},
-        },
-    ),
-    (
-        Index17,
+        Index68,
         [((1, 514), torch.int64)],
         {
             "model_names": [
@@ -5820,7 +7697,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index111,
+        Index179,
         [((2050, 1024), torch.float32)],
         {
             "model_names": ["pt_xglm_facebook_xglm_564m_clm_hf"],
@@ -5829,7 +7706,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index111,
+        Index179,
         [((2050, 2048), torch.float32)],
         {
             "model_names": ["pt_xglm_facebook_xglm_1_7b_clm_hf"],
@@ -5838,7 +7715,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index112,
+        Index180,
         [((1, 1, 1024, 72), torch.float32)],
         {
             "model_names": [
@@ -5851,7 +7728,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index113,
+        Index181,
         [((1024, 48), torch.float32)],
         {
             "model_names": ["pt_nbeats_seasionality_basis_clm_hf"],
@@ -5860,7 +7737,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index114,
+        Index182,
         [((1024, 48), torch.float32)],
         {
             "model_names": ["pt_nbeats_seasionality_basis_clm_hf"],
@@ -5869,7 +7746,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index115,
+        Index183,
         [((1024, 48), torch.float32)],
         {
             "model_names": ["pt_nbeats_seasionality_basis_clm_hf"],
@@ -5878,7 +7755,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index116,
+        Index184,
         [((1024, 48), torch.float32)],
         {
             "model_names": ["pt_nbeats_seasionality_basis_clm_hf"],
@@ -5887,7 +7764,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index117,
+        Index185,
         [((1024, 96), torch.float32)],
         {
             "model_names": ["pt_nbeats_generic_basis_clm_hf"],
@@ -5896,7 +7773,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index118,
+        Index186,
         [((1024, 96), torch.float32)],
         {
             "model_names": ["pt_nbeats_generic_basis_clm_hf"],
@@ -5905,7 +7782,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index119,
+        Index187,
         [((1024, 8), torch.float32)],
         {
             "model_names": ["pt_nbeats_trend_basis_clm_hf"],
@@ -5914,7 +7791,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index120,
+        Index188,
         [((1024, 8), torch.float32)],
         {
             "model_names": ["pt_nbeats_trend_basis_clm_hf"],
@@ -5923,7 +7800,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index121,
+        Index189,
         [((732, 16), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -5932,7 +7809,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index122,
+        Index190,
         [((732, 16), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
@@ -5941,25 +7818,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index123,
-        [((1, 197, 1024), torch.float32)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_large_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "197", "stride": "1"},
-        },
-    ),
-    (
-        Index0,
-        [((1, 197, 1024), torch.float32)],
-        {
-            "model_names": ["pt_vit_google_vit_large_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index121,
+        Index189,
         [((732, 12), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -5968,7 +7827,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index122,
+        Index190,
         [((732, 12), torch.float32)],
         {
             "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
@@ -5977,23 +7836,10 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index123,
-        [((1, 197, 768), torch.float32)],
-        {
-            "model_names": ["pt_beit_microsoft_beit_base_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "197", "stride": "1"},
-        },
-    ),
-    (
         Index0,
-        [((1, 197, 768), torch.float32)],
+        [((1, 197, 192), torch.float32)],
         {
-            "model_names": [
-                "pt_deit_facebook_deit_base_patch16_224_img_cls_hf",
-                "pt_deit_facebook_deit_base_distilled_patch16_224_img_cls_hf",
-                "pt_vit_google_vit_base_patch16_224_img_cls_hf",
-            ],
+            "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
         },
@@ -6008,16 +7854,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index0,
-        [((1, 197, 192), torch.float32)],
-        {
-            "model_names": ["pt_deit_facebook_deit_tiny_patch16_224_img_cls_hf"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index22,
+        Index73,
         [((1, 2, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6026,7 +7863,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((1, 2, 30, 40), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6035,7 +7872,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index22,
+        Index73,
         [((1, 2, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6044,7 +7881,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((1, 2, 60, 80), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6053,7 +7890,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index22,
+        Index73,
         [((1, 2, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6062,7 +7899,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((1, 2, 120, 160), torch.float32)],
         {
             "model_names": ["pt_glpn_kitti_vinvino02_glpn_kitti_depth_estimation_hf"],
@@ -6071,7 +7908,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index22,
+        Index73,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6080,7 +7917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index23,
+        Index74,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6089,7 +7926,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index124,
+        Index191,
         [((1, 3, 224, 224), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6098,7 +7935,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 176, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6107,7 +7944,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index24,
+        Index75,
         [((1, 176, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6116,7 +7953,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index25,
+        Index76,
         [((1, 176, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6125,61 +7962,61 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index125,
+        Index192,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "88", "stride": "1"},
         },
     ),
     (
-        Index126,
+        Index193,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "88", "stop": "132", "stride": "1"},
         },
     ),
     (
-        Index127,
+        Index194,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "132", "stop": "176", "stride": "1"},
         },
     ),
     (
-        Index128,
+        Index195,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "44", "stride": "1"},
         },
     ),
     (
-        Index129,
+        Index196,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "44", "stop": "88", "stride": "1"},
         },
     ),
     (
-        Index130,
+        Index197,
         [((1, 176, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "88", "stop": "176", "stride": "1"},
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 288, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6188,7 +8025,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 288, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6197,7 +8034,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index26,
+        Index77,
         [((1, 288, 28, 28), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6206,7 +8043,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index27,
+        Index78,
         [((1, 304, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6215,7 +8052,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index28,
+        Index79,
         [((1, 304, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6224,7 +8061,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index29,
+        Index80,
         [((1, 304, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6233,7 +8070,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index30,
+        Index81,
         [((1, 296, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6242,7 +8079,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index31,
+        Index82,
         [((1, 296, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6251,7 +8088,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index32,
+        Index83,
         [((1, 296, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6260,7 +8097,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 280, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6269,7 +8106,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 280, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6278,7 +8115,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index33,
+        Index84,
         [((1, 280, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6287,7 +8124,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index34,
+        Index85,
         [((1, 288, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6296,7 +8133,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index35,
+        Index86,
         [((1, 288, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6305,7 +8142,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index26,
+        Index77,
         [((1, 288, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6314,7 +8151,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index36,
+        Index87,
         [((1, 448, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6323,7 +8160,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index37,
+        Index88,
         [((1, 448, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6332,7 +8169,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index38,
+        Index89,
         [((1, 448, 14, 14), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6341,16 +8178,20 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index36,
+        Index87,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_googlenet_base_img_cls_torchvision", "pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": [
+                "pt_googlenet_base_img_cls_torchvision",
+                "pt_hrnet_hrnetv2_w64_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w64_pose_estimation_timm",
+            ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index37,
+        Index88,
         [((1, 448, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6359,7 +8200,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index38,
+        Index89,
         [((1, 448, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6368,52 +8209,52 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index131,
+        Index198,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "192", "stride": "1"},
         },
     ),
     (
-        Index132,
+        Index199,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "192", "stop": "448", "stride": "1"},
         },
     ),
     (
-        Index133,
+        Index200,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "256", "stop": "384", "stride": "1"},
         },
     ),
     (
-        Index134,
+        Index201,
         [((1, 448, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "384", "stop": "448", "stride": "1"},
         },
     ),
     (
-        Index39,
+        Index90,
         [((1, 624, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6422,7 +8263,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index40,
+        Index91,
         [((1, 624, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6431,7 +8272,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index41,
+        Index92,
         [((1, 624, 7, 7), torch.float32)],
         {
             "model_names": ["pt_googlenet_base_img_cls_torchvision"],
@@ -6440,727 +8281,619 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index135,
+        Index202,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "48", "stride": "1"},
+        },
+    ),
+    (
+        Index203,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "48", "stop": "144", "stride": "1"},
+        },
+    ),
+    (
+        Index204,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "144", "stop": "336", "stride": "1"},
+        },
+    ),
+    (
+        Index78,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "192", "stride": "1"},
+        },
+    ),
+    (
+        Index79,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "192", "stop": "288", "stride": "1"},
+        },
+    ),
+    (
+        Index205,
+        [((1, 336, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "288", "stop": "336", "stride": "1"},
+        },
+    ),
+    (
+        Index206,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "96", "stride": "1"},
+        },
+    ),
+    (
+        Index207,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "96", "stop": "144", "stride": "1"},
+        },
+    ),
+    (
+        Index208,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "144", "stop": "192", "stride": "1"},
+        },
+    ),
+    (
+        Index202,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "48", "stride": "1"},
+        },
+    ),
+    (
+        Index209,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "48", "stop": "96", "stride": "1"},
+        },
+    ),
+    (
+        Index210,
+        [((1, 192, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w48_pose_estimation_timm", "pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "96", "stop": "192", "stride": "1"},
+        },
+    ),
+    (
+        Index211,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "18", "stride": "1"},
         },
     ),
     (
-        Index136,
+        Index212,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "18", "stop": "54", "stride": "1"},
         },
     ),
     (
-        Index137,
+        Index213,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "54", "stop": "126", "stride": "1"},
         },
     ),
     (
-        Index138,
+        Index214,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "72", "stride": "1"},
         },
     ),
     (
-        Index139,
+        Index215,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "72", "stop": "108", "stride": "1"},
         },
     ),
     (
-        Index140,
+        Index216,
         [((1, 126, 7, 7), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "108", "stop": "126", "stride": "1"},
         },
     ),
     (
-        Index135,
+        Index211,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "18", "stride": "1"},
         },
     ),
     (
-        Index141,
+        Index217,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "36", "stride": "1"},
         },
     ),
     (
-        Index142,
+        Index218,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "36", "stop": "54", "stride": "1"},
         },
     ),
     (
-        Index143,
+        Index219,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "54", "stop": "72", "stride": "1"},
         },
     ),
     (
-        Index144,
+        Index220,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "18", "stop": "36", "stride": "1"},
         },
     ),
     (
-        Index145,
+        Index221,
         [((1, 72, 28, 28), torch.float32)],
         {
             "model_names": [
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_timm",
                 "pt_hrnet_hrnet_w18_pose_estimation_timm",
-                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
-                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
                 "pt_hrnet_hrnet_w18_small_v2_pose_estimation_osmr",
+                "pt_hrnet_hrnetv2_w18_pose_estimation_osmr",
+                "pt_hrnet_hrnet_w18_ms_aug_in1k_pose_estimation_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "36", "stop": "72", "stride": "1"},
         },
     ),
     (
-        Index146,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "40", "stride": "1"},
-        },
-    ),
-    (
-        Index147,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "40", "stop": "120", "stride": "1"},
-        },
-    ),
-    (
-        Index148,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "120", "stop": "280", "stride": "1"},
-        },
-    ),
-    (
-        Index30,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "160", "stride": "1"},
-        },
-    ),
-    (
-        Index149,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "160", "stop": "240", "stride": "1"},
-        },
-    ),
-    (
-        Index150,
-        [((1, 280, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "240", "stop": "280", "stride": "1"},
-        },
-    ),
-    (
-        Index151,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "80", "stride": "1"},
-        },
-    ),
-    (
-        Index152,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "80", "stop": "120", "stride": "1"},
-        },
-    ),
-    (
-        Index153,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "120", "stop": "160", "stride": "1"},
-        },
-    ),
-    (
-        Index146,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "40", "stride": "1"},
-        },
-    ),
-    (
-        Index154,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "40", "stop": "80", "stride": "1"},
-        },
-    ),
-    (
-        Index155,
-        [((1, 160, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "80", "stop": "160", "stride": "1"},
-        },
-    ),
-    (
-        Index128,
+        Index195,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "44", "stride": "1"},
         },
     ),
     (
-        Index156,
+        Index222,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "44", "stop": "132", "stride": "1"},
         },
     ),
     (
-        Index157,
+        Index223,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "132", "stop": "308", "stride": "1"},
         },
     ),
     (
-        Index158,
+        Index224,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "176", "stride": "1"},
         },
     ),
     (
-        Index159,
+        Index225,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "176", "stop": "264", "stride": "1"},
         },
     ),
     (
-        Index160,
+        Index226,
         [((1, 308, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w44_pose_estimation_timm", "pt_hrnet_hrnetv2_w44_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "264", "stop": "308", "stride": "1"},
         },
     ),
     (
-        Index161,
-        [((1, 210, 7, 7), torch.float32)],
+        Index227,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "30", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "40", "stride": "1"},
         },
     ),
     (
-        Index162,
-        [((1, 210, 7, 7), torch.float32)],
+        Index228,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "30", "stop": "90", "stride": "1"},
+            "args": {"dim": "-3", "start": "40", "stop": "120", "stride": "1"},
         },
     ),
     (
-        Index163,
-        [((1, 210, 7, 7), torch.float32)],
+        Index229,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "90", "stop": "210", "stride": "1"},
+            "args": {"dim": "-3", "start": "120", "stop": "280", "stride": "1"},
         },
     ),
     (
-        Index164,
-        [((1, 210, 7, 7), torch.float32)],
+        Index81,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "120", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "160", "stride": "1"},
         },
     ),
     (
-        Index165,
-        [((1, 210, 7, 7), torch.float32)],
+        Index230,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "120", "stop": "180", "stride": "1"},
+            "args": {"dim": "-3", "start": "160", "stop": "240", "stride": "1"},
         },
     ),
     (
-        Index166,
-        [((1, 210, 7, 7), torch.float32)],
+        Index231,
+        [((1, 280, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "180", "stop": "210", "stride": "1"},
+            "args": {"dim": "-3", "start": "240", "stop": "280", "stride": "1"},
         },
     ),
     (
-        Index167,
-        [((1, 120, 28, 28), torch.float32)],
+        Index232,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "60", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "80", "stride": "1"},
         },
     ),
     (
-        Index168,
-        [((1, 120, 28, 28), torch.float32)],
+        Index233,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "60", "stop": "90", "stride": "1"},
+            "args": {"dim": "-3", "start": "80", "stop": "120", "stride": "1"},
         },
     ),
     (
-        Index169,
-        [((1, 120, 28, 28), torch.float32)],
+        Index234,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "90", "stop": "120", "stride": "1"},
+            "args": {"dim": "-3", "start": "120", "stop": "160", "stride": "1"},
         },
     ),
     (
-        Index161,
-        [((1, 120, 28, 28), torch.float32)],
+        Index227,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "30", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "40", "stride": "1"},
         },
     ),
     (
-        Index170,
-        [((1, 120, 28, 28), torch.float32)],
+        Index235,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "30", "stop": "60", "stride": "1"},
+            "args": {"dim": "-3", "start": "40", "stop": "80", "stride": "1"},
         },
     ),
     (
-        Index171,
-        [((1, 120, 28, 28), torch.float32)],
+        Index236,
+        [((1, 160, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w30_pose_estimation_osmr", "pt_hrnet_hrnet_w30_pose_estimation_timm"],
+            "model_names": ["pt_hrnet_hrnet_w40_pose_estimation_timm", "pt_hrnet_hrnetv2_w40_pose_estimation_osmr"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "60", "stop": "120", "stride": "1"},
+            "args": {"dim": "-3", "start": "80", "stop": "160", "stride": "1"},
         },
     ),
     (
-        Index6,
+        Index54,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index172,
+        Index237,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "32", "stop": "96", "stride": "1"},
         },
     ),
     (
-        Index173,
+        Index238,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "96", "stop": "224", "stride": "1"},
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index174,
+        Index239,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "128", "stop": "192", "stride": "1"},
         },
     ),
     (
-        Index175,
+        Index240,
         [((1, 224, 7, 7), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "192", "stop": "224", "stride": "1"},
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index176,
+        Index241,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "96", "stride": "1"},
         },
     ),
     (
-        Index177,
+        Index242,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "96", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index6,
+        Index54,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "1"},
         },
     ),
     (
-        Index7,
+        Index55,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "32", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index9,
+        Index57,
         [((1, 128, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnet_w32_pose_estimation_timm", "pt_hrnet_hrnetv2_w32_pose_estimation_osmr"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index10,
+        Index58,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index174,
+        Index239,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "128", "stop": "192", "stride": "1"},
         },
     ),
     (
-        Index178,
+        Index243,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "192", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "1"},
         },
     ),
     (
-        Index9,
+        Index57,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "64", "stop": "128", "stride": "1"},
         },
     ),
     (
-        Index11,
+        Index59,
         [((1, 256, 28, 28), torch.float32)],
         {
-            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr"],
+            "model_names": ["pt_hrnet_hrnetv2_w64_pose_estimation_osmr", "pt_hrnet_hrnet_w64_pose_estimation_timm"],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "128", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index179,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "48", "stride": "1"},
-        },
-    ),
-    (
-        Index180,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "48", "stop": "144", "stride": "1"},
-        },
-    ),
-    (
-        Index181,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "144", "stop": "336", "stride": "1"},
-        },
-    ),
-    (
-        Index27,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "192", "stride": "1"},
-        },
-    ),
-    (
-        Index28,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "192", "stop": "288", "stride": "1"},
-        },
-    ),
-    (
-        Index182,
-        [((1, 336, 7, 7), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "288", "stop": "336", "stride": "1"},
-        },
-    ),
-    (
-        Index183,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "96", "stride": "1"},
-        },
-    ),
-    (
-        Index184,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "96", "stop": "144", "stride": "1"},
-        },
-    ),
-    (
-        Index185,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "144", "stop": "192", "stride": "1"},
-        },
-    ),
-    (
-        Index179,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "48", "stride": "1"},
-        },
-    ),
-    (
-        Index186,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "48", "stop": "96", "stride": "1"},
-        },
-    ),
-    (
-        Index187,
-        [((1, 192, 28, 28), torch.float32)],
-        {
-            "model_names": ["pt_hrnet_hrnetv2_w48_pose_estimation_osmr"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "96", "stop": "192", "stride": "1"},
-        },
-    ),
-    (
-        Index4,
+        Index52,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -7172,7 +8905,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index5,
+        Index53,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -7184,7 +8917,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index7,
+        Index55,
         [((1, 64, 28, 28), torch.float32)],
         {
             "model_names": [
@@ -7196,7 +8929,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index8,
+        Index56,
         [((1, 112, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -7208,7 +8941,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index176,
+        Index241,
         [((1, 112, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -7220,7 +8953,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index188,
+        Index244,
         [((1, 112, 7, 7), torch.float32)],
         {
             "model_names": [
@@ -7232,1306 +8965,2089 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index183,
+        Index245,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "30", "stride": "1"},
+        },
+    ),
+    (
+        Index246,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "30", "stop": "90", "stride": "1"},
+        },
+    ),
+    (
+        Index247,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "90", "stop": "210", "stride": "1"},
+        },
+    ),
+    (
+        Index248,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "120", "stride": "1"},
+        },
+    ),
+    (
+        Index249,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "120", "stop": "180", "stride": "1"},
+        },
+    ),
+    (
+        Index250,
+        [((1, 210, 7, 7), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "180", "stop": "210", "stride": "1"},
+        },
+    ),
+    (
+        Index22,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index251,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "60", "stop": "90", "stride": "1"},
+        },
+    ),
+    (
+        Index252,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "90", "stop": "120", "stride": "1"},
+        },
+    ),
+    (
+        Index245,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "30", "stride": "1"},
+        },
+    ),
+    (
+        Index253,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "30", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index254,
+        [((1, 120, 28, 28), torch.float32)],
+        {
+            "model_names": ["pt_hrnet_hrnet_w30_pose_estimation_timm", "pt_hrnet_hrnetv2_w30_pose_estimation_osmr"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "60", "stop": "120", "stride": "1"},
+        },
+    ),
+    (
+        Index206,
         [((1, 224, 35, 35), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "96", "stride": "1"},
         },
     ),
     (
-        Index189,
+        Index255,
         [((1, 224, 35, 35), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "96", "stop": "160", "stride": "1"},
         },
     ),
     (
-        Index58,
+        Index108,
         [((1, 224, 35, 35), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "160", "stop": "224", "stride": "1"},
         },
     ),
     (
-        Index39,
+        Index90,
         [((1, 768, 17, 17), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "384", "stride": "1"},
         },
     ),
     (
-        Index40,
+        Index91,
         [((1, 768, 17, 17), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "384", "stop": "576", "stride": "1"},
         },
     ),
     (
-        Index190,
+        Index256,
         [((1, 768, 17, 17), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "576", "stop": "768", "stride": "1"},
         },
     ),
     (
-        Index36,
+        Index87,
         [((1, 1024, 8, 8), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "0", "stop": "256", "stride": "1"},
         },
     ),
     (
-        Index191,
+        Index257,
         [((1, 1024, 8, 8), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "256", "stop": "640", "stride": "1"},
         },
     ),
     (
-        Index192,
+        Index258,
         [((1, 1024, 8, 8), torch.float32)],
         {
             "model_names": [
                 "pt_inception_v4_img_cls_osmr",
-                "pt_inception_inception_v4_img_cls_timm",
                 "pt_inception_inception_v4_tf_in1k_img_cls_timm",
+                "pt_inception_inception_v4_img_cls_timm",
             ],
             "pcc": 0.99,
             "args": {"dim": "-3", "start": "640", "stop": "1024", "stride": "1"},
         },
     ),
     (
+        Index259,
+        [((3, 1, 12, 257, 64), torch.float32)],
+        {
+            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 1, 12, 257, 64), torch.float32)],
+        {
+            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 1, 12, 257, 64), torch.float32)],
+        {
+            "model_names": ["pt_mgp_alibaba_damo_mgp_str_base_scene_text_recognition_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 64, 3, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 64, 3, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 64, 3, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 16, 6, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 16, 6, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 16, 6, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 4, 12, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 4, 12, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 4, 12, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 1, 24, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 1, 24, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 1, 24, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_s_img_cls_torchvision", "pt_swin_swin_v2_t_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 64, 3, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 64, 3, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 64, 3, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index262,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index264,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index266,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "53", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index267,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "53", "stride": "1"},
+        },
+    ),
+    (
+        Index268,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "53", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index269,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "53", "stride": "1"},
+        },
+    ),
+    (
+        Index270,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index271,
+        [((1, 56, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index272,
+        [((1, 28, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index273,
+        [((1, 28, 56, 96), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 16, 6, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 16, 6, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 16, 6, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index274,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index275,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index276,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "25", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index277,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "25", "stride": "1"},
+        },
+    ),
+    (
+        Index278,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "25", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index279,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "25", "stride": "1"},
+        },
+    ),
+    (
+        Index280,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index281,
+        [((1, 28, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index282,
+        [((1, 14, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index283,
+        [((1, 14, 28, 192), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 4, 12, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 4, 12, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 4, 12, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index284,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index285,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index286,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "11", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index287,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "11", "stride": "1"},
+        },
+    ),
+    (
+        Index288,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "11", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index289,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "11", "stride": "1"},
+        },
+    ),
+    (
+        Index290,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index291,
+        [((1, 14, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index292,
+        [((1, 7, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index293,
+        [((1, 7, 14, 384), torch.float32)],
+        {
+            "model_names": [
+                "pt_swin_swin_t_img_cls_torchvision",
+                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
+                "pt_swin_swin_s_img_cls_torchvision",
+            ],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 1, 24, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 1, 24, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 1, 24, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_t_img_cls_torchvision", "pt_swin_swin_s_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 64, 4, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 64, 4, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 64, 4, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index11,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index12,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index13,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index14,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index21,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "60", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index22,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index23,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "60", "stop": "64", "stride": "1"},
+        },
+    ),
+    (
+        Index24,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "60", "stride": "1"},
+        },
+    ),
+    (
+        Index19,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index20,
+        [((1, 64, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index25,
+        [((1, 32, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index26,
+        [((1, 32, 64, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "64", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 16, 8, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 16, 8, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 16, 8, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index27,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index12,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index28,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "4", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index14,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
+        },
+    ),
+    (
+        Index33,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "28", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
+        Index34,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index35,
+        [((1, 32, 32, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "28", "stop": "32", "stride": "1"},
+        },
+    ),
+    (
         Index36,
-        [((1, 1792, 56, 56), torch.float32)],
+        [((1, 32, 32, 256), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "256", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "1"},
         },
     ),
     (
-        Index193,
-        [((1, 1792, 56, 56), torch.float32)],
+        Index31,
+        [((1, 32, 32, 256), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "256", "stop": "512", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "32", "stride": "2"},
         },
     ),
     (
-        Index194,
-        [((1, 1792, 56, 56), torch.float32)],
+        Index32,
+        [((1, 32, 32, 256), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "512", "stop": "768", "stride": "1"},
+            "args": {"dim": "-3", "start": "1", "stop": "32", "stride": "2"},
         },
     ),
     (
-        Index195,
-        [((1, 1792, 56, 56), torch.float32)],
+        Index37,
+        [((1, 16, 32, 256), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "768", "stop": "1024", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "2"},
         },
     ),
     (
-        Index196,
-        [((1, 1792, 56, 56), torch.float32)],
+        Index38,
+        [((1, 16, 32, 256), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1024", "stop": "1280", "stride": "1"},
+            "args": {"dim": "-2", "start": "1", "stop": "32", "stride": "2"},
         },
     ),
     (
-        Index197,
-        [((1, 1792, 56, 56), torch.float32)],
+        Index259,
+        [((3, 4, 16, 64, 32), torch.float32)],
         {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1280", "stop": "1536", "stride": "1"},
-        },
-    ),
-    (
-        Index198,
-        [((1, 1792, 56, 56), torch.float32)],
-        {
-            "model_names": ["pt_monodle_base_obj_det_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1536", "stop": "1792", "stride": "1"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 64, 3, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
             "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
         },
     ),
     (
-        Index200,
-        [((3, 64, 3, 49, 32), torch.float32)],
+        Index260,
+        [((3, 4, 16, 64, 32), torch.float32)],
         {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
             "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
         },
     ),
     (
-        Index201,
-        [((3, 64, 3, 49, 32), torch.float32)],
+        Index261,
+        [((3, 4, 16, 64, 32), torch.float32)],
         {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
             "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
         },
     ),
     (
-        Index202,
-        [((1, 56, 56, 96), torch.float32)],
+        Index39,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "56", "stride": "1"},
+            "args": {"dim": "-3", "start": "4", "stop": "16", "stride": "1"},
         },
     ),
     (
-        Index203,
-        [((1, 56, 56, 96), torch.float32)],
+        Index12,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "4", "stride": "1"},
         },
     ),
     (
-        Index204,
-        [((1, 56, 56, 96), torch.float32)],
+        Index40,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "56", "stride": "1"},
+            "args": {"dim": "-2", "start": "4", "stop": "16", "stride": "1"},
         },
     ),
     (
-        Index205,
-        [((1, 56, 56, 96), torch.float32)],
+        Index14,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "4", "stride": "1"},
         },
     ),
     (
-        Index206,
-        [((1, 56, 56, 96), torch.float32)],
+        Index45,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "53", "stop": "56", "stride": "1"},
+            "args": {"dim": "-3", "start": "12", "stop": "16", "stride": "1"},
         },
     ),
     (
-        Index207,
-        [((1, 56, 56, 96), torch.float32)],
+        Index46,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "53", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "12", "stride": "1"},
         },
     ),
     (
-        Index208,
-        [((1, 56, 56, 96), torch.float32)],
+        Index47,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "53", "stop": "56", "stride": "1"},
-        },
-    ),
-    (
-        Index209,
-        [((1, 56, 56, 96), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "53", "stride": "1"},
-        },
-    ),
-    (
-        Index210,
-        [((1, 56, 56, 96), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index211,
-        [((1, 56, 56, 96), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index212,
-        [((1, 28, 56, 96), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index213,
-        [((1, 28, 56, 96), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 16, 6, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 16, 6, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 16, 6, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index214,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index203,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index215,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index205,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index216,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "25", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index217,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "25", "stride": "1"},
-        },
-    ),
-    (
-        Index218,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "25", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index219,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "25", "stride": "1"},
-        },
-    ),
-    (
-        Index220,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index221,
-        [((1, 28, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index222,
-        [((1, 14, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index223,
-        [((1, 14, 28, 192), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 4, 12, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 4, 12, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 4, 12, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index224,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index203,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index225,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index205,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index226,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "11", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index227,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "11", "stride": "1"},
-        },
-    ),
-    (
-        Index228,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "11", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index229,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "11", "stride": "1"},
-        },
-    ),
-    (
-        Index230,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index231,
-        [((1, 14, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index232,
-        [((1, 7, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index233,
-        [((1, 7, 14, 384), torch.float32)],
-        {
-            "model_names": [
-                "pt_swin_swin_s_img_cls_torchvision",
-                "pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf",
-                "pt_swin_swin_t_img_cls_torchvision",
-            ],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 1, 24, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 1, 24, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 1, 24, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_s_img_cls_torchvision", "pt_swin_swin_t_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 64, 4, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 64, 4, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 64, 4, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index202,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "56", "stride": "1"},
-        },
-    ),
-    (
-        Index203,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index204,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "56", "stride": "1"},
-        },
-    ),
-    (
-        Index205,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index206,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "53", "stop": "56", "stride": "1"},
-        },
-    ),
-    (
-        Index207,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "53", "stride": "1"},
-        },
-    ),
-    (
-        Index208,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "53", "stop": "56", "stride": "1"},
-        },
-    ),
-    (
-        Index209,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "53", "stride": "1"},
-        },
-    ),
-    (
-        Index210,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index211,
-        [((1, 56, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index212,
-        [((1, 28, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index213,
-        [((1, 28, 56, 128), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "56", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 16, 8, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 16, 8, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 16, 8, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index214,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index203,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index215,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index205,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index216,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "25", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index217,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "25", "stride": "1"},
-        },
-    ),
-    (
-        Index218,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "25", "stop": "28", "stride": "1"},
-        },
-    ),
-    (
-        Index219,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "25", "stride": "1"},
-        },
-    ),
-    (
-        Index220,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index221,
-        [((1, 28, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index222,
-        [((1, 14, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index223,
-        [((1, 14, 28, 256), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "28", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 4, 16, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 4, 16, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 4, 16, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index224,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "3", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index203,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index225,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "3", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index205,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
-        },
-    ),
-    (
-        Index226,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "11", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index227,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "11", "stride": "1"},
-        },
-    ),
-    (
-        Index228,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "11", "stop": "14", "stride": "1"},
-        },
-    ),
-    (
-        Index229,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "11", "stride": "1"},
-        },
-    ),
-    (
-        Index230,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "0", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index231,
-        [((1, 14, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-3", "start": "1", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index232,
-        [((1, 7, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index233,
-        [((1, 7, 14, 512), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-2", "start": "1", "stop": "14", "stride": "2"},
-        },
-    ),
-    (
-        Index199,
-        [((3, 1, 32, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
-        },
-    ),
-    (
-        Index200,
-        [((3, 1, 32, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
-        },
-    ),
-    (
-        Index201,
-        [((3, 1, 32, 49, 32), torch.float32)],
-        {
-            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
-            "pcc": 0.99,
-            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+            "args": {"dim": "-2", "start": "12", "stop": "16", "stride": "1"},
         },
     ),
     (
         Index48,
-        [((1, 2, 128, 400), torch.float32)],
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": ["pt_yolov10_default_obj_det_github"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "64", "stop": "128", "stride": "1"},
+            "args": {"dim": "-2", "start": "0", "stop": "12", "stride": "1"},
         },
     ),
     (
-        Index98,
-        [((1, 2, 128, 400), torch.float32)],
+        Index43,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": ["pt_yolov10_default_obj_det_github"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "0", "stop": "32", "stride": "1"},
+            "args": {"dim": "-3", "start": "0", "stop": "16", "stride": "2"},
         },
     ),
     (
-        Index234,
-        [((1, 2, 128, 400), torch.float32)],
+        Index44,
+        [((1, 16, 16, 512), torch.float32)],
         {
-            "model_names": ["pt_yolov10_default_obj_det_github"],
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
             "pcc": 0.99,
-            "args": {"dim": "-2", "start": "32", "stop": "64", "stride": "1"},
+            "args": {"dim": "-3", "start": "1", "stop": "16", "stride": "2"},
         },
     ),
     (
-        Index235,
+        Index49,
+        [((1, 8, 16, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index50,
+        [((1, 8, 16, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "16", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 1, 32, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 1, 32, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 1, 32, 64, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_v2_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 64, 4, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 64, 4, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 64, 4, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index262,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index264,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index266,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "53", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index267,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "53", "stride": "1"},
+        },
+    ),
+    (
+        Index268,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "53", "stop": "56", "stride": "1"},
+        },
+    ),
+    (
+        Index269,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "53", "stride": "1"},
+        },
+    ),
+    (
+        Index270,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index271,
+        [((1, 56, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index272,
+        [((1, 28, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index273,
+        [((1, 28, 56, 128), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "56", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 16, 8, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 16, 8, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 16, 8, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index274,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index275,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index276,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "25", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index277,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "25", "stride": "1"},
+        },
+    ),
+    (
+        Index278,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "25", "stop": "28", "stride": "1"},
+        },
+    ),
+    (
+        Index279,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "25", "stride": "1"},
+        },
+    ),
+    (
+        Index280,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index281,
+        [((1, 28, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index282,
+        [((1, 14, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index283,
+        [((1, 14, 28, 256), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "28", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 4, 16, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 4, 16, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 4, 16, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index284,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "3", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index263,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index285,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "3", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index265,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index286,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "11", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index287,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "11", "stride": "1"},
+        },
+    ),
+    (
+        Index288,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "11", "stop": "14", "stride": "1"},
+        },
+    ),
+    (
+        Index289,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "11", "stride": "1"},
+        },
+    ),
+    (
+        Index290,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "0", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index291,
+        [((1, 14, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-3", "start": "1", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index292,
+        [((1, 7, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index293,
+        [((1, 7, 14, 512), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "14", "stride": "2"},
+        },
+    ),
+    (
+        Index259,
+        [((3, 1, 32, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index260,
+        [((3, 1, 32, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index261,
+        [((3, 1, 32, 49, 32), torch.float32)],
+        {
+            "model_names": ["pt_swin_swin_b_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-5", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index294,
+        [((3, 197, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index295,
+        [((3, 197, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index296,
+        [((3, 197, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index294,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index295,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index296,
+        [((3, 50, 1, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 50, 768), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_b_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index294,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index295,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index296,
+        [((3, 50, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 50, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_32_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index294,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index295,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index296,
+        [((3, 1370, 1, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index0,
+        [((1, 1370, 1280), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_h_14_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index294,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index295,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "1", "stop": "2", "stride": "1"},
+        },
+    ),
+    (
+        Index296,
+        [((3, 197, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_vit_vit_l_16_img_cls_torchvision"],
+            "pcc": 0.99,
+            "args": {"dim": "-4", "start": "2", "stop": "3", "stride": "1"},
+        },
+    ),
+    (
+        Index297,
         [((1, 5880, 4), torch.float32)],
         {
             "model_names": [
                 "pt_yolo_v6_yolov6m_obj_det_torchhub",
                 "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
                 "pt_yolo_v6_yolov6s_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "2", "stride": "1"},
         },
     ),
     (
-        Index236,
+        Index298,
         [((1, 5880, 4), torch.float32)],
         {
             "model_names": [
                 "pt_yolo_v6_yolov6m_obj_det_torchhub",
                 "pt_yolo_v6_yolov6n_obj_det_torchhub",
-                "pt_yolo_v6_yolov6l_obj_det_torchhub",
                 "pt_yolo_v6_yolov6s_obj_det_torchhub",
+                "pt_yolo_v6_yolov6l_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "2", "stop": "4", "stride": "1"},
         },
     ),
     (
-        Index237,
+        Index0,
+        [((1, 4251, 192), torch.float32)],
+        {
+            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "0", "stop": "1", "stride": "1"},
+        },
+    ),
+    (
+        Index299,
+        [((1, 4251, 192), torch.float32)],
+        {
+            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "1", "stop": "-100", "stride": "1"},
+        },
+    ),
+    (
+        Index300,
+        [((1, 4251, 192), torch.float32)],
+        {
+            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "-100", "stop": "4251", "stride": "1"},
+        },
+    ),
+    (
+        Index301,
+        [((1, 1445, 192), torch.float32)],
+        {
+            "model_names": ["pt_yolos_hustvl_yolos_tiny_obj_det_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-2", "start": "-100", "stop": "1445", "stride": "1"},
+        },
+    ),
+    (
+        Index302,
         [((1, 3, 640, 640), torch.float32)],
         {
             "model_names": [
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "0", "stop": "640", "stride": "2"},
         },
     ),
     (
-        Index238,
+        Index303,
         [((1, 3, 640, 640), torch.float32)],
         {
             "model_names": [
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-2", "start": "1", "stop": "640", "stride": "2"},
         },
     ),
     (
-        Index239,
+        Index304,
         [((1, 3, 320, 640), torch.float32)],
         {
             "model_names": [
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "0", "stop": "640", "stride": "2"},
         },
     ),
     (
-        Index240,
+        Index305,
         [((1, 3, 320, 640), torch.float32)],
         {
             "model_names": [
+                "pt_yolox_yolox_x_obj_det_torchhub",
+                "pt_yolox_yolox_m_obj_det_torchhub",
                 "pt_yolox_yolox_s_obj_det_torchhub",
                 "pt_yolox_yolox_l_obj_det_torchhub",
-                "pt_yolox_yolox_m_obj_det_torchhub",
-                "pt_yolox_yolox_x_obj_det_torchhub",
             ],
             "pcc": 0.99,
             "args": {"dim": "-1", "start": "1", "stop": "640", "stride": "2"},
         },
     ),
     (
-        Index241,
+        Index306,
         [((1, 3, 416, 416), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -8540,7 +11056,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index242,
+        Index307,
         [((1, 3, 416, 416), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -8549,7 +11065,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index243,
+        Index308,
         [((1, 3, 208, 416), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -8558,7 +11074,7 @@ forge_modules_and_shapes_dtypes_list = [
         },
     ),
     (
-        Index244,
+        Index309,
         [((1, 3, 208, 416), torch.float32)],
         {
             "model_names": ["pt_yolox_yolox_nano_obj_det_torchhub", "pt_yolox_yolox_tiny_obj_det_torchhub"],
@@ -8571,10 +11087,9 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Index")
+    record_forge_op_name("Index")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -8582,9 +11097,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -8611,14 +11126,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

@@ -5,10 +5,10 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, ModelGroup, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.gemma.utils.model_utils import (
+from test.models.pytorch.text.gemma.model_utils.model_utils import (
     generate_no_cache,
     pad_inputs,
 )
@@ -32,15 +32,17 @@ from test.models.pytorch.text.gemma.utils.model_utils import (
         ),
     ],
 )
-def test_gemma_pytorch_v1(forge_property_recorder, variant):
+def test_gemma_pytorch_v1(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gemma", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model="gemma",
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -57,11 +59,10 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(

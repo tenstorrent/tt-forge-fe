@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 import subprocess
 import onnx
@@ -44,19 +44,12 @@ import torch
         ),
     ],
 )
-def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
+def test_qwen_clm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    if variant in ["Qwen/Qwen2.5-0.5B-Instruct", "Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-3B-Instruct"]:
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu", return_dict=False)
@@ -73,9 +66,9 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
     inputs = [input_ids, attention_mask]
 
     # Export model to ONNX
-    onnx_path = f"{tmp_path}/model.onnx"
+    onnx_path = f"{forge_tmp_path}/model.onnx"
     if variant not in ["Qwen/Qwen2.5-0.5B", "Qwen/Qwen2.5-0.5B-Instruct"]:
-        command = build_optimum_cli_command(variant, tmp_path)
+        command = build_optimum_cli_command(variant, forge_tmp_path)
         subprocess.run(command, check=True)
     else:
         torch.onnx.export(framework_model, (inputs[0], inputs[1]), onnx_path, opset_version=17)
@@ -88,14 +81,11 @@ def test_qwen_clm_onnx(forge_property_recorder, variant, tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Compile model
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

@@ -36,7 +36,8 @@ RUN apt-get update && apt-get install -y \
     expect \
     lcov \
     libgl1 \
-    libglx-mesa0
+    libglx-mesa0 \
+    unzip
 
 # Upgrade pip, setuptools, wheel (do this *after* installing python3-pip)
 RUN pip install --upgrade pip setuptools wheel

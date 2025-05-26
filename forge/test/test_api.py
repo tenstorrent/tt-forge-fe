@@ -95,6 +95,37 @@ def test_forge():
 
 
 @pytest.mark.push
+def test_save_binary():
+    class Add(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, x1, x2):
+            return torch.add(x1, x2)
+
+    model = Add()
+    shape = (1, 1024, 32)
+    inputs = [torch.rand(shape), torch.rand(shape)]
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+
+    file_path = "generated_add.ttnn"
+    compiled_model.save(file_path)
+
+    assert os.path.exists(file_path)
+    with open(file_path, "rb") as f:
+        f.seek(8)
+        load_identify = f.read(4)
+    assert load_identify == b"TTNN"
+    os.remove(file_path)
+
+    # Must be *.ttnn extension, it causes an error if it is not
+    file_path = "generated_add.fb"
+    with pytest.raises(ValueError):
+        compiled_model.save(file_path)
+
+
+@pytest.mark.push
 def test_export_to_cpp():
     class Add(nn.Module):
         def __init__(self):

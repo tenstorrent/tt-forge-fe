@@ -59,12 +59,12 @@ class Conv2d(PyOp):
             padding,
         )
         if t_ops[1].dtype == torch.int8:
-            target_dtype = torch.int32
             padded_activations, weights = padded_activations.float(), weights.float()
             if bias is not None:
                 bias = bias.float()
+            cast_result_to_int32 = True
         else:
-            target_dtype = torch.float32
+            cast_result_to_int32 = False
 
         result = torch.nn.functional.conv2d(
             padded_activations,
@@ -79,7 +79,8 @@ class Conv2d(PyOp):
         if channel_last:
             result = result.permute((0, 2, 3, 1))
 
-        result = result.to(target_dtype)
+        if cast_result_to_int32:
+            result = result.to(torch.int32)
         return result
 
     def shape(self, tensor_shapes):
@@ -223,12 +224,12 @@ class Conv2dTranspose(PyOp):
             activations = activations.permute((0, 3, 1, 2))
 
         if t_ops[1].dtype == torch.int8:
-            target_dtype = torch.int32
             activations, weights = activations.float(), weights.float()
             if bias is not None:
                 bias = bias.float()
+            cast_result_to_int32 = True
         else:
-            target_dtype = torch.float32
+            cast_result_to_int32 = False
 
         result = torch.nn.functional.conv_transpose2d(
             activations,
@@ -243,7 +244,8 @@ class Conv2dTranspose(PyOp):
 
         if channel_last:
             result = result.permute((0, 2, 3, 1))
-        result = result.to(target_dtype)
+        if cast_result_to_int32:
+            result = result.to(torch.int32)
         return result
 
     def shape(self, tensor_shapes):

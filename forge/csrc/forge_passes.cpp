@@ -80,7 +80,6 @@ run_post_initial_graph_passes(
     std::shared_ptr<void> compiler_cfg = make_shared_py_object(compiler_cfg_object);
 
     passes::print_graph(graph, "INITIAL");
-    passes::apply_user_data_format_override(graph, compiler_cfg_object);
     passes::generate_initial_flops_estimate(graph);
     passes::decompose_nd_reshape_split(graph);
     passes::erase_unnecessary_4d_tm_sequence(graph);
@@ -90,6 +89,7 @@ run_post_initial_graph_passes(
 
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
+    passes::apply_user_data_format_override(graph, compiler_cfg_object);
     return std::make_tuple(inserted_node_id_mapping, chip_id_assignments);
 }
 

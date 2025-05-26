@@ -7,22 +7,19 @@ import torchvision.transforms as transforms
 from PIL import Image
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodle.utils.model import CenterNet3D
+from test.models.pytorch.vision.monodle.model_utils.model import CenterNet3D
 
 
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Floating point exception(core dumped)")
-def test_monodle_pytorch(forge_property_recorder):
+def test_monodle_pytorch():
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="monodle", source=Source.TORCHVISION, task=Task.OBJECT_DETECTION
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load data sample
     url = "https://images.rawpixel.com/image_1300/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMTA2LTA0Ny1jaGltXzEuanBn.jpg"
@@ -45,9 +42,7 @@ def test_monodle_pytorch(forge_property_recorder):
     inputs = [img_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

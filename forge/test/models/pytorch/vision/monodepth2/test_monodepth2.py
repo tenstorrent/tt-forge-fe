@@ -5,10 +5,10 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.monodepth2.utils.utils import (
+from test.models.pytorch.vision.monodepth2.model_utils.utils import (
     download_model,
     load_input,
     load_model,
@@ -28,18 +28,15 @@ variants = [
 
 
 @pytest.mark.parametrize("variant", variants)
-def test_monodepth2(forge_property_recorder, variant):
+def test_monodepth2(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="monodepth2",
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.DEPTH_PREDICTION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # prepare model and input
     download_model(variant)
@@ -49,9 +46,7 @@ def test_monodepth2(forge_property_recorder, variant):
     inputs = [input_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

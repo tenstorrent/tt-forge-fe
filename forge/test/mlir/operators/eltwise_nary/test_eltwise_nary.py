@@ -23,7 +23,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_meshgrid(forge_property_recorder, shapes):
+def test_meshgrid(shapes):
     class Meshgrid(nn.Module):
         def __init__(self):
             super().__init__()
@@ -34,11 +34,9 @@ def test_meshgrid(forge_property_recorder, shapes):
     inputs = [torch.arange(i * 10 + 1, i * 10 + 1 + shape[0], dtype=torch.float32) for i, shape in enumerate(shapes)]
 
     framework_model = Meshgrid()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -53,7 +51,7 @@ def test_meshgrid(forge_property_recorder, shapes):
 )
 @pytest.mark.xfail(reason="Unsupported data format during lowering from TTForge to TTIR: Bfp2_b")
 @pytest.mark.push
-def test_where(forge_property_recorder, condition, input, other):
+def test_where(condition, input, other):
     class Where(nn.Module):
         def __init__(self):
             super().__init__()
@@ -68,11 +66,9 @@ def test_where(forge_property_recorder, condition, input, other):
     inputs = [condition, input, other]
 
     framework_model = Where()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -90,7 +86,7 @@ def test_where(forge_property_recorder, condition, input, other):
     ids=["0", "1", "2", "3", "-1", "-2", "-3", "-4"],
 )
 @pytest.mark.push
-def test_concat(forge_property_recorder, inputs_and_dim):
+def test_concat(inputs_and_dim):
     in_shape1, in_shape2, dim = inputs_and_dim
 
     class Concat(nn.Module):
@@ -103,8 +99,35 @@ def test_concat(forge_property_recorder, inputs_and_dim):
     inputs = [torch.rand(in_shape1), torch.rand(in_shape2)]
 
     framework_model = Concat()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shapes",
+    [
+        [(1, 78), (52,)],
+        [(18,), (26,), (13,)],
+        [(1, 11), (2, 2), (31, 3), (1, 5)],
+        [(31,), (12, 3), (66,), (13, 12), (20,)],
+        [(2, 2), (1, 3), (11,), (62,), (11,), (31,)],
+        [(384, 384)] * 7,
+        [(96, 96)] * 8,
+    ],
+)
+@pytest.mark.push
+def test_block_diag(input_shapes):
+
+    inputs = [torch.randn(*shape) for shape in input_shapes]
+
+    class block_diag(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+        def forward(self, *inputs):
+            return torch.block_diag(*inputs)
+
+    framework_model = block_diag()
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)

@@ -91,6 +91,22 @@ jobs:
       runs-on: '[{"runs-on": "n150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
 
+  test_full_model_passing_p150:
+    if: success() || failure()
+    needs:
+      - set-inputs
+      - docker-build
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and not xfail'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "p150"}]'
+      run_id: ${{ needs.build.outputs.run_id }}
+
   perf-benchmark:
     if: success() || failure()
     needs:
@@ -119,6 +135,22 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
 
+  test_full_model_xfailing_p150:
+    if: success() || failure()
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly and xfail'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      runs-on: '[{"runs-on": "p150"}]'
+
   test_models_ops:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
@@ -134,6 +166,23 @@ jobs:
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       runs-on: '[{"runs-on": "n150"}]'
+      allow-fail: true
+
+  test_models_ops_p150:
+    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
+    needs:
+      - docker-build
+      - set-inputs
+      - build
+    uses: ./.github/workflows/test-sub.yml
+    secrets: inherit
+    with:
+      test_mark: 'nightly_models_ops'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
+      run_id: ${{ needs.build.outputs.run_id }}
+      docker-image: ${{ needs.docker-build.outputs.docker-image }}
+      runs-on: '[{"runs-on": "p150"}]'
       allow-fail: true
 
   test_sweeps:
@@ -159,9 +208,12 @@ jobs:
       - docker-build
       - build
       - test_full_model_passing
+      - test_full_model_passing_p150
       - perf-benchmark
       - test_full_model_xfailing
+      - test_full_model_xfailing_p150
       - test_models_ops
+      - test_models_ops_p150
       - test_sweeps
     runs-on: Ubuntu-latest
     outputs:
@@ -176,8 +228,8 @@ jobs:
         uses: re-actors/alls-green@v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
-          allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_models_ops, test_sweeps
+          allowed-failures: test_models_ops, test_models_ops_p150, test_sweeps, test_full_model_passing_p150, test_full_model_xfailing_p150
+          allowed-skips: test_models_ops, test_models_ops_p150, test_sweeps
 
   fail-send-msg:
     if: always()

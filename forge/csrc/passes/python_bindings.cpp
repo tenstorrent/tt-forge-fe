@@ -252,15 +252,13 @@ void PassesModule(py::module &m_passes)
         .def("fuse", &tt::DecomposingContext::fuse, py::arg("operand"), py::arg("producer_output_port_id") = 0)
         .def(
             "tensor",
-            [](tt::DecomposingContext &self, py::object tensor, DataFormat df)
+            [](tt::DecomposingContext &self, py::object tensor)
             {
                 return self.tensor(
                     make_shared_py_object(tensor),
-                    graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()),
-                    df);
+                    graphlib::Shape::create(tensor.attr("shape").cast<std::vector<std::uint32_t>>()));
             },
-            py::arg("tensor"),
-            py::arg("df") = DataFormat::Invalid)
+            py::arg("tensor"))
         .def(
             "get_pytorch_tensor",
             [](tt::DecomposingContext &self, graphlib::NodeContext const &node)

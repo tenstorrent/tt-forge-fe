@@ -12,10 +12,33 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
 class Avgpool1D0(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, avgpool1d_input_0):
+        avgpool1d_output_1 = forge.op.AvgPool1d(
+            "",
+            avgpool1d_input_0,
+            kernel_size=[64],
+            stride=[64],
+            padding=[0, 0],
+            ceil_mode=False,
+            count_include_pad=True,
+        )
+        return avgpool1d_output_1
+
+
+class Avgpool1D1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
 
@@ -42,6 +65,24 @@ forge_modules_and_shapes_dtypes_list = [
     pytest.param(
         (
             Avgpool1D0,
+            [((1, 768, 64), torch.float32)],
+            {
+                "model_names": ["onnx_swin_microsoft_swinv2_tiny_patch4_window8_256_img_cls_hf"],
+                "pcc": 0.99,
+                "args": {
+                    "kernel_size": "[64]",
+                    "stride": "[64]",
+                    "padding": "[0, 0]",
+                    "ceil_mode": "False",
+                    "count_include_pad": "True",
+                },
+            },
+        ),
+        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler stage")],
+    ),
+    pytest.param(
+        (
+            Avgpool1D1,
             [((1, 768, 49), torch.float32)],
             {
                 "model_names": ["pt_swin_microsoft_swin_tiny_patch4_window7_224_img_cls_hf"],
@@ -55,17 +96,16 @@ forge_modules_and_shapes_dtypes_list = [
                 },
             },
         ),
-        marks=[pytest.mark.skip(reason="Segmentation fault at Run mlir compile stage")],
+        marks=[pytest.mark.skip(reason="Segmentation fault at run_mlir_compiler stage")],
     ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("AvgPool1d")
+    record_forge_op_name("AvgPool1d")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -73,9 +113,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -102,14 +142,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

@@ -24,20 +24,29 @@ python forge/test/benchmark/benchmark.py -m mnist_linear -bs 32 -lp 32 -o forge-
 # Resnet HF
 python forge/test/benchmark/benchmark.py -m resnet50_hf -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-resnet50_hf.json
 
+# Resnet HF
+python forge/test/benchmark/benchmark.py -m resnet50_hf_config -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-resnet50_hf_config.json
+
 # Llama
-python forge/test/benchmark/benchmark.py -m llama -bs 1 -lp 32 -o forge-benchmark-e2e-llama.json
+python forge/test/benchmark/benchmark.py -m llama -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-llama.json
 
 # MobileNetV2 Basic
-python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -ts classification -bs 1 -lp 32 -o forge-benchmark-e2e-mobilenetv2_basic.json
+python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-benchmark-e2e-mobilenetv2_basic.json
 
 # EfficientNet Timm
-python forge/test/benchmark/benchmark.py -m efficientnet_timm -ts classification -bs 1 -lp 32 -o forge-benchmark-e2e-efficientnet_timm.json
+python forge/test/benchmark/benchmark.py -m efficientnet_timm -ts classification -bs 6 -df bfloat16 -lp 32 -o forge-benchmark-e2e-efficientnet_timm.json
 
 # Segformer Classification
-python forge/test/benchmark/benchmark.py -m segformer_classification -bs 1 -lp 32 -o forge-benchmark-e2e-segformer_classification.json
+python forge/test/benchmark/benchmark.py -m segformer -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-segformer.json
 
 # ViT Base
-python forge/test/benchmark/benchmark.py -m vit_base -ts classification -bs 1 -lp 32 -o forge-benchmark-e2e-vit_base.json
+python forge/test/benchmark/benchmark.py -m vit_base -ts classification -bs 1 -df float32 -lp 32 -o forge-benchmark-e2e-vit_base.json
 
 # Vovnet OSMR
-python forge/test/benchmark/benchmark.py -m vovnet_osmr -ts classification -bs 1 -lp 32 -o forge-benchmark-e2e-vovnet_osmr.json
+python forge/test/benchmark/benchmark.py -m vovnet_osmr -ts classification -bs 16 -df bfloat16 -lp 32 -o forge-benchmark-e2e-vovnet_osmr.json
+
+# Yolo8
+python forge/test/benchmark/benchmark.py -m yolo_v8 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v8.json
+
+# Yolo10
+python forge/test/benchmark/benchmark.py -m yolo_v10 -ts na -bs 1 -df bfloat16 -lp 32 -o forge-benchmark-e2e-yolo_v10.json

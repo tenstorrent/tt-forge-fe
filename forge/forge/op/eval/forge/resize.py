@@ -44,7 +44,8 @@ def eval(type, attr, ops):
             upsample = torch.nn.Upsample(scale_factor=scale_factor, mode=resize_method)
             result = upsample(acts)
         else:
-            raise NotImplementedError("Downsampling of resize2d is not supported yet")
+            resize_method = "bicubic" if resize_method == "cubic" else resize_method
+            result = torch.nn.functional.interpolate(acts, size=(sizes[0], sizes[1]), mode=resize_method)
 
         if attr[-1]:
             result = result.permute((0, 2, 3, 1))
@@ -175,6 +176,16 @@ def shape(type, attr, ops):
             shape[-3], shape[-2] = shape[-3] * scale_factor, shape[-2] * scale_factor
         else:
             shape[-2], shape[-1] = shape[-2] * scale_factor, shape[-1] * scale_factor
+        return shape, []
+
+    elif type == "downsample2d":
+        channel_last = attr[2]
+        scale_factor = attr[0]
+        shape = list(ops[0])
+        if channel_last:
+            shape[-3], shape[-2] = shape[-3] // scale_factor, shape[-2] // scale_factor
+        else:
+            shape[-2], shape[-1] = shape[-2] // scale_factor, shape[-1] // scale_factor
         return shape, []
 
 
@@ -320,7 +331,13 @@ def decompose(type, attr, dc, inputs):
                 (scale_factor, resize_method, True),
             )
         else:
-            raise NotImplementedError("Downsampling of resize2d is not supported yet")
+            scale_factor = shape[-3] // sizes[0] if channel_last else shape[-2] // sizes[0]
+            result = dc.op_with_named_attrs(
+                "downsample2d",
+                [result],
+                {"scale_factor": scale_factor, "mode": resize_method, "channel_last": True},
+                (scale_factor, resize_method, True),
+            )
 
         if not channel_last:
             # Changing the Layout back to NCHW from NHWC after ttir.upsample2d operation
