@@ -11,6 +11,7 @@ import onnx
 import onnxruntime as ort
 import onnx.helper
 import onnx.numpy_helper
+from loguru import logger
 
 import forge
 from forge.verify.verify import verify, VerifyConfig
@@ -200,7 +201,6 @@ def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padd
             k = nn.functional.pad(x, self.padding, mode="constant", value=0)
             y = self.conv(k)
             return y @ x
-            # return self.conv(x)
 
     pad_top, pad_bottom, pad_left, pad_right = padding
     if pad_top != pad_bottom or pad_left != pad_right:
@@ -218,3 +218,144 @@ def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padd
     )
 
     verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim):
+    compiler_cfg = forge.config.CompilerConfig()
+    compiler_cfg.enable_tvm_cpu_fallback = False
+    compiler_cfg.default_df_override = DataFormat.Float16_b
+
+    class Embedding(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding = nn.Embedding(vocab_size, embedding_dim)
+
+        def forward(self, x):
+            return self.embedding(x)
+
+    inputs = [
+        torch.randint(0, vocab_size, (1, token_num)),
+    ]
+
+    framework_model = Embedding().to(torch.bfloat16)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (1, 32, 32),
+    ],
+)
+@pytest.mark.push
+def test_multiply(forge_property_recorder, shape):
+    class Multiply(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.register_buffer("constant_b", torch.rand(size=shape))
+
+        def forward(self, a):
+            return a * self.constant_b
+
+    inputs = [torch.rand(shape).to(torch.bfloat16)]
+
+    framework_model = Multiply()
+    compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
+    )
+
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+
+
+@pytest.mark.push
+def test_mnist_training(forge_property_recorder):
+    # Model and data type.
+    # For bfloat16, the following line should be added to the test_forge_vs_torch function:
+    # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
+    # That sets relu threshold to bfloat16 tensor.
+    # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
+    dtype = torch.float32
+
+    # Set training hyperparameters
+    num_epochs = 3
+    batch_size = 1024
+    learning_rate = 0.001
+
+    # Load dataset
+    test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
+
+    # Define model and instruct it to compile and run on TT device
+    framework_model = MNISTLinear(
+        bias=False, dtype=dtype
+    )  # bias=False because batch_size=1 with bias=True is not supported
+
+    # Create a torch loss and leave on CPU
+    loss_fn = torch.nn.CrossEntropyLoss()
+
+    # Define optimizer and instruct it to compile and run on TT device
+    framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+    tt_model = forge.compile(
+        framework_model,
+        sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
+        optimizer=framework_optimizer,
+        training=True,
+        forge_property_handler=forge_property_recorder,
+    )
+
+    logger.info("Starting training loop... (logger will be disabled)")
+    logger.disable("")
+    for epoch_idx in range(num_epochs):
+
+        total_loss = 0
+        for batch_idx, (data, target) in enumerate(train_loader):
+            # Reset gradients (every batch)
+            framework_optimizer.zero_grad()
+
+            # Create target tensor and leave on CPU
+            target = nn.functional.one_hot(target, num_classes=10).to(dtype)
+
+            # Forward pass (prediction) on device
+            golden_pred, pred = verify(
+                inputs=[data],
+                framework_model=framework_model,
+                compiled_model=tt_model,
+                verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+                forge_property_handler=forge_property_recorder,
+            )
+            golden_pred, pred = golden_pred[0], pred[0]
+
+            # Compute loss on CPU
+            loss = loss_fn(pred, target)
+            total_loss += loss.item()
+
+            golden_loss = loss_fn(golden_pred, target)
+            assert torch.allclose(loss, golden_loss, rtol=1e-1)  # 10% tolerance
+
+            # Loss backward pass on CPU.
+            loss.backward()
+
+            # Run backward pass on device.
+            tt_model.backward()
+
+            # Adjust weights (on CPU)
+            framework_optimizer.step()
+
+        print(f"epoch: {epoch_idx} loss: {total_loss}")
+
+    test_loss = 0
+    for batch_idx, (data, target) in enumerate(test_loader):
+        pred = tt_model(data)[0]
+        target = nn.functional.one_hot(target, num_classes=10).to(dtype)
+
+        test_loss += loss_fn(pred, target)
+
+    print(f"Test (total) loss: {test_loss}")

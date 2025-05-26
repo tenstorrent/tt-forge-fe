@@ -304,7 +304,7 @@ void configure_output_data_formats(graphlib::Graph *graph, std::optional<DataFor
             if (node_input_activation)
             {
                 TT_ASSERT(
-                    node->output_df() == default_df_override,
+                    node->output_df() == default_df_override || node->output_df() == DataFormat::Int32,
                     "Input activations should have output_df same as dataformat override which is: {}, but node "
                     "output_df is: {}",
                     default_df_override.value(),

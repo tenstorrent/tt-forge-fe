@@ -17,6 +17,8 @@ from forge.verify.config import DepricatedVerifyConfig
 from forge.config import CompileDepth
 from ..utils import *
 from test.mlir.utils import *
+from forge.config import CompilerConfig
+from forge._C import DataFormat
 
 
 @pytest.mark.push
@@ -26,7 +28,7 @@ def test_mnist_training(forge_property_recorder):
     # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
     # That sets relu threshold to bfloat16 tensor.
     # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
-    dtype = torch.float32
+    dtype = torch.bfloat16
 
     # Set training hyperparameters
     num_epochs = 3
@@ -46,12 +48,16 @@ def test_mnist_training(forge_property_recorder):
 
     # Define optimizer and instruct it to compile and run on TT device
     framework_optimizer = torch.optim.SGD(framework_model.parameters(), lr=learning_rate)
+    data_format_override = DataFormat.Float16_b
+
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
     tt_model = forge.compile(
         framework_model,
         sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
         optimizer=framework_optimizer,
         training=True,
         forge_property_handler=forge_property_recorder,
+        compiler_cfg=compiler_cfg,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")

@@ -613,6 +613,7 @@ NodeContext autograd_engine::create_constant(
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     node->set_shape(Shape::create({1}));
+    std::cout << "***1st autograd constant node name: " << node->name() << std::endl;
     node->set_output_df(current_fwd_op->output_df());
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
@@ -638,6 +639,7 @@ NodeContext autograd_engine::create_constant(
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     node->set_shape(Shape::create({1}));
+    std::cout << "*** 2nd autograd constant node name: " << node->name() << std::endl;
     node->set_output_df(current_fwd_op->output_df());
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
@@ -662,13 +664,32 @@ NodeContext autograd_engine::create_constant(
     int created_op_index,
     graphlib::NodeEpochType epoch_type)
 {
+    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
+
     auto node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
             "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor, shape),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     node->set_shape(shape);
-    node->set_output_df(current_fwd_op->output_df());
+
+    // Infer node output DataFormat from Python tensor dtype
+    py::module_ tensor_module = py::module_::import("forge.tensor");
+    py::object py_tensor = borrow_shared_py_object(tensor);
+    py::object tensor_dtype = py_tensor.attr("dtype");
+
+    DataFormat output_df;
+    try
+    {
+        output_df = py::cast<DataFormat>(tensor_module.attr("pytorch_dtype_to_forge_dataformat")(tensor_dtype));
+    }
+    catch (py::error_already_set &e)
+    {
+        throw std::runtime_error(
+            "Encountered python error while dtype to DataFormat mapping: " + std::string(e.what()));
+    }
+
+    node->set_output_df(output_df);
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
     {

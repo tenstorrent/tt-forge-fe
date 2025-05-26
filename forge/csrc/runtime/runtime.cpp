@@ -63,6 +63,12 @@ void verify_input_descs(
                 LogTTDevice, "Tensor {} - stride mismatch: expected {}, got {}", i, expected_desc.stride, desc.stride);
         }
 
+        auto expected = target::EnumNameDataType(expected_desc.dataType);
+        auto got = target::EnumNameDataType(desc.dataType);
+        std::cout << "for tensor: " << i << std::endl;
+        std::cout << "expected = " << expected << std::endl;
+        std::cout << "got = " << got << std::endl;
+        std::cout << "shape = " << expected_desc.shape << std::endl;
         if (desc.dataType != expected_desc.dataType)
         {
             auto expected = target::EnumNameDataType(expected_desc.dataType);

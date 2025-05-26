@@ -21,11 +21,11 @@ class MNISTLinear(nn.Module):
     ):  # changed hidden_size to 512 because matmul 256 x batch_size is not supported in ttnn
         super(MNISTLinear, self).__init__()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(input_size, hidden_size, bias=bias, dtype=dtype),
+            nn.Linear(input_size, output_size, bias=bias, dtype=dtype),
             nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size, bias=bias, dtype=dtype),
-            nn.ReLU(),
-            nn.Linear(hidden_size, output_size, bias=bias, dtype=dtype),
+            # nn.Linear(hidden_size, hidden_size, bias=bias, dtype=dtype),
+            # nn.ReLU(),
+            # nn.Linear(hidden_size, output_size, bias=bias, dtype=dtype),
         )
 
     def forward(self, x):

@@ -27,6 +27,8 @@ ProgramState create_program_state(
 {
     std::vector<tt::Tensor> persistent_inputs;
     persistent_inputs.reserve(persistent_input_names.size());
+    // std::cout<<"******** persistant_input_names.size() = "<<persistent_input_names.size()<<std::endl;
+    // std::cout<<"******** 13th element = "<<persistent_input_names[12]<<std::endl;
 
     for (auto& name : persistent_input_names)
     {
