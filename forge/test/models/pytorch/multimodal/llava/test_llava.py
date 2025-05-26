@@ -8,7 +8,13 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs

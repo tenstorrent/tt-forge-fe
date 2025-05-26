@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
-from forge.forge_property_utils import Framework
+from forge.forge_property_utils import Framework, record_model_properties
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     denoising_loop,
