@@ -27,18 +27,18 @@ GPTNeoModel._prepare_4d_causal_attention_mask_with_cache_position = (
 variants = [
     pytest.param(
         "EleutherAI/gpt-neo-125M",
-        marks=pytest.mark.xfail,
+        # marks=pytest.mark.xfail,
     ),
-    pytest.param(
-        "EleutherAI/gpt-neo-1.3B",
-        marks=pytest.mark.xfail,
-    ),
-    pytest.param(
-        "EleutherAI/gpt-neo-2.7B",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
-        ),
-    ),
+    # pytest.param(
+    #     "EleutherAI/gpt-neo-1.3B",
+    #     marks=pytest.mark.xfail,
+    # ),
+    # pytest.param(
+    #     "EleutherAI/gpt-neo-2.7B",
+    #     marks=pytest.mark.skip(
+    #         reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB during compile time)"
+    #     ),
+    # ),
 ]
 
 

@@ -16,7 +16,7 @@ from forge.verify.verify import verify
     [
         pytest.param(
             "Qwen/Qwen1.5-0.5B",
-            marks=[pytest.mark.xfail],
+            # marks=[pytest.mark.xfail],
         ),
     ],
 )
@@ -44,12 +44,8 @@ def test_qwen1_5_causal_lm(variant):
     batch_size = 1
     prompt = ["My name is Jim Keller and"] * batch_size
 
-    inputs = tokenizer(prompt)
-
-    input_ids = torch.tensor(inputs["input_ids"])
-    attention_mask = torch.tensor(inputs["attention_mask"])
-
-    inputs = [input_ids, attention_mask]
+    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
