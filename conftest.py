@@ -50,7 +50,7 @@ def pytest_unconfigure():
     print("------------- Cache urls:")
     print(session.urls())
     print("------------- All cache keys for redirects and responses combined:")
-    print(list(session.keys()))
+    print(list(session.responses.keys()))
     print("------------- All responses:")
     for response in session.values():
         print(response)
