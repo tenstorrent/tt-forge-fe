@@ -116,6 +116,7 @@ jobs:
     with:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.buildtype}}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   run-tests:
