@@ -86,7 +86,7 @@ def main():
         args.models_ops_test_output_directory_path, args.models_ops_test_package_name
     )
 
-    model_output_dir_paths = generate_and_export_unique_ops_tests(
+    generate_and_export_unique_ops_tests(
         test_directory_or_file_path=args.test_directory_or_file_path,
         unique_ops_output_directory_path=args.unique_ops_output_directory_path,
         extract_tvm_unique_ops_config=True,
@@ -108,7 +108,7 @@ def main():
         args.unique_ops_output_directory_path, "extracted_unique_ops_config_across_all_models_ops_tests.log"
     )
     unique_operations_across_all_models_ops_test = extract_unique_op_tests_from_models(
-        model_output_dir_paths=model_output_dir_paths,
+        models_unique_ops_config_output_dir_path=args.unique_ops_output_directory_path,
         unique_ops_config_file_path=unique_ops_config_file_path,
         use_constant_value=False,
         convert_param_and_const_to_activation=True,

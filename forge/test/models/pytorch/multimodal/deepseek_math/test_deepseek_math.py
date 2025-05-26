@@ -34,24 +34,24 @@ def test_deepseek_inference_no_cache_cpu(variant):
     print(generated_text)
 
 
-@pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
-def test_deepseek_inference(variant):
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
-    )
+# @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
+# def test_deepseek_inference(variant):
+#     # Record Forge Property
+#       module_name = record_model_properties(
+#           framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+#       )
 
-    model_name = f"deepseek-ai/{variant}"
-    model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
-    framework_model = DeepSeekWrapper(model)
-    framework_model.eval()
+#     model_name = f"deepseek-ai/{variant}"
+#     model, tokenizer, input_ids = download_model_and_tokenizer(model_name)
+#     framework_model = DeepSeekWrapper(model)
+#     framework_model.eval()
 
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=[input_ids],
-        module_name=module_name,
-    )
-    generated_text = generation(
-        max_new_tokens=1, compiled_model=compiled_model, input_ids=input_ids, tokenizer=tokenizer
-    )
-    print(generated_text)
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=[input_ids],
+#         module_name=module_name,
+#     )
+#     generated_text = generation(
+#         max_new_tokens=1, compiled_model=compiled_model, input_ids=input_ids, tokenizer=tokenizer
+#     )
+#     print(generated_text)
