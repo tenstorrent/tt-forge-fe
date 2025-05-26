@@ -127,13 +127,18 @@ class TensorImpl : public std::enable_shared_from_this<TensorImpl>
     // Note: the host tensor is not modified and lives on.
     void to_device(const size_t device_id, runtime::Layout& layout)
     {
-        TT_ASSERT(!rt_tensor.has_value());
-        auto device = TTSystem::get_system().devices[device_id];
+        if (!rt_tensor.has_value()) {
+          auto device = TTSystem::get_system().devices[device_id];
 
-        TT_ASSERT(host_storage.has_value(), "Since the tensor is on host, we expect the host storage to be set");
-        rt_tensor = runtime::createBorrowedHostTensor(
-            host_storage->data_ptr(), desc.shape, desc.stride, desc.itemsize, desc.dataType);
-        rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
+          TT_ASSERT(host_storage.has_value(), "Since the tensor is on host, we expect the host storage to be set");
+          rt_tensor = runtime::createBorrowedHostTensor(
+              host_storage->data_ptr(), desc.shape, desc.stride, desc.itemsize, desc.dataType);
+          rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
+        }
+        else {
+          auto device = TTSystem::get_system().devices[device_id];
+          rt_tensor = tt::runtime::toLayout(rt_tensor.value(), *device->rt_device, layout);
+        }
     }
 
     void to_host()
