@@ -44,6 +44,11 @@ on:
         required: false
         default: false
         type: boolean
+      model-analysis:
+        description: 'Run model analysis tests to extract and export unique ops configuration'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run-tests:
@@ -145,6 +150,7 @@ jobs:
           pip install forge*.whl --force-reinstall
 
       - name: Run Test
+        if: ${{ !inputs.model-analysis }}
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HOME: /mnt/dockercache/huggingface
@@ -164,6 +170,29 @@ jobs:
                  --log-memory-usage \
                  2>&1 | tee pytest.log
 
+      - name: Extract and Export Unique Ops Configuration
+        if: ${{ inputs.model-analysis }}
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HOME: /mnt/dockercache/huggingface
+          FORGE_MODELS_CACHE: /mnt/dockercache/forge_models_cache
+          HF_HUB_DISABLE_PROGRESS_BARS: 1
+          FORGE_DISABLE_REPORTIFY_DUMP: 1
+          FORGE_EXTRACT_TVM_UNIQUE_OPS_CONFIG: 1
+          FORGE_EXPORT_TVM_UNIQUE_OPS_CONFIG_DETAILS: 1
+        shell: bash
+        run: |
+          source env/activate
+          pytest forge/test/models/pytorch/multimodal/ --splits ${{ inputs.test_group_cnt }} \
+                 --group ${{ matrix.test_group_id }} \
+                 --splitting-algorithm least_duration \
+                 -m "${{ inputs.test_mark }}" \
+                 --log-memory-usage \
+                 --timeout=1200 \
+                 --runxfail \
+                 -vss \
+                 2>&1 | tee pytest.log
+
       - name: Upload Test Log
         uses: actions/upload-artifact@v4
         if: success() || failure()
@@ -179,15 +208,22 @@ jobs:
           path: pytest-memory-usage.csv
 
       - name: Upload Test Report
+        if: ${{ always() && ! inputs.model-analysis }}
         uses: actions/upload-artifact@v4
-        if: success() || failure()
         with:
           name: test-reports-${{ matrix.build.runs-on }}-${{ matrix.test_group_id }}-${{ steps.fetch-job-id.outputs.job_id }}
           path: ${{ steps.strings.outputs.test_report_path }}
 
+      - name: Upload Models Unique Ops Config
+        if: ${{ always() && inputs.model-analysis }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: models-unique-ops-config-${{ steps.fetch-job-id.outputs.job_id }}
+          path: generated_modules/
+
       - name: Show Test Report
         uses: mikepenz/action-junit-report@v5
-        if: success() || failure()
+        if: ${{ always() && ! inputs.model-analysis }}
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
           check_name: TT-Forge-FE Tests
@@ -197,7 +233,7 @@ jobs:
           group_suite: true
 
       - name: Upload test results to Codecov
-        if: success() || failure()
+        if: ${{ always() && ! inputs.model-analysis }}
         uses: codecov/test-results-action@v1
         with:
           files: ${{ steps.strings.outputs.test_report_path }}
