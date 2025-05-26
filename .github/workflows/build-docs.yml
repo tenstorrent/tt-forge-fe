@@ -8,12 +8,6 @@ on:
         required: true
         type: string
 
-# Sets permissions for:
-#   - downloading docker container
-permissions:
-  contents: read
-  packages: write
-
 jobs:
 
   build:

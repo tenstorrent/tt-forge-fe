@@ -37,11 +37,6 @@ on:
         description: 'Run id the workflow where to find installation (or undefined if build is not successful)'
         value: ${{ jobs.build-conclusion.outputs.run_id }}
 
-permissions:
-  packages: write
-  checks: write
-  pull-requests: write # only required if `comment: true` was enabled
-
 jobs:
 
   forge-build:
