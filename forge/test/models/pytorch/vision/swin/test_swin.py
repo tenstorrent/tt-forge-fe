@@ -234,10 +234,9 @@ def test_swin_torchvision(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
-    compiled_model = forge.compile(
+    verify(
+        inputs,
         framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
