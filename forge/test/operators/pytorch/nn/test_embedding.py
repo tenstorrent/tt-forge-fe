@@ -19,6 +19,8 @@ import forge
 import forge.op
 from loguru import logger
 
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
     InputSourceFlags,
@@ -30,6 +32,7 @@ from test.operators.utils import (
     TestCollection,
     TestCollectionCommon,
 )
+from test.operators.utils.test_data import TestCollectionTorch
 from test.operators.utils.datatypes import ValueRange
 from test.operators.utils.compat import TestDevice
 from test.operators.utils.utils import PytorchUtils
@@ -78,6 +81,7 @@ class ModelDirect(torch.nn.Module):
             "embedding_dim": kwargs["embedding_dim"],
         }
 
+        # TODO: should we set dtype in Embedding module?
         self.weight = torch.rand(
             (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
         )
@@ -169,6 +173,8 @@ class TestVerification:
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
             warm_reset=warm_reset,
+            deprecated_verification=False,
+            verify_config=VerifyConfig(value_checker=AllCloseValueChecker(rtol=1e-2, atol=1e-2)),
             value_range=value_range,
         )
 
@@ -187,29 +193,26 @@ class TestParamsData:
     # weight_dtypes = [torch.bfloat16, torch.float32]
 
     @classmethod
-    def generate_kwargs(cls, test_vector: TestVector, weight_dtype: Type[torch.dtype]):
-        num_embedding_limit = 2**7 - 1  # 127
+    def generate_kwargs(
+        cls,
+        test_vector: TestVector,
+        weight_dtype: Type[torch.dtype] = None,
+        num_embeddings_min: int = 2,
+        num_embeddings_max: int = 32000,
+    ):
+
         rng = random.Random(math.prod(test_vector.input_shape) + 1)
-        num_embeddings = []
-        match test_vector.dev_data_format:
-            case forge.DataFormat.RawUInt8:
-                num_embedding_limit = 2**8 - 1  # 255
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.RawUInt16:
-                num_embedding_limit = 2**16 - 1  # 65535
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.RawUInt32:
-                num_embedding_limit = 2**32 - 1  # 4294967295
-                num_embeddings = [rng.randint(2, 32000)]
-            case forge.DataFormat.Int8:
-                num_embedding_limit = 2**7 - 1  # 127
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.UInt16:
-                num_embedding_limit = 2**16 - 1  # 65535
-                num_embeddings = [rng.randint(2, num_embedding_limit)]
-            case forge.DataFormat.Int32:
-                num_embedding_limit = 2**31 - 1  # 2147483647
-                num_embeddings = [rng.randint(2, 32000)]
+        num_embeddings = [rng.randint(num_embeddings_min, num_embeddings_max)]
+
+        # match test_vector.dev_data_format:
+        #     case torch.int32:
+        #         # num_embedding_limit = 2**31 - 1  # 2147483647
+        #         # num_embeddings = [rng.randint(32000, 500000)]
+        #         num_embeddings = [rng.randint(2, 32000)]  # TODO: change boundaries
+        #     case torch.int64:
+        #         # num_embedding_limit = 2**63 - 1  # 9223372036854775807
+        #         # num_embeddings = [rng.randint(32000, 500000)]
+        #         num_embeddings = [rng.randint(2, 32000)]  # TODO: change boundaries
 
         kwarg_list = []
         for num_embeddings in num_embeddings:
@@ -230,7 +233,7 @@ class TestCollectionData:
 
     all = TestCollection(
         operators=[
-            "embedding",  # 00
+            "embedding",
         ],
         input_sources=TestCollectionCommon.all.input_sources,
         input_shapes=[
@@ -239,7 +242,7 @@ class TestCollectionData:
             if reduce(lambda x, y: x * y, input_shape) * TestParamsData.MAX_EMBEDDING_DIM
             < TestParamsData.INPUT_SHAPE_THRESHOLD
         ],
-        dev_data_formats=TestCollectionCommon.int.dev_data_formats,
+        dev_data_formats=[torch.int32, torch.int64],
         math_fidelities=TestCollectionCommon.all.math_fidelities,
     )
 
@@ -247,7 +250,7 @@ class TestCollectionData:
         input_sources=TestCollectionCommon.single.input_sources,
         input_shapes=TestCollectionCommon.single.input_shapes,
         dev_data_formats=[
-            pytest.param(forge.DataFormat.Int32, id="Int32"),
+            pytest.param(torch.int32, id="int32"),  # TODO check this
         ],
         math_fidelities=TestCollectionCommon.single.math_fidelities,
     )
@@ -263,6 +266,8 @@ TestParamsData.test_plan = TestPlan(
         # 2. Operand source(s):
         # 3. Operand shapes type(s):
         # 4. Operand / output size of dimensions
+
+        # Case of weight dtype torch.float32
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
@@ -270,20 +275,39 @@ TestParamsData.test_plan = TestPlan(
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.float32),
         ),
+        # Case of weight dtype torch.bfloat16
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
+        ),
+        # Case of num_embeddings range
+        # between 32000 and 500000
+        TestCollection(
+            operators=TestCollectionData.all.operators,
+            input_sources=TestCollectionData.all.input_sources,
+            input_shapes=TestCollectionData.single.input_shapes,
+            dev_data_formats=TestCollectionData.single.dev_data_formats,
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(
+                test_vector, num_embeddings_min=32000, num_embeddings_max=500000
+            ),
+        ),
+        # Case of all sources and shapes from the test plan
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
             dev_data_formats=TestCollectionData.all.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
         ),
-        # Test plan:
-        # 6. Math fidelity
+        # Case of all math fidelities
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
         ),
@@ -379,20 +403,20 @@ TestParamsData.test_plan = TestPlan(
         #     failing_reason=FailingReasons.INFERENCE_FAILED,
         # ),
         # SEGMENTATION FAULT ERROR
-        TestCollection(
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=[
-                (9920, 1),
-                (1, 9920, 1),
-                (1, 1, 9920, 1),
-            ],
-            kwargs=[
-                {
-                    "embedding_dim": 10000,
-                },
-            ],
-            skip_reason=FailingReasons.SEG_FAULT,
-        ),
+        # TestCollection(
+        #     input_sources=TestCollectionData.all.input_sources,
+        #     input_shapes=[
+        #         (9920, 1),
+        #         (1, 9920, 1),
+        #         (1, 1, 9920, 1),
+        #     ],
+        #     kwargs=[
+        #         {
+        #             "embedding_dim": 10000,
+        #         },
+        #     ],
+        #     skip_reason=FailingReasons.SEG_FAULT,
+        # ),
     ],
 )
 
