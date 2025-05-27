@@ -6,21 +6,13 @@ import pytest
 import torch
 
 import forge
-from forge._C import DataFormat
-from forge.config import CompilerConfig
-from forge.forge_property_utils import (
-    Framework,
-    ModelGroup,
-    Source,
-    Task,
-    record_model_properties,
-)
 from forge.verify.verify import verify
-
+import onnx
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_xl,
 )
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
@@ -43,25 +35,18 @@ class StableDiffusionXLWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip_model_analysis
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param(
-            "stable-diffusion-xl-base-1.0",
-            marks=[pytest.mark.xfail],
-        ),
-    ],
+@pytest.mark.skip(
+    reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
 )
-def test_stable_diffusion_generation(variant):
-    # Record Forge Property
+@pytest.mark.parametrize("variant", ["stable-diffusion-xl-base-1.0"])
+def test_stable_diffusion_generation(variant, forge_tmp_path):
+    # Build Module Name
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="stable_diffusion",
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
-        group=ModelGroup.RED,
     )
 
     # Load the pipeline
@@ -81,23 +66,22 @@ def test_stable_diffusion_generation(variant):
         added_cond_kwargs,
         add_time_ids,
     ) = stable_diffusion_preprocessing_xl(pipe, prompt)
-    inputs = [latent_model_input.to(torch.bfloat16), timestep.to(torch.bfloat16), prompt_embeds.to(torch.bfloat16)]
+    inputs = [latent_model_input, timestep, prompt_embeds]
 
     # Wrap the pipeline in the wrapper
-    framework_model = StableDiffusionXLWrapper(framework_model, added_cond_kwargs, cross_attention_kwargs=None).to(
-        torch.bfloat16
-    )
+    framework_model = StableDiffusionXLWrapper(framework_model, added_cond_kwargs, cross_attention_kwargs=None)
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    # Export model to ONNX
+    onnx_path = f"{forge_tmp_path}/stable_diffusion_xl.onnx"
+    torch.onnx.export(framework_model, (latent_model_input, timestep, prompt_embeds), onnx_path, opset_version=17)
+
+    # Load framework model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_path)
+    framework_model = forge.OnnxModule(module_name, onnx_model, onnx_path)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
