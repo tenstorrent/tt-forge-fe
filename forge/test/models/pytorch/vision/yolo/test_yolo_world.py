@@ -8,6 +8,8 @@ import torch
 from ultralytics import YOLO
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
@@ -46,11 +48,16 @@ def test_yolo_world_inference():
     )
 
     # Load framework_model and input
-    framework_model = YoloWorldWrapper(model_url)
-    inputs = [get_test_input()]
+    framework_model = YoloWorldWrapper(model_url).to(torch.bfloat16)
+    inputs = [get_test_input().to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Compile with Forge
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)

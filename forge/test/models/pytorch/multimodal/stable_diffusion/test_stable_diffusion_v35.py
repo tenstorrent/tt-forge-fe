@@ -6,6 +6,8 @@ import pytest
 import torch
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
@@ -71,13 +73,25 @@ def test_stable_diffusion_v35(variant):
 
     # TODO: Implement post-processing using VAE decode after obtaining the transformer output.
     framework_model = StableDiffusionWrapper(framework_model, joint_attention_kwargs=None, return_dict=False)
+    framework_model.to(torch.bfloat16)
 
     # Load inputs
     prompt = "An astronaut riding a green horse"
     latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
-    inputs = [latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds]
+    inputs = [
+        latent_model_input.to(torch.bfloat16),
+        timestep.to(torch.bfloat16),
+        prompt_embeds.to(torch.bfloat16),
+        pooled_prompt_embeds.to(torch.bfloat16),
+    ]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
+    )
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)

@@ -61,23 +61,31 @@ def test_detr_detection(variant):
 
     # Load the model
     framework_model = DetrForObjectDetection.from_pretrained(variant)
-    framework_model = DetrWrapper(framework_model, task="detection")
+    framework_model = DetrWrapper(framework_model, task="detection").to(torch.bfloat16)
 
     # Preprocess the image for the model
     image_url = "http://images.cocodataset.org/val2017/000000397133.jpg"
     input_batch = preprocess_input_data(image_url)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
     )
 
 

@@ -104,7 +104,6 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -140,7 +139,6 @@ def test_swin_v2_tiny_image_classification(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -169,7 +167,6 @@ def test_swin_v2_tiny_masked(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
