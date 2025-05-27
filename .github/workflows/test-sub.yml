@@ -189,7 +189,6 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: success() || failure()
         with:
-          token: ${{ secrets.GH_TOKEN }}
           report_paths: ${{ steps.strings.outputs.test_report_path }}
           check_name: TT-Forge-FE Tests
           comment: false
