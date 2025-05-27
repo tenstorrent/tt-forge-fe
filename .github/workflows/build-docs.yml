@@ -51,6 +51,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        apt-get update
         apt install cargo -y
         cargo install --version ${MDBOOK_VERSION} mdbook --locked
 
