@@ -107,11 +107,13 @@ std::vector<std::shared_ptr<TTDevice>> get_available_tt_devices() { return Torch
 
 struct Mallocator final : public c10::Allocator
 {
-    virtual c10::DataPtr allocate(size_t n) const override
+    c10::DataPtr allocate(size_t n) override
     {
         void* ptr = std::calloc(n, 1);
         return c10::DataPtr(ptr, nullptr, std::free, c10::Device(TT, 0));
     }
+
+    void copy_data(void* dest, const void* src, std::size_t count) const override { std::memcpy(dest, src, count); }
 
     static c10::Allocator* get()
     {
