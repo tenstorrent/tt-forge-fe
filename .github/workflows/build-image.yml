@@ -19,6 +19,10 @@ on:
         value: ${{ jobs.build-image.outputs.docker-image }}
 
 
+permissions:
+  packages: write
+  checks: write
+
 jobs:
 
   build-image:
@@ -62,13 +66,11 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build Docker images and output the image name
         id: build
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Output the image name
           set pipefail
@@ -88,7 +90,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ github.token }}
       - name: Set latest tag on the image
         run: |
           DOCKER_CI_IMAGE=${{ needs.build-image.outputs.docker-image }}
