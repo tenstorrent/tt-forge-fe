@@ -1,0 +1,26 @@
+# xfail_embedding_INDEX_ERROR ids
+
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 500)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 500)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 500)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 500)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 500)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 20954, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 500)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 1000)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 1000)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 1000)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 1000)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 1000)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 26106, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(1, 1000)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(9920, 1)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(9920, 1)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(9920, 1)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(9920, 1)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(9920, 1)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 5088, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(9920, 1)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(32, 64)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(32, 64)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(32, 64)-torch.int32-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(32, 64)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 3200, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(32, 64)-torch.int64-None
+embedding-CONST_EVAL_PASS-{'num_embeddings': 17134, 'embedding_dim': 10000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int64}-(32, 64)-torch.int64-None
