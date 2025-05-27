@@ -174,21 +174,8 @@ NodeContext DecomposingContext::tensor(std::shared_ptr<void> tensor, graphlib::S
 
     new_node->set_shape(tensor_shape);
 
-    // Try to extract torch tensor dtype and map to DataFormat
-    DataFormat output_df;
-
     py::object py_tensor = borrow_shared_py_object(tensor);
-    py::object tensor_dtype = py_tensor.attr("dtype");
-
-    try
-    {
-        output_df = py::cast<DataFormat>(tensor_module.attr("pytorch_dtype_to_forge_dataformat")(tensor_dtype));
-    }
-    catch (py::error_already_set &e)
-    {
-        throw std::runtime_error(
-            "Encountered python error while dtype to DataFormat mapping: " + std::string(e.what()));
-    }
+    DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
 
     new_node->set_output_df(output_df);
 
