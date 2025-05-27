@@ -13,13 +13,11 @@ namespace tt::passes
 
 using Edge = graphlib::Edge;
 
-void materialize_unary_broadcasts(Graph *graph)
+// Collect edges from unary operations that have broadcast TMs
+std::vector<Edge> collect_unary_broadcast_edges(Graph *graph)
 {
-    // Find all edges with input_tms that can't be implicitly broadcasted
-    // and convert them to explicit operations
     std::vector<Edge> edges_to_process;
     
-    // First collect all edges with broadcast TMs
     for (Node *node : graph->nodes())
     {
         // Only consider unary operations (nodes with single input)
@@ -36,7 +34,45 @@ void materialize_unary_broadcasts(Graph *graph)
         }
     }
     
-    // Process the edges and create explicit broadcast operations
+    return edges_to_process;
+}
+
+// Create a broadcast operation for a specific edge and TM
+Node* create_broadcast_op(Graph *graph, Node *producer, Node *consumer, 
+                          const graphlib::OpType &tm, Node *current_node, int current_port)
+{
+    // Get broadcast dimension and size
+    int dim = std::get<int>(tm.attr[0]);
+    int size = std::get<int>(tm.attr[1]);
+    
+    // Create broadcast op node
+    std::string new_node_name = producer->name() + "_bcast_" + std::to_string(dim) + 
+                                                   "_to_" + consumer->name();
+    std::unique_ptr<graphlib::PyOpNode> broadcast_node = graphlib::create_node<graphlib::PyOpNode>(
+        new_node_name, graphlib::OpType("broadcast", {dim, size, true}));
+    graphlib::PyOpNode *broadcast_op = graph->add_node(
+        std::move(broadcast_node),
+        graph->get_subgraph_id_for_node(producer->id()));
+    
+    // Calculate the new shape after this broadcast
+    graphlib::Shape new_shape = current_node->shape();
+    new_shape[dim] = size;
+    broadcast_op->set_shape(new_shape);
+    broadcast_op->set_output_df(current_node->output_df());
+    
+    // Insert new node in the chain
+    graph->add_edge(current_node, broadcast_op, current_port, 0);
+    
+    return broadcast_op;
+}
+
+void materialize_unary_broadcasts(Graph *graph)
+{
+    // Find all edges with input_tms that can't be implicitly broadcasted
+    // and convert them to explicit broadcast operations
+    std::vector<Edge> edges_to_process = collect_unary_broadcast_edges(graph);
+    
+    // Process edges and create explicit broadcast operations
     for (Edge edge : edges_to_process)
     {
         auto attrs = graph->get_edge_attributes(edge);
@@ -52,7 +88,7 @@ void materialize_unary_broadcasts(Graph *graph)
 
         graphlib::Shape producer_shape = producer->shape();
         
-        // Keep track of the current node in the chain
+        // Keep track of current node in the chain
         Node *current_node = producer;
         int current_port = edge.producer_output_port_id;
         
@@ -61,35 +97,8 @@ void materialize_unary_broadcasts(Graph *graph)
         {
             if (tm.op != "broadcast")
                 continue;
-                
-            // Get the broadcast dimension and size
-            int dim = std::get<int>(tm.attr[0]);
-            int size = std::get<int>(tm.attr[1]);
             
-            // Skip trivial broadcasts (size 1)
-            if (size == 1)
-                continue;
-            
-            // Create a new broadcast op node
-            std::string new_node_name = producer->name() + "_bcast_" + std::to_string(dim) + 
-                                                            "_to_" + consumer->name();
-            std::unique_ptr<graphlib::PyOpNode> broadcast_node = graphlib::create_node<graphlib::PyOpNode>(
-                new_node_name, graphlib::OpType("broadcast", {dim, size, true}));
-            graphlib::PyOpNode *broadcast_op = graph->add_node(
-                std::move(broadcast_node),
-                graph->get_subgraph_id_for_node(producer->id()));
-            
-            // Calculate the new shape after this broadcast
-            graphlib::Shape new_shape = current_node->shape();
-            new_shape[dim] = size;
-            broadcast_op->set_shape(new_shape);
-            broadcast_op->set_output_df(current_node->output_df());
-            
-            // Insert the new node in the chain
-            graph->add_edge(current_node, broadcast_op, current_port, 0);
-            
-            // Update current node for next iteration
-            current_node = broadcast_op;
+            current_node = create_broadcast_op(graph, producer, consumer, tm, current_node, current_port);
             current_port = 0;
         }
         
