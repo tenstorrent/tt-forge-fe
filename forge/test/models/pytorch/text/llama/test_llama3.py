@@ -141,13 +141,13 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
     pytest.param(
         "huggyllama/llama-7b",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 58 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
 ]

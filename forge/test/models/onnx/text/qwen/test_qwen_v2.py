@@ -24,7 +24,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
@@ -36,7 +36,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",

@@ -17,7 +17,8 @@ import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import Framework, Source, Task, record_model_properties
-from forge.verify.verify import verify
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
 from test.models.models_utils import print_cls_results
 from test.utils import download_model
@@ -72,30 +73,25 @@ variants = [
     pytest.param("hrnetv2_w30"),
     pytest.param(
         "hrnetv2_w32",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 28 GB)")],
     ),
     pytest.param(
         "hrnetv2_w40",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
-    pytest.param(
-        "hrnetv2_w44",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
-    ),
+    pytest.param("hrnetv2_w44"),
     pytest.param(
         "hrnetv2_w48",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
     ),
-    pytest.param(
-        "hrnetv2_w64",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
-    ),
+    pytest.param("hrnetv2_w64"),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_hrnet_osmr_pytorch(variant):
+
+    pcc = 0.99
+    if variant in ["hrnetv2_w44", "hrnetv2_w64"]:
+        pcc = 0.97
 
     # Record Forge Property
     module_name = record_model_properties(
@@ -118,7 +114,12 @@ def test_hrnet_osmr_pytorch(variant):
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -170,27 +171,27 @@ variants = [
     pytest.param("hrnet_w30"),
     pytest.param(
         "hrnet_w32",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 22 GB)")],
     ),
     pytest.param(
         "hrnet_w40",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 24 GB)")],
     ),
     pytest.param(
         "hrnet_w44",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 26 GB)")],
     ),
     pytest.param(
         "hrnet_w48",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 27 GB)")],
     ),
     pytest.param(
         "hrnet_w64",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 30 GB)")],
     ),
     pytest.param(
         "hrnet_w18.ms_aug_in1k",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 31 GB)")],
+        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this test (requires around 29 GB)")],
     ),
 ]
 

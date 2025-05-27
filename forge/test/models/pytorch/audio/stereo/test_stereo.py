@@ -23,14 +23,13 @@ variants = [
     pytest.param(
         "facebook/musicgen-large",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
         ),
     ),
 ]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_stereo(variant):
 
