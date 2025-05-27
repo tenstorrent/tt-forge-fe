@@ -74,6 +74,12 @@ std::tuple<bool, int> can_commute_through_dim(
     }
     else if (initial_op->op_name() == "transpose")
     {
+        // if reduce dim is out of bounds for transpose we can't commute
+        if (dim >= (int)initial_op->shape().size())
+        {
+            return std::make_tuple(can_reduce, new_dim);
+        }
+
         can_reduce = true;
         int dim0 = initial_op->op_type().get_attr_as<int>("dim0");
         if (dim0 < 0)
