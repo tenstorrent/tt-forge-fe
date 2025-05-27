@@ -41,6 +41,8 @@ class FailingReasonsRegister:
         ("div", FailingReasons.SPECIAL_VALUES),
         ("embedding", FailingReasons.COMPILATION_FAILED),
         ("embedding", FailingReasons.DATA_MISMATCH),
+        ("embedding", FailingReasons.INDEX_ERROR),
+        ("embedding", FailingReasons.SPECIAL_VALUES),
         ("exp", FailingReasons.DATA_MISMATCH),
         ("exp", FailingReasons.SPECIAL_VALUES),
         ("ge", FailingReasons.DATA_MISMATCH),
