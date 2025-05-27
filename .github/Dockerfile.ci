@@ -23,9 +23,6 @@ WORKDIR $BUILD_DIR/$PROJECT_NAME
 # Show last commit
 RUN git log -1
 
-# Update submodules
-RUN git submodule update --init --recursive -f
-
 # Build the toolchain
 WORKDIR $BUILD_DIR/$PROJECT_NAME
 RUN source env/activate && \

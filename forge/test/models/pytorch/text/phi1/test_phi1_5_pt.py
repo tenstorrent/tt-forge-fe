@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
