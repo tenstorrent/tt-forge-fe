@@ -99,7 +99,7 @@ def test_yolo_v4(
     compiler_config = CompilerConfig()
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # Turn on MLIR optimizations.
-    compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
+    # compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
