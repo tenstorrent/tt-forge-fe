@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 #include "passes/materialize_unary_broadcasts.hpp"
-
-#include "graph_lib/node_types.hpp"
+#include "graph_lib/edge.hpp"
 #include "graph_lib/utils.hpp"
-#include "passes/commute_utils.hpp"
 #include "passes/passes_utils.hpp"
+#include "utils/logger.hpp"
 
 namespace tt::passes
 {
@@ -63,11 +62,17 @@ Node* create_broadcast_op(Graph *graph, Node *producer, Node *consumer,
     // Insert new node in the chain
     graph->add_edge(current_node, broadcast_op, current_port, 0);
     
+    log_trace(LogGraphCompiler, "Created broadcast node: {} with dim={}, size={}", 
+              new_node_name, dim, size);
+    
     return broadcast_op;
 }
 
 void materialize_unary_broadcasts(Graph *graph)
 {
+    log_trace(LogGraphCompiler, "---------------------------------------------------");
+    log_trace(LogGraphCompiler, "Starting materialize_unary_broadcasts pass...");
+    
     // Find all edges with input_tms that can't be implicitly broadcasted
     // and convert them to explicit broadcast operations
     std::vector<Edge> edges_to_process = collect_unary_broadcast_edges(graph);
@@ -87,6 +92,9 @@ void materialize_unary_broadcasts(Graph *graph)
         Node *consumer = graph->node_by_id(edge.consumer_node_id);
 
         graphlib::Shape producer_shape = producer->shape();
+        
+        log_trace(LogGraphCompiler, "Processing edge: {} -> {} with {} TMs", 
+                  producer->name(), consumer->name(), tms.size());
         
         // Keep track of current node in the chain
         Node *current_node = producer;
