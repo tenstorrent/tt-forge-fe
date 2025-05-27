@@ -69,14 +69,12 @@ def test_inplace_updation():
             -50,
             None,
             torch.int32,
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.865278346197563"),
         ),
         pytest.param(
             (8, 1, 8, 8),
             None,
             876,
             torch.int32,
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.8614933523955847"),
         ),
     ],
 )
