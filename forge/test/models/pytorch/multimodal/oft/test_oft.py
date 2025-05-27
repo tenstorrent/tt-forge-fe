@@ -10,6 +10,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -22,9 +23,9 @@ from test.models.pytorch.multimodal.oft.model_utils.oft_utils import (
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
-def test_oft(forge_property_recorder, variant):
+def test_oft(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="oft",
         variant=variant.split("/")[-1],
@@ -43,8 +44,7 @@ def test_oft(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

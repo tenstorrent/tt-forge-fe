@@ -20,7 +20,7 @@ from test.mlir.utils import *
 
 
 @pytest.mark.push
-def test_mnist_training(forge_property_recorder):
+def test_mnist_training():
     # Model and data type.
     # For bfloat16, the following line should be added to the test_forge_vs_torch function:
     # In file forge/forge/op/eval/forge/eltwise_unary.py:418 should be replaced with: threshold_tensor = ac.tensor(torch.zeros(shape, dtype=torch.bfloat16) + threshold)
@@ -51,7 +51,6 @@ def test_mnist_training(forge_property_recorder):
         sample_inputs=[torch.rand(batch_size, 784, dtype=dtype)],
         optimizer=framework_optimizer,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -72,7 +71,6 @@ def test_mnist_training(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             golden_pred, pred = golden_pred[0], pred[0]
 
@@ -105,7 +103,7 @@ def test_mnist_training(forge_property_recorder):
 
 
 @pytest.mark.push
-def test_mnist_training_with_grad_accumulation(forge_property_recorder):
+def test_mnist_training_with_grad_accumulation():
     # Config
     num_epochs = 3
     batch_size = 1
@@ -129,7 +127,6 @@ def test_mnist_training_with_grad_accumulation(forge_property_recorder):
         framework_model,
         sample_inputs=[torch.rand(batch_size, 784)],
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -152,7 +149,6 @@ def test_mnist_training_with_grad_accumulation(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             golden_pred, pred = golden_pred[0], pred[0]
 
@@ -191,7 +187,7 @@ def test_mnist_training_with_grad_accumulation(forge_property_recorder):
 
 @pytest.mark.parametrize("freeze_layer", [None, 0, 2, 4])
 @pytest.mark.push
-def test_forge_vs_torch_gradients(forge_property_recorder, freeze_layer):
+def test_forge_vs_torch_gradients(freeze_layer):
     logger.disable("")
     batch_size = 64
 
@@ -217,9 +213,7 @@ def test_forge_vs_torch_gradients(forge_property_recorder, freeze_layer):
 
     sample_inputs = [torch.ones(batch_size, in_features, dtype=dtype)]
 
-    tt_model = forge.compile(
-        forge_model, sample_inputs=sample_inputs, training=True, forge_property_handler=forge_property_recorder
-    )
+    tt_model = forge.compile(forge_model, sample_inputs=sample_inputs, training=True)
 
     X = torch.ones(batch_size, in_features, dtype=dtype)
     y = torch.zeros(batch_size, out_features, dtype=dtype)
@@ -253,7 +247,7 @@ def test_forge_vs_torch_gradients(forge_property_recorder, freeze_layer):
 # And in file forge/forge/compile.py::compile_main forced bfloat 16 should be added compiler_cfg.default_df_override = DataFormat.Float16_b
 @pytest.mark.skip(reason="Need to be tested with bfloat16 and takes around 10 minutes to run")
 @pytest.mark.push
-def test_forge_vs_torch(forge_property_recorder):
+def test_forge_vs_torch():
     batch_size = 64
     learning_rate = 1e-2
     epochs = 10
@@ -278,7 +272,6 @@ def test_forge_vs_torch(forge_property_recorder):
         sample_inputs=[torch.ones(batch_size, 784, dtype=dtype)],
         optimizer=forge_optimizer,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     test_loader, train_loader = load_dataset(batch_size, dtype=dtype)
@@ -355,7 +348,7 @@ def test_forge_vs_torch(forge_property_recorder):
 
 
 @pytest.mark.push
-def test_loss_device(forge_property_recorder):
+def test_loss_device():
     # Config
     num_epochs = 3
     batch_size = 1
@@ -377,7 +370,6 @@ def test_loss_device(forge_property_recorder):
         framework_model,
         sample_inputs=[torch.rand(batch_size, 784)],
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
@@ -390,7 +382,6 @@ def test_loss_device(forge_property_recorder):
         sample_inputs=loss_inputs,
         attach_to=tt_model,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -413,7 +404,6 @@ def test_loss_device(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             pred = pred[0]
 
@@ -452,7 +442,7 @@ def test_loss_device(forge_property_recorder):
 
 
 @pytest.mark.push
-def test_lora(forge_property_recorder):
+def test_lora():
     # Config
     num_epochs = 3
     batch_size = 128
@@ -472,7 +462,6 @@ def test_lora(forge_property_recorder):
         sample_inputs=[torch.rand(batch_size, 784)],
         optimizer=tt_optimizer,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     loss_fn = CrossEntropyLoss(name="cross_entropy_loss")
@@ -484,7 +473,6 @@ def test_lora(forge_property_recorder):
         sample_inputs=loss_inputs,
         attach_to=tt_model,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -502,7 +490,6 @@ def test_lora(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             pred = pred[0]
 
@@ -538,7 +525,7 @@ def test_lora(forge_property_recorder):
 
 
 @pytest.mark.push
-def test_optimizer_device(forge_property_recorder):
+def test_optimizer_device():
     # Config
     num_epochs = 32
     batch_size = 1024
@@ -559,7 +546,6 @@ def test_optimizer_device(forge_property_recorder):
         sample_inputs=[torch.rand(batch_size, 784)],
         optimizer=optimizer,
         training=True,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -578,7 +564,6 @@ def test_optimizer_device(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             pred = pred[0]
 
@@ -611,7 +596,7 @@ def test_optimizer_device(forge_property_recorder):
 
 
 @pytest.mark.push
-def test_e2e_device(forge_property_recorder):
+def test_e2e_device():
     # Config
     num_epochs = 5
     batch_size = 1024
@@ -632,7 +617,6 @@ def test_e2e_device(forge_property_recorder):
         sample_inputs=[torch.rand(batch_size, 784)],
         optimizer=tt_optimizer,
         training=True,
-        forge_property_handler=forge_property_recorder,
         verify_cfg=verify_cfg,
     )
 
@@ -643,7 +627,6 @@ def test_e2e_device(forge_property_recorder):
         sample_inputs=loss_inputs,
         training=True,
         attach_to=tt_model,
-        forge_property_handler=forge_property_recorder,
     )
 
     logger.info("Starting training loop... (logger will be disabled)")
@@ -663,7 +646,6 @@ def test_e2e_device(forge_property_recorder):
                 framework_model=framework_model,
                 compiled_model=tt_model,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-                forge_property_handler=forge_property_recorder,
             )
             pred = pred[0]
 
@@ -673,7 +655,6 @@ def test_e2e_device(forge_property_recorder):
                 framework_model=framework_loss,
                 compiled_model=tt_loss,
                 verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(rtol=1e-1), verify_shape=False),
-                forge_property_handler=forge_property_recorder,
             )
             total_loss += loss[0].item()
 

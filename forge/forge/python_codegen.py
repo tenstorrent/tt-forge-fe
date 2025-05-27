@@ -155,6 +155,9 @@ class ForgeWriter(PythonWriter):
             self.wl("from forge.verify.verify import verify")
             self.wl("from forge.verify.value_checkers import AutomaticValueChecker")
             self.wl("from forge.verify.config import VerifyConfig")
+            self.wl(
+                "from forge.forge_property_utils import record_forge_op_name, record_op_model_names, record_forge_op_args, record_single_op_operands_info"
+            )
             self.wl("import pytest")
 
         if self.framework == "tensorflow":
@@ -990,14 +993,13 @@ class ForgeWriter(PythonWriter):
             )
         else:
             self.wl('@pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list)')
-        self.wl("def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):")
+        self.wl("def test_module(forge_module_and_shapes_dtypes):")
         self.indent += 1
         if module_metadata is not None:
             for metadata_name, metadata_value in module_metadata.items():
                 if metadata_name == "forge_op_name":
                     self.wl("")
-                    self.wl("forge_property_recorder.enable_single_op_details_recording()")
-                    self.wl(f'forge_property_recorder.record_forge_op_name("{metadata_value}")')
+                    self.wl(f'record_forge_op_name("{metadata_value}")')
         self.wl("")
         if is_pytest_metadata_list_empty:
             self.wl("forge_module, operand_shapes_dtypes = forge_module_and_shapes_dtypes")
@@ -1012,11 +1014,11 @@ class ForgeWriter(PythonWriter):
             self.indent += 1
             self.wl('if metadata_name == "model_names":')
             self.indent += 1
-            self.wl("forge_property_recorder.record_op_model_names(metadata_value)")
+            self.wl("record_op_model_names(metadata_value)")
             self.indent -= 1
             self.wl('elif metadata_name == "args":')
             self.indent += 1
-            self.wl("forge_property_recorder.record_forge_op_args(metadata_value)")
+            self.wl("record_forge_op_args(metadata_value)")
             self.indent -= 1
             self.wl("else:")
             self.indent += 1
@@ -1074,14 +1076,12 @@ class ForgeWriter(PythonWriter):
             self.indent -= 1
         self.wl("")
         if module_metadata is not None and len(module_metadata) != 0:
-            self.wl("forge_property_recorder.record_single_op_operands_info(framework_model, inputs)")
+            self.wl("record_single_op_operands_info(framework_model, inputs)")
             self.wl("")
-        self.wl(
-            "compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)"
-        )
+        self.wl("compiled_model = compile(framework_model, sample_inputs=inputs)")
         self.wl("")
         self.wl(
-            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)), forge_property_handler=forge_property_recorder)"
+            "verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))"
         )
         self.wl("")
         self.wl("")

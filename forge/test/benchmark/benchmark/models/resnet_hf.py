@@ -35,6 +35,8 @@ TASK = [
     "classification",
 ]
 
+EVALUATION_SCORE_TARGET = 0.75
+
 # Batch size configurations
 BATCH_SIZE = [
     1,
@@ -109,7 +111,9 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         compiler_cfg.default_df_override = DataFormat.Float16_b
 
     # Turn on MLIR optimizations.
-    compiler_cfg.mlir_config = MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True)
+    compiler_cfg.mlir_config = (
+        MLIRConfig().set_enable_optimizer(True).set_enable_fusing(True).set_enable_memory_layout_analysis(True)
+    )
 
     compiled_model = forge.compile(framework_model, sample_inputs=inputs[0], compiler_cfg=compiler_cfg)
 
@@ -118,16 +122,8 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     settings.enable_program_cache = True
     configure_devices(device_settings=settings)
 
-    # Run for the first time to warm up the model, it will be done by verify function.
-    # This is required to get accurate performance numbers.
-    verify(
-        [
-            inputs[0],
-        ],
-        framework_model,
-        compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    )
+    # Run for the first time to warm up the model. This is required to get accurate performance numbers.
+    compiled_model(inputs[0])
 
     if task == "classification":
         predictions = []
@@ -147,10 +143,6 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
         evaluation_score = 0.0
     else:
         raise ValueError(f"Unsupported task: {task}.")
-
-    fw_out = framework_model(inputs[-1])[0]
-    co_out = co_out.to("cpu")
-    AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out)
 
     date = datetime.now().strftime("%d-%m-%Y")
     machine_name = socket.gethostname()
@@ -187,6 +179,16 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
     print(f"| Input size: {input_size}")
     print(f"| Channel size: {channel_size}")
     print("====================================================================")
+
+    if task == "classification":
+        if evaluation_score <= EVALUATION_SCORE_TARGET:
+            raise ValueError(f"Evaluation score {evaluation_score} is less than the target {EVALUATION_SCORE_TARGET}.")
+    elif task == "na":
+        fw_out = framework_model(inputs[-1])[0]
+        co_out = co_out.to("cpu")
+        AutomaticValueChecker(pcc=0.95).check(fw_out=fw_out, co_out=co_out)
+    else:
+        raise ValueError(f"Unsupported task: {task}.")
 
     result = {
         "model": model_name,

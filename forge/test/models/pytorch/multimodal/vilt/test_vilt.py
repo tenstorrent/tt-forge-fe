@@ -13,7 +13,7 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.vilt.model_utils.model import (
@@ -58,21 +58,19 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
+def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     logits = co_out[0]
@@ -110,19 +108,17 @@ variants = ["dandelin/vilt-b32-mlm"]
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
+def test_vilt_maskedlm_hf_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
     )
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

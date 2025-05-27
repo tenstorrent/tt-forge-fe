@@ -17,6 +17,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import VerifyConfig, verify
@@ -46,9 +47,9 @@ class DetrWrapper(torch.nn.Module):
     "variant",
     ["facebook/detr-resnet-50"],
 )
-def test_detr_detection(forge_property_recorder, variant):
+def test_detr_detection(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,
@@ -69,9 +70,7 @@ def test_detr_detection(forge_property_recorder, variant):
     inputs = [input_batch]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
     verify(
@@ -79,7 +78,6 @@ def test_detr_detection(forge_property_recorder, variant):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )
 
 
@@ -93,10 +91,10 @@ def test_detr_detection(forge_property_recorder, variant):
         )
     ],
 )
-def test_detr_segmentation(forge_property_recorder, variant):
+def test_detr_segmentation(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="detr",
         variant=variant,
@@ -122,9 +120,8 @@ def test_detr_segmentation(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -29,6 +29,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -48,9 +49,9 @@ def generate_model_unet_imgseg_osmr_pytorch(variant):
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
+def test_unet_osmr_cityscape_pytorch():
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="cityscape",
@@ -70,12 +71,11 @@ def test_unet_osmr_cityscape_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def get_imagenet_sample():
@@ -134,10 +134,10 @@ def generate_model_unet_imgseg_smp_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_unet_qubvel_pytorch(forge_property_recorder):
+def test_unet_qubvel_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet",
         variant="qubvel",
@@ -155,12 +155,11 @@ def test_unet_qubvel_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_unet_imgseg_torchhub_pytorch(variant):
@@ -200,10 +199,10 @@ def generate_model_unet_imgseg_torchhub_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_unet_torchhub_pytorch(forge_property_recorder):
+def test_unet_torchhub_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH, model="unet", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
     )
 
@@ -219,20 +218,19 @@ def test_unet_torchhub_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 # Reference: https://github.com/arief25ramadhan/carvana-unet-segmentation
 @pytest.mark.nightly
-def test_unet_carvana(forge_property_recorder):
+def test_unet_carvana():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="unet_carvana",
         source=Source.GITHUB,
@@ -252,9 +250,8 @@ def test_unet_carvana(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

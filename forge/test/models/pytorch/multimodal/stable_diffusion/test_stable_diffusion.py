@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 
-from forge.forge_property_utils import Framework
+from forge.forge_property_utils import Framework, record_model_properties
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     denoising_loop,
@@ -15,11 +15,9 @@ from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
 @pytest.mark.skip(reason="unsupported for now")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["CompVis/stable-diffusion-v1-4"])
-def test_stable_diffusion_pytorch(forge_property_recorder, variant):
+def test_stable_diffusion_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="stable_diffusion", variant=variant
-    )
+    module_name = record_model_properties(framework=Framework.PYTORCH, model="stable_diffusion", variant=variant)
 
     batch_size = 1
 
@@ -48,7 +46,6 @@ def test_stable_diffusion_pytorch(forge_property_recorder, variant):
         prompt_embeds,
         extra_step_kwargs,
         num_inference_steps=num_inference_steps,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Data post-processing

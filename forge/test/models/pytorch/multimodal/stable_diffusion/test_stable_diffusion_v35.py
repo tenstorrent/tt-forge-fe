@@ -6,7 +6,13 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
@@ -46,9 +52,9 @@ class StableDiffusionWrapper(torch.nn.Module):
         "stable-diffusion-3.5-large-turbo",
     ],
 )
-def test_stable_diffusion_v35(forge_property_recorder, variant):
+def test_stable_diffusion_v35(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="stable_diffusion",
         variant=variant,
@@ -71,9 +77,7 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
     latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
     inputs = [latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds]
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

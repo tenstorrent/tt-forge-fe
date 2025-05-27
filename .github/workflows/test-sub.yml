@@ -26,7 +26,7 @@ on:
         description: 'Runs on'
         required: false
         type: string
-        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
       operators:
         description: 'Operators to test (comma separated)'
         required: false
@@ -131,7 +131,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_conclusion: success
           workflow_search: true
-          workflow: on-nightly.yml
+          workflow: on-push.yml
           name: forge-wheel
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true
@@ -189,6 +189,7 @@ jobs:
         uses: mikepenz/action-junit-report@v5
         if: success() || failure()
         with:
+          token: ${{ secrets.GH_TOKEN }}
           report_paths: ${{ steps.strings.outputs.test_report_path }}
           check_name: TT-Forge-FE Tests
           comment: false

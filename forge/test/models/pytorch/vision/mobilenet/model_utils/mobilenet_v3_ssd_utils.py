@@ -23,4 +23,4 @@ def load_input():
     transform = transforms.Compose([transforms.Resize((320, 320)), transforms.ToTensor()])
     img_tensor = [transform(image).unsqueeze(0)]
     batch_tensor = torch.cat(img_tensor, dim=0)
-    return [batch_tensor.to(torch.bfloat16)]
+    return [batch_tensor]

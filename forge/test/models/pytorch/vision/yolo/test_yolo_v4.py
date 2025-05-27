@@ -8,7 +8,14 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from third_party.tt_forge_models.yolov4 import ModelLoader  # isort:skip
@@ -27,19 +34,18 @@ class Wrapper(torch.nn.Module):
         return x.to(image.dtype), y.to(image.dtype), z.to(image.dtype)
 
 
-# @pytest.mark.xfail
 @pytest.mark.nightly
-def test_yolo_v4(forge_property_recorder):
+def test_yolo_v4():
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="Yolo v4",
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load model and input
     framework_model = ModelLoader.load_model()
@@ -55,9 +61,8 @@ def test_yolo_v4(forge_property_recorder):
         framework_model,
         sample_inputs=[input_sample],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify([input_sample], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([input_sample], framework_model, compiled_model)

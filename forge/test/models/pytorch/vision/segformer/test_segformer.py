@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 from transformers import (
     SegformerConfig,
     SegformerForImageClassification,
@@ -10,12 +11,15 @@ from transformers import (
 )
 
 import forge
+from forge._C import DataFormat
+from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -33,7 +37,7 @@ variants_img_classification = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(forge_property_recorder, variant):
+def test_segformer_image_classification_pytorch(variant):
 
     if variant in ["nvidia/mit-b0"]:
         group = ModelGroup.RED
@@ -43,7 +47,7 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -60,20 +64,26 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     config = SegformerConfig(**config_dict)
 
     # Load the model from HuggingFace
-    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     logits = co_out[0]
@@ -92,10 +102,10 @@ variants_semseg = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, variant):
+def test_segformer_semantic_segmentation_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="segformer",
         variant=variant,
@@ -104,17 +114,23 @@ def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, varian
     )
 
     # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

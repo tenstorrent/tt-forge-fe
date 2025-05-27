@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -27,10 +28,10 @@ variants = ["microsoft/phi-1_5"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
-def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
+def test_phi_1_5_causal_lm_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1.5",
         variant=variant,
@@ -52,21 +53,19 @@ def test_phi_1_5_causal_lm_pytorch(forge_property_recorder, variant):
     sample_inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs, module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs, module_name)
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
-def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
+def test_phi_1_5_token_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1.5",
         variant=variant,
@@ -87,19 +86,19 @@ def test_phi_1_5_token_classification_pytorch(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail
-def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, variant):
+def test_phi_1_5_sequence_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="phi1.5",
         variant=variant,
@@ -128,7 +127,7 @@ def test_phi_1_5_sequence_classification_pytorch(forge_property_recorder, varian
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

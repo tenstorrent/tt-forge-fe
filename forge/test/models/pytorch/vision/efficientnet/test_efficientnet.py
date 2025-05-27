@@ -28,6 +28,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -57,7 +58,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_timm(forge_property_recorder, variant):
+def test_efficientnet_timm(variant):
     if variant in ["efficientnet_b0"]:
         group = ModelGroup.RED
         priority = ModelPriority.P1
@@ -66,7 +67,7 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -107,12 +108,11 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -139,10 +139,10 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_torchvision(forge_property_recorder, variant):
+def test_efficientnet_torchvision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="efficientnet",
         variant=variant,
@@ -186,12 +186,11 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

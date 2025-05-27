@@ -11,7 +11,7 @@ from torch import nn
 
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
@@ -19,9 +19,9 @@ from test.models.pytorch.text.deepcogito.model_utils.model import get_input_mode
 @pytest.mark.skip(reason="Skipping due to CI/CD Limitations")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
-def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant):
+def test_cogito_generation_onnx(forge_tmp_path, variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
         model="cogito",
         variant=variant,
@@ -71,7 +71,6 @@ def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant
         loaded_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Run verification
@@ -79,5 +78,4 @@ def test_cogito_generation_onnx(forge_property_recorder, forge_tmp_path, variant
         sample_inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

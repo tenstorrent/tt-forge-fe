@@ -46,7 +46,6 @@ from forge._C import DataFormat
 @pytest.mark.parametrize("has_bias", [False, True], ids=["no_bias", "with_bias"])
 @pytest.mark.push
 def test_conv2d(
-    forge_property_recorder,
     batch_size,
     output_channels,
     input_channels,
@@ -91,15 +90,13 @@ def test_conv2d(
 
     framework_model = Conv2d()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_dual_conv2d(forge_property_recorder):
+def test_dual_conv2d():
 
     tf.random.set_seed(0)
 
@@ -119,11 +116,9 @@ def test_dual_conv2d(forge_property_recorder):
     inputs = [tf.random.uniform((1, 128, 128, 3))]
 
     framework_model = DualConv2d()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -160,7 +155,6 @@ def test_dual_conv2d(forge_property_recorder):
 )
 @pytest.mark.push
 def test_maxpool2d(
-    forge_property_recorder,
     act_shape,
 ):
     # NOTE: Only shapes that are tile-dim aligned before and after
@@ -184,15 +178,13 @@ def test_maxpool2d(
     inputs = [tf.random.uniform(act_shape, dtype=tf.bfloat16)]
 
     framework_model = MaxPool()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_batch_norm(forge_property_recorder):
+def test_batch_norm():
     tf.random.set_seed(0)
 
     class TFBatchNorm(tf.keras.Model):
@@ -207,8 +199,6 @@ def test_batch_norm(forge_property_recorder):
 
     framework_model = TFBatchNorm()
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

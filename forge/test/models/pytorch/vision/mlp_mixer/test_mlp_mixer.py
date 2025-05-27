@@ -14,7 +14,7 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -34,10 +34,7 @@ varaints = [
         "mixer_b16_224_miil_in21k",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "mixer_b32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_b32_224"),
     pytest.param(
         "mixer_l16_224",
         marks=[pytest.mark.xfail],
@@ -46,15 +43,9 @@ varaints = [
         "mixer_l16_224_in21k",
         marks=[pytest.mark.xfail],
     ),
-    pytest.param(
-        "mixer_l32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_l32_224"),
     pytest.param("mixer_s16_224"),
-    pytest.param(
-        "mixer_s32_224",
-        marks=[pytest.mark.xfail],
-    ),
+    pytest.param("mixer_s32_224"),
     pytest.param(
         "mixer_b16_224.goog_in21k",
         marks=[pytest.mark.xfail],
@@ -64,10 +55,10 @@ varaints = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
-def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
+def test_mlp_mixer_timm_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         variant=variant,
@@ -79,7 +70,7 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
     if variant in ["mixer_s32_224", "mixer_s16_224", "mixer_b32_224", "mixer_l32_224"]:
         load_pretrained_weights = False
 
-    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights)
+    framework_model = download_model(timm.create_model, variant, pretrained=load_pretrained_weights).to(torch.bfloat16)
     config = resolve_data_config({}, model=framework_model)
     transform = create_transform(**config)
 
@@ -93,15 +84,21 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
         image = torch.rand(1, 3, 256, 256)
     pixel_values = transform(image).unsqueeze(0)
 
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -109,10 +106,10 @@ def test_mlp_mixer_timm_pytorch(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.xfail
-def test_mlp_mixer_pytorch(forge_property_recorder):
+def test_mlp_mixer_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mlp_mixer",
         source=Source.GITHUB,
@@ -140,9 +137,8 @@ def test_mlp_mixer_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

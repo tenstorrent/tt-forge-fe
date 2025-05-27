@@ -7,7 +7,7 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v3_ssd_utils import (
@@ -26,10 +26,10 @@ variants_with_weights = {
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_mobilenetv3_ssd(forge_property_recorder, variant):
+def test_mobilenetv3_ssd(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="mobilenetv3_ssd",
         variant=variant,
@@ -41,6 +41,7 @@ def test_mobilenetv3_ssd(forge_property_recorder, variant):
     weight_name = variants_with_weights[variant]
     framework_model = load_model(variant, weight_name).to(torch.bfloat16)
     inputs = load_input()
+    inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
@@ -50,9 +51,8 @@ def test_mobilenetv3_ssd(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

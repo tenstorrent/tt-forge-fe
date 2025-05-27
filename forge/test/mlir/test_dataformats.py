@@ -25,7 +25,7 @@ from forge._C import DataFormat
     ],
 )
 @pytest.mark.push
-def test_add_bfloat16_pytorch(forge_property_recorder, shape):
+def test_add_bfloat16_pytorch(shape):
     class Add(nn.Module):
         def __init__(self):
             super().__init__()
@@ -44,15 +44,12 @@ def test_add_bfloat16_pytorch(forge_property_recorder, shape):
     data_format_override = DataFormat.Float16_b
 
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
 
 
@@ -63,7 +60,7 @@ def test_add_bfloat16_pytorch(forge_property_recorder, shape):
     ],
 )
 @pytest.mark.push
-def test_add_constant_bfloat16_pytorch(forge_property_recorder, shape):
+def test_add_constant_bfloat16_pytorch(shape):
     class Add(nn.Module):
         def __init__(self):
             super().__init__()
@@ -84,21 +81,18 @@ def test_add_constant_bfloat16_pytorch(forge_property_recorder, shape):
     data_format_override = DataFormat.Float16_b
 
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 8, 8)])
 @pytest.mark.push
-def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
+def test_conv2d_bnorm_bfloat16_pytorch(shape):
     class TinyBNNet(nn.Module):
         def __init__(self):
             super().__init__()
@@ -120,11 +114,10 @@ def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -147,7 +140,6 @@ def test_conv2d_bnorm_bfloat16_pytorch(forge_property_recorder, shape):
 )
 @pytest.mark.push
 def test_convtranspose2d_bfloat16_pytorch(
-    forge_property_recorder,
     in_channels,
     out_channels,
     kernel_size,
@@ -174,11 +166,9 @@ def test_convtranspose2d_bfloat16_pytorch(
     ).to(torch.bfloat16)
 
     compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
@@ -189,7 +179,7 @@ def test_convtranspose2d_bfloat16_pytorch(
     ],
 )
 @pytest.mark.push
-def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padding):
+def test_conv2d_and_matmul_bfloat16_pytorch(shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):
             super().__init__()
@@ -213,8 +203,6 @@ def test_conv2d_and_matmul_bfloat16_pytorch(forge_property_recorder, shape, padd
 
     framework_model = PaddingAndConv2d(padding=padding).to(torch.bfloat16)
     compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder, compiler_cfg=compiler_cfg
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

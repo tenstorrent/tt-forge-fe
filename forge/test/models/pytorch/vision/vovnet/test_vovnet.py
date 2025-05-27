@@ -14,6 +14,7 @@ from forge.forge_property_utils import (
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -40,7 +41,7 @@ varaints = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", varaints)
-def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
+def test_vovnet_osmr_pytorch(variant):
 
     if variant in ["vovnet27s"]:
         group = ModelGroup.RED
@@ -50,7 +51,7 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,
@@ -79,7 +80,6 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -88,7 +88,6 @@ def test_vovnet_osmr_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
         verify_cfg=verify_cfg,
     )
 
@@ -103,12 +102,12 @@ def generate_model_vovnet39_imgcls_stigma_pytorch():
 
 
 @pytest.mark.nightly
-def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
+def test_vovnet_v1_39_stigma_pytorch():
 
     variant = "vovnet39"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet_v1",
         variant=variant,
@@ -126,12 +125,11 @@ def test_vovnet_v1_39_stigma_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -145,12 +143,12 @@ def generate_model_vovnet57_imgcls_stigma_pytorch():
 
 
 @pytest.mark.nightly
-def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
+def test_vovnet_v1_57_stigma_pytorch():
 
     variant = "vovnet_v1_57"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,
@@ -168,12 +166,11 @@ def test_vovnet_v1_57_stigma_pytorch(forge_property_recorder):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -199,10 +196,10 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_vovnet_timm_pytorch(forge_property_recorder, variant):
+def test_vovnet_timm_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model="vovnet",
         variant=variant,
@@ -222,9 +219,8 @@ def test_vovnet_timm_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
