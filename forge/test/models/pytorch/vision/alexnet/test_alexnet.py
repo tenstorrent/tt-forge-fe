@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 
@@ -73,7 +74,10 @@ def test_alexnet_torchhub():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly

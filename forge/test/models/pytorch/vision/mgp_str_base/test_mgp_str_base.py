@@ -32,7 +32,7 @@ class Wrapper(torch.nn.Module):
         self.model = model
 
     def forward(self, inputs):
-        return self.model(inputs).logits
+        return self.model(inputs)[0]
 
 
 @pytest.mark.nightly
@@ -56,7 +56,7 @@ def test_mgp_scene_text_recognition(variant):
     # Load model and input
     framework_model = load_model(variant)
     framework_model = Wrapper(framework_model).to(torch.bfloat16)
-    inputs = load_input(variant)
+    inputs, processor = load_input(variant)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
@@ -71,10 +71,17 @@ def test_mgp_scene_text_recognition(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
     )
+
+    # Post processing
+    output = (co_out[0], co_out[1], co_out[2])
+
+    generated_text = processor.batch_decode(output)["generated_text"]
+
+    print(f"Generated text: {generated_text}")

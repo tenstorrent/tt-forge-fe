@@ -88,8 +88,15 @@ def test_phi_1_5_token_classification_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_token_class_ids = co_out[0].argmax(-1)[0]
+    predicted_tokens_classes = [framework_model.config.id2label[t.item()] for t in predicted_token_class_ids]
+
+    print(f"Context: {input_prompt}")
+    print(f"Answer: {predicted_tokens_classes}")
 
 
 @pytest.mark.nightly
@@ -128,5 +135,9 @@ def test_phi_1_5_sequence_classification_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, inputs, module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")

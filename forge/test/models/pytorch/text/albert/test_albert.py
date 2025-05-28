@@ -202,8 +202,15 @@ def test_albert_question_answering_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    answer_start_index = co_out[0].argmax()
+    answer_end_index = co_out[1].argmax()
+
+    predict_answer_tokens = input_tokens.input_ids[0, answer_start_index : answer_end_index + 1]
+    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
 
 
 @pytest.mark.nightly

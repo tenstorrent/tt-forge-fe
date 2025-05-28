@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.dla.model_utils.utils import load_dla_model
 from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 
@@ -59,8 +60,11 @@ def test_dla_pytorch(variant):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 variants = ["dla34.in1k"]
@@ -92,5 +96,8 @@ def test_dla_timm(variant):
         framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])

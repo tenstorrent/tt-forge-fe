@@ -18,6 +18,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mnist.model_utils.utils import load_input, load_model
 
 
@@ -48,10 +49,13 @@ def test_mnist():
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    fw_out, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
     )
+
+    # Post Processing
+    print_cls_results(fw_out[0], co_out[0])
