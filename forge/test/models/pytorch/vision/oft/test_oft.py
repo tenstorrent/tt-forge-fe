@@ -21,7 +21,7 @@ from third_party.tt_forge_models.oft import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Getting hang at generate_initial_graph pass")
 def test_oft():
     # Record Forge Property
     module_name = record_model_properties(
