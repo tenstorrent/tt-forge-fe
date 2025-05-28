@@ -200,6 +200,19 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
     return causal_mask
 
 
+def embed_pos(self, hidden_states):
+    seq_len = hidden_states.shape[1]
+    pos_seq = torch.arange(0, seq_len).long().to(hidden_states.device)
+    pos_seq = pos_seq[:, None] - pos_seq[None, :]
+
+    # pos_seq[pos_seq < -self.max_length] = -self.max_length
+    # pos_seq[pos_seq >= self.max_length] = self.max_length - 1
+    pos_seq = torch.clamp(pos_seq, min=-self.max_length, max=self.max_length - 1)
+    pos_seq = pos_seq + self.max_length
+
+    return self.pe_k(pos_seq)
+
+
 def Gemma2DecoderLayer_patched_forward(
     self,
     hidden_states: torch.Tensor,
