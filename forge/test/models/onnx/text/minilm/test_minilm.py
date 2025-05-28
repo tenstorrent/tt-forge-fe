@@ -13,7 +13,6 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 from test.utils import download_model
 
 
-
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
 def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
