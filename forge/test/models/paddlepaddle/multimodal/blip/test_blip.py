@@ -14,7 +14,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["Salesforce/blip-image-captioning-base"]
 
@@ -25,7 +25,7 @@ def test_blip_text(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="blip_text",
+        model=ModelArch.BLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
@@ -55,7 +55,7 @@ def test_blip_vision(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="blip_vision",
+        model=ModelArch.BLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
@@ -85,7 +85,7 @@ def test_blip(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="blip",
+        model=ModelArch.BLIP,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_CAPTIONING,

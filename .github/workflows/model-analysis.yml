@@ -3,6 +3,10 @@ name: Model Analysis
 on:
   workflow_dispatch:
 
+permissions:
+  packages: write
+  checks: write
+
 jobs:
 
   docker-build:

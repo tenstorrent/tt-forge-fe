@@ -13,7 +13,13 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.wideresnet.model_utils.utils import (
@@ -35,7 +41,7 @@ def test_wideresnet_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="wideresnet",
+        model=ModelArch.WIDERESNET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
@@ -91,7 +97,7 @@ def test_wideresnet_timm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="wideresnet",
+        model=ModelArch.WIDERESNET,
         source=Source.TIMM,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,

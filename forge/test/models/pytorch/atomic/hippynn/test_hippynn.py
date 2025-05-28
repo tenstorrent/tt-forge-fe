@@ -13,7 +13,13 @@ import torch
 from hippynn.graphs import inputs
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.atomic.hippynn.model_utils.model import load_model
@@ -39,7 +45,7 @@ def test_hippynn():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="Hippyn",
+        model=ModelArch.HIPPYNN,
         variant="default",
         task=Task.ATOMIC_ML,
         source=Source.GITHUB,

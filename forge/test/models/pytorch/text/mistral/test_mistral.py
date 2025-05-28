@@ -6,7 +6,14 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
@@ -22,7 +29,11 @@ def test_mistral(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     configuration = MistralConfig()
@@ -56,14 +67,14 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 60 GB)")
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_v0_3(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mistral",
+        model=ModelArch.MISTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

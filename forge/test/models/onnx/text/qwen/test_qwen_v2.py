@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 import subprocess
 import onnx
@@ -24,7 +24,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B",
@@ -36,7 +36,7 @@ import torch
         ),
         pytest.param(
             "Qwen/Qwen2.5-1.5B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
         ),
         pytest.param(
             "Qwen/Qwen2.5-3B-Instruct",
@@ -48,7 +48,11 @@ def test_qwen_clm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model="qwen_v2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.ONNX,
+        model=ModelArch.QWENV2,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Load model and tokenizer

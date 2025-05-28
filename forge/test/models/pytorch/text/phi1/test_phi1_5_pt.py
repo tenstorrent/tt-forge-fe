@@ -12,10 +12,12 @@ from transformers import (
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -32,7 +34,7 @@ def test_phi_1_5_causal_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -60,13 +62,12 @@ def test_phi_1_5_causal_lm_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_phi_1_5_token_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -93,13 +94,12 @@ def test_phi_1_5_token_classification_pytorch(variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.xfail
 def test_phi_1_5_sequence_classification_pytorch(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi1.5",
+        model=ModelArch.PHI1_5,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

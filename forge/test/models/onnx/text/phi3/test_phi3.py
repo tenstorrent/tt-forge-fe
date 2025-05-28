@@ -12,7 +12,7 @@ import subprocess
 import onnx
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 
 variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/Phi-3-mini-128k-instruct"]
@@ -27,7 +27,7 @@ def test_phi3_causal_lm_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

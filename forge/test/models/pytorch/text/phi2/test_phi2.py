@@ -14,10 +14,12 @@ from transformers import (
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -35,7 +37,7 @@ variants = [
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
     ),
 ]
 
@@ -53,7 +55,7 @@ def test_phi2_clm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -101,11 +103,11 @@ def test_phi2_clm(variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
     ),
 ]
 
@@ -117,7 +119,7 @@ def test_phi2_token_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -153,11 +155,11 @@ def test_phi2_token_classification(variant):
 variants = [
     pytest.param(
         "microsoft/phi-2",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 27 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB"),
     ),
 ]
 
@@ -169,7 +171,7 @@ def test_phi2_sequence_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

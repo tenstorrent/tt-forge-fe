@@ -11,6 +11,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -50,7 +51,7 @@ def test_vit_classify_224_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vit",
+        model=ModelArch.VIT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -111,7 +112,7 @@ def test_vit_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vit",
+        model=ModelArch.ViT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

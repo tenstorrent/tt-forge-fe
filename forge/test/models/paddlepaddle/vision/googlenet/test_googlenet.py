@@ -11,7 +11,7 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import googlenet
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail()
@@ -20,7 +20,7 @@ def test_googlenet():
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="googlenet",
+        model=ModelArch.GOOGLENET,
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
     )

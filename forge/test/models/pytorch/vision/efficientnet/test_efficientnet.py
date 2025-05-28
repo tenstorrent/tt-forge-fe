@@ -24,6 +24,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -69,7 +70,7 @@ def test_efficientnet_timm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="efficientnet",
+        model=ModelArch.EFFICIENTNET,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
@@ -144,7 +145,7 @@ def test_efficientnet_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="efficientnet",
+        model=ModelArch.EFFICIENTNET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,

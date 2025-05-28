@@ -16,7 +16,14 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 
@@ -44,7 +51,7 @@ def test_whisper_large_v3_speech_translation(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="whisper",
+        model=ModelArch.WHISPER,
         variant=variant,
         task=Task.SPEECH_TRANSLATE,
         source=Source.HUGGINGFACE,

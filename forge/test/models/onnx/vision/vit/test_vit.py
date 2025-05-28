@@ -8,7 +8,7 @@ import onnx
 import forge
 from transformers import ViTForImageClassification
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 variants = [
@@ -28,7 +28,7 @@ def test_vit_classify_224(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="vit_base",
+        model=ModelArch.VITBASE,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

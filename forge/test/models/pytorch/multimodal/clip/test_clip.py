@@ -7,7 +7,13 @@ from PIL import Image
 from transformers import CLIPModel, CLIPProcessor
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.clip.model_utils.clip_model import CLIPTextWrapper
@@ -28,7 +34,7 @@ def test_clip_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="clip",
+        model=ModelArch.CLIP,
         variant=variant,
         suffix="text",
         source=Source.HUGGINGFACE,

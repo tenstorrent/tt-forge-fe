@@ -17,10 +17,12 @@ from transformers import (
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -87,14 +89,14 @@ variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instr
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(variant):
     if variant == "microsoft/phi-3-mini-4k-instruct":
-        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
     elif variant == "microsoft/phi-3-mini-128k-instruct":
         pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -151,7 +153,7 @@ def test_phi3_token_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -193,7 +195,7 @@ def test_phi3_sequence_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

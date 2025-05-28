@@ -5,7 +5,13 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 # Variants for testing
@@ -57,7 +63,11 @@ def test_qwen_clm(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="qwen_coder", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.QWENCODER,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Load model and tokenizer

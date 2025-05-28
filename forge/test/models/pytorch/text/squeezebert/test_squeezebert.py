@@ -5,7 +5,13 @@ import pytest
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -17,7 +23,7 @@ def test_squeezebert_sequence_classification_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="squeezebert",
+        model=ModelArch.SQUEEZEBERT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

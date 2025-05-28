@@ -5,7 +5,13 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import fetch_model, yolov5_loader
@@ -39,7 +45,7 @@ def test_yolov5_320x320(restore_package_versions, size):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -83,7 +89,7 @@ def test_yolov5_640x640(restore_package_versions, size):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -126,7 +132,7 @@ def test_yolov5_480x480(restore_package_versions, size):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -153,7 +159,7 @@ def test_yolov5_1280x1280(restore_package_versions, variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,

@@ -20,6 +20,7 @@ from transformers.models.llama.modeling_llama import (
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -141,13 +142,13 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
     pytest.param(
         "huggyllama/llama-7b",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 58 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
 ]
@@ -168,7 +169,7 @@ def test_llama3_causal_lm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llama3",
+        model=ModelArch.LLAMA3,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -278,7 +279,7 @@ def test_llama3_sequence_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llama3",
+        model=ModelArch.LLAMA3,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

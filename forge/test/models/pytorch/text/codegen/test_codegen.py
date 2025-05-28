@@ -8,7 +8,13 @@ import torch
 from transformers import AutoTokenizer, CodeGenForCausalLM, CodeGenModel
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import (
@@ -35,7 +41,11 @@ def test_codegen(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="codegen", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.CODEGEN,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Load model (with tokenizer)

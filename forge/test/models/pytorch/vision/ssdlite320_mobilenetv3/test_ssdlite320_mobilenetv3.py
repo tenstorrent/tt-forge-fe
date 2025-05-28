@@ -2,11 +2,18 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
@@ -24,7 +31,7 @@ def test_ssdlite320_mobilenetv3(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="ssdlite320_mobilenetv3",
+        model=ModelArch.SSDLITE320MOBILENETV3,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

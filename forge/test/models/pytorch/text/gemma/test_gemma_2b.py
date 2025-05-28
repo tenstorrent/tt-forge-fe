@@ -12,7 +12,14 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gemma.model_utils.model_utils import (
@@ -34,7 +41,7 @@ def test_gemma_2b(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="gemma",
+        model=ModelArch.GEMMA,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.TEXT_GENERATION,
@@ -99,7 +106,7 @@ def test_gemma_pytorch_v2(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="gemma",
+        model=ModelArch.GEMMA,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,

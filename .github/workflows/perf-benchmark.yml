@@ -9,6 +9,10 @@ on:
         default: false
         type: boolean
 
+permissions:
+  packages: write
+  checks: write
+
 jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml

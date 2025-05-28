@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 
@@ -22,14 +22,14 @@ variants = ["microsoft/phi-1"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)")
+@pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)")
 @pytest.mark.parametrize("variant", variants)
 def test_phi_causal_lm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="phi1",
+        model=ModelArch.PHI1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,

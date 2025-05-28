@@ -7,6 +7,7 @@ import pytest
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -25,7 +26,7 @@ def test_birnn_crf():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="BiRnnCrf",
+        model=ModelArch.BIRNNCRF,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.GITHUB,
         group=ModelGroup.RED,

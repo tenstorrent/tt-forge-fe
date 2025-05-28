@@ -17,10 +17,12 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
@@ -44,7 +46,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -90,7 +92,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -103,7 +105,6 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -128,7 +129,7 @@ def test_swin_v2_tiny_image_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -139,7 +140,6 @@ def test_swin_v2_tiny_image_classification(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -157,7 +157,7 @@ def test_swin_v2_tiny_masked(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
@@ -168,7 +168,6 @@ def test_swin_v2_tiny_masked(variant):
 
     url = "http://images.cocodataset.org/val2017/000000039769.jpg"
     inputs = load_image(url, feature_extractor)
-    inputs = [inputs[0].to(torch.bfloat16)]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
@@ -203,7 +202,7 @@ def test_swin_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
@@ -236,10 +235,9 @@ def test_swin_torchvision(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
-    compiled_model = forge.compile(
+    verify(
+        inputs,
         framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )

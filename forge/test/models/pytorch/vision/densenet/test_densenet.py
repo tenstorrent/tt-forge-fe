@@ -10,11 +10,18 @@ from torchxrayvision.models import fix_resolution, op_norm
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
@@ -52,7 +59,7 @@ def test_densenet_121_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
@@ -107,7 +114,7 @@ def test_densenet_161_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
@@ -148,7 +155,7 @@ def test_densenet_169_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
@@ -182,12 +189,11 @@ def test_densenet_169_pytorch(variant):
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
 
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
@@ -215,4 +221,7 @@ def test_densenet_201_pytorch(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

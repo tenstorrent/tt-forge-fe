@@ -14,7 +14,7 @@ from transformers import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import mean_pooling
 from test.utils import download_model
 
@@ -31,7 +31,7 @@ def test_bert_masked_lm_onnx(variant, forge_tmp_path, opset_version):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
@@ -81,7 +81,7 @@ def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,
@@ -140,7 +140,7 @@ def test_bert_sentence_embedding_generation_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant,
         task=Task.SENTENCE_EMBEDDING_GENERATION,
         source=Source.HUGGINGFACE,

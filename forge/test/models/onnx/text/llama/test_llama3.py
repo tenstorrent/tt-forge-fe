@@ -18,7 +18,7 @@ from transformers.models.llama.modeling_llama import (
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 from test.utils import download_model
 import subprocess
@@ -129,7 +129,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B",
@@ -141,7 +141,7 @@ LlamaModel._update_causal_mask = _update_causal_mask
         ),
         pytest.param(
             "meta-llama/Llama-3.2-1B-Instruct",
-            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model"),
+            marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 30 GB"),
         ),
         pytest.param(
             "meta-llama/Llama-3.2-3B-Instruct",
@@ -153,7 +153,11 @@ def test_llama3_causal_lm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.ONNX, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.ONNX,
+        model=ModelArch.LLAMA3,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Load model and tokenizer
