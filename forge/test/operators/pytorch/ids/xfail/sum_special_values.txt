@@ -1,0 +1,3 @@
+# xfail_sum_SPECIAL_VALUES ids
+
+sum-FROM_HOST-{'dim': 3, 'keepdim': True}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
