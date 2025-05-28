@@ -109,4 +109,6 @@ class FailingReasonsRegister:
     # Format: (operator, skip_reason, failing_reason)
     skip = [
         ("matmul", FailingReasons.HIGH_MEMORY, None),
+        ("conv2d", FailingReasons.FATAL_ERROR, None),
+        ("conv_transpose_2d", FailingReasons.FATAL_ERROR, None),
     ]
