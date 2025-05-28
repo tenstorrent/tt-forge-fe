@@ -7,7 +7,13 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.beit.model_utils.utils import load_input, load_model
@@ -31,7 +37,7 @@ def test_beit_image_classification(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="beit",
+        model=ModelArch.BEIT,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,

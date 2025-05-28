@@ -7,6 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -27,7 +28,7 @@ def test_ministral_8b(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="ministral",
+        model=ModelArch.MINISTRAL,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,

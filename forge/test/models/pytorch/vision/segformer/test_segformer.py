@@ -15,6 +15,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -49,7 +50,7 @@ def test_segformer_image_classification_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -107,7 +108,7 @@ def test_segformer_semantic_segmentation_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,

@@ -13,7 +13,7 @@ from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 variants = [
@@ -35,7 +35,7 @@ def test_resnet_onnx(variant, forge_tmp_path, opset_version):
     # Record model details
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="resnet",
+        model=ModelArch.RESNET,
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,

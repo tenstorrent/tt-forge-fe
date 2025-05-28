@@ -8,6 +8,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -28,7 +29,11 @@ def test_mistral(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     configuration = MistralConfig()
@@ -69,7 +74,7 @@ def test_mistral_v0_3(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mistral",
+        model=ModelArch.MISTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

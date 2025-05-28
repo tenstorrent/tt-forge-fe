@@ -13,7 +13,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
@@ -42,7 +48,7 @@ def test_albert_masked_lm_pytorch(size, variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
@@ -111,7 +117,7 @@ def test_albert_token_classification_pytorch(size, variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -175,7 +181,7 @@ def test_albert_question_answering_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,
@@ -208,7 +214,7 @@ def test_albert_sequence_classification_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

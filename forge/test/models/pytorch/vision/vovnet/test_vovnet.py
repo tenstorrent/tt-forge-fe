@@ -10,6 +10,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
@@ -53,7 +54,7 @@ def test_vovnet_osmr_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.OSMR,
         task=Task.IMAGE_CLASSIFICATION,
@@ -109,7 +110,7 @@ def test_vovnet_v1_39_stigma_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet_v1",
+        model=ModelArch.VOVNETV1,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -150,7 +151,7 @@ def test_vovnet_v1_57_stigma_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
@@ -201,7 +202,7 @@ def test_vovnet_timm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vovnet",
+        model=ModelArch.VOVNET,
         variant=variant,
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,

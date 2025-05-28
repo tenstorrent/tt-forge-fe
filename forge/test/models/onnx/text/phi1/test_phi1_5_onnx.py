@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, PhiForCausalLM
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 
 from test.utils import download_model
@@ -25,7 +25,7 @@ def test_phi1_5_clm_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="phi_1_5",
+        model=ModelArch.PHI1_5,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,

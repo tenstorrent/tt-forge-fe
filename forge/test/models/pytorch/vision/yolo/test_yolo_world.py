@@ -12,6 +12,7 @@ from forge._C import DataFormat
 from forge.config import CompilerConfig
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -40,7 +41,7 @@ def test_yolo_world_inference():
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_world",
+        model=ModelArch.YOLOWORLD,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,

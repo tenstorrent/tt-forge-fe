@@ -9,7 +9,7 @@ from transformers import BertModel, BertTokenizer
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.utils import download_model
 
 
@@ -25,7 +25,7 @@ def test_minilm_sequence_classification_onnx(variant, forge_tmp_path, opset_vers
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="minilm",
+        model=ModelArch.MINILM,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,

@@ -6,7 +6,13 @@ import torch
 from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -47,7 +53,11 @@ def test_t5_generation(variant):
 
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
+        framework=Framework.PYTORCH,
+        model=ModelArch.T5,
+        variant=variant,
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Load tokenizer and model from HuggingFace

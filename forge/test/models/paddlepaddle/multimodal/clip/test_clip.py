@@ -13,7 +13,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["openai/clip-vit-base-patch16"]
 
@@ -25,7 +25,7 @@ def test_clip_text(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip_text",
+        model=ModelArch.CLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
@@ -55,7 +55,7 @@ def test_clip_vision(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip_vision",
+        model=ModelArch.CLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
@@ -85,7 +85,7 @@ def test_clip(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model=ModelArch.CLIP,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_TEXT_PAIRING,

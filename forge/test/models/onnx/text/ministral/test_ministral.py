@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.verify.verify import verify
 from test.utils import download_model
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 import subprocess
 import onnx
@@ -23,7 +23,7 @@ def test_ministral(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="ministral",
+        model=ModelArch.MINISTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,

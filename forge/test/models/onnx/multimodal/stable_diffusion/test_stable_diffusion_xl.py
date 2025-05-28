@@ -12,7 +12,7 @@ from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
     load_pipe,
     stable_diffusion_preprocessing_xl,
 )
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, ModelArch, Source, Task, record_model_properties
 
 
 class StableDiffusionXLWrapper(torch.nn.Module):
@@ -43,7 +43,7 @@ def test_stable_diffusion_generation(variant, forge_tmp_path):
     # Build Module Name
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="stable_diffusion",
+        model=ModelArch.STABLEDIFFUSION,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,

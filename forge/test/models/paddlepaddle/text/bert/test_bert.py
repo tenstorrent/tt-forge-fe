@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 from paddlenlp.transformers import (
     BertForSequenceClassification,
@@ -39,7 +39,7 @@ def test_bert_sequence_classification(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
@@ -67,7 +67,7 @@ def test_bert_maskedlm(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
@@ -102,7 +102,7 @@ def test_bert_question_answering(variant, input):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="bert",
+        model=ModelArch.BERT,
         variant=variant.split("/")[-1] if "/" in variant else variant,
         task=Task.QA,
         source=Source.PADDLENLP,

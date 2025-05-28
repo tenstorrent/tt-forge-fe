@@ -9,7 +9,13 @@ from pytorchcv.model_provider import get_model as ptcv_get_model
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.inception.model_utils.model_utils import (
@@ -34,7 +40,11 @@ def generate_model_inceptionV4_imgcls_osmr_pytorch(variant):
 def test_inception_v4_osmr_pytorch():
     # Record Forge Property
     module_name = record_model_properties(
-        framework=Framework.PYTORCH, model="inception", variant="v4", source=Source.OSMR, task=Task.IMAGE_CLASSIFICATION
+        framework=Framework.PYTORCH,
+        model=ModelArch.INCEPTION,
+        variant="v4",
+        source=Source.OSMR,
+        task=Task.IMAGE_CLASSIFICATION,
     )
 
     framework_model, inputs = generate_model_inceptionV4_imgcls_osmr_pytorch("inceptionv4")
@@ -79,7 +89,7 @@ def test_inception_v4_timm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="inception",
+        model=ModelArch.INCEPTION,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,

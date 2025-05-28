@@ -10,7 +10,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = [
     "t5-small",
@@ -25,7 +25,7 @@ def test_t5_conditional_generation(variant):
     # Record Forge properties
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="t5",
+        model=ModelArch.T5,
         variant=variant[3:],
         task=Task.TEXT_GENERATION,
         source=Source.PADDLENLP,

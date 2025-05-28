@@ -9,6 +9,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     Source,
     Task,
@@ -40,7 +41,7 @@ def test_phi3_5_vision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3_5_vision",
+        model=ModelArch.PHI35VISION,
         variant=variant,
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,

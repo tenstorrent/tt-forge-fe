@@ -14,7 +14,7 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, record_model_properties
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.utils import fetch_paddle_model
 
 
@@ -37,7 +37,7 @@ def test_paddleocr_det(variant, url):
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="paddleocr",
+        model=ModelArch.PADDLEOCR,
         variant=variant,
         source=Source.PADDLE,
         task=Task.SCENE_TEXT_DETECTION,
