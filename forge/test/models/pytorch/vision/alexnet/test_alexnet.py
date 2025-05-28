@@ -21,6 +21,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.utils import download_model
 
 
@@ -77,7 +78,6 @@ def test_alexnet_torchhub():
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 def test_alexnet_osmr():
 
     # Record Forge Property
@@ -86,7 +86,10 @@ def test_alexnet_osmr():
     )
 
     # Load model
-    framework_model = download_model(ptcv_get_model, "alexnet", pretrained=True)
+
+    # Using AlexNet-b instead of AlexNet-a to avoid LocalResponseNorm,
+    # which internally uses avgpool3d — currently unsupported for bfloat16.
+    framework_model = download_model(ptcv_get_model, "alexnetb", pretrained=True).to(torch.bfloat16)
     framework_model.eval()
 
     # Load and pre-process image
@@ -108,10 +111,21 @@ def test_alexnet_osmr():
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
+    compiled_model = forge.compile(
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
+    )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    print_cls_results(fw_out[0], co_out[0])
