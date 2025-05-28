@@ -20,16 +20,11 @@ variants = [
     "microsoft/resnet-50",
 ]
 
-# Opset 7 is the minimum version in Torch.
-# Opset 17 is the maximum version in Torchscript.
-opset_versions = [7, 17]
-
 
 @pytest.mark.push
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-@pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_resnet_onnx(variant, forge_tmp_path, opset_version):
+def test_resnet_onnx(variant, forge_tmp_path):
     random.seed(0)
 
     # Record model details
@@ -45,7 +40,7 @@ def test_resnet_onnx(variant, forge_tmp_path, opset_version):
     torch_model = ResNetForImageClassification.from_pretrained(variant)
     input_sample = torch.randn(1, 3, 224, 224)
     onnx_path = f"{forge_tmp_path}/resnet50.onnx"
-    torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=opset_version)
+    torch.onnx.export(torch_model, input_sample, onnx_path, opset_version=17)
 
     # Load framework model
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.

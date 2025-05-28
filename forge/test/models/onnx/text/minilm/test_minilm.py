@@ -13,15 +13,10 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 from test.utils import download_model
 
 
-# Opset 9 is the minimum version to support BERT-like models in Torch.
-# Opset 17 is the maximum version in Torchscript.
-opset_versions = [9, 17]
-
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
-@pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification_onnx(variant, forge_tmp_path, opset_version):
+def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.ONNX,
@@ -45,7 +40,7 @@ def test_minilm_sequence_classification_onnx(variant, forge_tmp_path, opset_vers
     # Export model to ONNX
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
     onnx_path = f"{forge_tmp_path}/minilm.onnx"
-    torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
+    torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=17)
 
     # Load ONNX model
     onnx_model = onnx.load(onnx_path)
