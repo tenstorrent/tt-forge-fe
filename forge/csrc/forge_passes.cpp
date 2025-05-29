@@ -158,8 +158,6 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
     if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
         passes::constant_folding(graph);
 
-    recalculate_shapes(graph);
-
     // Issue #152
     // passes::fuse_tm_sequences(graph);
 
