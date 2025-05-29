@@ -46,7 +46,7 @@ sudo chown -R $USER /opt/ttmlir-toolchain
 
 Build FFE environment:
 ```sh
-# Inicialize required env vars
+# Initialize required env vars
 source env/activate
 
 # Initialize and update submodules
