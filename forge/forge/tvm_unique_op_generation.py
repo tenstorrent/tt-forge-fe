@@ -675,7 +675,7 @@ def extract_and_generate_unique_ops_tests(
             )
             writer.write_header(include_pytest_imports=True)
 
-            # Get the unique operands and operation arguments assiocated the operand names
+            # Get the unique operands and operation arguments associated the operand names
             unique_operands_and_opargs_opmetadata = unique_operations[
                 forge_op_function_name
             ].get_unique_operands_and_opargs_opmetadata()
@@ -971,7 +971,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
         )
         writer.write_header(include_pytest_imports=True)
 
-        # Get the unique operands and operation arguments assiocated with the operation metadata
+        # Get the unique operands and operation arguments associated with the operation metadata
         unique_operands_and_opargs_opmetadata = unique_operations[
             forge_op_function_name
         ].get_unique_operands_and_opargs_opmetadata()
