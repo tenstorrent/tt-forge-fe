@@ -86,8 +86,7 @@ run_post_initial_graph_passes(
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
     passes::bypass_nop_tms(graph);
-    
-    
+
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
     passes::apply_user_data_format_override(graph, compiler_cfg_object);

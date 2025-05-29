@@ -754,7 +754,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
 
     dump_graph(graph, graph_name, "decomposed_graph")
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
-    
+
     if compiler_cfg.match_subgraph_patterns:
         return CompileDepth.POST_PATTERN_MATCHER
     if compiler_cfg.enable_optimization_passes:
