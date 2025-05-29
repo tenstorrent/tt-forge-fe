@@ -21,7 +21,7 @@ from forge.forge_property_utils import (
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
-from test.models.pytorch.vision.ssd300_vgg16.model_utils.model_utils import (
+from test.models.pytorch.vision.ssdlite320_mobilenetv3.model_utils.model_utils import (
     Postprocessor,
 )
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
