@@ -20,6 +20,7 @@ from test.utils import download_model
 variants = ["mistralai/Ministral-8B-Instruct-2410"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
