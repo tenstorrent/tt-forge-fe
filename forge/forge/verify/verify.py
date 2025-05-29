@@ -320,7 +320,7 @@ def verify_backward(
     co_gradient_outputs = compiled_model.backward()
     co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
-        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        # NOTE: Need to clone the gradients of parameters as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
