@@ -10,7 +10,7 @@ import torch
 from loguru import logger
 from typing import Optional, List, Union
 
-from forge import ForgeModule, Module, DepricatedVerifyConfig
+from forge import ForgeModule, Module, DeprecatedVerifyConfig
 from forge.tensor import to_pt_tensors
 from forge.op_repo import TensorShape
 from forge.config import CompilerConfig

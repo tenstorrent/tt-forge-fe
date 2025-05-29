@@ -13,7 +13,7 @@ import numpy as np
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DeprecatedVerifyConfig, CompilerConfig
 
 from . import models_nd
 
@@ -81,5 +81,5 @@ def test_reduce(mode, recompute, operation, model, shape, dim, keepdim):
         model.testname,
         *model.inputs,
         compiler_cfg=CompilerConfig(enable_training=training, enable_recompute=recompute),
-        verify_cfg=DepricatedVerifyConfig(),
+        verify_cfg=DeprecatedVerifyConfig(),
     )

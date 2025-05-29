@@ -24,7 +24,7 @@ from ..tensor import (
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
+from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
@@ -83,7 +83,7 @@ def do_verify(
     golden_input_grads: Tuple[torch.Tensor, ...],
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
@@ -224,7 +224,7 @@ def verify_golden(
     device: "TTDevice",
     inputs: Tuple[Tensor],
     outputs: Tuple[torch.Tensor],
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
 ):
 
     assert False  # Run ttnn golden
