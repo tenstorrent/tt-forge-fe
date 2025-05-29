@@ -122,7 +122,7 @@ def test_resnet_timm():
     # Record model details
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.ResNet,
+        model=ModelArch.RESNET,
         source=Source.TIMM,
         variant="50",
         task=Task.IMAGE_CLASSIFICATION,
@@ -169,7 +169,7 @@ def test_resnet_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.ResNet,
+        model=ModelArch.RESNET,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

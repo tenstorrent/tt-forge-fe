@@ -112,7 +112,7 @@ def test_vit_torchvision(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.ViT,
+        model=ModelArch.VIT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,

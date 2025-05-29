@@ -9,7 +9,7 @@ import forge
 from test.mlir.llama.utils.utils import load_model
 from forge.verify.compare import compare_with_golden
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelGroup, record_model_properties
+from forge.forge_property_utils import Framework, ModelArch, Source, Task, ModelGroup, record_model_properties
 
 
 class LlamaPrefillModel(torch.nn.Module):
@@ -64,15 +64,15 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
 
     # Extract model variant from path
     if "open_llama_3b" in model_path:
-        model_name = "Open Llama"
+        model_name = ModelArch.OPENLLAMA
         variant = "3b"
         group = ModelGroup.GENERALITY
     elif "Llama-3.2-1B" in model_path:
-        model_name = "Llama 3.2"
+        model_name = ModelArch.LLAMA3_2
         variant = "1b"
         group = ModelGroup.RED
     else:
-        model_name = "Llama"
+        model_name = ModelArch.LLAMA
         variant = "unknown"
         group = ModelGroup.GENERALITY
 
@@ -96,7 +96,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     framework_model = LlamaPrefillModel(model)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, model_name=module_name)
 
     # Prefill Phase - Process the initial prompt on device
     # Validate prefill outputs between TT and CPU

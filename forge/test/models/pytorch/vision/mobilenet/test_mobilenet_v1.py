@@ -166,7 +166,7 @@ def test_mobilenet_v1_timm(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.MOBILENET_V1,
+        model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,

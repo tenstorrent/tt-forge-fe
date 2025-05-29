@@ -37,7 +37,7 @@ def test_mobilenetv3_ssd(variant):
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model=ModelArch.MOBILENET_V3_SSD,
+        model=ModelArch.MOBILENETV3SSD,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
