@@ -69,7 +69,7 @@ class FailingReasonsRegister:
         ("max", FailingReasons.SPECIAL_VALUES),
         ("maximum", FailingReasons.DATA_MISMATCH),
         ("mean", FailingReasons.DATA_MISMATCH),
-        ("minimum", FailingReasons.DTYPE_MISMATCH),
+        ("minimum", FailingReasons.DATA_MISMATCH),
         ("mul", FailingReasons.DATA_MISMATCH),
         ("ne", FailingReasons.DTYPE_MISMATCH),
         ("neg", FailingReasons.DTYPE_MISMATCH),
