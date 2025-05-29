@@ -16,6 +16,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.skip("Skipping due to Out of Memory issue")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])

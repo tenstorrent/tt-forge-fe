@@ -85,6 +85,7 @@ Phi3Model._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_ca
 variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instruct"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_causal_lm(variant):
@@ -142,6 +143,7 @@ def test_phi3_causal_lm(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi3_token_classification(variant):
@@ -187,6 +189,7 @@ def test_phi3_token_classification(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
 @pytest.mark.parametrize("variant", variants)

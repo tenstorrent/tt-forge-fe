@@ -2,6 +2,7 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 
 import forge
 from forge._C import DataFormat
@@ -39,7 +40,7 @@ def test_ssd300_vgg16(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
-    framework_model.to(torch.bfloat16)
+    framework_model = framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b
