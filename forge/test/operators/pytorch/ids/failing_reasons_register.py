@@ -13,8 +13,8 @@ class FailingReasonsRegister:
     # Format: (operator, failing_reason)
     xfail = [
         ("add", FailingReasons.DATA_MISMATCH),
-        ("clamp", FailingReasons.COMPILATION_FAILED),
         ("clamp", FailingReasons.DATA_MISMATCH),
+        ("clamp", FailingReasons.DTYPE_MISMATCH),
         ("clamp", FailingReasons.FORGE_RUNTIME),
         ("clamp", FailingReasons.SPECIAL_VALUES),
         ("concatenate", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
