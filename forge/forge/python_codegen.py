@@ -972,7 +972,7 @@ class ForgeWriter(PythonWriter):
             if markers_with_reasons is not None:
                 marker_str_list = []
                 for marker_with_reason in markers_with_reasons:
-                    marker_str = f'pytest.mark.{marker_with_reason["maker_name"]}'
+                    marker_str = f'pytest.mark.{marker_with_reason["marker_name"]}'
                     marker_reason = marker_with_reason["reason"]
                     if marker_reason is not None:
                         marker_str += f'(reason="{marker_reason}")'

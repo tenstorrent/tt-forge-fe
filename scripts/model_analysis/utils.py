@@ -528,13 +528,13 @@ def extract_models_ops_test_params(pytest_file_path: str):
                                             mark_reason = ast.literal_eval(mk_kw.value)
                                     marker_list.append(
                                         {
-                                            "maker_name": mark_name,
+                                            "marker_name": mark_name,
                                             "reason": mark_reason,
                                         }
                                     )
                                 elif isinstance(mark_node, ast.Attribute):
                                     mark_name = mark_node.attr
-                                    marker_list.append({"maker_name": mark_name, "reason": None})
+                                    marker_list.append({"marker_name": mark_name, "reason": None})
 
                     # The test tuple is the first argument to param()
                     param_tuple = param_call.args[0]
