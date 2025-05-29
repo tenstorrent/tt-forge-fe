@@ -1443,7 +1443,7 @@ def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
         value = detach_tensors(
-            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguos=True
+            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguous=True
         )[0]
     else:
         value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]

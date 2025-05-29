@@ -189,7 +189,7 @@ def get_forge_parameters_from_state_dict(state_dict: Dict[str, torch.Tensor]):
     return forge_parameters
 
 
-def detach_tensors(tensors: List[torch.Tensor], fix_non_contiguos: bool = False) -> List[torch.Tensor]:
+def detach_tensors(tensors: List[torch.Tensor], fix_non_contiguous: bool = False) -> List[torch.Tensor]:
     """
     Detach tensors, and set requires_grad again if needed. Optionally clone non-contiguous tensors.
     """
@@ -197,7 +197,7 @@ def detach_tensors(tensors: List[torch.Tensor], fix_non_contiguos: bool = False)
     for t, old_t in zip(detached_tensors, tensors):
         t.requires_grad = old_t.requires_grad or old_t.grad_fn is not None
 
-    if fix_non_contiguos:
+    if fix_non_contiguous:
         detached_tensors = [t if t.is_contiguous() else t.contiguous() for t in detached_tensors]
         assert all([t.is_contiguous() for t in detached_tensors])
 
