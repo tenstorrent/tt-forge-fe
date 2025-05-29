@@ -32,7 +32,6 @@ from test.models.pytorch.multimodal.vilt.model_utils.model import (
 from test.utils import download_model
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
 
 text1 = "How many cats are there?"
 text2 = "a bunch of cats laying on a [MASK]."
@@ -49,6 +48,7 @@ def generate_model_vilt_question_answering_hf_pytorch(variant):
     processor = download_model(ViltProcessor.from_pretrained, variant)
     model = download_model(ViltForQuestionAnswering.from_pretrained, variant, config=config)
     model.eval()
+    image = Image.open(requests.get(url, stream=True).raw)
 
     encoding = processor(image, text1, return_tensors="pt")
 
@@ -111,6 +111,7 @@ def generate_model_vilt_maskedlm_hf_pytorch(variant):
     processor = download_model(ViltProcessor.from_pretrained, variant)
     model = download_model(ViltForMaskedLM.from_pretrained, variant, config=config)
     model.eval()
+    image = Image.open(requests.get(url, stream=True).raw)
 
     # prepare inputs
     encoding = processor(image, text2, return_tensors="pt")
