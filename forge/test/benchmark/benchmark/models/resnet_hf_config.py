@@ -117,6 +117,9 @@ def test_resnet_hf_config(training, batch_size, data_format, input_size, channel
     mlir_config.set_custom_config(
         "override-conv2d-config=conv2d_81.dc.conv2d.2=shard_layout#height_sharded,conv2d_97.dc.conv2d.2=shard_layout#height_sharded"
     )
+    
+    # Enable Forge FE optimizations
+    compiler_cfg.enable_optimization_passes = True
 
     compiler_cfg.mlir_config = mlir_config
 
