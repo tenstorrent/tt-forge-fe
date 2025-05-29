@@ -1,4 +1,4 @@
-# xfail_embedding_DATA_MISMATCH ids
+# xfail_embedding_DTYPE_MISMATCH ids
 
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 161, 'embedding_dim': 1000, 'weight_dtype': torch.bfloat16}-(1, 4)-forge.RawUInt8-None
 embedding-FROM_ANOTHER_OP-{'num_embeddings': 161, 'embedding_dim': 3200, 'weight_dtype': torch.bfloat16}-(1, 4)-forge.RawUInt8-None
