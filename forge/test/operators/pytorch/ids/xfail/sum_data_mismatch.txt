@@ -31,7 +31,9 @@ sum-CONST_EVAL_PASS-{'dim': 1, 'keepdim': False}-(1, 10000, 1)-None-None
 sum-CONST_EVAL_PASS-{'dim': 2, 'keepdim': True}-(1, 1, 9920, 1)-None-None
 sum-CONST_EVAL_PASS-{'dim': 2, 'keepdim': False}-(1, 1, 9920, 1)-None-None
 sum-FROM_HOST-{'dim': 1, 'keepdim': True}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
 sum-FROM_HOST-{'dim': 2, 'keepdim': True}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
+sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
 sum-FROM_HOST-{'dim': 3, 'keepdim': False}-(1, 2, 3, 4)-forge.RawUInt32-HiFi4
 sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-forge.Int8-HiFi4
 sum-FROM_HOST-{'dim': 2, 'keepdim': False}-(1, 2, 3, 4)-forge.Int8-HiFi4
