@@ -14,6 +14,7 @@ from forge.forge_property_utils import Framework, Source, Task, ModelArch, recor
 variants = ["facebook/llama-7b"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip()
 @pytest.mark.parametrize("variant", variants)

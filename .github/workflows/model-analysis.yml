@@ -2,8 +2,28 @@ name: Model Analysis
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "pchandrasekaran/models_ops_workflow" ]
+    inputs:
+      test_group_cnt:
+        description: 'Test group count'
+        required: false
+        default: "8"
+        type: choice
+        options:
+          - "2"
+          - "4"
+          - "6"
+          - "8"
+          - "10"
+          - "12"
+      runs-on:
+        description: 'Runs on'
+        required: false
+        default: n150
+        type: choice
+        options:
+          - n150
+          - n300
+          - p150
 
 permissions:
   packages: write
@@ -15,8 +35,26 @@ jobs:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
 
-  build:
+  set-inputs:
+    runs-on: ubuntu-latest
     needs: docker-build
+    if: always()
+    outputs:
+      test_group_cnt: ${{ steps.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ steps.set-inputs.outputs.test_group_ids }}
+      runs-on: ${{ steps.set-inputs.outputs.runs-on }}
+    steps:
+      - name: Inputs Management
+        id: set-inputs
+        run: |
+          echo "test_group_cnt=${{ inputs.test_group_cnt }}" >> $GITHUB_OUTPUT
+          echo "test_group_ids=[$(seq -s ',' 1 ${{ inputs.test_group_cnt }})]" >> $GITHUB_OUTPUT
+          echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
+
+  build:
+    needs:
+      - docker-build
+      - set-inputs
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
@@ -26,15 +64,16 @@ jobs:
   extract-unique-ops-configuration:
     needs:
       - docker-build
+      - set-inputs
       - build
     uses: ./.github/workflows/test-sub.yml
     secrets: inherit
     with:
-      test_mark: 'not skip_model_analysis'
-      test_group_cnt: 2
-      test_group_ids: '[1,2]'
+      test_mark: 'not (skip_model_analysis or out_of_memory)'
+      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
+      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: ${{ needs.set-inputs.outputs.runs-on }}
       run_id: ${{ needs.build.outputs.run_id }}
       allow-fail: true
       model-analysis: true
@@ -43,10 +82,11 @@ jobs:
 
     needs:
       - docker-build
+      - set-inputs
       - build
       - extract-unique-ops-configuration
 
-    runs-on: ["in-service", "n150"]
+    runs-on: ["in-service", "${{ inputs.runs-on }}"]
 
     container:
       image: ${{ needs.docker-build.outputs.docker-image }}

@@ -33,6 +33,7 @@ variants = [
 ]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_gemma_2b(variant):
@@ -95,9 +96,12 @@ def test_gemma_2b(variant):
         ),
         pytest.param(
             "google/gemma-2-9b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
-            ),
+            marks=[
+                pytest.mark.skip(
+                    reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
+                ),
+                pytest.mark.out_of_memory,
+            ],
         ),
     ],
 )
