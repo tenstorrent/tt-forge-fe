@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# SPDX-FileCopyrightText: (c) 2025 Tenstorrent AI ULC
+#
+# SPDX-License-Identifier: Apache-2.0
 
 set -euxo pipefail
 

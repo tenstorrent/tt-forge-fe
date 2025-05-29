@@ -19,6 +19,7 @@ from test.models.models_utils import Gemma2DecoderLayer_patched_forward
 Gemma2DecoderLayer.forward = Gemma2DecoderLayer_patched_forward
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

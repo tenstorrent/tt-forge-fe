@@ -21,6 +21,7 @@ from test.utils import download_model
 variants = ["microsoft/phi-1"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.skip("Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)")
 @pytest.mark.parametrize("variant", variants)

@@ -567,14 +567,16 @@ def pytest_collection_modifyitems(config, items):
                 print(n)
 
 
-@pytest.hookimpl(tryfirst=True)
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_call(item):
     """
     Wrap the normal test call.  If ExitTest is raised, swallow it
     and return early—pytest will see the test as having passed.
     """
+    # Run the actual test function
     try:
-        item.runtest()
+        yield
     except ExitTest:
-        # Do nothing: exit this test without error, pytest treats it as PASSED
-        return
+        # Prevent pytest from treating this as an error
+        # the exception is swallowed, so the call phase ends cleanly
+        pass
