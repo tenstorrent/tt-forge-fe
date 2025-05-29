@@ -97,7 +97,6 @@ class FailingReasonsRegister:
         ("sub", FailingReasons.DATA_MISMATCH),
         ("sub", FailingReasons.DTYPE_MISMATCH),
         ("sum", FailingReasons.DATA_MISMATCH),
-        ("sum", FailingReasons.SPECIAL_VALUES),
         ("tanh", FailingReasons.DATA_MISMATCH),
         ("transpose", FailingReasons.COMPILATION_FAILED),
         ("transpose", FailingReasons.DATA_MISMATCH),
