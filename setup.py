@@ -35,21 +35,21 @@ class BuildCommand(build):
         # Call the parent class's run method
         super().run()
 
+        build_path = pathlib.Path(self.build_lib)
+        self.copy_file(build_path / "forge" / "lib" / "_ttnn.so", build_path / "ttnn" / "_ttnn.so")
+
 
 class BuildPyWithMetalPackages(build_py):
     def find_metal_packages(self) -> list[str]:
         # Find all python packages in ttnn - skip test packages.
         file_dir = os.path.dirname(os.path.abspath(__file__))
-        ttnn_dir = (
-            pathlib.Path(file_dir)
-            / "third_party"
-            / "tt-mlir"
-            / "third_party"
-            / "tt-metal"
-            / "src"
-            / "tt-metal"
-            / "ttnn"
+
+        tt_metal_root_dir = (
+            pathlib.Path(file_dir) / "third_party" / "tt-mlir" / "third_party" / "tt-metal" / "src" / "tt-metal"
         )
+        ttnn_dir = tt_metal_root_dir / "ttnn"
+
+        tools_dir = tt_metal_root_dir / "tools"
 
         ttnn_packages = find_packages(
             where=ttnn_dir,
@@ -57,7 +57,12 @@ class BuildPyWithMetalPackages(build_py):
         )
         print(f"Found ttnn packages: {ttnn_packages}")
 
-        return ttnn_packages
+        tools_packages = find_packages(
+            where=tools_dir,
+        )
+        print(f"Found metal tools packages: {tools_packages}")
+
+        return ttnn_packages + tools_packages
 
     def run(self):
         # Add ttnn packages to the list of packages to be built
@@ -150,7 +155,7 @@ setup(
     package_dir={
         "forge": "forge/forge",
         "ttnn": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/ttnn",
-        "tracy": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/tracy",
+        "tracy": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tools/tracy",
         "tt_lib": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/tt_lib",
         "tools": "../tt-forge/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/tools",
     },
