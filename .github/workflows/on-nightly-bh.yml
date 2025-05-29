@@ -1,4 +1,4 @@
-name: On nightly
+name: On nightly Blackhole
 
 on:
   workflow_dispatch:
@@ -11,16 +11,15 @@ on:
       test_group_cnt:
         description: 'Test group count'
         required: false
-        default: "2"
+        default: "1"
         type: choice
         options:
           - "1"
           - "2"
           - "3"
           - "4"
-          - "8"
       run_ops_sweeps:
-        description: 'Run models ops and sweeps tests'
+        description: 'Run models ops tests'
         required: false
         default: 'No'
         type: choice
@@ -52,7 +51,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=4
           default_run_ops_sweeps=Yes
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
@@ -79,7 +78,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       build: ${{ needs.set-inputs.outputs.rebuild }}
 
-  test_full_model_passing:
+  test_full_model_passing_p150:
     if: success() || failure()
     needs:
       - set-inputs
@@ -92,22 +91,10 @@ jobs:
       test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: '[{"runs-on": "p150"}]'
       run_id: ${{ needs.build.outputs.run_id }}
 
-  perf-benchmark:
-    if: success() || failure()
-    needs:
-      - docker-build
-      - build
-      - set-inputs
-    uses: ./.github/workflows/perf-benchmark-sub.yml
-    secrets: inherit
-    with:
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      run_id: ${{ needs.build.outputs.run_id }}
-
-  test_full_model_xfailing:
+  test_full_model_xfailing_p150:
     if: success() || failure()
     needs:
       - docker-build
@@ -121,9 +108,9 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ needs.build.outputs.run_id }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: '[{"runs-on": "p150"}]'
 
-  test_models_ops:
+  test_models_ops_p150:
     if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
     needs:
       - docker-build
@@ -137,66 +124,19 @@ jobs:
       test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
       run_id: ${{ needs.build.outputs.run_id }}
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
+      runs-on: '[{"runs-on": "p150"}]'
       allow-fail: true
 
-  test_sweeps:
-    if: ${{ needs.set-inputs.outputs.run_ops_sweeps }}
-    needs:
-      - docker-build
-      - set-inputs
-      - build
-    uses: ./.github/workflows/test-sub.yml
-    secrets: inherit
-    with:
-      test_mark: 'nightly_sweeps'
-      test_group_cnt: ${{ needs.set-inputs.outputs.test_group_cnt }}
-      test_group_ids: ${{ needs.set-inputs.outputs.test_group_ids_os }}
-      run_id: ${{ needs.build.outputs.run_id }}
-      docker-image: ${{ needs.docker-build.outputs.docker-image }}
-      runs-on: '[{"runs-on": "n150"}]'
-      allow-fail: true
-
-  fail-notify:
+  check-all-green:
     if: always()
     needs:
       - docker-build
       - build
-      - test_full_model_passing
-      - perf-benchmark
-      - test_full_model_xfailing
-      - test_models_ops
-      - test_sweeps
+      - test_full_model_passing_p150
+      - test_full_model_xfailing_p150
+      - test_models_ops_p150
     runs-on: Ubuntu-latest
-    outputs:
-      is-main: ${{ steps.branch-check.outputs.IS_MAIN }}
-      failed: ${{ steps.check.outputs.failure }}
     steps:
-      - name: Check if branch is main
-        id: branch-check
-        run: echo "IS_MAIN=$(if [ '${{ github.ref }}' == 'refs/heads/main' ]; then echo true; else echo false; fi)" >> $GITHUB_OUTPUT
-      - name: Check if the needed jobs succeeded or failed
-        id: check
-        uses: re-actors/alls-green@v1.2.2
+      - uses: re-actors/alls-green@v1.2.2
         with:
           jobs: ${{ toJSON(needs) }}
-          allowed-failures: test_models_ops, test_sweeps
-          allowed-skips: test_models_ops, test_sweeps
-
-  fail-send-msg:
-    if: always()
-    needs:
-      - fail-notify
-    runs-on: Ubuntu-latest
-    steps:
-      - name: Send Fail Notification
-        if: ${{ needs.fail-notify.outputs.failed == 'true' && needs.fail-notify.outputs.is-main == 'true' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Bad bad nightly: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}>",
-              "channel": "C08HFLL9L56"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NIGHTLY_FAIL }}

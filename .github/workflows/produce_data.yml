@@ -7,6 +7,7 @@ on:
       - "On PR"
       - "On push"
       - "On nightly"
+      - "On nightly Blackhole"
       - "Test"
       - "Performance benchmark"
     types:
