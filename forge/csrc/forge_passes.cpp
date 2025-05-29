@@ -86,19 +86,19 @@ run_post_initial_graph_passes(
     passes::fuse_pad_conv2d(graph);
     passes::explicate_unsqueeze(graph);
     passes::fuse_conv2d_bias(graph);
-
+    passes::bypass_nop_tms(graph);
+    
+    
     auto inserted_node_id_mapping = decompose_tt_forge_graph(graph, "get_f_forge_decompose", compiler_cfg);
     auto chip_id_assignments = passes::fracture(graph, fracture_groups);
     passes::apply_user_data_format_override(graph, compiler_cfg_object);
+    recalculate_shapes(graph);
     return std::make_tuple(inserted_node_id_mapping, chip_id_assignments);
 }
 
 void run_optimization_graph_passes(graphlib::Graph *graph)
 {
     passes::print_graph(graph, "PRE OPTIMIZE");
-    // passes::lower_concat_to_runtime_transform(graph);
-
-    passes::bypass_nop_tms(graph);
 
     // Erase all inverse ops possible.
     // Then, if no inverse ops are erased, then attempt to insert inverse ops on the output.
@@ -109,54 +109,54 @@ void run_optimization_graph_passes(graphlib::Graph *graph)
     // Commuting to input may have introduced clones, so attempt to erase inverse ops again
     // ...
 
-    // bool attempt_update = true;
-    // while (attempt_update)
-    // {
-    //     passes::hoist_unsqueeze_squeeze_to_reshape(graph);
+    bool attempt_update = true;
+    while (attempt_update)
+    {
+        passes::hoist_unsqueeze_squeeze_to_reshape(graph);
 
-    //     bool skip_erase_redundant = false;
-    //     attempt_update = passes::erase_inverse_ops(graph);
-    //     if (not attempt_update)
-    //     {
-    //         attempt_update = passes::insert_inverse_on_outputs(graph);
-    //         if (attempt_update)
-    //             skip_erase_redundant = true;
-    //     }
-    //     if (not attempt_update)
-    //         attempt_update = passes::insert_inverse_on_inputs(graph);
-    //     if (not attempt_update)
-    //     {
-    //         attempt_update = passes::insert_inverse_on_downstream_tms(graph);
-    //         if (attempt_update)
-    //             skip_erase_redundant = true;
-    //     }
-    //     if (not attempt_update)
-    //         attempt_update = passes::replace_incommutable_patterns(graph);
+        bool skip_erase_redundant = false;
+        attempt_update = passes::erase_inverse_ops(graph);
+        if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_on_outputs(graph);
+            if (attempt_update)
+                skip_erase_redundant = true;
+        }
+        if (not attempt_update)
+            attempt_update = passes::insert_inverse_on_inputs(graph);
+        if (not attempt_update)
+        {
+            attempt_update = passes::insert_inverse_on_downstream_tms(graph);
+            if (attempt_update)
+                skip_erase_redundant = true;
+        }
+        if (not attempt_update)
+            attempt_update = passes::replace_incommutable_patterns(graph);
 
-    //     // These passes erase tms for non-inverse reasons. Usually we are fine with this.
-    //     // However, we might insert tms on top or under of other tms for the purpose of erasing other inverse ops.
-    //     // Skip in that case
-    //     if (not skip_erase_redundant)
-    //     {
-    //         if (not attempt_update)
-    //             attempt_update = passes::erase_consecutive_reshape(graph, true);
+        // These passes erase tms for non-inverse reasons. Usually we are fine with this.
+        // However, we might insert tms on top or under of other tms for the purpose of erasing other inverse ops.
+        // Skip in that case
+        if (not skip_erase_redundant)
+        {
+            if (not attempt_update)
+                attempt_update = passes::erase_consecutive_reshape(graph, true);
 
-    //         // TODO: Figure out if this is needed. (Issue #152)
-    //         // if (not attempt_update)
-    //         //     attempt_update = passes::fuse_tm_sequences(graph);
+            // TODO: Figure out if this is needed. (Issue #152)
+            // if (not attempt_update)
+            //     attempt_update = passes::fuse_tm_sequences(graph);
 
-    //         passes::bypass_nop_tms(graph);
-    //     }
-    // }
-    // passes::move_tm_through_requantize(graph);
-    // recalculate_shapes(graph);
+            passes::bypass_nop_tms(graph);
+        }
+    }
+    passes::move_tm_through_requantize(graph);
+    recalculate_shapes(graph);
 
-    // passes::hoist_transforms_to_inputs(graph);
-    // passes::erase_consecutive_reshape(graph, true);
+    passes::hoist_transforms_to_inputs(graph);
+    passes::erase_consecutive_reshape(graph, true);
 
-    // passes::fuse_per_channel_ops(graph);
-    // if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
-    //     passes::constant_folding(graph);
+    passes::fuse_per_channel_ops(graph);
+    if (not env_as<bool>("FORGE_DISABLE_CONSTANT_FOLDING"))
+        passes::constant_folding(graph);
 
     recalculate_shapes(graph);
 
