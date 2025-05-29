@@ -1,4 +1,4 @@
-# xfail_minimum_DATA_MISMATCH ids
+# xfail_minimum_DTYPE_MISMATCH ids
 
 minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.int8-HiFi4
 minimum-FROM_HOST-None-(1, 2, 3, 4)-torch.int32-HiFi4
