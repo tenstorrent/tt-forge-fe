@@ -11,16 +11,15 @@ on:
       test_group_cnt:
         description: 'Test group count'
         required: false
-        default: "2"
+        default: "1"
         type: choice
         options:
           - "1"
           - "2"
           - "3"
           - "4"
-          - "8"
       run_ops_sweeps:
-        description: 'Run models ops and sweeps tests'
+        description: 'Run models ops tests'
         required: false
         default: 'No'
         type: choice
@@ -52,7 +51,7 @@ jobs:
       - name: Set Inputs
         id: set-inputs
         run: |
-          default_test_group_cnt=10
+          default_test_group_cnt=4
           default_run_ops_sweeps=Yes
 
           ros_res=$(if [ -z "${{ inputs.run_ops_sweeps }}" ]; then echo $default_run_ops_sweeps; else echo ${{ inputs.run_ops_sweeps }}; fi)
