@@ -29,7 +29,7 @@ variants = ["yolov10x", "yolov10n"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_yolov10():
+def test_yolov10(variant):
 
     if variant in ["yolov10x"]:
         group = ModelGroup.RED
