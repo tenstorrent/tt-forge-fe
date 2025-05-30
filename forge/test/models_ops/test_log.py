@@ -39,23 +39,8 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Log0,
-        [((1, 6, 4096), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Log0,
         [((1, 6, 2048), torch.float32)],
         {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Log0,
-        [((1, 6, 5120), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99},
-    ),
-    (
-        Log0,
-        [((1, 6, 3072), torch.float32)],
-        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99},
     ),
 ]
 
@@ -105,9 +90,4 @@ def test_module(forge_module_and_shapes_dtypes):
 
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

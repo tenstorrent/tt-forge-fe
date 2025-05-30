@@ -43,19 +43,12 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "onnx_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pd_blip_text_salesforce_blip_image_captioning_base_text_enc_padlenlp",
-                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
-                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
-                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
-                "pd_ernie_1_0_seq_cls_padlenlp",
-                "pd_roberta_rbt4_ch_seq_cls_padlenlp",
-                "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",
-                "pt_vilt_dandelin_vilt_b32_mlm_mlm_hf",
-                "pt_albert_textattack_albert_base_v2_imdb_seq_cls_hf",
-                "pt_bert_textattack_bert_base_uncased_sst_2_seq_cls_hf",
                 "pt_bert_emrecan_bert_base_turkish_cased_mean_nli_stsb_tr_sentence_embed_gen_hf",
-                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                "pt_squeezebert_squeezebert_squeezebert_mnli_seq_cls_hf",
+                "pt_vilt_dandelin_vilt_b32_mlm_mlm_hf",
+                "pd_bert_bert_base_uncased_seq_cls_padlenlp",
+                "pt_vilt_dandelin_vilt_b32_finetuned_vqa_qa_hf",
+                "pd_bert_bert_base_japanese_seq_cls_padlenlp",
+                "pd_bert_chinese_roberta_base_seq_cls_padlenlp",
             ],
             "pcc": 0.99,
         },
@@ -66,16 +59,16 @@ forge_modules_and_shapes_dtypes_list = [
         {"model_names": ["onnx_minilm_sentence_transformers_all_minilm_l6_v2_seq_cls_hf"], "pcc": 0.99},
     ),
     (Tanh0, [((1, 32, 6144), torch.float32)], {"model_names": ["pt_bloom_bigscience_bloom_1b1_clm_hf"], "pcc": 0.99}),
-    (Tanh0, [((1, 8, 207, 207), torch.float32)], {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf"], "pcc": 0.99}),
     (
         Tanh0,
-        [((1, 207, 256000), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_2_2b_it_qa_hf", "pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
-    ),
-    (
-        Tanh0,
-        [((1, 16, 207, 207), torch.float32)],
-        {"model_names": ["pt_gemma_google_gemma_2_9b_it_qa_hf"], "pcc": 0.99},
+        [((1, 48), torch.float32)],
+        {
+            "model_names": [
+                "pd_paddleocr_v0_rec_ch_scene_text_recognition_paddlemodels",
+                "pd_paddleocr_v0_rec_en_scene_text_recognition_paddlemodels",
+            ],
+            "pcc": 0.99,
+        },
     ),
 ]
 
@@ -125,9 +118,4 @@ def test_module(forge_module_and_shapes_dtypes):
 
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
