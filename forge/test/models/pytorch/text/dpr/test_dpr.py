@@ -124,19 +124,16 @@ def test_dpr_question_encoder_pytorch(variant):
     if variant == "facebook/dpr-question_encoder-multiset-base":
         verify_values = False
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(verify_values=verify_values),
     )
 
-    # Inference
-    embeddings = compiled_model(*inputs)
-
     # Results
-    print("embeddings", embeddings)
+    print("embeddings", co_out)
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
@@ -179,20 +176,17 @@ def test_dpr_reader_pytorch(variant):
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
     )
 
-    # Inference
-    outputs = compiled_model(*inputs)
-
     # Post processing
-    start_logits = outputs[0]
-    end_logits = outputs[1]
-    relevance_logits = outputs[2]
+    start_logits = co_out[0]
+    end_logits = co_out[1]
+    relevance_logits = co_out[2]
 
     start_indices = torch.argmax(start_logits, dim=1)
     end_indices = torch.argmax(end_logits, dim=1)

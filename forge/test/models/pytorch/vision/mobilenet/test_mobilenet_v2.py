@@ -363,5 +363,8 @@ def test_mobilenetv2_torchvision(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])

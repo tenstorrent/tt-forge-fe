@@ -74,7 +74,10 @@ def test_alexnet_torchhub():
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly

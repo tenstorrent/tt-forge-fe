@@ -90,8 +90,8 @@ def test_densenet_121_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    _, co_out = verify(
+    # Model Verification and Inference
+    fw_out, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
@@ -101,6 +101,8 @@ def test_densenet_121_pytorch(variant):
     # post processing
     if variant == "densenet121_hf_xray":
         outputs = op_norm(co_out[0], model.op_threshs)
+    else:
+        print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
@@ -140,8 +142,11 @@ def test_densenet_161_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post Processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
@@ -182,8 +187,11 @@ def test_densenet_169_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post Processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
@@ -220,7 +228,7 @@ def test_densenet_201_pytorch(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
+    # Model Verification and Inference
     fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results

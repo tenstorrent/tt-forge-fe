@@ -16,6 +16,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v3_ssd_utils import (
     load_input,
     load_model,
@@ -60,5 +61,8 @@ def test_mobilenetv3_ssd(variant):
         compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    print_cls_results(fw_out[0], co_out[0])
