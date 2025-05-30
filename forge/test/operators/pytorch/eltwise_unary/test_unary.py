@@ -70,6 +70,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import TestCollectionTorch
 from test.operators.utils import ValueRanges
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from .models import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -261,6 +262,12 @@ class TestCollectionData:
         ],
     )
 
+    bitwise = TestCollection(
+        operators=[
+            "bitwise_not",
+        ],
+    )
+
     # torch.float16 is not supported well - python crashes
     common_to_skip = TestCollection(
         dev_data_formats=[torch.float16],
@@ -272,74 +279,6 @@ class TestCollectionData:
 class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
-
-    sqrt_runtime_error_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/sqrt_operator/sqrt_runtime_error_failed.txt"
-    )
-
-    exp_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/exp_operator/exp_all_close_value_checker.txt"
-    )
-
-    reciprocal_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/reciprocal_operator/reciprocal_all_close_value_checker.txt"
-    )
-
-    rsqrt_runtime_error_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/rsqrt_operator/rsqrt_runtime_error_failed.txt"
-    )
-
-    clamp_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/clamp_operator/clamp_all_close_value_checker.txt"
-    )
-
-    log_runtime_error_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/log_operator/log_runtime_error_failed.txt"
-    )
-
-    log1p_runtime_error_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/log1p_operator/log1p_runtime_error_failed.txt"
-    )
-
-    log1p_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/log1p_operator/log1p_all_close_value_checker.txt"
-    )
-
-    cumsum_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/cumsum_operator/cumsum_all_close_value_checker.txt"
-    )
-
-    isnan_dtype_mismatch_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/isnan_operator/isnan_dtype_mismatch_failed.txt"
-    )
-
-    tanh_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/tanh_operator/tanh_all_close_value_checker.txt"
-    )
-
-    pow_all_close_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_all_close_value_checker.txt"
-    )
-
-    pow_assertion_error_exponent_value = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_assertion_error_exponent_value.txt"
-    )
-
-    pow_assertion_error_pcc_nan = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_assertion_error_pcc_nan.txt"
-    )
-
-    pow_automatic_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_automatic_value_checker.txt"
-    )
-
-    pow_runtime_error_failed = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_runtime_error_failed.txt"
-    )
-
-    pow_value_error_dtype_mismatch = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/failed_tests_op_ids/pow_operator/pow_value_error_dtype_mismatch.txt"
-    )
 
 
 TestParamsData.test_plan_implemented = TestPlan(
@@ -396,6 +335,9 @@ TestParamsData.test_plan_implemented = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(
+            operators=TestCollectionData.implemented.operators,
+        ),
         # ValueError: Dtype mismatch: framework_model.dtype=torch.float32, compiled_model.dtype=torch.int32
         TestCollection(
             operators=["sqrt", "exp", "reciprocal", "rsqrt", "log", "log1p", "sigmoid", "cos", "sin", "tanh"],
@@ -409,30 +351,30 @@ TestParamsData.test_plan_implemented = TestPlan(
             math_fidelities=TestCollectionCommon.single.math_fidelities,
             failing_reason=FailingReasons.DTYPE_MISMATCH,
         ),
-        # *********** sqrt failing rules ***********
-        # RuntimeError: ... !has_special_values(a)
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sqrt_runtime_error_failed,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # *********** exp failing rules ***********
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.exp_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # *********** reciprocal failing rules ***********
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.reciprocal_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # *********** rsqrt failing rules ***********
-        # RuntimeError: ... !has_special_values(a)
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.rsqrt_runtime_error_failed,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
+        # # *********** sqrt failing rules ***********
+        # # RuntimeError: ... !has_special_values(a)
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.sqrt_runtime_error_failed,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # *********** exp failing rules ***********
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.exp_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # *********** reciprocal failing rules ***********
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.reciprocal_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # *********** rsqrt failing rules ***********
+        # # RuntimeError: ... !has_special_values(a)
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.rsqrt_runtime_error_failed,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
         # *********** clamp failing rules ***********
         # RuntimeError: value cannot be converted to type at::BFloat16 without overflow
         TestCollection(
@@ -480,28 +422,28 @@ TestParamsData.test_plan_implemented = TestPlan(
             math_fidelities=TestCollectionCommon.single.math_fidelities,
             failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.clamp_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # *********** log failing rules ***********
-        # RuntimeError: ... !has_special_values(a)
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log_runtime_error_failed,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # ************ log1p failing rules ***********
-        # RuntimeError: ... !has_special_values(a)
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log1p_runtime_error_failed,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log1p_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.clamp_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # *********** log failing rules ***********
+        # # RuntimeError: ... !has_special_values(a)
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log_runtime_error_failed,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # ************ log1p failing rules ***********
+        # # RuntimeError: ... !has_special_values(a)
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log1p_runtime_error_failed,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.log1p_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
         # ************ cumsum failing rules ***********
         # RuntimeError: ... !has_special_values(a)
         TestCollection(
@@ -511,11 +453,11 @@ TestParamsData.test_plan_implemented = TestPlan(
             kwargs=[{"dim": 2}],
             failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
         ),
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.cumsum_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.cumsum_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
         # ************ square failing rules ***********
         TestCollection(
             operators=["square"],
@@ -529,43 +471,43 @@ TestParamsData.test_plan_implemented = TestPlan(
             math_fidelities=TestCollectionCommon.single.math_fidelities,
             failing_reason=FailingReasons.ATTRIBUTE_ERROR,
         ),
-        # ************* isnan failing rules ***********
-        # ValueError: Dtype mismatch: framework_model.dtype=torch.uint8, compiled_model.dtype=torch.float32
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.isnan_dtype_mismatch_failed,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
-        # ************** tanh failing rules ***********
-        # AllClose ValueChecker
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tanh_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # ************** pow failing rules ***********
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_all_close_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_assertion_error_exponent_value,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_assertion_error_pcc_nan,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_automatic_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_runtime_error_failed,
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_value_error_dtype_mismatch,
-            failing_reason=FailingReasons.DTYPE_MISMATCH,
-        ),
+        # # ************* isnan failing rules ***********
+        # # ValueError: Dtype mismatch: framework_model.dtype=torch.uint8, compiled_model.dtype=torch.float32
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.isnan_dtype_mismatch_failed,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
+        # # ************** tanh failing rules ***********
+        # # AllClose ValueChecker
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.tanh_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # ************** pow failing rules ***********
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_all_close_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_assertion_error_exponent_value,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_assertion_error_pcc_nan,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_automatic_value_checker,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_runtime_error_failed,
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
+        # TestCollection(
+        #     criteria=lambda test_vector: test_vector.get_id() in TestIdsData.pow_value_error_dtype_mismatch,
+        #     failing_reason=FailingReasons.DTYPE_MISMATCH,
+        # ),
         TestCollectionData.common_to_skip,
     ],
 )
@@ -608,6 +550,9 @@ TestParamsData.test_plan_implemented_float = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(
+            operators=TestCollectionData.implemented_float.operators,
+        ),
         TestCollectionData.common_to_skip,
     ],
 )
@@ -632,6 +577,12 @@ TestParamsData.test_plan_not_implemented = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             failing_reason=FailingReasons.NOT_IMPLEMENTED,
+        ),
+        TestCollection(
+            operators=TestCollectionData.bitwise.operators,
+            input_sources=TestCollectionCommon.single.input_sources,
+            input_shapes=TestCollectionCommon.single.input_shapes,
+            failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
         TestCollectionData.common_to_skip,
     ],
