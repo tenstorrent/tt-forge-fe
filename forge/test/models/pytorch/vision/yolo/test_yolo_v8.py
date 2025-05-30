@@ -33,6 +33,7 @@ def test_yolov8(variant):
 
     if variant in ["yolov8x"]:
         group = ModelGroup.RED
+        priority = ModelPriority.P2
     else:
         group = ModelGroup.GENERALITY
 
@@ -44,7 +45,7 @@ def test_yolov8(variant):
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
-        priority=ModelPriority.P2,
+        priority=priority,
     )
 
     # Load  model and input
