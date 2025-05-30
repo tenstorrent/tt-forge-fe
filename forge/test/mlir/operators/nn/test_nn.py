@@ -385,7 +385,6 @@ def test_log_softmax(input_shape, dim):
 @pytest.mark.push
 def test_embedding(vocab_size, token_num, embedding_dim):
     compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
         def __init__(self):

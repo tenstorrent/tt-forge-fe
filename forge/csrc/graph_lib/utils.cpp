@@ -663,6 +663,22 @@ std::vector<Node *> get_nodes_with_data_outdegree_zero(Graph *graph)
     return outdegree_zero_nodes;
 }
 
+DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor)
+{
+    py::module_ tensor_module = py::module_::import("forge.tensor");
+    py::object tensor_dtype = py_tensor.attr("dtype");
+
+    try
+    {
+        return py::cast<DataFormat>(tensor_module.attr("pytorch_dtype_to_forge_dataformat")(tensor_dtype));
+    }
+    catch (const py::error_already_set &e)
+    {
+        throw std::runtime_error(
+            "Encountered Python error while dtype to DataFormat mapping: " + std::string(e.what()));
+    }
+}
+
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 std::pair<Edge, Edge> insert_node_on_edge(
     Graph *graph,

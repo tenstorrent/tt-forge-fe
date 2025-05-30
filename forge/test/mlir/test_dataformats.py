@@ -190,7 +190,6 @@ def test_conv2d_and_matmul_bfloat16_pytorch(shape, padding):
             k = nn.functional.pad(x, self.padding, mode="constant", value=0)
             y = self.conv(k)
             return y @ x
-            # return self.conv(x)
 
     pad_top, pad_bottom, pad_left, pad_right = padding
     if pad_top != pad_bottom or pad_left != pad_right:
@@ -203,6 +202,32 @@ def test_conv2d_and_matmul_bfloat16_pytorch(shape, padding):
 
     framework_model = PaddingAndConv2d(padding=padding).to(torch.bfloat16)
     compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize("vocab_size", [32000])
+@pytest.mark.parametrize("token_num", [12])
+@pytest.mark.parametrize("embedding_dim", [3200])
+@pytest.mark.push
+def test_embedding(vocab_size, token_num, embedding_dim):
+    compiler_cfg = forge.config.CompilerConfig()
+    compiler_cfg.default_df_override = DataFormat.Float16_b
+
+    class Embedding(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embedding = nn.Embedding(vocab_size, embedding_dim)
+
+        def forward(self, x):
+            return self.embedding(x)
+
+    inputs = [
+        torch.randint(0, vocab_size, (1, token_num)),
+    ]
+
+    framework_model = Embedding().to(torch.bfloat16)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     verify(inputs, framework_model, compiled_model)
