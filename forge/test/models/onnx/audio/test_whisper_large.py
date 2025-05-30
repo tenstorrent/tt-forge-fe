@@ -29,7 +29,7 @@ variants = ["openai/whisper-large-v3"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_whisper_large_v3_onnx(variant, tmp_path):
 

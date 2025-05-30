@@ -96,7 +96,7 @@ def test_llama_prefil_on_device_decode_on_cpu(model_path):
 
     # This is the part of the model needed for prefill; model without the last Linear layer (lm_head)
     framework_model = LlamaPrefillModel(model)
-    compiled_model = forge.compile(framework_model, sample_inputs=inputs, model_name=module_name)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Prefill Phase - Process the initial prompt on device
     # Validate prefill outputs between TT and CPU
