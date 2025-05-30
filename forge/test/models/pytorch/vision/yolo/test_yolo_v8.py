@@ -24,17 +24,27 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
     load_yolo_model_and_image,
 )
 
+variants = ["yolov8x", "yolov8n"]
+
 
 @pytest.mark.nightly
-def test_yolov8():
+@pytest.mark.parametrize("variant", variant)
+def test_yolov8(variant):
+
+    if variant in ["yolov8x"]:
+        group = ModelGroup.RED
+    else:
+        group = ModelGroup.GENERALITY
+
     # Record Forge Property
     module_name = record_model_properties(
         framework=Framework.PYTORCH,
         model=ModelArch.YOLOV8,
-        variant="default",
+        variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
+        priority=ModelPriority.P2,
     )
 
     # Load  model and input
