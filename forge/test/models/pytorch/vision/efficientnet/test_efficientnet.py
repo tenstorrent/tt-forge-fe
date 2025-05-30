@@ -13,9 +13,21 @@ from timm.data.transforms_factory import create_transform
 from torch.hub import load_state_dict_from_url
 from torchvision.models import (
     EfficientNet_B0_Weights,
+    EfficientNet_B1_Weights,
+    EfficientNet_B2_Weights,
+    EfficientNet_B3_Weights,
     EfficientNet_B4_Weights,
+    EfficientNet_B5_Weights,
+    EfficientNet_B6_Weights,
+    EfficientNet_B7_Weights,
     efficientnet_b0,
+    efficientnet_b1,
+    efficientnet_b2,
+    efficientnet_b3,
     efficientnet_b4,
+    efficientnet_b5,
+    efficientnet_b6,
+    efficientnet_b7,
 )
 from torchvision.models._api import WeightsEnum
 
@@ -48,12 +60,16 @@ variants = [
         "efficientnet_b4",
         id="efficientnet_b4",
     ),
-    # pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
-    # pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
-    # pytest.param("hf_hub:timm/efficientnet_b5.in12k_ft_in1k", id="hf_hub_timm_efficientnet_b5_in12k_ft_in1k"),
-    # pytest.param("hf_hub:timm/tf_efficientnet_b0.aa_in1k", id="hf_hub_timm_tf_efficientnet_b0_aa_in1k"),
-    # pytest.param("hf_hub:timm/efficientnetv2_rw_s.ra2_in1k", id="hf_hub_timm_efficientnetv2_rw_s_ra2_in1k"),
-    # pytest.param("hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k"),
+    pytest.param("hf_hub:timm/efficientnet_b0.ra_in1k", id="hf_hub_timm_efficientnet_b0_ra_in1k"),
+    pytest.param("hf_hub:timm/efficientnet_b4.ra2_in1k", id="hf_hub_timm_efficientnet_b4_ra2_in1k"),
+    pytest.param("hf_hub:timm/efficientnet_b5.in12k_ft_in1k", id="hf_hub_timm_efficientnet_b5_in12k_ft_in1k"),
+    pytest.param(
+        "hf_hub:timm/tf_efficientnet_b0.aa_in1k", id="hf_hub_timm_tf_efficientnet_b0_aa_in1k", marks=[pytest.mark.xfail]
+    ),
+    pytest.param("hf_hub:timm/efficientnetv2_rw_s.ra2_in1k", id="hf_hub_timm_efficientnetv2_rw_s_ra2_in1k"),
+    pytest.param(
+        "hf_hub:timm/tf_efficientnetv2_s.in21k", id="hf_hub_timm_tf_efficientnetv2_s_in21k", marks=[pytest.mark.xfail]
+    ),
 ]
 
 
@@ -128,14 +144,24 @@ WeightsEnum.get_state_dict = get_state_dict
 
 variants = [
     "efficientnet_b0",
-    # models.efficientnet_b1,
-    # models.efficientnet_b2,
-    # models.efficientnet_b3,
+    "efficientnet_b1",
+    "efficientnet_b2",
+    "efficientnet_b3",
     "efficientnet_b4",
-    # models.efficientnet_b5,
-    # models.efficientnet_b6,
-    # models.efficientnet_b7,
+    "efficientnet_b5",
+    "efficientnet_b6",
+    "efficientnet_b7",
 ]
+variant_model_map = {
+    "efficientnet_b0": (efficientnet_b0, EfficientNet_B0_Weights.IMAGENET1K_V1),
+    "efficientnet_b1": (efficientnet_b1, EfficientNet_B1_Weights.IMAGENET1K_V1),
+    "efficientnet_b2": (efficientnet_b2, EfficientNet_B2_Weights.IMAGENET1K_V1),
+    "efficientnet_b3": (efficientnet_b3, EfficientNet_B3_Weights.IMAGENET1K_V1),
+    "efficientnet_b4": (efficientnet_b4, EfficientNet_B4_Weights.IMAGENET1K_V1),
+    "efficientnet_b5": (efficientnet_b5, EfficientNet_B5_Weights.IMAGENET1K_V1),
+    "efficientnet_b6": (efficientnet_b6, EfficientNet_B6_Weights.IMAGENET1K_V1),
+    "efficientnet_b7": (efficientnet_b7, EfficientNet_B7_Weights.IMAGENET1K_V1),
+}
 
 
 @pytest.mark.nightly
@@ -152,10 +178,8 @@ def test_efficientnet_torchvision(variant):
     )
 
     # Load model
-    if variant == "efficientnet_b0":
-        framework_model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)
-    elif variant == "efficientnet_b4":
-        framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
+    model_fn, weights = variant_model_map[variant]
+    framework_model = model_fn(weights)
 
     framework_model.eval()
     framework_model = framework_model.to(torch.bfloat16)
