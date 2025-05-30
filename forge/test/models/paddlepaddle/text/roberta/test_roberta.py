@@ -21,7 +21,6 @@ variants = ["hfl/rbt4"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
 def test_roberta_sequence_classification(variant):
     # Record Forge properties
