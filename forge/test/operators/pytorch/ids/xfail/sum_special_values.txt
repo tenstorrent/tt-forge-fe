@@ -1,0 +1,5 @@
+# xfail_sum_SPECIAL_VALUES ids
+
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-torch.int8-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-torch.int32-HiFi4
+sum-FROM_HOST-{'dim': 1, 'keepdim': False}-(1, 2, 3, 4)-torch.int64-HiFi4
