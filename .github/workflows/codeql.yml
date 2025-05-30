@@ -56,6 +56,9 @@ jobs:
 
   docker-build:
     uses: ./.github/workflows/build-image.yml
+    permissions:
+      checks: write
+      packages: write
     secrets: inherit
 
   analyze-cpp:
