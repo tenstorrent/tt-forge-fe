@@ -28,7 +28,7 @@ variants = ["yolov8x", "yolov8n"]
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variant)
+@pytest.mark.parametrize("variant", variants)
 def test_yolov8(variant):
 
     if variant in ["yolov8x"]:
