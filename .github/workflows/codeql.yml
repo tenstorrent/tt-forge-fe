@@ -94,7 +94,12 @@ jobs:
           clean: true
           fetch-depth: 0 # Fetch all history and tags
 
-      # Initializes the CodeQL tools for scanning.
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
+
+        # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
