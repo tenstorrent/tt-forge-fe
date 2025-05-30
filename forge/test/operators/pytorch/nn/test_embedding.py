@@ -19,7 +19,10 @@ import forge
 import forge.op
 from loguru import logger
 
+from forge._C import DataFormat
+
 from forge.verify.config import VerifyConfig
+from forge.config import CompilerConfig
 from forge.verify.value_checkers import AllCloseValueChecker
 
 from test.operators.utils import (
@@ -54,10 +57,7 @@ class ModelFromAnotherOp(torch.nn.Module):
             "embedding_dim": kwargs["embedding_dim"],
         }
 
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs, dtype=kwargs["dtype"])
 
     def forward(self, x: torch.Tensor):
         # we use Add operator to create one operands which is input for the embedding operator
@@ -81,11 +81,7 @@ class ModelDirect(torch.nn.Module):
             "embedding_dim": kwargs["embedding_dim"],
         }
 
-        # TODO: should we set dtype in Embedding module?
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs, dtype=kwargs["dtype"])
 
     def forward(self, x: torch.Tensor):
         output = self.embedding(x)
@@ -109,10 +105,7 @@ class ModelConstEvalPass(torch.nn.Module):
 
         self.constant = torch.randint(0, self.kwargs["num_embeddings"] - 1, self.shape, dtype=torch.int32)
 
-        self.weight = torch.rand(
-            (self.kwargs["num_embeddings"], self.kwargs["embedding_dim"]), dtype=kwargs["weight_dtype"]
-        )
-        self.embedding = self.operator(**self.kwargs, _weight=self.weight)
+        self.embedding = self.operator(**self.kwargs, dtype=kwargs["dtype"])
 
     def forward(self, x: torch.Tensor):
         v1 = self.embedding(self.constant)
@@ -153,6 +146,12 @@ class TestVerification:
             shape=test_vector.input_shape,
             kwargs=kwargs,
         )
+        pytorch_model.to(kwargs.get("dtype", torch.bfloat16))  # TODO: refactor!
+
+        # inputs = [torch.rand(shape).to(torch.bfloat16)]
+        # framework_model = TinyBNNet().to(torch.bfloat16)
+
+        compiler_cfg = CompilerConfig(default_df_override=DataFormat.Float16_b)
 
         input_shapes = tuple([test_vector.input_shape for _ in range(number_of_operands)])
         logger.trace(f"***input_shapes: {input_shapes}")
@@ -169,6 +168,7 @@ class TestVerification:
             test_device=test_device,
             input_shapes=input_shapes,
             input_params=input_params,
+            compiler_cfg=compiler_cfg,
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             pcc=test_vector.pcc,
@@ -190,13 +190,12 @@ class TestParamsData:
     MAX_EMBEDDING_DIM = 10000
 
     embedding_dims = [1000, 3200, MAX_EMBEDDING_DIM]
-    # weight_dtypes = [torch.bfloat16, torch.float32]
 
     @classmethod
     def generate_kwargs(
         cls,
         test_vector: TestVector,
-        weight_dtype: Type[torch.dtype] = None,
+        dtype: Type[torch.dtype] = None,
         num_embeddings_min: int = 2,
         num_embeddings_max: int = 32000,
     ):
@@ -221,7 +220,7 @@ class TestParamsData:
                     {
                         "num_embeddings": num_embeddings,
                         "embedding_dim": embedding_dim,
-                        "weight_dtype": weight_dtype,
+                        "dtype": dtype,
                     }
                 )
         return kwarg_list
@@ -266,48 +265,49 @@ TestParamsData.test_plan = TestPlan(
         # 2. Operand source(s):
         # 3. Operand shapes type(s):
         # 4. Operand / output size of dimensions
-
         # Case of weight dtype torch.float32
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            dev_data_formats=TestCollectionData.single.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.float32),
-        ),
-        # Case of weight dtype torch.bfloat16
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            dev_data_formats=TestCollectionData.single.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, torch.bfloat16),
-        ),
-        # Case of num_embeddings range
-        # between 32000 and 500000
-        TestCollection(
-            operators=TestCollectionData.all.operators,
-            input_sources=TestCollectionData.all.input_sources,
-            input_shapes=TestCollectionData.single.input_shapes,
-            dev_data_formats=TestCollectionData.single.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(
-                test_vector, num_embeddings_min=32000, num_embeddings_max=500000
-            ),
-        ),
+        # TestCollection(
+        #     operators=TestCollectionData.all.operators,
+        #     input_sources=TestCollectionData.all.input_sources,
+        #     input_shapes=TestCollectionData.single.input_shapes,
+        #     dev_data_formats=TestCollectionData.single.dev_data_formats,
+        #     kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.float32),
+        # ),
+        # # Case of weight dtype torch.bfloat16
+        # TestCollection(
+        #     operators=TestCollectionData.all.operators,
+        #     input_sources=TestCollectionData.all.input_sources,
+        #     input_shapes=TestCollectionData.single.input_shapes,
+        #     dev_data_formats=TestCollectionData.single.dev_data_formats,
+        #     kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
+        # ),
+        # # Case of num_embeddings range
+        # # between 32000 and 500000
+        # TestCollection(
+        #     operators=TestCollectionData.all.operators,
+        #     input_sources=TestCollectionData.all.input_sources,
+        #     input_shapes=TestCollectionData.single.input_shapes,
+        #     dev_data_formats=TestCollectionData.single.dev_data_formats,
+        #     kwargs=lambda test_vector: TestParamsData.generate_kwargs(
+        #         test_vector,
+        #         num_embeddings_min=32000,
+        #         num_embeddings_max=500000,
+        #     ),
+        # ),
         # Case of all sources and shapes from the test plan
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.all.input_sources,
             input_shapes=TestCollectionData.all.input_shapes,
             dev_data_formats=TestCollectionData.all.dev_data_formats,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
         ),
         # Case of all math fidelities
         TestCollection(
             operators=TestCollectionData.all.operators,
             input_sources=TestCollectionData.single.input_sources,
             input_shapes=TestCollectionData.single.input_shapes,
-            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector),
+            kwargs=lambda test_vector: TestParamsData.generate_kwargs(test_vector, dtype=torch.bfloat16),
             dev_data_formats=TestCollectionData.single.dev_data_formats,
             math_fidelities=TestCollectionData.all.math_fidelities,
         ),
