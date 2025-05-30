@@ -76,17 +76,23 @@ jobs:
         image: ${{ needs.docker-build.outputs.docker-image }}
 
     steps:
+      - name: Set cache path
+        id: cache-path
+        shell: bash
+        run: echo "work-dir=$(pwd)" >> $GITHUB_OUTPUT
+
+      - name: Git safe dir
+        shell: bash
+        run: |
+          git config --system --add safe.directory ${{ steps.cache-path.outputs.work-dir }}
+          chown -R root:root ${{ steps.cache-path.outputs.work-dir }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
           clean: true
           fetch-depth: 0 # Fetch all history and tags
-
-      - name: Set cache path
-        id: cache-path
-        shell: bash
-        run: echo "work-dir=$(pwd)" >> $GITHUB_OUTPUT
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
