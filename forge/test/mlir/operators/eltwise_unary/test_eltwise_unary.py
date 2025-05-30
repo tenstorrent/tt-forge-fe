@@ -84,7 +84,7 @@ def test_pixel_shuffle(input_shape, scale_factor):
             marks=pytest.mark.xfail(reason="BinaryOpType cannot be mapped to BcastOpMath"),
         ),
         ((2, 128, 8, 8), torch.float16),
-        ((512,),torch.float16),
+        ((512,), torch.float16),
         ((6, 1, 900, 256), torch.float16),
         ((8, 64, 32, 32, 45), torch.float16),
     ],
