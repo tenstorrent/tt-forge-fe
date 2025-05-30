@@ -25,9 +25,9 @@ jobs:
         include:
         - language: actions
           build-mode: none
-        - language: c-cpp
-          build-mode: autobuild
-        - language: python
+        - language: c++17
+          build-mode: manual
+        - language: python-3.10
           build-mode: none
     steps:
     - name: Checkout repository
