@@ -3,7 +3,7 @@ This document walks you through how to set up to run models using tt-forge. The 
 
 * [Configuring Hardware](#configuring-hardware)
 * [Setting up the Docker Container](#setting-up-the-docker-container)
-* [Installing Dependencies](#installing-depencencies)
+* [Installing Dependencies](#installing-dependencies)
 * [Creating a Virtual Environment](#creating-a-virtual-environment)
 * [Installing a Wheel](#installing-a-wheel)
 * [Running a Demo](#running-a-demo)
@@ -30,7 +30,7 @@ TT_SKIP_INSTALL_PODMAN=0 TT_SKIP_INSTALL_METALIUM_CONTAINER=0 /bin/bash -c "$(cu
 
 ## Setting up the Docker Container
 
-The simplest way to run models is to use the Docker image. T
+The simplest way to run models is to use the Docker image.
 
 * **Base Image**: This image includes all the necessary dependencies.
     * ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04

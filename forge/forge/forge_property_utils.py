@@ -429,14 +429,14 @@ class Config:
     verify: Dict[str, Any] = field(default_factory=lambda: dict())
 
 
-# Model group property that is part of a model info. With current repports we are using tags: 'group' and 'tags.group'.
+# Model group property that is part of a model info. With current reports we are using tags: 'group' and 'tags.group'.
 # If we want to add group there too, we would need to change how reporters read this info.
 class ModelGroup(StrEnum):
     GENERALITY = "generality"
     RED = "red"
 
 
-# Model priority property that is part of a model info. With current repports we are using tag: 'priority'.
+# Model priority property that is part of a model info. With current reports we are using tag: 'priority'.
 # If we want to add priority in model's info too, we would need to change how reporters read this info.
 class ModelPriority(StrEnum):
     P1 = "P1"

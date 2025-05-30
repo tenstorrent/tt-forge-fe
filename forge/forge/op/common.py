@@ -14,7 +14,7 @@ from forge.forgeglobal import get_unique_node_id, tracing
 from forge.tensor import pytorch_dtype_to_forge_dataformat
 
 
-depracated_name_dict = {}
+deprecated_name_dict = {}
 deprecated_op_id = 0
 
 
@@ -27,7 +27,7 @@ class ForgeOp:
         """
         self.op_type = op_type
 
-        global deprecated_op_id, depracated_name_dict
+        global deprecated_op_id, deprecated_name_dict
         if tracing():
             if name != "":
                 self.name = name
@@ -35,7 +35,7 @@ class ForgeOp:
                 unique_id = get_unique_node_id()
                 self.name = f"{op_type}_{unique_id}"
                 if unique_id != deprecated_op_id:
-                    depracated_name_dict[f"{op_type}_{deprecated_op_id}"] = self.name
+                    deprecated_name_dict[f"{op_type}_{deprecated_op_id}"] = self.name
         deprecated_op_id += 1
 
         operands = tuple(

@@ -13,11 +13,11 @@ import os
 
 import forge
 import forge.op
-from forge import ForgeModule, Tensor, DepricatedVerifyConfig
+from forge import ForgeModule, Tensor, DeprecatedVerifyConfig
 from test.common import run
 from forge.verify import TestKind, verify_module
 
-verify_cfg = DepricatedVerifyConfig(run_golden=True, run_net2pipe=True)  # Run backend golden check on all tests in here
+verify_cfg = DeprecatedVerifyConfig(run_golden=True, run_net2pipe=True)  # Run backend golden check on all tests in here
 
 
 @pytest.mark.parametrize(
@@ -46,7 +46,7 @@ def test_interleave(test_kind, test_device, input_shape, axis, stride, num_opera
     verify_module(
         mod,
         input_shapes,
-        verify_cfg=DepricatedVerifyConfig(
+        verify_cfg=DeprecatedVerifyConfig(
             test_kind=test_kind,
             devtype=test_device.devtype,
             arch=test_device.arch,
@@ -58,7 +58,7 @@ def test_interleave(test_kind, test_device, input_shape, axis, stride, num_opera
 @pytest.mark.parametrize("aligned", [True, False])
 def test_concat(test_kind, test_device, dim, aligned):
     @run(
-        DepricatedVerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch),
+        DeprecatedVerifyConfig(test_kind=test_kind, devtype=test_device.devtype, arch=test_device.arch),
     )
     def simple_concat(a, b):
         return forge.op.Concatenate("", a, b, axis=dim)
@@ -115,7 +115,7 @@ def test_concat_two_kinds_pad(test_device):
     verify_module(
         mod,
         input_shapes,
-        verify_cfg=DepricatedVerifyConfig(
+        verify_cfg=DeprecatedVerifyConfig(
             test_kind=TestKind.INFERENCE,
             devtype=test_device.devtype,
             arch=test_device.arch,

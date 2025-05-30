@@ -294,7 +294,7 @@ def run_models_unique_op_tests(unique_operations, unique_ops_output_directory_pa
         # Extract operation name from forge op function name
         op_name = forge_op_function_name.split(".")[-1]
 
-        # Get the unique operands and operation arguments assiocated the operand metadata
+        # Get the unique operands and operation arguments associated with the operand metadata
         unique_operands_and_opargs_opmetadata = unique_operations[
             forge_op_function_name
         ].get_unique_operands_and_opargs_opmetadata()

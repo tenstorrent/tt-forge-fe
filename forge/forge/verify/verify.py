@@ -24,7 +24,7 @@ from ..tensor import (
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
+from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
@@ -83,7 +83,7 @@ def do_verify(
     golden_input_grads: Tuple[torch.Tensor, ...],
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
@@ -224,7 +224,7 @@ def verify_golden(
     device: "TTDevice",
     inputs: Tuple[Tensor],
     outputs: Tuple[torch.Tensor],
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
 ):
 
     assert False  # Run ttnn golden
@@ -320,7 +320,7 @@ def verify_backward(
     co_gradient_outputs = compiled_model.backward()
     co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
-        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        # NOTE: Need to clone the gradients of parameters as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 

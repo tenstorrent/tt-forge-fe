@@ -8,7 +8,7 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 from forge.verify.config import VerifyConfig
-from forge.verify import DepricatedVerifyConfig
+from forge.verify import DeprecatedVerifyConfig
 
 
 @pytest.mark.parametrize(
@@ -450,7 +450,7 @@ def test_floordiv(bucket_size):
     compiled_model = forge.compile(
         framework_model,
         sample_inputs=inputs,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
     )
     verify(inputs, framework_model, compiled_model)
 

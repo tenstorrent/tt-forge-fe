@@ -99,7 +99,7 @@ python scripts/export_models_ops_correlation.py
 
 |                              **Option**                                   |                                                **Description**                                                   |
 | :-----------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: |
-| `--cross_correlation_output_file_name`                                    | Specify the output xlsx file name for saving the cross correation data between model variants and unique ops.    |
+| `--cross_correlation_output_file_name`                                    | Specify the output xlsx file name for saving the cross correlation data between model variants and unique ops.   |
 | `--models_unique_op_configs_output_file_name`                             | Specify the output xlsx file name for saving the Models unique op configurations.                                |
 | `-o`, `--output_directory_path`                                           | Specify the output directory path for saving the xlsx/csv file.                                                  |
 | `--export_unique_op_config_file_type` (csv, xlsx)                         | Specify the export unique op configuration file type                                                             |

@@ -15,7 +15,7 @@ from forge.forge_property_utils import (
     Task,
     record_model_properties,
 )
-from forge.verify.verify import DepricatedVerifyConfig, verify
+from forge.verify.verify import DeprecatedVerifyConfig, verify
 
 from test.utils import download_model
 
@@ -80,7 +80,7 @@ def test_mamba(variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
     )
 
     # Model Verification
