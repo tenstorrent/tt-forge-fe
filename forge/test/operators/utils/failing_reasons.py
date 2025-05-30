@@ -128,7 +128,7 @@ class ComponentChecker(Enum):
                     M.contains("lib/_ttnn.so"),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             ExceptionCheck(
@@ -137,7 +137,7 @@ class ComponentChecker(Enum):
                     M.contains("lib/_ttnn.so"),
                     M.neg(M.contains("lib/libTTMLIRRuntime.so")),  # no MLIR runtime
                     M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -152,7 +152,7 @@ class ComponentChecker(Enum):
                     M.contains("lib/_ttnn.so"),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             ExceptionCheck(
@@ -162,7 +162,7 @@ class ComponentChecker(Enum):
                     M.contains("lib/_ttnn.so"),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -177,7 +177,7 @@ class ComponentChecker(Enum):
                     M.neg(M.contains("lib/_ttnn.so")),
                     M.contains("lib/libTTMLIRRuntime.so"),
                     M.contains("forge/_C.so"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -196,10 +196,10 @@ class ComponentChecker(Enum):
                         M.last_line(M.contains("forge/verify/compare.py:")),
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
                         M.last_line(M.contains("forge/verify/verify.py:")),
-                        M.last_line(M.contains("forge/op/eval/interface.py:112")),
+                        M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
                         M.last_line(M.contains("forge/compiled_graph_state.py:")),
-                        M.last_line(M.contains("forge/op/eval/forge/clip.py:32")),
+                        M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/convolution.py:")),
                         M.last_line(M.contains("forge/op/eval/forge/tm.py:")),
                         M.last_line(M.contains("test/operators/utils/compat.py:")),  # Deprecated verification
@@ -218,7 +218,7 @@ class ComponentChecker(Enum):
                     M.any(
                         M.last_line(M.contains("forge/verify/compare.py:")),
                         M.last_line(M.contains("forge/verify/value_checkers.py:")),
-                        M.last_line(M.contains("forge/op/eval/interface.py:112")),
+                        M.last_line(M.contains("forge/op/eval/interface.py:")),
                         M.last_line(M.contains("forge/compile.py:")),
                     ),
                 ],
@@ -237,8 +237,8 @@ class ComponentChecker(Enum):
                     M.neg(M.contains("forge/_C.so")),
                     M.any(
                         M.last_line(M.contains("/tvm/relay/frontend/pytorch.py:")),
-                        M.last_line(M.contains("/tvm/relay/expr_functor.py:79")),
-                        M.last_line(M.contains("/tvm/_ffi/base.py:479: InternalError")),
+                        M.last_line(M.contains("/tvm/relay/expr_functor.py:")),
+                        M.last_line(M.contains("/tvm/_ffi/base.py:")),
                         M.last_line(M.contains("forge/tvm_calls/relay/op/forge_passes.py:")),
                         M.last_line(M.contains("forge/tvm_to_python.py:")),
                     ),
@@ -280,7 +280,7 @@ class FailingReasons(Enum):
                 class_name="RuntimeError",
                 component=ComponentChecker.NONE.value,
                 message=[
-                    M.contains("/forge/csrc/passes/lower_to_mlir.cpp:473: false"),
+                    M.contains("/forge/csrc/passes/lower_to_mlir.cpp:"),
                 ],
             ),
             ExceptionCheck(
@@ -341,7 +341,7 @@ class FailingReasons(Enum):
                     M.contains("Unsupported data format"),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310:")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             ExceptionCheck(
@@ -433,7 +433,7 @@ class FailingReasons(Enum):
                     ),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/verify/value_checkers.py:54")),
+                    M.last_line(M.contains("forge/verify/value_checkers.py:")),
                 ],
             ),
             # RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false
@@ -486,7 +486,7 @@ class FailingReasons(Enum):
                     M.equals("AllCloseValueChecker (all_close): all_close doesn't make sense for integer/bool types"),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/verify/value_checkers.py:48")),
+                    M.last_line(M.contains("forge/verify/value_checkers.py:")),
                 ],
             ),
         ],
@@ -663,7 +663,7 @@ class FailingReasons(Enum):
                     M.equals("'NotImplementedType' object is not callable"),
                 ],
                 error_log=[
-                    M.last_line(M.contains("forge/op/eval/interface.py:112")),
+                    M.last_line(M.contains("forge/op/eval/interface.py:")),
                 ],
             ),
         ],
@@ -871,7 +871,7 @@ class FailingReasons(Enum):
                     M.regex(
                         "Statically allocated circular buffers in program .* clash with L1 buffers on core range .*. L1 buffer allocated at .* and static circular buffer region ends at .*"
                     ),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             # conv2d	ValueError: circular mode for torch.nn.functional.pad are not supported in TVM
@@ -1011,7 +1011,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("normalized_index >= 0 and normalized_index < rank"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             ExceptionCheck(
@@ -1098,6 +1098,8 @@ class FailingReasons(Enum):
     CONV2D_VALIDATE_ARGS = FailingReason(
         description="Validating Conv2d dilation args",
         checks=[
+            #     def populate_conv2d_args(graph, nid, compiler_cfg):
+            #         ...
             #         dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
             # >       assert all([dim == dilation[0] for dim in dilation])
             # E       AssertionError
@@ -1107,9 +1109,9 @@ class FailingReasons(Enum):
                 component=ComponentChecker.TVM.value,
                 message=[],
                 error_log=[
-                    # M.contains("assert all([dim == dilation[0] for dim in dilation])"),
+                    M.contains("def populate_conv2d_args("),
                     M.contains(">       assert all([dim == dilation[0] for dim in dilation])"),
-                    M.last_line(M.contains("forge/tvm_to_python.py:567: AssertionError")),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
         ],
@@ -1191,7 +1193,7 @@ class FailingReasons(Enum):
                 class_name="tvm.error.InternalError",
                 component=ComponentChecker.TVM.value,
                 error_log=[
-                    M.last_line(M.contains("/tvm/_ffi/base.py:479: InternalError")),
+                    M.last_line(M.contains("/tvm/_ffi/base.py:")),
                     M.contains(
                         "E       InternalError: Check failed: (static_cast<int>(tensor_b->shape.size()) == 2) is false:"
                     ),
@@ -1244,7 +1246,7 @@ class FailingReasons(Enum):
                 class_name="tvm.error.InternalError",
                 component=ComponentChecker.TVM.value,
                 error_log=[
-                    M.last_line(M.contains("/tvm/_ffi/base.py:479: InternalError")),
+                    M.last_line(M.contains("/tvm/_ffi/base.py:")),
                     M.contains("E       InternalError: Check failed: src_idx < ishape.size() (1 vs. 1)"),
                 ],
             ),
@@ -1266,7 +1268,7 @@ class FailingReasons(Enum):
                 class_name="tvm.error.InternalError",
                 component=ComponentChecker.TVM.value,
                 error_log=[
-                    M.last_line(M.contains("/tvm/_ffi/base.py:479: InternalError")),
+                    M.last_line(M.contains("/tvm/_ffi/base.py:")),
                     M.contains("E       InternalError: Check failed: src_idx < ishape.size() (2 vs. 1)"),
                 ],
             ),
@@ -1281,7 +1283,7 @@ class FailingReasons(Enum):
                     M.starts_with("warning unhandled case: <class 'NoneType'>"),
                 ],
                 error_log=[
-                    M.last_line(M.contains("/tvm/relay/expr_functor.py:79")),
+                    M.last_line(M.contains("/tvm/relay/expr_functor.py:")),
                 ],
             ),
         ],
@@ -1335,7 +1337,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             # max	RuntimeError: TT_FATAL @ ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())	UNCLASSIFIED	6
@@ -1370,7 +1372,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("Unsupported datatype"),
-                    M.contains("forge/compiled_graph_state.py:310"),
+                    M.contains("forge/compiled_graph_state.py:"),
                 ],
             ),
             # clamp	RuntimeError: TT_THROW @ ttnn/cpp/ttnn/operations/creation.hpp:182: tt::exception
@@ -1399,7 +1401,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("Unsupported DataType!"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             # matmul	matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1479: a_shape[i] == b_shape[i]
@@ -1436,7 +1438,7 @@ class FailingReasons(Enum):
                 error_log=[
                     M.contains("bmm (non-bcast matmul) expects input tensors of shapes BCMK*BCKN=BCMN or equivalent"),
                     M.contains("ttnn::operations::matmul::Matmul::validate"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -1485,7 +1487,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains("ttnn::operations::data_movement::Transpose::validate"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
@@ -1516,7 +1518,7 @@ class FailingReasons(Enum):
                     M.contains(">       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)"),
                     M.contains("Invalid arguments to reshape"),
                     M.contains("tt::tt_metal::infer_dims_for_reshape"),
-                    M.last_line(M.contains("forge/compiled_graph_state.py:310")),
+                    M.last_line(M.contains("forge/compiled_graph_state.py:")),
                 ],
             ),
         ],
@@ -1562,7 +1564,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains(">       ret = torch.clip(tensors[0], min=self.min, max=self.max)"),
-                    M.last_line(M.contains("forge/op/eval/forge/clip.py:32")),
+                    M.last_line(M.contains("forge/op/eval/forge/clip.py:")),
                 ],
             ),
         ],
@@ -1582,7 +1584,7 @@ class FailingReasons(Enum):
                 ],
                 error_log=[
                     M.contains('>       op_attrs["padding"] = padding'),
-                    M.last_line(M.contains("forge/tvm_calls/relay/op/forge_passes.py:197")),
+                    M.last_line(M.contains("forge/tvm_calls/relay/op/forge_passes.py:")),
                 ],
             ),
             # squeeze	tvm.error.InternalError: Traceback (most recent call last):
@@ -1610,9 +1612,11 @@ class FailingReasons(Enum):
                     M.regex("Check failed: .* : cannot squeeze axis with dimension not equal to 1"),
                     M.contains("third_party/tvm/src/relay/op/tensor/transform.cc"),
                     M.contains(">       raise py_err"),
-                    M.last_line(M.contains("/tvm/_ffi/base.py:479")),
+                    M.last_line(M.contains("/tvm/_ffi/base.py:")),
                 ],
             ),
+            #     def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
+            #         ...
             # >       assert all([stride == strides[0] for stride in strides])
             # E       AssertionError
             # forge/forge/tvm_to_python.py:652: AssertionError
@@ -1623,8 +1627,9 @@ class FailingReasons(Enum):
                     # M.starts_with(">       assert all([stride == strides[0] for stride in strides])"),
                 ],
                 error_log=[
+                    M.contains("def populate_conv2d_transpose_args("),
                     M.contains(">       assert all([stride == strides[0] for stride in strides])"),
-                    M.last_line(M.contains("forge/tvm_to_python.py:652")),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
             # >       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"
@@ -1635,14 +1640,18 @@ class FailingReasons(Enum):
                 component=ComponentChecker.TVM.value,
                 message=[
                     # M.starts_with(">       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel""),
+                    M.starts_with("Only supports group of 1 or in_channel"),
                 ],
                 error_log=[
                     M.contains(
                         '>       assert groups == 1 or (in_channel is not None and groups == in_channel), "Only supports group of 1 or in_channel"'
                     ),
-                    M.last_line(M.contains("forge/tvm_to_python.py:697")),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
+            #     def populate_conv2d_transpose_args(graph, nid, compiler_cfg):
+            #         ...
+            #         dilation = [int(dilation) for dilation in node["attrs"]["dilation"][0]]
             # >       assert all([dim == dilation[0] for dim in dilation])
             # E       AssertionError
             # forge/forge/tvm_to_python.py:679: AssertionError
@@ -1653,8 +1662,9 @@ class FailingReasons(Enum):
                     # M.starts_with(">       assert all([dim == dilation[0] for dim in dilation])"),
                 ],
                 error_log=[
+                    M.contains("def populate_conv2d_transpose_args("),
                     M.contains(">       assert all([dim == dilation[0] for dim in dilation])"),
-                    M.last_line(M.contains("forge/tvm_to_python.py:679")),
+                    M.last_line(M.contains("forge/tvm_to_python.py:")),
                 ],
             ),
         ],
