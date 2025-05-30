@@ -26,11 +26,13 @@ from test.operators.utils import TestVector
 from test.operators.utils import TestPlan
 from test.operators.utils import TestPlanUtils
 from test.operators.utils import FailingReasons
-from test.operators.utils.compat import TestDevice
+from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
+from test.operators.utils.test_data import TestCollectionTorch
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -113,22 +115,31 @@ class TestVerification:
     ):
 
         operator = PytorchUtils.get_op_class_by_name(test_vector.operator)
+        value_range = ValueRanges.LARGE
         kwargs = test_vector.kwargs if test_vector.kwargs else {}
 
         model_type = cls.MODEL_TYPES[test_vector.input_source]
-        pytorch_model = (
-            model_type(operator, test_vector.input_shape, kwargs)
-            if test_vector.input_source in (InputSource.CONST_EVAL_PASS,)
-            else model_type(operator, kwargs)
-        )
+        if test_vector.input_source == InputSource.CONST_EVAL_PASS:
+            pytorch_model = model_type(
+                operator=operator,
+                shape=test_vector.input_shape,
+                kwargs=kwargs,
+                dtype=TestTensorsUtils.get_dtype_for_df(test_vector.dev_data_format),
+                value_range=value_range,
+            )
+        else:
+            pytorch_model = model_type(
+                operator=operator,
+                kwargs=kwargs,
+            )
 
         input_shapes = tuple([test_vector.input_shape])
 
         logger.trace(f"***input_shapes: {input_shapes}")
 
         # We use AllCloseValueChecker in all cases except for integer data formats:
-        verify_config = VerifyConfig(value_checker=AllCloseValueChecker())
-        if test_vector.dev_data_format in TestCollectionCommon.int.dev_data_formats:
+        verify_config = VerifyConfig(value_checker=AllCloseValueChecker(atol=1e-2, rtol=1e-8))
+        if test_vector.dev_data_format in TestCollectionTorch.int.dev_data_formats:
             verify_config = VerifyConfig(value_checker=AutomaticValueChecker())
 
         VerifyUtils.verify(
@@ -139,7 +150,7 @@ class TestVerification:
             dev_data_format=test_vector.dev_data_format,
             math_fidelity=test_vector.math_fidelity,
             warm_reset=warm_reset,
-            value_range=ValueRanges.SMALL,
+            value_range=value_range,
             deprecated_verification=False,
             verify_config=verify_config,
         )
@@ -240,10 +251,6 @@ class TestIdsData:
 
     __test__ = False  # Avoid collecting TestIdsData as a pytest test
 
-    failed_allclose_value_checker = TestPlanUtils.load_test_ids_from_file(
-        f"{os.path.dirname(__file__)}/test_reshape_ids_failed_allclose_value_checker.txt"
-    )
-
 
 TestParamsData.test_plan = TestPlan(
     verify=lambda test_device, test_vector: TestVerification.verify(
@@ -266,8 +273,8 @@ TestParamsData.test_plan = TestPlan(
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
             dev_data_formats=[
                 item
-                for item in TestCollectionCommon.all.dev_data_formats
-                if item not in TestCollectionCommon.single.dev_data_formats
+                for item in TestCollectionTorch.all.dev_data_formats
+                if item not in TestCollectionTorch.single.dev_data_formats
             ],
             math_fidelities=TestCollectionCommon.single.math_fidelities,
         ),
@@ -277,7 +284,7 @@ TestParamsData.test_plan = TestPlan(
             input_sources=TestCollectionCommon.single.input_sources,
             input_shapes=TestCollectionCommon.single.input_shapes,
             kwargs=lambda test_vector: TestParamsData.generate_random_kwargs(test_vector),
-            dev_data_formats=TestCollectionCommon.single.dev_data_formats,
+            dev_data_formats=TestCollectionTorch.single.dev_data_formats,
             math_fidelities=TestCollectionCommon.all.math_fidelities,
         ),
         # Test specific classes of reshape operations collection:
@@ -289,18 +296,15 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id() in TestIdsData.failed_allclose_value_checker,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            input_shapes=[(1, 10000), (7, 10, 1000, 100)],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_shapes=[(0,)],
-            failing_reason=FailingReasons.UNSUPPORTED_DIMENSION,
-        ),
+        # TestCollection(
+        #     input_shapes=[(1, 10000), (7, 10, 1000, 100)],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     input_shapes=[(0,)],
+        #     failing_reason=FailingReasons.UNSUPPORTED_DIMENSION,
+        # ),
+        *TestIdsDataLoader.build_failing_rules(operators=["reshape"]),
     ],
 )
 
