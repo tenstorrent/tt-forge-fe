@@ -23,6 +23,7 @@ from test.operators.utils import (
 )
 from test.operators.utils.compat import TestDevice
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -215,6 +216,7 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operators),
         # Unsupported ttnn::DataType... Fatal Python error: Aborted
         TestCollection(
             operators=TestParamsData.operators,
@@ -226,20 +228,20 @@ TestParamsData.test_plan = TestPlan(
             failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
             skip_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
         ),
-        # Unsupported special cases:
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_sources=[
-                InputSource.FROM_ANOTHER_OP,
-                InputSource.FROM_HOST,
-            ],
-            input_shapes=[
-                ((1, 10000), (1, 10000), (1, 10000)),
-                ((1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000)),
-            ],
-            kwargs=[{"dim": 1}],
-            failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
-        ),
+        # # Unsupported special cases:
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_sources=[
+        #         InputSource.FROM_ANOTHER_OP,
+        #         InputSource.FROM_HOST,
+        #     ],
+        #     input_shapes=[
+        #         ((1, 10000), (1, 10000), (1, 10000)),
+        #         ((1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000), (1, 10000)),
+        #     ],
+        #     kwargs=[{"dim": 1}],
+        #     failing_reason=FailingReasons.UNSUPPORTED_SPECIAL_CASE,
+        # ),
     ],
 )
 
