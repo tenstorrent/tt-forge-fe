@@ -33,6 +33,7 @@ from test.operators.utils import (
 from test.operators.utils.datatypes import ValueRange
 from test.operators.utils.compat import TestDevice
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -288,94 +289,95 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        # FLOAT32 ERRORS:
-        # RuntimeError: Fatal error
-        # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_HOST,
-                InputSource.FROM_ANOTHER_OP,
-            ],
-            criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        # AssertionError: PCC check failed
-        TestCollection(
-            input_sources=[
-                InputSource.CONST_EVAL_PASS,
-            ],
-            criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # BFLOAT16 ERRORS:
-        # PCC ERRORS:
-        # AssertionError: PCC check failed
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_HOST,
-            ],
-            input_shapes=[
-                (45, 17),
-                (9920, 1),
-                (17, 41),
-                (89, 3),
-                (11, 1, 23),
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_ANOTHER_OP,
-            ],
-            criteria=lambda test_vector: len(test_vector.input_shape) == 2
-            or test_vector.input_shape in ((1, 1, 23), (11, 1, 23)),
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        # RUNTIME ERRORS:
-        # RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32
-        TestCollection(
-            input_sources=[
-                InputSource.CONST_EVAL_PASS,
-            ],
-            criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.bfloat16,
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        # ALLOCATION ERRORS:
-        # RuntimeError: TT_THROW @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145: tt::exception
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_HOST,
-                InputSource.FROM_ANOTHER_OP,
-            ],
-            input_shapes=[
-                (9920, 1),
-            ],
-            kwargs=[
-                {
-                    "embedding_dim": 10000,
-                },
-            ],
-            failing_reason=FailingReasons.ALLOCATION_FAILED,
-        ),
-        # FATAL ERRORS:
-        # RuntimeError: Fatal error
-        # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_HOST,
-            ],
-            criteria=lambda test_vector: len(test_vector.input_shape) > 2
-            and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            input_sources=[
-                InputSource.FROM_ANOTHER_OP,
-            ],
-            criteria=lambda test_vector: len(test_vector.input_shape) > 2
-            and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
+        # # FLOAT32 ERRORS:
+        # # RuntimeError: Fatal error
+        # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #         InputSource.FROM_ANOTHER_OP,
+        #     ],
+        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # # AssertionError: PCC check failed
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.CONST_EVAL_PASS,
+        #     ],
+        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.float32,
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # BFLOAT16 ERRORS:
+        # # PCC ERRORS:
+        # # AssertionError: PCC check failed
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #     ],
+        #     input_shapes=[
+        #         (45, 17),
+        #         (9920, 1),
+        #         (17, 41),
+        #         (89, 3),
+        #         (11, 1, 23),
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_ANOTHER_OP,
+        #     ],
+        #     criteria=lambda test_vector: len(test_vector.input_shape) == 2
+        #     or test_vector.input_shape in ((1, 1, 23), (11, 1, 23)),
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
+        # # RUNTIME ERRORS:
+        # # RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.CONST_EVAL_PASS,
+        #     ],
+        #     criteria=lambda test_vector: test_vector.kwargs["weight_dtype"] == torch.bfloat16,
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # # ALLOCATION ERRORS:
+        # # RuntimeError: TT_THROW @ /home/kmilanovic/src/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145: tt::exception
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #         InputSource.FROM_ANOTHER_OP,
+        #     ],
+        #     input_shapes=[
+        #         (9920, 1),
+        #     ],
+        #     kwargs=[
+        #         {
+        #             "embedding_dim": 10000,
+        #         },
+        #     ],
+        #     failing_reason=FailingReasons.ALLOCATION_FAILED,
+        # ),
+        # # FATAL ERRORS:
+        # # RuntimeError: Fatal error
+        # # FATAL | Input output tensor size mismatch in memcpy: 40000 * 4 != 240000 * 4
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_HOST,
+        #     ],
+        #     criteria=lambda test_vector: len(test_vector.input_shape) > 2
+        #     and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     input_sources=[
+        #         InputSource.FROM_ANOTHER_OP,
+        #     ],
+        #     criteria=lambda test_vector: len(test_vector.input_shape) > 2
+        #     and test_vector.input_shape not in ((1, 1, 23), (11, 1, 23)),
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
         # SEGMENTATION FAULT ERROR
         TestCollection(
             input_sources=TestCollectionData.all.input_sources,
