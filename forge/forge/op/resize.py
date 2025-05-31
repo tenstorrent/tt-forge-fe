@@ -21,6 +21,47 @@ INT_TO_RESIZE2d_METHOD = {
 }
 
 
+def Resize1d(
+    name: str,
+    operandA: Tensor,
+    size: int,
+    method: str = "linear",
+    align_corners: bool = False,
+    channel_last: bool = False,
+) -> Tensor:
+    """
+    Resize input activations in 1D, with default method 'linear'
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input tensor to resize
+
+    size: int
+        Target size
+
+    method: str
+        Interpolation method: 'linear'
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    assert method == "linear", f"Expected method to be 'linear', got {method}"
+    result: Tensor = op(
+        "resize1d",
+        name,
+        operandA,
+        attrs=(size, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
+    ).get_tensor()
+
+    return result
+
+
 def Resize2d(
     name: str,
     operandA: Tensor,
