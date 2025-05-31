@@ -43,6 +43,7 @@ class StableDiffusionWrapper(torch.nn.Module):
         return noise_pred
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

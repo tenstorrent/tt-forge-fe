@@ -17,6 +17,7 @@ import onnx
 variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Segmentation Fault")

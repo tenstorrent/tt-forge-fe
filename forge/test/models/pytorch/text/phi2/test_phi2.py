@@ -37,7 +37,10 @@ variants = [
     ),
     pytest.param(
         "microsoft/phi-2-pytdml",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+        marks=[
+            pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+            pytest.mark.out_of_memory,
+        ],
     ),
 ]
 
@@ -112,6 +115,7 @@ variants = [
 ]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_token_classification(variant):
@@ -164,6 +168,7 @@ variants = [
 ]
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 def test_phi2_sequence_classification(variant):

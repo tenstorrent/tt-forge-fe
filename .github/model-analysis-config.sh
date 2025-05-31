@@ -15,8 +15,7 @@ env_vars["BODY"]="This PR will generate models ops tests by extracting the uniqu
 env_vars["OUTPUT_PATH"]="forge/test/models_ops/"
 
 # 2) Script config
-env_vars["TEST_DIR_OR_FILE_PATH"]="forge/test/models"
-env_vars["UNIQUE_OPS_OUTPUT_DIR_PATH"]="./models_unique_ops_output"
+env_vars["UNIQUE_OPS_OUTPUT_DIR_PATH"]="models_unique_ops_output/"
 env_vars["MODELS_OPS_TEST_OUTPUT_DIR_PATH"]="forge/test"
 env_vars["MODELS_OPS_TEST_PACKAGE_NAME"]="models_ops"
 env_vars["SCRIPT_OUTPUT_LOG"]="generate_models_ops_test.log"

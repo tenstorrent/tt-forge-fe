@@ -119,6 +119,7 @@ def _update_causal_mask(
 LlamaModel._update_causal_mask = _update_causal_mask
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

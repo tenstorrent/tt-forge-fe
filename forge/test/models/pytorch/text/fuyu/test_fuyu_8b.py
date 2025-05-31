@@ -30,6 +30,7 @@ from test.models.pytorch.text.fuyu.model_utils.model import (
 )
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

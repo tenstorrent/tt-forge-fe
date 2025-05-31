@@ -34,6 +34,7 @@ def test_deepseek_inference_no_cache_cpu(variant):
     print(generated_text)
 
 
+@pytest.mark.out_of_memory
 @pytest.mark.parametrize("variant", ["deepseek-math-7b-instruct"])
 def test_deepseek_inference(variant):
     # Record Forge Property
