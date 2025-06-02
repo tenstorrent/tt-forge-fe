@@ -75,13 +75,6 @@ struct ModelState
     }
 
     void run_program(ProgramType program_type, std::vector<tt::Tensor> act_inputs);
-
-    bool test_so(
-        std::string so_path,
-        std::string func_name,
-        std::vector<tt::Tensor>& act_inputs,
-        std::vector<tt::Tensor>& consts_and_params,
-        std::vector<tt::Tensor>& outputs);
 };
 
 ProgramState create_program_state(
