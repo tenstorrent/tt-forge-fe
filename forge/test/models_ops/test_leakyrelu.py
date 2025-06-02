@@ -39,120 +39,43 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Leakyrelu0,
-        [((1, 32, 640, 640), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 128, 60, 80), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 64, 320, 320), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 256, 30, 40), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 32, 320, 320), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 512, 15, 20), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 128, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 1024, 15, 20), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 64, 160, 160), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 256, 15, 20), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 256, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 512, 30, 40), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 128, 80, 80), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 128, 30, 40), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
     (
         Leakyrelu0,
-        [((1, 512, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
-    ),
-    (
-        Leakyrelu0,
-        [((1, 256, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
-    ),
-    (
-        Leakyrelu0,
-        [((1, 1024, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
-    ),
-    (
-        Leakyrelu0,
-        [((1, 512, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
-    ),
-    (
-        Leakyrelu0,
-        [((1, 256, 20, 20), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
-    ),
-    (
-        Leakyrelu0,
-        [((1, 128, 40, 40), torch.float32)],
-        {
-            "model_names": ["pt_yolox_yolox_darknet_obj_det_torchhub"],
-            "pcc": 0.99,
-            "args": {"alpha": "0.10000000000000001"},
-        },
+        [((1, 256, 60, 80), torch.float32)],
+        {"model_names": ["pt_yolo_v4_default_obj_det_github"], "pcc": 0.99, "args": {"alpha": "0.10000000000000001"}},
     ),
 ]
 
@@ -202,9 +125,4 @@ def test_module(forge_module_and_shapes_dtypes):
 
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))

@@ -38,8 +38,6 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
-    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
     (
         Notequal0,
         [((1, 128), torch.int64)],
@@ -51,6 +49,7 @@ forge_modules_and_shapes_dtypes_list = [
             "pcc": 0.99,
         },
     ),
+    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
 ]
 
 
@@ -99,9 +98,4 @@ def test_module(forge_module_and_shapes_dtypes):
 
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
