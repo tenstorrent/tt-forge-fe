@@ -2295,7 +2295,8 @@ class LowerAdaptiveMaxPool(DFPatternCallback):
         output_shape = [int(dim) for dim in pre.checked_type.shape]
 
         assert post.attrs.layout == "NCHW"
-        assert input_shape[-1] == input_shape[-2], "Only support same factor of the input for H and W"
+        if input_shape[-1] != input_shape[-2]:
+            return post
         assert output_shape[-1] == output_shape[-2], "Only support same factor of the output for H and W"
 
         input_size = input_shape[-1]
