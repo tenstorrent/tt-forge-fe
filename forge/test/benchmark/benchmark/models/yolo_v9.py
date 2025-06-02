@@ -94,7 +94,7 @@ def test_yolo_v9(
         framework_model = framework_model.to(torch.bfloat16)
 
     # Compiler configuration
-    compiler_config = CompilerConfig()
+    compiler_config = CompilerConfig(enable_optimization_passes=True)
     # @TODO - For now, we are skipping enabling MLIR optimizations, because it is not working with the current version of the model.
     # Turn on MLIR optimizations.
     # compiler_config.mlir_config = MLIRConfig().set_enable_optimizer(True)
