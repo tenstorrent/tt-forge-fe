@@ -108,32 +108,3 @@ class Postprocessor:
         detections_co = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
 
         return detections_fw, detections_co
-
-
-class Processor:
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def process(self, x, y):
-        fw_head_outputs = {
-            "bbox_regression": x[0],
-            "cls_logits": x[1],
-        }
-        co_head_outputs = {
-            "bbox_regression": y[0],
-            "cls_logits": y[1],
-        }
-        detections_fw = postprocess_detections(fw_head_outputs, self.model.anchors, self.model.images.image_sizes)
-        detections_fw = self.model.transform.postprocess(
-            detections_fw, self.model.images.image_sizes, self.model.original_image_sizes
-        )
-
-        detections_co = self.model.postprocess_detections(
-            co_head_outputs, self.model.anchors, self.model.images.image_sizes
-        )
-        detections_co = self.model.transform.postprocess(
-            detections_co, self.model.images.image_sizes, self.model.original_image_sizes
-        )
-
-        return detections_fw, detections_co
