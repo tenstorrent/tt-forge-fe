@@ -58,6 +58,29 @@ permissions:
 
 jobs:
 
+  save-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show input parameters
+        run: |
+          echo "## Input Parameters" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Rebuild: ${{ inputs.rebuild }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Preset: ${{ inputs.preset }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Mark: ${{ inputs.test_mark }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Runs On: ${{ inputs.runs-on }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Group Count: ${{ inputs.test_group_cnt }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Operators: ${{ inputs.operators }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Filters: ${{ inputs.filters }}" >> $GITHUB_STEP_SUMMARY
+      - name: Save inputs to file
+        run: |
+          echo '{ "branch_name": "${{ github.ref_name }}", "rebuild": "${{ inputs.rebuild }}", "preset": "${{ inputs.preset }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "operators": "${{ inputs.operators }}", "filters": "${{ inputs.filters }}" }' > inputs.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inputs
+          path: inputs.json
+
   docker-build:
     uses: ./.github/workflows/build-image.yml
     secrets: inherit
