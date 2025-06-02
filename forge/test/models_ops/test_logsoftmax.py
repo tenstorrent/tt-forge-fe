@@ -90,9 +90,4 @@ def test_module(forge_module_and_shapes_dtypes):
 
     compiled_model = compile(framework_model, sample_inputs=inputs)
 
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-    )
+    verify(inputs, framework_model, compiled_model, VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)))
