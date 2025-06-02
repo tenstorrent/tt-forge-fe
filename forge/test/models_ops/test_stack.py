@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
@@ -33,6 +39,17 @@ class Stack1(ForgeModule):
         return stack_output_1
 
 
+class Stack2(ForgeModule):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def forward(self, stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5):
+        stack_output_1 = forge.op.Stack(
+            "", stack_input_0, stack_input_1, stack_input_2, stack_input_3, stack_input_4, stack_input_5, axis=-1
+        )
+        return stack_output_1
+
+
 def ids_func(param):
     forge_module = param[0]
     shapes_dtypes = param[1]
@@ -51,6 +68,7 @@ forge_modules_and_shapes_dtypes_list = [
             ],
             {
                 "model_names": [
+                    "pt_stereo_facebook_musicgen_small_music_generation_hf",
                     "pt_stereo_facebook_musicgen_large_music_generation_hf",
                     "pt_stereo_facebook_musicgen_medium_music_generation_hf",
                 ],
@@ -73,15 +91,62 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"axis": "-1"},
         },
     ),
+    (
+        Stack2,
+        [
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+            ((1, 4096), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_1_4b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+            ((1, 2048), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_370m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+            ((1, 5120), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_2_8b_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
+    (
+        Stack2,
+        [
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+            ((1, 3072), torch.float32),
+        ],
+        {"model_names": ["pt_mamba_state_spaces_mamba_790m_hf_clm_hf"], "pcc": 0.99, "args": {"axis": "-1"}},
+    ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Stack")
+    record_forge_op_name("Stack")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -89,9 +154,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -118,14 +183,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

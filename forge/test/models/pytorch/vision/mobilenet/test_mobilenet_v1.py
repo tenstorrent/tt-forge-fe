@@ -3,46 +3,60 @@
 # SPDX-License-Identifier: Apache-2.0
 import pytest
 import requests
+import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.mobilenet.utils.utils import (
+from test.models.pytorch.vision.mobilenet.model_utils.utils import (
     load_mobilenet_model,
     post_processing,
 )
-from test.models.pytorch.vision.utils.utils import load_timm_model_and_input
+from test.models.pytorch.vision.vision_utils.utils import load_timm_model_and_input
 from test.utils import download_model
 
 
 @pytest.mark.nightly
 @pytest.mark.push
-def test_mobilenetv1_basic(forge_property_recorder):
+def test_mobilenetv1_basic():
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenet_v1",
+        model=ModelArch.MOBILENETV1,
         variant="basic",
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and prepare input data
     framework_model, inputs = load_mobilenet_model("mobilenet_v1")
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     #  Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     post_processing(co_out)
@@ -61,35 +75,38 @@ def generate_model_mobilenetv1_imgcls_hf_pytorch(variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v1_0.75_192"])
-def test_mobilenetv1_192(forge_property_recorder, variant):
+def test_mobilenetv1_192(variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilnet_v1",
+        model=ModelArch.MOBILENET_V1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetv1_imgcls_hf_pytorch(variant)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
@@ -104,35 +121,38 @@ def generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant):
 
     image_tensor = inputs.pixel_values
 
-    return model, [image_tensor], {}
+    return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["google/mobilenet_v1_1.0_224"])
-def test_mobilenetv1_224(forge_property_recorder, variant):
+def test_mobilenetv1_224(variant):
     pytest.skip("Hitting segmentation fault in MLIR")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilnet_v1",
+        model=ModelArch.MOBILENET_V1,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_mobilenetV1I224_imgcls_hf_pytorch(variant)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
@@ -141,27 +161,32 @@ variants = ["mobilenetv1_100.ra4_e3600_r224_in1k"]
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_mobilenet_v1_timm(forge_property_recorder, variant):
+def test_mobilenet_v1_timm(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mobilenet_v1",
+        model=ModelArch.MOBILENETV1,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model and inputs
     framework_model, inputs = load_timm_model_and_input(variant)
+    framework_model = framework_model.to(torch.bfloat16)
+    inputs = inputs.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=[inputs],
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify([inputs], framework_model, compiled_model)

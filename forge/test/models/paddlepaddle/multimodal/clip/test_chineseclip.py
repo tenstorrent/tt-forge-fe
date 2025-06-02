@@ -19,23 +19,22 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["OFA-Sys/chinese-clip-vit-base-patch16"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_chineseclip_text(variant, forge_property_recorder):
+def test_chineseclip_text(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip_text",
+        model=ModelArch.CHINESECLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPTextModel.from_pretrained(variant)
@@ -48,27 +47,24 @@ def test_chineseclip_text(variant, forge_property_recorder):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_chineseclip_vision(variant, forge_property_recorder):
+def test_chineseclip_vision(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip_vision",
+        model=ModelArch.CHINESECLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPVisionModel.from_pretrained(variant)
@@ -85,27 +81,24 @@ def test_chineseclip_vision(variant, forge_property_recorder):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_chineseclip(variant, forge_property_recorder):
+def test_chineseclip(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="chineseclip",
+        model=ModelArch.CHINESECLIP,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_TEXT_PAIRING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = ChineseCLIPModel.from_pretrained(variant)
@@ -137,9 +130,7 @@ def test_chineseclip(variant, forge_property_recorder):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

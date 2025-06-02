@@ -2,11 +2,22 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
+import torch
 from datasets import load_dataset
 from transformers import AutoFeatureExtractor, ViTForImageClassification
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.config import VerifyConfig
+from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -15,7 +26,7 @@ from test.utils import download_model
 def generate_model_deit_imgcls_hf_pytorch(variant):
     # STEP 2: Create Forge module from PyTorch model
     image_processor = download_model(AutoFeatureExtractor.from_pretrained, variant)
-    model = download_model(ViTForImageClassification.from_pretrained, variant)
+    model = download_model(ViTForImageClassification.from_pretrained, variant, return_dict=False)
 
     # STEP 3: Run inference on Tenstorrent device
     dataset = load_dataset("huggingface/cats-image")
@@ -35,29 +46,48 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_deit_imgcls_hf_pytorch(forge_property_recorder, variant):
+def test_deit_imgcls_hf_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="deit",
+        model=ModelArch.DEIT,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     framework_model, inputs, _ = generate_model_deit_imgcls_hf_pytorch(
         variant,
     )
+    inputs = [inputs[0].to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    pcc = 0.99
+    if variant == "facebook/deit-base-patch16-224":
+        pcc = 0.96
+
+    # Model Verification and inference
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
+    )
+
+    # Post processing
+    logits = co_out[0]
+    predicted_class_idx = logits.argmax(-1).item()
+    print("Predicted class:", framework_model.config.id2label[predicted_class_idx])

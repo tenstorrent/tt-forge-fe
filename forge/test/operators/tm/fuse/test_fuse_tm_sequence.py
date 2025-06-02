@@ -10,7 +10,7 @@ import torch
 import os
 
 from forge.verify.backend import verify_module
-from forge import DepricatedVerifyConfig
+from forge import DeprecatedVerifyConfig
 from forge.verify.config import TestKind
 
 
@@ -132,7 +132,7 @@ def test_fuse_tm_sequence_multi_user(test_device):
         tt_model,
         input_shapes=(pt_tensor.shape,),
         inputs=[(pt_tensor,)],
-        verify_cfg=DepricatedVerifyConfig(
+        verify_cfg=DeprecatedVerifyConfig(
             arch=test_device.arch,
             devtype=test_device.devtype,
             devmode=test_device.devmode,

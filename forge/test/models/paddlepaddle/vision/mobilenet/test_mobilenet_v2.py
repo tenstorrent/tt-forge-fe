@@ -11,15 +11,15 @@ from forge.verify.verify import verify
 
 from paddle.vision.models import mobilenet_v2
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.nightly
-def test_mobilenetv2_basic(forge_property_recorder):
+def test_mobilenetv2_basic():
     # Record model details
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="mobilenetv2",
+        model=ModelArch.MOBILENETV2,
         variant="basic",
         source=Source.PADDLE,
         task=Task.IMAGE_CLASSIFICATION,
@@ -34,7 +34,6 @@ def test_mobilenetv2_basic(forge_property_recorder):
         framework_model,
         sample_inputs=input_sample,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Verify data on sample input
@@ -43,5 +42,4 @@ def test_mobilenetv2_basic(forge_property_recorder):
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-        forge_property_handler=forge_property_recorder,
     )

@@ -15,7 +15,15 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 
@@ -74,22 +82,27 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
 Phi3Model._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
 
 
-variants = ["microsoft/phi-3-mini-4k-instruct"]
+variants = ["microsoft/phi-3-mini-4k-instruct", "microsoft/phi-3-mini-128k-instruct"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_causal_lm(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 38 GB)")
+def test_phi3_causal_lm(variant):
+    if variant == "microsoft/phi-3-mini-4k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
+    elif variant == "microsoft/phi-3-mini-128k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.PHI3,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -123,30 +136,28 @@ def test_phi3_causal_lm(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_token_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_phi3_token_classification(variant):
+    if variant == "microsoft/phi-3-mini-4k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 29 GB)")
+    elif variant == "microsoft/phi-3-mini-128k-instruct":
+        pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -170,28 +181,25 @@ def test_phi3_token_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_phi3_sequence_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3",
+        model=ModelArch.PHI3,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Phi3Config from pretrained variant, disable return_dict and caching.
     config = Phi3Config.from_pretrained(variant)
@@ -214,7 +222,7 @@ def test_phi3_sequence_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -4,30 +4,37 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.oft.utils.oft_utils import (
+from test.models.pytorch.multimodal.oft.model_utils.oft_utils import (
     StableDiffusionWrapper,
     get_inputs,
 )
 
 
-@pytest.mark.xfail()
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["runwayml/stable-diffusion-v1-5"])
 @pytest.mark.nightly
-def test_oft(forge_property_recorder, variant):
+def test_oft(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="oft",
+        model=ModelArch.OFT,
         variant=variant.split("/")[-1],
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+        priority=ModelPriority.P1,
     )
-
-    forge_property_recorder.record_group("red")
-    forger_proprty_recorder.record_priority("P1")
 
     # Load model and inputs
     pipe, inputs = get_inputs(model=variant)
@@ -38,8 +45,7 @@ def test_oft(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_recorder=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_recorder=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -61,6 +61,10 @@ std::string config_to_pipeline_options(const std::optional<MLIRConfig> &mlir_con
         {
             options << " memory-layout-analysis-enabled=" << *mlir_config->enable_memory_layout_analysis;
         }
+        if (mlir_config->enable_fusing.has_value())
+        {
+            options << " enable-fusing-pass=" << *mlir_config->enable_fusing;
+        }
 
         // Add custom configuration options.
         options << " " << mlir_config->custom_config;

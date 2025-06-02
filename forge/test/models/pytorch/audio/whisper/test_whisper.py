@@ -10,7 +10,13 @@ import torch
 from transformers import AutoProcessor, WhisperConfig, WhisperForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -20,30 +26,39 @@ variants = [
         "openai/whisper-tiny",
         marks=[pytest.mark.xfail],
     ),
-    "openai/whisper-base",
-    "openai/whisper-small",
-    "openai/whisper-medium",
-    "openai/whisper-large",
+    pytest.param(
+        "openai/whisper-base",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-small",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-medium",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "openai/whisper-large",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_whisper(forge_property_recorder, variant):
-    if variant != "openai/whisper-tiny":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_whisper(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="whisper",
+        model=ModelArch.WHISPER,
         variant=variant,
         task=Task.SPEECH_RECOGNITION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)
@@ -81,12 +96,10 @@ def test_whisper(forge_property_recorder, variant):
     framework_model = Wrapper(model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

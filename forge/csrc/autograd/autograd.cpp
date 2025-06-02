@@ -662,13 +662,18 @@ NodeContext autograd_engine::create_constant(
     int created_op_index,
     graphlib::NodeEpochType epoch_type)
 {
+    TT_ASSERT(tensor, "Trying to create constant tensor node with null tensor");
+
     auto node = graph->add_node(
         graphlib::create_node<graphlib::ConstantInputNode>(
             "input_constant_" + current_fwd_op->name() + "_" + std::to_string(created_op_index), tensor, shape),
         graph->get_subgraph_id_for_node(current_fwd_op->id()));
 
     node->set_shape(shape);
-    node->set_output_df(current_fwd_op->output_df());
+
+    py::object py_tensor = borrow_shared_py_object(tensor);
+    DataFormat output_df = graphlib::infer_data_format_from_py_tensor(py_tensor);
+    node->set_output_df(output_df);
 
     if (epoch_type == graphlib::NodeEpochType::Backward)
     {

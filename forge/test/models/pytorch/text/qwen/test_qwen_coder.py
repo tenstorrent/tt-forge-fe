@@ -5,7 +5,13 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 # Variants for testing
@@ -14,28 +20,55 @@ variants = [
         "Qwen/Qwen2.5-Coder-0.5B",
         marks=[pytest.mark.xfail],
     ),
-    "Qwen/Qwen2.5-Coder-1.5B",
-    "Qwen/Qwen2.5-Coder-1.5B-Instruct",
-    "Qwen/Qwen2.5-Coder-3B",
-    "Qwen/Qwen2.5-Coder-3B-Instruct",
-    "Qwen/Qwen2.5-Coder-7B",
-    "Qwen/Qwen2.5-Coder-7B-Instruct",
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-1.5B",
+        marks=[pytest.mark.xfail],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-3B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-3B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-7B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-7B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.nightly
-def test_qwen_clm(forge_property_recorder, variant):
-    if variant != "Qwen/Qwen2.5-Coder-0.5B":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_qwen_clm(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen_coder", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.QWENCODER,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")
@@ -57,9 +90,7 @@ def test_qwen_clm(forge_property_recorder, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -8,18 +8,35 @@ import torchxrayvision as xrv
 from torchxrayvision.models import fix_resolution, op_norm
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.densenet.utils.densenet_utils import (
+from test.models.models_utils import print_cls_results
+from test.models.pytorch.vision.densenet.model_utils.densenet_utils import (
     get_input_img,
     get_input_img_hf_xray,
 )
 from test.utils import download_model
 
-variants = ["densenet121", "densenet121_hf_xray"]
+variants = [
+    pytest.param(
+        "densenet121",
+    ),
+    pytest.param(
+        "densenet121_hf_xray",
+        marks=[pytest.mark.xfail],
+    ),
+]
 
 
 class densenet_xray_wrapper(nn.Module):
@@ -36,22 +53,17 @@ class densenet_xray_wrapper(nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_densenet_121_pytorch(forge_property_recorder, variant):
-    if variant == "densenet121":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+@pytest.mark.parametrize("variant", variants)
+def test_densenet_121_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # STEP 2: Create Forge module from PyTorch model
     if variant == "densenet121":
@@ -64,138 +76,160 @@ def test_densenet_121_pytorch(forge_property_recorder, variant):
         img_tensor = get_input_img_hf_xray()
 
     # STEP 3: Run inference on Tenstorrent device
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
+    # Model Verification and Inference
+    fw_out, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+    )
+
+    # post processing
     if variant == "densenet121_hf_xray":
-        verify(
-            inputs,
-            framework_model,
-            compiled_model,
-            VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
-            forge_property_handler=forge_property_recorder,
-        )
-        # Inference
-        output = compiled_model(*inputs)
-        # post processing
-        outputs = op_norm(output[0], model.op_threshs)
+        outputs = op_norm(co_out[0], model.op_threshs)
     else:
-        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+        print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet161",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet161",
     ],
 )
-def test_densenet_161_pytorch(forge_property_recorder, variant):
+def test_densenet_161_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet161", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post Processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "densenet169",
-            marks=[pytest.mark.xfail],
-        ),
+        "densenet169",
     ],
 )
-def test_densenet_169_pytorch(forge_property_recorder, variant):
+def test_densenet_169_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet169", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post Processing
+    print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
-def test_densenet_201_pytorch(forge_property_recorder, variant):
-    pytest.skip("Insufficient host DRAM to run this model (requires a more than 32 GB during compile time)")
+def test_densenet_201_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="densenet",
+        model=ModelArch.DENSENET,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # STEP 2: Create Forge module from PyTorch model
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "densenet201", pretrained=True).to(
+        torch.bfloat16
+    )
 
     # STEP 3: Run inference on Tenstorrent device
     img_tensor = get_input_img()
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

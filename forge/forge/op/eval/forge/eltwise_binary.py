@@ -27,12 +27,6 @@ def eval(type, attr, ops):
 
     t_ops = to_torch_operands(*ops)
 
-    if t_ops[0].dtype != t_ops[1].dtype:
-        if t_ops[0].dtype == torch.bool:
-            t_ops = (t_ops[0].type(t_ops[1].dtype), t_ops[1])
-        else:
-            t_ops = (t_ops[0], t_ops[1].type(t_ops[0].dtype))
-
     f = {
         "add": lambda i: torch.add(t_ops[0], t_ops[1]),
         "divide": lambda i: torch.divide(t_ops[0], t_ops[1]),

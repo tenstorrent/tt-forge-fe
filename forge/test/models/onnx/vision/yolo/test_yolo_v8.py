@@ -9,23 +9,21 @@ import onnx
 import forge
 from forge.verify.verify import verify
 
-from test.models.onnx.vision.yolo.utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from forge.forge_property_utils import Framework, Source, Task
+from test.models.onnx.vision.yolo.model_utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail()
 @pytest.mark.nightly
-def test_yolov8(forge_property_recorder, tmp_path):
+def test_yolov8(forge_tmp_path):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="Yolov8",
+        model=ModelArch.YOLOV8,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
     )
-    forge_property_recorder.record_group("generality")
-    forge_property_recorder.record_priority("P2")
 
     # Load  model and input
     model, image_tensor = load_yolo_model_and_image(
@@ -34,7 +32,7 @@ def test_yolov8(forge_property_recorder, tmp_path):
     torch_model = YoloWrapper(model)
 
     # Export model to ONNX
-    onnx_path = tmp_path / "yolov8.onnx"
+    onnx_path = forge_tmp_path / "yolov8.onnx"
     torch.onnx.export(
         torch_model,
         image_tensor,
@@ -55,8 +53,7 @@ def test_yolov8(forge_property_recorder, tmp_path):
         onnx_model,
         sample_inputs=[image_tensor],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([image_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([image_tensor], framework_model, compiled_model)

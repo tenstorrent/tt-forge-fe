@@ -14,7 +14,15 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 
@@ -36,9 +44,14 @@ def get_sample_data(model_name):
 
 variants = [
     pytest.param("deepmind/vision-perceiver-conv", id="deepmind/vision-perceiver-conv"),
-    pytest.param("deepmind/vision-perceiver-learned", id="deepmind/vision-perceiver-learned"),
+    pytest.param(
+        "deepmind/vision-perceiver-learned",
+        marks=pytest.mark.xfail,
+        id="deepmind/vision-perceiver-learned",
+    ),
     pytest.param(
         "deepmind/vision-perceiver-fourier",
+        marks=pytest.mark.xfail,
         id="deepmind/vision-perceiver-fourier",
     ),
 ]
@@ -46,21 +59,16 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, variant):
-    if variant != "deepmind/vision-perceiver-conv":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_perceiverio_for_image_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="perceiverio",
+        model=ModelArch.PERCEIVERIO,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Sample Image
     pixel_values = get_sample_data(variant)
@@ -79,13 +87,20 @@ def test_perceiverio_for_image_classification_pytorch(forge_property_recorder, v
         logger.info(f"The model {variant} is not supported")
 
     framework_model.eval()
+    framework_model.to(torch.bfloat16)
 
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

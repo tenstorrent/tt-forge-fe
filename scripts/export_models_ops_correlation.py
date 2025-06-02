@@ -395,7 +395,7 @@ if __name__ == "__main__":
         "--cross_correlation_output_file_name",
         default="Models_Ops_cross_correlation_data",
         required=False,
-        help="Specify the output xlsx file name for saving the cross correation data between model variants and unique ops.",
+        help="Specify the output xlsx file name for saving the cross correlation data between model variants and unique ops.",
     )
     parser.add_argument(
         "--models_unique_op_configs_output_file_name",

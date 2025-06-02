@@ -8,9 +8,9 @@ import onnx
 
 import forge
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
-from test.models.pytorch.vision.sam.utils.model import get_model_inputs
+from test.models.pytorch.vision.sam.model_utils.model import get_model_inputs
 
 
 @pytest.mark.parametrize(
@@ -22,30 +22,23 @@ from test.models.pytorch.vision.sam.utils.model import get_model_inputs
     ],
 )
 @pytest.mark.nightly
-def test_sam_onnx(forge_property_recorder, variant, tmp_path):
+def test_sam_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="sam",
+        model=ModelArch.SAM,
         variant=variant,
         task=Task.IMAGE_SEGMENTATION,
         source=Source.GITHUB,
     )
 
-    if variant == "facebook/sam-vit-base":
-        forge_property_recorder.record_group("generality")
-        forge_property_recorder.record_priority("P2")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load  model and input
-
     framework_model, sample_inputs = get_model_inputs(variant)
     input_tensor = sample_inputs[0]
     sample_inputs = [input_tensor]
 
-    onnx_path = f"{tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
+    onnx_path = f"{forge_tmp_path}/sam_" + str(variant).split("/")[-1].replace("-", "_") + ".onnx"
     torch.onnx.export(
         framework_model,
         input_tensor,
@@ -65,7 +58,6 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
         onnx_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
@@ -73,5 +65,4 @@ def test_sam_onnx(forge_property_recorder, variant, tmp_path):
         sample_inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

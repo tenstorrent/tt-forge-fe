@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
@@ -51,13 +57,13 @@ def ids_func(param):
 forge_modules_and_shapes_dtypes_list = [
     (
         Cumsum0,
-        [((1, 11), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
+        [((1, 9), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
     (
         Cumsum0,
-        [((1, 9), torch.int64)],
-        {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
+        [((1, 11), torch.int64)],
+        {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99, "args": {"dim": "1"}},
     ),
     pytest.param(
         (
@@ -67,7 +73,7 @@ forge_modules_and_shapes_dtypes_list = [
         ),
         marks=[
             pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:140: tt::exception info: Out of Memory: Not enough space to allocate 9999220736 B DRAM buffer across 12 banks, where each bank needs to store 833269760 B"
+                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception info: Out of Memory: Not enough space to allocate 9999220736 B DRAM buffer across 12 banks, where each bank needs to store 833269760 B"
             )
         ],
     ),
@@ -82,11 +88,11 @@ forge_modules_and_shapes_dtypes_list = [
         {
             "model_names": [
                 "pt_opt_facebook_opt_125m_qa_hf",
-                "pt_opt_facebook_opt_350m_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
-                "pt_opt_facebook_opt_1_3b_qa_hf",
                 "pt_opt_facebook_opt_125m_seq_cls_hf",
                 "pt_opt_facebook_opt_350m_qa_hf",
+                "pt_opt_facebook_opt_1_3b_qa_hf",
+                "pt_opt_facebook_opt_350m_seq_cls_hf",
+                "pt_opt_facebook_opt_1_3b_seq_cls_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -97,9 +103,9 @@ forge_modules_and_shapes_dtypes_list = [
         [((1, 256), torch.int64)],
         {
             "model_names": [
+                "pt_opt_facebook_opt_1_3b_clm_hf",
                 "pt_opt_facebook_opt_350m_clm_hf",
                 "pt_opt_facebook_opt_125m_clm_hf",
-                "pt_opt_facebook_opt_1_3b_clm_hf",
             ],
             "pcc": 0.99,
             "args": {"dim": "1"},
@@ -122,10 +128,9 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("CumSum")
+    record_forge_op_name("CumSum")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -133,9 +138,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -162,14 +167,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

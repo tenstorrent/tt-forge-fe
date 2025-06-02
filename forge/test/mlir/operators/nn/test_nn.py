@@ -21,9 +21,7 @@ from forge.verify.verify import verify
     ],
 )
 @pytest.mark.push
-def test_conv2d_reflect_padding_mode(
-    forge_property_recorder, input_shape, in_channels, out_channels, kernel_size, padding_value
-):
+def test_conv2d_reflect_padding_mode(input_shape, in_channels, out_channels, kernel_size, padding_value):
     class Conv2dReflectPad(nn.Module):
         def __init__(self, in_channels, out_channels, kernel_size, padding_value):
             super().__init__()
@@ -40,11 +38,9 @@ def test_conv2d_reflect_padding_mode(
 
     inputs = [torch.rand(input_shape)]
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -63,7 +59,7 @@ def test_conv2d_reflect_padding_mode(
     reason="permute(sparse_coo): number of dimensions in the tensor input does not match the length of the desired ordering of dimensions i.e. input.dim() = 5 is not equal to len(dims) = 4. Tracking Issue: https://github.com/tenstorrent/tt-forge-fe/issues/1422"
 )
 @pytest.mark.push
-def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
+def test_avgpool3d(shape, kernel_size, stride):
     class AvgPool3D(nn.Module):
         def __init__(self):
             super().__init__()
@@ -78,12 +74,10 @@ def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
     inputs = [torch.rand(shape)]
 
     framework_model = AvgPool3D()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
     if compiler_cfg.compile_depth == forge.CompileDepth.FULL:
-        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+        verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -168,7 +162,7 @@ def test_avgpool3d(forge_property_recorder, shape, kernel_size, stride):
     ],
 )
 @pytest.mark.push
-def test_maxpool2d(forge_property_recorder, input_shape, kernel_size, stride_size, padding, ceil_mode):
+def test_maxpool2d(input_shape, kernel_size, stride_size, padding, ceil_mode):
     class maxpool2d(nn.Module):
         def __init__(self):
             super().__init__()
@@ -185,11 +179,9 @@ def test_maxpool2d(forge_property_recorder, input_shape, kernel_size, stride_siz
     inputs = [torch.rand(input_shape).to(dtype=torch.bfloat16)]
 
     framework_model = maxpool2d().to(dtype=torch.bfloat16)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -202,7 +194,7 @@ def test_maxpool2d(forge_property_recorder, input_shape, kernel_size, stride_siz
     ],
 )
 @pytest.mark.push
-def test_interpolate(forge_property_recorder, shape, mode):
+def test_interpolate(shape, mode):
     class Interpolate(nn.Module):
         def __init__(self):
             super().__init__()
@@ -213,11 +205,81 @@ def test_interpolate(forge_property_recorder, shape, mode):
     inputs = [torch.rand(shape)]
 
     framework_model = Interpolate()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, target_height, target_width",
+    [
+        pytest.param(
+            (1, 192, 64, 84),
+            32,
+            42,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 128, 126, 126),
+            42,
+            42,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 64, 400, 840),
+            100,
+            210,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 3, 50, 150),
+            10,
+            30,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d (https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 256, 100, 120),
+            50,
+            60,
+            marks=pytest.mark.xfail(
+                reason="Found Unsupported operations while lowering from TTForge to TTIR in forward graph - downsample2d(https://github.com/tenstorrent/tt-mlir/issues/1440)"
+            ),
+        ),
+        pytest.param(
+            (1, 192, 50, 83),
+            32,
+            42,
+            marks=pytest.mark.xfail(
+                reason="AssertionError: Only support downsample with integer scale factor (https://github.com/tenstorrent/tt-forge-fe/issues/2041) "
+            ),
+        ),
+    ],
+)
+@pytest.mark.push
+def test_downsample(input_shape, target_height, target_width):
+    class Downsample(nn.Module):
+        def __init__(self, height, width):
+            super().__init__()
+            self.height = height
+            self.width = width
+
+        def forward(self, x):
+            return nn.functional.interpolate(x, size=(self.height, self.width), mode="bicubic", align_corners=False)
+
+    framework_model = Downsample(target_height, target_width)
+    framework_model.eval()
+
+    inputs = torch.randn(*input_shape)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -236,7 +298,7 @@ def test_interpolate(forge_property_recorder, shape, mode):
     ],
 )
 @pytest.mark.push
-def test_batchnorm2d(forge_property_recorder, batch_size, num_channels, height, width):
+def test_batchnorm2d(batch_size, num_channels, height, width):
 
     if batch_size != 1:
         pytest.xfail("Batch size is not 1")
@@ -244,16 +306,14 @@ def test_batchnorm2d(forge_property_recorder, batch_size, num_channels, height, 
     inputs = [torch.rand(batch_size, num_channels, height, width)]
 
     framework_model = nn.BatchNorm2d(num_features=num_channels)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.skip(reason="This is not ready yet")
 @pytest.mark.push
-def test_linear(forge_property_recorder):
+def test_linear():
     class Linear(nn.Module):
         def __init__(self):
             super().__init__()
@@ -265,15 +325,13 @@ def test_linear(forge_property_recorder):
     inputs = [torch.rand(1, 128, 20)]
 
     framework_model = Linear()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_softmax(forge_property_recorder):
+def test_softmax():
     class Softmax(nn.Module):
         def __init__(self):
             super().__init__()
@@ -285,11 +343,9 @@ def test_softmax(forge_property_recorder):
     inputs = [torch.rand(1, 128)]
 
     framework_model = Softmax()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
@@ -303,7 +359,7 @@ def test_softmax(forge_property_recorder):
         ((10,), 0),
     ],
 )
-def test_log_softmax(forge_property_recorder, input_shape, dim):
+def test_log_softmax(input_shape, dim):
     class LogSoftmax(nn.Module):
         def __init__(self, dim):
             super().__init__()
@@ -315,11 +371,9 @@ def test_log_softmax(forge_property_recorder, input_shape, dim):
     inputs = [torch.rand(*input_shape)]
 
     framework_model = LogSoftmax(dim)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 # @pytest.mark.parametrize("vocab_size", [2048, 16384, 32000])
@@ -329,9 +383,8 @@ def test_log_softmax(forge_property_recorder, input_shape, dim):
 @pytest.mark.parametrize("token_num", [12])
 @pytest.mark.parametrize("embedding_dim", [3200])
 @pytest.mark.push
-def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim):
+def test_embedding(vocab_size, token_num, embedding_dim):
     compiler_cfg = forge.config.CompilerConfig()
-    compiler_cfg.enable_tvm_cpu_fallback = False
 
     class Embedding(nn.Module):
         def __init__(self):
@@ -346,11 +399,9 @@ def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim
     ]
 
     framework_model = Embedding()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -575,7 +626,6 @@ def test_embedding(forge_property_recorder, vocab_size, token_num, embedding_dim
     ],
 )
 def test_convtranspose2d(
-    forge_property_recorder,
     in_channels,
     out_channels,
     kernel_size,
@@ -601,15 +651,13 @@ def test_convtranspose2d(
         padding_mode=padding_mode,
     )
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.push
-def test_avg_pool2d(forge_property_recorder):
+def test_avg_pool2d():
     class AvgPool2d(nn.Module):
         def __init__(self):
             super().__init__()
@@ -622,18 +670,15 @@ def test_avg_pool2d(forge_property_recorder):
     inputs = [torch.rand(1, 2048, 7, 7)]
 
     framework_model = AvgPool2d()
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 224, 224)])
 @pytest.mark.parametrize("padding", [0, 1])
-@pytest.mark.xfail(reason="RuntimeError: Tensor 1 - data type mismatch: expected BFloat16, got Float32")
 @pytest.mark.push
-def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
+def test_avgpool2d_decompose_to_conv2d(shape, padding):
     class AvgPool2d(nn.Module):
         def __init__(self, padding):
             super().__init__()
@@ -647,11 +692,9 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     framework_model = AvgPool2d(padding=padding)
     framework_model = framework_model.to(torch.bfloat16)
 
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.parametrize("shape", [(1, 3, 32, 32)])
@@ -667,7 +710,7 @@ def test_avgpool2d_decompose_to_conv2d(forge_property_recorder, shape, padding):
     ],
 )
 @pytest.mark.push
-def test_conv2d_with_padding(forge_property_recorder, shape, padding):
+def test_conv2d_with_padding(shape, padding):
     class PaddingAndConv2d(nn.Module):
         def __init__(self, padding):
             super().__init__()
@@ -681,11 +724,9 @@ def test_conv2d_with_padding(forge_property_recorder, shape, padding):
     inputs = [torch.rand(shape)]
 
     framework_model = PaddingAndConv2d(padding=padding)
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs)
 
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.xfail(
@@ -703,7 +744,7 @@ def test_conv2d_with_padding(forge_property_recorder, shape, padding):
     ],
 )
 @pytest.mark.parametrize("align_corners", [True, False])
-def test_grid_sample(forge_property_recorder, img, grid, align_corners, test_device):
+def test_grid_sample(img, grid, align_corners, test_device):
     class GridSampleModule(nn.Module):
         def __init__(self, interpolation="bilinear", align_corners=align_corners):
             super(GridSampleModule, self).__init__()
@@ -720,6 +761,4 @@ def test_grid_sample(forge_property_recorder, img, grid, align_corners, test_dev
     img = torch.randn(img)
     grid = torch.randn(grid)
     output = model(img, grid)
-    compiled_model = forge.compile(
-        model, sample_inputs=[img, grid], module_name="grid_sample", forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(model, sample_inputs=[img, grid], module_name="grid_sample")

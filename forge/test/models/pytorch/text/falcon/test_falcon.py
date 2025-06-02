@@ -6,7 +6,14 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
@@ -15,16 +22,17 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["tiiuae/falcon-7b-instruct"])
-def test_falcon(forge_property_recorder, variant):
+def test_falcon(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="falcon", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.FALCON,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     tokenizer = AutoTokenizer.from_pretrained(variant)
     model = FalconForCausalLM.from_pretrained(variant)
@@ -45,12 +53,10 @@ def test_falcon(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
@@ -76,13 +82,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_falcon_3(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="falcon3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
+def test_falcon_3(variant):
     # Record Forge Property
     if variant in [
         "tiiuae/Falcon3-1B-Base",
@@ -90,9 +90,19 @@ def test_falcon_3(forge_property_recorder, variant):
         "tiiuae/Falcon3-7B-Base",
         "tiiuae/Falcon3-10B-Base",
     ]:
-        forge_property_recorder.record_group("red")
+        group = ModelGroup.RED
     else:
-        forge_property_recorder.record_group("generality")
+        group = ModelGroup.GENERALITY
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.FALCON3,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+    )
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -109,11 +119,10 @@ def test_falcon_3(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # post processing
     generated_text = generate_no_cache(

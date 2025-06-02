@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from loguru import logger
 from typing import Optional, List, Dict, Type, Union
 
-from forge import ForgeModule, Module, DepricatedVerifyConfig
+from forge import ForgeModule, Module, DeprecatedVerifyConfig
 from forge.op_repo import TensorShape
 from forge.op_repo.pytorch_operators import pytorch_operator_repository
 from forge.verify import TestKind  # , verify_module
@@ -36,7 +36,7 @@ from .compat import (
 from .datatypes import ValueRange, ValueRanges
 from .datatypes import OperatorParameterTypes
 from .datatypes import FrameworkDataFormat
-from .features import TestFeaturesConfiguration
+from .features import TestSweepsFeatures
 
 
 # All supported framework model types
@@ -159,7 +159,7 @@ class VerifyUtils:
         warm_reset: bool = False,
         deprecated_verification: bool = True,
         verify_config: Optional[VerifyConfig] = VerifyConfig(),
-        skip_forge_verification: bool = TestFeaturesConfiguration.SKIP_FORGE_VERIFICATION,
+        skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):
         """Perform Forge verification on the model
 
@@ -265,7 +265,7 @@ class VerifyUtils:
         dev_data_format: forge.DataFormat = None,
         convert_to_forge: bool = True,  # explicit conversion to forge data format
         deprecated_verification: bool = True,
-        skip_forge_verification: bool = TestFeaturesConfiguration.SKIP_FORGE_VERIFICATION,
+        skip_forge_verification: bool = TestSweepsFeatures.params.skip_forge_verification,
     ):
 
         if deprecated_verification:

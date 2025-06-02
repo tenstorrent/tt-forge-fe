@@ -13,7 +13,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import AutomaticValueChecker, VerifyConfig
 from forge.verify.verify import verify
 
@@ -37,11 +43,12 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
-def test_albert_masked_lm_pytorch(forge_property_recorder, size, variant):
+def test_albert_masked_lm_pytorch(size, variant):
 
-    module_name = forge_property_recorder.record_model_properties(
+    # Record Forge Property
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
         task=Task.MASKED_LM,
         source=Source.HUGGINGFACE,
@@ -116,19 +123,16 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size,variant", params)
-def test_albert_token_classification_pytorch(forge_property_recorder, size, variant):
+def test_albert_token_classification_pytorch(size, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=f"{size}_{variant}",
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # NOTE: These model variants are pre-trined only. They need to be fine-tuned
     # on a downstream task. Code is for demonstration purposes only.
@@ -165,9 +169,7 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
     ]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     if size == "xxlarge" and variant == "v2":
         pcc = 0.87
@@ -182,7 +184,6 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )
 
     # post processing
@@ -196,19 +197,16 @@ def test_albert_token_classification_pytorch(forge_property_recorder, size, vari
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["twmkn9/albert-base-v2-squad2"])
-def test_albert_question_answering_pytorch(forge_property_recorder, variant):
+def test_albert_question_answering_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -234,30 +232,32 @@ def test_albert_question_answering_pytorch(forge_property_recorder, variant):
     ]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    answer_start_index = co_out[0].argmax()
+    answer_end_index = co_out[1].argmax()
+
+    predict_answer_tokens = input_tokens.input_ids[0, answer_start_index : answer_end_index + 1]
+    print("predicted answer ", tokenizer.decode(predict_answer_tokens, skip_special_tokens=True))
 
 
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", ["textattack/albert-base-v2-imdb"])
-def test_albert_sequence_classification_pytorch(forge_property_recorder, variant):
+def test_albert_sequence_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="albert",
+        model=ModelArch.ALBERT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AlbertTokenizer.from_pretrained, variant)
@@ -282,12 +282,10 @@ def test_albert_sequence_classification_pytorch(forge_property_recorder, variant
     ]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # post processing
     predicted_class_id = co_out[0].argmax().item()

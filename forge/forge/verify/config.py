@@ -89,7 +89,7 @@ class NebulaGalaxy:
 
 @dataclass_json
 @dataclass
-class DepricatedVerifyConfig:
+class DeprecatedVerifyConfig:
     graph_name: str = "graph"  # name of the graph/test
     enabled: bool = True
     intermediates: bool = True
@@ -189,8 +189,8 @@ class DepricatedVerifyConfig:
             self.golden_ignore_df_precision = False
 
     @classmethod
-    def disabled(cls) -> "DepricatedVerifyConfig":
-        v = DepricatedVerifyConfig()
+    def disabled(cls) -> "DeprecatedVerifyConfig":
+        v = DeprecatedVerifyConfig()
         v.enabled = False
         v.verify_last = False
         v.intermediates = False
@@ -218,19 +218,19 @@ def should_waive_gradient(param_name, verify_cfg):
 
 
 # Global verify configutation
-g_verify_config: DepricatedVerifyConfig = DepricatedVerifyConfig()
+g_verify_config: DeprecatedVerifyConfig = DeprecatedVerifyConfig()
 
 
-def _get_global_verify_config() -> DepricatedVerifyConfig:
+def _get_global_verify_config() -> DeprecatedVerifyConfig:
     return g_verify_config
 
 
 def _clear_global_verify_config():
     global g_verify_config
-    g_verify_config = DepricatedVerifyConfig()
+    g_verify_config = DeprecatedVerifyConfig()
 
 
-def _set_global_verify_config(config: DepricatedVerifyConfig):
+def _set_global_verify_config(config: DeprecatedVerifyConfig):
     global g_compiler_config
     g_compiler_config = config
 

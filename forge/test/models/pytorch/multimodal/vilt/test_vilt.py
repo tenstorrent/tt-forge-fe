@@ -13,10 +13,19 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import verify
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.value_checkers import AutomaticValueChecker
+from forge.verify.verify import VerifyConfig, verify
 
-from test.models.pytorch.multimodal.vilt.utils.model import (
+from test.models.pytorch.multimodal.vilt.model_utils.model import (
     ViLtEmbeddingWrapper,
     ViltModelWrapper,
 )
@@ -58,24 +67,32 @@ variants = ["dandelin/vilt-b32-finetuned-vqa"]
 @pytest.mark.nightly
 @pytest.mark.push
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_question_answering_hf_pytorch(forge_property_recorder, variant):
+def test_vilt_question_answering_hf_pytorch(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH, model=ModelArch.VILT, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, model = generate_model_vilt_question_answering_hf_pytorch(variant)
 
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
     # Model Verification and Inference
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98)),
+    )
 
     # Post processing
     logits = co_out[0]
@@ -111,24 +128,35 @@ variants = ["dandelin/vilt-b32-mlm"]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_vilt_maskedlm_hf_pytorch(forge_property_recorder, variant):
+def test_vilt_maskedlm_hf_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vilt", variant=variant, task=Task.MASKED_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.VILT,
+        variant=variant,
+        task=Task.MASKED_LM,
+        source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     framework_model, inputs, _ = generate_model_vilt_maskedlm_hf_pytorch(variant)
 
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16), inputs[1].to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(
+        inputs,
+        framework_model,
+        compiled_model,
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.97)),
+    )

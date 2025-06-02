@@ -20,7 +20,17 @@ from torchvision.models import (
 from torchvision.models._api import WeightsEnum
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import print_cls_results
@@ -49,26 +59,27 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_timm(forge_property_recorder, variant):
+def test_efficientnet_timm(variant):
+    if variant in ["efficientnet_b0"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="efficientnet",
+        model=ModelArch.EFFICIENTNET,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
+        group=group,
+        priority=priority,
     )
 
-    # Record Forge Property
-    if variant in ["efficientnet_b0"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
-
     # Load model
-    framework_model = download_model(timm.create_model, variant, pretrained=True)
+    framework_model = download_model(timm.create_model, variant, pretrained=True).to(torch.bfloat16)
     framework_model.eval()
 
     # Load and pre-process image
@@ -88,15 +99,21 @@ def test_efficientnet_timm(forge_property_recorder, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -123,19 +140,16 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_efficientnet_torchvision(forge_property_recorder, variant):
+def test_efficientnet_torchvision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="efficientnet",
+        model=ModelArch.EFFICIENTNET,
         variant=variant,
         source=Source.TORCHVISION,
         task=Task.IMAGE_CLASSIFICATION,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model
     if variant == "efficientnet_b0":
@@ -144,6 +158,7 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         framework_model = efficientnet_b4(weights=EfficientNet_B4_Weights.IMAGENET1K_V1)
 
     framework_model.eval()
+    framework_model = framework_model.to(torch.bfloat16)
 
     # Load and pre-process image
     try:
@@ -162,15 +177,21 @@ def test_efficientnet_torchvision(forge_property_recorder, variant):
         )
         img_tensor = torch.rand(1, 3, 224, 224)
 
-    inputs = [img_tensor]
+    inputs = [img_tensor.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])

@@ -8,8 +8,14 @@ import torch
 from transformers import AutoTokenizer, MambaForCausalLM
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.verify import DepricatedVerifyConfig, verify
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
+from forge.verify.verify import DeprecatedVerifyConfig, verify
 
 from test.utils import download_model
 
@@ -30,20 +36,17 @@ variants = [
     pytest.param(
         "state-spaces/mamba-2.8b-hf",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
         ),
     ),
     pytest.param(
         "state-spaces/mamba-1.4b-hf",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 29 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
         ),
     ),
     pytest.param(
         "state-spaces/mamba-370m-hf",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 23 GB during compile time)"
-        ),
     ),
 ]
 
@@ -51,15 +54,16 @@ variants = [
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
-def test_mamba(forge_property_recorder, variant):
+def test_mamba(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="mamba", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MAMBA,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -76,9 +80,8 @@ def test_mamba(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        verify_cfg=DepricatedVerifyConfig(verify_forge_codegen_vs_framework=True),
-        forge_property_handler=forge_property_recorder,
+        verify_cfg=DeprecatedVerifyConfig(verify_forge_codegen_vs_framework=True),
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

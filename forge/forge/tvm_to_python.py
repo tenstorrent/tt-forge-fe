@@ -1467,8 +1467,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     method = node["attrs"]["method"][0][0]
 
     assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest neighbor and linear for now"
+        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
+    ), "Only support nearest neighbor, linear and cubic for now"
     assert int(node["attrs"]["num_inputs"]) == 1
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
@@ -2022,7 +2022,6 @@ def generate_forge_module(
     verify_cfg=None,
     clean_later=False,
     input_names=[],
-    forge_property_handler=None,
 ):
     global counter
 
@@ -2056,7 +2055,6 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2119,7 +2117,6 @@ def compile_tvm_to_python(
     compiler_cfg=None,
     verify_cfg=None,
     input_names=[],
-    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2154,7 +2151,6 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
-        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):
@@ -2634,7 +2630,7 @@ def compile_tvm_to_python(
             delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
-                    "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"
+                    "Preserving Intermediate tensor values in ForgeModule forward may cause out-of-memory issues"
                 )
             writer = ForgeWriter(
                 current_module_name,
