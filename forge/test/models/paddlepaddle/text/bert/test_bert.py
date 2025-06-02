@@ -7,7 +7,6 @@ import paddle
 
 import forge
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 from forge.tvm_calls.forge_utils import paddle_trace
 
 from forge.forge_property_utils import Framework, Source, Task
@@ -61,14 +60,7 @@ def test_bert_sequence_classification(forge_property_recorder, variant, input):
     )
 
     # Verify
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=False),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -98,14 +90,7 @@ def test_bert_maskedlm(forge_property_recorder, variant, input):
     )
 
     # Verify
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=False),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     outputs = compiled_model(*inputs)
@@ -142,14 +127,7 @@ def test_bert_question_answering(forge_property_recorder, variant, input):
     )
 
     # Verify
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=False),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # Inference
     outputs = compiled_model(*inputs)

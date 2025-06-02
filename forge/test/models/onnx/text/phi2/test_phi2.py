@@ -6,7 +6,6 @@ import onnx
 from transformers import AutoTokenizer, PhiForCausalLM
 import forge
 from forge.verify.verify import verify
-from forge.verify.config import VerifyConfig
 
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
 from test.models.models_utils import build_optimum_cli_command
@@ -75,6 +74,5 @@ def test_phi2_clm_onnx(forge_property_recorder, variant, forge_tmp_path):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )

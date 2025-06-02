@@ -54,6 +54,6 @@ def test_resnet_pd(variant, forge_property_recorder):
         input_sample,
         framework_model,
         compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=True),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
         forge_property_handler=forge_property_recorder,
     )

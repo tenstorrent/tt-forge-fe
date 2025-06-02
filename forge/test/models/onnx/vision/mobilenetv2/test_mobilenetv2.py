@@ -71,7 +71,7 @@ def test_mobilenetv2_onnx(variant, forge_property_recorder, forge_tmp_path):
         inputs,
         framework_model,
         compiled_model,
-        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc), verify_emitc_correctness=True),
+        verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
         forge_property_handler=forge_property_recorder,
     )
 

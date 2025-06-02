@@ -10,7 +10,6 @@ import onnx
 import torch
 from forge.verify.verify import verify
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority
-from forge.verify.config import VerifyConfig
 from transformers import SegformerForSemanticSegmentation, SegformerForImageClassification
 from test.models.models_utils import get_sample_data
 from test.utils import download_model
@@ -66,7 +65,6 @@ def test_segformer_image_classification_onnx(forge_property_recorder, variant, f
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -125,6 +123,5 @@ def test_segformer_semantic_segmentation_onnx(forge_property_recorder, variant, 
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )

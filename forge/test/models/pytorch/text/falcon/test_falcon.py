@@ -7,7 +7,6 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, FalconForCausalLM
 
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
@@ -48,13 +47,7 @@ def test_falcon(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants = [
@@ -121,14 +114,7 @@ def test_falcon_3(forge_property_recorder, variant):
     )
 
     # Model Verification
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify(
-        [padded_inputs],
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=False),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     # post processing
     generated_text = generate_no_cache(

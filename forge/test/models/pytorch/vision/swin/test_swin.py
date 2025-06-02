@@ -19,7 +19,6 @@ from forge.forge_property_utils import (
     Source,
     Task,
 )
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.swin.utils.image_utils import load_image
@@ -61,13 +60,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -105,13 +98,7 @@ def test_swin_v2_tiny_4_256_hf_pytorch(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -148,13 +135,7 @@ def test_swin_v2_tiny_image_classification(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 @pytest.mark.nightly
@@ -184,13 +165,7 @@ def test_swin_v2_tiny_masked(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants_with_weights = {
@@ -236,10 +211,4 @@ def test_swin_torchvision(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

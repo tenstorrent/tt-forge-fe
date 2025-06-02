@@ -74,8 +74,7 @@ def test_detr_detection(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        # https://github.com/tenstorrent/tt-mlir/issues/3397
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=False),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -117,10 +116,4 @@ def test_detr_segmentation(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

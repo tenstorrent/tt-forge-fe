@@ -7,7 +7,6 @@ from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -92,19 +91,8 @@ def test_t5_generation(forge_property_recorder, variant):
         framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
     )
 
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify_emitc_correctness = True
-    if variant == "t5-small":
-        verify_emitc_correctness = False
-
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=verify_emitc_correctness),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

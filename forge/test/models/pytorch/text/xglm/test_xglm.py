@@ -6,7 +6,6 @@ from transformers import AutoTokenizer, XGLMConfig, XGLMForCausalLM
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -56,10 +55,4 @@ def test_xglm_causal_lm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

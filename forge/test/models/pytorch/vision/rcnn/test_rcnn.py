@@ -10,7 +10,6 @@ import torchvision.transforms as transforms
 
 import forge
 from forge.forge_property_utils import Framework, Source, Task
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 
@@ -90,12 +89,6 @@ def test_rcnn_pytorch(forge_property_recorder):
             forge_property_handler=forge_property_recorder,
         )
 
-        verify(
-            inputs,
-            framework_model,
-            compiled_model,
-            VerifyConfig(verify_emitc_correctness=True),
-            forge_property_handler=forge_property_recorder,
-        )
+        verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
         break  # As generated proposals will be around 2000, halt inference after getting result from single proposal.

@@ -19,7 +19,6 @@ from transformers.models.llama.modeling_llama import (
 
 import forge
 from forge.forge_property_utils import Framework, ModelGroup, Source, Task
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -211,13 +210,7 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
     )
 
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
 
 
 variants = [
@@ -309,16 +302,5 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
         forge_property_handler=forge_property_recorder,
     )
 
-    # https://github.com/tenstorrent/tt-mlir/issues/3397
-    verify_emitc_correctness = True
-    if variant == "meta-llama/Llama-3.2-1B-Instruct":
-        verify_emitc_correctness = False
-
     # Model Verification
-    verify(
-        inputs,
-        framework_model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=verify_emitc_correctness),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)

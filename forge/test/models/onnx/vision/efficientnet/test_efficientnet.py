@@ -78,7 +78,6 @@ def test_efficientnet_onnx(variant, forge_property_recorder, forge_tmp_path):
         compiled_model,
         verify_cfg=VerifyConfig(
             value_checker=AutomaticValueChecker(pcc=pcc),
-            verify_emitc_correctness=True,
         ),
         forge_property_handler=forge_property_recorder,
     )

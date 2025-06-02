@@ -69,8 +69,6 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        # https://github.com/tenstorrent/tt-mlir/issues/3397
-        VerifyConfig(verify_emitc_correctness=False),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -130,8 +128,7 @@ def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        # https://github.com/tenstorrent/tt-mlir/issues/3397
-        verify_cfg=VerifyConfig(verify_values=verify_values, verify_emitc_correctness=False),
+        verify_cfg=VerifyConfig(verify_values=verify_values),
         forge_property_handler=forge_property_recorder,
     )
 
@@ -189,7 +186,6 @@ def test_dpr_reader_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
         forge_property_handler=forge_property_recorder,
     )
 

@@ -49,7 +49,6 @@ def test_resnet(forge_property_recorder, variant):
         input_sample,
         framework_model,
         compiled_model,
-        # https://github.com/tenstorrent/tt-mlir/issues/3397
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95), verify_emitc_correctness=False),
+        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
         forge_property_handler=forge_property_recorder,
     )

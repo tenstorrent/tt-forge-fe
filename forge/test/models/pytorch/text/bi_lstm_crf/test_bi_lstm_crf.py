@@ -12,7 +12,6 @@ from forge.forge_property_utils import (
     Source,
     Task,
 )
-from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.bi_lstm_crf.utils.model import get_model
@@ -44,10 +43,4 @@ def test_birnn_crf(forge_property_recorder):
     )
 
     # Model Verification
-    verify(
-        test_input,
-        model,
-        compiled_model,
-        VerifyConfig(verify_emitc_correctness=True),
-        forge_property_handler=forge_property_recorder,
-    )
+    verify(test_input, model, compiled_model, forge_property_handler=forge_property_recorder)
