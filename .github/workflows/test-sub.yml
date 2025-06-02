@@ -55,7 +55,7 @@ jobs:
         test_group_id: ${{ fromJSON(inputs.test_group_ids) }}
 
     runs-on:
-      - n150-7
+      - n150-2
       # - in-service
       # - ${{ matrix.build.runs-on }}
 
