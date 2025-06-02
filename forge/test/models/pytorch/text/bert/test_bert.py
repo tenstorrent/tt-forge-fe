@@ -40,7 +40,7 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
     sample_text = "The capital of France is [MASK]."
 
     # Data preprocessing
-    input_tokens = tokenizer(
+    tokenized = tokenizer(
         sample_text,
         max_length=128,
         padding="max_length",
@@ -48,7 +48,13 @@ def test_bert_masked_lm_pytorch(forge_property_recorder, variant):
         return_tensors="pt",
     )
 
-    inputs = [input_tokens["input_ids"]]
+    batch_size = 1
+    seq_len = 128
+    input_ids = tokenized["input_ids"]
+    attention_mask = tokenized["attention_mask"]
+    token_type_ids = torch.zeros_like(input_ids)
+    position_ids = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+    inputs = [input_ids, attention_mask, token_type_ids, position_ids]
 
     # Forge compile framework model
     compiled_model = forge.compile(
@@ -97,7 +103,19 @@ def generate_model_bert_qa_hf_pytorch(variant):
         return_tensors="pt",
     )
 
-    return model, [input_tokens["input_ids"]], tokenizer
+    # Manually create token_type_ids and position_ids to avoid dynamic graph behavior
+    batch_size, seq_len = input_tokens["input_ids"].shape
+    input_tokens["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    input_tokens["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    inputs = [
+        input_tokens["input_ids"],
+        input_tokens["attention_mask"],
+        input_tokens["token_type_ids"],
+        input_tokens["position_ids"],
+    ]
+
+    return model, inputs, tokenizer
 
 
 variants = [
@@ -284,9 +302,21 @@ def test_bert_sentence_embedding_generation_pytorch(forge_property_recorder, var
     framework_model.eval()
 
     # prepare input
-    sentences = "Bu örnek bir cümle"
-    encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
-    inputs = [encoded_input["input_ids"], encoded_input["attention_mask"], encoded_input["token_type_ids"]]
+    sentence = "Bu örnek bir cümle"
+    encoding = tokenizer(sentence, padding="max_length", truncation=True, max_length=16, return_tensors="pt")
+
+    # Manually construct token_type_ids and position_ids
+    batch_size, seq_len = encoding["input_ids"].shape
+    encoding["token_type_ids"] = torch.zeros((batch_size, seq_len), dtype=torch.long)
+    encoding["position_ids"] = torch.arange(seq_len).unsqueeze(0).expand(batch_size, -1)
+
+    # Inputs for forward pass
+    inputs = [
+        encoding["input_ids"],
+        encoding["attention_mask"],
+        encoding["token_type_ids"],
+        encoding["position_ids"],
+    ]
 
     # Forge compile framework model
     compiled_model = forge.compile(
