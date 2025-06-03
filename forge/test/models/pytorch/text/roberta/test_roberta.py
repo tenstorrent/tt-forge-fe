@@ -23,12 +23,7 @@ from test.utils import download_model
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize(
-    "variant",
-    [
-        pytest.param("xlm-roberta-base", marks=[pytest.mark.xfail]),
-    ],
-)
+@pytest.mark.parametrize("variant", ["xlm-roberta-base"])
 def test_roberta_masked_lm(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -41,7 +36,7 @@ def test_roberta_masked_lm(variant):
 
     # Load Albert tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant)
+    framework_model = download_model(AutoModelForMaskedLM.from_pretrained, variant, return_dict=False)
 
     # Input processing
     text = "Hello I'm a <mask> model."
@@ -65,7 +60,6 @@ def test_roberta_masked_lm(variant):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["cardiffnlp/twitter-roberta-base-sentiment"])
 def test_roberta_sentiment_pytorch(variant):
 
@@ -80,7 +74,7 @@ def test_roberta_sentiment_pytorch(variant):
 
     # Load Bart tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant)
+    framework_model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False)
 
     # Example from multi-nli validation set
     text = """Great road trip views! @ Shartlesville, Pennsylvania"""
