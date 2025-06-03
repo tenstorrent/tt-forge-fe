@@ -142,7 +142,7 @@ def test_gptneo_sequence_classification(variant):
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
     tokenizer.pad_token = tokenizer.eos_token
-    model = download_model(GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True)
+    model = download_model(GPTNeoForSequenceClassification.from_pretrained, variant, torchscript=True, use_cache=False)
 
     # Load data sample
     review = "the movie was great!"

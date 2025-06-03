@@ -77,10 +77,7 @@ def test_gpt2_text_gen(variant):
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "mnoukhov/gpt2-imdb-sentiment-classifier",
-            marks=[pytest.mark.xfail],
-        ),
+        "mnoukhov/gpt2-imdb-sentiment-classifier",
     ],
 )
 def test_gpt2_sequence_classification(variant):
@@ -96,7 +93,9 @@ def test_gpt2_sequence_classification(variant):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False)
+    model = download_model(
+        AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False, use_cache=False
+    )
     model.eval()
     framework_model = Wrapper(model)
 
