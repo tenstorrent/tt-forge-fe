@@ -4,3 +4,5 @@ add_dependencies(runtime tt-mlir)
 target_link_libraries(runtime PUBLIC coverage_config)
 
 target_compile_options(runtime PRIVATE ${STATIC_LIB_FLAGS} ${TTFORGE_CSRC_CFLAGS})
+
+add_subdirectory(test)

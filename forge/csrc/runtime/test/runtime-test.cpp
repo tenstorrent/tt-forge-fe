@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include "runtime_test.hpp"
+#include "runtime-test.hpp"
 
 #include "runtime/tensor.hpp"
 #include "runtime/tt_device.hpp"
@@ -78,8 +78,9 @@ bool test_so(
     std::vector<tt::Tensor>& consts_and_params,
     std::vector<tt::Tensor>& golden_outs)
 {
-    void* so_handle = tt::open_so(so_path);
-    std::vector<tt::runtime::Tensor> outs = tt::run_so_program(so_handle, func_name, act_inputs, consts_and_params);
+    void* so_handle = tt::runtime_test::open_so(so_path);
+    std::vector<tt::runtime::Tensor> outs =
+        tt::runtime_test::run_so_program(so_handle, func_name, act_inputs, consts_and_params);
 
     std::vector<runtime::Tensor> host_outs;
     std::transform(
@@ -108,9 +109,9 @@ bool test_so(
             return vec_host_t.front();
         });
 
-    tt::close_so(so_handle);
+    tt::runtime_test::close_so(so_handle);
 
-    return tt::compareOuts(host_outs, golden_host_outs);
+    return tt::runtime_test::compareOuts(host_outs, golden_host_outs);
 }
 
 }  // namespace tt::runtime_test

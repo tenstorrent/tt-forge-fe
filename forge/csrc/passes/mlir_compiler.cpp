@@ -205,11 +205,9 @@ std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module, const std::op
 }
 
 std::string run_mlir_compiler_to_shared_object(
-    tt::ForgeGraphModule& module,
-    const std::optional<MLIRConfig>& mlir_config,
-    const std::optional<py::object>& forge_property_handler)
+    tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, mlir_config, forge_property_handler);
+    return run_mlir_compiler_generic<MLIROutputKind::SharedObject>(module, mlir_config);
 }
 
 void to_json(::nlohmann::json& j, const MLIRConfig& p)

@@ -757,6 +757,14 @@ def record_execution(execution_stage: ExecutionStage):
     fph.record_execution(execution_stage)
 
 
+def record_emitc_status(self, is_success: bool):
+    fph = forge_property_handler_var.get()
+    if fph is None:
+        return
+
+    fph.record_emitc_status(is_success)
+
+
 def record_compiler_config(compiler_config: CompilerConfig):
     """
     Records the compiler configuration under config.compiler.
