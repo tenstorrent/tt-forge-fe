@@ -27,8 +27,8 @@ jobs:
           build-mode: none
         - language: python
           build-mode: none
-        - language: c-cpp
-          build-mode: none
+        # - language: c-cpp
+        #   build-mode: none
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -68,7 +68,8 @@ jobs:
     - name: Run Cppcheck
       run: |
         sudo apt-get install -y cppcheck
-        cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar forge/csrc || true
+        cd forge/csrc
+        cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar .
 
   analyze-cpp:
     name: Analyze c-cpp
@@ -87,7 +88,7 @@ jobs:
       - name: Setup
         id: cache-path
         shell: bash
-        run: apt-get update && apt-get install -y ca-certificates software-properties-common build-essential
+        run: sudo apt-get update && apt-get install -y ca-certificates software-properties-common build-essential
 
       - name: Git safe dir
         shell: bash
