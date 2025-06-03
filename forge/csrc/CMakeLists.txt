@@ -82,6 +82,7 @@ target_link_libraries(ttforge_csrc PRIVATE
     reportify
     tt_torch_device
     runtime
+    runtime-test
     ttforge_csrc_objs
     verif
 

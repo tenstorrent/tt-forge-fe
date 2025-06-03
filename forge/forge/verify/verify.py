@@ -27,6 +27,7 @@ from ..tensor import (
 from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor, ProgramType
+from forge._C.runtime_test import test_so
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
@@ -35,6 +36,7 @@ from forge.forge_property_utils import (
     record_execution,
     record_verify_config,
     record_consistency_limits,
+    record_emitc_status,
 )
 
 
@@ -419,7 +421,8 @@ def verify(
         fwd_func_name = "forward"
         fwd_func_name_len = len(fwd_func_name)
         fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
-        is_success = compiled_model.runtime_model_state.test_so(
+        is_success = test_so(
+            # is_success = compiled_model.runtime_model_state.test_so(
             so_path,
             fwd_func_sym,
             compiled_model.inputs,
@@ -429,8 +432,7 @@ def verify(
 
         logger.info("SharedObject test is success: {}", is_success)
 
-        if forge_property_handler is not None:
-            forge_property_handler.record_emitc_status(is_success)
+        record_emitc_status(is_success)
 
         assert is_success
 

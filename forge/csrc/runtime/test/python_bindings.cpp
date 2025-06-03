@@ -5,7 +5,7 @@
 #include "runtime/test/python_bindings.hpp"
 
 #include "runtime/tensor.hpp"
-#include "runtime/test/runtime_test.hpp"
+#include "runtime/test/runtime-test.hpp"
 
 namespace tt
 {

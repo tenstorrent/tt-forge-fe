@@ -498,7 +498,7 @@ class CompiledModel:
         """
 
         logger.info(f"Exporting model {self.framework_module.get_name()} to shared object file...")
-        path_to_so = run_mlir_compiler_to_shared_object(self.forge_graph_module, None)
+        path_to_so = run_mlir_compiler_to_shared_object(self.forge_graph_module)
 
         logger.info(f'Exported model as shared object file to "{path_to_so}"')
 
