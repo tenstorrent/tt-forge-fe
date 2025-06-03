@@ -993,6 +993,25 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_adaptive_maxpool2d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    output_size = [int(size) for size in node["attrs"]["output_size"][0]]
+    args.append(
+        (
+            "output_size",
+            f"{output_size[0]}",
+        )
+    )
+
+    layout = node["attrs"].get("layout", [["NCHW"]])[0][0]
+    channel_last = int(layout == "NHWC")
+    args.append(("channel_last", f"{channel_last}"))
+
+    return args
+
+
 def populate_maxpool3d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1702,6 +1721,7 @@ tvm_to_forge_op_map = {
     "nn.max_pool1d": "max_pool1d",
     "nn.max_pool2d": "max_pool2d",
     "nn.max_pool3d": "max_pool3d",
+    "nn.adaptive_max_pool2d": "adaptive_max_pool2d",
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
@@ -1789,6 +1809,7 @@ forge_op_to_function_name = {
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
     "max_pool3d": "forge.op.MaxPool3d",
+    "adaptive_max_pool2d": "forge.op.AdaptiveMaxPool2d",
     "maximum": "forge.op.Max",
     "mean": "forge.op.ReduceAvg",
     "minimum": "forge.op.Min",
@@ -1855,6 +1876,7 @@ forge_ops_needing_arguments = {
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
     "max_pool3d": populate_maxpool3d_args,
+    "adaptive_max_pool2d": populate_adaptive_maxpool2d_args,
     "pad": populate_pad_args,
     "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,
