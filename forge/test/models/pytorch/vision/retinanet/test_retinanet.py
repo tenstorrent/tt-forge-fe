@@ -4,10 +4,13 @@
 import os
 import shutil
 import zipfile
+from collections import OrderedDict
+from typing import Optional
 
 import pytest
 import requests
 import torch
+from torch import Tensor
 
 import forge
 from forge._C import DataFormat
@@ -21,8 +24,10 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
+from test.models.models_utils import print_cls_results
 from test.models.pytorch.vision.retinanet.model_utils.image_utils import img_preprocess
 from test.models.pytorch.vision.retinanet.model_utils.model import Model
+from test.models.pytorch.vision.retinanet.model_utils.model_utils import Postprocessor
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 
 variants = [
@@ -32,6 +37,32 @@ variants = [
     "retinanet_rn101fpn",
     "retinanet_rn152fpn",
 ]
+
+
+class RetinanetWrapper(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        model.eval()
+        self.model = model
+
+    def forward(
+        self, images: list[Tensor], targets: Optional[list[dict[str, Tensor]]] = None
+    ) -> tuple[dict[str, Tensor], list[dict[str, Tensor]]]:
+
+        # transform the input
+        images, targets = self.model.transform(images, targets)
+
+        # get the features from the backbone
+        features = self.model.backbone(images.tensors)
+        if isinstance(features, torch.Tensor):
+            features = OrderedDict([("0", features)])
+
+        features = list(features.values())
+
+        # compute the ssd heads outputs using the features
+        head_outputs = self.model.head(features)
+        output = [head_outputs["bbox_regression"], head_outputs["cls_logits"], features[0]]
+        return output
 
 
 @pytest.mark.nightly
@@ -117,9 +148,9 @@ def test_retinanet_torchvision(variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "detection", weight_name)
+    framework_model = RetinanetWrapper(framework_model)
     framework_model.to(torch.bfloat16)
     inputs = [inputs[0].to(torch.bfloat16)]
-
     data_format_override = DataFormat.Float16_b
     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
@@ -132,4 +163,10 @@ def test_retinanet_torchvision(variant):
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
+
+    postprocessor = Postprocessor(framework_model)
+    detection_fw, detection_co = postprocessor.process(fw_out, co_out, inputs)
+
+    # Run model on sample data and print results
+    print_cls_results(detection_fw[0], detection_co[0])

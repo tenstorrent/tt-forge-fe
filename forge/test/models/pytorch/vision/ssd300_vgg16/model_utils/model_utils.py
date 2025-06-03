@@ -75,8 +75,6 @@ class Postprocessor:
             "bbox_regression": x[0],
             "cls_logits": x[1],
         }
-        anchors_fw = x[2]
-        anchors_co = y[2]
         co_head_outputs = {
             "bbox_regression": y[0],
             "cls_logits": y[1],
@@ -105,6 +103,6 @@ class Postprocessor:
         detections_fw = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
 
         detections_co = postprocess_detections(co_head_outputs, anchors_co, images.image_size)
-        detections_co = self.model.transform.postprocess(detections_fw, images.image_size, original_image_sizes)
+        detections_co = self.model.transform.postprocess(detections_co, images.image_size, original_image_sizes)
 
         return detections_fw, detections_co
