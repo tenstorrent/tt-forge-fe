@@ -11,7 +11,7 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: builder
+    runs-on: ubuntu-latest
     permissions:
       # required for all workflows
       security-events: write
@@ -70,59 +70,49 @@ jobs:
         sudo apt-get install -y cppcheck
         cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar forge/csrc || true
 
-#   docker-build:
-#     uses: ./.github/workflows/build-image.yml
-#     permissions:
-#       checks: write
-#       packages: write
-#     secrets: inherit
+  analyze-cpp:
+    name: Analyze c-cpp
+    runs-on: builder
+    permissions:
+        # required for all workflows
+        security-events: write
+        packages: read
+        actions: read
+        contents: read
 
-#   analyze-cpp:
-#     name: Analyze c-cpp
-#     needs: docker-build
-#     runs-on: builder
-#     permissions:
-#         # required for all workflows
-#         security-events: write
-#         packages: read
-#         actions: read
-#         contents: read
+    strategy:
+        fail-fast: false
 
-#     strategy:
-#         fail-fast: false
-#     container:
-#         image: ${{ needs.docker-build.outputs.docker-image }}
+    steps:
+      - name: Setup
+        id: cache-path
+        shell: bash
+        run: apt-get update && apt-get install -y ca-certificates software-properties-common build-essential
 
-#     steps:
-#       - name: Set cache path
-#         id: cache-path
-#         shell: bash
-#         run: echo "work-dir=$(pwd)" >> $GITHUB_OUTPUT
+      - name: Git safe dir
+        shell: bash
+        run: |
+          git config --system --add safe.directory ${{ steps.cache-path.outputs.work-dir }}
+          chown -R root:root ${{ steps.cache-path.outputs.work-dir }}
 
-#       - name: Git safe dir
-#         shell: bash
-#         run: |
-#           git config --system --add safe.directory ${{ steps.cache-path.outputs.work-dir }}
-#           chown -R root:root ${{ steps.cache-path.outputs.work-dir }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          clean: true
+          fetch-depth: 0 # Fetch all history and tags
 
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#         with:
-#           submodules: 'recursive'
-#           clean: true
-#           fetch-depth: 0 # Fetch all history and tags
+      - name: Cleanup submodules
+        run: |
+            git submodule foreach --recursive git clean -ffdx
+            git submodule foreach --recursive git reset --hard
 
-#       - name: Cleanup submodules
-#         run: |
-#             git submodule foreach --recursive git clean -ffdx
-#             git submodule foreach --recursive git reset --hard
-
-#         # Initializes the CodeQL tools for scanning.
-#       - name: Initialize CodeQL
-#         uses: github/codeql-action/init@v3
-#         with:
-#           languages: c-cpp
-#           build-mode: manual
+        # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: c-cpp
+          build-mode: none
 
 #     # If the analyze step fails for c-cpp with "We were unable to automatically build your code",
 #     # modify the matrix above to set the build mode to "manual" for that language.
@@ -150,7 +140,7 @@ jobs:
 #             -DCODE_COVERAGE=ON
 #             cmake --build build
 
-#       - name: Perform CodeQL Analysis
-#         uses: github/codeql-action/analyze@v3
-#         with:
-#           category: "/language:c-cpp"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:c-cpp"
