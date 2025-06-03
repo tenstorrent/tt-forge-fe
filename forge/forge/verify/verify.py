@@ -419,12 +419,10 @@ def verify(
         all_outputs = compiled_model.runtime_model_state.get_outputs(ProgramType.Forward)
         consts_and_params = compiled_model.runtime_model_state.get_persistent_inputs(ProgramType.Forward)
         fwd_func_name = "forward"
-        fwd_func_name_len = len(fwd_func_name)
-        fwd_func_sym = f"_Z{fwd_func_name_len}{fwd_func_name}St6vectorIN2tt8tt_metal6TensorESaIS2_EE"
         is_success = test_so(
             # is_success = compiled_model.runtime_model_state.test_so(
             so_path,
-            fwd_func_sym,
+            fwd_func_name,
             compiled_model.inputs,
             consts_and_params,
             all_outputs,
