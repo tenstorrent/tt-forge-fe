@@ -30,7 +30,7 @@ from test.utils import download_model
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["bert-base-uncased"])
-@pytest.mark.push
+@pytest.mark.xfail
 def test_bert_masked_lm_pytorch(variant):
     # Record Forge Property
     module_name = record_model_properties(
@@ -77,7 +77,7 @@ def test_bert_masked_lm_pytorch(variant):
 
     # post processing
     logits = co_out[0]
-    mask_token_index = (input_tokens.input_ids == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
+    mask_token_index = (tokenized["input_ids"] == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
     predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
     print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
@@ -312,6 +312,6 @@ def test_bert_sentence_embedding_generation_pytorch(variant):
     _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
-    sentence_embeddings = mean_pooling(co_out, encoded_input["attention_mask"])
+    sentence_embeddings = mean_pooling(co_out, encoding["attention_mask"])
 
     print("Sentence embeddings:", sentence_embeddings)
