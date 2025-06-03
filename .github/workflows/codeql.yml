@@ -11,7 +11,7 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: ubuntu-latest
+    runs-on: builder
     permissions:
       # required for all workflows
       security-events: write
@@ -53,6 +53,22 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+
+  cppcheck:
+    name: Cppcheck
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        clean: true
+        fetch-depth: 0 # Fetch all history and tags
+
+    - name: Run Cppcheck
+      run: |
+        sudo apt-get install -y cppcheck
+        cppcheck --std=c++17 --check-level=exhaustive --enable=warning,information --platform=unix64 --suppress=uninitMemberVar forge/csrc || true
 
 #   docker-build:
 #     uses: ./.github/workflows/build-image.yml
