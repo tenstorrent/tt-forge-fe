@@ -1442,8 +1442,7 @@ graphlib::Edge clone_input_forking_edge(graphlib::Graph *graph, graphlib::Edge u
 graphlib::Shape default_tm_evaluator(graphlib::OpType const &tm, graphlib::Shape shape, graphlib::IRLevel ir_level)
 {
     std::vector<Shape> shapes = {shape};
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(tm, shapes, ir_level == IRLevel::IR_FORGE, shape.get_tile_dim());
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(tm, shapes, shape.get_tile_dim());
     shape = std::get<0>(shape_data);
     TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
     return shape;
@@ -1494,50 +1493,6 @@ std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node con
     return std::make_pair(0, 0);
 }
 
-bool tms_support_kernel_broadcast(
-    Shape producer_shape, std::vector<OpType> const &tms, UBlockOrder ublock_order, int ublock_ct, bool is_forge)
-{
-    if (not std::any_of(tms.begin(), tms.end(), [](auto const &op_type) { return op_type.op == "broadcast"; }))
-        return false;
-
-    // Kernel broadcast producer must start as 2 dimensional
-    if (producer_shape.z() > 1)
-        return false;
-
-    // Anything goes when it's just a single tile
-    if (producer_shape.is_single_tile())
-        return true;
-
-    // The following code asserts if this set of TMs interleaves the
-    // broadcast tile order which is illegal for kernel broadcast.
-    Shape shape = producer_shape;
-    for (auto const &tm : tms)
-    {
-        if (tm.op == "broadcast")
-        {
-            // If we sliced and now have a zdim, a broadcast will create repeat tiles which is illegal
-            if (shape.z() > 1)
-                return false;
-
-            int dim = shape.negative_index(std::get<int>(tm.attr[0]));
-
-            // If the broadcast dim is in the same direction as the ublock order,
-            // then we are repeating tiles which is illagal
-            if ((not shape.is_unit(-2) and dim == -1 and (ublock_order == UBlockOrder::R or ublock_ct > 1)) or
-                (not shape.is_unit(-1) and dim == -2 and ublock_order == UBlockOrder::C))
-                return false;
-        }
-        else if (tm.op == "transpose")
-        {
-            ublock_order = flip_ublock_order(ublock_order);
-        }
-
-        shape = ::get_tm_shape(tm, shape, is_forge);
-    }
-
-    return true;
-}
-
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node)
 {
@@ -1560,7 +1515,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
         {
             std::vector<Shape> shapes = {operand_shape};
             std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-                get_op_shape(tm, shapes, graph->get_ir_level() == IRLevel::IR_FORGE, operand_shape.get_tile_dim());
+                get_op_shape(tm, shapes, operand_shape.get_tile_dim());
             operand_shape = std::get<0>(shape_data);
             TT_ASSERT(std::get<1>(shape_data).size() == 0, "TMs should not cause broadcasts");
             log_trace(LogGraphCompiler, "    TM {} {}", tm.as_string(), operand_shape);
@@ -1591,7 +1546,7 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
                                    : dynamic_cast<graphlib::OpNode *>(node)->op_type();
 
     std::tuple<Shape, std::vector<DimBroadcast>> shape_data =
-        get_op_shape(op_type, operand_shapes, graph->get_ir_level() == IRLevel::IR_FORGE, node->shape().get_tile_dim());
+        get_op_shape(op_type, operand_shapes, node->shape().get_tile_dim());
 
     log_trace(LogGraphCompiler, "  {}", std::get<0>(shape_data));
     node->set_shape(std::get<0>(shape_data));
@@ -1608,11 +1563,6 @@ void calculate_and_set_node_shape(Graph *graph, Node *node)
             {
                 int dim = std::get<1>(b);
                 int size = std::get<2>(b);
-                bool const is_forge = graph->get_ir_level() == IRLevel::IR_FORGE;
-                if (is_forge and dim >= 2)
-                {
-                    size /= graphlib::Shape::FORGE_TILE_DIM;
-                }
                 graph->get_edge_attributes(e)->set_broadcast_dim(dim, size);
             }
         }

@@ -57,7 +57,6 @@ def get_intermediate_tensors(
     inputs: Tuple[Tensor, ...],
     parameters: Dict[str, torch.Tensor],
     device: "TTDevice",
-    is_forge: bool,
 ):
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
     intermediates = pygraph.get_intermediate_tensors(
@@ -75,7 +74,6 @@ def do_verify(
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
     verify_cfg: DeprecatedVerifyConfig,
-    is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
     optimizer=None,

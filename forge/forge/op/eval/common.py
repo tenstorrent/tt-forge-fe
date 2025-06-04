@@ -70,54 +70,34 @@ def cast_for_cpu_eval(t_ops, op_name=None):
     return t_ops, original_type
 
 
-def create_constant_tensor_from_value(
-    value: float, dims: Tuple[int, int], is_forge: bool, df: DataFormat
-) -> torch.Tensor:
+def create_constant_tensor_from_value(value: float, dims: Tuple[int, int], df: DataFormat) -> torch.Tensor:
     dim_r, dim_c = dims
     if dim_r < 0:
-        dim_r = TILE_DIM if is_forge else 0
+        dim_r = 0
     if dim_c < 0:
-        dim_c = TILE_DIM if is_forge else 0
+        dim_c = 0
 
     tensor_r = dim_r
     tensor_c = dim_c
-    if is_forge and (tensor_c % 32 != 0):
-        tensor_c += 32 - tensor_c % 32
-    if is_forge and (tensor_r % 32 != 0):
-        tensor_r += 32 - tensor_r % 32
 
     dtype = forge_dataformat_to_pytorch_dtype(df)
-    if is_forge:
-        tensor = torch.zeros(1, 1, tensor_r, tensor_c, dtype=dtype)
-        tensor[:, :, 0:dim_r, 0:dim_c] = value
+    if tensor_c == 0 and tensor_r == 0:
+        # Unsqueezing to make this a 1d tensor.
+        # Currently, the runtime expects a 1d tensor for scalar values.
+        tensor = torch.unsqueeze(torch.tensor(value, dtype=dtype), dim=0)
+    elif tensor_c == 0 or tensor_r == 0:
+        dim = tensor_c if tensor_r == 0 else tensor_r
+        tensor = torch.zeros(dim, dtype=dtype)
+        tensor[0:dim] = value
     else:
-        if tensor_c == 0 and tensor_r == 0:
-            # Unsqueezing to make this a 1d tensor.
-            # Currently, the runtime expects a 1d tensor for scalar values.
-            tensor = torch.unsqueeze(torch.tensor(value, dtype=dtype), dim=0)
-        elif tensor_c == 0 or tensor_r == 0:
-            dim = tensor_c if tensor_r == 0 else tensor_r
-            tensor = torch.zeros(dim, dtype=dtype)
-            tensor[0:dim] = value
-        else:
-            tensor = torch.zeros(tensor_r, tensor_c, dtype=dtype)
-            tensor[0:tensor_r, 0:tensor_c] = value
+        tensor = torch.zeros(tensor_r, tensor_c, dtype=dtype)
+        tensor[0:tensor_r, 0:tensor_c] = value
 
-    return tensor
-
-
-def create_constant_tensor_from_tile(tile: List[float], is_forge: bool, df: DataFormat) -> torch.Tensor:
-
-    assert is_forge, "Tile tensors should only be created for forge graphs"
-    assert len(tile) == TILE_DIM * TILE_DIM, "Incorrect number of elements in tile"
-    tensor = torch.FloatTensor(tile)
-    tensor = tensor.reshape(1, 1, TILE_DIM, TILE_DIM)
-    tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
 
 def create_constant_tensor_from_tensor(
-    tensor_values: List[float], tensor_shape: List[int], is_forge: bool, df: DataFormat
+    tensor_values: List[float], tensor_shape: List[int], df: DataFormat
 ) -> torch.Tensor:
     assert prod(tensor_shape) == len(tensor_values)
     tensor = torch.FloatTensor(tensor_values)
@@ -126,7 +106,7 @@ def create_constant_tensor_from_tensor(
     return tensor
 
 
-def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
+def create_constant_tensor(flat_data: List[float], shape: List[int], df: DataFormat) -> torch.Tensor:
     tensor = torch.FloatTensor(flat_data)
     tensor = tensor.reshape(*shape)
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))

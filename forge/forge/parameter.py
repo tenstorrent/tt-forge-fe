@@ -148,7 +148,9 @@ class Parameter(TensorBase):
         if self._data_format is None:
             self._data_format = pytorch_dtype_to_forge_dataformat(self._value.dtype, fp32_fallback=self.fp32_fallback)
 
-    def value(self, is_forge=False) -> torch.Tensor:
+    def value(
+        self,
+    ) -> torch.Tensor:
         """
         Return parameter value, optionally padded to forge dimensions.
         """
