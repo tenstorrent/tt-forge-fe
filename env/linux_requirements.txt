@@ -1,27 +1,20 @@
 # First include all requirements from the Distribution build
 -r core_requirements.txt
 
-bitarray==2.5.1
 clang-format==14.0.3
 diffusers==0.32.1
 optimum==1.23.3
 hydra-core
 IPython==8.8.0
-nvidia-ml-py3==7.352.0
-omegaconf
 pytest==6.2.4
 pytest-timeout==2.0.1
 pytest-xdist==2.5.0
 pytorchcv==0.0.67
 pytest-split
-sacrebleu==2.1.0
-sacremoses==0.0.53
 seaborn
 scikit-image==0.20.0 # For DenseNet 121 HF XRay model
 segmentation_models_pytorch==0.4.0
 sentencepiece==0.2.0
-subword-nmt==0.3.8
-tensorflow-hub==0.12.0
 timm==1.0.9
 yolov5==7.0.9
 # The CPU versions of torch and torch visions are used due to their size being
@@ -33,10 +26,8 @@ torch==2.3.1 ; python_version=='3.11'
 torchxrayvision==0.0.39
 vgg_pytorch==0.3.0
 librosa==0.10.0.post2
-soundfile==0.12.1
 accelerate==1.0.1
 python-gitlab==4.4.0
-deepdiff==6.7.1
 tabulate==0.9.0
 opencv-contrib-python==4.9.0.80
 yolov6detect==0.4.1
