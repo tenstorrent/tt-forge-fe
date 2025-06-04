@@ -954,12 +954,10 @@ py::object consteval_input(
 
     py::object tensor_module;
     py::function narrow_forge_tensor_to_pytorch;
-    py::function pad_pytorch_tensor_to_forge;
     if (is_forge)
     {
         tensor_module = py::module_::import("forge.tensor");
         narrow_forge_tensor_to_pytorch = tensor_module.attr("narrow_forge_tensor_to_pytorch");
-        pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
     }
 
     if (node_epoch_type == graphlib::NodeEpochType::Backward)
@@ -1024,11 +1022,6 @@ py::object consteval_input(
     }
 
     TT_ASSERT(output.ptr() != nullptr, runtime_node->name());
-
-    if (is_forge)
-    {
-        output = pad_pytorch_tensor_to_forge(output, std::vector<int>{});
-    }
 
     return output;
 }
@@ -1321,18 +1314,6 @@ py::object get_constant_input_value(graphlib::Node *node, bool is_forge)
     else if (cnode->is_tensor())
     {
         auto tensor = borrow_shared_py_object(cnode->tensor());
-        if (is_forge)
-        {
-            py::object tensor_module = py::module_::import("forge.tensor");
-            py::function pad_pytorch_tensor_to_forge = tensor_module.attr("pad_pytorch_tensor_to_forge");
-            tensor = pad_pytorch_tensor_to_forge(
-                tensor,
-                node->as<graphlib::InputNode>()->get_tile_broadcast_dims(),
-                false,  // squeeze
-                1,      // microbatch
-                node->shape().get_tile_height(),
-                node->shape().get_tile_width());
-        }
         return tensor;
     }
 

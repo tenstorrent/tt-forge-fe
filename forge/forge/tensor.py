@@ -386,7 +386,7 @@ class TensorFromPytorch(Tensor):
             if reinterpret_shape[0] == 1:
                 reinterpret_shape[0] = microbatch
             value = value.view(reinterpret_shape)
-        new_tensor = pad_pytorch_tensor_to_forge(value, tile_broadcast_dims, squeeze, microbatch, tile_r, tile_c)
+        new_tensor = value
         return Tensor.create_from_torch(new_tensor)
 
     # def to_tensor_desc(self) -> "PytorchTensorDesc":
@@ -881,103 +881,11 @@ def is_equivalent_data_format(pt_df: torch.dtype, tt_df: DataFormat) -> bool:
 #     return tensor_desc_to_pytorch_tensor(desc)
 
 
-def pad_sparse_pytorch_tensor_to_forge(sparse: torch.Tensor) -> torch.Tensor:
-    assert len(sparse.shape) == 4, "This function should only be invoked from pad_pytorch_tensor_to_forge"
-    sparse_r = align_up_tile(sparse.shape[-2])
-    sparse_c = align_up_tile(sparse.shape[-1])
-    sparse = sparse.coalesce()
-    return torch.sparse_coo_tensor(
-        sparse.indices(),
-        sparse.values(),
-        (sparse.shape[0], sparse.shape[1], sparse_r, sparse_c),
-        dtype=sparse.dtype,
-    )
-
-
 def is_forge_shape(tensor: torch.Tensor, min_dim=-1) -> bool:
     dim_ok = len(tensor.shape) >= min_dim if min_dim > 0 else len(tensor.shape) == 4
     if not dim_ok or len(tensor.shape) > 4:
         return False
     return tensor.shape[-1] % TILE_DIM == 0 and tensor.shape[-2] % TILE_DIM == 0
-
-
-def pad_pytorch_tensor_to_forge(
-    tensor: torch.Tensor,
-    tile_broadcast_dims: List[int],
-    squeeze: bool = False,
-    microbatch=1,
-    tile_r=TILE_DIM,
-    tile_c=TILE_DIM,
-) -> torch.Tensor:
-    """
-    Pad pytorch tensor to 4D tile-snapped dimensions. Broadcast given dims to tile size.
-    """
-    # Skip padding if not needed
-    min_dim = 2 if squeeze and tensor.shape[0] != microbatch and len(tensor.shape) > 2 else 4
-    if is_forge_shape(tensor, min_dim):
-        return tensor
-
-    new_tensor = tensor
-
-    while len(new_tensor.shape) < min_dim:
-        if new_tensor.shape[0] == microbatch:
-            new_tensor = new_tensor.unsqueeze(1)
-        else:
-            new_tensor = new_tensor.unsqueeze(0)
-
-    while len(new_tensor.shape) > 5:
-        assert new_tensor.shape[0] == 1, "Invalid dimension size above dim 5"
-        new_tensor = new_tensor.squeeze(0)
-
-    if new_tensor.shape[0] < microbatch:
-        new_tensor = new_tensor.broadcast_to([microbatch, *new_tensor.shape[1:]]).contiguous()
-
-    if is_forge_shape(new_tensor):
-        new_tensor = new_tensor.detach().contiguous()
-        return new_tensor  # done after adjusting number of dims
-
-    if new_tensor.is_sparse:
-        return pad_sparse_pytorch_tensor_to_forge(new_tensor)
-
-    def get_pad(dim, tile_dim):
-        if dim % tile_dim > 0:
-            return tile_dim - (dim % tile_dim)
-        return 0
-
-    dim_c = new_tensor.shape[-1]
-    dim_r = new_tensor.shape[-2]
-
-    pad_right = get_pad(dim_c, tile_c)
-    pad_bottom = get_pad(dim_r, tile_r)
-
-    # broadcast to tile dim if told to do so
-    mode_right = "replicate" if (-1 in tile_broadcast_dims or 3 in tile_broadcast_dims) else "constant"
-    mode_bottom = "replicate" if (-2 in tile_broadcast_dims or 2 in tile_broadcast_dims) else "constant"
-
-    if mode_right == "replicate":
-        assert dim_c == 1, "Trying to broadcast to tile dim a dimension that's not 1"
-
-    if mode_bottom == "replicate":
-        assert dim_r == 1, "Trying to broadcast to tile dim a dimension that's not 1"
-
-    # Torch pad needs at least 3d, and float32
-    original_type = new_tensor.dtype
-    if original_type != torch.float32:
-        new_tensor = new_tensor.type(torch.float32)
-    original_dim = len(new_tensor.shape)
-    while len(new_tensor.shape) < 3:
-        new_tensor = new_tensor.unsqueeze(0)
-    ret = torch.nn.functional.pad(new_tensor, (0, pad_right, 0, 0), mode=mode_right)
-    ret = torch.nn.functional.pad(ret, (0, 0, 0, pad_bottom), mode=mode_bottom)
-    while len(ret.shape) > original_dim:
-        ret = ret.squeeze(0)
-
-    if ret.dtype != original_type:
-        ret = ret.type(original_type)
-
-    ret = ret.detach()
-    ret.requires_grad = tensor.requires_grad
-    return ret
 
 
 def narrow_forge_tensor_to_pytorch(
@@ -1408,8 +1316,6 @@ def consteval_tensor(consteval_trace, name: str, inputs: Dict[str, torch.Tensor]
             output = node_to_tensor[node["input_nodes"][0]]
 
     assert output is not None, "Expect a valid tensor output out of consteval"
-    if is_forge:
-        output = pad_pytorch_tensor_to_forge(output, [], tile_r=tile_r, tile_c=tile_c)
     return output
 
 
@@ -1446,7 +1352,7 @@ def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
             [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguous=True
         )[0]
     else:
-        value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]
+        value = inputs[input_name]
     # cast if necessary
     forge_dtype = pytorch_dtype_to_forge_dataformat(value.dtype)
     if value.dtype != forge_dataformat_to_pytorch_dtype(forge_dtype):
@@ -1495,49 +1401,6 @@ def get_post_const_eval_tensors(
         )
 
     return post_const_eval_constants
-
-
-# def _embedding_index(tensor: torch.Tensor, original_shape: Tuple[int, ...], queue: DramIODesc):
-#     assert queue.data_format in [DataFormat.RawUInt8, DataFormat.RawUInt16, DataFormat.RawUInt32]
-#     assert len(tensor.shape) <= 2, "Must be a 1d tensor"
-#     assert len(original_shape) <= 1 or original_shape[-2] == 1, "Must be a 1d tensor"
-#     assert len(original_shape) <= 2 or original_shape[-3] == 1, "Must be a 1d tensor"
-
-#     q_rt = queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt
-#     w = tensor.shape[0] if len(tensor.shape) > 1 else 1
-#     pad = align_up(tensor.shape[-1], TILE_DIM) - tensor.shape[-1]
-#     tensor = torch.nn.functional.pad(tensor, (0, pad))
-#     tensor = tensor.reshape(w, 1, 1, tensor.shape[-1])
-#     tensor[:, :, :, original_shape[-1]:] = ~torch.tensor(0, dtype=tensor.dtype)
-#     tensor = tensor.view(w, q_rt, -1, TILE_DIM)
-#     pad = align_up(tensor.shape[-2], TILE_DIM) - tensor.shape[-2]
-#     tensor = torch.nn.functional.pad(tensor, (0, 0, 0, pad))
-#     tensor = tensor.view(w, q_rt, -1, TILE_DIM, TILE_DIM)
-#     tensor = tensor.transpose(2, 3).view(w, 1, q_rt * TILE_DIM, -1)
-
-#     assert len(tensor.shape) == 4, "_embedding_index: rank changed"
-#     assert tensor.shape[0] == w, "_embedding_index: w changed"
-#     assert tensor.shape[1] == queue.t, "_embedding_index: t changed"
-#     assert tensor.shape[2] == (queue.bufq_grid_dim_r * queue.mblock_m * queue.ublock_rt * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-#     assert tensor.shape[3] == (queue.bufq_grid_dim_c * queue.mblock_n * queue.ublock_ct * TILE_DIM), "_embedding_index: tensor dims mismatch q dims"
-#     return tensor
-
-# def _reinterpret_shape(tensor: torch.Tensor, shape: List[int], queue: DramIODesc, tile_bcast_dims: List[int]):
-#     tensor = tensor.contiguous().view(shape)
-#     tile_r = queue.tile_height
-#     tile_c = queue.tile_width
-#     microbatch = queue.input_count
-#     tensor = pad_pytorch_tensor_to_forge(tensor, tile_bcast_dims, squeeze=True, microbatch=microbatch, tile_r=tile_r, tile_c=tile_c)
-#     return tensor, queue
-
-# def _prestride_shape(tensor: torch.Tensor, stride_height: int, stride_width: int, queue: DramIODesc):
-#     assert stride_height == stride_width, "Backend supports only square strides for prestriding transform"
-#     stride = stride_height
-#     stride_desc = StrideDescriptor()
-#     stride_desc.stride = stride
-#     stride_desc.xy_offsets = [(x, y) for y in range(stride) for x in range(stride)]
-#     queue.s_descriptor = stride_desc
-#     return tensor, queue
 
 
 def do_runtime_transform(transform, tensor, q, tile_bcast_dims):

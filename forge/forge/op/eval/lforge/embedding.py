@@ -4,7 +4,6 @@
 import torch
 from forge._C.graph import UBlockOrder
 from ..common import to_torch_operands
-from forge.tensor import pad_pytorch_tensor_to_forge, align_up_tile
 
 
 def eval(type, attr, ops):
@@ -15,13 +14,13 @@ def eval(type, attr, ops):
     indices = t_ops[0].reshape(-1).narrow(0, 0, num_indices)
     table = t_ops[1].squeeze(0).squeeze(0)
     r = torch.embedding(table, indices)
-    return pad_pytorch_tensor_to_forge(r, [])
+    return r
 
 
 def shape(type, attr, ops, tile_height, tile_width):
     assert type == "embedding"
     assert len(ops) == 2
-    num_indices = align_up_tile(attr[0])
+    num_indices = attr[0]
     embedding_dim = ops[1][-1]
     shape = [1, 1, num_indices, embedding_dim]
     return shape, []

@@ -11,7 +11,6 @@ from .tensor import (
     TensorShape,
     TensorBase,
     pytorch_dtype_to_forge_dataformat,
-    pad_pytorch_tensor_to_forge,
     forge_dataformat_to_pytorch_dtype,
 )
 from .forgeglobal import lazy_trace_data
@@ -155,8 +154,7 @@ class Parameter(TensorBase):
         """
 
         if self._value is not None:
-            # parameters are never tile-broadcast
-            ret = pad_pytorch_tensor_to_forge(self._value, []) if is_forge else self._value
+            ret = self._value
             ret.requires_grad = self.requires_grad
             return ret
 

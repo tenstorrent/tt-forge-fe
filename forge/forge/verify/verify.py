@@ -19,7 +19,6 @@ from forge.tensor import to_pt_tensors
 from ..tensor import (
     FrameworkTensor,
     Tensor,
-    pad_pytorch_tensor_to_forge,
     narrow_forge_tensor_to_pytorch,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
@@ -63,12 +62,6 @@ def get_intermediate_tensors(
     is_forge: bool,
 ):
     torch_inputs: List[torch.Tensor] = [i.value() for i in inputs]
-
-    if is_forge:
-        torch_inputs = [
-            pad_pytorch_tensor_to_forge(t, graph.get_tile_broadcast_dims_for_input(i))
-            for i, t in enumerate(torch_inputs)
-        ]
     intermediates = pygraph.get_intermediate_tensors(
         graph, torch_inputs, parameters, device, relative_atol=1.0, pcc=0.0
     )

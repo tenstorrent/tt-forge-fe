@@ -18,7 +18,7 @@ from scipy.spatial import distance
 
 from ...forgeglobal import TILE_DIM
 
-from ...tensor import pad_pytorch_tensor_to_forge, forge_dataformat_to_pytorch_dtype
+from ...tensor import forge_dataformat_to_pytorch_dtype
 from forge import DataFormat, MathFidelity
 
 
@@ -122,8 +122,6 @@ def create_constant_tensor_from_tensor(
     assert prod(tensor_shape) == len(tensor_values)
     tensor = torch.FloatTensor(tensor_values)
     tensor = tensor.reshape(tensor_shape)
-    if is_forge:
-        tensor = pad_pytorch_tensor_to_forge(tensor, [])
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
@@ -131,8 +129,6 @@ def create_constant_tensor_from_tensor(
 def create_constant_tensor(flat_data: List[float], shape: List[int], is_forge: bool, df: DataFormat) -> torch.Tensor:
     tensor = torch.FloatTensor(flat_data)
     tensor = tensor.reshape(*shape)
-    if is_forge:
-        tensor = pad_pytorch_tensor_to_forge(tensor)
     tensor = tensor.type(forge_dataformat_to_pytorch_dtype(df))
     return tensor
 
