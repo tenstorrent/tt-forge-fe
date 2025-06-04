@@ -243,6 +243,25 @@ def eval(type, attr, ops):
         )
         if channel_last:
             result = result.permute((0, 2, 3, 1))
+
+    elif type == "adaptive_max_pool2d":
+        assert len(attr) == 3, f"Expected 3 attrs: output_h, output_w, channel_last, got: {len(attr)}"
+
+        output_size = [attr[0], attr[1]]
+        channel_last = attr[2]
+
+        if channel_last:
+            activations = activations.permute((0, 3, 1, 2))  # NHWC → NCHW
+
+        result = torch.nn.functional.adaptive_max_pool2d(
+            activations,
+            output_size=output_size,
+            return_indices=False,
+        )
+
+        if channel_last:
+            result = result.permute((0, 2, 3, 1))  # NCHW → NHWC
+
     elif type == "max_pool3d":
         assert len(attr) == 17, f"maxpool3d attr-len = {len(attr)}"
         kernel_size = [attr[0], attr[1], attr[2]]
@@ -446,6 +465,24 @@ def shape(type, attr, ops):
             result = (activations[0], y, x, activations[1])
         else:
             result = (activations[0], activations[1], y, x)
+
+        return result, []
+
+    elif type == "adaptive_max_pool2d":
+        assert len(attr) == 3, f"Expected 3 attrs: output_h, output_w, channel_last, got: {len(attr)}"
+
+        output_h = attr[0]
+        output_w = attr[1]
+        channel_last = attr[2]
+
+        activations = [ops[0][dim] for dim in range(len(ops[0]))]
+        if channel_last:
+            activations = [activations[ii] for ii in (0, 3, 1, 2)]
+
+        if channel_last:
+            result = (activations[0], output_h, output_w, activations[1])
+        else:
+            result = (activations[0], activations[1], output_h, output_w)
 
         return result, []
 

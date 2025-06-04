@@ -123,8 +123,14 @@ def test_opt_qa(variant):
     verify(inputs, framework_model, compiled_model)
 
 
+variants = [
+    pytest.param("facebook/opt-125m", marks=[pytest.mark.xfail]),
+    "facebook/opt-350m",
+    pytest.param("facebook/opt-1.3b", marks=[pytest.mark.xfail]),
+]
+
+
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_opt_sequence_classification(variant):
 
@@ -143,7 +149,9 @@ def test_opt_sequence_classification(variant):
     # on a downstream task. Code is for demonstration purposes only.
 
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
-    framework_model = download_model(OPTForSequenceClassification.from_pretrained, variant, torchscript=True)
+    framework_model = download_model(
+        OPTForSequenceClassification.from_pretrained, variant, torchscript=True, use_cache=False
+    )
 
     # Load data sample
     review = "the movie was great!"
