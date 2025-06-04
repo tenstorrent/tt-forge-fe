@@ -407,27 +407,6 @@ json create_json_for_graph(const graphlib::Graph* graph, std::function<bool(grap
     return this_json;
 }
 
-json create_json_for_mlir(const std::string& module_name, mlir::Operation* operation)
-{
-    json this_json;
-
-    this_json["module"] = module_name;
-
-    std::string outputString;
-    llvm::raw_string_ostream outStream(outputString);
-
-    // Print the MLIR module
-    mlir::OpPrintingFlags printFlags;
-    printFlags.enableDebugInfo();
-
-    // Put data into string
-    operation->print(outStream, printFlags);
-    outStream.flush();
-    this_json["content"] = outputString;
-
-    return this_json;
-}
-
 JsonNamePairs create_jsons_for_graph(
     const std::string& graph_prefix, const graphlib::Graph* graph, std::function<bool(graphlib::Node*)> node_filter)
 {
@@ -435,19 +414,6 @@ JsonNamePairs create_jsons_for_graph(
 
     json this_json = create_json_for_graph(graph, node_filter);
     std::string this_name = graph_prefix + ".forge";
-    JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
-    this_json_name_pairs.push_back(this_json_name_pair);
-
-    return this_json_name_pairs;
-}
-
-JsonNamePairs create_jsons_for_mlir(
-    const std::string& file_name, const std::string& module_name, mlir::Operation* operation)
-{
-    JsonNamePairs this_json_name_pairs;
-
-    json this_json = create_json_for_mlir(module_name, operation);
-    std::string this_name = file_name + ".mlir";
     JsonNamePair this_json_name_pair = std::make_pair(this_json, this_name);
     this_json_name_pairs.push_back(this_json_name_pair);
 
