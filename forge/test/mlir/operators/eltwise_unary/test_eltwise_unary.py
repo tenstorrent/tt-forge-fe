@@ -9,6 +9,8 @@ from torch import nn
 import forge
 from forge.verify.verify import verify
 import torch.nn.functional as F
+import onnx
+import os
 
 
 @pytest.mark.parametrize(
@@ -1006,3 +1008,51 @@ def test_bernoulli(input_shape):
     )
 
     verify(inputs, model, compiled_model)
+
+
+@pytest.mark.parametrize(
+    "input_shape, upscale_factor",
+    [
+        ((1, 3072, 8, 8), 32),
+        ((1, 128, 16, 16), 8),
+        ((1, 144, 12, 12), 6),
+        ((1, 256, 4, 4), 4),
+        ((1, 36, 10, 10), 6),
+    ],
+)
+@pytest.mark.push
+def test_depth_to_space(input_shape, upscale_factor):
+    class DepthToSpace(nn.Module):
+        def __init__(self, upscale_factor):
+            super().__init__()
+            self.model = nn.PixelShuffle(upscale_factor)
+
+        def forward(self, x):
+            return self.model(x)
+
+    x = torch.randn(*input_shape)
+    inputs = [x]
+    model = DepthToSpace(upscale_factor)
+
+    # Export model to ONNX
+    onnx_path = f"DepthToSpace_up_{upscale_factor}.onnx"
+    torch.onnx.export(
+        model,
+        inputs[0],
+        onnx_path,
+        opset_version=17,
+        input_names=["input"],
+        output_names=["output"],
+    )
+
+    # Load ONNX model
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+
+    # Forge compile framework model
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs)
+
+    verify(inputs, model, compiled_model)
+
+    # Clean up exported ONNX file
+    os.remove(onnx_path)

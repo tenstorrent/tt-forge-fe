@@ -762,3 +762,34 @@ def test_grid_sample(img, grid, align_corners, test_device):
     grid = torch.randn(grid)
     output = model(img, grid)
     compiled_model = forge.compile(model, sample_inputs=[img, grid], module_name="grid_sample")
+
+
+@pytest.mark.xfail(
+    reason="RuntimeError: Found Unsupported operations while lowering from TTForge to TTIR in forward graph - adaptive_max_pool2d"
+)  # https://github.com/tenstorrent/tt-mlir/issues/3630
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        (1, 256, 60, 80),
+        (1, 256, 30, 40),
+        (1, 256, 15, 20),
+        (1, 56, 150, 200),
+        (1, 5, 2, 18),
+    ],
+)
+@pytest.mark.push
+def test_adaptive_maxpool2d(input_shape):
+    class Adaptive_Maxpool2d(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.pool = nn.AdaptiveMaxPool2d((3, 3))
+
+        def forward(self, x):
+            return self.pool(x)
+
+    x = torch.randn(*input_shape)
+    inputs = [x]
+    model = Adaptive_Maxpool2d()
+
+    compiled_model = forge.compile(model, sample_inputs=inputs)
+    verify(inputs, model, compiled_model)
