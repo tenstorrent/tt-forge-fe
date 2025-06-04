@@ -19,7 +19,6 @@ from forge.tensor import to_pt_tensors
 from ..tensor import (
     FrameworkTensor,
     Tensor,
-    narrow_forge_tensor_to_pytorch,
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
@@ -50,8 +49,7 @@ def _run_pytorch_backward(outputs, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
         if o.requires_grad:
-            loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
-            o.value().backward(loss, retain_graph=retain_graph)
+            o.value().backward(losses[i], retain_graph=retain_graph)
 
 
 def get_intermediate_tensors(

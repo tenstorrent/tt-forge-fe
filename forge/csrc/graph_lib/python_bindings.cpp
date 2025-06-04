@@ -952,14 +952,6 @@ py::object consteval_input(
         runtime_node->name());
     TT_ASSERT(consteval_graph->get_ir_level() == graphlib::IRLevel::IR_CONSTEVAL);
 
-    py::object tensor_module;
-    py::function narrow_forge_tensor_to_pytorch;
-    if (is_forge)
-    {
-        tensor_module = py::module_::import("forge.tensor");
-        narrow_forge_tensor_to_pytorch = tensor_module.attr("narrow_forge_tensor_to_pytorch");
-    }
-
     if (node_epoch_type == graphlib::NodeEpochType::Backward)
     {
         std::vector<graphlib::Node *> loss_input =
@@ -990,11 +982,6 @@ py::object consteval_input(
             }
 
             TT_ASSERT(not input_value.is_none());
-
-            if (is_forge)
-            {
-                input_value = narrow_forge_tensor_to_pytorch(input_value, node->shape().as_vector());
-            }
             node_outputs.insert({node->id(), {input_value}});
             continue;
         }
