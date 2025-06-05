@@ -11,6 +11,7 @@ from forge.verify.verify import verify
 
 from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.utils import download_model
+from test.models.models_utils import mean_pooling
 
 
 @pytest.mark.nightly
@@ -49,5 +50,9 @@ def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
     # Forge compile framework model
     compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    sentence_embeddings = mean_pooling(co_out, input_tokens["attention_mask"])
+    print("Sentence embeddings:", sentence_embeddings)
