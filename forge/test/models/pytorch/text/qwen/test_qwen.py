@@ -3,7 +3,7 @@
 
 import pytest
 import torch
-from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
+from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer, Qwen2Model
 
 import forge
 from forge.forge_property_utils import (
@@ -14,7 +14,11 @@ from forge.forge_property_utils import (
     record_model_properties,
 )
 from forge.verify.verify import verify
+from test.models.models_utils import _prepare_4d_causal_attention_mask_with_cache_position
 
+Qwen2Model._prepare_4d_causal_attention_mask_with_cache_position = (
+    _prepare_4d_causal_attention_mask_with_cache_position
+)
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
@@ -55,7 +59,7 @@ def test_qwen1_5_causal_lm(variant):
     prompt = ["My name is Jim Keller and"] * batch_size
 
     inputs = tokenizer(prompt, return_tensors="pt")
-    inputs = [inputs["input_ids"]]
+    inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
