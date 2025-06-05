@@ -1477,6 +1477,34 @@ def populate_pad_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_resize1d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    sizes = [int(x) for x in node["attrs"]["size"][0]]
+    assert len(sizes) == 1, "Resize1D should only have one size dimension"
+
+    method = node["attrs"]["method"][0][0]
+    assert method in ["nearest_neighbor", "linear", "cubic"], "Unsupported interpolation method"
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    args.append(("size", f"{sizes[0]}"))
+
+    args.append(("method", f'"{method}"'))
+
+    coordinate_transform_mode = node["attrs"]["coordinate_transformation_mode"][0][0]
+    align_corners = "True" if coordinate_transform_mode == "align_corners" else "False"
+    args.append(("align_corners", f"{align_corners}"))
+
+    channel_last = int(node["attrs"]["layout"][0][0] == "NWC")
+    args.append(("channel_last", f"{channel_last}"))
+
+    return args
+
+
 def populate_resize2d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1695,6 +1723,7 @@ tvm_to_forge_op_map = {
     "greater_equal": "greater_equal",
     "greater": "greater",
     "identity": "identity",
+    "image.resize1d": "resize1d",
     "image.resize2d": "resize2d",
     "image.resize3d": "resize3d",
     "layernorm": "layernorm",
@@ -1827,6 +1856,7 @@ forge_op_to_function_name = {
     "repeat": "forge.op.Repeat",
     "repeat_interleave": "forge.op.RepeatInterleave",
     "reshape": "forge.op.Reshape",
+    "resize1d": "forge.op.Resize1d",
     "resize2d": "forge.op.Resize2d",
     "resize3d": "forge.op.Resize3d",
     "select": "forge.op.Select",
@@ -1886,6 +1916,7 @@ forge_ops_needing_arguments = {
     "repeat": populate_repeat_args,
     "repeat_interleave": populate_repeat_interleave_args,
     "reshape": populate_reshape_args,
+    "resize1d": populate_resize1d_args,
     "resize2d": populate_resize2d_args,
     "resize3d": populate_resize3d_args,
     "select": populate_select_args,
