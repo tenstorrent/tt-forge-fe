@@ -27,6 +27,7 @@ from test.operators.utils import TestCollection
 from test.operators.utils import TestCollectionCommon
 from test.operators.utils import ValueRanges
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 from test.operators.pytorch.eltwise_unary import ModelFromAnotherOp, ModelDirect, ModelConstEvalPass
 
@@ -149,40 +150,34 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        TestCollection(
-            criteria=lambda test_vector: test_vector.get_id()
-            in TestPlanUtils.load_test_ids_from_file(
-                f"{os.path.dirname(__file__)}/test_squeeze_ids_failed_allclose_value_checker.txt"
-            ),
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_shapes=[(1, 1)],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        TestCollection(
-            operators=TestParamsData.operators,
-            input_shapes=[
-                (2, 1, 2, 1, 2),
-                (100, 1, 100, 1),
-                (84, 25, 100, 1, 41),
-                (5, 5, 5, 5, 5),
-            ],
-            kwargs=[{"dim": None}],
-            failing_reason=FailingReasons.INFERENCE_FAILED,
-        ),
-        # tvm.error.InternalError: ...
-        TestCollection(
-            operators=TestParamsData.operators,
-            # fmt: off
-            criteria=lambda test_vector: test_vector.input_shape == (2, 1, 2, 1, 2)  and test_vector.kwargs == {"dim": 0} or
-                                         test_vector.input_shape == (100, 1, 100, 1) and test_vector.kwargs == {"dim": 2} or
-                                         test_vector.input_shape == (84, 25, 100, 1, 41) and test_vector.kwargs in [{"dim": 1}, {"dim": 2}] or
-                                         test_vector.input_shape == (5, 5, 5, 5, 5)  and test_vector.kwargs == {"dim": 0},
-            # fmt: on
-            failing_reason=FailingReasons.COMPILATION_FAILED,
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestParamsData.operators),
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_shapes=[(1, 1)],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     input_shapes=[
+        #         (2, 1, 2, 1, 2),
+        #         (100, 1, 100, 1),
+        #         (84, 25, 100, 1, 41),
+        #         (5, 5, 5, 5, 5),
+        #     ],
+        #     kwargs=[{"dim": None}],
+        #     failing_reason=FailingReasons.INFERENCE_FAILED,
+        # ),
+        # # tvm.error.InternalError: ...
+        # TestCollection(
+        #     operators=TestParamsData.operators,
+        #     # fmt: off
+        #     criteria=lambda test_vector: test_vector.input_shape == (2, 1, 2, 1, 2)  and test_vector.kwargs == {"dim": 0} or
+        #                                  test_vector.input_shape == (100, 1, 100, 1) and test_vector.kwargs == {"dim": 2} or
+        #                                  test_vector.input_shape == (84, 25, 100, 1, 41) and test_vector.kwargs in [{"dim": 1}, {"dim": 2}] or
+        #                                  test_vector.input_shape == (5, 5, 5, 5, 5)  and test_vector.kwargs == {"dim": 0},
+        #     # fmt: on
+        #     failing_reason=FailingReasons.COMPILATION_FAILED,
+        # ),
     ],
 )
 
