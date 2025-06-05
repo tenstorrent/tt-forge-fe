@@ -276,13 +276,6 @@ void write_json_to_file(const std::string& path, json json_file, int width = 4)
     o << json_file;
 }
 
-void write_text_to_file(const std::string& path, const std::string& content)
-{
-    std::ofstream o(path);
-    o << content;
-    o.flush();
-}
-
 JsonNamePairs create_jsons_for_graph(
     const std::string& graph_prefix,
     const graphlib::Graph* graph,
@@ -473,7 +466,10 @@ void dump_mlir(const std::string& file_name, const std::string& module_name, mli
     std::string root_file_path = full_report_path + root_file_name;
 
     std::filesystem::create_directories(std::filesystem::path(full_report_path));
-    write_text_to_file(root_file_path, outputString);
+
+    std::ofstream o(root_file_path);
+    o << outputString;
+    o.flush();
 }
 
 }  // namespace reportify
