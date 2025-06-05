@@ -793,3 +793,50 @@ def test_adaptive_maxpool2d(input_shape):
 
     compiled_model = forge.compile(model, sample_inputs=inputs)
     verify(inputs, model, compiled_model)
+
+
+import onnx
+
+
+@pytest.mark.parametrize(
+    "data, output_size",
+    [
+        ((1, 3, 64), 128),
+        ((1, 3, 128), 64),
+        ((1, 1, 32), 32),
+        ((2, 3, 50), 100),
+        ((4, 3, 75), 150),
+    ],
+)
+@pytest.mark.xfail
+@pytest.mark.parametrize("align_corners", [True, False])
+def test_resize1d(data, output_size, align_corners, forge_tmp_path):
+    class Resize1DModule(nn.Module):
+        def __init__(self, output_size, mode="linear", align_corners=True):
+            super(Resize1DModule, self).__init__()
+            self.output_size = output_size
+            self.mode = mode
+            self.align_corners = align_corners
+
+        def forward(self, x):
+            # x shape: (N, C, W)
+            return F.interpolate(x, size=self.output_size, mode=self.mode, align_corners=self.align_corners)
+
+    x = torch.randn(data)
+    model = Resize1DModule(mode="linear", align_corners=align_corners, output_size=output_size)
+    onnx_path = f"{forge_tmp_path}/reize_1d.onnx"
+    torch.onnx.export(
+        model,
+        x,
+        onnx_path,
+        input_names=["input"],
+        output_names=["output"],
+        opset_version=17,
+    )
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    framework_model = forge.OnnxModule("resize_1d", onnx_model, onnx_path)
+
+    compiled_model = forge.compile(framework_model, sample_inputs=[x])
+
+    verify([x], framework_model, compiled_model)

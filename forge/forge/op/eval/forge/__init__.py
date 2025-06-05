@@ -122,6 +122,7 @@ op_to_module_map = {
     "avg_pool3d": "pooling",
     "adaptive_max_pool2d": "pooling",
     "constant": "constant",
+    "resize1d": "resize",
     "resize2d": "resize",
     "resize3d": "resize",
     "upsample2d": "resize",
