@@ -51,4 +51,10 @@ def test_squeezebert_sequence_classification_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_class_id = co_out[0].argmax().item()
+    predicted_category = framework_model.config.id2label[predicted_class_id]
+
+    print(f"predicted category: {predicted_category}")
