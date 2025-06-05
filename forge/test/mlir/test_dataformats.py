@@ -257,3 +257,93 @@ def test_embedding_const_input(vocab_size, token_num, embedding_dim):
     framework_model = ModelConstEvalPass().to(torch.bfloat16)
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
     verify(inputs, framework_model, compiled_model)
+
+
+# embedding-FROM_ANOTHER_OP-{'num_embeddings': 20954, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(1, 500)-torch.int32-None
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[ModelFromAnotherOp-1-1000-(1, 500)-20954] - IndexError: index out of range in self
+
+# embedding-FROM_ANOTHER_OP-{'num_embeddings': 9125, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(45, 17)-torch.int32-None
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AutomaticValueChecker-ModelFromAnotherOp-42-1000-(45, 17)-9125]
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AllCloseValueChecker-ModelFromAnotherOp-42-1000-(45, 17)-9125]
+
+# embedding-FROM_HOST-{'num_embeddings': 9125, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(45, 17)-torch.int32-None
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AutomaticValueChecker-ModelFromHost-42-1000-(45, 17)-9125]
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AllCloseValueChecker-ModelFromHost-42-1000-(45, 17)-9125]
+
+# embedding-CONST_EVAL_PASS-{'num_embeddings': 9125, 'embedding_dim': 1000, 'dtype': torch.bfloat16, 'dev_data_format': torch.int32}-(45, 17)-torch.int32-None
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AutomaticValueChecker-ModelConstEvalPass-42-1000-(45, 17)-9125]
+# forge/test/mlir/test_dataformats.py::test_embedding_special_values[AllCloseValueChecker-ModelConstEvalPass-42-1000-(45, 17)-9125]
+
+@pytest.mark.parametrize("num_embeddings", [9125])  # num_embeddings
+@pytest.mark.parametrize(
+    "input_shape",
+    [
+        # pytest.param((1, 500), id="(1, 500)"),
+        pytest.param((45, 17), id="(45, 17)"),
+    ],
+)
+@pytest.mark.parametrize("embedding_dim", [1000])  # embedding_dim
+@pytest.mark.parametrize("manual_seed", [42])
+@pytest.mark.parametrize("model_type", ["ModelFromAnotherOp", "ModelFromHost", "ModelConstEvalPass"])
+@pytest.mark.parametrize("value_checker", ["AutomaticValueChecker", "AllCloseValueChecker"])
+def test_embedding_special_values(num_embeddings, input_shape, embedding_dim, manual_seed, model_type, value_checker):
+
+    compiler_cfg = forge.config.CompilerConfig()
+    compiler_cfg.default_df_override = DataFormat.Float16_b
+
+    generator = torch.Generator().manual_seed(manual_seed)
+
+    class ModelFromAnotherOp(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+            self.embedding = nn.Embedding(num_embeddings, embedding_dim, dtype=torch.bfloat16)
+
+        def forward(self, x):
+            add = torch.add(x, x)
+            output = self.embedding(add)
+            return output
+
+    class ModelFromHost(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+            self.embedding = nn.Embedding(num_embeddings, embedding_dim, dtype=torch.bfloat16)
+
+        def forward(self, x):
+            output = self.embedding(x)
+            return output
+
+    class ModelConstEvalPass(nn.Module):
+        def __init__(self):
+            super().__init__()
+
+            self.const = torch.randint(0, num_embeddings - 1, input_shape, dtype=torch.int32, generator=generator)
+            self.register_buffer("constant", self.const)
+
+            self.embedding = nn.Embedding(num_embeddings, embedding_dim, dtype=torch.bfloat16)
+
+        def forward(self, x):
+            v1 = self.embedding(self.constant)
+            v2 = self.embedding(x)
+            add = torch.add(v1, v2)
+            return add
+
+    model = eval(model_type)
+
+    max = num_embeddings - 1
+    if model.__name__ == "ModelFromAnotherOp":
+        max = int(max / 2)
+    inputs = [torch.randint(0, max, input_shape, dtype=torch.int32, generator=generator)]
+
+    framework_model = model().to(torch.bfloat16)
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, compiler_cfg=compiler_cfg)
+
+    if value_checker == "AutomaticValueChecker":
+        # AutomaticValueChecker is the default, so we don't need to specify it
+        verify_cfg = VerifyConfig()
+    else:
+        from forge.verify.value_checkers import AllCloseValueChecker
+        verify_cfg = VerifyConfig(value_checker=AllCloseValueChecker())
+    
+    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
