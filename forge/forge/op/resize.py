@@ -11,12 +11,55 @@ RESIZE2d_METHOD_TO_INT = {
     "nearest_neighbor": 0,
     "linear": 1,
     "bilinear": 1,
+    "cubic": 2,
 }
 
 INT_TO_RESIZE2d_METHOD = {
     0: "nearest",
     1: "bilinear",
+    2: "cubic",
 }
+
+
+def Resize1d(
+    name: str,
+    operandA: Tensor,
+    size: int,
+    method: str = "linear",
+    align_corners: bool = False,
+    channel_last: bool = False,
+) -> Tensor:
+    """
+    Resize input activations in 1D, with default method 'linear'
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input tensor to resize
+
+    size: int
+        Target size
+
+    method: str
+        Interpolation method: 'linear'
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    assert method == "linear", f"Expected method to be 'linear', got {method}"
+    result: Tensor = op(
+        "resize1d",
+        name,
+        operandA,
+        attrs=(size, RESIZE2d_METHOD_TO_INT[method], int(align_corners), int(channel_last)),
+    ).get_tensor()
+
+    return result
 
 
 def Resize2d(
@@ -50,8 +93,8 @@ def Resize2d(
     """
     assert len(sizes) == 2
     assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest_neighbor and linear interpolation for now"
+        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
+    ), "Only support nearest_neighbor, linear and cubic interpolation for now"
     result: Tensor = op(
         "resize2d",
         name,
@@ -89,6 +132,47 @@ def Upsample2d(
     """
     result: Tensor = op(
         "upsample2d",
+        name,
+        operandA,
+        attrs=(scale_factor, mode, channel_last),
+        scale_factor=scale_factor,
+        mode=mode,
+        channel_last=channel_last,
+    ).get_tensor()
+
+    return result
+
+
+def Downsample2d(
+    name: str, operandA: Tensor, scale_factor: int, mode: str = "nearest", channel_last: bool = False
+) -> Tensor:
+    """
+    Downsample 2D operation
+
+    Parameters
+    ----------
+    name: str
+        Op name, unique to the module, or leave blank to autoset
+
+    operandA: Tensor
+        Input operand A
+
+    scale_factor: int
+        Divider for spatial size.
+
+    mode: str
+        The downsampling algorithm
+
+    channel_last: bool
+        Whether the input is in channel-last format (NHWC)
+
+    Returns
+    -------
+    Tensor
+        Forge tensor
+    """
+    result: Tensor = op(
+        "downsample2d",
         name,
         operandA,
         attrs=(scale_factor, mode, channel_last),

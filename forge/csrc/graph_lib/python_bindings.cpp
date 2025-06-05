@@ -50,7 +50,8 @@ eval_graph(
     float pcc,
     std::string const &dump_tensors_path,
     bool allow_modified_shapes,
-    bool return_intermediates);
+    bool return_intermediates,
+    std::optional<py::object> optimizer = std::nullopt);
 
 py::object get_constant_input_value(graphlib::Node *node, bool is_forge);
 py::object eval_input(
@@ -164,6 +165,7 @@ void GraphModule(py::module &m_graph)
         .def("get_ordered_input_tile_dims", &Graph::get_ordered_input_tile_dims)
         .def("get_ordered_parameter_tile_dims", &Graph::get_ordered_parameter_tile_dims)
         .def("get_ordered_constant_tile_dims", &Graph::get_ordered_constant_tile_dims)
+        .def("contains_bwd_nodes", &Graph::contains_bwd_nodes)
         .def(
             "get_input_runtime_tensor_transforms",
             [](Graph *graph) -> std::vector<graphlib::RuntimeTensorTransform>
@@ -628,7 +630,8 @@ void GraphModule(py::module &m_graph)
            const std::vector<py::object> &losses,
            const std::vector<py::object> &targets,
            std::string const &dump_tensors_path,
-           bool allow_modified_shapes)
+           bool allow_modified_shapes,
+           std::optional<py::object> optimizer)
         {
             auto ret = eval_graph(
                 graph,
@@ -641,7 +644,8 @@ void GraphModule(py::module &m_graph)
                 pcc,
                 dump_tensors_path,
                 allow_modified_shapes,
-                false);
+                false,
+                optimizer.value_or(py::none()));
             return std::make_tuple(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret), std::get<3>(ret));
         },
         py::arg("graph"),
@@ -653,7 +657,8 @@ void GraphModule(py::module &m_graph)
         py::arg("losses") = std::vector<py::object>(),
         py::arg("targets") = std::vector<py::object>(),
         py::arg("dump_tensors_path") = "",
-        py::arg("allow_modified_shapes") = false);
+        py::arg("allow_modified_shapes") = false,
+        py::arg("optimizer") = py::none());
 
     m_graph.def(
         "remove_node",
@@ -720,7 +725,7 @@ py::object eval_op(
         case graphlib::IRLevel::IR_CONSTEVAL: eval_module = py::module_::import("forge.op.eval.forge"); break;
     }
 
-    py::function forge_eval = eval_module.attr("get_f_forge_eval")(type);
+    py::function forge_eval = eval_module.attr("get_f_forge_eval")(std::ref(type));
 
     log_trace(LogEval, "  eval_op: {}", type);
     bool has_requant =
@@ -774,16 +779,6 @@ py::object eval_relu(py::object tensor, graphlib::OpType type)
         tensor = eval_op(relu, inputs, graphlib::IRLevel::IR_TT_FORGE);
     }
     return tensor;
-}
-
-py::object eval_t_streaming_tms(py::object tensor, graphlib::Graph *graph, graphlib::Node *node, std::string const &dir)
-{
-    return tensor;
-}
-
-py::object eval_t_streaming_tms(py::object tensor, graphlib::Graph *graph, graphlib::Node *node)
-{
-    return eval_t_streaming_tms(tensor, graph, node, "Redo");
 }
 
 py::object eval_golden_transforms(graphlib::Node *node, py::object tensor, bool eval_for_output = false)
@@ -1367,8 +1362,13 @@ bool is_gradient_comparison_valid(Graph *graph, const graphlib::Edge &gradient_e
     return is_gradient_comparison_valid;
 }
 
+// Returns a map of input_name → tensor.
+// Supported input types include: activations, parameters (weights), constant inputs, and optimizer parameters.
 std::unordered_map<std::string, py::object> get_graph_input_mapping(
-    Graph *graph, const std::vector<py::object> &inputs, const std::unordered_map<std::string, py::object> &parameters)
+    Graph *graph,
+    const std::vector<py::object> &inputs,
+    const std::unordered_map<std::string, py::object> &parameters,
+    std::optional<py::object> optimizer)
 {
     std::vector<std::string> ordered_input_names = graph->get_ordered_input_names();
     std::unordered_map<std::string, py::object> graph_inputs = parameters;
@@ -1380,6 +1380,21 @@ std::unordered_map<std::string, py::object> get_graph_input_mapping(
         graph_inputs.insert({ordered_input_names[i], inputs[i]});
     }
 
+    py::object optimizer_params = py::none();
+    if (!optimizer->is_none())
+    {
+        optimizer_params = optimizer->attr("get_optimizer_params")();
+        // optimizer_params is a dictionary of optimizer parameters that looks like this:
+        // E.g. for 'l1.weight' trainable parameter, the optimizer parameters could be learning rate and momentum.
+        // If that was the only trainable parameter in our example, the optimizer_params dictionary would look like
+        // this:
+        // {
+        // ('l1.weight', 'lr'): 0.01,
+        // ('l1.weight', 'momentum'): 0.9,
+        // }
+        // So key to this dictionary is a tuple of parameter name and optimizer parameter name.
+    }
+
     for (Node *node : tt::graphlib::topological_sort(*graph))
     {
         if (node->node_type() != NodeType::kInput)
@@ -1389,60 +1404,49 @@ std::unordered_map<std::string, py::object> get_graph_input_mapping(
         {
             graph_inputs.insert({input->name(), get_constant_input_value(input, is_forge)});
         }
+        else if (input->is_optimizer_parameter())
+        {
+            // Finds values of optimizer parameters
+            TT_ASSERT(
+                not(!optimizer.has_value() or optimizer->is_none()),
+                "Optimizer is not provided but one of inputs is optimizer parameter");
+
+            TT_ASSERT(
+                !optimizer_params.is_none(), " Optimizer params is None but one of inputs is optimizer parameter");
+
+            std::vector<graphlib::Edge> optimizer_edges = graph->operand_edges(
+                input, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToOptimizer; });
+            TT_ASSERT(optimizer_edges.size() == 1);
+            // optimizer parameter (eg. input_opt_linear_relu_stack.0.weight_0.lr) always has one input edge that comes
+            // from parameter it is referring to (linear_relu_stack.0.weight). That edge is kAutogradFwdToOptimizer
+            // type.
+            Node *node_to_train = graph->node_by_id(optimizer_edges[0].producer_node_id);
+
+            // Parse out the optimizer-param suffix string to find optimizer parameter name.
+            std::string optimizer_input_name = input->name();
+            std::string::size_type optimizer_param_idx = optimizer_input_name.rfind('.');
+            TT_ASSERT(
+                optimizer_param_idx != std::string::npos,
+                "Expecting optimizer node to have a '.<optimizer-param>' suffix identifier");
+
+            // optimizer_param_key will be string like "lr", "momentum" etc.
+            // second part of the key to index into optimizer_params is name of the node this optimizer parameter is
+            // referring to. we get that from node_to_train->name().
+            std::string optimizer_parameter_name = optimizer_input_name.substr(optimizer_param_idx + 1);
+            std::string parameter_name = node_to_train->name();
+            py::tuple optimizer_param_key = py::make_tuple(parameter_name, optimizer_parameter_name);
+            py::object opt_tensor = optimizer_params.attr("get")(optimizer_param_key);
+            if (opt_tensor.is_none())
+                log_fatal(
+                    "optimizer_param key: {} not found for node: {}",
+                    std::string(py::str(optimizer_param_key)),
+                    optimizer_input_name);
+            graph_inputs.insert({input->name(), opt_tensor.attr("value")().cast<py::object>()});
+        }
     }
 
     return graph_inputs;
 }
-// static std::unordered_map<std::string, py::object> get_graph_input_mapping(
-//     Graph *graph, const std::unordered_map<std::string, py::object> &parameters, py::object optimizer)
-// {
-//     const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
-//     std::unordered_map<std::string, py::object> graph_inputs = parameters;
-
-//     for (Node *node : tt::graphlib::topological_sort(*graph))
-//     {
-//         graphlib::InputNode *input = dynamic_cast<graphlib::InputNode *>(node);
-//         if (not input)
-//             continue;
-
-//         if (input->is_constant())
-//         {
-//             graph_inputs.insert({input->name(), get_constant_input_value(input, is_forge)});
-//         }
-//         else if (input->is_optimizer_parameter())
-//         {
-//             // Finds values of optimizer parameters
-//             TT_ASSERT(not optimizer.is_none());
-
-//             std::vector<graphlib::Edge> optimizer_edges = graph->operand_edges(
-//                 input, [](const auto &edge) { return edge.edge_type == graphlib::EdgeType::kAutogradFwdToOptimizer;
-//                 });
-//             TT_ASSERT(optimizer_edges.size() == 1);
-
-//             std::string param_name = graph->node_by_id(optimizer_edges[0].producer_node_id)->name();
-//             py::object optimizer_params = optimizer.attr("get_optimizer_params")(param_name, is_forge);
-//             if (optimizer_params.is_none())
-//                 continue;
-
-//             // Parse out the optimizer-param suffix string and do a lookup to get the tensor
-//             std::string optimizer_input_name = input->name();
-//             std::string::size_type optimizer_param_idx = optimizer_input_name.rfind('.');
-//             TT_ASSERT(
-//                 optimizer_param_idx != std::string::npos,
-//                 "Expecting optimizer node to have a '.<optimizer-param>' suffix identifier");
-
-//             std::string optimizer_param_key = optimizer_input_name.substr(optimizer_param_idx + 1);
-//             py::object opt_tensor = optimizer_params.attr("get")(optimizer_param_key);
-//             if (opt_tensor.is_none())
-//                 log_fatal("optimizer_param key: {} not found for node: {}", optimizer_param_key,
-//                 optimizer_input_name);
-
-//             graph_inputs.insert({input->name(), opt_tensor.attr("value")().cast<py::object>()});
-//         }
-//     }
-
-//     return graph_inputs;
-// }
 
 // Evaluate graph with given inputs, and return list of outputs. If intermediate golden tensors are
 // provided, compare each matching node ID
@@ -1468,7 +1472,8 @@ eval_graph(
     float pcc,
     std::string const &dump_tensors_path,
     bool allow_modified_shapes,
-    bool return_intermediates)
+    bool return_intermediates,
+    std::optional<py::object> optimizer)
 {
     log_debug(LogEval, "Eval graph: {}", graph->name());
 
@@ -1478,7 +1483,8 @@ eval_graph(
     std::unordered_map<std::string, py::object> updated_parameter_mapping;
     std::unordered_map<std::string, py::object> intermediate_tensors;
 
-    std::unordered_map<std::string, py::object> graph_inputs = get_graph_input_mapping(graph, inputs, parameters);
+    std::unordered_map<std::string, py::object> graph_inputs =
+        get_graph_input_mapping(graph, inputs, parameters, optimizer);
 
     const bool is_forge = graph->get_ir_level() == graphlib::IRLevel::IR_FORGE;
 
@@ -1509,52 +1515,6 @@ eval_graph(
         }
     }
 
-    // Populate loss tensor mapping
-    if (losses.size() > 0)
-    {
-        size_t losses_index = 0;
-        std::vector<std::string> output_gradient_names = graph->get_ordered_output_gradient_names();
-        TT_ASSERT(
-            output_gradient_names.size() == losses.size(),
-            "The number of output gradient ports (" + std::to_string(output_gradient_names.size()) + ") and losses (" +
-                std::to_string(losses.size()) + ") should match.");
-
-        std::vector<Node *> nodes;
-        for (auto name : output_gradient_names) nodes.push_back(graph->get_node_by_name(name));
-        std::vector<py::object> loss_tensors = eval_runtime_tensor_transform(graph, nodes, losses);
-        for (std::string loss_name : graph->get_ordered_output_gradient_names())
-        {
-            py::object loss = loss_tensors.at(losses_index);
-            Node *node = graph->get_node_by_name(loss_name);
-            TT_ASSERT(
-                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_loss(),
-                "Expected that this node is a loss");
-            log_debug(tt::LogTest, "Populating bwd loss: {}", node->name());
-            node_outputs[node->id()].push_back(loss);
-            ++losses_index;
-        }
-    }
-
-    // Populate target tensor mapping
-    if (targets.size() > 0)
-    {
-        size_t targets_index = 0;
-        std::vector<std::string> target_inputs = graph->get_ordered_target_names();
-        TT_ASSERT(
-            target_inputs.size() == targets.size(),
-            "The number of target inputs (" + std::to_string(target_inputs.size()) + ") and targets (" +
-                std::to_string(targets.size()) + ") should match.");
-        for (std::string target : target_inputs)
-        {
-            Node *node = graph->get_node_by_name(target);
-            TT_ASSERT(
-                (node->node_type() == NodeType::kInput) && node->as<graphlib::InputNode>()->is_target(),
-                "Expected that this node is a target input");
-            log_debug(tt::LogTest, "Populating target input: {}", node->name());
-            node_outputs[node->id()].push_back(targets.at(targets_index++));
-        }
-    }
-
     // Populate Forge input tensor mapping
     int input_index = 0;
     std::vector<py::object> input_tensors =
@@ -1566,7 +1526,7 @@ eval_graph(
         log_debug(tt::LogTest, "Populating module input: {}", node->name());
         input_index++;
     }
-
+    log_debug(LogGraphCompiler, "\033[1mComparing intermediate tensors\033[0m");
     for (Node *node : tt::graphlib::topological_sort(*graph))
     {
         if (node->node_type() == NodeType::kInput)
@@ -1661,8 +1621,14 @@ eval_graph(
                             if (!grad.is(py::none()))
                             {
                                 py::object calculated = eval_golden_transforms(producer, obj);
+                                log_debug(
+                                    LogGraphCompiler,
+                                    "Comparing intermediate gradient for node: {}. Backward node calculating gradient: "
+                                    "{}",
+                                    producer->name(),
+                                    node->name());
                                 compare_tensor_to_golden(
-                                    node->name() + " from " + producer->name(),
+                                    node->name() + ", that is gradient with respect to " + producer->name(),
                                     grad,
                                     calculated,
                                     relative_atol,
@@ -1706,12 +1672,6 @@ eval_graph(
                     py::object ret = eval_golden_transforms(node, obj);
                     if (producer->node_type() == NodeType::kInput)
                     {
-                        auto operands = graph->data_operands(producer);
-                        if (operands.size() == 1)
-                        {
-                            graphlib::Node *optimizer = operands[0];
-                            ret = eval_t_streaming_tms(ret, graph, optimizer);
-                        }
                         ret = eval_input_bw(producer, ret, is_forge);
                         ret = eval_runtime_tensor_transform(graph, {producer}, {ret}, true).at(0);
                     }

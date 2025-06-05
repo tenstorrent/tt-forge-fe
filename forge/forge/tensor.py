@@ -669,7 +669,8 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
         return DataFormat.Float32
 
     if dtype == torch.uint8:
-        return DataFormat.RawUInt8
+        logger.warning("Parameter is uint8. Setting to Int32, since uint8 is not supported.")
+        return DataFormat.Int32
 
     if dtype == torch.int8:
         logger.warning("Parameter is int8. Setting to Int32, since int8 is not supported.")
@@ -680,8 +681,8 @@ def pytorch_dtype_to_forge_dataformat(dtype: torch.dtype, fp32_fallback: Optiona
     #     return DataFormat.UInt16
 
     if dtype == torch.bool:
-        logger.warning("Parameter is bool. Setting to uint8, since bool is not supported.")
-        return DataFormat.RawUInt8
+        logger.warning("Parameter is bool. Setting to Int32, since bool is not supported.")
+        return DataFormat.Int32
 
     if dtype == torch.int32:
         return DataFormat.Int32
@@ -1442,7 +1443,7 @@ def const_eval_tensor(inputs, consteval_trace, input_name, is_forge=True):
     contains_recorded_operations = consteval_trace[input_name]
     if contains_recorded_operations:
         value = detach_tensors(
-            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguos=True
+            [consteval_input(consteval_trace, input_name, inputs, is_forge)], fix_non_contiguous=True
         )[0]
     else:
         value = pad_pytorch_tensor_to_forge(inputs[input_name], []) if is_forge else inputs[input_name]

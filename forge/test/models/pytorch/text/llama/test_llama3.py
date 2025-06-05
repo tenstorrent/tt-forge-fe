@@ -18,7 +18,14 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -126,33 +133,48 @@ variants = [
     pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
-    pytest.param("meta-llama/Llama-3.2-3B", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
     pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")
+        "meta-llama/Llama-3.2-3B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
+        ),
     ),
-    pytest.param("huggyllama/llama-7b", marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model")),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "huggyllama/llama-7b",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_llama3_causal_lm(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="llama3", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
-    # Record Forge Property
+def test_llama3_causal_lm(variant):
     if variant in [
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
     ]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P2")
+        group = ModelGroup.RED
     else:
-        forge_property_recorder.record_group("generality")
+        group = ModelGroup.GENERALITY
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.LLAMA3,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+    )
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -191,29 +213,77 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Meta-Llama-3-8B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.1-8B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.2-1B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param("meta-llama/Llama-3.2-1B-Instruct"),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 24 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "meta-llama/Llama-3.2-3B-Instruct",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+    pytest.param(
+        "huggyllama/llama-7b",
+        marks=pytest.mark.skip(
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+        ),
+    ),
+]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_llama3_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_llama3_sequence_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llama3",
+        model=ModelArch.LLAMA3,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -235,8 +305,12 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+
+    print(f"Prediction : {framework_model.config.id2label[predicted_value]}")

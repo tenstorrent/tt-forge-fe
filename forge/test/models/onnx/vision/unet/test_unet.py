@@ -7,22 +7,23 @@ import numpy as np
 import forge
 import onnx
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task
-from utils import load_inputs
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
+from test.models.onnx.vision.unet.model_utils.utils import load_inputs
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail()
-def test_unet_onnx(forge_property_recorder, tmp_path):
+@pytest.mark.xfail
+def test_unet_onnx(forge_tmp_path):
 
     # Build Module Name
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.ONNX, model="unet", variant="base", source=Source.TORCH_HUB, task=Task.IMAGE_SEGMENTATION
+    module_name = record_model_properties(
+        framework=Framework.ONNX,
+        model=ModelArch.UNET,
+        variant="base",
+        source=Source.TORCH_HUB,
+        task=Task.IMAGE_SEGMENTATION,
+        priority=ModelPriority.P1,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P1")
 
     # Load the torch model
     torch_model = torch.hub.load(
@@ -42,16 +43,14 @@ def test_unet_onnx(forge_property_recorder, tmp_path):
     )
     inputs = load_inputs(url, filename)
 
-    onnx_path = f"{tmp_path}/unet.onnx"
+    onnx_path = f"{forge_tmp_path}/unet.onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path)
     onnx_model = onnx.load(onnx_path)
     onnx.checker.check_model(onnx_model)
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

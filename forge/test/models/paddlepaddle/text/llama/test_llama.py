@@ -9,7 +9,7 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["facebook/llama-7b"]
 
@@ -17,16 +17,15 @@ variants = ["facebook/llama-7b"]
 @pytest.mark.nightly
 @pytest.mark.skip()
 @pytest.mark.parametrize("variant", variants)
-def test_llama(variant, forge_property_recorder):
+def test_llama(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="llama",
+        model=ModelArch.LLAMA,
         variant=variant[9:],
         source=Source.PADDLENLP,
         task=Task.CAUSAL_LM,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load Model and Tokenizer
     model = LlamaForCausalLM.from_pretrained(variant)
@@ -57,9 +56,7 @@ def test_llama(variant, forge_property_recorder):
 
     # Compile Model
     # framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)

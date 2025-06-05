@@ -4,6 +4,8 @@
 
 #include "verif/python_bindings.hpp"
 
+#include <malloc.h>
+
 #include "verif/verif_ops.hpp"
 
 namespace tt
@@ -22,6 +24,10 @@ void VerifModule(py::module &m_verif)
     m_verif.def("max_abs_diff", &max_abs_diff, "max_abs_diff");
     m_verif.def("has_special_values", &has_special_values, "has_special_values");
     m_verif.def("calculate_tensor_pcc", &calculate_tensor_pcc, "calculate_tensor_pcc");
+    m_verif.def(
+        "malloc_trim",
+        []() { malloc_trim(0); },
+        "Call malloc_trim(0) to force malloc to release any unused memory back to the OS");
 }
 
 }  // namespace tt

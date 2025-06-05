@@ -188,6 +188,7 @@ class FuseConvAndPoolPadding(DFPatternCallback):
 
         # Fuse Pad Only if the mode is constant
         # Fusion is skipped if the padding is asymmetric for max-pooling or if the padding mode is not "constant".
+        # 'edge' == 'replicate' in forge
         if ((top_pad != bottom_pad or left_pad != right_pad) and (conv_pool.op.name == "nn.max_pool2d")) or (
             pad_mode == "edge" or pad_mode == "reflect"
         ):
@@ -197,8 +198,16 @@ class FuseConvAndPoolPadding(DFPatternCallback):
         else:
             padding = [top_pad, left_pad, bottom_pad, right_pad]
 
+        # update conv padding by adding the padding from the pad op
+        new_padding = [
+            padding[0] + conv_pool.attrs.padding[0],
+            padding[1] + conv_pool.attrs.padding[1],
+            padding[2] + conv_pool.attrs.padding[2],
+            padding[3] + conv_pool.attrs.padding[3],
+        ]
+
         op_attrs = {**conv_pool.attrs}
-        op_attrs["padding"] = padding
+        op_attrs["padding"] = new_padding
 
         if conv_pool.op.name == "nn.conv2d":
             weight = node_map[self.weight][0]
@@ -1284,8 +1293,8 @@ class CastWhereConditionToBool(DFPatternCallback):
         self.pattern = is_op("where")(wildcard(), wildcard(), wildcard())
 
     def callback(self, pre, post, node_map):
-        cond = tvm.relay.cast(pre.args[0], "bool")
-        return tvm.relay.where(cond, pre.args[1], pre.args[2])
+        cond = tvm.relay.cast(post.args[0], "bool")
+        return tvm.relay.where(cond, post.args[1], post.args[2])
 
 
 class DecomposeNegative(DFPatternCallback):
@@ -2027,6 +2036,123 @@ class DecomposeEinsum(DFPatternCallback):
 
             return result
 
+        elif match_einsum_pattern("...si,...id->...sd", equation):
+            from tvm.relay.frontend.common import infer_shape
+
+            # Ensure the einsum pattern is matched, and there are two input nodes
+            assert len(node_map[self.act][0]) == 2
+            srcA = node_map[self.act][0][0]
+            srcB = node_map[self.act][0][1]
+            assert infer_shape(srcA)[-1] == infer_shape(srcB)[-2]
+            return tvm.relay.nn.batch_matmul(srcA, srcB, transpose_a=False, transpose_b=False)
+
+        elif match_einsum_pattern("bhwc,hkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+
+            assert srcA_shape[-1] == srcB_shape[-1]
+
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+
+            # Extract the batch dimension
+            batch_dim = int(srcA_shape[0])
+
+            # Case 1: Batched input
+            if batch_dim > 1:
+
+                # In the batched case, we need to process each batch independently
+                # since einsum does not automatically broadcast batch dimensions.
+                # We split the input tensor A along the batch dimension.
+                a_split = tvm.relay.split(A, indices_or_sections=batch_dim, axis=0)
+
+                results = []
+
+                for batch_idx in range(batch_dim):
+                    # Extract the tensor for the current batch: shape [1, H, W, C]
+                    a_batch = a_split[batch_idx]
+
+                    # Expand A: shape becomes [1, H, W, 1, C]
+                    A_expanded = tvm.relay.expand_dims(a_batch, axis=3)
+
+                    # Expand B: shape becomes [1, H, 1, K, C]
+                    B_expanded = tvm.relay.expand_dims(B, axis=0)
+                    B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+
+                    # Element-wise multiplication: shape [1, H, W, K, C]
+                    multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+
+                    # Sum over the channel dimension (C): result shape [1, H, W, K]
+                    result = tvm.relay.sum(multiplied, axis=[-1])
+
+                    results.append(result)
+
+                # Concatenate the batch results to form final output
+                final_result = tvm.relay.concatenate(results, axis=0)
+
+            # Case 2: Single-batch input (batch_dim == 1)
+            else:
+
+                # Expand A: shape becomes [1, H, W, 1, C]
+                A_expanded = tvm.relay.expand_dims(A, axis=3)
+
+                # Expand B: shape becomes [1, H, 1, K, C]
+                B_expanded = tvm.relay.expand_dims(B, axis=0)
+                B_expanded = tvm.relay.expand_dims(B_expanded, axis=2)
+
+                # Element-wise multiplication: shape [1, H, W, K, C]
+                multiplied = tvm.relay.multiply(A_expanded, B_expanded)
+
+                # Sum over the channel dimension (C): result shape [1, H, W, K]
+                final_result = tvm.relay.sum(multiplied, axis=[-1])
+
+            return final_result
+
+        elif match_einsum_pattern("bhwc,wkc->bhwk", equation):
+            srcA_shape = pre.args[0][0].checked_type.shape
+            srcB_shape = pre.args[0][1].checked_type.shape
+
+            assert len(srcA_shape) == 4 and len(srcB_shape) == 3
+            assert srcA_shape[-1] == srcB_shape[-1]
+
+            A = node_map[self.act][0][0]
+            B = node_map[self.act][0][1]
+
+            b, h, w, c = [int(dim) for dim in srcA_shape]
+            _, k, _ = [int(dim) for dim in srcB_shape]
+
+            results = []
+
+            # Iterate over the width dimension (W) of tensor A.
+            for wi in range(w):
+                # Slice A along width at index wi: shape becomes [B, H, 1, C]
+                A_slice = tvm.relay.strided_slice(A, begin=[0, 0, wi, 0], end=[b, h, wi + 1, c])
+
+                # Remove the singleton width dimension
+                A_slice = tvm.relay.squeeze(A_slice, axis=[2])
+
+                # Slice B at position wi: shape becomes [1, K, C] → squeeze to [K, C]
+                B_slice = tvm.relay.strided_slice(B, begin=[wi, 0, 0], end=[wi + 1, k, c])
+                B_slice = tvm.relay.squeeze(B_slice, axis=[0])
+
+                # Rearrange the axes of B_slice and add a new leading dimension
+                B_transposed = tvm.relay.transpose(B_slice, axes=[1, 0])
+                B_expanded = tvm.relay.expand_dims(B_transposed, axis=0)
+
+                # Perform batched matrix multiplication
+                out_slice = tvm.relay.nn.batch_matmul(A_slice, B_expanded, transpose_b=False)
+
+                # Add back the width dimension at axis=2
+                out_slice = tvm.relay.expand_dims(out_slice, axis=2)
+
+                results.append(out_slice)
+
+            # Concatenate all the width slices to reconstruct full output tensor: [B, H, W, K]
+            final_result = tvm.relay.concatenate(results, axis=2)
+
+            return final_result
         else:
             assert False, f"TVM einsum decomposition does not support {equation} yet."
 
@@ -2169,7 +2295,8 @@ class LowerAdaptiveMaxPool(DFPatternCallback):
         output_shape = [int(dim) for dim in pre.checked_type.shape]
 
         assert post.attrs.layout == "NCHW"
-        assert input_shape[-1] == input_shape[-2], "Only support same factor of the input for H and W"
+        if input_shape[-1] != input_shape[-2]:
+            return post
         assert output_shape[-1] == output_shape[-2], "Only support same factor of the output for H and W"
 
         input_size = input_shape[-1]
@@ -4668,6 +4795,17 @@ class DecomposeFloor(DFPatternCallback):
         return floor_result
 
 
+class DecomposeZerosToFull(DFPatternCallback):
+    def __init__(self):
+        super().__init__()
+        self.pattern = is_op("zeros")()
+
+    def callback(self, pre, post, node_map):
+        shape = pre.attrs.shape
+        dtype = pre.attrs.dtype
+        return tvm.relay.full(tvm.relay.const(0, dtype=dtype), shape=shape, dtype=dtype)
+
+
 class DecomposeMeshgrid(DFPatternCallback):
     def __init__(self):
         super().__init__()
@@ -4706,6 +4844,40 @@ class DecomposeMeshgrid(DFPatternCallback):
         broadcasted_grids = [tvm.relay.broadcast_to(expanded_inputs[i], shape=tuple(lengths)) for i in range(num_dims)]
 
         return tvm.relay.Tuple(broadcasted_grids)
+
+
+class DecomposeDepthToSpace(DFPatternCallback):
+    def __init__(self):
+        super().__init__()
+        self.input = wildcard()
+        self.pattern = is_op("nn.depth_to_space")(self.input)
+
+    def callback(self, pre, post, node_map):
+        from tvm.relay.frontend.common import infer_shape
+
+        data = node_map[self.input][0]
+        attrs = pre.attrs
+        blocksize = int(attrs.block_size)
+
+        assert attrs.mode == "CRD", f"Only CRD mode is supported for now, got {attrs.mode}"
+
+        # Get input shape
+        shape = infer_shape(data)
+        b, c, h, w = shape
+
+        r = blocksize
+        out_c = c // (r * r)
+
+        # Reshape to [b, out_c, r, r, h, w]
+        reshaped = tvm.relay.reshape(data, [b, out_c, r, r, h, w])
+
+        # Transpose to [b, out_c, h, r, w, r]
+        transposed = tvm.relay.transpose(reshaped, axes=[0, 1, 4, 2, 5, 3])
+
+        # Reshape to [b, out_c, h * r, w * r]
+        out = tvm.relay.reshape(transposed, [b, out_c, h * r, w * r])
+
+        return out
 
 
 def _get_callback_name(callback):
@@ -4763,6 +4935,8 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeDepthToSpace(),
+            DecomposeZerosToFull(),
             DecomposeMeshgrid(),
             DecomposeGridSample(),
             DecomposeFloor(),
@@ -4816,7 +4990,6 @@ def run_forge_compile_passes(
             RemoveRedundantReshape(),
             LowerCopyToNOP(),
             TransposePad(),
-            DecomposeNonZeroPadtoConcat(),
             DecomposeMultiRangeTake(),
             LowerTakeToStridedSlice(),
             ConvertAddToBiasAddAfterConv2d(),

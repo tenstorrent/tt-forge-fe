@@ -24,43 +24,35 @@ from ..tensor import (
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
+from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge._C import ExecutionDepth
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.forge_property_utils import (
+    ExecutionStage,
+    record_execution,
+    record_verify_config,
+    record_consistency_limits,
+)
 
 
-def _generate_random_losses(outputs, is_forge):
+def _generate_random_losses(outputs):
     losses = []
     for out in outputs:
         if out.requires_grad:
             shape = list(out.shape.get_pytorch_shape())
-            if is_forge:
-                while len(shape) < 4:
-                    shape.insert(0, 1)
-                while len(shape) > 4:
-                    shape.pop(0)
-
-                shape[-1] = align_up_tile(shape[-1])
-                shape[-2] = align_up_tile(shape[-2])
-
             losses.append(torch.rand(shape, dtype=out.pt_data_format))
     return losses
 
 
-def _run_pytorch_backward(outputs, device, losses):
+def _run_pytorch_backward(outputs, losses):
     retain_graph = True
     for i, o in enumerate(outputs):
         if o.requires_grad:
-            if device.loss_module is None:
-                loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
-                o.value().backward(loss, retain_graph=retain_graph)
-            else:
-                o.value().backward(retain_graph=True)  # this is loss
+            loss = narrow_forge_tensor_to_pytorch(losses[i], o.value().shape)
+            o.value().backward(loss, retain_graph=retain_graph)
 
 
 def get_intermediate_tensors(
@@ -85,17 +77,17 @@ def get_intermediate_tensors(
 
 def do_verify(
     stage_name: str,
-    training: bool,
     graph: pygraph.Graph,
     inputs: Tuple[Tensor, ...],
     parameters: Dict[str, torch.Tensor],
     golden_input_grads: Tuple[torch.Tensor, ...],
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
+    optimizer=None,
 ):
     """
     Verify graph vs. pytorch golden
@@ -104,6 +96,7 @@ def do_verify(
     torch_targets: List[torch.Tensor] = [i if isinstance(i, torch.Tensor) else i.to_pytorch() for i in targets]
 
     logger.info("Verifying stage {}", stage_name)
+    training = graph.contains_bwd_nodes()
     if not training:
 
         pcc = 0.0 if verify_cfg.pcc is None else verify_cfg.pcc
@@ -123,42 +116,29 @@ def do_verify(
         for i, result in enumerate(zip(outputs, trace_outputs)):
             evaled = result[1]
             golden = result[0].value()
-            ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
+            ok &= compare_tensor_to_golden(f"output {i}", golden, evaled, verify_cfg=verify_cfg)
 
     else:
-        raise RuntimeError("Verification of training is not supported yet.")
-        if losses is None and device.loss_module is None:
-            losses = _generate_random_losses(outputs, is_forge)
-        elif losses is None:
-            losses = []
+        if losses is None:
+            losses = _generate_random_losses(outputs)
 
         # retain intermediate gradients for verification
         for t in intermediate_golden_tensors.values():
             if t.requires_grad == True:
                 t.retain_grad()
 
-        # Calculate pytorch gradients
-        run_backward = False
-        for i, o in enumerate(outputs):
-            # Check if we need to run, or if gradients have been calculated already
-            if o.value().grad is None and o.requires_grad:
-                run_backward = True
-                break
-        if run_backward:
-            _run_pytorch_backward(outputs, device, losses)
-
         pcc = 0.0 if verify_cfg.pcc is None else verify_cfg.pcc
         trace_outputs, parameter_to_gradients, bwd_gradients, parameter_to_updated_parameter = pygraph.eval(
             graph,
             torch_inputs,
             parameters,
-            tt_device=device,
             relative_atol=verify_cfg.relative_atol,
             pcc=pcc,
             intermediate_golden_tensors=intermediate_golden_tensors,
             losses=losses,
             targets=torch_targets,
             dump_tensors_path=verify_cfg.dump_tensors_path,
+            optimizer=optimizer,
         )
 
         # Verify forward pass results
@@ -168,50 +148,49 @@ def do_verify(
             golden = result[0].value()
             ok &= compare_tensor_to_golden(f"Output {i}", golden, evaled, verify_cfg=verify_cfg)
 
-        # Verify bwd gradients
-        # allow 0 on golden below because on the first post-autograd pass we don't have golden input grads yet
-        assert len(golden_input_grads) == 0 or (
-            len(golden_input_grads) == len(bwd_gradients)
+        # Verify gradients of inputs (if input tensors require gradients)
+        # TODO: Here, we rely on the fact that golden inputs are ordered in the same way as in the graph.
+        # This is true for now, but it is bad to rely on.
+        logger.debug("Verify gradients of inputs")
+        assert len(golden_input_grads) == len(
+            bwd_gradients
         ), f"Golden has {len(golden_input_grads)} input gradients, but graph eval returned {len(bwd_gradients)}"
         for bwd_index, golden_input_grad in enumerate(golden_input_grads):
             evaled = bwd_gradients[bwd_index]
             ok &= compare_tensor_to_golden(
-                f"Bwd gradient {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
+                f"gradient of input {bwd_index}", golden_input_grad, evaled, verify_cfg=verify_cfg
             )
 
-        # Verify parameter gradients:
-        device_parameters = device.get_parameters()
-        for parameter in device_parameters:
-            if parameter.requires_grad:
-                parameter_name = parameter.get_name()
+        logger.debug("Verify gradients of parameters")
+        for parameter_name, parameter_tensor in parameters.items():
+            if parameter_tensor.requires_grad:
                 if not parameter_name in parameter_to_gradients:
                     logger.warning("Parameter {} not used.", parameter_name)
                     continue
 
-                golden = parameter.value().grad
+                golden = parameter_tensor.grad
                 assert golden is not None
                 evaled = parameter_to_gradients[parameter_name]
                 warning_only = should_waive_gradient(parameter_name, verify_cfg)
                 ok &= compare_tensor_to_golden(
-                    f"Gradient for {parameter_name}",
+                    f"gradient of parameter {parameter_name}",
                     golden,
                     evaled,
                     verify_cfg=verify_cfg,
                     warning_only=warning_only,
                 )
 
-        # Verify parameter updates:
-        optimizer = device.get_optimizer()
+        # Verify parameter updates if optimizer is not None:
         if optimizer:
-            for parameter in device_parameters:
-                if parameter.requires_grad:
-                    parameter_name = parameter.get_name()
+            logger.debug("Verify updates of parameters")
+            for parameter_name, parameter_tensor in parameters.items():
+                if parameter_tensor.requires_grad:
                     if not parameter_name in parameter_to_updated_parameter:
                         logger.warning("Parameter {} not used.", parameter_name)
                         continue
 
                     golden = optimizer.torch_parameter_update(
-                        parameter_name=parameter_name, parameter=parameter.value(), gradient=parameter.value().grad
+                        parameter_name=parameter_name, parameter=parameter_tensor, gradient=parameter_tensor.grad
                     )
                     evaled = parameter_to_updated_parameter[parameter_name]
                     warning_only = should_waive_gradient(parameter_name, verify_cfg)
@@ -245,7 +224,7 @@ def verify_golden(
     device: "TTDevice",
     inputs: Tuple[Tensor],
     outputs: Tuple[torch.Tensor],
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
 ):
 
     assert False  # Run ttnn golden
@@ -341,7 +320,7 @@ def verify_backward(
     co_gradient_outputs = compiled_model.backward()
     co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
-        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        # NOTE: Need to clone the gradients of parameters as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
@@ -383,7 +362,6 @@ def verify(
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -403,8 +381,7 @@ def verify(
                Returns (None, None) if verification is disabled
     """
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_verify_config(verify_cfg)
+    record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -429,15 +406,9 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.FAILED_RUNTIME, execution_stage=ExecutionStage.FAILED_TTNN_BINARY_EXECUTION
-        )
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.INCORRECT_RESULT, execution_stage=ExecutionStage.FAILED_VERIFICATION
-        )
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
@@ -450,12 +421,7 @@ def verify(
 
     co_out = [co.to("cpu") for co in co_out]
 
-    if forge_property_handler is not None:
-        pcc, atol = determine_consistency_limits(fw_out, co_out)
-        if pcc is not None:
-            forge_property_handler.record_pcc(pcc=pcc)
-        if atol is not None:
-            forge_property_handler.record_atol(atol=atol)
+    record_consistency_limits(fw_out, co_out)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
@@ -483,10 +449,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(
-            execution_depth=ExecutionDepth.PASSED, execution_stage=ExecutionStage.PASSED
-        )
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

@@ -2,7 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
 from transformers import (
     AutoTokenizer,
     PhiConfig,
@@ -13,53 +12,20 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-
-def _prepare_4d_causal_attention_mask_with_cache_position(
-    self,
-    attention_mask: torch.Tensor,
-    sequence_length: int,
-    target_length: int,
-    dtype: torch.dtype,
-    device: torch.device,
-    cache_position: torch.Tensor,
-    batch_size: int,
-    **kwargs,
-):
-
-    if attention_mask is not None and attention_mask.dim() == 4:
-        # In this case we assume that the mask comes already in inverted form and requires no inversion or slicing.
-        causal_mask = attention_mask
-    else:
-        min_dtype = torch.finfo(dtype).min
-        causal_mask = torch.full((sequence_length, target_length), fill_value=min_dtype, dtype=dtype, device=device)
-        if sequence_length != 1:
-            causal_mask = torch.triu(causal_mask, diagonal=1)
-        causal_mask *= torch.arange(target_length, device=device) > cache_position.reshape(-1, 1)
-        causal_mask = causal_mask[None, None, :, :].expand(batch_size, 1, -1, -1)
-        if attention_mask is not None:
-            causal_mask = causal_mask.clone()  # copy to contiguous memory for in-place edit
-            mask_length = attention_mask.shape[-1]
-            padding_mask = causal_mask[:, :, :, :mask_length] + attention_mask[:, None, None, :]
-            padding_mask = padding_mask == 0
-
-            # Replace Implace Slice Update
-            # causal_mask[:, :, :, :mask_length] = causal_mask[:, :, :, :mask_length].masked_fill(
-            #     padding_mask, min_dtype
-            # )
-
-            if causal_mask.shape[-1] > mask_length:
-                part_1 = causal_mask[:, :, :, :mask_length]
-                part_2 = causal_mask[:, :, :, mask_length:]
-                part_1 = part_1.masked_fill(padding_mask, min_dtype)
-                causal_mask = torch.cat([part_1, part_2], dim=-1)
-            else:
-                causal_mask = causal_mask.masked_fill(padding_mask, min_dtype)
-
-    return causal_mask
-
+from test.models.models_utils import (
+    _prepare_4d_causal_attention_mask_with_cache_position,
+)
 
 PhiModel._prepare_4d_causal_attention_mask_with_cache_position = _prepare_4d_causal_attention_mask_with_cache_position
 
@@ -69,26 +35,33 @@ variants = [
         "microsoft/phi-2",
         marks=[pytest.mark.xfail],
     ),
-    "microsoft/phi-2-pytdml",
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-@pytest.mark.skip(reason="Skipping due to the current CI/CD pipeline limitations")
-def test_phi2_clm(forge_property_recorder, variant):
-
-    # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="phi2", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
-    )
-
-    # Record Forge Property
+def test_phi2_clm(variant):
     if variant in ["microsoft/phi-2"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
     else:
-        forge_property_recorder.record_group("generality")
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.PHI2,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
+    )
 
     # Load PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -121,30 +94,36 @@ def test_phi2_clm(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 28 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
+    ),
+]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_token_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_phi2_token_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -167,30 +146,36 @@ def test_phi2_token_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
+
+
+variants = [
+    pytest.param(
+        "microsoft/phi-2",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB"),
+    ),
+    pytest.param(
+        "microsoft/phi-2-pytdml",
+        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB"),
+    ),
+]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_sequence_classification(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_phi2_sequence_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     # PhiConfig from pretrained variant, disable return_dict and caching.
     config = PhiConfig.from_pretrained(variant)
@@ -214,9 +199,7 @@ def test_phi2_sequence_classification(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

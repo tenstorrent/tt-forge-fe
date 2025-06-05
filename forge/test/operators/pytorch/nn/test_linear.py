@@ -274,7 +274,7 @@ TestParamsData.test_plan = TestPlan(
             ],
             failing_reason=FailingReasons.DATA_MISMATCH,
         ),
-        # # THIS ERROR OCCURES WHEN USING DEPRICATED VERIFICATION METHOD (NOT ALLCLOSE VALUE CHECKER)
+        # # THIS ERROR OCCURES WHEN USING DEPRECATED VERIFICATION METHOD (NOT ALLCLOSE VALUE CHECKER)
         # # E   AssertionError: PCC check failed
         # # this also happens for other 2 dim ipnut shapes where microbatch size is 1 and out_features is 1 - not all cases are failing
         # TestCollection(

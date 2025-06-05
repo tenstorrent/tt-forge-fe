@@ -12,13 +12,19 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
 class Max0(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("max0_const_1", shape=(1,), dtype=torch.int32)
+        self.add_constant("max0_const_1", shape=(1,), dtype=torch.float32)
 
     def forward(self, max_input_0):
         max_output_1 = forge.op.Max("", max_input_0, self.get_constant("max0_const_1"))
@@ -28,7 +34,7 @@ class Max0(ForgeModule):
 class Max1(ForgeModule):
     def __init__(self, name):
         super().__init__(name)
-        self.add_constant("max1_const_1", shape=(1,), dtype=torch.float32)
+        self.add_constant("max1_const_1", shape=(1,), dtype=torch.int32)
 
     def forward(self, max_input_0):
         max_output_1 = forge.op.Max("", max_input_0, self.get_constant("max1_const_1"))
@@ -42,57 +48,74 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    (Max0, [((2441216,), torch.int32)], {"model_name": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99}),
+    (Max0, [((1, 112, 112, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 56, 55, 64), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 56, 55, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 56, 55, 128), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 28, 28, 128), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 28, 28, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 28, 28, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 14, 14, 256), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 14, 14, 1024), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 14, 14, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 7, 7, 512), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
+    (Max0, [((1, 7, 7, 2048), torch.float32)], {"model_names": ["jax_resnet_50_img_cls_hf"], "pcc": 0.99}),
     (
         Max1,
-        [((1, 32, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"], "pcc": 0.99},
+        [((2441216,), torch.int32)],
+        {"model_names": ["pt_llava_llava_hf_llava_1_5_7b_hf_cond_gen_hf"], "pcc": 0.99},
     ),
     (
-        Max1,
+        Max0,
+        [((1, 12, 32, 32), torch.float32)],
+        {"model_names": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (
+        Max0,
         [((1, 16, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_350m_seq_cls_hf", "pt_opt_facebook_opt_350m_qa_hf"], "pcc": 0.99},
+        {"model_names": ["pt_opt_facebook_opt_350m_qa_hf", "pt_opt_facebook_opt_350m_seq_cls_hf"], "pcc": 0.99},
     ),
-    (Max1, [((1, 32, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
     (
-        Max1,
+        Max0,
+        [((1, 32, 32, 32), torch.float32)],
+        {"model_names": ["pt_opt_facebook_opt_1_3b_qa_hf", "pt_opt_facebook_opt_1_3b_seq_cls_hf"], "pcc": 0.99},
+    ),
+    (Max0, [((1, 32, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_1_3b_clm_hf"], "pcc": 0.99}),
+    (
+        Max0,
         [((1, 16, 256, 256), torch.float32)],
         {
-            "model_name": [
+            "model_names": [
                 "pt_opt_facebook_opt_350m_clm_hf",
-                "pt_xglm_facebook_xglm_1_7b_clm_hf",
                 "pt_xglm_facebook_xglm_564m_clm_hf",
+                "pt_xglm_facebook_xglm_1_7b_clm_hf",
             ],
             "pcc": 0.99,
         },
     ),
-    (
-        Max1,
-        [((1, 12, 32, 32), torch.float32)],
-        {"model_name": ["pt_opt_facebook_opt_125m_qa_hf", "pt_opt_facebook_opt_125m_seq_cls_hf"], "pcc": 0.99},
-    ),
-    (Max1, [((1, 12, 256, 256), torch.float32)], {"model_name": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
+    (Max0, [((1, 12, 256, 256), torch.float32)], {"model_names": ["pt_opt_facebook_opt_125m_clm_hf"], "pcc": 0.99}),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Max")
+    record_forge_op_name("Max")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
-            forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+        if metadata_name == "model_names":
+            record_op_model_names(metadata_value)
+        elif metadata_name == "args":
+            record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [
@@ -115,14 +138,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

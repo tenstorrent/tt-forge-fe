@@ -13,7 +13,7 @@ from forge.tvm_calls.forge_utils import paddle_trace
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["openai/clip-vit-base-patch16"]
 
@@ -21,16 +21,15 @@ variants = ["openai/clip-vit-base-patch16"]
 @pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_clip_text(variant, forge_property_recorder):
+def test_clip_text(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model=ModelArch.CLIPTEXT,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.TEXT_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPTextModel.from_pretrained(variant)
@@ -43,27 +42,24 @@ def test_clip_text(variant, forge_property_recorder):
 
     # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_clip_vision(variant, forge_property_recorder):
+def test_clip_vision(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model=ModelArch.CLIPVISION,
         variant=variant,
         source=Source.PADDLENLP,
         task=Task.IMAGE_ENCODING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPVisionModel.from_pretrained(variant)
@@ -76,27 +72,24 @@ def test_clip_vision(variant, forge_property_recorder):
 
     # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.xfail()
-def test_clip(variant, forge_property_recorder):
+def test_clip(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="clip",
+        model=ModelArch.CLIP,
         variant=variant,
         source=Source.PADDLENLP,
-        task=Task.IMAGE_ENCODING,
+        task=Task.IMAGE_TEXT_PAIRING,
     )
-    forge_property_recorder.record_group("generality")
 
     # Load model and processor
     model = CLIPModel.from_pretrained(variant)
@@ -128,9 +121,7 @@ def test_clip(variant, forge_property_recorder):
 
     # Compile model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

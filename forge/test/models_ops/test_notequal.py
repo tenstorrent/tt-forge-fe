@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
@@ -32,45 +38,41 @@ def ids_func(param):
 
 
 forge_modules_and_shapes_dtypes_list = [
-    pytest.param(
-        (
-            Notequal0,
-            [((1, 128), torch.int64)],
-            {
-                "model_name": [
-                    "pt_roberta_xlm_roberta_base_mlm_hf",
-                    "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
-                ],
-                "pcc": 0.99,
-            },
-        ),
-        marks=[
-            pytest.mark.xfail(
-                reason="RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_width_multi_core_program_factory.cpp:27: tt::exception info: BinaryOpType cannot be mapped to BcastOpMath"
-            )
-        ],
+    (Notequal0, [((1, 9), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_seq_cls_padlenlp"], "pcc": 0.99}),
+    (Notequal0, [((1, 11), torch.int64)], {"model_names": ["pd_roberta_rbt4_ch_clm_padlenlp"], "pcc": 0.99}),
+    (
+        Notequal0,
+        [((1, 128), torch.int64)],
+        {
+            "model_names": [
+                "pt_roberta_xlm_roberta_base_mlm_hf",
+                "pt_roberta_cardiffnlp_twitter_roberta_base_sentiment_seq_cls_hf",
+            ],
+            "pcc": 0.99,
+        },
     ),
 ]
 
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("NotEqual")
+    record_forge_op_name("NotEqual")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
     pcc = metadata.pop("pcc")
 
     for metadata_name, metadata_value in metadata.items():
-        if metadata_name == "model_name":
-            forge_property_recorder.record_op_model_names(metadata_value)
-        elif metadata_name == "op_params":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+        if metadata_name == "model_names":
+            record_op_model_names(metadata_value)
+        elif metadata_name == "args":
+            record_forge_op_args(metadata_value)
         else:
-            logger.warning("no utility function in forge property handler")
+            logger.warning(
+                "No utility function available in forge property handler to record %s property", metadata_name
+            )
 
     max_int = 1000
     inputs = [
@@ -93,14 +95,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

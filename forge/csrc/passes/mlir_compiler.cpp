@@ -8,11 +8,11 @@
 #include "graph_lib/defines.hpp"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
+#include "shared_utils/json_extension.hpp"
 
 // Forge headers
 #include "graph_lib/graph.hpp"
 #include "nlohmann/json.hpp"
-#include "shared_utils/forge_property_utils.hpp"
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #include "graph_lib/node_types.hpp"
@@ -46,10 +46,7 @@ namespace tt::passes
 
 // Template function to run the MLIR compiler pipeline, depending on the desired output.
 template <MLIROutputKind output>
-auto run_mlir_compiler_generic(
-    tt::ForgeGraphModule& module,
-    const std::optional<MLIRConfig>& mlir_config,
-    const std::optional<py::object>& forge_property_handler)
+auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
     // Register all the required dialects.
     mlir::DialectRegistry registry;
@@ -83,9 +80,6 @@ auto run_mlir_compiler_generic(
     // Generate MLIR from the Forge graph.
     mlir::OwningOpRef<mlir::ModuleOp> mlir_module = lower_to_mlir(module, context);
 
-    tt::property::record_execution_depth(
-        tt::property::ExecutionDepth::FAILED_TTMLIR_COMPILATION, forge_property_handler);
-
     // Run MLIR pipeline.
     run_mlir_passes<output>(mlir_module, mlir_config);
 
@@ -100,18 +94,12 @@ auto run_mlir_compiler_generic(
 
         // Generate binary from the MLIR module.
         auto binary = mlir::tt::ttnn::ttnnToFlatbuffer(mlir_module.get());
-        tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
-
         if (binary == nullptr)
         {
             throw std::runtime_error("Failed to generate flatbuffer binary.");
         }
 
-        tt::property::record_execution_depth(tt::property::ExecutionDepth::FAILED_RUNTIME, forge_property_handler);
-
-        std::string binary_json_str = runtime::Binary(binary).asJson();
-        tt::property::record_flatbuffer_details(binary_json_str, forge_property_handler);
-
+        tt::log_info(LogMLIRCompiler, "Flatbuffer binary generated successfully.");
         return binary;
     }
     else if constexpr (output == MLIROutputKind::Cpp)
@@ -133,23 +121,32 @@ auto run_mlir_compiler_generic(
     }
 }
 
-runtime::Binary run_mlir_compiler(
-    tt::ForgeGraphModule& module,
-    const std::optional<MLIRConfig>& mlir_config,
-    const std::optional<py::object>& forge_property_handler)
+runtime::Binary run_mlir_compiler(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module, mlir_config, forge_property_handler);
+    return run_mlir_compiler_generic<MLIROutputKind::Flatbuffer>(module, mlir_config);
 }
 
-std::string run_mlir_compiler_to_cpp(
-    tt::ForgeGraphModule& module,
-    const std::optional<MLIRConfig>& mlir_config,
-    const std::optional<py::object>& forge_property_handler)
+std::string run_mlir_compiler_to_cpp(tt::ForgeGraphModule& module, const std::optional<MLIRConfig>& mlir_config)
 {
-    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, mlir_config, forge_property_handler);
+    return run_mlir_compiler_generic<MLIROutputKind::Cpp>(module, mlir_config);
 }
 
-void to_json(::nlohmann::json& j, const MLIRConfig& p) { j = nlohmann::json{{"enable_consteval", p.enable_consteval}}; }
+void to_json(::nlohmann::json& j, const MLIRConfig& p)
+{
+    j = nlohmann::json{
+        {"enable_consteval", p.enable_consteval},
+        {"enable_optimizer", p.enable_optimizer},
+        {"enable_memory_layout_analysis", p.enable_memory_layout_analysis},
+        {"enable_fusing", p.enable_fusing},
+        {"custom_config", p.custom_config}};
+}
 
-void from_json(const ::nlohmann::json& j, MLIRConfig& p) { j.at("enable_consteval").get_to(p.enable_consteval); }
+void from_json(const ::nlohmann::json& j, MLIRConfig& p)
+{
+    j.at("enable_consteval").get_to(p.enable_consteval);
+    j.at("enable_optimizer").get_to(p.enable_optimizer);
+    j.at("enable_memory_layout_analysis").get_to(p.enable_memory_layout_analysis);
+    j.at("enable_fusing").get_to(p.enable_fusing);
+    j.at("custom_config").get_to(p.custom_config);
+}
 }  // namespace tt::passes

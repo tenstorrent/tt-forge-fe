@@ -51,7 +51,7 @@ static bool hoist_bcast_through_path(graphlib::Graph *graph, std::vector<graphli
     {
         auto *op = path[i];
         TT_ASSERT(graph->data_users(op).size() == 1, "Must have one user edge");
-        TT_ASSERT(is_elementwise(op), "Must be elementwise op");
+        TT_ASSERT(op->is_eltwise(), "Must be elementwise op");
 
         auto shape = op->shape();
         TT_ASSERT(shape[bcast_dim] == 1, "Cannot broadcast on dims > 1");
@@ -131,7 +131,7 @@ static bool is_incommutable_reduce_avg_reduce_avg_bcast_on_incommutable_dim(
                 break;
             }
             next_op = dynamic_cast<graphlib::OpNode *>(graph->data_users(next_op)[0]);
-            if (not next_op or not is_elementwise(next_op))
+            if (not next_op or not next_op->is_eltwise())
                 break;
             next_ops.push_back(next_op);
         }
@@ -392,7 +392,7 @@ static bool find_and_replace_incommutable_patterns(
             break;
         }
         // TODO: (lpanos) I dont think is_elementwise should return true for any of these ops, but for now it does
-        bool can_commute = is_elementwise(op) and op->op_name() != "concatenate" and op->op_name() != "select" and
+        bool can_commute = op->is_eltwise() and op->op_name() != "concatenate" and op->op_name() != "select" and
                            op->op_name() != "interleave";
 
         if (not can_commute and op != initial_op)

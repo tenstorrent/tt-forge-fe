@@ -993,6 +993,25 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_adaptive_maxpool2d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    output_size = [int(size) for size in node["attrs"]["output_size"][0]]
+    args.append(
+        (
+            "output_size",
+            f"{output_size[0]}",
+        )
+    )
+
+    layout = node["attrs"].get("layout", [["NCHW"]])[0][0]
+    channel_last = int(layout == "NHWC")
+    args.append(("channel_last", f"{channel_last}"))
+
+    return args
+
+
 def populate_maxpool3d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1396,14 +1415,44 @@ def populate_pad_args(graph, nid, compiler_cfg):
     node = graph["nodes"][nid]
     pad_width = [int(x) for x in node["attrs"]["pad_width"][0]]
     shape = node["attrs"]["shape"][0][0]
+    channel_last = False
 
     mode = node["attrs"]["pad_mode"][0][0]
-    args.append(
-        (
-            "pad",
-            f"({pad_width})",
+    assert mode in ["constant", "edge", "reflect"], "Forge pad only support constant/replicate/reflect padding for now"
+    if len(shape) > 2:
+        # Forge Pad only supports padding on last 2 dims
+        assert len(pad_width) == len(shape) * 2
+        assert all([x == 0 for x in pad_width[0:-6]]), "Forge Pad does not support padding on W dim"
+        assert all([x == 0 for x in pad_width[-6:-4]]) or all(
+            [x == 0 for x in pad_width[-2:]]
+        ), "Forge only support Z dim padding for channel-last inputs"
+        if any([x != 0 for x in pad_width[-6:-4]]):
+            pad_width = pad_width[-6:-2]
+            channel_last = True
+        else:
+            pad_width = pad_width[-4:]
+
+    # TVM nn.pad axis start from the last axis, need to swap
+    pad_width_by_axis = [pad_width[x : x + 2] for x in range(0, len(pad_width), 2)]
+    pad_width_by_axis.reverse()
+    pad_width_final = [item for axis in pad_width_by_axis for item in axis]
+
+    if len(pad_width_final) == 2:
+        args.append(
+            (
+                "pad",
+                f"({pad_width_final[0]}, {pad_width_final[1]})",
+            )
         )
-    )
+    elif len(pad_width_final) == 4:
+        args.append(
+            (
+                "pad",
+                f"({pad_width_final[0]}, {pad_width_final[1]}, {pad_width_final[2]}, {pad_width_final[3]})",
+            )
+        )
+    else:
+        raise ValueError("Pad only support 2D or 4D padding")
 
     tvm_pad_mode_to_forge_mode = {
         "constant": "constant",
@@ -1417,12 +1466,41 @@ def populate_pad_args(graph, nid, compiler_cfg):
             f'"{tvm_pad_mode_to_forge_mode[mode]}"',
         )
     )
+
     args.append(
         (
-            "pad_len",
-            f"{len(pad_width)}",
+            "channel_last",
+            f"{channel_last}",
         )
     )
+
+    return args
+
+
+def populate_resize1d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    sizes = [int(x) for x in node["attrs"]["size"][0]]
+    assert len(sizes) == 1, "Resize1D should only have one size dimension"
+
+    method = node["attrs"]["method"][0][0]
+    assert method in ["nearest_neighbor", "linear", "cubic"], "Unsupported interpolation method"
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    args.append(("size", f"{sizes[0]}"))
+
+    args.append(("method", f'"{method}"'))
+
+    coordinate_transform_mode = node["attrs"]["coordinate_transformation_mode"][0][0]
+    align_corners = "True" if coordinate_transform_mode == "align_corners" else "False"
+    args.append(("align_corners", f"{align_corners}"))
+
+    channel_last = int(node["attrs"]["layout"][0][0] == "NWC")
+    args.append(("channel_last", f"{channel_last}"))
 
     return args
 
@@ -1436,8 +1514,8 @@ def populate_resize2d_args(graph, nid, compiler_cfg):
     method = node["attrs"]["method"][0][0]
 
     assert (
-        method == "nearest_neighbor" or method == "linear" or method == "bilinear"
-    ), "Only support nearest neighbor and linear for now"
+        method == "nearest_neighbor" or method == "linear" or method == "bilinear" or method == "cubic"
+    ), "Only support nearest neighbor, linear and cubic for now"
     assert int(node["attrs"]["num_inputs"]) == 1
     input_nid = node["inputs"][0][0]
     input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
@@ -1645,6 +1723,7 @@ tvm_to_forge_op_map = {
     "greater_equal": "greater_equal",
     "greater": "greater",
     "identity": "identity",
+    "image.resize1d": "resize1d",
     "image.resize2d": "resize2d",
     "image.resize3d": "resize3d",
     "layernorm": "layernorm",
@@ -1671,6 +1750,7 @@ tvm_to_forge_op_map = {
     "nn.max_pool1d": "max_pool1d",
     "nn.max_pool2d": "max_pool2d",
     "nn.max_pool3d": "max_pool3d",
+    "nn.adaptive_max_pool2d": "adaptive_max_pool2d",
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
@@ -1758,6 +1838,7 @@ forge_op_to_function_name = {
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
     "max_pool3d": "forge.op.MaxPool3d",
+    "adaptive_max_pool2d": "forge.op.AdaptiveMaxPool2d",
     "maximum": "forge.op.Max",
     "mean": "forge.op.ReduceAvg",
     "minimum": "forge.op.Min",
@@ -1775,6 +1856,7 @@ forge_op_to_function_name = {
     "repeat": "forge.op.Repeat",
     "repeat_interleave": "forge.op.RepeatInterleave",
     "reshape": "forge.op.Reshape",
+    "resize1d": "forge.op.Resize1d",
     "resize2d": "forge.op.Resize2d",
     "resize3d": "forge.op.Resize3d",
     "select": "forge.op.Select",
@@ -1824,6 +1906,7 @@ forge_ops_needing_arguments = {
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
     "max_pool3d": populate_maxpool3d_args,
+    "adaptive_max_pool2d": populate_adaptive_maxpool2d_args,
     "pad": populate_pad_args,
     "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,
@@ -1833,6 +1916,7 @@ forge_ops_needing_arguments = {
     "repeat": populate_repeat_args,
     "repeat_interleave": populate_repeat_interleave_args,
     "reshape": populate_reshape_args,
+    "resize1d": populate_resize1d_args,
     "resize2d": populate_resize2d_args,
     "resize3d": populate_resize3d_args,
     "select": populate_select_args,
@@ -1991,7 +2075,6 @@ def generate_forge_module(
     verify_cfg=None,
     clean_later=False,
     input_names=[],
-    forge_property_handler=None,
 ):
     global counter
 
@@ -2025,7 +2108,6 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2088,7 +2170,6 @@ def compile_tvm_to_python(
     compiler_cfg=None,
     verify_cfg=None,
     input_names=[],
-    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2123,7 +2204,6 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
-        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):
@@ -2344,13 +2424,13 @@ def compile_tvm_to_python(
                 assert "num_inputs" in node["attrs"]
 
                 # TVM nn.pad has 2 inputs [Data, pad_value]
-                # We need to assert pad_value being zero, then remove the constant
+                # We remove the constant and move it to the arguments
                 if node["name"] == "nn.pad" and int(node["attrs"]["num_inputs"]) == 2:
                     pad_value_node = graph["nodes"][node["inputs"][1][0]]
                     pad_value_node_name = pad_value_node["name"]
                     pad_value = json_graph["params"][pad_value_node_name]
                     assert pad_value_node["nid"] in constants
-                    assert not pad_value.any(), "Padding contains non-zero values"
+                    args.append(("value", f"{float(pad_value.item())}"))
                     del constants[pad_value_node["nid"]]
                     node["attrs"]["num_inputs"] = "1"
 
@@ -2603,7 +2683,7 @@ def compile_tvm_to_python(
             delete_inputs = not verify_cfg.enable_op_level_comparision
             if not delete_inputs:
                 logger.warning(
-                    "Preserving Intermediate tensor values in ForgeModule forward may causes out-of-memory issues"
+                    "Preserving Intermediate tensor values in ForgeModule forward may cause out-of-memory issues"
                 )
             writer = ForgeWriter(
                 current_module_name,
@@ -2706,7 +2786,7 @@ def compile_tvm_to_python(
 
         modules.append(writer)
 
-        if (framework in ["pytorch", "paddle", "onnx"] and compiler_cfg.extract_tvm_unique_ops_config) or (
+        if compiler_cfg.extract_tvm_unique_ops_config or (
             framework == "pytorch" and compiler_cfg.tvm_generate_unique_ops_tests
         ):
 

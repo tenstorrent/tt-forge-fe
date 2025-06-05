@@ -7,10 +7,17 @@ import torch
 from transformers import AutoModelForCausalLM, AutoProcessor
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.multimodal.phi3.utils.utils import load_input
+from test.models.pytorch.multimodal.phi3.model_utils.utils import load_input
 from test.utils import download_model
 
 
@@ -29,19 +36,17 @@ variants = ["microsoft/Phi-3.5-vision-instruct"]
 @pytest.mark.nightly
 @pytest.mark.skip("Test uses large amount of host memory (>30GB).")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_vision(forge_property_recorder, variant):
+def test_phi3_5_vision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3_5_vision",
+        model=ModelArch.PHI35VISION,
         variant=variant,
         task=Task.MULTIMODAL_TEXT_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     # Load model and processor
     model = download_model(
@@ -60,9 +65,7 @@ def test_phi3_5_vision(forge_property_recorder, variant):
     inputs = load_input(processor)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

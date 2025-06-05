@@ -6,9 +6,13 @@ import json
 from enum import Enum
 from loguru import logger
 from typing import Any, Dict, List, Optional
+from collections.abc import MutableMapping
+from collections import Counter
 
 import torch
 import onnx
+import flax
+from transformers.modeling_flax_utils import FlaxPreTrainedModel
 
 from forge.python_codegen import ForgeWriter
 from forge.utils import create_excel_file
@@ -375,6 +379,8 @@ class UniqueOperations(dict):
         named_parameters: Dict[str, torch.Tensor],
         node_name_to_node_type: Optional[Dict[str, NodeType]] = None,
         use_constant_value: bool = True,
+        convert_param_and_const_to_activation: bool = False,
+        existing_unique_operations: Optional["UniqueOperations"] = None,
     ):
         """
         Creates unique operations by mapping operand and argument information to forge op names.
@@ -388,11 +394,29 @@ class UniqueOperations(dict):
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
         """
-        unique_operations = UniqueOperations()
+        if existing_unique_operations is not None:
+            unique_operations = existing_unique_operations
+        else:
+            unique_operations = UniqueOperations()
         for nid in sorted(ops):
             forge_op_function_name = ops[nid].function_name
             operand_names = ops[nid].input_names
             operand_types = ops[nid].input_node_types
+            if convert_param_and_const_to_activation:
+                assert (
+                    node_name_to_node_type is None
+                ), "node_name_to_node_type shouldn't be provided when convert_param_and_const_to_activation is set to True"
+                # Check if all operands types are parameters or constants and change the operand type from
+                # parameters or constants to activation and pass it as activation to forge module forward function
+                all_params_const = all(
+                    [
+                        True if (operand_type == NodeType.Parameter or operand_type == NodeType.Constant) else False
+                        for operand_type in operand_types
+                    ]
+                )
+                if all_params_const:
+                    operand_types = [NodeType.Activation] * len(operand_types)
+
             if node_name_to_node_type is not None:
                 assert UniqueOperations.validate_node_types(
                     operand_names, operand_types, node_name_to_node_type
@@ -540,20 +564,43 @@ def extract_and_generate_unique_ops_tests(
     file is created, which includes a Forge module for different configurations and associated test cases.
     """
 
+    named_parameters = {}
     if framework in ["pytorch", "paddle"]:
-        named_parameters = dict(framework_mod.module.state_dict().items())
+        named_parameters.update(framework_mod.module.state_dict())
         named_buffers = dict(framework_mod.module.named_buffers())
         named_parameters.update(named_buffers)
     elif framework == "onnx":
-        named_parameters = {}
         for weight in framework_mod.module.graph.initializer:
             named_parameters[weight.name] = onnx.numpy_helper.to_array(weight)
+    elif framework == "jax":
+
+        def flatten_params(params, parent_key="", sep="."):
+            items = []
+            for key, val in params.items():
+                new_key = parent_key + sep + key if parent_key else key
+                if isinstance(val, MutableMapping):
+                    items.extend(flatten_params(val, new_key, sep=sep).items())
+                else:
+                    items.append((new_key, val))
+            return dict(items)
+
+        if isinstance(framework_mod.module, FlaxPreTrainedModel):
+            named_parameters = framework_mod.module.params
+        elif isinstance(framework_mod.module, flax.linen.Module):
+            if hasattr(framework_mod.module, "variables") and "params" in framework_mod.module.variables:
+                named_parameters = framework_mod.module.variables["params"]
+        if named_parameters:
+            named_parameters = flatten_params(named_parameters)
+    elif framework == "tensorflow":
+        for weight in framework_mod.module.weights:
+            named_parameters[weight.name] = weight.value()
     if param_file_name is not None:
         serialized_params = torch.load(param_file_name)
         named_parameters.update(serialized_params)
 
     # Convert parameters from different framework to pytorch framework(i.e Convert paddle weight/buffer tensor to pytorch tensor)
-    named_parameters = to_pt_parameters(named_parameters, framework)
+    if named_parameters:
+        named_parameters = to_pt_parameters(named_parameters, framework)
 
     # The model's named parameters and named buffers are stored for the following key reasons:
     #
@@ -582,12 +629,14 @@ def extract_and_generate_unique_ops_tests(
     named_buffers_file_name = None
     if compiler_cfg.tvm_generate_unique_ops_tests:
         # Store named parameters
-        named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
-        torch.save(named_parameters, named_params_file_name)
+        if named_parameters:
+            named_params_file_name = os.path.join(module_directory, str(current_module_name) + "_named_params.pt")
+            torch.save(named_parameters, named_params_file_name)
 
         # Store named buffers
-        named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
-        torch.save(named_buffers, named_buffers_file_name)
+        if named_buffers:
+            named_buffers_file_name = os.path.join(module_directory, str(current_module_name) + "_named_buffers.pt")
+            torch.save(named_buffers, named_buffers_file_name)
     else:
         if param_file_name is not None and os.path.exists(param_file_name):
             os.remove(param_file_name)
@@ -626,7 +675,7 @@ def extract_and_generate_unique_ops_tests(
             )
             writer.write_header(include_pytest_imports=True)
 
-            # Get the unique operands and operation arguments assiocated the operand names
+            # Get the unique operands and operation arguments associated the operand names
             unique_operands_and_opargs_opmetadata = unique_operations[
                 forge_op_function_name
             ].get_unique_operands_and_opargs_opmetadata()
@@ -922,12 +971,13 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
         )
         writer.write_header(include_pytest_imports=True)
 
-        # Get the unique operands and operation arguments assiocated with the operation metadata
+        # Get the unique operands and operation arguments associated with the operation metadata
         unique_operands_and_opargs_opmetadata = unique_operations[
             forge_op_function_name
         ].get_unique_operands_and_opargs_opmetadata()
 
         pytest_input_shapes_and_dtypes_list = []
+        pytest_markers_with_reasons = []
         forge_module_names = []
         module_idx = 0
         forge_module_list = []
@@ -940,17 +990,6 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 operand_types = operands.get_operand_types()
                 operand_dtypes = operands.get_operand_dtypes()
                 model_variant_info_list = operation_metadata["model_variant_info"]
-
-                # Check if all operands types are parameters or constants and change the operand type from
-                # parameters or constants to activation and pass it as activation to forge module forward function
-                all_params_const = all(
-                    [
-                        True if (operand_type == NodeType.Parameter or operand_type == NodeType.Constant) else False
-                        for operand_type in operand_types
-                    ]
-                )
-                if all_params_const:
-                    operand_types = [NodeType.Activation] * len(operand_types)
 
                 # Check if an existing Forge module matches the current operation configuration.
                 # This involves comparing the number of inputs, operand types, activation operand count,
@@ -1021,7 +1060,6 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
 
                 # If no matching Forge module was found, create a new one for the current operation configuration
                 if need_to_create_forge_module:
-
                     # Generate class name and append it forge_module_names list for using it as pytest parameter.
                     class_name = op_name + str(module_idx)
                     class_name = class_name.title().replace("_", "")
@@ -1097,30 +1135,52 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 pytest_input_shapes_and_dtypes_list.append(pytest_input_shapes_dtypes)
 
                 # A dictonary contain metadata info for the specific operation configuration which will be recorded in record_property fixture
-                pytest_metadata = {
-                    "model_names": [
-                        model_variant_info["variant_name"] for model_variant_info in model_variant_info_list
-                    ],
-                    "pcc": 0.99,
-                }
+                model_names = [model_variant_info["variant_name"] for model_variant_info in model_variant_info_list]
+                non_duplicate_model_names = list(dict.fromkeys(model_names))
+                model_names_cnt = Counter(model_names)
+                duplicate_model_names = [
+                    model_name for model_name in non_duplicate_model_names if model_names_cnt[model_name] > 1
+                ]
+                if duplicate_model_names:
+                    logger.warning(
+                        f"There are duplicate model names(i.e {duplicate_model_names}) present inside the operation_metadata"
+                    )
+                pytest_metadata = {"model_names": non_duplicate_model_names}
+                if "pcc" in operation_metadata.keys():
+                    assert (
+                        len(operation_metadata["pcc"]) == 1
+                    ), "There should be only one pcc value in operation metadata"
+                    pytest_metadata["pcc"] = operation_metadata["pcc"][0]
+                else:
+                    pytest_metadata["pcc"] = 0.99
 
                 if len(args) != 0:
                     pytest_metadata["args"] = dict(args)
 
-                if op_name == "embedding":
-                    # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
-                    pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
-                elif op_name == "advindex":
-                    # Calculate advindex op indicies tensor maximum value based upon the reference tensor at dim = 0.
-                    if (
-                        len(operand_shapes[1]) > 1
-                        and len(operand_shapes[0]) > len(operand_shapes[1])
-                        and operand_shapes[0] == 1
-                    ):
-                        pytest_metadata["max_int"] = int(operand_shapes[0][1]) - 1
-                    else:
-                        pytest_metadata["max_int"] = int(operand_shapes[0][0]) - 1
+                if (
+                    "max_int" in operation_metadata.keys()
+                    and len(operation_metadata["max_int"]) == 1
+                    and operation_metadata["max_int"][0] is not None
+                ):
+                    pytest_metadata["max_int"] = operation_metadata["max_int"][0]
+                else:
+                    if op_name == "embedding":
+                        # Calculate embedding op indicies tensor maximum value based upon the num_embeddings of the weight tensor.
+                        pytest_metadata["max_int"] = int(operand_shapes[1][0]) - 1
+                    elif op_name == "advindex":
+                        # Calculate advindex op indicies tensor maximum value based upon the reference tensor along the specified dimension (default is 0).
+                        advindex_dim = args["dim"] if not args.is_empty() and "dim" in args else 0
+                        pytest_metadata["max_int"] = int(operand_shapes[0][advindex_dim]) - 1
 
+                markers_with_reasons = None
+                if (
+                    "markers" in operation_metadata.keys()
+                    and operation_metadata["markers"]
+                    and len(operation_metadata["markers"]) == 1
+                ):
+                    markers_with_reasons = operation_metadata["markers"][0]
+
+                pytest_markers_with_reasons.append(markers_with_reasons)
                 pytest_metadata_list.append(pytest_metadata)
 
         # List of marker that will added at the top of the test function
@@ -1142,6 +1202,7 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
             use_ids_function=True,
             include_random_parameter_constant_gen=True,
             exclude_record_property=exclude_record_property,
+            pytest_markers_with_reasons=pytest_markers_with_reasons,
         )
 
         writer.close_file()

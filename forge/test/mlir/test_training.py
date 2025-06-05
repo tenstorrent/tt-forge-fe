@@ -24,7 +24,7 @@ class MatmulParam(nn.Module):
 
 
 @pytest.mark.push
-def test_torch_training(forge_property_recorder):
+def test_torch_training():
     model = MatmulParam()
     shape = (1, 1024)
     inputs = torch.rand(shape)
@@ -34,9 +34,7 @@ def test_torch_training(forge_property_recorder):
     loss_fn = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
-    tt_model = forge.compile(
-        model, sample_inputs=[torch.rand(shape)], optimizer=optimizer, forge_property_handler=forge_property_recorder
-    )
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)
 
     num_epochs = 20
 
@@ -46,7 +44,6 @@ def test_torch_training(forge_property_recorder):
             inputs=[inputs],
             framework_model=model,
             compiled_model=tt_model,
-            forge_property_handler=forge_property_recorder,
         )
         fw_out, tt_out = fw_out[0], tt_out[0]
 
@@ -69,11 +66,9 @@ def test_torch_training(forge_property_recorder):
 
 @pytest.mark.push
 @pytest.mark.parametrize("optimizer", [forge.optimizers.SGD, forge.optimizers.Adam, forge.optimizers.AdamW])
-def test_compile_optimizers(forge_property_recorder, optimizer):
+def test_compile_optimizers(optimizer):
     model = MatmulParam()
     shape = (1, 1024)
 
     optimizer = optimizer(learning_rate=0.1)
-    tt_model = forge.compile(
-        model, sample_inputs=[torch.rand(shape)], optimizer=optimizer, forge_property_handler=forge_property_recorder
-    )
+    tt_model = forge.compile(model, sample_inputs=[torch.rand(shape)], optimizer=optimizer)

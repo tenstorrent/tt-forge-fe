@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+import torch
 from transformers import (
     SegformerConfig,
     SegformerForImageClassification,
@@ -10,42 +11,52 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    ModelPriority,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.segformer.utils.image_utils import get_sample_data
+from test.models.pytorch.vision.segformer.model_utils.image_utils import get_sample_data
 
 variants_img_classification = [
     pytest.param("nvidia/mit-b0", marks=pytest.mark.push),
-    "nvidia/mit-b1",
-    "nvidia/mit-b2",
-    "nvidia/mit-b3",
-    "nvidia/mit-b4",
-    "nvidia/mit-b5",
+    pytest.param("nvidia/mit-b1", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b2", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b3", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b4", marks=pytest.mark.xfail),
+    pytest.param("nvidia/mit-b5", marks=pytest.mark.xfail),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_img_classification)
-def test_segformer_image_classification_pytorch(forge_property_recorder, variant):
-    if variant != "nvidia/mit-b0":
-        pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_segformer_image_classification_pytorch(variant):
+
+    if variant in ["nvidia/mit-b0"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P1
+    else:
+        group = ModelGroup.GENERALITY
+        priority = ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
+        group=group,
+        priority=priority,
     )
-
-    # Record Forge Property
-    if variant in ["nvidia/mit-b0"]:
-        forge_property_recorder.record_group("red")
-        forge_property_recorder.record_priority("P1")
-    else:
-        forge_property_recorder.record_group("generality")
 
     # Set model configurations
     config = SegformerConfig.from_pretrained(variant)
@@ -54,20 +65,26 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
     config = SegformerConfig(**config_dict)
 
     # Load the model from HuggingFace
-    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config)
+    framework_model = SegformerForImageClassification.from_pretrained(variant, config=config).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    _, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    _, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post processing
     logits = co_out[0]
@@ -76,43 +93,45 @@ def test_segformer_image_classification_pytorch(forge_property_recorder, variant
 
 
 variants_semseg = [
-    "nvidia/segformer-b0-finetuned-ade-512-512",
-    "nvidia/segformer-b1-finetuned-ade-512-512",
-    "nvidia/segformer-b2-finetuned-ade-512-512",
-    "nvidia/segformer-b3-finetuned-ade-512-512",
-    "nvidia/segformer-b4-finetuned-ade-512-512",
+    pytest.param("nvidia/segformer-b0-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b1-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b2-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b3-finetuned-ade-512-512", marks=pytest.mark.xfail),
+    pytest.param("nvidia/segformer-b4-finetuned-ade-512-512", marks=pytest.mark.xfail),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_semseg)
-def test_segformer_semantic_segmentation_pytorch(forge_property_recorder, variant):
-    pytest.skip("Skipping due to the current CI/CD pipeline limitations")
+def test_segformer_semantic_segmentation_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="segformer",
+        model=ModelArch.SEGFORMER,
         variant=variant,
         task=Task.SEMANTIC_SEGMENTATION,
         source=Source.HUGGINGFACE,
     )
 
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
-
     # Load the model from HuggingFace
-    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant)
+    framework_model = SegformerForSemanticSegmentation.from_pretrained(variant).to(torch.bfloat16)
     framework_model.eval()
 
     # Load the sample image
     pixel_values = get_sample_data(variant)
-    inputs = [pixel_values]
+    inputs = [pixel_values.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

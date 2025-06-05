@@ -20,8 +20,29 @@ import os
 
 
 def eval(type, attr, ops):
+    if type == "resize1d":
+        assert len(attr) == 4, "Resize1d should have 4 attrs: [size, method, align_corners, channel_last]"
+        assert len(ops) == 1
+        size, method, align_corners, channel_last = attr
+        acts = ops[0]
+        shape = acts.shape
 
-    if type == "resize2d":
+        if channel_last:
+            acts = acts.permute((0, 2, 1))
+
+        result = torch.nn.functional.interpolate(
+            acts,
+            size=size,
+            mode="linear",
+            align_corners=bool(align_corners),
+        )
+
+        if channel_last:
+            result = result.permute((0, 2, 1))
+
+        return result
+
+    elif type == "resize2d":
         assert len(attr) == 5, "Resize2d should have 4 attrs: [size, size, method, align_corners, channel_last]"
         assert len(ops) == 1
         resize_method = INT_TO_RESIZE2d_METHOD[attr[-3]]
@@ -44,7 +65,8 @@ def eval(type, attr, ops):
             upsample = torch.nn.Upsample(scale_factor=scale_factor, mode=resize_method)
             result = upsample(acts)
         else:
-            raise NotImplementedError("Downsampling of resize2d is not supported yet")
+            resize_method = "bicubic" if resize_method == "cubic" else resize_method
+            result = torch.nn.functional.interpolate(acts, size=(sizes[0], sizes[1]), mode=resize_method)
 
         if attr[-1]:
             result = result.permute((0, 2, 3, 1))
@@ -89,7 +111,32 @@ def eval(type, attr, ops):
 
 
 def shape(type, attr, ops):
-    if type == "resize2d":
+
+    if type == "resize1d":
+        assert len(attr) == 4, "Resize1d should have 4 attrs: [size, method, align_corners, channel_last]"
+        size, _, _, channel_last = attr
+        shape = list(ops[0])
+
+        if channel_last:
+            old_w = shape[-2]
+            upsample = size >= old_w
+            if upsample:
+                assert size % old_w == 0, "Only support upsample with integer scale factor"
+            else:
+                assert old_w % size == 0, "Only support downsample with integer scale factor"
+            shape[-2] = size
+        else:
+            old_w = shape[-1]
+            upsample = size >= old_w
+            if upsample:
+                assert size % old_w == 0, "Only support upsample with integer scale factor"
+            else:
+                assert old_w % size == 0, "Only support downsample with integer scale factor"
+            shape[-1] = size
+
+        return shape, []
+
+    elif type == "resize2d":
         assert len(attr) == 5, "Resize2d should have 4 attrs: [size, size, method, align_corners]"
         shape = list(ops[0])
         channel_last = attr[-1]
@@ -175,6 +222,16 @@ def shape(type, attr, ops):
             shape[-3], shape[-2] = shape[-3] * scale_factor, shape[-2] * scale_factor
         else:
             shape[-2], shape[-1] = shape[-2] * scale_factor, shape[-1] * scale_factor
+        return shape, []
+
+    elif type == "downsample2d":
+        channel_last = attr[2]
+        scale_factor = attr[0]
+        shape = list(ops[0])
+        if channel_last:
+            shape[-3], shape[-2] = shape[-3] // scale_factor, shape[-2] // scale_factor
+        else:
+            shape[-2], shape[-1] = shape[-2] // scale_factor, shape[-1] // scale_factor
         return shape, []
 
 
@@ -320,7 +377,13 @@ def decompose(type, attr, dc, inputs):
                 (scale_factor, resize_method, True),
             )
         else:
-            raise NotImplementedError("Downsampling of resize2d is not supported yet")
+            scale_factor = shape[-3] // sizes[0] if channel_last else shape[-2] // sizes[0]
+            result = dc.op_with_named_attrs(
+                "downsample2d",
+                [result],
+                {"scale_factor": scale_factor, "mode": resize_method, "channel_last": True},
+                (scale_factor, resize_method, True),
+            )
 
         if not channel_last:
             # Changing the Layout back to NCHW from NHWC after ttir.upsample2d operation

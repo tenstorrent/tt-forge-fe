@@ -17,9 +17,10 @@ variants = [
 ]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_t5_encoder(forge_property_recorder, variant):
+def test_t5_encoder(variant):
 
     # Load Model and Tokenizer
     model = T5ForConditionalGeneration.from_pretrained(variant)
@@ -61,4 +62,4 @@ def test_t5_encoder(forge_property_recorder, variant):
     compiled_model = forge.compile(framework_model, inputs)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

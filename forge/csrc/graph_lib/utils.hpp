@@ -50,7 +50,6 @@ bool default_node_filter(Node *);
 
 // Checks if given opnode is element-wise
 class OpNode;
-bool is_eltwise(const OpNode *op);
 bool is_eltwise_nary(const OpNode *op);
 bool is_eltwise_unary(const OpNode *op);
 bool is_eltwise_binary(const OpNode *op);
@@ -77,6 +76,9 @@ std::vector<Node *> get_longest_path(const Graph *graph, bool from_inputs_only =
 std::vector<Node *> get_nodes_with_indegree_zero(Graph *graph);
 std::vector<Node *> get_nodes_with_outdegree_zero(Graph *graph);
 std::vector<Node *> get_nodes_with_data_outdegree_zero(Graph *graph);
+
+// Checks dtype of py_tensor and returns appropriate DataFormat
+DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
 
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.

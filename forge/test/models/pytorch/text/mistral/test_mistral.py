@@ -6,10 +6,17 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer, MistralConfig
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from test.models.pytorch.text.mistral.utils.utils import get_current_weather
+from test.models.pytorch.text.mistral.model_utils.utils import get_current_weather
 from test.utils import download_model
 
 variants = ["mistralai/Mistral-7B-v0.1"]
@@ -17,16 +24,17 @@ variants = ["mistralai/Mistral-7B-v0.1"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_mistral(forge_property_recorder, variant):
+def test_mistral(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="mistral", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("generality")
 
     configuration = MistralConfig()
     configuration.sliding_window = None
@@ -49,33 +57,29 @@ def test_mistral(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 60 GB)")
+@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
 @pytest.mark.parametrize("variant", variants)
-def test_mistral_v0_3(forge_property_recorder, variant):
+def test_mistral_v0_3(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="mistral",
+        model=ModelArch.MISTRAL,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
-    forge_property_recorder.record_priority("P2")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -94,9 +98,7 @@ def test_mistral_v0_3(forge_property_recorder, variant):
     inputs = [input["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

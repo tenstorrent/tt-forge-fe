@@ -9,14 +9,15 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task, build_module_name
+from forge.forge_property_utils import Framework, Source, Task, record_model_properties
 
 variants = ["facebook/llama-7b"]
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_llama_decoder(variant, forge_property_recorder):
+def test_llama_decoder(variant):
     full_model = LlamaForCausalLM.from_pretrained(variant)
     decoder = full_model.llama.layers[0]
     hidden_size = full_model.llama.hidden_size
@@ -37,9 +38,10 @@ def test_llama_decoder(variant, forge_property_recorder):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.xfail()
 @pytest.mark.parametrize("variant", variants)
-def test_llama_rms_norm(variant, forge_property_recorder):
+def test_llama_rms_norm(variant):
     full_model = LlamaModel.from_pretrained(variant)
     rms_norm = full_model.llama.norm
     hidden_size = full_model.llama.hidden_size
@@ -60,8 +62,9 @@ def test_llama_rms_norm(variant, forge_property_recorder):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.skip_model_analysis
 @pytest.mark.parametrize("variant", variants)
-def test_llama_lm_head(variant, forge_property_recorder):
+def test_llama_lm_head(variant):
     full_model = LlamaForCausalLM.from_pretrained(variant)
     lm_head = full_model.lm_head
     hidden_size = full_model.llama.hidden_size

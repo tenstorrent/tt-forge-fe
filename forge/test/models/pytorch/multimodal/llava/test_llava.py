@@ -8,10 +8,17 @@ import torch
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
-from .utils import load_inputs
+from test.models.pytorch.multimodal.llava.model_utils.utils import load_inputs
 
 
 class Wrapper(torch.nn.Module):
@@ -37,20 +44,18 @@ variants = ["llava-hf/llava-1.5-7b-hf"]
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_llava(forge_property_recorder, variant):
+def test_llava(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 30 GB)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llava",
+        model=ModelArch.LLAVA,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
     )
-
-    # Record Forge Property
-    forge_property_recorder.record_group("red")
 
     framework_model, processor = load_model(variant)
     image = "https://www.ilankelman.org/stopsigns/australia.jpg"
@@ -61,9 +66,7 @@ def test_llava(forge_property_recorder, variant):
     inputs = [input_ids, attn_mask, pixel_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
