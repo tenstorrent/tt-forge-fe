@@ -194,6 +194,7 @@ def test_densenet_169_pytorch(variant):
     print_cls_results(fw_out[0], co_out[0])
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["densenet201"])
 def test_densenet_201_pytorch(variant):

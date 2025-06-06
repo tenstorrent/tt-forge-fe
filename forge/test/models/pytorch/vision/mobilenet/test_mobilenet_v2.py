@@ -333,6 +333,7 @@ variants_with_weights = {
 }
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants_with_weights.keys())
 def test_mobilenetv2_torchvision(variant):

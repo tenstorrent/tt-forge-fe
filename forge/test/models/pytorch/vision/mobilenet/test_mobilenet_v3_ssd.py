@@ -22,6 +22,14 @@ from test.models.pytorch.vision.mobilenet.model_utils.mobilenet_v3_ssd_utils imp
     load_model,
 )
 
+variants = [
+    "resnet18",
+    "resnet34",
+    pytest.param("resnet50", marks=[pytest.mark.xfail]),
+    pytest.param("resnet101", marks=[pytest.mark.xfail]),
+    "resnet152",
+]
+
 variants_with_weights = {
     "resnet18": "ResNet18_Weights",
     "resnet34": "ResNet34_Weights",

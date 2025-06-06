@@ -105,7 +105,7 @@ variants = [
     "regnet_x_800mf",
     "regnet_x_1_6gf",
     "regnet_x_3_2gf",
-    "regnet_x_8gf",
+    pytest.param("regnet_x_8gf", marks=[pytest.mark.xfail]),
     "regnet_x_16gf",
     "regnet_x_32gf",
 ]

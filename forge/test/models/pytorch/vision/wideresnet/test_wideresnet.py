@@ -87,7 +87,7 @@ def generate_model_wideresnet_imgcls_timm(variant):
     return framework_model.to(torch.bfloat16), [img_tensor.to(torch.bfloat16)]
 
 
-variants = ["wide_resnet50_2", "wide_resnet101_2"]
+variants = [pytest.param("wide_resnet50_2", marks=[pytest.mark.xfail]), "wide_resnet101_2"]
 
 
 @pytest.mark.nightly

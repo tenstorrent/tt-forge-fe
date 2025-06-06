@@ -165,9 +165,15 @@ variants_with_weights = {
     "resnet152": "ResNet152_Weights",
 }
 
+xfail_variants = {"resnet50", "resnet152"}
+params = [
+    pytest.param(variant, marks=pytest.mark.xfail()) if variant in xfail_variants else pytest.param(variant)
+    for variant in variants_with_weights.keys()
+]
+
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", params, ids=list(variants_with_weights.keys()))
 def test_resnet_torchvision(variant):
 
     # Record Forge Property

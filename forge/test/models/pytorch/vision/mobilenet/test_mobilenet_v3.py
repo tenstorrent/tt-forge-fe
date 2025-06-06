@@ -106,11 +106,13 @@ def generate_model_mobilenetV3_imgcls_timm_pytorch(variant):
     return model.to(torch.bfloat16), [image_tensor.to(torch.bfloat16)], {}
 
 
-variants = ["mobilenetv3_large_100", "mobilenetv3_small_100"]
+variants = [
+    "mobilenetv3_large_100",
+    pytest.param("mobilenetv3_small_100", marks=[pytest.mark.xfail]),
+]
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
 def test_mobilenetv3_timm(variant):
 
