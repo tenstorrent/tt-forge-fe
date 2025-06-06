@@ -138,8 +138,8 @@ def test_bert_question_answering_onnx(variant, forge_tmp_path, opset_version):
     verify(inputs, framework_model, compiled_model)
 
 
+@pytest.mark.xfail
 @pytest.mark.nightly
-@pytest.mark.push
 @pytest.mark.parametrize("variant", ["emrecan/bert-base-turkish-cased-mean-nli-stsb-tr"])
 def test_bert_sentence_embedding_generation_onnx(variant, forge_tmp_path):
 

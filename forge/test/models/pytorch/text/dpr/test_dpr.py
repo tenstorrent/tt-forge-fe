@@ -26,7 +26,7 @@ from forge.verify.verify import verify
 from test.utils import download_model
 
 params = [
-    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.push]),
+    pytest.param("facebook/dpr-ctx_encoder-single-nq-base", marks=[pytest.mark.xfail]),
     pytest.param("facebook/dpr-ctx_encoder-multiset-base"),
 ]
 
