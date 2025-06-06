@@ -14,9 +14,11 @@ import onnx
 import flax
 from transformers.modeling_flax_utils import FlaxPreTrainedModel
 
-from forge.python_codegen import ForgeWriter
+import forge
+from forge.python_codegen import ForgeWriter, forge_df_from_str, pytorch_df_from_str
 from forge.utils import create_excel_file
 from forge.tensor import to_pt_tensor, AnyTensor
+from forge.config import CompilerConfig
 
 
 class NodeType(Enum):
@@ -381,6 +383,7 @@ class UniqueOperations(dict):
         use_constant_value: bool = True,
         convert_param_and_const_to_activation: bool = False,
         existing_unique_operations: Optional["UniqueOperations"] = None,
+        compiler_cfg: Optional[CompilerConfig] = None,
     ):
         """
         Creates unique operations by mapping operand and argument information to forge op names.
@@ -394,6 +397,10 @@ class UniqueOperations(dict):
         Returns:
             UniqueOperations: Populated UniqueOperations dictionary.
         """
+        lower_df = None
+        if compiler_cfg is not None and compiler_cfg.default_df_override is not None:
+            lower_df = forge_df_from_str(compiler_cfg.default_df_override, "")
+
         if existing_unique_operations is not None:
             unique_operations = existing_unique_operations
         else:
@@ -441,6 +448,31 @@ class UniqueOperations(dict):
                     named_parameters[operand_name] if operand_type == NodeType.Constant else operand_shape
                     for operand_type, operand_shape, operand_name in zip(operand_types, operand_shapes, operand_names)
                 ]
+
+            if lower_df is not None:
+                torch_lower_df = pytorch_df_from_str(lower_df, "", return_as_str=False)
+                if use_constant_value:
+                    operand_shapes = [
+                        operand_shape.to(torch_lower_df)
+                        if operand_type == NodeType.Constant
+                        and torch.is_floating_point(operand_shape)
+                        and operand_shape.dtype != torch_lower_df
+                        else operand_shape
+                        for operand_type, operand_shape in zip(operand_types, operand_shapes)
+                    ]
+                operand_dtypes_copy = list(operand_dtypes)
+                operand_dtypes = [
+                    lower_df
+                    if torch.is_floating_point(
+                        torch.empty(1, dtype=pytorch_df_from_str(operand_dtype, "", return_as_str=False))
+                    )
+                    else operand_dtype
+                    for operand_dtype in operand_dtypes
+                ]
+                if operand_dtypes_copy != operand_dtypes:
+                    args = dict(args)
+                    args["default_df_override"] = lower_df
+
             new_operands = OperandsInfo(operand_types, operand_shapes, operand_dtypes)
             new_args = OpArgs(args)
             if forge_op_function_name in unique_operations.keys():
@@ -643,7 +675,9 @@ def extract_and_generate_unique_ops_tests(
             param_file_name = None
 
     # Extract unique operations by comparing operands types, shapes and dtypes and arguments if any
-    unique_operations = UniqueOperations.create_unique_operations(ops, named_parameters, node_name_to_node_type)
+    unique_operations = UniqueOperations.create_unique_operations(
+        ops, named_parameters, node_name_to_node_type, compiler_cfg=compiler_cfg
+    )
     logger.info(f"UniqueOperations:\n{unique_operations}")
 
     def get_param_const(name):
@@ -990,6 +1024,12 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                 operand_types = operands.get_operand_types()
                 operand_dtypes = operands.get_operand_dtypes()
                 model_variant_info_list = operation_metadata["model_variant_info"]
+                default_df_override = None
+                if "default_df_override" in args.keys():
+                    default_df_override = args.pop("default_df_override")
+                    default_df_override = forge.DataFormat.to_json(
+                        forge_df_from_str(default_df_override, "", return_as_str=False)
+                    )
 
                 # Check if an existing Forge module matches the current operation configuration.
                 # This involves comparing the number of inputs, operand types, activation operand count,
@@ -1153,6 +1193,9 @@ def generate_models_ops_test(unique_operations: UniqueOperations, models_ops_tes
                     pytest_metadata["pcc"] = operation_metadata["pcc"][0]
                 else:
                     pytest_metadata["pcc"] = 0.99
+
+                if default_df_override is not None:
+                    pytest_metadata["default_df_override"] = default_df_override
 
                 if len(args) != 0:
                     pytest_metadata["args"] = dict(args)

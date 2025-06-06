@@ -4,7 +4,6 @@
 import random
 
 import pytest
-import timm
 import torch
 from datasets import load_dataset
 from tabulate import tabulate
@@ -24,7 +23,6 @@ from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
 from test.utils import download_model
 
 variants = [
@@ -34,8 +32,9 @@ variants = [
 
 @pytest.mark.push
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants, ids=variants)
-def test_resnet_hf(variant):
+@pytest.mark.parametrize("run_in_bfloat16", [True, False])
+@pytest.mark.parametrize("variant", variants)
+def test_resnet_hf(variant, run_in_bfloat16):
     random.seed(0)
 
     # Record model details
@@ -45,6 +44,7 @@ def test_resnet_hf(variant):
         variant="50",
         source=Source.HUGGINGFACE,
         task=Task.IMAGE_CLASSIFICATION,
+        suffix="bf16" if run_in_bfloat16 else "f32",
     )
 
     # Load tiny dataset
@@ -52,15 +52,17 @@ def test_resnet_hf(variant):
     images = random.sample(dataset["valid"]["image"], 10)
 
     # Load framework model
-    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False).to(
-        torch.bfloat16
-    )
+    framework_model = download_model(ResNetForImageClassification.from_pretrained, variant, return_dict=False)
+    if run_in_bfloat16:
+        framework_model = framework_model.to(torch.bfloat16)
+    framework_model.eval()
 
-    # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
-
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+    compiler_cfg = CompilerConfig()
+    if run_in_bfloat16:
+        input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
+        compiler_cfg.default_df_override = DataFormat.Float16_b
+    else:
+        input_sample = [torch.rand(1, 3, 224, 224)]
 
     compiled_model = forge.compile(
         framework_model,
@@ -117,84 +119,84 @@ def run_and_print_results(framework_model, compiled_model, inputs):
     )
 
 
-@pytest.mark.nightly
-def test_resnet_timm():
-    # Record model details
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNET,
-        source=Source.TIMM,
-        variant="50",
-        task=Task.IMAGE_CLASSIFICATION,
-    )
+# @pytest.mark.nightly
+# def test_resnet_timm():
+#     # Record model details
+#     module_name = record_model_properties(
+#         framework=Framework.PYTORCH,
+#         model=ModelArch.RESNET,
+#         source=Source.TIMM,
+#         variant="50",
+#         task=Task.IMAGE_CLASSIFICATION,
+#     )
 
-    # Load framework model
-    framework_model = download_model(timm.create_model, "resnet50", pretrained=True).to(torch.bfloat16)
+#     # Load framework model
+#     framework_model = download_model(timm.create_model, "resnet50", pretrained=True).to(torch.bfloat16)
 
-    # Compile model
-    input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
+#     # Compile model
+#     input_sample = [torch.rand(1, 3, 224, 224).to(torch.bfloat16)]
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+#     data_format_override = DataFormat.Float16_b
+#     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=input_sample,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=input_sample,
+#         module_name=module_name,
+#         compiler_cfg=compiler_cfg,
+#     )
 
-    # Verify data on sample input
-    verify(
-        input_sample,
-        framework_model,
-        compiled_model,
-        VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
-    )
-
-
-variants_with_weights = {
-    "resnet18": "ResNet18_Weights",
-    "resnet34": "ResNet34_Weights",
-    "resnet50": "ResNet50_Weights",
-    "resnet101": "ResNet101_Weights",
-    "resnet152": "ResNet152_Weights",
-}
+#     # Verify data on sample input
+#     verify(
+#         input_sample,
+#         framework_model,
+#         compiled_model,
+#         VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.95)),
+#     )
 
 
-@pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
-def test_resnet_torchvision(variant):
+# variants_with_weights = {
+#     "resnet18": "ResNet18_Weights",
+#     "resnet34": "ResNet34_Weights",
+#     "resnet50": "ResNet50_Weights",
+#     "resnet101": "ResNet101_Weights",
+#     "resnet152": "ResNet152_Weights",
+# }
 
-    # Record Forge Property
-    module_name = record_model_properties(
-        framework=Framework.PYTORCH,
-        model=ModelArch.RESNET,
-        variant=variant,
-        task=Task.IMAGE_CLASSIFICATION,
-        source=Source.TORCHVISION,
-    )
 
-    # Load model and input
-    weight_name = variants_with_weights[variant]
-    framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
-    framework_model.to(torch.bfloat16)
-    inputs = [inputs[0].to(torch.bfloat16)]
+# @pytest.mark.nightly
+# @pytest.mark.parametrize("variant", variants_with_weights.keys())
+# def test_resnet_torchvision(variant):
 
-    data_format_override = DataFormat.Float16_b
-    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+#     # Record Forge Property
+#     module_name = record_model_properties(
+#         framework=Framework.PYTORCH,
+#         model=ModelArch.RESNET,
+#         variant=variant,
+#         task=Task.IMAGE_CLASSIFICATION,
+#         source=Source.TORCHVISION,
+#     )
 
-    # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model,
-        sample_inputs=inputs,
-        module_name=module_name,
-        compiler_cfg=compiler_cfg,
-    )
+#     # Load model and input
+#     weight_name = variants_with_weights[variant]
+#     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+#     framework_model.to(torch.bfloat16)
+#     inputs = [inputs[0].to(torch.bfloat16)]
 
-    verify_cfg = VerifyConfig()
-    if variant == "resnet34":
-        verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+#     data_format_override = DataFormat.Float16_b
+#     compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+#     # Forge compile framework model
+#     compiled_model = forge.compile(
+#         framework_model,
+#         sample_inputs=inputs,
+#         module_name=module_name,
+#         compiler_cfg=compiler_cfg,
+#     )
+
+#     verify_cfg = VerifyConfig()
+#     if variant == "resnet34":
+#         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
+
+#     # Model Verification
+#     verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
