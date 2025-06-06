@@ -114,8 +114,15 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
     # Enable program cache on all devices
     settings = DeviceSettings()
-    settings.enable_program_cache = True
-    configure_devices(device_settings=settings)
+    LOOP_SIZE = 100
+    for it in range(LOOP_SIZE):
+        if it % 2 == 0:
+            settings.enable_program_cache = True
+        else:
+            settings.enable_program_cache = False
+        configure_devices(device_settings=settings)
+    # settings.enable_program_cache = True
+    # configure_devices(device_settings=settings)
 
     verify(
         [
