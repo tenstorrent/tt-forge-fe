@@ -28,11 +28,13 @@ class FailingReasonsRegister:
         ("conv2d", FailingReasons.UNSUPPORTED_SPECIAL_CASE),
         ("conv_transpose_2d", FailingReasons.ALLOCATION_CIRCULAR_BUFFER),
         ("conv_transpose_2d", FailingReasons.ALLOCATION_FAILED),
+        ("conv_transpose_2d", FailingReasons.ASSERT_DIM),
+        ("conv_transpose_2d", FailingReasons.ASSERT_GROUPS),
+        ("conv_transpose_2d", FailingReasons.ASSERT_STRIDE),
         ("conv_transpose_2d", FailingReasons.DATA_MISMATCH),
         ("conv_transpose_2d", FailingReasons.DTYPE_MISMATCH),
         ("conv_transpose_2d", FailingReasons.MLIR_RUNTIME),
         ("conv_transpose_2d", FailingReasons.SPECIAL_VALUES),
-        ("conv_transpose_2d", FailingReasons.TVM_RUNTIME),
         ("conv_transpose_2d", FailingReasons.UNSUPPORTED_DATA_FORMAT),
         ("cumsum", FailingReasons.DATA_MISMATCH),
         ("div", FailingReasons.DATA_MISMATCH),
@@ -107,5 +109,5 @@ class FailingReasonsRegister:
     skip = [
         ("matmul", FailingReasons.HIGH_MEMORY, None),
         ("conv2d", FailingReasons.FATAL_ERROR, None),
-        ("conv_transpose_2d", FailingReasons.FATAL_ERROR, None),
+        # ("conv_transpose_2d", FailingReasons.FATAL_ERROR, FailingReasons.TVM_RUNTIME),
     ]
