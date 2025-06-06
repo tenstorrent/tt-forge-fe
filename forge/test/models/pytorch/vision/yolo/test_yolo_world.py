@@ -22,6 +22,7 @@ from forge.verify.verify import verify
 from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import (
     WorldModelWrapper,
     get_test_input,
+    load_world_model,
 )
 
 
@@ -42,7 +43,8 @@ def test_yolo_world_inference():
     )
 
     # Load framework_model and input
-    framework_model = WorldModelWrapper(model_url).to(torch.bfloat16)
+    framework_model = load_world_model(MODEL_URL)
+    framework_model = WorldModelWrapper(framework_model).to(torch.bfloat16)
     inputs = [get_test_input().to(torch.bfloat16)]
 
     data_format_override = DataFormat.Float16_b

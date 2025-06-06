@@ -11,10 +11,7 @@ import forge
 from forge.forge_property_utils import Framework, Source, Task
 from forge.verify.verify import verify
 
-from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import (
-    WorldModelWrapper,
-    get_test_input,
-)
+from test.models.pytorch.vision.yolo.model_utils.yolovx_utils import WorldModelWrapper, get_test_input, load_world_model
 from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
@@ -35,14 +32,14 @@ def test_yolo_world_inference_onnx(tmp_path):
     )
 
     # Load framework_model and input
-
-    torch_model = WorldModelWrapper(MODEL_URL)
+    framework_model = load_world_model(MODEL_URL)
+    framework_model = WorldModelWrapper(framework_model).to(torch.bfloat16)
     inputs = get_test_input()
 
     # Export model to ONNX
     onnx_path = tmp_path / "yolo-world.onnx"
     torch.onnx.export(
-        torch_model,
+        framework_model,
         inputs,
         onnx_path,
         input_names=["image"],

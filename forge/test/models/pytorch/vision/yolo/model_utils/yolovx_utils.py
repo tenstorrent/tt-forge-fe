@@ -23,23 +23,28 @@ def get_test_input():
     return image_tensor
 
 
+def load_world_model(model_url: str):
+    try:
+        ckpt = load_state_dict_from_url(model_url, map_location="cpu")
+    except Exception as e:
+        raise RuntimeError(f"Unexpected error while downloading model from URL: {e}")
+
+    cfg_path = ckpt.get("cfg", "yolov8s-world.yaml")
+    model = WorldModel(cfg=cfg_path)
+
+    if "model" in ckpt:
+        state_dict = ckpt["model"].float().state_dict()
+    else:
+        state_dict = ckpt
+
+    model.load_state_dict(state_dict, strict=False)
+    model.eval()
+    return model
+
+
 class WorldModelWrapper(torch.nn.Module):
-    def __init__(self, model_url: str):
+    def __init__(self, model: str):
         super().__init__()
-        try:
-            ckpt = load_state_dict_from_url(model_url, map_location="cpu")
-        except Exception as e:
-            raise RuntimeError(f"Unexpected error while downloading model from URL: {e}")
-        cfg_path = ckpt.get("cfg", "yolov8s-world.yaml")
-        model = WorldModel(cfg=cfg_path)
-
-        if "model" in ckpt:
-            state_dict = ckpt["model"].float().state_dict()
-        else:
-            state_dict = ckpt
-
-        model.load_state_dict(state_dict, strict=False)
-        model.eval()
         self.model = model
 
     @smart_inference_mode()
