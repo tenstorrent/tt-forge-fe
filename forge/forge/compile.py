@@ -151,7 +151,7 @@ class CompileContext:
         return self.optimizer is not None and isinstance(self.optimizer, forge.optimizers.Optimizer)
 
 
-def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, is_forge: bool, losses=None):
+def calculate_grads(outputs: Tuple[Tensor, ...], intermediate_golden_tensors: Dict, losses=None):
     """
     Verify graph vs. pytorch golden
     """
@@ -318,7 +318,6 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.outputs,
                 context.intermediate_tensors,  # intermediate golden tensors
                 verify_cfg,  # DeprecatedVerifyConfig
-                False,
                 losses=context.losses,
                 targets=context.targets,
                 optimizer=context.optimizer,
@@ -715,7 +714,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
     for module in modules_:
         if isinstance(module, forge.module.Module):
             for p in module.get_parameters():
-                context.parameter_dict[p.get_name()] = p.value(is_forge=False)
+                context.parameter_dict[p.get_name()] = p.value()
         elif isinstance(module, torch.fx.GraphModule):
             for name, value in module.named_parameters():
                 context.parameter_dict[name] = value
@@ -901,7 +900,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     extract_unique_op_configuration(context.graph, context.stage.name.upper())
 
     # GOLDEN:
-    context.losses = calculate_grads(outputs, intermediate_tensors, False, context.losses)
+    context.losses = calculate_grads(outputs, intermediate_tensors, context.losses)
     # Append losses to inputs, because we need losses for calculating backward gradients.
     # Loss is one of the inputs of backward graph.
     context.inputs = append_losses_to_inputs(context.inputs, context.losses)

@@ -370,7 +370,7 @@ static bool fuse_per_channel_concat(graphlib::Graph *graph, graphlib::OpNode *co
                     // Create a dummy const node
                     py::object eval_module = py::module_::import("forge.op.eval");
                     auto const_tensor = make_shared_py_object(eval_module.attr("create_constant_tensor_from_tensor")(
-                        std::vector<float>{const_value}, const_shape.as_vector(), false, ops[0].second->output_df()));
+                        std::vector<float>{const_value}, const_shape.as_vector(), ops[0].second->output_df()));
                     auto const_node = graph->add_node(
                         graphlib::create_node<graphlib::ConstantInputNode>(
                             "created_const_op" + std::to_string(layer_id) + "_" + std::to_string(i),

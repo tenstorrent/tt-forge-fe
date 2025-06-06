@@ -99,21 +99,27 @@ class CompiledGraphState:
         constant_to_tensor: Dict[str, torch.Tensor] = {}
         if isinstance(module, Module):
             for p in module.get_parameters():
-                value = p.value(is_forge=False)
+                value = p.value()
                 if value == None:
                     raise ValueError(f"Parameter {p.get_name()} has no value")
-                constant_to_tensor[p.get_name()] = p.value(is_forge=False)
+                constant_to_tensor[p.get_name()] = p.value()
 
         if optimizer_params is not None:
             for name, opt_param in optimizer_params.items():
                 constant_to_tensor[name] = opt_param.value()
 
         post_const_eval_constants: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
-            graph, constant_to_tensor, consteval_trace, ordered_constant_node_names, is_forge=False
+            graph,
+            constant_to_tensor,
+            consteval_trace,
+            ordered_constant_node_names,
         )
 
         post_const_eval_parameters: Dict[str, torch.Tensor] = get_post_const_eval_tensors(
-            graph, constant_to_tensor, consteval_trace, ordered_parameter_node_names, is_forge=False
+            graph,
+            constant_to_tensor,
+            consteval_trace,
+            ordered_parameter_node_names,
         )
 
         return CompiledGraphState(

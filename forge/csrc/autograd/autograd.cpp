@@ -160,7 +160,7 @@ void autograd_engine::create_backward_graph(const grad_map &requires_grad_map)
                 // Grad of loss is 1. Create constant and use that as "input".
                 py::object eval_module = py::module_::import("forge.op.eval");
                 auto const_tensor = make_shared_py_object(eval_module.attr("create_constant_tensor_from_tensor")(
-                    std::vector<float>{1.0}, node->shape().as_vector(), false, node->output_df()));
+                    std::vector<float>{1.0}, node->shape().as_vector(), node->output_df()));
                 auto const_node = graph->add_node(
                     graphlib::create_node<graphlib::ConstantInputNode>(
                         "loss_grad_constant_" + node->name(), const_tensor, node->shape()),
@@ -569,7 +569,7 @@ NodeContext autograd_engine::create_optimizer_op(
     {
         operand_shapes.push_back(graph->node_by_id(n.id)->shape());
     }
-    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes, false);
+    std::tuple<Shape, std::vector<DimBroadcast>> shape_data = get_op_shape(type, operand_shapes);
 
     node->set_shape(Shape(std::get<0>(shape_data)));
     node->set_optimizer();

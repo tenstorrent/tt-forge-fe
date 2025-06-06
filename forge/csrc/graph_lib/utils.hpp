@@ -231,13 +231,6 @@ graphlib::Shape post_tms_shape(
 
 std::pair<int, int> get_padding(graphlib::Graph const *graph, graphlib::Node const *node);
 
-bool tms_support_kernel_broadcast(
-    Shape producer_shape,
-    std::vector<OpType> const &tms,
-    UBlockOrder ublock_order,
-    int ublock_ct,
-    bool is_forge = true);
-
 // Calculate node shape from operand shapes, using python callback
 void calculate_and_set_node_shape(Graph *graph, Node *node);
 
