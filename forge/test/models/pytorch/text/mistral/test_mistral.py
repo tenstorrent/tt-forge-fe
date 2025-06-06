@@ -67,7 +67,7 @@ variants = ["mistralai/Mistral-7B-Instruct-v0.3"]
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)")
+@pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants)
 def test_mistral_v0_3(variant):
 
@@ -80,6 +80,8 @@ def test_mistral_v0_3(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+
+    raise RuntimeError("Insufficient host DRAM to run this model")
 
     # Load tokenizer and model
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)
@@ -102,3 +104,45 @@ def test_mistral_v0_3(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = ["mistralai/Mistral-Nemo-Instruct-2407"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_Nemo(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    raise RuntimeError("Insufficient host DRAM to run this model")
+
+
+variants = ["mistralai/Mixtral-8x7B-Instruct-v0.1"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_8x7b(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    raise RuntimeError("Insufficient host DRAM to run this model")

@@ -54,6 +54,10 @@ variants = [
             reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
+    pytest.param(
+        "Qwen/Qwen2.5-Coder-32B-Instruct",
+        marks=[pytest.mark.xfail],
+    ),
 ]
 
 
@@ -69,6 +73,9 @@ def test_qwen_clm(variant):
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
     )
+
+    if variant == "Qwen/Qwen2.5-Coder-32B-Instruct":
+        raise RuntimeError("Insufficient host DRAM to run this model")
 
     # Load model and tokenizer
     framework_model = AutoModelForCausalLM.from_pretrained(variant, device_map="cpu")

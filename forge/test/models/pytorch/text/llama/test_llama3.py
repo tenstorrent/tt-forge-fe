@@ -130,7 +130,7 @@ variants = [
     pytest.param("meta-llama/Meta-Llama-3-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
     pytest.param("meta-llama/Meta-Llama-3-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
     pytest.param("meta-llama/Llama-3.1-8B", marks=pytest.mark.skip(reason="Segmentation Fault")),
-    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.skip(reason="Segmentation Fault")),
+    pytest.param("meta-llama/Llama-3.1-8B-Instruct", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B", marks=pytest.mark.xfail),
     pytest.param("meta-llama/Llama-3.2-1B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
@@ -139,18 +139,14 @@ variants = [
             reason="Insufficient host DRAM to run this model (requires a bit more than 26 GB during compile time)"
         ),
     ),
-    pytest.param(
-        "meta-llama/Llama-3.2-3B-Instruct",
-        marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
-        ),
-    ),
+    pytest.param("meta-llama/Llama-3.2-3B-Instruct", marks=pytest.mark.xfail),
     pytest.param(
         "huggyllama/llama-7b",
         marks=pytest.mark.skip(
             reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
+    pytest.param("meta-llama/Meta-Llama-3.1-70B", marks=pytest.mark.xfail),
 ]
 
 
@@ -161,6 +157,7 @@ def test_llama3_causal_lm(variant):
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
         "meta-llama/Llama-3.2-3B-Instruct",
+        "meta-llama/Meta-Llama-3.1-70B",
     ]:
         group = ModelGroup.RED
     else:
@@ -175,6 +172,11 @@ def test_llama3_causal_lm(variant):
         source=Source.HUGGINGFACE,
         group=group,
     )
+
+    if variant in ["meta-llama/Meta-Llama-3.1-70B", "meta-llama/Llama-3.2-3B-Instruct"]:
+        raise RuntimeError("Insufficient host DRAM to run this model")
+    elif variant == "meta-llama/Llama-3.1-8B-Instruct":
+        raise RuntimeError("Segmentation Fault")
 
     # Load model (with tokenizer)
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

@@ -63,15 +63,15 @@ variants = [
     pytest.param("tiiuae/Falcon3-1B-Base", marks=pytest.mark.push),
     pytest.param(
         "tiiuae/Falcon3-3B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 25 GB)"),
+        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "tiiuae/Falcon3-7B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 36 GB)"),
+        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "tiiuae/Falcon3-10B-Base",
-        marks=pytest.mark.skip(reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB)"),
+        marks=pytest.mark.xfail,
     ),
     pytest.param(
         "tiiuae/Falcon3-Mamba-7B-Base",
@@ -103,6 +103,9 @@ def test_falcon_3(variant):
         source=Source.HUGGINGFACE,
         group=group,
     )
+
+    if variant != "tiiuae/Falcon3-1B-Base":
+        raise RuntimeError("Insufficient host DRAM to run this model")
 
     # Load model and tokenizer
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant)

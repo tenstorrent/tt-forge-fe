@@ -84,7 +84,7 @@ def test_swin_v1_tiny_4_224_hf_pytorch(variant):
     [
         pytest.param(
             "microsoft/swinv2-tiny-patch4-window8-256",
-            marks=[pytest.mark.skip(reason="Transient failure - Segmentation fault")],
+            marks=pytest.mark.xfail,
         ),
     ],
 )
@@ -99,6 +99,8 @@ def test_swin_v2_tiny_4_256_hf_pytorch(variant):
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
+
+    raise RuntimeError("Transient failure - Segmentation fault")
 
     feature_extractor = ViTImageProcessor.from_pretrained(variant)
     framework_model = Swinv2Model.from_pretrained(variant)
