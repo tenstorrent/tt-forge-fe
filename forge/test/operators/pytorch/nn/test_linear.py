@@ -34,6 +34,7 @@ from test.operators.utils import (
 )
 from test.operators.utils.compat import TestDevice, TestTensorsUtils
 from test.operators.utils.utils import PytorchUtils
+from test.operators.pytorch.ids.loader import TestIdsDataLoader
 
 
 class ModelFromAnotherOp(torch.nn.Module):
@@ -261,19 +262,20 @@ TestParamsData.test_plan = TestPlan(
         ),
     ],
     failing_rules=[
-        # E   RuntimeError: The expanded size of the tensor (x) must match the existing size (y) at non-singleton dimension 0.  Target sizes: [x].  Tensor sizes: [y]
-        TestCollection(
-            input_sources=TestCollectionData.all.input_sources,
-            criteria=lambda test_vector: len(test_vector.input_shape) == 4 and test_vector.input_shape[0] > 1,
-            failing_reason=FailingReasons.MICROBATCHING_UNSUPPORTED,
-        ),
-        # E   ValueError: Data mismatch -> AllCloseValueChecker (all_close):
-        TestCollection(
-            input_shapes=[
-                (1, 10000),
-            ],
-            failing_reason=FailingReasons.DATA_MISMATCH,
-        ),
+        *TestIdsDataLoader.build_failing_rules(operators=TestCollectionData.all.operators),
+        # # E   RuntimeError: The expanded size of the tensor (x) must match the existing size (y) at non-singleton dimension 0.  Target sizes: [x].  Tensor sizes: [y]
+        # TestCollection(
+        #     input_sources=TestCollectionData.all.input_sources,
+        #     criteria=lambda test_vector: len(test_vector.input_shape) == 4 and test_vector.input_shape[0] > 1,
+        #     failing_reason=FailingReasons.MICROBATCHING_UNSUPPORTED,
+        # ),
+        # # E   ValueError: Data mismatch -> AllCloseValueChecker (all_close):
+        # TestCollection(
+        #     input_shapes=[
+        #         (1, 10000),
+        #     ],
+        #     failing_reason=FailingReasons.DATA_MISMATCH,
+        # ),
         # # THIS ERROR OCCURES WHEN USING DEPRECATED VERIFICATION METHOD (NOT ALLCLOSE VALUE CHECKER)
         # # E   AssertionError: PCC check failed
         # # this also happens for other 2 dim ipnut shapes where microbatch size is 1 and out_features is 1 - not all cases are failing

@@ -265,6 +265,8 @@ class TestCollectionData:
 
     implemented_const_eval = TestCollection(
         operators=[
+            "atan2",
+            "arctan2",
             "floor_divide",
             "fmod",
             "remainder",
@@ -482,6 +484,17 @@ class TestPlansData:
             TestCollection(
                 operators=TestCollectionData.not_implemented.operators,
                 failing_reason=FailingReasons.NOT_IMPLEMENTED,
+            ),
+            TestCollection(
+                operators=TestCollectionData.bitwise.operators,
+                failing_reason=FailingReasons.UNSUPPORTED_DATA_FORMAT,
+            ),
+            TestCollection(
+                operators=[
+                    "eq",
+                ],
+                # Raises different exception than other operators
+                failing_reason=FailingReasons.DTYPE_MISMATCH,
             ),
             # Not implemented operators for CONST_EVAL_PASS
             # 10 operators are implemented for CONST_EVAL_PASS the are not for other input sources
