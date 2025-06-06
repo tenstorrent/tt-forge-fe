@@ -52,13 +52,13 @@ def test_python_indexing(index_shape: Literal[0] | Literal[2] | Literal[-1]):
         ([0, 2, 4], (10,)),  # vector
         pytest.param(
             ([[0, 1], [2, 3]], (5, 5)),  # 2D matrix indexing
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='AssertionError: Dim to drop needs to be singleton (Failed on "DecomposeMultiIndexAdvIndex" TVM callback)'
             ),
         ),
         pytest.param(
             ([[0, 1, -1], [2, 3, -1]], (5, 5, 5)),  # 3D matrix indexing
-            marks=pytest.mark.xfail(
+            marks=pytest.mark.skip(
                 reason='AssertionError: Dim to drop needs to be singleton (Failed on "DecomposeMultiIndexAdvIndex" TVM callback)'
             ),
         ),
