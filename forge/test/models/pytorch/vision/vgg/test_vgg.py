@@ -344,5 +344,8 @@ def test_vgg_torchvision(variant):
     if variant == "vgg16_bn":
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+    # Model Verification and inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

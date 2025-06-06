@@ -174,5 +174,9 @@ def test_opt_sequence_classification(variant):
         module_name,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    # Model Verification and inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")
