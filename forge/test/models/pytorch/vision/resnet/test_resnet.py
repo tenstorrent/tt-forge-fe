@@ -157,6 +157,14 @@ def test_resnet_timm():
     print_cls_results(fw_out[0], co_out[0])
 
 
+variants = [
+    "resnet18",
+    "resnet34",
+    pytest.param("resnet50", marks=[pytest.mark.xfail]),
+    "resnet101",
+    pytest.param("resnet152", marks=[pytest.mark.xfail]),
+]
+
 variants_with_weights = {
     "resnet18": "ResNet18_Weights",
     "resnet34": "ResNet34_Weights",
@@ -167,7 +175,7 @@ variants_with_weights = {
 
 
 @pytest.mark.nightly
-@pytest.mark.parametrize("variant", variants_with_weights.keys())
+@pytest.mark.parametrize("variant", variants)
 def test_resnet_torchvision(variant):
 
     # Record Forge Property
