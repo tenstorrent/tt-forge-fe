@@ -17,7 +17,13 @@ from vgg_pytorch import VGG
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.verify import verify
@@ -30,19 +36,23 @@ variants = [
     pytest.param("vgg11"),
     pytest.param("vgg13"),
     pytest.param("vgg16"),
-    pytest.param("vgg19", marks=pytest.mark.xfail),
+    pytest.param("vgg19"),
     pytest.param("bn_vgg19"),
-    pytest.param("bn_vgg19b", marks=pytest.mark.xfail),
+    pytest.param("bn_vgg19b"),
 ]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_osmr_pytorch(forge_property_recorder, variant):
+def test_vgg_osmr_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vgg", variant=variant, source=Source.OSMR, task=Task.OBJECT_DETECTION
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.VGG,
+        variant=variant,
+        source=Source.OSMR,
+        task=Task.OBJECT_DETECTION,
     )
 
     framework_model = download_model(ptcv_get_model, variant, pretrained=True).to(torch.bfloat16)
@@ -87,7 +97,6 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
@@ -96,7 +105,6 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
         verify_cfg=VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
     )
 
@@ -105,11 +113,15 @@ def test_vgg_osmr_pytorch(forge_property_recorder, variant):
 
 
 @pytest.mark.nightly
-def test_vgg_19_hf_pytorch(forge_property_recorder):
+def test_vgg_19_hf_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vgg", variant="19", source=Source.HUGGINGFACE, task=Task.OBJECT_DETECTION
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.VGG,
+        variant="19",
+        source=Source.HUGGINGFACE,
+        task=Task.OBJECT_DETECTION,
     )
 
     """
@@ -120,7 +132,7 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
     vgg16, vgg16_bn
     vgg19, vgg19_bn
     """
-    framework_model = download_model(VGG.from_pretrained, "vgg19")
+    framework_model = download_model(VGG.from_pretrained, "vgg19").to(torch.bfloat16)
     framework_model.eval()
 
     # Image preprocessing
@@ -143,15 +155,21 @@ def test_vgg_19_hf_pytorch(forge_property_recorder):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -177,45 +195,58 @@ def preprocess_timm_model(model_name):
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_timm_pytorch(forge_property_recorder):
+def test_vgg_bn19_timm_pytorch():
 
     variant = "vgg19_bn"
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="vgg", variant="vgg19_bn", source=Source.TIMM, task=Task.OBJECT_DETECTION
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.VGG,
+        variant="vgg19_bn",
+        source=Source.TIMM,
+        task=Task.OBJECT_DETECTION,
     )
 
     torch.multiprocessing.set_sharing_strategy("file_system")
     framework_model, image_tensor = download_model(preprocess_timm_model, variant)
 
-    inputs = [image_tensor]
+    inputs = [image_tensor.to(torch.bfloat16)]
+    framework_model.to(torch.bfloat16)
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
 
 
 @pytest.mark.nightly
-def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
+def test_vgg_bn19_torchhub_pytorch():
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vgg",
+        model=ModelArch.VGG,
         variant="vgg19_bn",
         source=Source.TORCH_HUB,
         task=Task.OBJECT_DETECTION,
     )
 
-    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True)
+    framework_model = download_model(torch.hub.load, "pytorch/vision:v0.10.0", "vgg19_bn", pretrained=True).to(
+        torch.bfloat16
+    )
     framework_model.eval()
 
     # Image preprocessing
@@ -238,15 +269,21 @@ def test_vgg_bn19_torchhub_pytorch(forge_property_recorder):
         )
         input_batch = torch.rand(1, 3, 224, 224)
 
-    inputs = [input_batch]
+    inputs = [input_batch.to(torch.bfloat16)]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Run model on sample data and print results
     print_cls_results(fw_out[0], co_out[0])
@@ -275,12 +312,12 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vgg_torchvision(forge_property_recorder, variant):
+def test_vgg_torchvision(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="vgg",
+        model=ModelArch.VGG,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
@@ -289,20 +326,26 @@ def test_vgg_torchvision(forge_property_recorder, variant):
     # Load model and input
     weight_name = variants_with_weights[variant]
     framework_model, inputs = load_vision_model_and_input(variant, "classification", weight_name)
+    framework_model.to(torch.bfloat16)
+    inputs = [inputs[0].to(torch.bfloat16)]
 
-    framework_model.to(torch.float32)
-    inputs = [inputs[0].to(torch.float32)]
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
 
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model,
+        sample_inputs=inputs,
+        module_name=module_name,
+        compiler_cfg=compiler_cfg,
     )
 
     verify_cfg = VerifyConfig()
     if variant == "vgg16_bn":
         verify_cfg = VerifyConfig(value_checker=AutomaticValueChecker(pcc=0.98))
 
-    # Model Verification
-    verify(
-        inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder, verify_cfg=verify_cfg
-    )
+    # Model Verification and inference
+    fw_out, co_out = verify(inputs, framework_model, compiled_model, verify_cfg=verify_cfg)
+
+    # Run model on sample data and print results
+    print_cls_results(fw_out[0], co_out[0])

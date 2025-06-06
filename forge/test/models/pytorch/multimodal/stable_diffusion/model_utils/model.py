@@ -13,7 +13,7 @@ from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import (
 )
 
 import forge
-from forge.forge_property_utils import Framework
+from forge.forge_property_utils import Framework, ModelArch, record_model_properties
 
 
 def load_pipe(variant, variant_type):
@@ -384,7 +384,6 @@ def denoising_loop(
     guidance_scale: float = 7.5,
     callback=None,
     callback_steps: int = 1,
-    forge_property_handler=None,
 ):
 
     do_classifier_free_guidance = guidance_scale > 1.0
@@ -405,23 +404,19 @@ def denoising_loop(
             # noise_pred_0 = pipeline(latent_model_input.detach()[0:1],timestep_.detach()[0:1],prompt_embeds.detach()[0:1],)
 
             inputs = [latent_model_input.detach()[0:1], timestep_.detach()[0:1], prompt_embeds.detach()[0:1]]
-            module_name = forge_property_recorder.record_model_properties(
-                framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"1_{i}"
+            module_name = record_model_properties(
+                framework=Framework.PYTORCH, model=ModelArch.STABLEDIFFUSION, suffix=f"1_{i}"
             )
-            compiled_model = forge.compile(
-                pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-            )
+            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=module_name)
             noise_pred_0 = compiled_model(*inputs)
 
             # sanity
             # noise_pred_1 = pipeline(latent_model_input.detach()[1:2],timestep_.detach()[1:2],prompt_embeds.detach()[1:2],)
             inputs = [latent_model_input.detach()[1:2], timestep_.detach()[1:2], prompt_embeds.detach()[1:2]]
-            module_name = forge_property_recorder.record_model_properties(
-                framework=Framework.PYTORCH, model="stable_diffusion", suffix=f"2_{i}"
+            module_name = record_model_properties(
+                framework=Framework.PYTORCH, model=ModelArch.STABLEDIFFUSION, suffix=f"2_{i}"
             )
-            compiled_model = forge.compile(
-                pipeline, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-            )
+            compiled_model = forge.compile(pipeline, sample_inputs=inputs, module_name=module_name)
             noise_pred_1 = compiled_model(*inputs)
 
             noise_pred = torch.cat([noise_pred_0[0].value().detach(), noise_pred_1[0].value().detach()], dim=0)

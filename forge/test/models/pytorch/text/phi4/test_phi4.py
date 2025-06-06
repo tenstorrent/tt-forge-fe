@@ -12,10 +12,12 @@ from transformers import (
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -27,12 +29,12 @@ variants = ["microsoft/phi-4"]
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
-def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
+def test_phi_4_causal_lm_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi4",
+        model=ModelArch.PHI4,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -51,23 +53,21 @@ def test_phi_4_causal_lm_pytorch(forge_property_recorder, variant):
     sample_inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs, module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs, module_name)
 
     # Model Verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
-def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
+def test_phi_4_token_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi4",
+        model=ModelArch.PHI4,
         variant=variant,
         task=Task.TOKEN_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -86,21 +86,21 @@ def test_phi_4_token_classification_pytorch(forge_property_recorder, variant):
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
 @pytest.mark.skip(reason="Skipped due to kill at consteval compilation stage")
-def test_phi_4_sequence_classification_pytorch(forge_property_recorder, variant):
+def test_phi_4_sequence_classification_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi4",
+        model=ModelArch.PHI4,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -126,7 +126,7 @@ def test_phi_4_sequence_classification_pytorch(forge_property_recorder, variant)
     inputs = [inputs["input_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(framework_model, inputs, module_name, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, inputs, module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

@@ -77,6 +77,9 @@ std::vector<Node *> get_nodes_with_indegree_zero(Graph *graph);
 std::vector<Node *> get_nodes_with_outdegree_zero(Graph *graph);
 std::vector<Node *> get_nodes_with_data_outdegree_zero(Graph *graph);
 
+// Checks dtype of py_tensor and returns appropriate DataFormat
+DataFormat infer_data_format_from_py_tensor(const py::object &py_tensor);
+
 // Insert new node on the given edge. Node attributes will be picked up from consumer node.
 // Returns new edges to and from the new node.
 std::pair<Edge, Edge> insert_node_on_edge(

@@ -37,8 +37,13 @@ from forge.parameter import Parameter
 from forge.forgeglobal import state_changed, clear_state_changed
 import forge.query as query
 from forge.tensor import Tensor, to_pt_tensors, AnyTensor
-from forge.verify import DepricatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.verify import DeprecatedVerifyConfig, do_verify, _generate_random_losses, _run_pytorch_backward
+from forge.forge_property_utils import (
+    ExecutionStage,
+    record_execution,
+    record_compiler_config,
+    record_flatbuffer_details,
+)
 from forge.tensor import TensorFromPytorch
 
 LAST_SUCCESSFUL_STAGE = None
@@ -108,7 +113,7 @@ class CompileContext:
     modules: List[Module]
     graph_name: str
     compiler_cfg: CompilerConfig
-    verify_cfg: DepricatedVerifyConfig
+    verify_cfg: DeprecatedVerifyConfig
     microbatch_size: int
     microbatch_count: int
     inputs: Union[torch.Tensor, List[torch.Tensor]]
@@ -140,7 +145,6 @@ class CompileContext:
     forge_module: Optional[ForgeGraphModule] = None
     compiled_binary: Optional[Binary] = None
     attach_to: Optional[CompiledModel] = None
-    forge_property_handler: Optional[ForgePropertyHandler] = None
 
     def optimizer_on_device(self):
         # For now we support only Forge optimizer on device.
@@ -182,8 +186,7 @@ def compile_main(
     training: bool = False,
     attach_to: Optional[CompiledModel] = None,
     compiler_cfg: CompilerConfig = CompilerConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
-    verify_cfg: DepricatedVerifyConfig = DepricatedVerifyConfig(),
+    verify_cfg: DeprecatedVerifyConfig = DeprecatedVerifyConfig(),
 ) -> CompiledModel:
     """
     Main entry point for compiling modules from different frameworks for Tenstorrent devices.
@@ -234,9 +237,8 @@ def compile_main(
     modules = [wrap_module(module, module_name)]
     training = training or optimizer is not None
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_compiler_config(compiler_cfg)
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
+    record_compiler_config(compiler_cfg)
+    record_execution(ExecutionStage.FAILED_TVM_RELAY_IRMODULE_GENERATION)
 
     compile_context: CompileContext = CompileContext(
         modules=modules,
@@ -249,7 +251,6 @@ def compile_main(
         optimizer=optimizer,
         training=training,
         attach_to=attach_to,
-        forge_property_handler=forge_property_handler,
     )
 
     return forge_compile_from_context(compile_context)
@@ -316,7 +317,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
                 context.input_grads,
                 context.outputs,
                 context.intermediate_tensors,  # intermediate golden tensors
-                verify_cfg,  # DepricatedVerifyConfig
+                verify_cfg,  # DeprecatedVerifyConfig
                 False,
                 losses=context.losses,
                 targets=context.targets,
@@ -407,9 +408,7 @@ def forge_compile_from_context(context: CompileContext) -> CompiledModel:
         # execute the optimizer graphs of all linked modules.
         context.optimizer.link_module(compiled_module)
 
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
-
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     logger.info("Compilation completed.")
 
     return compiled_module
@@ -450,7 +449,7 @@ def forge_compile_torch(
         graph_name=module_name,
         inputs=inputs,
         compiler_cfg=compiler_cfg,
-        verify_cfg=DepricatedVerifyConfig.disabled(),
+        verify_cfg=DeprecatedVerifyConfig.disabled(),
         microbatch_size=1,
         microbatch_count=1,
         graph=graph,
@@ -464,7 +463,7 @@ def forge_compile(
     *inputs: Union[Tensor, List[Any], Dict[str, Any]],
     targets: List[Tensor] = [],
     compiler_cfg: CompilerConfig = CompilerConfig(),
-    verify_cfg: Optional[DepricatedVerifyConfig] = None,
+    verify_cfg: Optional[DeprecatedVerifyConfig] = None,
     losses: Optional[List[Tensor]] = None,
     microbatch_size: int = 1,
     microbatch_count: int = 1,
@@ -492,7 +491,7 @@ def forge_compile(
     targets: List[Tensor], optional
         Optional list of target tensors, if this device has a loss module
 
-    verify_cfg: Optional[DepricatedVerifyConfig]
+    verify_cfg: Optional[DeprecatedVerifyConfig]
         If set, automatic verification vs. pytorch golden result will be performed, with given parameters
         must contain data.
 
@@ -505,7 +504,7 @@ def forge_compile(
 
     inputs = list(inputs)
     if verify_cfg is None:
-        verify_cfg = DepricatedVerifyConfig.disabled()  # no verification config provided, disable by default
+        verify_cfg = DeprecatedVerifyConfig.disabled()  # no verification config provided, disable by default
 
     compiler_cfg.apply_env_config_overrides()
 
@@ -589,7 +588,7 @@ def generate_compile_results(
 
     Parameters
     ----------
-    verify_cfg: DepricatedVerifyConfig
+    verify_cfg: DeprecatedVerifyConfig
         Value verification config
 
     initial_graph: Graph
@@ -676,7 +675,6 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
                     module_inputs,
                     context.compiler_cfg,
                     context.verify_cfg,
-                    forge_property_handler=context.forge_property_handler,
                 )
                 assert isinstance(module, ForgeModule)
 
@@ -684,8 +682,7 @@ def generate_initial_graph(context: CompileContext) -> CompileDepth:
 
             modules_.append(module)
 
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
+    record_execution(ExecutionStage.FAILED_FORGE_INITIAL_GRAPH_PASS)
 
     if context.graph is None:
         context.graph, context.outputs, context.intermediate_tensors, context.inputs, _ = generate_graph(
@@ -743,8 +740,7 @@ def run_post_initial_graph_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
 
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS)
+    record_execution(ExecutionStage.FAILED_FORGE_POST_INITIAL_GRAPH_PASS)
 
     inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
         graph, compiler_cfg, compiler_cfg.fracture_groups
@@ -781,8 +777,7 @@ def run_consteval_pass(context: CompileContext) -> CompileDepth:
     """
     graph = context.graph
     graph_name = context.graph_name
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_CONSTEVAL)
+    record_execution(ExecutionStage.FAILED_FORGE_CONSTEVAL)
 
     run_consteval_graph_pass(graph)
     dump_graph(graph, graph_name, "consteval_graph")
@@ -833,14 +828,12 @@ def run_optimization_pass(context: CompileContext) -> CompileDepth:
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
     graph, intermediate_tensors = context.graph, context.intermediate_tensors
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS)
+    record_execution(ExecutionStage.FAILED_FORGE_OPTIMIZATION_GRAPH_PASS)
 
     run_optimization_graph_passes(graph)
     dump_graph(graph, graph_name, "optimized_graph")
 
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP)
+    record_execution(ExecutionStage.FAILED_FORGE_POST_OPTIMIZATION_DECOMP)
 
     inserted_node_id_mapping = run_post_optimize_decompose_graph_passes(graph, compiler_cfg)
     dump_graph(graph, graph_name, "decomposed_optimized_graph")
@@ -888,8 +881,7 @@ def run_autograd_pass(context: CompileContext) -> CompileDepth:
     graph_name = context.graph_name
     graph, intermediate_tensors, outputs = context.graph, context.intermediate_tensors, context.outputs
 
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS)
+    record_execution(ExecutionStage.FAILED_FORGE_AUTOGRAD_PASS)
 
     graph.set_training(True)
 
@@ -941,8 +933,7 @@ def run_post_autograd_pass(context: CompileContext) -> CompileDepth:
         context.losses,
         context.outputs,
     )
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP)
+    record_execution(ExecutionStage.FAILED_FORGE_POST_AUTOGRAD_DECOMP)
 
     inserted_node_id_mapping = run_post_autograd_graph_passes(graph, compiler_cfg)
     for inserted_node_id, original_node_id in inserted_node_id_mapping:
@@ -974,8 +965,7 @@ def run_pre_lowering_pass(context: CompileContext) -> CompileDepth:
     compiler_cfg = context.compiler_cfg
     graph_name = context.graph_name
     graph = context.graph
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_PRE_LOWERING)
+    record_execution(ExecutionStage.FAILED_FORGE_PRE_LOWERING)
 
     graph = run_pre_lowering_passes(graph, compiler_cfg.default_df_override)
     dump_graph(graph, graph_name, "pre_lowering")
@@ -999,8 +989,7 @@ def split_graph(context: CompileContext) -> CompileDepth:
     -------
     CompileDepth - next compile stage
     """
-    if context.forge_property_handler is not None:
-        context.forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
+    record_execution(ExecutionStage.FAILED_FORGE_GRAPH_SPLIT)
 
     assert context.graph is not None
     context.forge_module = forge._C.split_graph(context.graph)
@@ -1009,21 +998,18 @@ def split_graph(context: CompileContext) -> CompileDepth:
 
 
 def run_mlir_compiler(context: CompileContext) -> CompileDepth:
-    forge_module, compiler_cfg, forge_property_handler = (
+    forge_module, compiler_cfg = (
         context.forge_module,
         context.compiler_cfg,
-        context.forge_property_handler,
     )
     assert forge_module is not None
     assert compiler_cfg is not None
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
+    record_execution(ExecutionStage.FAILED_FORGE_MLIR_COMPILATION)
 
     context.compiled_binary = forge._C.run_mlir_compiler(forge_module, compiler_cfg.mlir_config)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_flatbuffer_details(context.compiled_binary.as_json())
+    record_flatbuffer_details(context.compiled_binary.as_json())
 
     return CompileDepth.FINISH_COMPILE
 
@@ -1050,8 +1036,7 @@ def convert_to_forge_module(
     module: AnyModule,
     module_inputs: Union[AnyTensor, List[AnyTensor]],
     compiler_cfg: CompilerConfig,
-    verify_cfg: DepricatedVerifyConfig,
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
+    verify_cfg: DeprecatedVerifyConfig,
 ) -> ForgeModule:
     """
     Converts given module to a Forge module, along with the module_inputs (which will be converted to Forge tensors).
@@ -1075,7 +1060,6 @@ def convert_to_forge_module(
         compiler_cfg,
         module.name,
         verify_cfg,
-        forge_property_handler=forge_property_handler,
     )
     assert len(forge_module) == 1, "Attemping to load split model onto single devices"
 

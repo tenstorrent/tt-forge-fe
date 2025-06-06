@@ -12,6 +12,12 @@ from forge import Tensor, compile
 from forge.verify.verify import verify
 from forge.verify.value_checkers import AutomaticValueChecker
 from forge.verify.config import VerifyConfig
+from forge.forge_property_utils import (
+    record_forge_op_name,
+    record_op_model_names,
+    record_forge_op_args,
+    record_single_op_operands_info,
+)
 import pytest
 
 
@@ -1357,41 +1363,32 @@ forge_modules_and_shapes_dtypes_list = [
             "args": {"dim": "-1", "epsilon": "0.0"},
         },
     ),
-    pytest.param(
-        (
-            Layernorm14,
-            [((2, 1, 1024), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "epsilon": "1e-05"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Layernorm14,
+        [((2, 1, 1024), torch.float32)],
+        {
+            "model_names": ["pt_stereo_facebook_musicgen_small_music_generation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "epsilon": "1e-05"},
+        },
     ),
-    pytest.param(
-        (
-            Layernorm15,
-            [((2, 1, 2048), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "epsilon": "1e-05"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Layernorm15,
+        [((2, 1, 2048), torch.float32)],
+        {
+            "model_names": ["pt_stereo_facebook_musicgen_large_music_generation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "epsilon": "1e-05"},
+        },
     ),
-    pytest.param(
-        (
-            Layernorm16,
-            [((2, 1, 1536), torch.float32)],
-            {
-                "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
-                "pcc": 0.99,
-                "args": {"dim": "-1", "epsilon": "1e-05"},
-            },
-        ),
-        marks=[pytest.mark.xfail(reason="Data mismatch between framework output and compiled model output")],
+    (
+        Layernorm16,
+        [((2, 1, 1536), torch.float32)],
+        {
+            "model_names": ["pt_stereo_facebook_musicgen_medium_music_generation_hf"],
+            "pcc": 0.99,
+            "args": {"dim": "-1", "epsilon": "1e-05"},
+        },
     ),
     (
         Layernorm17,
@@ -2751,10 +2748,9 @@ forge_modules_and_shapes_dtypes_list = [
 
 @pytest.mark.nightly_models_ops
 @pytest.mark.parametrize("forge_module_and_shapes_dtypes", forge_modules_and_shapes_dtypes_list, ids=ids_func)
-def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
+def test_module(forge_module_and_shapes_dtypes):
 
-    forge_property_recorder.enable_single_op_details_recording()
-    forge_property_recorder.record_forge_op_name("Layernorm")
+    record_forge_op_name("Layernorm")
 
     forge_module, operand_shapes_dtypes, metadata = forge_module_and_shapes_dtypes
 
@@ -2762,9 +2758,9 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
 
     for metadata_name, metadata_value in metadata.items():
         if metadata_name == "model_names":
-            forge_property_recorder.record_op_model_names(metadata_value)
+            record_op_model_names(metadata_value)
         elif metadata_name == "args":
-            forge_property_recorder.record_forge_op_args(metadata_value)
+            record_forge_op_args(metadata_value)
         else:
             logger.warning(
                 "No utility function available in forge property handler to record %s property", metadata_name
@@ -2791,14 +2787,13 @@ def test_module(forge_module_and_shapes_dtypes, forge_property_recorder):
         )
         framework_model.set_constant(name, constant_tensor)
 
-    forge_property_recorder.record_single_op_operands_info(framework_model, inputs)
+    record_single_op_operands_info(framework_model, inputs)
 
-    compiled_model = compile(framework_model, sample_inputs=inputs, forge_property_handler=forge_property_recorder)
+    compiled_model = compile(framework_model, sample_inputs=inputs)
 
     verify(
         inputs,
         framework_model,
         compiled_model,
         VerifyConfig(value_checker=AutomaticValueChecker(pcc=pcc)),
-        forge_property_handler=forge_property_recorder,
     )

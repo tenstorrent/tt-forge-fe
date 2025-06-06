@@ -993,6 +993,25 @@ def populate_maxpool2d_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_adaptive_maxpool2d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    output_size = [int(size) for size in node["attrs"]["output_size"][0]]
+    args.append(
+        (
+            "output_size",
+            f"{output_size[0]}",
+        )
+    )
+
+    layout = node["attrs"].get("layout", [["NCHW"]])[0][0]
+    channel_last = int(layout == "NHWC")
+    args.append(("channel_last", f"{channel_last}"))
+
+    return args
+
+
 def populate_maxpool3d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1458,6 +1477,34 @@ def populate_pad_args(graph, nid, compiler_cfg):
     return args
 
 
+def populate_resize1d_args(graph, nid, compiler_cfg):
+    args = []
+    node = graph["nodes"][nid]
+
+    sizes = [int(x) for x in node["attrs"]["size"][0]]
+    assert len(sizes) == 1, "Resize1D should only have one size dimension"
+
+    method = node["attrs"]["method"][0][0]
+    assert method in ["nearest_neighbor", "linear", "cubic"], "Unsupported interpolation method"
+
+    assert int(node["attrs"]["num_inputs"]) == 1
+    input_nid = node["inputs"][0][0]
+    input_shape = graph["nodes"][input_nid]["attrs"]["shape"][0][0]
+
+    args.append(("size", f"{sizes[0]}"))
+
+    args.append(("method", f'"{method}"'))
+
+    coordinate_transform_mode = node["attrs"]["coordinate_transformation_mode"][0][0]
+    align_corners = "True" if coordinate_transform_mode == "align_corners" else "False"
+    args.append(("align_corners", f"{align_corners}"))
+
+    channel_last = int(node["attrs"]["layout"][0][0] == "NWC")
+    args.append(("channel_last", f"{channel_last}"))
+
+    return args
+
+
 def populate_resize2d_args(graph, nid, compiler_cfg):
     args = []
     node = graph["nodes"][nid]
@@ -1676,6 +1723,7 @@ tvm_to_forge_op_map = {
     "greater_equal": "greater_equal",
     "greater": "greater",
     "identity": "identity",
+    "image.resize1d": "resize1d",
     "image.resize2d": "resize2d",
     "image.resize3d": "resize3d",
     "layernorm": "layernorm",
@@ -1702,6 +1750,7 @@ tvm_to_forge_op_map = {
     "nn.max_pool1d": "max_pool1d",
     "nn.max_pool2d": "max_pool2d",
     "nn.max_pool3d": "max_pool3d",
+    "nn.adaptive_max_pool2d": "adaptive_max_pool2d",
     "nn.pad": "pad",
     "nn.relu": "relu",
     "nn.softmax": "softmax",
@@ -1789,6 +1838,7 @@ forge_op_to_function_name = {
     "max_pool1d": "forge.op.MaxPool1d",
     "max_pool2d": "forge.op.MaxPool2d",
     "max_pool3d": "forge.op.MaxPool3d",
+    "adaptive_max_pool2d": "forge.op.AdaptiveMaxPool2d",
     "maximum": "forge.op.Max",
     "mean": "forge.op.ReduceAvg",
     "minimum": "forge.op.Min",
@@ -1806,6 +1856,7 @@ forge_op_to_function_name = {
     "repeat": "forge.op.Repeat",
     "repeat_interleave": "forge.op.RepeatInterleave",
     "reshape": "forge.op.Reshape",
+    "resize1d": "forge.op.Resize1d",
     "resize2d": "forge.op.Resize2d",
     "resize3d": "forge.op.Resize3d",
     "select": "forge.op.Select",
@@ -1855,6 +1906,7 @@ forge_ops_needing_arguments = {
     "max_pool1d": populate_maxpool1d_args,
     "max_pool2d": populate_maxpool2d_args,
     "max_pool3d": populate_maxpool3d_args,
+    "adaptive_max_pool2d": populate_adaptive_maxpool2d_args,
     "pad": populate_pad_args,
     "pixel_shuffle": populate_pixel_shuffle_args,
     "prelu": populate_prelu_args,
@@ -1864,6 +1916,7 @@ forge_ops_needing_arguments = {
     "repeat": populate_repeat_args,
     "repeat_interleave": populate_repeat_interleave_args,
     "reshape": populate_reshape_args,
+    "resize1d": populate_resize1d_args,
     "resize2d": populate_resize2d_args,
     "resize3d": populate_resize3d_args,
     "select": populate_select_args,
@@ -2022,7 +2075,6 @@ def generate_forge_module(
     verify_cfg=None,
     clean_later=False,
     input_names=[],
-    forge_property_handler=None,
 ):
     global counter
 
@@ -2056,7 +2108,6 @@ def generate_forge_module(
             compiler_cfg=compiler_cfg,
             verify_cfg=verify_cfg,
             input_names=input_names,
-            forge_property_handler=forge_property_handler,
         )
     else:
         module_writers, flattened_inputs = load_writers_metadata(graph_name, inputs)
@@ -2119,7 +2170,6 @@ def compile_tvm_to_python(
     compiler_cfg=None,
     verify_cfg=None,
     input_names=[],
-    forge_property_handler=None,
 ):
     if compiler_cfg is None:
         compiler_cfg = CompilerConfig()
@@ -2154,7 +2204,6 @@ def compile_tvm_to_python(
         path=path,
         verify_cfg=verify_cfg,
         input_names=input_names,
-        forge_property_handler=forge_property_handler,
     )
 
     def _determine_node_dtype(node):

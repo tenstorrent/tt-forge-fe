@@ -7,10 +7,12 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import forge
 from forge.forge_property_utils import (
     Framework,
+    ModelArch,
     ModelGroup,
     ModelPriority,
     Source,
     Task,
+    record_model_properties,
 )
 from forge.verify.verify import verify
 
@@ -22,12 +24,12 @@ variants = ["microsoft/Phi-3.5-mini-instruct"]
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Test skipped due to segmentation fault issue")
 @pytest.mark.parametrize("variant", variants)
-def test_phi3_5_causal_lm(forge_property_recorder, variant):
+def test_phi3_5_causal_lm(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="phi3_5",
+        model=ModelArch.PHI3_5,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -54,9 +56,7 @@ def test_phi3_5_causal_lm(forge_property_recorder, variant):
     inputs = [inputs["input_ids"], inputs["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

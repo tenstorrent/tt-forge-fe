@@ -10,7 +10,7 @@ from transformers import MgpstrForSceneTextRecognition, MgpstrProcessor
 
 
 def load_model(variant):
-    model = MgpstrForSceneTextRecognition.from_pretrained(variant)
+    model = MgpstrForSceneTextRecognition.from_pretrained(variant, return_dict=False)
     model.eval()
     return model
 
@@ -23,4 +23,4 @@ def load_input(variant):
         images=image,
         return_tensors="pt",
     )
-    return [inputs["pixel_values"]]
+    return [inputs["pixel_values"]], processor

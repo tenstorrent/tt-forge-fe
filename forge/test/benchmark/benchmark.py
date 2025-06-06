@@ -12,6 +12,8 @@ import argparse
 # so we add the project root to the path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.insert(0, project_root)
+project_third_party = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+sys.path.insert(0, project_third_party)
 
 # Forge modules
 from benchmark import models
@@ -28,6 +30,8 @@ MODELS = {
     "vit_base": models.vit.vit_base_benchmark,
     "vovnet_osmr": models.vovnet.vovnet_osmr_benchmark,
     "yolo_v8": models.yolo_v8.yolo_v8_benchmark,
+    "yolo_v4": models.yolo_v4.yolo_v4_benchmark,
+    "yolo_v9": models.yolo_v9.yolo_v9_benchmark,
     "yolo_v10": models.yolo_v10.yolo_v10_benchmark,
 }
 

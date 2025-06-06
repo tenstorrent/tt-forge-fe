@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from loguru import logger
 from typing import Optional, List, Dict, Type, Union
 
-from forge import ForgeModule, Module, DepricatedVerifyConfig
+from forge import ForgeModule, Module, DeprecatedVerifyConfig
 from forge.op_repo import TensorShape
 from forge.op_repo.pytorch_operators import pytorch_operator_repository
 from forge.verify import TestKind  # , verify_module

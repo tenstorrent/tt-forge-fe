@@ -13,7 +13,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.config import VerifyConfig
 from forge.verify.verify import verify
 
@@ -27,12 +33,12 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
-def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
+def test_dpr_context_encoder_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="context_encoder",
         source=Source.HUGGINGFACE,
@@ -60,16 +66,13 @@ def test_dpr_context_encoder_pytorch(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification and Inference
     _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Results
@@ -81,12 +84,12 @@ variants = ["facebook/dpr-question_encoder-single-nq-base", "facebook/dpr-questi
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
+def test_dpr_question_encoder_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="question_encoder",
         source=Source.HUGGINGFACE,
@@ -114,29 +117,23 @@ def test_dpr_question_encoder_pytorch(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"], input_tokens["token_type_ids"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     verify_values = True
 
     if variant == "facebook/dpr-question_encoder-multiset-base":
         verify_values = False
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
         verify_cfg=VerifyConfig(verify_values=verify_values),
-        forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    embeddings = compiled_model(*inputs)
-
     # Results
-    print("embeddings", embeddings)
+    print("embeddings", co_out)
 
 
 variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-base"]
@@ -145,12 +142,12 @@ variants = ["facebook/dpr-reader-single-nq-base", "facebook/dpr-reader-multiset-
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", variants, ids=variants)
-def test_dpr_reader_pytorch(forge_property_recorder, variant):
+def test_dpr_reader_pytorch(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="dpr",
+        model=ModelArch.DPR,
         variant=variant,
         suffix="reader",
         source=Source.HUGGINGFACE,
@@ -177,25 +174,19 @@ def test_dpr_reader_pytorch(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(
+    # Model Verification and Inference
+    _, co_out = verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )
 
-    # Inference
-    outputs = compiled_model(*inputs)
-
     # Post processing
-    start_logits = outputs[0]
-    end_logits = outputs[1]
-    relevance_logits = outputs[2]
+    start_logits = co_out[0]
+    end_logits = co_out[1]
+    relevance_logits = co_out[2]
 
     start_indices = torch.argmax(start_logits, dim=1)
     end_indices = torch.argmax(end_logits, dim=1)

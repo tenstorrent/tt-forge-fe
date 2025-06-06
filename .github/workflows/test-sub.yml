@@ -26,7 +26,7 @@ on:
         description: 'Runs on'
         required: false
         type: string
-        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+        default: '[{"runs-on": "n150"}, {"runs-on": "n300"}, {"runs-on": "p150"}]'
       operators:
         description: 'Operators to test (comma separated)'
         required: false
@@ -103,6 +103,11 @@ jobs:
             conftest.py
             .test_durations
 
+      - name: Setup Forge Models repo
+        shell: bash
+        run: |
+          git submodule update --init --recursive -f third_party/tt_forge_models
+
         # Clean everything from submodules (needed to avoid issues
         # with cmake generated files leftover from previous builds)
       - name: Cleanup submodules
@@ -126,7 +131,7 @@ jobs:
           github_token: ${{secrets.GITHUB_TOKEN}}
           workflow_conclusion: success
           workflow_search: true
-          workflow: on-nightly.yml
+          workflow: on-push.yml
           name: forge-wheel
           repo: tenstorrent/tt-forge-fe
           check_artifacts: true

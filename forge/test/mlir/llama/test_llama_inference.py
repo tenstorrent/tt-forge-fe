@@ -106,7 +106,7 @@ def test_llama_inference_cache_cpu(model_path):
 
 @pytest.mark.parametrize("model_path", ["openlm-research/open_llama_3b", "meta-llama/Llama-3.2-1B"])
 @pytest.mark.parametrize("seq_len", [2048, 512, 128])
-def test_llama_input_sequence_lengths(forge_property_recorder, model_path, seq_len):
+def test_llama_input_sequence_lengths(model_path, seq_len):
     if model_path == "openlm-research/open_llama_3b" and seq_len == 2048:
         pytest.skip("ValueError: Data mismatch for openlm-research/open_llama_3b - sequence length of 2048")
     # Load Model and Tokenizer
@@ -121,6 +121,6 @@ def test_llama_input_sequence_lengths(forge_property_recorder, model_path, seq_l
     input_ids = tokenizer(prompt, padding="max_length", truncation=True, return_tensors="pt").input_ids
 
     # Compile the model and run fwd pass
-    compiled_model = forge.compile(framework_model, input_ids, forge_property_handler=forge_property_recorder)
+    compiled_model = forge.compile(framework_model, input_ids)
 
-    verify([input_ids], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([input_ids], framework_model, compiled_model)

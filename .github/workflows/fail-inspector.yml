@@ -9,6 +9,10 @@ on:
     types:
       - completed
 
+permissions:
+  packages: write
+  checks: write
+
 jobs:
   inspect:
     runs-on: ubuntu-latest
@@ -102,10 +106,8 @@ jobs:
     steps:
       - name: Find all test runs
         uses: tenstorrent/tt-forge/.github/actions/fail-inspector-deduct@main
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ github.token }}
           slack_webhook_url: ${{ secrets.SLACK_NIGHTLY_INSPECT }}
           nightly_workflow_id: ${{ needs.inspect.outputs.nightly_workflow_id }}
           nightly_attempt: ${{ needs.inspect.outputs.nightly_attempt }}

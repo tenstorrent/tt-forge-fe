@@ -6,7 +6,13 @@ import torch
 from transformers import SpeechT5ForTextToSpeech, SpeechT5Processor
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -31,12 +37,12 @@ class Wrapper(torch.nn.Module):
         ),
     ],
 )
-def test_speecht5_tts(forge_property_recorder, variant):
+def test_speecht5_tts(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="speecht5_tts",
+        model=ModelArch.SPEECHT5TTS,
         variant=variant,
         task=Task.TEXT_TO_SPEECH,
         source=Source.HUGGINGFACE,
@@ -54,9 +60,7 @@ def test_speecht5_tts(forge_property_recorder, variant):
     inputs = [model_inputs["input_ids"], model_inputs["attention_mask"], decoder_input_values]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

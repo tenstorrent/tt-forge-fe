@@ -15,18 +15,18 @@ import forge
 from forge.verify.verify import verify
 from forge.tvm_calls.forge_utils import paddle_trace
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 
 variants = ["ernie-1.0"]
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_ernie_for_sequence_classification(forge_property_recorder, variant):
+def test_ernie_for_sequence_classification(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="ernie",
+        model=ModelArch.ERNIE,
         variant=variant[6:],
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.PADDLENLP,
@@ -45,21 +45,19 @@ def test_ernie_for_sequence_classification(forge_property_recorder, variant):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_ernie_maskedlm(forge_property_recorder, variant):
+def test_ernie_maskedlm(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="ernie",
+        model=ModelArch.ERNIE,
         variant=variant[6:],
         task=Task.MASKED_LM,
         source=Source.PADDLENLP,
@@ -76,12 +74,10 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     # Inference
     outputs = compiled_model(*inputs)
@@ -93,11 +89,11 @@ def test_ernie_maskedlm(forge_property_recorder, variant):
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_ernie_question_answering(forge_property_recorder, variant):
+def test_ernie_question_answering(variant):
     # Record Forge properties
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PADDLE,
-        model="ernie",
+        model=ModelArch.ERNIE,
         variant=variant[6:],
         task=Task.QA,
         source=Source.PADDLENLP,
@@ -116,12 +112,10 @@ def test_ernie_question_answering(forge_property_recorder, variant):
 
     # Compile Model
     framework_model, _ = paddle_trace(model, inputs=inputs)
-    compiled_model = forge.compile(
-        framework_model, inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Verify
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     # Inference
     outputs = compiled_model(*inputs)

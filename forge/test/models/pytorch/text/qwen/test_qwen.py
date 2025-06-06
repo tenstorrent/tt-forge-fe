@@ -6,7 +6,13 @@ import torch
 from transformers import Qwen2Config, Qwen2ForCausalLM, Qwen2Tokenizer
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 
@@ -20,10 +26,14 @@ from forge.verify.verify import verify
         ),
     ],
 )
-def test_qwen1_5_causal_lm(forge_property_recorder, variant):
+def test_qwen1_5_causal_lm(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.QWEN15,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Setup model configuration
@@ -52,22 +62,24 @@ def test_qwen1_5_causal_lm(forge_property_recorder, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["Qwen/Qwen1.5-0.5B-Chat"])
-def test_qwen1_5_chat(forge_property_recorder, variant):
+def test_qwen1_5_chat(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="qwen1.5", variant=variant, task=Task.CAUSAL_LM, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.QWEN15,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
     )
 
     # Setup model configuration
@@ -110,9 +122,7 @@ def test_qwen1_5_chat(forge_property_recorder, variant):
     inputs = [input_ids, attention_mask]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

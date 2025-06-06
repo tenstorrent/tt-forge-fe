@@ -4,7 +4,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.deepcogito.model_utils.model import get_input_model
@@ -13,12 +19,12 @@ from test.models.pytorch.text.deepcogito.model_utils.model import get_input_mode
 @pytest.mark.skip("Skipping due to Out of Memory issue")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepcogito/cogito-v1-preview-llama-3B"])
-def test_cogito_generation(forge_property_recorder, variant):
+def test_cogito_generation(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="cogito",
+        model=ModelArch.COGITO,
         variant=variant,
         task=Task.TEXT_GENERATION,
         source=Source.HUGGINGFACE,
@@ -33,8 +39,7 @@ def test_cogito_generation(forge_property_recorder, variant):
         framework_model,
         sample_inputs=sample_inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Run verification
-    verify(sample_inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(sample_inputs, framework_model, compiled_model)

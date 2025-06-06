@@ -4,7 +4,13 @@
 import pytest
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.models_utils import generate_no_cache, pad_inputs
@@ -16,12 +22,12 @@ from test.models.pytorch.multimodal.deepseek_coder.model_utils.model_utils impor
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["deepseek-coder-1.3b-instruct"])
-def test_deepseek_inference_no_cache(forge_property_recorder, variant):
+def test_deepseek_inference_no_cache(variant):
     pytest.skip("Insufficient host DRAM to run this model (requires a bit more than 32 GB during compile time)")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="deepseek", variant=variant, task=Task.QA, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH, model=ModelArch.DEEPSEEK, variant=variant, task=Task.QA, source=Source.HUGGINGFACE
     )
 
     # Load Model and Tokenizer
@@ -37,11 +43,10 @@ def test_deepseek_inference_no_cache(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     generated_text = generate_no_cache(
         max_new_tokens=512, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer

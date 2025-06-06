@@ -16,7 +16,7 @@ import onnx
     reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen, PCC got=0.4923030518607919"
 )  # https://github.com/tenstorrent/tt-forge-fe/issues/1793
 @pytest.mark.push
-def test_inplace_updation(forge_property_recorder):
+def test_inplace_updation():
     class Inplace_updation(nn.Module):
         def __init__(self):
             super().__init__()
@@ -51,9 +51,8 @@ def test_inplace_updation(forge_property_recorder):
     compiled_model = forge.compile(
         model,
         sample_inputs=inputs,
-        forge_property_handler=forge_property_recorder,
     )
-    verify(inputs, model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, model, compiled_model)
 
 
 @pytest.mark.parametrize(
@@ -70,14 +69,12 @@ def test_inplace_updation(forge_property_recorder):
             -50,
             None,
             torch.int32,
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.865278346197563"),
         ),
         pytest.param(
             (8, 1, 8, 8),
             None,
             876,
             torch.int32,
-            marks=pytest.mark.xfail(reason="Tensor mismatch. PCC = 0.8614933523955847"),
         ),
     ],
 )

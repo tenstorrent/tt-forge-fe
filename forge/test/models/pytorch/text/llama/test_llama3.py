@@ -18,7 +18,14 @@ from transformers.models.llama.modeling_llama import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -135,13 +142,13 @@ variants = [
     pytest.param(
         "meta-llama/Llama-3.2-3B-Instruct",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 40 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
     pytest.param(
         "huggyllama/llama-7b",
         marks=pytest.mark.skip(
-            reason="Insufficient host DRAM to run this model (requires a bit more than 58 GB during compile time)"
+            reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
         ),
     ),
 ]
@@ -149,7 +156,7 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_llama3_causal_lm(forge_property_recorder, variant):
+def test_llama3_causal_lm(variant):
     if variant in [
         "meta-llama/Llama-3.1-8B-Instruct",
         "meta-llama/Llama-3.2-1B-Instruct",
@@ -160,9 +167,9 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         group = ModelGroup.GENERALITY
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llama3",
+        model=ModelArch.LLAMA3,
         variant=variant,
         task=Task.CAUSAL_LM,
         source=Source.HUGGINGFACE,
@@ -206,11 +213,10 @@ def test_llama3_causal_lm(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 variants = [
@@ -268,12 +274,12 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_llama3_sequence_classification(forge_property_recorder, variant):
+def test_llama3_sequence_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="llama3",
+        model=ModelArch.LLAMA3,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -299,8 +305,12 @@ def test_llama3_sequence_classification(forge_property_recorder, variant):
         framework_model,
         inputs,
         module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+
+    print(f"Prediction : {framework_model.config.id2label[predicted_value]}")

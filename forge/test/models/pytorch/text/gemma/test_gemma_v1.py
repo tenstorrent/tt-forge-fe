@@ -5,7 +5,14 @@ import pytest
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.text.gemma.model_utils.model_utils import (
@@ -21,23 +28,23 @@ from test.models.pytorch.text.gemma.model_utils.model_utils import (
         pytest.param(
             "google/gemma-1.1-2b-it",
             marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 22 GB during compile time)"
+                reason="Insufficient host DRAM to run this model (requires a bit more than 21 GB during compile time)"
             ),
         ),
         pytest.param(
             "google/gemma-1.1-7b-it",
             marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
             ),
         ),
     ],
 )
-def test_gemma_pytorch_v1(forge_property_recorder, variant):
+def test_gemma_pytorch_v1(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="gemma",
+        model=ModelArch.GEMMA,
         variant=variant,
         task=Task.QA,
         source=Source.HUGGINGFACE,
@@ -59,11 +66,10 @@ def test_gemma_pytorch_v1(forge_property_recorder, variant):
         framework_model,
         sample_inputs=[padded_inputs],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([padded_inputs], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([padded_inputs], framework_model, compiled_model)
 
     # Runtime and Post-Processing
     generated_text = generate_no_cache(

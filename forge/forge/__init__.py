@@ -66,7 +66,7 @@ from .config import (
     CompilerConfig,
     CompileDepth,
 )
-from .verify import DepricatedVerifyConfig
+from .verify import DeprecatedVerifyConfig
 from .forgeglobal import set_device_pipeline, is_silicon, get_tenstorrent_device
 from .parameter import Parameter
 from .tensor import Tensor, SomeTensor, TensorShape

@@ -43,4 +43,4 @@ def load_vision_model_and_input(variant, task, weight_name):
     # Current limitation of compiler/runtime is that it does not support non-contiguous tensors properly.
     batch_t = batch_t.contiguous()
 
-    return model.to(torch.bfloat16), [batch_t.to(torch.bfloat16)]
+    return model, [batch_t]

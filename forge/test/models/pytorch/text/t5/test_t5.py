@@ -6,7 +6,13 @@ import torch
 from transformers import AutoTokenizer, T5Config, T5ForConditionalGeneration
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -41,13 +47,17 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_t5_generation(forge_property_recorder, variant):
+def test_t5_generation(variant):
     if variant not in {"t5-small", "google/flan-t5-small", "t5-base", "t5-large"}:
         pytest.skip(f"Skipping {variant} due to the current CI/CD pipeline limitations")
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="t5", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.T5,
+        variant=variant,
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Load tokenizer and model from HuggingFace
@@ -87,12 +97,10 @@ def test_t5_generation(forge_property_recorder, variant):
     framework_model = Wrapper(model)
 
     # Forge compile
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
     current_decoder_input_ids = decoder_input_ids
     all_decoded_ids = decoder_input_ids

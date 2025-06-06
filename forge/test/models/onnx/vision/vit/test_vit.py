@@ -6,9 +6,9 @@ from datasets import load_dataset
 import torch
 import onnx
 import forge
-from transformers import ViTForImageClassification
+from transformers import ViTForImageClassification, AutoImageProcessor
 from forge.verify.verify import verify
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 variants = [
@@ -22,24 +22,27 @@ variants = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", variants)
-def test_vit_classify_224(forge_property_recorder, variant, forge_tmp_path):
+def test_vit_classify_224(variant, forge_tmp_path):
     priority = ModelPriority.P1 if variant in ["google/vit-base-patch16-224"] else ModelPriority.P2
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="vit_base",
+        model=ModelArch.VITBASE,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
         priority=priority,
     )
 
-    # Load the torch model
+    # Load torch model and processor
     torch_model = ViTForImageClassification.from_pretrained(variant)
+    image_processor = AutoImageProcessor.from_pretrained(variant)
 
-    # Load the inputs
-    inputs = [torch.rand(1, 3, 224, 224)]
+    # prepare input
+    dataset = load_dataset("huggingface/cats-image")
+    image = dataset["test"]["image"][0]
+    inputs = [image_processor(image, return_tensors="pt").pixel_values]
 
     onnx_path = f"{forge_tmp_path}/vit.onnx"
     torch.onnx.export(torch_model, inputs[0], onnx_path, opset_version=17)
@@ -48,9 +51,12 @@ def test_vit_classify_224(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    logits = co_out[0]
+    predicted_class_idx = logits.argmax(-1).item()
+    print("Predicted class:", torch_model.config.id2label[predicted_class_idx])

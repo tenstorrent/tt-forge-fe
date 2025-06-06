@@ -5,7 +5,13 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import fetch_model, yolov5_loader
@@ -34,12 +40,12 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size):
+def test_yolov5_320x320(restore_package_versions, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -52,12 +58,10 @@ def test_yolov5_320x320(restore_package_versions, forge_property_recorder, size)
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_yoloV5I640_imgcls_torchhub_pytorch(variant, size):
@@ -80,12 +84,12 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size):
+def test_yolov5_640x640(restore_package_versions, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -98,12 +102,10 @@ def test_yolov5_640x640(restore_package_versions, forge_property_recorder, size)
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 def generate_model_yoloV5I480_imgcls_torchhub_pytorch(variant, size):
@@ -125,12 +127,12 @@ size = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("size", size)
-def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size):
+def test_yolov5_480x480(restore_package_versions, size):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant="yolov5" + size,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -143,23 +145,21 @@ def test_yolov5_480x480(restore_package_versions, forge_property_recorder, size)
     )
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["yolov5s"])
 @pytest.mark.xfail
-def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, variant):
+def test_yolov5_1280x1280(restore_package_versions, variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="yolo_v5",
+        model=ModelArch.YOLOV5,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCH_HUB,
@@ -178,9 +178,7 @@ def test_yolov5_1280x1280(restore_package_versions, forge_property_recorder, var
     inputs = [input_tensor]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

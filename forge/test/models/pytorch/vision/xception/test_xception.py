@@ -13,7 +13,13 @@ from timm.data.transforms_factory import create_transform
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.xception.model_utils.utils import post_processing
@@ -53,12 +59,12 @@ params = [
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", params)
-def test_xception_timm(forge_property_recorder, variant):
+def test_xception_timm(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="xception",
+        model=ModelArch.XCEPTION,
         variant=variant,
         source=Source.TIMM,
         task=Task.IMAGE_CLASSIFICATION,
@@ -74,13 +80,11 @@ def test_xception_timm(forge_property_recorder, variant):
         framework_model,
         sample_inputs=inputs,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification and Inference
-    fw_out, co_out = verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    fw_out, co_out = verify(inputs, framework_model, compiled_model)
 
     # Post Processing
-    if variant == "xception71.tf_in1k":
-        post_processing(co_out)
+    post_processing(co_out)

@@ -14,18 +14,18 @@ import forge
 
 from test.models.pytorch.vision.swin.model_utils.image_utils import load_image
 from test.models.pytorch.vision.vision_utils.utils import load_vision_model_and_input
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 @pytest.mark.skip(reason="Segmentation Fault at run_mlir_compiler compilation stage")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_swin_v2_tiny_image_classification_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -53,20 +53,18 @@ def test_swin_v2_tiny_image_classification_onnx(forge_property_recorder, variant
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
 
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["microsoft/swinv2-tiny-patch4-window8-256"])
-def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_swin_v2_tiny_masked_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.MASKED_IMAGE_MODELING,
         source=Source.HUGGINGFACE,
@@ -93,9 +91,7 @@ def test_swin_v2_tiny_masked_onnx(forge_property_recorder, variant, forge_tmp_pa
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
 
 variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
@@ -104,12 +100,12 @@ variants_with_weights = {"swin_v2_t": "Swin_V2_T_Weights"}
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["swin_v2_t"])
-def test_swin_torchvision(forge_property_recorder, variant, forge_tmp_path):
+def test_swin_torchvision(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="swin",
+        model=ModelArch.SWIN,
         variant=variant,
         task=Task.IMAGE_CLASSIFICATION,
         source=Source.TORCHVISION,
@@ -131,6 +127,4 @@ def test_swin_torchvision(forge_property_recorder, variant, forge_tmp_path):
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)

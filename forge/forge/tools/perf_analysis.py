@@ -1032,7 +1032,7 @@ def get_screen_description(data, config):
     return mapping, table_data, max_rows, max_columns
 
 
-def save_epoch_screens_to_files(stdscr, data, config, epoch_sreens_save_dir):
+def save_epoch_screens_to_files(stdscr, data, config, epoch_screens_save_dir):
     """
     Save epoch summary and details screens to txt files in a given folder
     """
@@ -1042,17 +1042,17 @@ def save_epoch_screens_to_files(stdscr, data, config, epoch_sreens_save_dir):
     config["epoch"] = None
     config["screen_name"] = "epoch_summary"
     mapping, table_data, _, _ = get_screen_description(data, config)
-    display_screen(table_data, mapping, stdscr, config, save_screen=True, base_dir=epoch_sreens_save_dir)
+    display_screen(table_data, mapping, stdscr, config, save_screen=True, base_dir=epoch_screens_save_dir)
 
     # Save details screens per epoch
     for epoch in range(num_epochs):
         config["epoch"] = epoch
         config["screen_name"] = f"epoch_{epoch}_details"
         mapping, table_data, _, _ = get_screen_description(data, config)
-        display_screen(table_data, mapping, stdscr, config, save_screen=True, base_dir=epoch_sreens_save_dir)
+        display_screen(table_data, mapping, stdscr, config, save_screen=True, base_dir=epoch_screens_save_dir)
 
 
-def main(stdscr, data, save_epoch_screens=False, epoch_sreens_save_dir=None):
+def main(stdscr, data, save_epoch_screens=False, epoch_screens_save_dir=None):
 
     # Curses config
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
@@ -1071,7 +1071,7 @@ def main(stdscr, data, save_epoch_screens=False, epoch_sreens_save_dir=None):
     }
 
     if save_epoch_screens:
-        save_epoch_screens_to_files(stdscr, data, config, epoch_sreens_save_dir)
+        save_epoch_screens_to_files(stdscr, data, config, epoch_screens_save_dir)
         return False
 
     while key != ord("q") and key != ord("Q"):

@@ -2367,7 +2367,8 @@ class LowerAdaptiveMaxPool(DFPatternCallback):
         output_shape = [int(dim) for dim in pre.checked_type.shape]
 
         assert post.attrs.layout == "NCHW"
-        assert input_shape[-1] == input_shape[-2], "Only support same factor of the input for H and W"
+        if input_shape[-1] != input_shape[-2]:
+            return post
         assert output_shape[-1] == output_shape[-2], "Only support same factor of the output for H and W"
 
         input_size = input_shape[-1]
@@ -4917,6 +4918,40 @@ class DecomposeMeshgrid(DFPatternCallback):
         return tvm.relay.Tuple(broadcasted_grids)
 
 
+class DecomposeDepthToSpace(DFPatternCallback):
+    def __init__(self):
+        super().__init__()
+        self.input = wildcard()
+        self.pattern = is_op("nn.depth_to_space")(self.input)
+
+    def callback(self, pre, post, node_map):
+        from tvm.relay.frontend.common import infer_shape
+
+        data = node_map[self.input][0]
+        attrs = pre.attrs
+        blocksize = int(attrs.block_size)
+
+        assert attrs.mode == "CRD", f"Only CRD mode is supported for now, got {attrs.mode}"
+
+        # Get input shape
+        shape = infer_shape(data)
+        b, c, h, w = shape
+
+        r = blocksize
+        out_c = c // (r * r)
+
+        # Reshape to [b, out_c, r, r, h, w]
+        reshaped = tvm.relay.reshape(data, [b, out_c, r, r, h, w])
+
+        # Transpose to [b, out_c, h, r, w, r]
+        transposed = tvm.relay.transpose(reshaped, axes=[0, 1, 4, 2, 5, 3])
+
+        # Reshape to [b, out_c, h * r, w * r]
+        out = tvm.relay.reshape(transposed, [b, out_c, h * r, w * r])
+
+        return out
+
+
 def _get_callback_name(callback):
     if isinstance(callback, DFPatternCallback):
         return type(callback).__name__
@@ -4972,6 +5007,7 @@ def run_forge_compile_passes(
     return run_pattern_callbacks(
         relay_module,
         [
+            DecomposeDepthToSpace(),
             DecomposeZerosToFull(),
             DecomposeMeshgrid(),
             DecomposeGridSample(),

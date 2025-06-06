@@ -8,6 +8,10 @@ on:
     - cron: '0 8 * * *'  # Runs at 08:00 UTC every day
   workflow_dispatch:  # Manual trigger
 
+permissions:
+  packages: write
+  checks: write
+
 jobs:
   uplift-pr:
     runs-on: ubuntu-latest

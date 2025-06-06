@@ -16,7 +16,14 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 
@@ -39,12 +46,12 @@ class Wrapper(torch.nn.Module):
 @pytest.mark.nightly
 @pytest.mark.xfail
 @pytest.mark.parametrize("variant", ["openai/whisper-large-v3-turbo"])
-def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
+def test_whisper_large_v3_speech_translation(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="whisper",
+        model=ModelArch.WHISPER,
         variant=variant,
         task=Task.SPEECH_TRANSLATE,
         source=Source.HUGGINGFACE,
@@ -68,9 +75,7 @@ def test_whisper_large_v3_speech_translation(forge_property_recorder, variant):
     inputs = [decoder_input_ids, encoder_outputs]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

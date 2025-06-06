@@ -9,7 +9,14 @@ import torch
 import forge
 from forge._C import DataFormat
 from forge.config import CompilerConfig
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
@@ -17,17 +24,28 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import (
     load_yolo_model_and_image,
 )
 
+variants = ["yolov8x", "yolov8n"]
+
 
 @pytest.mark.nightly
-def test_yolov8(forge_property_recorder):
+@pytest.mark.parametrize("variant", variants)
+def test_yolov8(variant):
+
+    if variant in ["yolov8x"]:
+        group = ModelGroup.RED
+        priority = ModelPriority.P2
+    else:
+        group = ModelGroup.GENERALITY
+
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="Yolov8",
-        variant="default",
+        model=ModelArch.YOLOV8,
+        variant=variant,
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
         group=ModelGroup.RED,
+        priority=priority,
     )
 
     # Load  model and input
@@ -45,9 +63,8 @@ def test_yolov8(forge_property_recorder):
         framework_model,
         sample_inputs=input,
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
         compiler_cfg=compiler_cfg,
     )
 
     # Model Verification
-    verify(input, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(input, framework_model, compiled_model)

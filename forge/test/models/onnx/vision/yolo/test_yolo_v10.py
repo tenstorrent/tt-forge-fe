@@ -10,16 +10,16 @@ import forge
 from forge.verify.verify import verify
 
 from test.models.onnx.vision.yolo.model_utils.yolo_utils import load_yolo_model_and_image, YoloWrapper
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 
 
 @pytest.mark.xfail
 @pytest.mark.nightly
-def test_yolov10(forge_property_recorder, forge_tmp_path):
+def test_yolov10(forge_tmp_path):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="Yolov10",
+        model=ModelArch.YOLOV10,
         variant="default",
         task=Task.OBJECT_DETECTION,
         source=Source.GITHUB,
@@ -54,8 +54,7 @@ def test_yolov10(forge_property_recorder, forge_tmp_path):
         onnx_model,
         sample_inputs=[image_tensor],
         module_name=module_name,
-        forge_property_handler=forge_property_recorder,
     )
 
     # Model Verification
-    verify([image_tensor], framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify([image_tensor], framework_model, compiled_model)

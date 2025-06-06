@@ -8,11 +8,10 @@ on:
         required: true
         type: string
 
-# Sets permissions for:
-#   - downloading docker container
 permissions:
   contents: read
-  packages: write
+  pages: write
+  id-token: write
 
 jobs:
 
@@ -52,6 +51,7 @@ jobs:
       shell: bash
       run: |
         source env/activate
+        apt-get update
         apt install cargo -y
         cargo install --version ${MDBOOK_VERSION} mdbook --locked
 

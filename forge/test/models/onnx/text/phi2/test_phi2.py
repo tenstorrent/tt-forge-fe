@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, PhiForCausalLM
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task, ModelPriority
+from forge.forge_property_utils import Framework, Source, Task, ModelPriority, ModelArch, record_model_properties
 from test.models.models_utils import build_optimum_cli_command
 
 from test.utils import download_model
@@ -19,12 +19,12 @@ variants = ["microsoft/phi-2"]
 @pytest.mark.nightly
 @pytest.mark.skip(reason="Transient test - Out of memory due to other tests in CI pipeline")
 @pytest.mark.parametrize("variant", variants)
-def test_phi2_clm_onnx(forge_property_recorder, variant, forge_tmp_path):
+def test_phi2_clm_onnx(variant, forge_tmp_path):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="phi2",
+        model=ModelArch.PHI2,
         variant=variant,
         source=Source.HUGGINGFACE,
         task=Task.CAUSAL_LM,
@@ -65,14 +65,11 @@ def test_phi2_clm_onnx(forge_property_recorder, variant, forge_tmp_path):
 
     # Compile model
     inputs = [input_ids, attn_mask]
-    compiled_model = forge.compile(
-        framework_model, inputs, forge_property_handler=forge_property_recorder, module_name=module_name
-    )
+    compiled_model = forge.compile(framework_model, inputs, module_name=module_name)
 
     # Model Verification
     verify(
         inputs,
         framework_model,
         compiled_model,
-        forge_property_handler=forge_property_recorder,
     )

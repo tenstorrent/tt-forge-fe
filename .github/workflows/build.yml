@@ -40,7 +40,6 @@ on:
 permissions:
   packages: write
   checks: write
-  pull-requests: write # only required if `comment: true` was enabled
 
 jobs:
 

@@ -6,7 +6,16 @@ import pytest
 import torch
 
 import forge
-from forge.forge_property_utils import Framework, ModelGroup, Source, Task
+from forge._C import DataFormat
+from forge.config import CompilerConfig
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    ModelGroup,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.models.pytorch.multimodal.stable_diffusion.model_utils.model import (
@@ -35,22 +44,34 @@ class StableDiffusionWrapper(torch.nn.Module):
 
 
 @pytest.mark.nightly
-@pytest.mark.skip(
-    reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
-)
 @pytest.mark.parametrize(
     "variant",
     [
-        "stable-diffusion-3.5-medium",
-        "stable-diffusion-3.5-large",
-        "stable-diffusion-3.5-large-turbo",
+        pytest.param(
+            "stable-diffusion-3.5-medium",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 31 GB during compile time)"
+            ),
+        ),
+        pytest.param(
+            "stable-diffusion-3.5-large",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
+            ),
+        ),
+        pytest.param(
+            "stable-diffusion-3.5-large-turbo",
+            marks=pytest.mark.skip(
+                reason="Insufficient host DRAM to run this model (requires a bit more than 54 GB during compile time)"
+            ),
+        ),
     ],
 )
-def test_stable_diffusion_v35(forge_property_recorder, variant):
+def test_stable_diffusion_v35(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="stable_diffusion",
+        model=ModelArch.STABLEDIFFUSION,
         variant=variant,
         task=Task.CONDITIONAL_GENERATION,
         source=Source.HUGGINGFACE,
@@ -65,15 +86,25 @@ def test_stable_diffusion_v35(forge_property_recorder, variant):
 
     # TODO: Implement post-processing using VAE decode after obtaining the transformer output.
     framework_model = StableDiffusionWrapper(framework_model, joint_attention_kwargs=None, return_dict=False)
+    framework_model.to(torch.bfloat16)
 
     # Load inputs
     prompt = "An astronaut riding a green horse"
     latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds = stable_diffusion_preprocessing_v35(pipe, prompt)
-    inputs = [latent_model_input, timestep, prompt_embeds, pooled_prompt_embeds]
+    inputs = [
+        latent_model_input.to(torch.bfloat16),
+        timestep.to(torch.bfloat16),
+        prompt_embeds.to(torch.bfloat16),
+        pooled_prompt_embeds.to(torch.bfloat16),
+    ]
+
+    data_format_override = DataFormat.Float16_b
+    compiler_cfg = CompilerConfig(default_df_override=data_format_override)
+
     # Forge compile framework model
     compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
+        framework_model, sample_inputs=inputs, module_name=module_name, compiler_cfg=compiler_cfg
     )
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)

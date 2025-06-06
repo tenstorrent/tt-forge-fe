@@ -18,13 +18,14 @@ static bool system_is_initialized = false;
 
 TTSystem detect_available_devices()
 {
-    auto [system_desc, chip_ids] = runtime::getCurrentSystemDesc();
-
+    auto system_desc = runtime::getCurrentSystemDesc();
+    std::vector<int> chip_ids;
     std::vector<std::shared_ptr<TTDevice>> devices;
     int logical_device_index = 0;
     ARCH arch = ARCH::Invalid;
     for (std::uint32_t chip_desc_index : *system_desc->chip_desc_indices())
     {
+        chip_ids.push_back(static_cast<int>(chip_desc_index));
         target::ChipDesc const* chip_desc = system_desc->chip_descs()->Get(chip_desc_index);
         target::ChipCapability chip_capabilities = system_desc->chip_capabilities()->Get(logical_device_index);
 

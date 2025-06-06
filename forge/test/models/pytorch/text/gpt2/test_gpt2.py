@@ -11,7 +11,13 @@ from transformers import (
 )
 
 import forge
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import (
+    Framework,
+    ModelArch,
+    Source,
+    Task,
+    record_model_properties,
+)
 from forge.verify.verify import verify
 
 from test.utils import download_model
@@ -34,10 +40,14 @@ class Wrapper(torch.nn.Module):
         "gpt2",
     ],
 )
-def test_gpt2_text_gen(forge_property_recorder, variant):
+def test_gpt2_text_gen(variant):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
-        framework=Framework.PYTORCH, model="gpt2", variant=variant, task=Task.TEXT_GENERATION, source=Source.HUGGINGFACE
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.GPT,
+        variant=variant,
+        task=Task.TEXT_GENERATION,
+        source=Source.HUGGINGFACE,
     )
 
     # Load tokenizer and model from HuggingFace
@@ -57,30 +67,25 @@ def test_gpt2_text_gen(forge_property_recorder, variant):
     framework_model = Wrapper(model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    verify(inputs, framework_model, compiled_model)
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",
     [
-        pytest.param(
-            "mnoukhov/gpt2-imdb-sentiment-classifier",
-            marks=[pytest.mark.xfail],
-        ),
+        "mnoukhov/gpt2-imdb-sentiment-classifier",
     ],
 )
-def test_gpt2_sequence_classification(forge_property_recorder, variant):
+def test_gpt2_sequence_classification(variant):
 
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.PYTORCH,
-        model="gpt2",
+        model=ModelArch.GPT,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -88,7 +93,9 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
 
     # Load tokenizer and model from HuggingFace
     tokenizer = download_model(AutoTokenizer.from_pretrained, variant, padding_side="left")
-    model = download_model(AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False)
+    model = download_model(
+        AutoModelForSequenceClassification.from_pretrained, variant, return_dict=False, use_cache=False
+    )
     model.eval()
     framework_model = Wrapper(model)
 
@@ -98,9 +105,11 @@ def test_gpt2_sequence_classification(forge_property_recorder, variant):
     inputs = [input_tokens["input_ids"], input_tokens["attention_mask"]]
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        framework_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+    print(f"Predicted Sentiment: {model.config.id2label[predicted_value]}")

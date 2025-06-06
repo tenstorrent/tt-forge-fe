@@ -13,7 +13,7 @@ import numpy as np
 
 import forge
 import forge.op
-from forge import TTDevice, BackendType, forge_compile, DepricatedVerifyConfig, CompilerConfig
+from forge import TTDevice, BackendType, forge_compile, DeprecatedVerifyConfig, CompilerConfig
 
 from forge.verify.config import TestKind
 
@@ -80,7 +80,7 @@ def test_matmul_generic(op_test_kind, model, shape):
             enable_training=test_kind.is_training(),
             enable_recompute=test_kind.is_recompute(),
         ),
-        verify_cfg=DepricatedVerifyConfig(),
+        verify_cfg=DeprecatedVerifyConfig(),
     )
 
 
@@ -108,5 +108,5 @@ def test_matmul_custom(test_kind, model):
             enable_training=test_kind.is_training(),
             enable_recompute=test_kind.is_recompute(),
         ),
-        verify_cfg=DepricatedVerifyConfig(),
+        verify_cfg=DeprecatedVerifyConfig(),
     )

@@ -24,13 +24,18 @@ from ..tensor import (
     pytorch_dtype_to_forge_dataformat,
     forge_dataformat_to_pytorch_dtype,
 )
-from .config import DepricatedVerifyConfig, VerifyConfig, should_waive_gradient
+from .config import DeprecatedVerifyConfig, VerifyConfig, should_waive_gradient
 import forge._C.graph as pygraph
 from forge._C.runtime import Tensor as CTensor
 from forge.compiled_graph_state import CompiledModel
 from forge.verify.compare import compare_tensor_to_golden, determine_consistency_limits
 from forge.verify.utils import convert_to_supported_pytorch_dtype
-from forge.forge_property_utils import ForgePropertyHandler, ExecutionStage
+from forge.forge_property_utils import (
+    ExecutionStage,
+    record_execution,
+    record_verify_config,
+    record_consistency_limits,
+)
 
 
 def _generate_random_losses(outputs):
@@ -78,7 +83,7 @@ def do_verify(
     golden_input_grads: Tuple[torch.Tensor, ...],
     outputs: Tuple[Tensor, ...],
     intermediate_golden_tensors: Dict,
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
     is_forge: bool,
     losses=None,
     targets: List[Tensor] = [],
@@ -219,7 +224,7 @@ def verify_golden(
     device: "TTDevice",
     inputs: Tuple[Tensor],
     outputs: Tuple[torch.Tensor],
-    verify_cfg: DepricatedVerifyConfig,
+    verify_cfg: DeprecatedVerifyConfig,
 ):
 
     assert False  # Run ttnn golden
@@ -315,7 +320,7 @@ def verify_backward(
     co_gradient_outputs = compiled_model.backward()
     co_gradients: Dict[str, torch.Tensor] = {}
     for name, grad in zip(compiled_model.bwd_compiled_graph_state.ordered_output_names, co_gradient_outputs):
-        # NOTE: Need to clone the gradients of parametars as they are modified in the backward pass of the framework model
+        # NOTE: Need to clone the gradients of parameters as they are modified in the backward pass of the framework model
         #       but no need to clone the gradients of the inputs as they are not modified in the backward pass of the framework model
         co_gradients[name] = grad.to_torch().clone() if name.startswith("grad_acc_") else grad.to_torch()
 
@@ -357,7 +362,6 @@ def verify(
     framework_model: FrameworkModule,
     compiled_model: CompiledModel,
     verify_cfg: VerifyConfig = VerifyConfig(),
-    forge_property_handler: Optional[ForgePropertyHandler] = None,
 ):
     """
     Performs verification of a compiled model by comparing its outputs against a reference framework model.
@@ -377,8 +381,7 @@ def verify(
                Returns (None, None) if verification is disabled
     """
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_verify_config(verify_cfg)
+    record_verify_config(verify_cfg)
 
     # 0th step: Check if inputs are of the correct type
     if not inputs:
@@ -403,11 +406,9 @@ def verify(
     # 1st step: run forward pass for the networks
     fw_out = framework_model(*inputs)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
+    record_execution(ExecutionStage.FAILED_TTNN_BINARY_EXECUTION)
     co_out = compiled_model(*inputs)
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.FAILED_VERIFICATION)
+    record_execution(ExecutionStage.FAILED_VERIFICATION)
 
     # 2nd step: apply preprocessing:
     # - cast framework tensors to pytorch tensors if needed
@@ -420,12 +421,7 @@ def verify(
 
     co_out = [co.to("cpu") for co in co_out]
 
-    if forge_property_handler is not None:
-        pcc, atol = determine_consistency_limits(fw_out, co_out)
-        if pcc is not None:
-            forge_property_handler.record_pcc(pcc=pcc)
-        if atol is not None:
-            forge_property_handler.record_atol(atol=atol)
+    record_consistency_limits(fw_out, co_out)
 
     if not verify_cfg.enabled:
         logger.warning("Verification is disabled")
@@ -453,8 +449,7 @@ def verify(
         if verify_cfg.verify_values:
             verify_cfg.value_checker.check(fw, co)
 
-    if forge_property_handler is not None:
-        forge_property_handler.record_execution(ExecutionStage.PASSED)
+    record_execution(ExecutionStage.PASSED)
 
     # Return both the framework and compiled model outputs
     return fw_out, co_out

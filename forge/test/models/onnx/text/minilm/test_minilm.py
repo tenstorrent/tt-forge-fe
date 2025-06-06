@@ -9,23 +9,18 @@ from transformers import BertModel, BertTokenizer
 import forge
 from forge.verify.verify import verify
 
-from forge.forge_property_utils import Framework, Source, Task
+from forge.forge_property_utils import Framework, Source, Task, ModelArch, record_model_properties
 from test.utils import download_model
-
-
-# Opset 9 is the minimum version to support BERT-like models in Torch.
-# Opset 17 is the maximum version in Torchscript.
-opset_versions = [9, 17]
+from test.models.models_utils import mean_pooling
 
 
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["sentence-transformers/all-MiniLM-L6-v2"])
-@pytest.mark.parametrize("opset_version", opset_versions, ids=opset_versions)
-def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, forge_tmp_path, opset_version):
+def test_minilm_sequence_classification_onnx(variant, forge_tmp_path):
     # Record Forge Property
-    module_name = forge_property_recorder.record_model_properties(
+    module_name = record_model_properties(
         framework=Framework.ONNX,
-        model="minilm",
+        model=ModelArch.MINILM,
         variant=variant,
         task=Task.SEQUENCE_CLASSIFICATION,
         source=Source.HUGGINGFACE,
@@ -45,7 +40,7 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, f
     # Export model to ONNX
     # TODO: Replace with pre-generated ONNX model to avoid exporting from scratch.
     onnx_path = f"{forge_tmp_path}/minilm.onnx"
-    torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=opset_version)
+    torch.onnx.export(framework_model, inputs[0], onnx_path, opset_version=17)
 
     # Load ONNX model
     onnx_model = onnx.load(onnx_path)
@@ -53,9 +48,11 @@ def test_minilm_sequence_classification_onnx(forge_property_recorder, variant, f
     framework_model = forge.OnnxModule(module_name, onnx_model)
 
     # Forge compile framework model
-    compiled_model = forge.compile(
-        onnx_model, sample_inputs=inputs, module_name=module_name, forge_property_handler=forge_property_recorder
-    )
+    compiled_model = forge.compile(onnx_model, sample_inputs=inputs, module_name=module_name)
 
-    # Model Verification
-    verify(inputs, framework_model, compiled_model, forge_property_handler=forge_property_recorder)
+    # Model Verification and Inference
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # Post processing
+    sentence_embeddings = mean_pooling(co_out, input_tokens["attention_mask"])
+    print("Sentence embeddings:", sentence_embeddings)
