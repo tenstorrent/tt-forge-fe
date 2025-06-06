@@ -56,7 +56,13 @@ def test_roberta_masked_lm(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    logits = co_out[0]
+    mask_token_index = (input_tokens == tokenizer.mask_token_id)[0].nonzero(as_tuple=True)[0]
+    predicted_token_id = logits[0, mask_token_index].argmax(axis=-1)
+    print("The predicted token for the [MASK] is: ", tokenizer.decode(predicted_token_id))
 
 
 @pytest.mark.nightly
@@ -93,4 +99,8 @@ def test_roberta_sentiment_pytorch(variant):
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 
     # Model Verification
-    verify(inputs, framework_model, compiled_model)
+    _, co_out = verify(inputs, framework_model, compiled_model)
+
+    # post processing
+    predicted_value = co_out[0].argmax(-1).item()
+    print(f"Predicted Sentiment: {framework_model.config.id2label[predicted_value]}")
