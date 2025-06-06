@@ -119,8 +119,15 @@ def test_resnet_hf(training, batch_size, data_format, input_size, channel_size, 
 
     # Enable program cache on all devices
     settings = DeviceSettings()
-    settings.enable_program_cache = True
-    configure_devices(device_settings=settings)
+    LOOP_SIZE = 100
+    for it in range(LOOP_SIZE):
+        if it % 2 == 0:
+            settings.enable_program_cache = True
+        else:
+            settings.enable_program_cache = False
+        configure_devices(device_settings=settings)
+    # settings.enable_program_cache = True
+    # configure_devices(device_settings=settings)
 
     # Run for the first time to warm up the model. This is required to get accurate performance numbers.
     compiled_model(inputs[0])
