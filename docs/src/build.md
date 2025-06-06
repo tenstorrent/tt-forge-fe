@@ -1,33 +1,80 @@
 # Building
 
-This document describes how to build the tt-forge-fe project on your local machine.
+This document describes how to build the tt-forge-fe project on your local machine. The following topics are covered:
 
-## Prerequisites
+* Configuring Hardware
+* Installing Dependencies
+
+## Configuring Hardware
+This walkthrough assumes you are using Ubuntu 22.04.
+
+Configure your hardware with tt-installer:
+
+1. Make sure your system is up-to-date:
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade -y
+```
+
+2. Set up your hardware and dependencies using tt-installer:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://github.com/tenstorrent/tt-installer/releases/latest/download/install.sh)"
+```
+
+## Installing Dependencies
 The main project dependencies are:
-1. Clang 17
-2. Ninja
-3. CMake 3.20 or higher
-4. Python 3.10 or higher
+* Ubuntu 22.04
+* Clang 17
+* Ninja
+* CMake 3.20 or higher
+* Python 3.10 or higher
 
-On Ubuntu 22.04 systems, you can install these dependencies using the following commands:
-```sh
-# Update package list
-sudo apt update -y
-sudo apt upgrade -y
+### Installing Clang 17
+This section walks you through installing Clang 17.
 
-# Install Clang
-sudo apt install clang-17
+1. Install Clang 17:
 
-# Install Ninja
-sudo apt install ninja-build
+```bash
+wget https://apt.llvm.org/llvm.sh
+chmod u+x llvm.sh
+sudo ./llvm.sh 17
+sudo apt install -y libc++-17-dev libc++abi-17-dev
+sudo ln -s /usr/bin/clang-17 /usr/bin/clang
+sudo ln -s /usr/bin/clang++-17 /usr/bin/clang++
+```
 
-# Install CMake
-sudo apt remove cmake -y
-pip3 install cmake --upgrade
-cmake --version
+2. Check that the selected GCC candidate using Clang 17 is using 11:
 
-# Check Python version
-python3 --version
+```bash
+clang -v
+```
+
+3. Delete any non-11 paths:
+
+```bash
+sudo rm -rf /usr/bin/../lib/gcc/x86_64-linux-gnu/12
+```
+
+### Installing Ninja
+Install Ninja:
+
+```bash
+sudo apt-get install ninja-build
+```
+### Installing CMake 4.0.2
+Install CMake 4.0.2:
+
+```bash
+pip install cmake
+```
+
+### Installing Python 3.10
+Install Python 3.10:
+
+```bash
+sudo apt install python3.10
 ```
 
 ## Building the Environment
@@ -44,7 +91,7 @@ sudo mkdir -p /opt/ttmlir-toolchain
 sudo chown -R $USER /opt/ttmlir-toolchain
 ```
 
-Build FFE environment:
+Build the tt-forge-fe environment:
 ```sh
 # Initialize required env vars
 source env/activate
@@ -75,9 +122,8 @@ cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang
 cmake --build build
 ```
 
-> **NOTE:** our official compiler is `clang-17`, building with other compilers is at the moment not tested.
->
-> If you want to try other compilers, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
+> **NOTE:** Our official compiler is `clang-17`, building with other compilers has not been
+> tested. If you want to try other compilers, you can do so by changing the `-DCMAKE_CXX_COMPILER` and `-DCMAKE_C_COMPILER` options.
 
 You can pass additional options to the `cmake` command to customize the build. For example, to build everything in debug mode, you can run:
 ```sh
@@ -145,18 +191,18 @@ To ensure a clean build environment, follow these steps to remove existing build
     > **Note:** This should rarely be needed, as it removes the entire build and environment (consequently entire toolchain will need to be rebuilt).
 
 ## Useful Build Environment Variables
-1. `TTMLIR_TOOLCHAIN_DIR` - Specifies the directory where TTMLIR dependencies will be installed. Defaults to `/opt/ttmlir-toolchain` if not defined.
-2. `TTMLIR_VENV_DIR` - Specifies the virtual environment directory for TTMLIR. Defaults to `/opt/ttmlir-toolchain/venv` if not defined.
-3. `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
-4. `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
-5. `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
+* `TTMLIR_TOOLCHAIN_DIR` - Specifies the directory where TTMLIR dependencies will be installed. Defaults to `/opt/ttmlir-toolchain` if not defined.
+* `TTMLIR_VENV_DIR` - Specifies the virtual environment directory for TTMLIR. Defaults to `/opt/ttmlir-toolchain/venv` if not defined.
+* `TTFORGE_TOOLCHAIN_DIR` - Specifies the directory where tt-forge dependencies will be installed. Defaults to `/opt/ttforge-toolchain` if not defined.
+* `TTFORGE_VENV_DIR` - Specifies the virtual environment directory for tt-forge. Defaults to `/opt/ttforge-toolchain/venv` if not defined.
+* `TTFORGE_PYTHON_VERSION` - Specifies the Python version to use. Defaults to `python3.10` if not defined.
 
 ## Run tt-forge-fe Using a Docker Image
 
 We provide two Docker images for tt-forge-fe:
 
-1. **Base Image**: This image includes all the necessary preinstalled dependencies.
-2. **Prebuilt Environment Image**: This image also comes with a prebuilt environment, allowing you to skip the environment build step.
+* **Base Image**: This image includes all the necessary preinstalled dependencies.
+* **Prebuilt Environment Image**: This image also comes with a prebuilt environment, allowing you to skip the environment build step.
 
 ```sh
 ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ird-ubuntu-22-04
