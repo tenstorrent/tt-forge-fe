@@ -102,3 +102,25 @@ def test_mistral_v0_3(variant):
 
     # Model Verification
     verify(inputs, framework_model, compiled_model)
+
+
+variants = ["mistralai/Mistral-Small-24B-Instruct-2501"]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_mistral_small_24b(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.MISTRAL,
+        variant=variant,
+        task=Task.CAUSAL_LM,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Insufficient host DRAM to run this model")

@@ -23,40 +23,39 @@ from forge.verify.verify import verify
 variants = [
     pytest.param(
         "Qwen/Qwen2.5-0.5B",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-0.5B-Instruct",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-1.5B",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-1.5B-Instruct",
-        marks=[pytest.mark.xfail],
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
     ),
     pytest.param(
         "Qwen/Qwen2.5-3B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
     ),
     pytest.param(
         "Qwen/Qwen2.5-7B-Instruct",
-        marks=[pytest.mark.skip(reason="Insufficient host DRAM to run this model")],
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-14B-Instruct",
+    ),
+    pytest.param(
+        "Qwen/Qwen2.5-32B-Instruct",
     ),
 ]
 
 
 @pytest.mark.parametrize("variant", variants)
+@pytest.mark.xfail
 @pytest.mark.nightly
 def test_qwen_clm(variant):
     if variant in [
@@ -68,6 +67,16 @@ def test_qwen_clm(variant):
         group = ModelGroup.RED
     else:
         group = ModelGroup.GENERALITY
+
+    if variant in [
+        "Qwen/Qwen2.5-3B",
+        "Qwen/Qwen2.5-3B-Instruct",
+        "Qwen/Qwen2.5-7B",
+        "Qwen/Qwen2.5-7B-Instruct",
+        "Qwen/Qwen2.5-14B-Instruct",
+        "Qwen/Qwen2.5-32B-Instruct",
+    ]:
+        raise RuntimeError("Insufficient host DRAM to run this model")
 
     # Record Forge Property
     module_name = record_model_properties(

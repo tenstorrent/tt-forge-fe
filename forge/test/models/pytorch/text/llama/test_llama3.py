@@ -314,3 +314,28 @@ def test_llama3_sequence_classification(variant):
     predicted_value = co_out[0].argmax(-1).item()
 
     print(f"Prediction : {framework_model.config.id2label[predicted_value]}")
+
+
+variants = [
+    "meta-llama/Llama-3.2-90B-Vision-Instruct",
+    "meta-llama/Llama-3.1-8B-Instruct",
+]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_bevdepth(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.FLUX,
+        variant=variant,
+        task=Task.SEQUENCE_CLASSIFICATION,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Insufficient host DRAM to run this model")

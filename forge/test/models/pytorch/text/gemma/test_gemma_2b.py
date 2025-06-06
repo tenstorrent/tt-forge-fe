@@ -95,9 +95,7 @@ def test_gemma_2b(variant):
         ),
         pytest.param(
             "google/gemma-2-9b-it",
-            marks=pytest.mark.skip(
-                reason="Insufficient host DRAM to run this model (requires a bit more than 50 GB during compile time)"
-            ),
+            marks=pytest.mark.xfail,
         ),
     ],
 )
@@ -112,6 +110,8 @@ def test_gemma_pytorch_v2(variant):
         source=Source.HUGGINGFACE,
         group=ModelGroup.RED,
     )
+    if variant == "google/gemma-2-9b-it":
+        raise RuntimeError("Insufficient host DRAM to run this model")
 
     # Load model and tokenizer from HuggingFace
     tokenizer = AutoTokenizer.from_pretrained(variant)
@@ -138,3 +138,27 @@ def test_gemma_pytorch_v2(variant):
         max_new_tokens=max_new_tokens, model=compiled_model, inputs=padded_inputs, seq_len=seq_len, tokenizer=tokenizer
     )
     print(generated_text)
+
+
+variants = [
+    "google/gemma-2-27b-it",
+]
+
+
+@pytest.mark.nightly
+@pytest.mark.xfail
+@pytest.mark.parametrize("variant", variants)
+def test_gemma_pytorch_27b(variant):
+
+    # Record Forge Property
+    module_name = record_model_properties(
+        framework=Framework.PYTORCH,
+        model=ModelArch.FLUX,
+        variant=variant,
+        task=Task.QA,
+        source=Source.HUGGINGFACE,
+        group=ModelGroup.RED,
+    )
+
+    # Force the test to fail explicitly
+    raise RuntimeError("Insufficient host DRAM to run this model")
