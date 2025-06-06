@@ -102,7 +102,9 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
     # Compiler configuration
     compiler_config = CompilerConfig()
     # Turn on MLIR optimizations.
-    compiler_config.mlir_config = MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True)
+    compiler_config.mlir_config = (
+        MLIRConfig().set_enable_consteval(True).set_enable_optimizer(True).set_enable_memory_layout_analysis(True)
+    )
     if data_format == "bfloat16":
         # Convert model to bfloat16
         compiler_config.default_df_override = DataFormat.Float16_b
@@ -114,8 +116,15 @@ def test_mobilenetv2_basic(training, batch_size, input_size, channel_size, loop_
 
     # Enable program cache on all devices
     settings = DeviceSettings()
-    settings.enable_program_cache = True
-    configure_devices(device_settings=settings)
+    LOOP_SIZE = 100
+    for it in range(LOOP_SIZE):
+        if it % 2 == 0:
+            settings.enable_program_cache = True
+        else:
+            settings.enable_program_cache = False
+        configure_devices(device_settings=settings)
+    # settings.enable_program_cache = True
+    # configure_devices(device_settings=settings)
 
     verify(
         [

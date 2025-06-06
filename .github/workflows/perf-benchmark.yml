@@ -46,7 +46,7 @@ jobs:
       build: ${{ needs.set-inputs.outputs.buildtype}}
 
   run-perf-benchmarks:
-    if: always()
+    # if: always()
     needs:
       - docker-build
       - set-inputs
